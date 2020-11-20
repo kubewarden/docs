@@ -34,7 +34,7 @@ Write to STDOUT    |   ✅   |
 Read env variables |   ✅   |
 Handle JSON        |   ❔   |
 
-## Write to STOUD
+## Write to STDOUT
 
 Writing to STDOUT can be done using the [`Console`](https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesconsolemd)
 class defined by `as-wasi`.

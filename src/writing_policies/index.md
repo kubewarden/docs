@@ -15,7 +15,7 @@ nice overview.
 
 # What a policy does
 
-The chimera admission controller receives [`AdmissionReview`](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#request)
+The Chimera admission controller receives [`AdmissionReview`](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#request)
 objects from the Kubernetes API server. It then forwards the
 value of the `request` key to the policy to be evaluated.
 
@@ -54,7 +54,7 @@ must be specified when the request is rejected.
 
 The policy can read configuration values straight from its environment variables.
 
-The chimera admission controller takes care of exporting certain environment
+The Chimera admission controller takes care of exporting certain environment
 variables from the host to the WASM runtime.
 
 # Recap

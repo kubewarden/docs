@@ -49,7 +49,7 @@ Write to STDOUT    |   ✅   |
 Read env variables |   ❌   |
 Handle JSON        |   😒   |
 
-## Write to STOUD
+## Write to STDOUT
 
 Writing to STDOUT can be done using the `ftm` package.
 
