@@ -1,0 +1,7 @@
+[book]
+authors = ["Flavio Castelli"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Chimera Kubernetes Policy Engine"
+git-repository-url = "https://github.com/chimera-kube/chimera-book"
