@@ -39,6 +39,7 @@ machine can be run on a x86_64 Linux server without any conversion.
 ## Policy distribution
 
 Chimera policies can be served by a regular web server or, even
-better, can be published inside of a container registry.
+better, can be published inside of an OCI compliant registry.
 
-The policies can be stored inside of a container registry as [OCI artifacts](https://github.com/opencontainers/artifacts).
+The policies can be stored inside of an OCI compliant registry as [OCI
+artifacts](https://github.com/opencontainers/artifacts).
