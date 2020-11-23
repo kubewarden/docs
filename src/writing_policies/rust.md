@@ -9,8 +9,8 @@
 [Rust](https://www.rust-lang.org/) is the most mature programming language that
 can generate WebAssembly modules.
 
-WebAssembly is really first citizen in the Rust world, that means all the tools
-and crates should work out of the box.
+WebAssembly is a first-class citizen in the Rust world, that means
+many of the tools and crates should work out of the box.
 
 Of course, Rust programs are still bound to the limitations of the WASI
 specification.

@@ -15,9 +15,12 @@ nice overview.
 
 # What a policy does
 
-The Chimera admission controller receives [`AdmissionReview`](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#request)
-objects from the Kubernetes API server. It then forwards the
-value of the `request` key to the policy to be evaluated.
+The Chimera admission controller receives
+[`AdmissionReview`](https://godoc.org/k8s.io/api/admission/v1#AdmissionReview)
+objects from the Kubernetes API server. It then forwards the value of
+the `request` (of type
+[`AdmissionRequest`](https://godoc.org/k8s.io/api/admission/v1#AdmissionRequest)
+key to the policy to be evaluated.
 
 The policy has to evaluate the `request` and state whether it should be
 accepted or not. When the request is rejected, the policy must provide the
@@ -38,17 +41,29 @@ rules:
 
 ## The `ValidationResponse` object
 
-The `ValidationResponse` object is a simple JSON object like that:
+The `ValidationResponse` object is a simple JSON object like the
+following:
 
 ```json
 {
-  "accepted": true,
-  "message": ""
+  "accepted": <boolean>, // mandatory
+  "message": <string>,   // optional, ignored if accepted
+  "code": <integer>      // optional, ignored if accepted
 }
 ```
 
-The `accepted` attribute can be either `true` or `false`. The `message` attribute
-must be specified when the request is rejected.
+The `message` and `code` attributes can be specified when the request
+is not accepted. `message` is a free form textual error. `code`
+represents an HTTP error code.
+
+If the request is accepted, `message` and `code`
+values will be ignored by the Kubernetes API server if they are
+present.
+
+If `message` and/or `code` are provided, and the request is not
+accepted, the Kubernetes API server will forward this information as
+part of the body of the error returned to the Kubernetes API server
+client that issued the rejected request.
 
 ## Policy configuration
 

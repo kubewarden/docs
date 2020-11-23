@@ -33,7 +33,7 @@ is solved the Swift-based policies will be even easier to write.
 
 We haven't done extensive testing, but from our initial research it seems the
 performance of WASM modules produced by the Swiftwasm compiler *seem* to be
-slower than the ones produced by the Rust.
+slower than the ones produced by the Rust compiler.
 
 It's also critical to perform some post-build optimizations before using the
 policy *"in production"*.
@@ -50,4 +50,3 @@ contains a Chimera policy written in Swift.
 
 The policy's `Makefile` has a `release` target that takes care of the
 optimizations outlined above.
-
