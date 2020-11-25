@@ -1,10 +1,22 @@
 # Testing Policies
 
-Chimera Policies are regular WASM modules targeting the WASI interface. Morover,
-they are also "exectutable" programs. Because of that it's really easy to run
-your policies from your shell.
+Chimera Policies are regular programs built as WASM modules. Hence policies can
+be testes using the regular testing capabilities offered by the programming
+language of your choice.
 
-This can be done using the [Wasmtime](https://wasmtime.dev/) runtime.
+The reference policies we created do that extensively, as seen here:
+
+  * [pod-runtime](https://github.com/chimera-kube/pod-runtime-class-policy/tree/main/Tests)
+    policy tests
+  * [pod-toleration](https://github.com/chimera-kube/pod-toleration-policy/blob/60388a054550cc94f2116c45c684b3b079bc8090/src/main.rs#L146-L306)
+    policy tests
+
+
+On top of that, Chimera Policies are also "exectutable" programs. Because of
+that it's really easy to run your policies from your shell.
+
+You can run the WASM module that implements a Chimera Policy straight from
+your console by using the [Wasmtime](https://wasmtime.dev/) runtime.
 
 Just follow the instructions on their website and install the `wasmtime` binary
 on your machine. Once this is done you can invoke your Chimera Policy in this way:
