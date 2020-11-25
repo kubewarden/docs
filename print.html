@@ -1,0 +1,734 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chimera Kubernetes Policy Engine</title>
+        
+        <meta name="robots" content="noindex" />
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting-started/local-eval-with-k3s.html"><strong aria-hidden="true">2.1.</strong> Local evaluation with k3s</a></li><li class="chapter-item expanded "><a href="getting-started/kubernetes-deployment.html"><strong aria-hidden="true">2.2.</strong> Kubernetes deployment</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">3.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rust.html"><strong aria-hidden="true">3.1.</strong> Rust</a></li><li class="chapter-item expanded "><a href="writing-policies/swift.html"><strong aria-hidden="true">3.2.</strong> Swift</a></li><li class="chapter-item expanded "><a href="writing-policies/typescript.html"><strong aria-hidden="true">3.3.</strong> TypeScript</a></li><li class="chapter-item expanded "><a href="writing-policies/go.html"><strong aria-hidden="true">3.4.</strong> Go</a></li><li class="chapter-item expanded "><a href="writing-policies/dsl.html"><strong aria-hidden="true">3.5.</strong> Domain Specific Language</a></li><li class="chapter-item expanded "><a href="writing-policies/other-languages.html"><strong aria-hidden="true">3.6.</strong> Other languages</a></li></ol></li><li class="chapter-item expanded "><a href="testing-policies.html"><strong aria-hidden="true">4.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Chimera Kubernetes Policy Engine</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <blockquote>
+<p><strong>WARNING:</strong> Chimera is in early development stage, it's not production ready.</p>
+<p>Feedback is highly appreciated.</p>
+</blockquote>
+<h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
+<p>Chimera is a <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Kubernetes Dynamic Admission Controller</a>
+that validates incoming requests using policies written in WebAssembly.</p>
+<h2><a class="header" href="#what-is-webassembly" id="what-is-webassembly">What is WebAssembly?</a></h2>
+<p>As stated on <a href="https://webassembly.org/">WebAssembly's official website</a>:</p>
+<blockquote>
+<p>WebAssembly (abbreviated Wasm) is a binary instruction format for a stack-based virtual machine. Wasm is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications.</p>
+</blockquote>
+<p>WebAssembly has been originally conceived as an &quot;extension&quot; of browsers. However,
+recent efforts have been made by the WebAssembly community to allow the execution
+of WebAssembly code outside of the browsers. These efforts lead to the creation
+of the <a href="https://wasi.dev/">WebAssembly System Interface</a>, also known as <em>&quot;WASI&quot;</em>.</p>
+<p>Chimera policies are executed outside of a browsers, hence they target a
+WASI-compliant runtime.</p>
+<h2><a class="header" href="#why-use-webassembly" id="why-use-webassembly">Why use WebAssembly?</a></h2>
+<p>By using WebAssembly, users can write Kubernetes policies using their favorite
+programming language, as long as the language can produce WASM binaries.</p>
+<p>Policy authors can reuse their skills, tools and best practices. Policies
+are &quot;traditional&quot; programs that can have reusable blocks (regular libraries),
+can be tested, can be linted, can be plugged into the current CI and CD
+workflows,...</p>
+<p>WASM modules are portable, once built they can run on any kind of
+architecture and Operating System. A policy built on a Apple Silicon
+machine can be run on a x86_64 Linux server without any conversion.</p>
+<h2><a class="header" href="#policy-distribution" id="policy-distribution">Policy distribution</a></h2>
+<p>Chimera Policies can be served by a regular web server or, even
+better, can be published inside of an OCI compliant registry.</p>
+<p>Chimera Policies can be stored inside of an OCI compliant registry as <a href="https://github.com/opencontainers/artifacts">OCI
+artifacts</a>.</p>
+<h1><a class="header" href="#getting-started" id="getting-started">Getting started</a></h1>
+<p>The <code>chimera-admission</code> project is the core component of the Chimera
+project. It's an admission controller that is designed to
+validate and, in the near future, to mutate incoming requests
+made agaist the Kubernetes API server.</p>
+<h2><a class="header" href="#cloning" id="cloning">Cloning</a></h2>
+<p>The first step is to clone the <code>chimera-admission</code> project:</p>
+<pre><code class="language-shell">$ git clone https://github.com/chimera-kube/chimera-admission.git
+</code></pre>
+<h2><a class="header" href="#building" id="building">Building</a></h2>
+<p>After you have cloned the <code>chimera-admission</code> project, you can build
+either the <code>x86_64</code> or the <code>arm64</code> binaries, depending on your
+architecture:</p>
+<pre><code class="language-shell">$ # Build x86_64 binary
+$ make chimera-admission-amd64
+$ # Build ARM64 binary
+$ make chimera-admission-arm64
+</code></pre>
+<blockquote>
+<p><strong>Note well:</strong> cross compiling <code>chimera-admission</code> is tricky at this
+time due to its current dependency on CGO, therefore we suggest you
+to build the <code>chimera-admission</code> target that matches your current
+architecture and toolchain.</p>
+</blockquote>
+<h1><a class="header" href="#local-evaluation-with-k3s" id="local-evaluation-with-k3s">Local evaluation with k3s</a></h1>
+<p>You need a Kubernetes cluster running and accessible through a
+<code>kubeconfig</code> file.  This can be done quickly using k3s.</p>
+<p>The following commands download k3s and then run it locally:</p>
+<pre><code class="language-shell">$ wget https://github.com/rancher/k3s/releases/download/v1.19.4%2Bk3s1/k3s
+$ chmod +x k3s
+$ ./k3s server --disable-agent
+</code></pre>
+<p>The policy will be downloaded as an OCI artifact from
+<a href="https://github.com/orgs/chimera-kube/packages/container/package/policies%2Fpod-toleration">here</a>.</p>
+<pre><code class="language-shell">$ CHIMERA_RESOURCES=pods \
+  CHIMERA_EXPORT_TOLERATION_KEY=example-key \
+  CHIMERA_EXPORT_TOLERATION_OPERATOR=Exists \
+  CHIMERA_EXPORT_TOLERATION_EFFECT=NoSchedule \
+  CHIMERA_EXPORT_ALLOWED_GROUPS=system:masters \
+  CHIMERA_WASM_URI=registry://ghcr.io/chimera-kube/policies/pod-toleration:v0.0.2 \
+  KUBECONFIG=$HOME/.kube/k3s.yaml \
+  ./chimera-admission-amd64
+</code></pre>
+<p>Now we can see the policy in action by creating the following Pod:</p>
+<pre><code class="language-shell">$ k3s kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  tolerations:
+  - key: &quot;example-key&quot;
+    operator: &quot;Exists&quot;
+    effect: &quot;NoSchedule&quot;
+EOF
+</code></pre>
+<p>The <code>chimera-admission</code> instance will accept the creation request because the
+<code>kubeconfig</code> used by k3s authenticates us as user named <code>kubernetes-admin</code> who
+belongs to the <code>sytem:masters</code> and to the <code>system:authenticated</code>
+groups.</p>
+<p>Let's remove the Pod now, so that we can make one last test:</p>
+<pre><code class="language-shell">$ k3s kubectl delete pod nginx
+</code></pre>
+<p>Stop the previous admission server execution, and re-run it with
+a different tuning of the Chimera Policy:</p>
+<pre><code class="language-shell">$ CHIMERA_RESOURCES=pods \
+  CHIMERA_EXPORT_TOLERATION_KEY=example-key \
+  CHIMERA_EXPORT_TOLERATION_OPERATOR=Exists \
+  CHIMERA_EXPORT_TOLERATION_EFFECT=NoSchedule \
+  CHIMERA_EXPORT_ALLOWED_GROUPS=trusted-users \
+  CHIMERA_WASM_URI=registry://ghcr.io/chimera-kube/policies/pod-toleration:v0.0.2 \
+  KUBECONFIG=$HOME/.kube/k3s.yaml \
+  ./chimera-admission-amd64
+</code></pre>
+<p>Now the policy accepts this toleration only when a user who belongs to the
+<code>trusted-users</code> group is the author of the request.</p>
+<p>Let's create the same Pod one last time:</p>
+<pre><code class="language-shell">$ k3s kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  tolerations:
+  - key: &quot;example-key&quot;
+    operator: &quot;Exists&quot;
+    effect: &quot;NoSchedule&quot;
+EOF
+Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;rule-0.wasm.admission.rule&quot; denied the request: User not allowed to create Pod objects with toleration: key: example-key, operator: Exists, effect: NoSchedule)
+</code></pre>
+<p>The admission controller is properly working: the creation request has
+been rejected because it's not done by a user who belongs to one of the
+valid groups.</p>
+<h1><a class="header" href="#kubernetes-deployment" id="kubernetes-deployment">Kubernetes deployment</a></h1>
+<p>The <a href="https://github.com/chimera-kube/chimera-admission/tree/main/deployment"><code>deployment</code></a>
+directory inside of the <a href="https://github.com/chimera-kube/chimera-admission">chimera-admission</a>
+repository shows how to deploy the <code>chimera-admission</code> controller
+on top of a Kubernetes cluster.</p>
+<p>The chimera-admission controller will automatically register itself against the
+Kubernetes API server.</p>
+<p>chimera-admission can be deployed by doing a simple:</p>
+<pre><code class="language-shell">$ kubectl apply -f https://raw.githubusercontent.com/chimera-kube/chimera-admission/main/deployment/chimera-admission.yaml
+</code></pre>
+<blockquote>
+<p><strong>Note well:</strong> <code>chimera-admission</code> is still in alpha phase. It's not meant to
+be used in production.</p>
+<p>We also plan to create a Kubernetes controller to simplify the management
+of Chimera Policies.</p>
+</blockquote>
+<h2><a class="header" href="#components" id="components">Components</a></h2>
+<p>The YAML file takes care of deploying all the required Kubernetes resources.
+The next section cover in detail all the objects that will be created.</p>
+<h3><a class="header" href="#namespace" id="namespace">Namespace</a></h3>
+<p>A <code>Namespace</code> called <code>chimera</code> is created. All the other resources deployed
+by this file are placed inside of it.</p>
+<h3><a class="header" href="#serviceaccount" id="serviceaccount">ServiceAccount</a></h3>
+<p>A <code>ServiceAccount</code> named <code>chimera</code> is created. This is used by the
+<code>chimera-admission</code> Pod to authenticate against the local Kubernetes API.</p>
+<h3><a class="header" href="#rbac-policies" id="rbac-policies">RBAC policies</a></h3>
+<p>A <code>ClusterRole</code> and a <code>ClusterRoleBinding</code> objects are created.</p>
+<p>These are used to grant the right set of privileges to the previously created
+service account.</p>
+<p>The service account is granted the right to do any kind of operation
+against <code>admissionregistration.k8s.io/validatingwebhookconfigurations</code>
+resources.</p>
+<p>This is required to allow <code>chimera-admission</code> to register itself against the
+local Kubernetes API server and, eventually, remove old instances of itself.</p>
+<h3><a class="header" href="#deployment" id="deployment">Deployment</a></h3>
+<p>A <code>Deployment</code> named <code>chimera-admission</code> is created.</p>
+<p>The deployment uses the <a href="https://github.com/orgs/chimera-kube/packages/container/package/chimera-admission">container image</a>
+we push automatically to our GitHub Container Registry.</p>
+<p>The admission controller uses the <a href="https://github.com/chimera-kube/pod-toleration-policy">pod-toleration</a>
+policy to validate incoming Pod requests.</p>
+<p>The controller will download the WASM module providing the policy from
+<a href="https://github.com/orgs/chimera-kube/packages/container/package/policies%2Fpod-toleration">here</a>.</p>
+<p>The Chimera Policy is automatically publish by a GitHub Action as an OCI
+artifact to on our GitHub Container Registry.</p>
+<h3><a class="header" href="#service" id="service">Service</a></h3>
+<p>A <code>Service</code> named <code>chimera-admission</code> is created. This is used to expose the
+<code>chimera-admission</code> Deployment inside of the cluster.</p>
+<p>This is how the Kubernetes API reaches <code>chimera-admission</code> to validate
+incoming requests.</p>
+<h1><a class="header" href="#writing-policies" id="writing-policies">Writing Policies</a></h1>
+<p>Chimera policies can be written using any kind of language capable of building
+<a href="https://webassembly.org/">WASM</a> binaries for the <a href="https://wasi.dev/">WASI</a> target.</p>
+<p>The list of languages that can produce WASM modules is continuously evolving.
+<a href="https://github.com/appcypher/awesome-wasm-langs">This page</a> provides a
+nice overview.</p>
+<blockquote>
+<p><strong>Note well:</strong> some languages have WASM support, but are not yet capable
+of building binaries for the WASI interface.</p>
+<p>WASM modules built for the browser target won't run inside of a WASI-compliant
+runtime.</p>
+</blockquote>
+<h1><a class="header" href="#what-a-policy-does" id="what-a-policy-does">What a policy does</a></h1>
+<p>The Chimera admission controller receives
+<a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionReview"><code>AdmissionReview</code></a>
+objects from the Kubernetes API server. It then forwards the value of
+the <code>request</code> (of type
+<a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionRequest"><code>AdmissionRequest</code></a>
+key to the policy to be evaluated.</p>
+<p>The policy has to evaluate the <code>request</code> and state whether it should be
+accepted or not. When the request is rejected, the policy must provide the
+explanation message that is going to be shown to the end user.</p>
+<blockquote>
+<p><strong>Note well:</strong> currently Chimera supports only Validating Admission Controller,
+Mutating ones are not yet implemented.</p>
+</blockquote>
+<h1><a class="header" href="#policy-interface" id="policy-interface">Policy interface</a></h1>
+<p>Chimera policies have to be implemented following some simple communication
+rules:</p>
+<ul>
+<li>The policy program has to be written as an executable.</li>
+<li>The policy will read the <code>request</code> data from its standard input</li>
+<li>The policy will evaluate the policy and serialize a <code>ValidationResponse</code>
+object as JSON on its standard output.</li>
+</ul>
+<h2><a class="header" href="#the-validationresponse-object" id="the-validationresponse-object">The <code>ValidationResponse</code> object</a></h2>
+<p>The <code>ValidationResponse</code> object is a simple JSON object like the
+following:</p>
+<pre><code class="language-json">{
+  &quot;accepted&quot;: &lt;boolean&gt;, // mandatory
+  &quot;message&quot;: &lt;string&gt;,   // optional, ignored if accepted
+  &quot;code&quot;: &lt;integer&gt;      // optional, ignored if accepted
+}
+</code></pre>
+<p>The <code>message</code> and <code>code</code> attributes can be specified when the request
+is not accepted. <code>message</code> is a free form textual error. <code>code</code>
+represents an HTTP error code.</p>
+<p>If the request is accepted, <code>message</code> and <code>code</code>
+values will be ignored by the Kubernetes API server if they are
+present.</p>
+<p>If <code>message</code> and/or <code>code</code> are provided, and the request is not
+accepted, the Kubernetes API server will forward this information as
+part of the body of the error returned to the Kubernetes API server
+client that issued the rejected request.</p>
+<h2><a class="header" href="#policy-configuration" id="policy-configuration">Policy configuration</a></h2>
+<p>The policy can read configuration values straight from its environment variables.</p>
+<p>The Chimera admission controller takes care of exporting certain environment
+variables from the host to the WASM runtime.</p>
+<h1><a class="header" href="#recap" id="recap">Recap</a></h1>
+<p>This is the minimal list of features a programming language must be able to
+support when building WASM modules for the WASI interface:</p>
+<ul>
+<li>Read from the STDIN [<strong>mandatory</strong>]</li>
+<li>Write to the STDOUT [<strong>mandatory</strong>]</li>
+<li>Handle JSON data, both marshalling and unmarshalling [<strong>strongly recommended</strong>]</li>
+<li>Read value of environment variables [<strong>optional</strong>]</li>
+</ul>
+<p>This is a really limited set of requirements, however, due to the early nature
+of WebAssembly, not all the programming languages are able to satisfy them. The
+next sections will cover the maturity level of some programming languages.</p>
+<h1><a class="header" href="#faq" id="faq">FAQ</a></h1>
+<h2><a class="header" href="#why-policies-arent-implemented-as-libraries" id="why-policies-arent-implemented-as-libraries">Why Policies aren't implemented as libraries?</a></h2>
+<p>It's possible to write WASM modules that expose functions, and
+later invoked these functions from a WASM runtime.</p>
+<p>However WebAssembly defines only 4 data types: integer and floating point numbers (32 and 64 bits).
+Sharing other data types between the runtime and the WASM module is not yet standardized,
+not all languages would be capable of doing that.</p>
+<blockquote>
+<p><strong>Note well:</strong> WebAssembly and WASI are fast evolving targets. The contents
+of this page have been written during Nov 2020, hence they could be outdated.</p>
+<p>Please open an issue if the contents of this page have become outdated.</p>
+</blockquote>
+<h1><a class="header" href="#rust" id="rust">Rust</a></h1>
+<p><a href="https://www.rust-lang.org/">Rust</a> is the most mature programming language that
+can generate WebAssembly modules.</p>
+<p>WebAssembly is a first-class citizen in the Rust world, that means
+many of the tools and crates should work out of the box.</p>
+<p>Of course, Rust programs are still bound to the limitations of the WASI
+specification.</p>
+<h1><a class="header" href="#example" id="example">Example</a></h1>
+<p><a href="https://github.com/chimera-kube/pod-toleration-policy">This GitHub repository</a>
+contains a Chimera policy written in Rust.</p>
+<blockquote>
+<p><strong>Note well:</strong> WebAssembly and WASI are fast evolving targets. The contents
+of this page have been written during Nov 2020, hence they could be outdated.</p>
+<p>Please open an issue if the contents of this page have become outdated.</p>
+</blockquote>
+<h1><a class="header" href="#swift" id="swift">Swift</a></h1>
+<p>As stated on the <a href="https://swift.org/">official website</a>:</p>
+<blockquote>
+<p>Swift is a general-purpose programming language built using a modern approach
+to safety, performance, and software design patterns.</p>
+</blockquote>
+<p>The swift compiler doesn't yet have WebAssembly support, however the
+<a href="https://swiftwasm.org/">Swiftwasm</a> provides a patched compiler with this
+capability.</p>
+<p>The Swiftwasm team is also working to upstream all these changes into the
+Swift project. In the meantime the toolchain provided by the Swiftwasm project
+can be used to build Chimera policies.</p>
+<p><strong>Note well:</strong> you don't need an Apple system to write or run Swift code. Everything
+can be done also on a Linux machine or on Windows (by using Docker for Windows).</p>
+<h1><a class="header" href="#known-limitations" id="known-limitations">Known limitations</a></h1>
+<p>No severe limitations have been found, only some minor glitches.</p>
+<p>The automatic unmarshalling of JSON data into native <code>struct</code> or <code>class</code> objects
+is not working. JSON parsing is still doable, but requires significantly more
+code. Once <a href="https://github.com/swiftwasm/swift/issues/2223">this issue</a>
+is solved the Swift-based policies will be even easier to write.</p>
+<p>We haven't done extensive testing, but from our initial research it seems the
+performance of WASM modules produced by the Swiftwasm compiler <em>seem</em> to be
+slower than the ones produced by the Rust compiler.</p>
+<p>It's also critical to perform some post-build optimizations before using the
+policy <em>&quot;in production&quot;</em>.</p>
+<p>These optimizations are:</p>
+<ol>
+<li>Strip the WASM module via <code>wasm-strip</code> to reduce its size</li>
+<li>Optimize the WASM module via <code>wasm-opt</code></li>
+</ol>
+<h1><a class="header" href="#example-1" id="example-1">Example</a></h1>
+<p><a href="https://github.com/chimera-kube/pod-runtime-class-policy">This GitHub repository</a>
+contains a Chimera policy written in Swift.</p>
+<p>The policy's <code>Makefile</code> has a <code>release</code> target that takes care of the
+optimizations outlined above.</p>
+<blockquote>
+<p><strong>Note well:</strong> WebAssembly and WASI are fast evolving targets. The contents
+of this page have been written during Nov 2020, hence they could be outdated.</p>
+<p>Please open an issue if the contents of this page have become outdated.</p>
+</blockquote>
+<h1><a class="header" href="#typescript" id="typescript">TypeScript</a></h1>
+<p>As stated on the <a href="https://www.typescriptlang.org/">official website</a>:</p>
+<blockquote>
+<p>TypeScript extends JavaScript by adding types.</p>
+<p>By understanding JavaScript, TypeScript saves you time catching errors and
+providing fixes before you run code.</p>
+</blockquote>
+<p>TypeScript <strong>cannot</strong> be converted to WebAssembly, however the
+<a href="https://www.assemblyscript.org/">AssemblyScript</a> is a <strong>subset</strong> of TypeScript
+designed explicitly for WebAssembly.</p>
+<p>AssemblyScript can produce WASM modules targeting the WASI interface by leveraging
+the <a href="https://github.com/jedisct1/as-wasi">as-wasi</a> project.</p>
+<h1><a class="header" href="#known-limitations-1" id="known-limitations-1">Known limitations</a></h1>
+<p>Currently AssemblyScript does not provide all the capabilities required to
+write Chimera policies. The basic requirements of Chimera policies are outlined
+<a href="writing-policies//writing_policies/index.html#recap">here</a>.</p>
+<p>This is a quick schema of what works and what doesn't work with AssemblyScript</p>
+<table><thead><tr><th>Capability</th><th>Status</th></tr></thead><tbody>
+<tr><td>Read from STDIN</td><td>❌</td></tr>
+<tr><td>Write to STDOUT</td><td>✅</td></tr>
+<tr><td>Read env variables</td><td>✅</td></tr>
+<tr><td>Handle JSON</td><td>❔</td></tr>
+</tbody></table>
+<h2><a class="header" href="#write-to-stdout" id="write-to-stdout">Write to STDOUT</a></h2>
+<p>Writing to STDOUT can be done using the <a href="https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesconsolemd"><code>Console</code></a>
+class defined by <code>as-wasi</code>.</p>
+<h2><a class="header" href="#read-from-stdin" id="read-from-stdin">Read from STDIN</a></h2>
+<p>Reading from STDIN can theoretically be done using the <a href="https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesconsolemd"><code>Console</code></a>
+class defined by <code>as-wasi</code>.</p>
+<p>Unfortunately right now no data is read from the STDIN.
+<a href="https://github.com/jedisct1/as-wasi/issues/95">This issue</a> has been created to track the problem.</p>
+<h2><a class="header" href="#read-environment-variables" id="read-environment-variables">Read environment variables</a></h2>
+<p>This can be done using the <a href="https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesenvironmd"><code>Environ</code></a>
+class provided by <code>as-wasi</code>.</p>
+<h2><a class="header" href="#handle-json" id="handle-json">Handle JSON</a></h2>
+<p>AssemblyScript is a subset of TypeScript, hence JSON handling is not provided
+out of the box.</p>
+<p>The <a href="https://github.com/nearprotocol/assemblyscript-json">assemblyscript-json</a>
+project seems to provide this capability. However we haven't tested the library yet.</p>
+<blockquote>
+<p><strong>Note well:</strong> WebAssembly and WASI are fast evolving targets. The contents
+of this page have been written during Nov 2020, hence they could be outdated.</p>
+<p>Please open an issue if the contents of this page have become outdated.</p>
+</blockquote>
+<h1><a class="header" href="#go" id="go">Go</a></h1>
+<p>As stated on the <a href="https://golang.org/">official website</a>:</p>
+<blockquote>
+<p>Go is an open source programming language that makes it easy to build simple,
+reliable, and efficient software.</p>
+</blockquote>
+<p>Currently the official Go compiler can build WebAssembly as documented
+<a href="https://github.com/golang/go/wiki/WebAssembly">here</a>. However, the compiler is
+not currently capable of producing WASM modules targeting the WASI interface.
+<a href="https://github.com/golang/go/issues/31105">This upstream issue</a> is tracking
+the evolution of this topic.</p>
+<p>Due to that, it's not possible to use the Go compiler to write Chimera policies.</p>
+<h1><a class="header" href="#tinygo" id="tinygo">TinyGo</a></h1>
+<p>TinyGo is an alternative Go compiler. As stated on the <a href="https://tinygo.org/">official website</a>:</p>
+<blockquote>
+<p>TinyGo is a project to bring the Go programming language to microcontrollers
+and modern web browsers by creating a new compiler based on LLVM.</p>
+<p>You can compile and run TinyGo programs on many different microcontroller
+boards such as the BBC micro:bit and the Arduino Uno.</p>
+<p>TinyGo can also be used to produce WebAssembly (WASM) code which is very
+compact in size.</p>
+</blockquote>
+<p>TinyGo has WebAssembly support and, starting from the <code>0.16.0</code> release, it
+can produce WASM modules targeting the WASI interface.</p>
+<h2><a class="header" href="#known-limitations-2" id="known-limitations-2">Known limitations</a></h2>
+<p>Currently TinyGo does not provide all the capabilities required to
+write Chimera policies. The basic requirements of Chimera policies are outlined
+<a href="writing-policies//writing_policies/index.html#recap">here</a>.</p>
+<p>This is a quick schema of what works and what doesn't work with TinyGo.</p>
+<table><thead><tr><th>Capability</th><th>Status</th></tr></thead><tbody>
+<tr><td>Read from STDIN</td><td>❌</td></tr>
+<tr><td>Write to STDOUT</td><td>✅</td></tr>
+<tr><td>Read env variables</td><td>❌</td></tr>
+<tr><td>Handle JSON</td><td>😒</td></tr>
+</tbody></table>
+<h2><a class="header" href="#write-to-stdout-1" id="write-to-stdout-1">Write to STDOUT</a></h2>
+<p>Writing to STDOUT can be done using the <code>ftm</code> package.</p>
+<h2><a class="header" href="#read-from-stdin-1" id="read-from-stdin-1">Read from STDIN</a></h2>
+<p>Reading from standard input is not yet implemented.
+<a href="https://github.com/tinygo-org/tinygo/issues/1505">This issue</a> has been created
+to track the problem.</p>
+<h2><a class="header" href="#read-environment-variables-1" id="read-environment-variables-1">Read environment variables</a></h2>
+<p>Reading environment variables is not working, they are always seen empty.
+<a href="https://github.com/tinygo-org/tinygo/issues/1504">This issue</a> has been created
+to track the problem.</p>
+<h2><a class="header" href="#handle-json-1" id="handle-json-1">Handle JSON</a></h2>
+<p>TinyGo <strong>does not support</strong> the full Go language, <a href="https://tinygo.org/lang-support/">this page</a>
+provides an overview of the Go features that are not yet supported.</p>
+<p><a href="https://tinygo.org/lang-support/stdlib/">This additional page</a> shows a detailed
+overview of the support level of Go's standard library.</p>
+<p>As stated by the page above, the <a href="https://golang.org/pkg/encoding/json/"><code>encoding/json</code></a> package is not yet supported.
+However, it's possible to use the <a href="https://github.com/buger/jsonparser"><code>github.com/buger/jsonparser</code></a>
+library from TinyGo. This allows to parse incoming JSON requests.</p>
+<p>The <a href="https://github.com/buger/jsonparser"><code>github.com/buger/jsonparser</code></a> library
+provides only JSON parsing capabilities.  However, a Chimera policy has to write
+a JSON <code>ValidationResponse</code> response object to its STDOUT.
+Luckily, the <a href="writing-policies//writing_policies/index.html#the-validationresponse-object"><code>ValidationResponse</code></a>
+object is trivial to produce, even without the help of a JSON library.</p>
+<blockquote>
+<p><strong>WARNING:</strong> not yet done, WIP</p>
+</blockquote>
+<h1><a class="header" href="#domain-specific-language" id="domain-specific-language">Domain Specific Language</a></h1>
+<p>Being able to write Chimera policies using regular programming languages provides
+many advantages, however in certain cases this could be a bit of an overkill.
+Simple policies could be written in an easier way using a domain-specific
+language.</p>
+<p>This is an extract from the <a href="https://en.wikipedia.org/wiki/Domain-specific_language">Wikipedia page</a>
+about domain-specific languages:</p>
+<blockquote>
+<p>A domain-specific language (DSL) is a computer language specialized to a
+particular application domain.</p>
+</blockquote>
+<p>We plan to provide a simple DSL that can be built as a WASM module.
+This would allow the Chimera admission controller to use policies written
+using regular programming languages <strong>and</strong> policies written a simpler DSL
+language.</p>
+<h1><a class="header" href="#other-languages" id="other-languages">Other languages</a></h1>
+<p>Chimera policies can be written by any programming language that can produce
+WebAssembly modules targeting the WASI interface.</p>
+<p>Please open a Pull Request or a GitHub Issue <a href="https://github.com/chimera-kube/chimera-book">here</a>
+if you know of a programming language that can be used to write 
+Chimera policies.</p>
+<h1><a class="header" href="#testing-policies" id="testing-policies">Testing Policies</a></h1>
+<p>Chimera Policies are regular WASM modules targeting the WASI interface. Morover,
+they are also &quot;exectutable&quot; programs. Because of that it's really easy to run
+your policies from your shell.</p>
+<p>This can be done using the <a href="https://wasmtime.dev/">Wasmtime</a> runtime.</p>
+<p>Just follow the instructions on their website and install the <code>wasmtime</code> binary
+on your machine. Once this is done you can invoke your Chimera Policy in this way:</p>
+<pre><code class="language-bash">$ wasmtime run [--env POLICY_SETTING=policy-value] policy.wasm
+</code></pre>
+<p>Your policy will then wait for the <code>AdmissionRequest</code> object to be provided
+on its standard input.</p>
+<p>You can create/record AdmissionRequests into json files and then feed them to
+your policy in this way:</p>
+<pre><code class="language-bash">$ cat request.json | wasmtime run policy.wasm
+</code></pre>
+<h2><a class="header" href="#example-2" id="example-2">Example</a></h2>
+<p>The <a href="https://github.com/chimera-kube/pod-toleration-policy">pod-toleration policy</a>
+can be tested from the CLI in this way:</p>
+<pre><code class="language-shell">$ wasmtime run --env TAINT_KEY=&quot;dedicated-key&quot; --env TAINT_VALUE=&quot;tenantA&quot; --env ALLOWED_GROUPS=&quot;system:authenticated&quot; target/wasm32-wasi/release/pod-toleration-policy.wasm
+</code></pre>
+<p>This &quot;trick&quot; is used to do some quick profiling of the policy using the
+<a href="https://github.com/sharkdp/hyperfine">hyperfine</a> utility.</p>
+<p>This is a slightly redacted snippet taken from the <code>Makefile</code> of the project:</p>
+<pre><code class="language-shell">echo Accepting policy
+hyperfine --warmup 10 &quot;cat test_data/req_pod_with_equal_toleration.json | wasmtime run --env TAINT_KEY=&quot;dedicated-key&quot; --env TAINT_VALUE=&quot;tenantA&quot; --env ALLOWED_GROUPS=&quot;system:authenticated&quot; target/wasm32-wasi/release/pod-toleration-policy.wasm&quot;
+
+echo Rejecting policy
+hyperfine --warmup 10 &quot;cat test_data/req_pod_with_equal_toleration.json | wasmtime run --env TAINT_KEY=&quot;dedicated-key&quot; --env TAINT_VALUE=&quot;tenantA&quot; --env ALLOWED_GROUPS=&quot;tenantA-users&quot; target/wasm32-wasi/release/pod-toleration-policy.wasm&quot;
+
+echo Operation not relevant
+hyperfine --warmup 10 &quot;cat test_data/req_delete.json | wasmtime run --env TAINT_KEY=&quot;dedicated-key&quot; --env TAINT_VALUE=&quot;tenantA&quot; --env ALLOWED_GROUPS=&quot;tenantA-users&quot; target/wasm32-wasi/release/pod-toleration-policy.wasm&quot;
+</code></pre>
+<h1><a class="header" href="#distributing-policies" id="distributing-policies">Distributing Policies</a></h1>
+<p>Chimera policies are simple WASM binaries that are then evaluated by the Chimera
+admission controller.</p>
+<p>The Chimera admission controller can currently load the policies from these
+sources:</p>
+<ul>
+<li>Local filesystem</li>
+<li>Remote web server</li>
+<li>OCI compliant registry</li>
+</ul>
+<p>We think distributing Chimera policies via a regular OCI compliant registry is the
+best choice. Container registries are a mandatory requirement of each Kubernetes
+cluster. Having a single place to store, and secure, all the artifacts required
+by a cluster can be really handy.</p>
+<h1><a class="header" href="#pushing-policies-to-an-oci-compliant-registry" id="pushing-policies-to-an-oci-compliant-registry">Pushing policies to an OCI compliant registry</a></h1>
+<p>The <a href="https://github.com/opencontainers/artifacts">OCI Artifacts</a>
+specification allows to store any kind of binary blob inside of a
+regular OCI compliant container registry.</p>
+<p>The target OCI compliant registry <strong>must support artifacts</strong> in order
+to successfully push a Chimera policy to it.</p>
+<p>The <a href="https://github.com/engineerd/wasm-to-oci"><code>wasm-to-oci</code></a> command line tool
+can be used to push a Chimera policy to an OCI compliant registry.</p>
+<p>Pushing a policy can be done in this way:</p>
+<pre><code class="language-bash">$ wasm-to-oci push pod-runtime-class-policy.wasm \
+              &lt;oci-registry&gt;/chimera-policies/pod-runtime-class-policy:v0.0.1
+</code></pre>
+<p>The policy can then be referenced from the Chimera admission controller as
+<code>registry://&lt;oci-registry&gt;/chimera-policies/pod-runtime-class-policy:v0.0.1</code>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>

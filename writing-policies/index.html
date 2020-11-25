@@ -1,0 +1,307 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Writing Policies - Chimera Kubernetes Policy Engine</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="../favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="../favicon.png">
+        
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting-started/local-eval-with-k3s.html"><strong aria-hidden="true">2.1.</strong> Local evaluation with k3s</a></li><li class="chapter-item expanded "><a href="../getting-started/kubernetes-deployment.html"><strong aria-hidden="true">2.2.</strong> Kubernetes deployment</a></li></ol></li><li class="chapter-item expanded "><a href="../writing-policies/index.html" class="active"><strong aria-hidden="true">3.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../writing-policies/rust.html"><strong aria-hidden="true">3.1.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../writing-policies/swift.html"><strong aria-hidden="true">3.2.</strong> Swift</a></li><li class="chapter-item expanded "><a href="../writing-policies/typescript.html"><strong aria-hidden="true">3.3.</strong> TypeScript</a></li><li class="chapter-item expanded "><a href="../writing-policies/go.html"><strong aria-hidden="true">3.4.</strong> Go</a></li><li class="chapter-item expanded "><a href="../writing-policies/dsl.html"><strong aria-hidden="true">3.5.</strong> Domain Specific Language</a></li><li class="chapter-item expanded "><a href="../writing-policies/other-languages.html"><strong aria-hidden="true">3.6.</strong> Other languages</a></li></ol></li><li class="chapter-item expanded "><a href="../testing-policies.html"><strong aria-hidden="true">4.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="../distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Chimera Kubernetes Policy Engine</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#writing-policies" id="writing-policies">Writing Policies</a></h1>
+<p>Chimera policies can be written using any kind of language capable of building
+<a href="https://webassembly.org/">WASM</a> binaries for the <a href="https://wasi.dev/">WASI</a> target.</p>
+<p>The list of languages that can produce WASM modules is continuously evolving.
+<a href="https://github.com/appcypher/awesome-wasm-langs">This page</a> provides a
+nice overview.</p>
+<blockquote>
+<p><strong>Note well:</strong> some languages have WASM support, but are not yet capable
+of building binaries for the WASI interface.</p>
+<p>WASM modules built for the browser target won't run inside of a WASI-compliant
+runtime.</p>
+</blockquote>
+<h1><a class="header" href="#what-a-policy-does" id="what-a-policy-does">What a policy does</a></h1>
+<p>The Chimera admission controller receives
+<a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionReview"><code>AdmissionReview</code></a>
+objects from the Kubernetes API server. It then forwards the value of
+the <code>request</code> (of type
+<a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionRequest"><code>AdmissionRequest</code></a>
+key to the policy to be evaluated.</p>
+<p>The policy has to evaluate the <code>request</code> and state whether it should be
+accepted or not. When the request is rejected, the policy must provide the
+explanation message that is going to be shown to the end user.</p>
+<blockquote>
+<p><strong>Note well:</strong> currently Chimera supports only Validating Admission Controller,
+Mutating ones are not yet implemented.</p>
+</blockquote>
+<h1><a class="header" href="#policy-interface" id="policy-interface">Policy interface</a></h1>
+<p>Chimera policies have to be implemented following some simple communication
+rules:</p>
+<ul>
+<li>The policy program has to be written as an executable.</li>
+<li>The policy will read the <code>request</code> data from its standard input</li>
+<li>The policy will evaluate the policy and serialize a <code>ValidationResponse</code>
+object as JSON on its standard output.</li>
+</ul>
+<h2><a class="header" href="#the-validationresponse-object" id="the-validationresponse-object">The <code>ValidationResponse</code> object</a></h2>
+<p>The <code>ValidationResponse</code> object is a simple JSON object like the
+following:</p>
+<pre><code class="language-json">{
+  &quot;accepted&quot;: &lt;boolean&gt;, // mandatory
+  &quot;message&quot;: &lt;string&gt;,   // optional, ignored if accepted
+  &quot;code&quot;: &lt;integer&gt;      // optional, ignored if accepted
+}
+</code></pre>
+<p>The <code>message</code> and <code>code</code> attributes can be specified when the request
+is not accepted. <code>message</code> is a free form textual error. <code>code</code>
+represents an HTTP error code.</p>
+<p>If the request is accepted, <code>message</code> and <code>code</code>
+values will be ignored by the Kubernetes API server if they are
+present.</p>
+<p>If <code>message</code> and/or <code>code</code> are provided, and the request is not
+accepted, the Kubernetes API server will forward this information as
+part of the body of the error returned to the Kubernetes API server
+client that issued the rejected request.</p>
+<h2><a class="header" href="#policy-configuration" id="policy-configuration">Policy configuration</a></h2>
+<p>The policy can read configuration values straight from its environment variables.</p>
+<p>The Chimera admission controller takes care of exporting certain environment
+variables from the host to the WASM runtime.</p>
+<h1><a class="header" href="#recap" id="recap">Recap</a></h1>
+<p>This is the minimal list of features a programming language must be able to
+support when building WASM modules for the WASI interface:</p>
+<ul>
+<li>Read from the STDIN [<strong>mandatory</strong>]</li>
+<li>Write to the STDOUT [<strong>mandatory</strong>]</li>
+<li>Handle JSON data, both marshalling and unmarshalling [<strong>strongly recommended</strong>]</li>
+<li>Read value of environment variables [<strong>optional</strong>]</li>
+</ul>
+<p>This is a really limited set of requirements, however, due to the early nature
+of WebAssembly, not all the programming languages are able to satisfy them. The
+next sections will cover the maturity level of some programming languages.</p>
+<h1><a class="header" href="#faq" id="faq">FAQ</a></h1>
+<h2><a class="header" href="#why-policies-arent-implemented-as-libraries" id="why-policies-arent-implemented-as-libraries">Why Policies aren't implemented as libraries?</a></h2>
+<p>It's possible to write WASM modules that expose functions, and
+later invoked these functions from a WASM runtime.</p>
+<p>However WebAssembly defines only 4 data types: integer and floating point numbers (32 and 64 bits).
+Sharing other data types between the runtime and the WASM module is not yet standardized,
+not all languages would be capable of doing that.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../getting-started/kubernetes-deployment.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../writing-policies/rust.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../getting-started/kubernetes-deployment.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../writing-policies/rust.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
