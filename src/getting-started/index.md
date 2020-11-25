@@ -5,28 +5,11 @@ project. It's an admission controller that is designed to
 validate and, in the near future, to mutate incoming requests
 made agaist the Kubernetes API server.
 
-## Cloning
+The next sections will guide you through its deployment.
 
-The first step is to clone the `chimera-admission` project:
+We are still in our early days, the admission controller is not meant
+to be used in production. Moreover, we plan to improve its UX in the near
+future.
 
-```shell
-$ git clone https://github.com/chimera-kube/chimera-admission.git
-```
-
-## Building
-
-After you have cloned the `chimera-admission` project, you can build
-either the `x86_64` or the `arm64` binaries, depending on your
-architecture:
-
-```shell
-$ # Build x86_64 binary
-$ make chimera-admission-amd64
-$ # Build ARM64 binary
-$ make chimera-admission-arm64
-```
-
-> **Note well:** cross compiling `chimera-admission` is tricky at this
-> time due to its current dependency on CGO, therefore we suggest you
-> to build the `chimera-admission` target that matches your current
-> architecture and toolchain.
+However everything is already functional and it can be used to play with
+Kubernetes admission policies written in WebAssembly.
