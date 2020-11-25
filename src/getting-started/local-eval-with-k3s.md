@@ -1,4 +1,4 @@
-# Local quickstart with k3s
+# Local evaluation with k3s
 
 You need a Kubernetes cluster running and accessible through a
 `kubeconfig` file.  This can be done quickly using k3s.
@@ -10,11 +10,8 @@ $ wget https://github.com/rancher/k3s/releases/download/v1.19.4%2Bk3s1/k3s
 $ chmod +x k3s
 $ ./k3s server --disable-agent
 ```
-
-Now we can start a `chimera-admission` instance that uses
-[this Chimera Policy](https://github.com/chimera-kube/pod-toleration-policy)
-to validate Pod operations. We assume the WASM file providing the policy has already
-been downloaded on the local filesystem.
+The policy will be downloaded as an OCI artifact from
+[here](https://github.com/orgs/chimera-kube/packages/container/package/policies%2Fpod-toleration).
 
 ```shell
 $ CHIMERA_RESOURCES=pods \
@@ -22,7 +19,7 @@ $ CHIMERA_RESOURCES=pods \
   CHIMERA_EXPORT_TOLERATION_OPERATOR=Exists \
   CHIMERA_EXPORT_TOLERATION_EFFECT=NoSchedule \
   CHIMERA_EXPORT_ALLOWED_GROUPS=system:masters \
-  CHIMERA_WASM_URI=file://$PWD/wasm-examples/pod-toleration-policy/pod-toleration-policy.wasm \
+  CHIMERA_WASM_URI=registry://ghcr.io/chimera-kube/policies/pod-toleration:v0.0.2 \
   KUBECONFIG=$HOME/.kube/k3s.yaml \
   ./chimera-admission-amd64
 ```
@@ -69,7 +66,7 @@ $ CHIMERA_RESOURCES=pods \
   CHIMERA_EXPORT_TOLERATION_OPERATOR=Exists \
   CHIMERA_EXPORT_TOLERATION_EFFECT=NoSchedule \
   CHIMERA_EXPORT_ALLOWED_GROUPS=trusted-users \
-  CHIMERA_WASM_URI=file://$PWD/wasm-examples/pod-toleration-policy/pod-toleration-policy.wasm \
+  CHIMERA_WASM_URI=registry://ghcr.io/chimera-kube/policies/pod-toleration:v0.0.2 \
   KUBECONFIG=$HOME/.kube/k3s.yaml \
   ./chimera-admission-amd64
 ```

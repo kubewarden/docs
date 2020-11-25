@@ -1,9 +1,9 @@
 # Getting started
 
 The `chimera-admission` project is the core component of the Chimera
-Kube project. It's an admission controller that is designed to
-validate and mutate incoming requests to the Kubernetes API
-server. Right now, only the validation feature is implemented.
+project. It's an admission controller that is designed to
+validate and, in the near future, to mutate incoming requests
+made agaist the Kubernetes API server.
 
 ## Cloning
 

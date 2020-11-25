@@ -30,7 +30,7 @@ programming language, as long as the language can produce WASM binaries.
 Policy authors can reuse their skills, tools and best practices. Policies
 are "traditional" programs that can have reusable blocks (regular libraries),
 can be tested, can be linted, can be plugged into the current CI and CD
-workflows, ...
+workflows,...
 
 WASM modules are portable, once built they can run on any kind of
 architecture and Operating System. A policy built on a Apple Silicon
@@ -38,8 +38,8 @@ machine can be run on a x86_64 Linux server without any conversion.
 
 ## Policy distribution
 
-Chimera policies can be served by a regular web server or, even
+Chimera Policies can be served by a regular web server or, even
 better, can be published inside of an OCI compliant registry.
 
-The policies can be stored inside of an OCI compliant registry as [OCI
+Chimera Policies can be stored inside of an OCI compliant registry as [OCI
 artifacts](https://github.com/opencontainers/artifacts).
