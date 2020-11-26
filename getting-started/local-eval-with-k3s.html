@@ -235,7 +235,7 @@ spec:
     value: &quot;tenantA&quot;
     effect: &quot;NoSchedule&quot;
 EOF
-Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;rule-0.wasm.admission.rule&quot; denied the request: User not allowed to create Pod objects with toleration: key: example-key, operator: Exists, effect: NoSchedule)
+Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;rule-0.chimera.admission.rule&quot; denied the request: User not allowed to create Pods that tolerate the taint key: dedicated, value : tenantA
 </code></pre>
 <p>The admission controller is working properly: the creation request has
 been rejected because it's not done by a user who belongs to one of the
