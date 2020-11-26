@@ -32,7 +32,7 @@ is solved the Swift-based policies will be even easier to write.
 
 
 We haven't done extensive testing, but from our initial research it seems the
-performance of WASM modules produced by the Swiftwasm compiler *seem* to be
+performance of Wasm modules produced by the Swiftwasm compiler *seem* to be
 slower than the ones produced by the Rust compiler.
 
 It's also critical to perform some post-build optimizations before using the
@@ -40,8 +40,8 @@ policy *"in production"*.
 
 These optimizations are:
 
-  1. Strip the WASM module via `wasm-strip` to reduce its size
-  1. Optimize the WASM module via `wasm-opt`
+  1. Strip the Wasm module via `wasm-strip` to reduce its size
+  1. Optimize the Wasm module via `wasm-opt`
 
 # Example
 

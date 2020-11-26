@@ -1,6 +1,6 @@
 # Distributing Policies
 
-Chimera policies are simple WASM binaries that are then evaluated by the Chimera
+Chimera policies are simple Wasm binaries that are then evaluated by the Chimera
 admission controller.
 
 The Chimera admission controller can currently load the policies from these

@@ -13,7 +13,7 @@ about domain-specific languages:
 > A domain-specific language (DSL) is a computer language specialized to a
 > particular application domain.
 
-We plan to provide a simple DSL that can be built as a WASM module.
+We plan to provide a simple DSL that can be built as a Wasm module.
 This would allow the Chimera admission controller to use policies written
 using regular programming languages **and** policies written a simpler DSL
 language.

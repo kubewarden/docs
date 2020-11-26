@@ -12,7 +12,7 @@ As stated on the [official website](https://golang.org/):
 
 Currently the official Go compiler can build WebAssembly as documented
 [here](https://github.com/golang/go/wiki/WebAssembly). However, the compiler is
-not currently capable of producing WASM modules targeting the WASI interface.
+not currently capable of producing Wasm modules targeting the WASI interface.
 [This upstream issue](https://github.com/golang/go/issues/31105) is tracking
 the evolution of this topic.
 
@@ -28,11 +28,11 @@ TinyGo is an alternative Go compiler. As stated on the [official website](https:
 > You can compile and run TinyGo programs on many different microcontroller
 > boards such as the BBC micro:bit and the Arduino Uno.
 >
-> TinyGo can also be used to produce WebAssembly (WASM) code which is very
+> TinyGo can also be used to produce WebAssembly (Wasm) code which is very
 > compact in size.
 
 TinyGo has WebAssembly support and, starting from the `0.16.0` release, it
-can produce WASM modules targeting the WASI interface.
+can produce Wasm modules targeting the WASI interface.
 
 ## Known limitations
 

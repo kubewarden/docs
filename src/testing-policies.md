@@ -1,6 +1,6 @@
 # Testing Policies
 
-Chimera Policies are regular programs built as WASM modules. Hence policies can
+Chimera Policies are regular programs built as Wasm modules. Hence policies can
 be testes using the regular testing capabilities offered by the programming
 language of your choice.
 
@@ -15,7 +15,7 @@ The reference policies we created do that extensively, as seen here:
 On top of that, Chimera Policies are also "exectutable" programs. Because of
 that it's really easy to run your policies from your shell.
 
-You can run the WASM module that implements a Chimera Policy straight from
+You can run the Wasm module that implements a Chimera Policy straight from
 your console by using the [Wasmtime](https://wasmtime.dev/) runtime.
 
 Just follow the instructions on their website and install the `wasmtime` binary

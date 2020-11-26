@@ -16,7 +16,7 @@ TypeScript **cannot** be converted to WebAssembly, however the
 [AssemblyScript](https://www.assemblyscript.org/) is a **subset** of TypeScript
 designed explicitly for WebAssembly.
 
-AssemblyScript can produce WASM modules targeting the WASI interface by leveraging
+AssemblyScript can produce Wasm modules targeting the WASI interface by leveraging
 the [as-wasi](https://github.com/jedisct1/as-wasi) project.
 
 # Known limitations

@@ -25,14 +25,14 @@ WASI-compliant runtime.
 ## Why use WebAssembly?
 
 By using WebAssembly, users can write Kubernetes policies using their favorite
-programming language, as long as the language can produce WASM binaries.
+programming language, as long as the language can produce Wasm binaries.
 
 Policy authors can reuse their skills, tools and best practices. Policies
 are "traditional" programs that can have reusable blocks (regular libraries),
 can be tested, can be linted, can be plugged into the current CI and CD
 workflows,...
 
-WASM modules are portable, once built they can run on any kind of
+Wasm modules are portable, once built they can run on any kind of
 architecture and Operating System. A policy built on a Apple Silicon
 machine can be run on a x86_64 Linux server without any conversion.
 

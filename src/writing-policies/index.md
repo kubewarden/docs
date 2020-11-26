@@ -1,16 +1,16 @@
 # Writing Policies
 
 Chimera policies can be written using any kind of language capable of building
-[WASM](https://webassembly.org/) binaries for the [WASI](https://wasi.dev/) target.
+[Wasm](https://webassembly.org/) binaries for the [WASI](https://wasi.dev/) target.
 
-The list of languages that can produce WASM modules is continuously evolving.
+The list of languages that can produce Wasm modules is continuously evolving.
 [This page](https://github.com/appcypher/awesome-wasm-langs) provides a
 nice overview.
 
-> **Note well:** some languages have WASM support, but are not yet capable
+> **Note well:** some languages have Wasm support, but are not yet capable
 > of building binaries for the WASI interface.
 >
-> WASM modules built for the browser target won't run inside of a WASI-compliant
+> Wasm modules built for the browser target won't run inside of a WASI-compliant
 > runtime.
 
 # What a policy does
@@ -70,12 +70,12 @@ client that issued the rejected request.
 The policy can read configuration values straight from its environment variables.
 
 The Chimera admission controller takes care of exporting certain environment
-variables from the host to the WASM runtime.
+variables from the host to the Wasm runtime.
 
 # Recap
 
 This is the minimal list of features a programming language must be able to
-support when building WASM modules for the WASI interface:
+support when building Wasm modules for the WASI interface:
 
   * Read from the STDIN [**mandatory**]
   * Write to the STDOUT [**mandatory**]
@@ -90,9 +90,9 @@ next sections will cover the maturity level of some programming languages.
 
 ## Why Policies aren't implemented as libraries?
 
-It's possible to write WASM modules that expose functions, and
-later invoked these functions from a WASM runtime.
+It's possible to write Wasm modules that expose functions, and
+later invoked these functions from a Wasm runtime.
 
 However WebAssembly defines only 4 data types: integer and floating point numbers (32 and 64 bits).
-Sharing other data types between the runtime and the WASM module is not yet standardized,
+Sharing other data types between the runtime and the Wasm module is not yet standardized,
 not all languages would be capable of doing that.
