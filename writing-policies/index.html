@@ -171,7 +171,7 @@ of building binaries for the WASI interface.</p>
 <p>Wasm modules built for the browser target won't run inside of a WASI-compliant
 runtime.</p>
 </blockquote>
-<h1><a class="header" href="#what-a-policy-does" id="what-a-policy-does">What a policy does</a></h1>
+<h2><a class="header" href="#what-a-policy-does" id="what-a-policy-does">What a policy does</a></h2>
 <p>The Chimera admission controller receives
 <a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionReview"><code>AdmissionReview</code></a>
 objects from the Kubernetes API server. It then forwards the value of
@@ -185,7 +185,7 @@ explanation message that is going to be shown to the end user.</p>
 <p><strong>Note well:</strong> currently Chimera supports only Validating Admission Controller,
 Mutating ones are not yet implemented.</p>
 </blockquote>
-<h1><a class="header" href="#policy-interface" id="policy-interface">Policy interface</a></h1>
+<h2><a class="header" href="#policy-interface" id="policy-interface">Policy interface</a></h2>
 <p>Chimera policies have to be implemented following some simple communication
 rules:</p>
 <ul>
@@ -194,12 +194,12 @@ rules:</p>
 <li>The policy will evaluate the policy and serialize a <code>ValidationResponse</code>
 object as JSON on its standard output.</li>
 </ul>
-<h2><a class="header" href="#the-validationresponse-object" id="the-validationresponse-object">The <code>ValidationResponse</code> object</a></h2>
+<h3><a class="header" href="#the-validationresponse-object" id="the-validationresponse-object">The <code>ValidationResponse</code> object</a></h3>
 <p>The <code>ValidationResponse</code> object is a simple JSON object like the
 following:</p>
 <pre><code class="language-json">{
   &quot;accepted&quot;: &lt;boolean&gt;, // mandatory
-  &quot;message&quot;: &lt;string&gt;,   // optional, ignored if accepted
+  &quot;message&quot;: &lt;string&gt;,   // optional, ignored if accepted - recommended for rejections
   &quot;code&quot;: &lt;integer&gt;      // optional, ignored if accepted
 }
 </code></pre>
@@ -213,11 +213,11 @@ present.</p>
 accepted, the Kubernetes API server will forward this information as
 part of the body of the error returned to the Kubernetes API server
 client that issued the rejected request.</p>
-<h2><a class="header" href="#policy-configuration" id="policy-configuration">Policy configuration</a></h2>
+<h3><a class="header" href="#policy-configuration" id="policy-configuration">Policy configuration</a></h3>
 <p>The policy can read configuration values straight from its environment variables.</p>
 <p>The Chimera admission controller takes care of exporting certain environment
 variables from the host to the Wasm runtime.</p>
-<h1><a class="header" href="#recap" id="recap">Recap</a></h1>
+<h2><a class="header" href="#recap" id="recap">Recap</a></h2>
 <p>This is the minimal list of features a programming language must be able to
 support when building Wasm modules for the WASI interface:</p>
 <ul>
@@ -227,15 +227,19 @@ support when building Wasm modules for the WASI interface:</p>
 <li>Read value of environment variables [<strong>optional</strong>]</li>
 </ul>
 <p>This is a really limited set of requirements, however, due to the early nature
-of WebAssembly, not all the programming languages are able to satisfy them. The
-next sections will cover the maturity level of some programming languages.</p>
-<h1><a class="header" href="#faq" id="faq">FAQ</a></h1>
-<h2><a class="header" href="#why-policies-arent-implemented-as-libraries" id="why-policies-arent-implemented-as-libraries">Why Policies aren't implemented as libraries?</a></h2>
+of WebAssembly and the WASI interface, not all the programming languages are
+able to satisfy them. The next sections will cover the maturity level of some
+programming languages.</p>
+<h2><a class="header" href="#faq" id="faq">FAQ</a></h2>
+<h3><a class="header" href="#why-policies-arent-implemented-as-libraries" id="why-policies-arent-implemented-as-libraries">Why Policies aren't implemented as libraries?</a></h3>
 <p>It's possible to write Wasm modules that expose functions, and
 later invoked these functions from a Wasm runtime.</p>
 <p>However WebAssembly defines only 4 data types: integer and floating point numbers (32 and 64 bits).
 Sharing other data types between the runtime and the Wasm module is not yet standardized,
 not all languages would be capable of doing that.</p>
+<p>Implementing policies as executables has a nice side effect, policies can be
+ran even from the command line. See <a href="/testing-policies.html">this</a> section of
+the documentation for more information.</p>
 
                     </main>
 

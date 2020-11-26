@@ -197,7 +197,7 @@ write Chimera policies. The basic requirements of Chimera policies are outlined
 <tr><td>Read from STDIN</td><td>❌</td></tr>
 <tr><td>Write to STDOUT</td><td>✅</td></tr>
 <tr><td>Read env variables</td><td>❌</td></tr>
-<tr><td>Handle JSON</td><td>😒</td></tr>
+<tr><td>Handle JSON</td><td>🤨</td></tr>
 </tbody></table>
 <h2><a class="header" href="#write-to-stdout" id="write-to-stdout">Write to STDOUT</a></h2>
 <p>Writing to STDOUT can be done using the <code>ftm</code> package.</p>
@@ -211,14 +211,15 @@ to track the problem.</p>
 to track the problem.</p>
 <h2><a class="header" href="#handle-json" id="handle-json">Handle JSON</a></h2>
 <p>TinyGo <strong>does not support</strong> the full Go language, <a href="https://tinygo.org/lang-support/">this page</a>
-provides an overview of the Go features that are not yet supported.</p>
-<p><a href="https://tinygo.org/lang-support/stdlib/">This additional page</a> shows a detailed
+provides an overview of the Go features that are not yet supported.
+Moreover, <a href="https://tinygo.org/lang-support/stdlib/">this additional page</a> shows a detailed
 overview of the support level of Go's standard library.</p>
-<p>As stated by the page above, the <a href="https://golang.org/pkg/encoding/json/"><code>encoding/json</code></a> package is not yet supported.
+<p>As stated by the page above, the <a href="https://golang.org/pkg/encoding/json/"><code>encoding/json</code></a>
+package is not yet supported.
 However, it's possible to use the <a href="https://github.com/buger/jsonparser"><code>github.com/buger/jsonparser</code></a>
-library from TinyGo. This allows to parse incoming JSON requests.</p>
+library with TinyGo. This allows to parse incoming JSON requests.</p>
 <p>The <a href="https://github.com/buger/jsonparser"><code>github.com/buger/jsonparser</code></a> library
-provides only JSON parsing capabilities.  However, a Chimera policy has to write
+provides only JSON parsing capabilities.  Anyhow, a Chimera Policy has to write
 a JSON <code>ValidationResponse</code> response object to its STDOUT.
 Luckily, the <a href="/writing_policies/index.html#the-validationresponse-object"><code>ValidationResponse</code></a>
 object is trivial to produce, even without the help of a JSON library.</p>

@@ -162,13 +162,13 @@
                         <h1><a class="header" href="#kubernetes-deployment" id="kubernetes-deployment">Kubernetes deployment</a></h1>
 <p>The <a href="https://github.com/chimera-kube/chimera-admission/tree/main/deployment"><code>deployment</code></a>
 directory inside of the <a href="https://github.com/chimera-kube/chimera-admission">chimera-admission</a>
-repository shows how to deploy the <code>chimera-admission</code> controller
-on top of a Kubernetes cluster.</p>
-<p>The chimera-admission controller will automatically register itself against the
-Kubernetes API server.</p>
+repository shows how to deploy the admission controller on top of a Kubernetes
+cluster.</p>
 <p>chimera-admission can be deployed by doing a simple:</p>
 <pre><code class="language-shell">$ kubectl apply -f https://raw.githubusercontent.com/chimera-kube/chimera-admission/main/deployment/chimera-admission.yaml
 </code></pre>
+<p>The chimera-admission controller will automatically register itself against the
+Kubernetes API server</p>
 <blockquote>
 <p><strong>Note well:</strong> <code>chimera-admission</code> is still in alpha phase. It's not meant to
 be used in production.</p>
@@ -177,10 +177,10 @@ of Chimera Policies.</p>
 </blockquote>
 <h2><a class="header" href="#components" id="components">Components</a></h2>
 <p>The YAML file takes care of deploying all the required Kubernetes resources.
-The next section cover in detail all the objects that will be created.</p>
+The next section covers in detail all the objects that will be created.</p>
 <h3><a class="header" href="#namespace" id="namespace">Namespace</a></h3>
-<p>A <code>Namespace</code> called <code>chimera</code> is created. All the other resources deployed
-by this file are placed inside of it.</p>
+<p>A <code>Namespace</code> called <code>chimera</code> is created. All the other resources are
+placed inside of it.</p>
 <h3><a class="header" href="#serviceaccount" id="serviceaccount">ServiceAccount</a></h3>
 <p>A <code>ServiceAccount</code> named <code>chimera</code> is created. This is used by the
 <code>chimera-admission</code> Pod to authenticate against the local Kubernetes API.</p>
@@ -201,8 +201,14 @@ we push automatically to our GitHub Container Registry.</p>
 policy to validate incoming Pod requests.</p>
 <p>The controller will download the Wasm module providing the policy from
 <a href="https://github.com/orgs/chimera-kube/packages/container/package/policies%2Fpod-toleration">here</a>.</p>
-<p>The Chimera Policy is automatically publish by a GitHub Action as an OCI
-artifact to on our GitHub Container Registry.</p>
+<p>chimera-admission will automatically generate a certificate authority and,
+through it, will sign a certificate. This certificate is used by the
+controller to secure the communication with the Kubernetes API server.</p>
+<blockquote>
+<p><strong>Note well:</strong> right now chimera-admission doesn't support automatic certificate
+rotation. It's however possible to provide a custom TLS certificate and an
+already existing CA bundle to be used.</p>
+</blockquote>
 <h3><a class="header" href="#service" id="service">Service</a></h3>
 <p>A <code>Service</code> named <code>chimera-admission</code> is created. This is used to expose the
 <code>chimera-admission</code> Deployment inside of the cluster.</p>

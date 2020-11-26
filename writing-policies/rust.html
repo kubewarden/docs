@@ -171,9 +171,17 @@ can generate WebAssembly modules.</p>
 many of the tools and crates should work out of the box.</p>
 <p>Of course, Rust programs are still bound to the limitations of the WASI
 specification.</p>
-<h1><a class="header" href="#example" id="example">Example</a></h1>
+<h2><a class="header" href="#example" id="example">Example</a></h2>
 <p><a href="https://github.com/chimera-kube/pod-toleration-policy">This GitHub repository</a>
-contains a Chimera policy written in Rust.</p>
+contains a Chimera Policy written in Rust.</p>
+<p><strong>Worth of note:</strong> this repository has a series of GitHub Actions that automate
+the following tasks:</p>
+<ul>
+<li>Run unit tests and code linting on pull requests and after code is merged
+into the main branch</li>
+<li>Build the policy in <code>release</code> mode and push it to a OCI registry as an
+artifact</li>
+</ul>
 
                     </main>
 

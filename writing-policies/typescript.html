@@ -171,12 +171,12 @@ of this page have been written during Nov 2020, hence they could be outdated.</p
 <p>By understanding JavaScript, TypeScript saves you time catching errors and
 providing fixes before you run code.</p>
 </blockquote>
-<p>TypeScript <strong>cannot</strong> be converted to WebAssembly, however the
+<p>TypeScript <strong>cannot</strong> be converted to WebAssembly, however
 <a href="https://www.assemblyscript.org/">AssemblyScript</a> is a <strong>subset</strong> of TypeScript
 designed explicitly for WebAssembly.</p>
-<p>AssemblyScript can produce Wasm modules targeting the WASI interface by leveraging
-the <a href="https://github.com/jedisct1/as-wasi">as-wasi</a> project.</p>
-<h1><a class="header" href="#known-limitations" id="known-limitations">Known limitations</a></h1>
+<p>AssemblyScript can produce Wasm modules targeting the WASI interface by
+leveraging the <a href="https://github.com/jedisct1/as-wasi">as-wasi</a> project.</p>
+<h2><a class="header" href="#known-limitations" id="known-limitations">Known limitations</a></h2>
 <p>Currently AssemblyScript does not provide all the capabilities required to
 write Chimera policies. The basic requirements of Chimera policies are outlined
 <a href="/writing_policies/index.html#recap">here</a>.</p>
@@ -187,18 +187,21 @@ write Chimera policies. The basic requirements of Chimera policies are outlined
 <tr><td>Read env variables</td><td>✅</td></tr>
 <tr><td>Handle JSON</td><td>❔</td></tr>
 </tbody></table>
-<h2><a class="header" href="#write-to-stdout" id="write-to-stdout">Write to STDOUT</a></h2>
+<h3><a class="header" href="#write-to-stdout" id="write-to-stdout">Write to STDOUT</a></h3>
 <p>Writing to STDOUT can be done using the <a href="https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesconsolemd"><code>Console</code></a>
 class defined by <code>as-wasi</code>.</p>
-<h2><a class="header" href="#read-from-stdin" id="read-from-stdin">Read from STDIN</a></h2>
+<h3><a class="header" href="#read-from-stdin" id="read-from-stdin">Read from STDIN</a></h3>
 <p>Reading from STDIN can theoretically be done using the <a href="https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesconsolemd"><code>Console</code></a>
 class defined by <code>as-wasi</code>.</p>
-<p>Unfortunately right now no data is read from the STDIN.
-<a href="https://github.com/jedisct1/as-wasi/issues/95">This issue</a> has been created to track the problem.</p>
-<h2><a class="header" href="#read-environment-variables" id="read-environment-variables">Read environment variables</a></h2>
+<p><del>Unfortunately, right now no data is read from the STDIN.</del>
+<del><a href="https://github.com/jedisct1/as-wasi/issues/95">This issue</a> has been created to track the problem.</del></p>
+<p>Unfortunately, right now reading data from the STDIN causes the Wasm runtime
+to kill the program.
+<a href="https://github.com/jedisct1/as-wasi/issues/97">This issue</a> has been created to track the problem.</p>
+<h3><a class="header" href="#read-environment-variables" id="read-environment-variables">Read environment variables</a></h3>
 <p>This can be done using the <a href="https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesenvironmd"><code>Environ</code></a>
 class provided by <code>as-wasi</code>.</p>
-<h2><a class="header" href="#handle-json" id="handle-json">Handle JSON</a></h2>
+<h3><a class="header" href="#handle-json" id="handle-json">Handle JSON</a></h3>
 <p>AssemblyScript is a subset of TypeScript, hence JSON handling is not provided
 out of the box.</p>
 <p>The <a href="https://github.com/nearprotocol/assemblyscript-json">assemblyscript-json</a>
