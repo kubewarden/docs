@@ -23,7 +23,7 @@ leveraging the [as-wasi](https://github.com/jedisct1/as-wasi) project.
 
 Currently AssemblyScript does not provide all the capabilities required to
 write Chimera policies. The basic requirements of Chimera policies are outlined
-[here](writing-policies/index.html#recap).
+[here](./index.md#recap).
 
 This is a quick schema of what works and what doesn't work with AssemblyScript
 
