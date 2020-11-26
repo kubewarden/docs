@@ -99,6 +99,6 @@ Sharing other data types between the runtime and the Wasm module is not yet stan
 not all languages would be capable of doing that.
 
 Implementing policies as executables has a nice side effect, policies can be
-ran even from the command line. See [this](/testing-policies.html) section of
+ran even from the command line. See [this](../testing-policies.md) section of
 the documentation for more information.
 

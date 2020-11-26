@@ -38,7 +38,7 @@ can produce Wasm modules targeting the WASI interface.
 
 Currently TinyGo does not provide all the capabilities required to
 write Chimera policies. The basic requirements of Chimera policies are outlined
-[here](/writing-policies/index.html#recap).
+[here](./index.md#recap).
 
 This is a quick schema of what works and what doesn't work with TinyGo.
 
@@ -80,5 +80,5 @@ library with TinyGo. This allows to parse incoming JSON requests.
 The [`github.com/buger/jsonparser`](https://github.com/buger/jsonparser) library
 provides only JSON parsing capabilities.  Anyhow, a Chimera Policy has to write
 a JSON `ValidationResponse` response object to its STDOUT.
-Luckily, the [`ValidationResponse`](/writing-policies/index.html#the-validationresponse-object)
+Luckily, the [`ValidationResponse`](./index.md#the-validationresponse-object)
 object is trivial to produce, even without the help of a JSON library.
