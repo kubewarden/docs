@@ -70,8 +70,8 @@ $ CHIMERA_RESOURCES=pods \
   ./chimera-admission-amd64
 ```
 
-Now the policy accepts this toleration only when a user who belongs to the
-`trusted-users` group is the author of the request.
+Now the policy accepts this toleration only when a user who belongs to
+the `some-other-user-group` group is the author of the request.
 
 Let's create the same Pod one last time:
 
