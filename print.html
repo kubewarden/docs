@@ -260,8 +260,8 @@ a different tuning of the Chimera Policy:</p>
   KUBECONFIG=$HOME/.kube/k3s.yaml \
   ./chimera-admission-amd64
 </code></pre>
-<p>Now the policy accepts this toleration only when a user who belongs to the
-<code>trusted-users</code> group is the author of the request.</p>
+<p>Now the policy accepts this toleration only when a user who belongs to
+the <code>some-other-user-group</code> group is the author of the request.</p>
 <p>Let's create the same Pod one last time:</p>
 <pre><code class="language-shell">$ k3s kubectl apply -f - &lt;&lt;EOF
 apiVersion: v1
