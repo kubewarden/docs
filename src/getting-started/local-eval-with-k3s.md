@@ -15,9 +15,8 @@ The policy will be downloaded as an OCI artifact from
 
 ```shell
 $ CHIMERA_RESOURCES=pods \
-  CHIMERA_EXPORT_TOLERATION_KEY=example-key \
-  CHIMERA_EXPORT_TOLERATION_OPERATOR=Exists \
-  CHIMERA_EXPORT_TOLERATION_EFFECT=NoSchedule \
+  CHIMERA_EXPORT_TAINT_KEY=dedicated \
+  CHIMERA_EXPORT_TAINT_VALUE=tenantA \
   CHIMERA_EXPORT_ALLOWED_GROUPS=system:masters \
   CHIMERA_WASM_URI=registry://ghcr.io/chimera-kube/policies/pod-toleration:v0.0.2 \
   KUBECONFIG=$HOME/.kube/k3s.yaml \
@@ -40,8 +39,9 @@ spec:
     image: nginx
     imagePullPolicy: IfNotPresent
   tolerations:
-  - key: "example-key"
-    operator: "Exists"
+  - key: "dedicated"
+    operator: "Equal"
+    value: "tenantA"
     effect: "NoSchedule"
 EOF
 ```
@@ -62,10 +62,9 @@ a different tuning of the Chimera Policy:
 
 ```shell
 $ CHIMERA_RESOURCES=pods \
-  CHIMERA_EXPORT_TOLERATION_KEY=example-key \
-  CHIMERA_EXPORT_TOLERATION_OPERATOR=Exists \
-  CHIMERA_EXPORT_TOLERATION_EFFECT=NoSchedule \
-  CHIMERA_EXPORT_ALLOWED_GROUPS=trusted-users \
+  CHIMERA_EXPORT_TAINT_KEY=dedicated \
+  CHIMERA_EXPORT_TAINT_VALUE=tenantA \
+  CHIMERA_EXPORT_ALLOWED_GROUPS=some-other-user-group \
   CHIMERA_WASM_URI=registry://ghcr.io/chimera-kube/policies/pod-toleration:v0.0.2 \
   KUBECONFIG=$HOME/.kube/k3s.yaml \
   ./chimera-admission-amd64
@@ -90,8 +89,9 @@ spec:
     image: nginx
     imagePullPolicy: IfNotPresent
   tolerations:
-  - key: "example-key"
-    operator: "Exists"
+  - key: "dedicated"
+    operator: "Equal""
+    value: "tenantA"
     effect: "NoSchedule"
 EOF
 Error from server: error when creating "STDIN": admission webhook "rule-0.wasm.admission.rule" denied the request: User not allowed to create Pod objects with toleration: key: example-key, operator: Exists, effect: NoSchedule)
