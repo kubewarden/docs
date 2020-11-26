@@ -216,9 +216,8 @@ $ ./k3s server --disable-agent
 <p>The policy will be downloaded as an OCI artifact from
 <a href="https://github.com/orgs/chimera-kube/packages/container/package/policies%2Fpod-toleration">here</a>.</p>
 <pre><code class="language-shell">$ CHIMERA_RESOURCES=pods \
-  CHIMERA_EXPORT_TOLERATION_KEY=example-key \
-  CHIMERA_EXPORT_TOLERATION_OPERATOR=Exists \
-  CHIMERA_EXPORT_TOLERATION_EFFECT=NoSchedule \
+  CHIMERA_EXPORT_TAINT_KEY=dedicated \
+  CHIMERA_EXPORT_TAINT_VALUE=tenantA \
   CHIMERA_EXPORT_ALLOWED_GROUPS=system:masters \
   CHIMERA_WASM_URI=registry://ghcr.io/chimera-kube/policies/pod-toleration:v0.0.2 \
   KUBECONFIG=$HOME/.kube/k3s.yaml \
@@ -238,8 +237,9 @@ spec:
     image: nginx
     imagePullPolicy: IfNotPresent
   tolerations:
-  - key: &quot;example-key&quot;
-    operator: &quot;Exists&quot;
+  - key: &quot;dedicated&quot;
+    operator: &quot;Equal&quot;
+    value: &quot;tenantA&quot;
     effect: &quot;NoSchedule&quot;
 EOF
 </code></pre>
@@ -253,10 +253,9 @@ groups.</p>
 <p>Stop the previous admission server execution, and re-run it with
 a different tuning of the Chimera Policy:</p>
 <pre><code class="language-shell">$ CHIMERA_RESOURCES=pods \
-  CHIMERA_EXPORT_TOLERATION_KEY=example-key \
-  CHIMERA_EXPORT_TOLERATION_OPERATOR=Exists \
-  CHIMERA_EXPORT_TOLERATION_EFFECT=NoSchedule \
-  CHIMERA_EXPORT_ALLOWED_GROUPS=trusted-users \
+  CHIMERA_EXPORT_TAINT_KEY=dedicated \
+  CHIMERA_EXPORT_TAINT_VALUE=tenantA \
+  CHIMERA_EXPORT_ALLOWED_GROUPS=some-other-user-group \
   CHIMERA_WASM_URI=registry://ghcr.io/chimera-kube/policies/pod-toleration:v0.0.2 \
   KUBECONFIG=$HOME/.kube/k3s.yaml \
   ./chimera-admission-amd64
@@ -277,8 +276,9 @@ spec:
     image: nginx
     imagePullPolicy: IfNotPresent
   tolerations:
-  - key: &quot;example-key&quot;
-    operator: &quot;Exists&quot;
+  - key: &quot;dedicated&quot;
+    operator: &quot;Equal&quot;&quot;
+    value: &quot;tenantA&quot;
     effect: &quot;NoSchedule&quot;
 EOF
 Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;rule-0.wasm.admission.rule&quot; denied the request: User not allowed to create Pod objects with toleration: key: example-key, operator: Exists, effect: NoSchedule)
