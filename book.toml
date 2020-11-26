@@ -5,4 +5,4 @@ multilingual = false
 src = "src"
 title = "Chimera Kubernetes Policy Engine"
 git-repository-url = "https://github.com/chimera-kube/chimera-book"
-site-url = "https://chimera-kube.github.io/chimera-book/"
+site-url = "/chimera-book"
