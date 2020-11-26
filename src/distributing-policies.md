@@ -11,9 +11,9 @@ sources:
   * OCI compliant registry
 
 We think distributing Chimera policies via a regular OCI compliant registry is the
-best choice. Container registries are a mandatory requirement of each Kubernetes
-cluster. Having a single place to store, and secure, all the artifacts required
-by a cluster can be really handy.
+best choice. Container registries are basically a mandatory requirement for
+Kubernetes cluster. Having a single place to store, and secure, all the
+artifacts required by a cluster can be really handy.
 
 # Pushing policies to an OCI compliant registry
 
@@ -22,10 +22,10 @@ specification allows to store any kind of binary blob inside of a
 regular OCI compliant container registry.
 
 The target OCI compliant registry **must support artifacts** in order
-to successfully push a Chimera policy to it.
+to successfully push a Chimera Policy to it.
 
 The [`wasm-to-oci`](https://github.com/engineerd/wasm-to-oci) command line tool
-can be used to push a Chimera policy to an OCI compliant registry.
+can be used to push a Chimera Policy to an OCI compliant registry.
 
 Pushing a policy can be done in this way:
 

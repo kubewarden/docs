@@ -97,6 +97,6 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "rule-0.wasm.admission.rule" denied the request: User not allowed to create Pod objects with toleration: key: example-key, operator: Exists, effect: NoSchedule)
 ```
 
-The admission controller is properly working: the creation request has
+The admission controller is working properly: the creation request has
 been rejected because it's not done by a user who belongs to one of the
 valid groups.

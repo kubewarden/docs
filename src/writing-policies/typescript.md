@@ -12,14 +12,14 @@ As stated on the [official website](https://www.typescriptlang.org/):
 > By understanding JavaScript, TypeScript saves you time catching errors and
 > providing fixes before you run code.
 
-TypeScript **cannot** be converted to WebAssembly, however the
+TypeScript **cannot** be converted to WebAssembly, however
 [AssemblyScript](https://www.assemblyscript.org/) is a **subset** of TypeScript
 designed explicitly for WebAssembly.
 
-AssemblyScript can produce Wasm modules targeting the WASI interface by leveraging
-the [as-wasi](https://github.com/jedisct1/as-wasi) project.
+AssemblyScript can produce Wasm modules targeting the WASI interface by
+leveraging the [as-wasi](https://github.com/jedisct1/as-wasi) project.
 
-# Known limitations
+## Known limitations
 
 Currently AssemblyScript does not provide all the capabilities required to
 write Chimera policies. The basic requirements of Chimera policies are outlined
@@ -34,25 +34,29 @@ Write to STDOUT    |   ✅   |
 Read env variables |   ✅   |
 Handle JSON        |   ❔   |
 
-## Write to STDOUT
+### Write to STDOUT
 
 Writing to STDOUT can be done using the [`Console`](https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesconsolemd)
 class defined by `as-wasi`.
 
-## Read from STDIN
+### Read from STDIN
 
 Reading from STDIN can theoretically be done using the [`Console`](https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesconsolemd)
 class defined by `as-wasi`.
 
-Unfortunately right now no data is read from the STDIN.
-[This issue](https://github.com/jedisct1/as-wasi/issues/95) has been created to track the problem.
+~~Unfortunately, right now no data is read from the STDIN.~~
+~~[This issue](https://github.com/jedisct1/as-wasi/issues/95) has been created to track the problem.~~
 
-## Read environment variables
+Unfortunately, right now reading data from the STDIN causes the Wasm runtime
+to kill the program.
+[This issue](https://github.com/jedisct1/as-wasi/issues/97) has been created to track the problem.
+
+### Read environment variables
 
 This can be done using the [`Environ`](https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesenvironmd)
 class provided by `as-wasi`.
 
-## Handle JSON
+### Handle JSON
 
 AssemblyScript is a subset of TypeScript, hence JSON handling is not provided
 out of the box.

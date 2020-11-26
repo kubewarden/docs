@@ -47,7 +47,7 @@ Capability         | Status |
 Read from STDIN    |   ❌   |
 Write to STDOUT    |   ✅   |
 Read env variables |   ❌   |
-Handle JSON        |   😒   |
+Handle JSON        |   🤨   |
 
 ## Write to STDOUT
 
@@ -69,16 +69,16 @@ to track the problem.
 
 TinyGo **does not support** the full Go language, [this page](https://tinygo.org/lang-support/)
 provides an overview of the Go features that are not yet supported.
-
-[This additional page](https://tinygo.org/lang-support/stdlib/) shows a detailed
+Moreover, [this additional page](https://tinygo.org/lang-support/stdlib/) shows a detailed
 overview of the support level of Go's standard library.
 
-As stated by the page above, the [`encoding/json`](https://golang.org/pkg/encoding/json/) package is not yet supported.
+As stated by the page above, the [`encoding/json`](https://golang.org/pkg/encoding/json/)
+package is not yet supported.
 However, it's possible to use the [`github.com/buger/jsonparser`](https://github.com/buger/jsonparser)
-library from TinyGo. This allows to parse incoming JSON requests.
+library with TinyGo. This allows to parse incoming JSON requests.
 
 The [`github.com/buger/jsonparser`](https://github.com/buger/jsonparser) library
-provides only JSON parsing capabilities.  However, a Chimera policy has to write
+provides only JSON parsing capabilities.  Anyhow, a Chimera Policy has to write
 a JSON `ValidationResponse` response object to its STDOUT.
 Luckily, the [`ValidationResponse`](/writing_policies/index.html#the-validationresponse-object)
 object is trivial to produce, even without the help of a JSON library.
