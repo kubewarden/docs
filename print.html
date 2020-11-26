@@ -420,7 +420,7 @@ later invoked these functions from a Wasm runtime.</p>
 Sharing other data types between the runtime and the Wasm module is not yet standardized,
 not all languages would be capable of doing that.</p>
 <p>Implementing policies as executables has a nice side effect, policies can be
-ran even from the command line. See <a href="writing-policies//testing-policies.html">this</a> section of
+ran even from the command line. See <a href="writing-policies/../testing-policies.html">this</a> section of
 the documentation for more information.</p>
 <blockquote>
 <p><strong>Note well:</strong> WebAssembly and WASI are fast evolving targets. The contents
@@ -571,7 +571,7 @@ can produce Wasm modules targeting the WASI interface.</p>
 <h2><a class="header" href="#known-limitations-2" id="known-limitations-2">Known limitations</a></h2>
 <p>Currently TinyGo does not provide all the capabilities required to
 write Chimera policies. The basic requirements of Chimera policies are outlined
-<a href="writing-policies//writing-policies/index.html#recap">here</a>.</p>
+<a href="writing-policies/./index.html#recap">here</a>.</p>
 <p>This is a quick schema of what works and what doesn't work with TinyGo.</p>
 <table><thead><tr><th>Capability</th><th>Status</th></tr></thead><tbody>
 <tr><td>Read from STDIN</td><td>❌</td></tr>
@@ -601,7 +601,7 @@ library with TinyGo. This allows to parse incoming JSON requests.</p>
 <p>The <a href="https://github.com/buger/jsonparser"><code>github.com/buger/jsonparser</code></a> library
 provides only JSON parsing capabilities.  Anyhow, a Chimera Policy has to write
 a JSON <code>ValidationResponse</code> response object to its STDOUT.
-Luckily, the <a href="writing-policies//writing-policies/index.html#the-validationresponse-object"><code>ValidationResponse</code></a>
+Luckily, the <a href="writing-policies/./index.html#the-validationresponse-object"><code>ValidationResponse</code></a>
 object is trivial to produce, even without the help of a JSON library.</p>
 <blockquote>
 <p><strong>WARNING:</strong> not yet done, WIP</p>
