@@ -181,12 +181,12 @@ of the <a href="https://wasi.dev/">WebAssembly System Interface</a>, also known 
 WASI-compliant runtime.</p>
 <h2><a class="header" href="#why-use-webassembly" id="why-use-webassembly">Why use WebAssembly?</a></h2>
 <p>By using WebAssembly, users can write Kubernetes policies using their favorite
-programming language, as long as the language can produce WASM binaries.</p>
+programming language, as long as the language can produce Wasm binaries.</p>
 <p>Policy authors can reuse their skills, tools and best practices. Policies
 are &quot;traditional&quot; programs that can have reusable blocks (regular libraries),
 can be tested, can be linted, can be plugged into the current CI and CD
 workflows,...</p>
-<p>WASM modules are portable, once built they can run on any kind of
+<p>Wasm modules are portable, once built they can run on any kind of
 architecture and Operating System. A policy built on a Apple Silicon
 machine can be run on a x86_64 Linux server without any conversion.</p>
 <h2><a class="header" href="#policy-distribution" id="policy-distribution">Policy distribution</a></h2>
@@ -326,7 +326,7 @@ local Kubernetes API server and, eventually, remove old instances of itself.</p>
 we push automatically to our GitHub Container Registry.</p>
 <p>The admission controller uses the <a href="https://github.com/chimera-kube/pod-toleration-policy">pod-toleration</a>
 policy to validate incoming Pod requests.</p>
-<p>The controller will download the WASM module providing the policy from
+<p>The controller will download the Wasm module providing the policy from
 <a href="https://github.com/orgs/chimera-kube/packages/container/package/policies%2Fpod-toleration">here</a>.</p>
 <p>The Chimera Policy is automatically publish by a GitHub Action as an OCI
 artifact to on our GitHub Container Registry.</p>
@@ -337,14 +337,14 @@ artifact to on our GitHub Container Registry.</p>
 incoming requests.</p>
 <h1><a class="header" href="#writing-policies" id="writing-policies">Writing Policies</a></h1>
 <p>Chimera policies can be written using any kind of language capable of building
-<a href="https://webassembly.org/">WASM</a> binaries for the <a href="https://wasi.dev/">WASI</a> target.</p>
-<p>The list of languages that can produce WASM modules is continuously evolving.
+<a href="https://webassembly.org/">Wasm</a> binaries for the <a href="https://wasi.dev/">WASI</a> target.</p>
+<p>The list of languages that can produce Wasm modules is continuously evolving.
 <a href="https://github.com/appcypher/awesome-wasm-langs">This page</a> provides a
 nice overview.</p>
 <blockquote>
-<p><strong>Note well:</strong> some languages have WASM support, but are not yet capable
+<p><strong>Note well:</strong> some languages have Wasm support, but are not yet capable
 of building binaries for the WASI interface.</p>
-<p>WASM modules built for the browser target won't run inside of a WASI-compliant
+<p>Wasm modules built for the browser target won't run inside of a WASI-compliant
 runtime.</p>
 </blockquote>
 <h1><a class="header" href="#what-a-policy-does" id="what-a-policy-does">What a policy does</a></h1>
@@ -392,10 +392,10 @@ client that issued the rejected request.</p>
 <h2><a class="header" href="#policy-configuration" id="policy-configuration">Policy configuration</a></h2>
 <p>The policy can read configuration values straight from its environment variables.</p>
 <p>The Chimera admission controller takes care of exporting certain environment
-variables from the host to the WASM runtime.</p>
+variables from the host to the Wasm runtime.</p>
 <h1><a class="header" href="#recap" id="recap">Recap</a></h1>
 <p>This is the minimal list of features a programming language must be able to
-support when building WASM modules for the WASI interface:</p>
+support when building Wasm modules for the WASI interface:</p>
 <ul>
 <li>Read from the STDIN [<strong>mandatory</strong>]</li>
 <li>Write to the STDOUT [<strong>mandatory</strong>]</li>
@@ -407,10 +407,10 @@ of WebAssembly, not all the programming languages are able to satisfy them. The
 next sections will cover the maturity level of some programming languages.</p>
 <h1><a class="header" href="#faq" id="faq">FAQ</a></h1>
 <h2><a class="header" href="#why-policies-arent-implemented-as-libraries" id="why-policies-arent-implemented-as-libraries">Why Policies aren't implemented as libraries?</a></h2>
-<p>It's possible to write WASM modules that expose functions, and
-later invoked these functions from a WASM runtime.</p>
+<p>It's possible to write Wasm modules that expose functions, and
+later invoked these functions from a Wasm runtime.</p>
 <p>However WebAssembly defines only 4 data types: integer and floating point numbers (32 and 64 bits).
-Sharing other data types between the runtime and the WASM module is not yet standardized,
+Sharing other data types between the runtime and the Wasm module is not yet standardized,
 not all languages would be capable of doing that.</p>
 <blockquote>
 <p><strong>Note well:</strong> WebAssembly and WASI are fast evolving targets. The contents
@@ -453,14 +453,14 @@ is not working. JSON parsing is still doable, but requires significantly more
 code. Once <a href="https://github.com/swiftwasm/swift/issues/2223">this issue</a>
 is solved the Swift-based policies will be even easier to write.</p>
 <p>We haven't done extensive testing, but from our initial research it seems the
-performance of WASM modules produced by the Swiftwasm compiler <em>seem</em> to be
+performance of Wasm modules produced by the Swiftwasm compiler <em>seem</em> to be
 slower than the ones produced by the Rust compiler.</p>
 <p>It's also critical to perform some post-build optimizations before using the
 policy <em>&quot;in production&quot;</em>.</p>
 <p>These optimizations are:</p>
 <ol>
-<li>Strip the WASM module via <code>wasm-strip</code> to reduce its size</li>
-<li>Optimize the WASM module via <code>wasm-opt</code></li>
+<li>Strip the Wasm module via <code>wasm-strip</code> to reduce its size</li>
+<li>Optimize the Wasm module via <code>wasm-opt</code></li>
 </ol>
 <h1><a class="header" href="#example-1" id="example-1">Example</a></h1>
 <p><a href="https://github.com/chimera-kube/pod-runtime-class-policy">This GitHub repository</a>
@@ -482,7 +482,7 @@ providing fixes before you run code.</p>
 <p>TypeScript <strong>cannot</strong> be converted to WebAssembly, however the
 <a href="https://www.assemblyscript.org/">AssemblyScript</a> is a <strong>subset</strong> of TypeScript
 designed explicitly for WebAssembly.</p>
-<p>AssemblyScript can produce WASM modules targeting the WASI interface by leveraging
+<p>AssemblyScript can produce Wasm modules targeting the WASI interface by leveraging
 the <a href="https://github.com/jedisct1/as-wasi">as-wasi</a> project.</p>
 <h1><a class="header" href="#known-limitations-1" id="known-limitations-1">Known limitations</a></h1>
 <p>Currently AssemblyScript does not provide all the capabilities required to
@@ -524,7 +524,7 @@ reliable, and efficient software.</p>
 </blockquote>
 <p>Currently the official Go compiler can build WebAssembly as documented
 <a href="https://github.com/golang/go/wiki/WebAssembly">here</a>. However, the compiler is
-not currently capable of producing WASM modules targeting the WASI interface.
+not currently capable of producing Wasm modules targeting the WASI interface.
 <a href="https://github.com/golang/go/issues/31105">This upstream issue</a> is tracking
 the evolution of this topic.</p>
 <p>Due to that, it's not possible to use the Go compiler to write Chimera policies.</p>
@@ -535,11 +535,11 @@ the evolution of this topic.</p>
 and modern web browsers by creating a new compiler based on LLVM.</p>
 <p>You can compile and run TinyGo programs on many different microcontroller
 boards such as the BBC micro:bit and the Arduino Uno.</p>
-<p>TinyGo can also be used to produce WebAssembly (WASM) code which is very
+<p>TinyGo can also be used to produce WebAssembly (Wasm) code which is very
 compact in size.</p>
 </blockquote>
 <p>TinyGo has WebAssembly support and, starting from the <code>0.16.0</code> release, it
-can produce WASM modules targeting the WASI interface.</p>
+can produce Wasm modules targeting the WASI interface.</p>
 <h2><a class="header" href="#known-limitations-2" id="known-limitations-2">Known limitations</a></h2>
 <p>Currently TinyGo does not provide all the capabilities required to
 write Chimera policies. The basic requirements of Chimera policies are outlined
@@ -588,7 +588,7 @@ about domain-specific languages:</p>
 <p>A domain-specific language (DSL) is a computer language specialized to a
 particular application domain.</p>
 </blockquote>
-<p>We plan to provide a simple DSL that can be built as a WASM module.
+<p>We plan to provide a simple DSL that can be built as a Wasm module.
 This would allow the Chimera admission controller to use policies written
 using regular programming languages <strong>and</strong> policies written a simpler DSL
 language.</p>
@@ -599,7 +599,7 @@ WebAssembly modules targeting the WASI interface.</p>
 if you know of a programming language that can be used to write 
 Chimera policies.</p>
 <h1><a class="header" href="#testing-policies" id="testing-policies">Testing Policies</a></h1>
-<p>Chimera Policies are regular programs built as WASM modules. Hence policies can
+<p>Chimera Policies are regular programs built as Wasm modules. Hence policies can
 be testes using the regular testing capabilities offered by the programming
 language of your choice.</p>
 <p>The reference policies we created do that extensively, as seen here:</p>
@@ -611,7 +611,7 @@ policy tests</li>
 </ul>
 <p>On top of that, Chimera Policies are also &quot;exectutable&quot; programs. Because of
 that it's really easy to run your policies from your shell.</p>
-<p>You can run the WASM module that implements a Chimera Policy straight from
+<p>You can run the Wasm module that implements a Chimera Policy straight from
 your console by using the <a href="https://wasmtime.dev/">Wasmtime</a> runtime.</p>
 <p>Just follow the instructions on their website and install the <code>wasmtime</code> binary
 on your machine. Once this is done you can invoke your Chimera Policy in this way:</p>
@@ -641,7 +641,7 @@ echo Operation not relevant
 hyperfine --warmup 10 &quot;cat test_data/req_delete.json | wasmtime run --env TAINT_KEY=&quot;dedicated-key&quot; --env TAINT_VALUE=&quot;tenantA&quot; --env ALLOWED_GROUPS=&quot;tenantA-users&quot; target/wasm32-wasi/release/pod-toleration-policy.wasm&quot;
 </code></pre>
 <h1><a class="header" href="#distributing-policies" id="distributing-policies">Distributing Policies</a></h1>
-<p>Chimera policies are simple WASM binaries that are then evaluated by the Chimera
+<p>Chimera policies are simple Wasm binaries that are then evaluated by the Chimera
 admission controller.</p>
 <p>The Chimera admission controller can currently load the policies from these
 sources:</p>

@@ -161,14 +161,14 @@
                     <main>
                         <h1><a class="header" href="#writing-policies" id="writing-policies">Writing Policies</a></h1>
 <p>Chimera policies can be written using any kind of language capable of building
-<a href="https://webassembly.org/">WASM</a> binaries for the <a href="https://wasi.dev/">WASI</a> target.</p>
-<p>The list of languages that can produce WASM modules is continuously evolving.
+<a href="https://webassembly.org/">Wasm</a> binaries for the <a href="https://wasi.dev/">WASI</a> target.</p>
+<p>The list of languages that can produce Wasm modules is continuously evolving.
 <a href="https://github.com/appcypher/awesome-wasm-langs">This page</a> provides a
 nice overview.</p>
 <blockquote>
-<p><strong>Note well:</strong> some languages have WASM support, but are not yet capable
+<p><strong>Note well:</strong> some languages have Wasm support, but are not yet capable
 of building binaries for the WASI interface.</p>
-<p>WASM modules built for the browser target won't run inside of a WASI-compliant
+<p>Wasm modules built for the browser target won't run inside of a WASI-compliant
 runtime.</p>
 </blockquote>
 <h1><a class="header" href="#what-a-policy-does" id="what-a-policy-does">What a policy does</a></h1>
@@ -216,10 +216,10 @@ client that issued the rejected request.</p>
 <h2><a class="header" href="#policy-configuration" id="policy-configuration">Policy configuration</a></h2>
 <p>The policy can read configuration values straight from its environment variables.</p>
 <p>The Chimera admission controller takes care of exporting certain environment
-variables from the host to the WASM runtime.</p>
+variables from the host to the Wasm runtime.</p>
 <h1><a class="header" href="#recap" id="recap">Recap</a></h1>
 <p>This is the minimal list of features a programming language must be able to
-support when building WASM modules for the WASI interface:</p>
+support when building Wasm modules for the WASI interface:</p>
 <ul>
 <li>Read from the STDIN [<strong>mandatory</strong>]</li>
 <li>Write to the STDOUT [<strong>mandatory</strong>]</li>
@@ -231,10 +231,10 @@ of WebAssembly, not all the programming languages are able to satisfy them. The
 next sections will cover the maturity level of some programming languages.</p>
 <h1><a class="header" href="#faq" id="faq">FAQ</a></h1>
 <h2><a class="header" href="#why-policies-arent-implemented-as-libraries" id="why-policies-arent-implemented-as-libraries">Why Policies aren't implemented as libraries?</a></h2>
-<p>It's possible to write WASM modules that expose functions, and
-later invoked these functions from a WASM runtime.</p>
+<p>It's possible to write Wasm modules that expose functions, and
+later invoked these functions from a Wasm runtime.</p>
 <p>However WebAssembly defines only 4 data types: integer and floating point numbers (32 and 64 bits).
-Sharing other data types between the runtime and the WASM module is not yet standardized,
+Sharing other data types between the runtime and the Wasm module is not yet standardized,
 not all languages would be capable of doing that.</p>
 
                     </main>
