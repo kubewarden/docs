@@ -177,35 +177,42 @@ designed explicitly for WebAssembly.</p>
 <p>AssemblyScript can produce Wasm modules targeting the WASI interface by
 leveraging the <a href="https://github.com/jedisct1/as-wasi">as-wasi</a> project.</p>
 <h2><a class="header" href="#known-limitations" id="known-limitations">Known limitations</a></h2>
-<p>Currently AssemblyScript does not provide all the capabilities required to
+<p>AssemblyScript provides all the capabilities required to
 write Chimera policies. The basic requirements of Chimera policies are outlined
 <a href="./index.html#recap">here</a>.</p>
 <p>This is a quick schema of what works and what doesn't work with AssemblyScript</p>
 <table><thead><tr><th>Capability</th><th>Status</th></tr></thead><tbody>
-<tr><td>Read from STDIN</td><td>❌</td></tr>
+<tr><td>Read from STDIN</td><td>✅</td></tr>
 <tr><td>Write to STDOUT</td><td>✅</td></tr>
 <tr><td>Read env variables</td><td>✅</td></tr>
-<tr><td>Handle JSON</td><td>❔</td></tr>
+<tr><td>Handle JSON</td><td>✅</td></tr>
 </tbody></table>
 <h3><a class="header" href="#write-to-stdout" id="write-to-stdout">Write to STDOUT</a></h3>
 <p>Writing to STDOUT can be done using the <a href="https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesconsolemd"><code>Console</code></a>
 class defined by <code>as-wasi</code>.</p>
 <h3><a class="header" href="#read-from-stdin" id="read-from-stdin">Read from STDIN</a></h3>
-<p>Reading from STDIN can theoretically be done using the <a href="https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesconsolemd"><code>Console</code></a>
+<p>Reading from STDIN can be done using the <a href="https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesconsolemd"><code>Console</code></a>
 class defined by <code>as-wasi</code>.</p>
-<p><del>Unfortunately, right now no data is read from the STDIN.</del>
-<del><a href="https://github.com/jedisct1/as-wasi/issues/95">This issue</a> has been created to track the problem.</del></p>
-<p>Unfortunately, right now reading data from the STDIN causes the Wasm runtime
-to kill the program.
-<a href="https://github.com/jedisct1/as-wasi/issues/97">This issue</a> has been created to track the problem.</p>
+<p>This has been working properly since the <code>0.4.4</code> relase of <code>as-wasi</code>.</p>
 <h3><a class="header" href="#read-environment-variables" id="read-environment-variables">Read environment variables</a></h3>
 <p>This can be done using the <a href="https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesenvironmd"><code>Environ</code></a>
 class provided by <code>as-wasi</code>.</p>
 <h3><a class="header" href="#handle-json" id="handle-json">Handle JSON</a></h3>
 <p>AssemblyScript is a subset of TypeScript, hence JSON handling is not provided
 out of the box.</p>
-<p>The <a href="https://github.com/nearprotocol/assemblyscript-json">assemblyscript-json</a>
-project seems to provide this capability. However we haven't tested the library yet.</p>
+<p>This can be done using the <a href="https://github.com/nearprotocol/assemblyscript-json">assemblyscript-json</a>
+project.</p>
+<h2><a class="header" href="#example" id="example">Example</a></h2>
+<p><a href="https://github.com/chimera-kube/pod-privileged-policy">This GitHub repository</a>
+contains a Chimera Policy written in AssemblyScript.</p>
+<p><strong>Worth of note:</strong> this repository has a series of GitHub Actions that automate
+the following tasks:</p>
+<ul>
+<li>Run unit tests and code linting on pull requests and after code is merged
+into the main branch</li>
+<li>Build the policy in <code>release</code> mode and push it to a OCI registry as an
+artifact</li>
+</ul>
 
                     </main>
 
