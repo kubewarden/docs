@@ -1,15 +1,7 @@
 # Summary
 
-- [Introduction](./README.md)
-- [Getting started](./getting-started/index.md)
-  - [Local evaluation with k3s](./getting-started/local-eval-with-k3s.md)
-  - [Kubernetes deployment](./getting-started/kubernetes-deployment.md)
-- [Writing Policies](./writing-policies/index.md)
-  - [Rust](./writing-policies/rust.md)
-  - [Swift](./writing-policies/swift.md)
-  - [TypeScript](./writing-policies/typescript.md)
-  - [Go](./writing-policies/go.md)
-  - [Domain Specific Language](./writing-policies/dsl.md)
-  - [Other languages](./writing-policies/other-languages.md)
+- [Introduction](./introduction.md)
+- [Running Policies](./running-policies.md)
 - [Testing Policies](./testing-policies.md)
+- [Writing Policies](./writing-policies/index.md)
 - [Distributing Policies](./distributing-policies.md)

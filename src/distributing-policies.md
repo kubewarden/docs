@@ -1,19 +1,20 @@
 # Distributing Policies
 
-Chimera policies are simple Wasm binaries that are then evaluated by the Chimera
-admission controller.
+Chimera policies are raw Wasm binaries that are evaluated by the
+Chimera admission server.
 
-The Chimera admission controller can currently load the policies from these
+The Chimera admission server can currently load policies from these
 sources:
 
   * Local filesystem
-  * Remote web server
-  * OCI compliant registry
+  * HTTP server
+  * OCI artifacts enabled OCI compliant registry
 
-We think distributing Chimera policies via a regular OCI compliant registry is the
-best choice. Container registries are basically a mandatory requirement for
-Kubernetes cluster. Having a single place to store, and secure, all the
-artifacts required by a cluster can be really handy.
+We think distributing Chimera policies via a regular OCI compliant
+registry is the best choice. Container registries are basically a
+mandatory requirement for any Kubernetes cluster. Having a single
+place to store, and secure, all the artifacts required by a cluster
+can be really handy.
 
 # Pushing policies to an OCI compliant registry
 
@@ -34,5 +35,5 @@ $ wasm-to-oci push pod-runtime-class-policy.wasm \
               <oci-registry>/chimera-policies/pod-runtime-class-policy:v0.0.1
 ```
 
-The policy can then be referenced from the Chimera admission controller as
+The policy can then be referenced from the Chimera admission server as
 `registry://<oci-registry>/chimera-policies/pod-runtime-class-policy:v0.0.1`.

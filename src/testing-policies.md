@@ -1,61 +1,168 @@
 # Testing Policies
 
-Chimera Policies are regular programs built as Wasm modules. Hence policies can
-be testes using the regular testing capabilities offered by the programming
-language of your choice.
+Policies usually need to be tested so we are sure that they behave as
+we expect when deployed on a Kubernetes cluster.
 
-The reference policies we created do that extensively, as seen here:
+Aside from the approach of testing policy logic with the tools that
+your language toolchain already provides, Chimera has a dedicated
+project for testing policies:
+[`chimera-policy-testdrive`](https://github.com/chimera-kube/chimera-policy-testdrive).
 
-  * [pod-runtime](https://github.com/chimera-kube/pod-runtime-class-policy/tree/main/Tests)
-    policy tests
-  * [pod-toleration](https://github.com/chimera-kube/pod-toleration-policy/blob/60388a054550cc94f2116c45c684b3b079bc8090/src/main.rs#L146-L306)
-    policy tests
+The concept of `chimera-policy-testdrive` is quite simple from a user
+point of view. You have to provide:
 
+* The policy to be tested: through the `--policy` argument. At this
+  time you can only load files in the local filesystem. This might
+  change, but it should be good enough for the develop, build, test
+  cycle.
 
-On top of that, Chimera Policies are also "exectutable" programs. Because of
-that it's really easy to run your policies from your shell.
+* A file that contains the admission request object to be provided to
+  the policy. This is a specific Kubernetes operation to be tested
+  against the policy. Provided using the `--request-file` argument.
 
-You can run the Wasm module that implements a Chimera Policy straight from
-your console by using the [Wasmtime](https://wasmtime.dev/) runtime.
+* Settings file that contains an arbitrary JSON document, that will be
+  exposed to the policy. This document allows static configuration of
+  the policy. Provided using the `--settings` parameter.
 
-Just follow the instructions on their website and install the `wasmtime` binary
-on your machine. Once this is done you can invoke your Chimera Policy in this way:
+## Install `chimera-policy-testdrive`
 
-```bash
-$ wasmtime run [--env POLICY_SETTING=policy-value] policy.wasm
+You can install the `chimera-policy-testdrive` with the `cargo`
+package manager:
+
+```console
+$ cargo install --git https://github.com/chimera-kube/chimera-policy-testdrive.git --branch main
 ```
 
-Your policy will then wait for the `AdmissionRequest` object to be provided
-on its standard input.
+You should now have a `chimera-policy-testdrive` executable in your
+`$PATH`:
 
-You can create/record AdmissionRequests into json files and then feed them to
-your policy in this way:
-
-```bash
-$ cat request.json | wasmtime run policy.wasm
+```console
+$ which chimera-policy-testdrive
+/home/ereslibre/.cargo/bin/chimera-policy-testdrive
 ```
 
-## Example
+## Policy test example
 
-The [pod-toleration policy](https://github.com/chimera-kube/pod-toleration-policy)
-can be tested from the CLI in this way:
+### Download a sample policy to test
 
-```shell
-$ wasmtime run --env TAINT_KEY="dedicated-key" --env TAINT_VALUE="tenantA" --env ALLOWED_GROUPS="system:authenticated" target/wasm32-wasi/release/pod-toleration-policy.wasm
+We will use [`wasm-to-oci`](https://github.com/engineerd/wasm-to-oci)
+in order to download a Wasm policy. We can also build a Wasm policy of
+our own if we prefer to do so.
+
+```console
+$ wasm-to-oci pull ghcr.io/chimera-kube/policies/pod-privileged:v0.1.0
+INFO[0002] Pulled: ghcr.io/chimera-kube/policies/pod-privileged:v0.1.0
+INFO[0002] Size: 21709
+INFO[0002] Digest: sha256:24d6cb6598815e0c1ccdb8e1e96aa4b9e4a63eab2b41fe271c9329f8263ab9a2
 ```
 
-This "trick" is used to do some quick profiling of the policy using the
-[hyperfine](https://github.com/sharkdp/hyperfine) utility.
+This should have created a `module.wasm` file in the current directoy.
 
-This is a slightly redacted snippet taken from the `Makefile` of the project:
+### The requests
 
-```shell
-echo Accepting policy
-hyperfine --warmup 10 "cat test_data/req_pod_with_equal_toleration.json | wasmtime run --env TAINT_KEY="dedicated-key" --env TAINT_VALUE="tenantA" --env ALLOWED_GROUPS="system:authenticated" target/wasm32-wasi/release/pod-toleration-policy.wasm"
+In order to mimic what the policy would evaluate during the execution
+on top of a Kubernetes cluster, we have to provide the resource type
+that it would receive from the API server: `AdmissionReview` API
+object types.
 
-echo Rejecting policy
-hyperfine --warmup 10 "cat test_data/req_pod_with_equal_toleration.json | wasmtime run --env TAINT_KEY="dedicated-key" --env TAINT_VALUE="tenantA" --env ALLOWED_GROUPS="tenantA-users" target/wasm32-wasi/release/pod-toleration-policy.wasm"
+Let's create two different requests, one that is valid, while the
+other is invalid.
 
-echo Operation not relevant
-hyperfine --warmup 10 "cat test_data/req_delete.json | wasmtime run --env TAINT_KEY="dedicated-key" --env TAINT_VALUE="tenantA" --env ALLOWED_GROUPS="tenantA-users" target/wasm32-wasi/release/pod-toleration-policy.wasm"
+This is a valid `AdmissionReview.request` object according to the
+policy that we want to test:
+
+```json
+{
+  "kind": {
+    "kind": "Pod",
+    "version": "v1"
+  },
+  "object": {
+    "metadata": {
+      "name": "valid-pod"
+    },
+    "spec": {
+      "containers": [
+        {
+          "image": "nginx",
+          "name": "valid-container"
+        }
+      ]
+    }
+  },
+  "operation": "CREATE",
+  "requestKind": {"version": "v1", "kind": "Pod"},
+  "userInfo": {
+    "username": "some-user",
+    "uid": "some-uid",
+    "groups": ["system:authenticated", "group-a", "group-b"]
+  }
+}
 ```
+
+This is an invalid `AdmissionReview.request` object according to the
+policy that we want to test:
+
+```json
+{
+  "kind": {
+    "kind": "Pod",
+    "version": "v1"
+  },
+  "object": {
+    "metadata": {
+      "name": "invalid-pod"
+    },
+    "spec": {
+      "containers": [
+        {
+          "image": "nginx",
+          "name": "invalid-container",
+          "securityContext": {
+            "privileged": true
+          }
+        }
+      ]
+    }
+  },
+  "operation": "CREATE",
+  "requestKind": {"version": "v1", "kind": "Pod"},
+  "userInfo": {
+    "username": "some-user",
+    "uid": "some-uid",
+    "groups": ["system:authenticated", "group-a", "group-b"]
+  }
+}
+```
+
+### Test the policy
+
+Now we can use `chimera-policy-testdrive` to test both requests:
+
+```console
+$ chimera-policy-testdrive --policy module.wasm --request-file valid-admission-review.json
+ValidationResponse { accepted: true, message: Some(""), code: None }
+```
+
+Whereas if we execute the invalid request, we will get:
+
+```console
+$ chimera-policy-testdrive --policy module.wasm --request-file invalid-admission-review.json
+ValidationResponse { accepted: false, message: Some("User cannot schedule privileged containers"), code: None }
+```
+
+## Wrapping up
+
+We have seen how to use `chimera-policy-testdrive` to test existing
+admission policies. This allows us to integrate the logic of our
+admission policy with real resources that will be provided by
+Kubernetes, so we have yet another tool for testing the integration
+without the the need of an already existing and running Kubernetes
+cluster.
+
+You can record `AdmissionReview` objects, or create specific ones and
+execute the `chimera-policy-testdrive` as desired with the admission
+reviews and the Wasm module you want to test against. These Wasm
+modules are currently located in the local filesystem, but you can use
+other tools like `wasm-to-oci` to download from an OCI registry if
+that's where these modules are located.
