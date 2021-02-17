@@ -3,7 +3,7 @@
 Chimera policies are raw Wasm binaries that are evaluated by the
 Chimera admission server.
 
-The Chimera admission server can currently load policies from these
+The Chimera policy server can currently load policies from these
 sources:
 
   * Local filesystem
