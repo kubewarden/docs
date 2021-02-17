@@ -1,7 +1,7 @@
 # Writing Policies
 
 Chimera policies can be written using any kind of language capable of building
-[Wasm](https://webassembly.org/) binaries and that supports waPC guest SDK.
+[Wasm](https://webassembly.org/) binaries and that supports [waPC](https://github.com/wapc) guest SDK.
 
 The list of languages that can produce Wasm modules is continuously evolving.
 [This page](https://github.com/appcypher/awesome-wasm-langs) provides a
