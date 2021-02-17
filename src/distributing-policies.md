@@ -7,7 +7,7 @@ The Chimera policy server can currently load policies from these
 sources:
 
   * Local filesystem
-  * HTTP server
+  * HTTP(s) server
   * OCI artifacts enabled OCI compliant registry
 
 We think distributing Chimera policies via a regular OCI compliant
