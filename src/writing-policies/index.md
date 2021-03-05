@@ -8,7 +8,7 @@ Chimera policies can be written using any kind of language capable of building
 
 ## Writing a validation policy
 
-The Chimera admission server receives
+The Chimera policy server receives
 [`AdmissionReview`](https://godoc.org/k8s.io/api/admission/v1#AdmissionReview)
 objects from the Kubernetes API server. It then forwards the value of
 the `request` (of type

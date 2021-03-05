@@ -1,14 +1,16 @@
 # Distributing Policies
 
-Chimera policies are raw Wasm binaries that are evaluated by the
-Chimera admission server.
+Chimera policies are Wasm binaries that are evaluated by the
+Chimera Policy Server.
 
-The Chimera policy server can currently load policies from these
+The Chimera policy server can load policies from these
 sources:
 
   * Local filesystem
   * HTTP(s) server
-  * OCI artifacts enabled OCI compliant registry
+  * OCI compliant registry like [distribution](https://github.com/distribution/distribution)
+    and other container registries (GitHub container registry, Azure Container
+    Registry, Amazon ECR, Google Container Registry, ...)
 
 We think distributing Chimera policies via a regular OCI compliant
 registry is the best choice. Container registries are basically a
@@ -35,5 +37,5 @@ $ wasm-to-oci push pod-runtime-class-policy.wasm \
               <oci-registry>/chimera-policies/pod-runtime-class-policy:v0.0.1
 ```
 
-The policy can then be referenced from the Chimera admission server as
+The policy can then be referenced from the Chimera Policy Server as
 `registry://<oci-registry>/chimera-policies/pod-runtime-class-policy:v0.0.1`.

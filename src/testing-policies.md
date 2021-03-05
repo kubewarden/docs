@@ -1,7 +1,35 @@
 # Testing Policies
 
-Policies usually need to be tested so we are sure that they behave as
-we expect when deployed on a Kubernetes cluster.
+This section covers the topic of testing Chimera Policies. There are two possible
+personas interested in testing policies:
+
+  * As a policy author: you're writing a Chimera Policy and you want to ensure
+    your code behaves the way you expect.
+  * As an end user: you found a Chimera Policy and you want to tune/test the policy
+    settings before deploying it, maybe you want to keep testing these settings
+    inside of your CI/CD pipelines,...
+
+# Chimera Policy authors
+
+Chimera Policies are regular programs compiled as WebAssembly. As with any kind
+of program, it's important to have a good test coverage.
+
+Policy authors can leverage the testing frameworks and tools of their language
+of choice to verify the behaviour of their policies.
+
+As an example, you can take a look at these Chimera policies:
+
+  * [pod-privileged-policy](https://github.com/chimera-kube/pod-privileged-policy): this
+    is a Chimera Policy written using [AssemblyScript](https://www.assemblyscript.org/).
+  * [pod-toleration-policy](https://github.com/chimera-kube/pod-toleration-policy): this
+    is a Chimera Policy written using [Rust](https://www.rust-lang.org/).
+
+Both policies have integrated test suites built using the regular testing libraries
+of Rust and AssemblyScript.
+
+Both projectes also rely on GitHub actions to implement their CI pipelines.
+
+# End users
 
 Aside from the approach of testing policy logic with the tools that
 your language toolchain already provides, Chimera has a dedicated
@@ -11,26 +39,22 @@ project for testing policies:
 The concept of `chimera-policy-testdrive` is quite simple from a user
 point of view. You have to provide:
 
-* The policy to be tested: through the `--policy` argument. At this
-  time you can only load files in the local filesystem. This might
-  change, but it should be good enough for the develop, build, test
-  cycle.
+1. The Wasm file providing the policy to be tested. The file is specified through
+  the `--policy` argument. At this  time you can only load files in the local
+  filesystem.
+1. A file containing the admission request object to be evaluated by
+  the policy. This is provided via the `--request-file` argument.
+1. The policy settings to be used at evaluation time, they can be provided
+  via `--settings` flag. The flag takes a JSON blob as parameter.
 
-* A file that contains the admission request object to be provided to
-  the policy. This is a specific Kubernetes operation to be tested
-  against the policy. Provided using the `--request-file` argument.
 
-* Settings file that contains an arbitrary JSON document, that will be
-  exposed to the policy. This document allows static configuration of
-  the policy. Provided using the `--settings` parameter.
+## Install
 
-## Install `chimera-policy-testdrive`
-
-You can install the `chimera-policy-testdrive` with the `cargo`
+You can install the `chimera-policy-testdrive` with Rust's `cargo`
 package manager:
 
 ```console
-$ cargo install --git https://github.com/chimera-kube/chimera-policy-testdrive.git --branch main
+cargo install --git https://github.com/chimera-kube/chimera-policy-testdrive.git --branch main
 ```
 
 You should now have a `chimera-policy-testdrive` executable in your
@@ -38,38 +62,44 @@ You should now have a `chimera-policy-testdrive` executable in your
 
 ```console
 $ which chimera-policy-testdrive
-/home/ereslibre/.cargo/bin/chimera-policy-testdrive
+~/.cargo/bin/chimera-policy-testdrive
 ```
 
-## Policy test example
+## Quickstart
 
-### Download a sample policy to test
+### Prerequisites
 
 We will use [`wasm-to-oci`](https://github.com/engineerd/wasm-to-oci)
-in order to download a Wasm policy. We can also build a Wasm policy of
-our own if we prefer to do so.
+to download a Chimera Policy published on a Container registry.
+
+Pre-built binaries of `wasm-to-oci`can be downloaded from the project's
+[GitHub Releases page](https://github.com/engineerd/wasm-to-oci/releases).
+
+### Obtain a Chimera policy
+
+We will download the 
+[pod-privileged-policy](https://github.com/chimera-kube/pod-privileged-policy):
 
 ```console
-$ wasm-to-oci pull ghcr.io/chimera-kube/policies/pod-privileged:v0.1.0
-INFO[0002] Pulled: ghcr.io/chimera-kube/policies/pod-privileged:v0.1.0
-INFO[0002] Size: 21709
-INFO[0002] Digest: sha256:24d6cb6598815e0c1ccdb8e1e96aa4b9e4a63eab2b41fe271c9329f8263ab9a2
+wasm-to-oci pull ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+```
+
+This will produce the following output:
+```console
+INFO[0001] Pulled: ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+INFO[0001] Size: 21769
+INFO[0001] Digest: sha256:2d31248b45c51efbab5cb88b47ed5d6cff7611158591dbf8974e3c26589891f9
 ```
 
 This should have created a `module.wasm` file in the current directoy.
 
-### The requests
+### Create `AdmissionReview` requests
 
-In order to mimic what the policy would evaluate during the execution
-on top of a Kubernetes cluster, we have to provide the resource type
-that it would receive from the API server: `AdmissionReview` API
-object types.
+We have to create some files holding the `AdmissionReview` objects that
+will be evaluated by the policy.
 
-Let's create two different requests, one that is valid, while the
-other is invalid.
-
-This is a valid `AdmissionReview.request` object according to the
-policy that we want to test:
+Let's create a file named `unprivileged-pod-req.json` with the following
+contents:
 
 ```json
 {
@@ -79,13 +109,13 @@ policy that we want to test:
   },
   "object": {
     "metadata": {
-      "name": "valid-pod"
+      "name": "unprivileged-pod"
     },
     "spec": {
       "containers": [
         {
           "image": "nginx",
-          "name": "valid-container"
+          "name": "unprivileged-container"
         }
       ]
     }
@@ -93,15 +123,20 @@ policy that we want to test:
   "operation": "CREATE",
   "requestKind": {"version": "v1", "kind": "Pod"},
   "userInfo": {
-    "username": "some-user",
-    "uid": "some-uid",
-    "groups": ["system:authenticated", "group-a", "group-b"]
+    "username": "alice",
+    "uid": "alice-uid",
+    "groups": ["system:authenticated", "devops-guild", "agile-guild"]
   }
 }
 ```
 
-This is an invalid `AdmissionReview.request` object according to the
-policy that we want to test:
+This request has been made by the user `alice` who belongs to the following
+groups: `system:authenticated`, `devops-guild` and `agile-guild`.
+All these informations can be found inside of the `userInfo` map.
+
+
+Let's create a file named `privileged-pod-req.json` with the following
+contents:
 
 ```json
 {
@@ -111,13 +146,13 @@ policy that we want to test:
   },
   "object": {
     "metadata": {
-      "name": "invalid-pod"
+      "name": "privileged-pod"
     },
     "spec": {
       "containers": [
         {
           "image": "nginx",
-          "name": "invalid-container",
+          "name": "privileged-container",
           "securityContext": {
             "privileged": true
           }
@@ -128,41 +163,68 @@ policy that we want to test:
   "operation": "CREATE",
   "requestKind": {"version": "v1", "kind": "Pod"},
   "userInfo": {
-    "username": "some-user",
-    "uid": "some-uid",
-    "groups": ["system:authenticated", "group-a", "group-b"]
+    "username": "alice",
+    "uid": "alice-uid",
+    "groups": ["system:authenticated", "devops-guild", "agile-guild"]
   }
 }
 ```
 
+This request is coming from the very same user `alice` show before.
+
+> **Note well:** these are stripped down `AdmissionReview` objects, we left
+> only the fields that are relevant to our policy.
+
 ### Test the policy
 
 Now we can use `chimera-policy-testdrive` to test both requests:
-
 ```console
-$ chimera-policy-testdrive --policy module.wasm --request-file valid-admission-review.json
+chimera-policy-testdrive --policy module.wasm --request-file unprivileged-pod-req.json
+```
+
+The policy will accept the request and produce the following output:
+```console
 ValidationResponse { accepted: true, message: Some(""), code: None }
 ```
 
-Whereas if we execute the invalid request, we will get:
-
+Whereas if we evaluate the privileged pod request:
 ```console
-$ chimera-policy-testdrive --policy module.wasm --request-file invalid-admission-review.json
-ValidationResponse { accepted: false, message: Some("User cannot schedule privileged containers"), code: None }
+chimera-policy-testdrive --policy module.wasm --request-file privileged-pod-req.json
 ```
+
+The policy will reject the request and produce the following output:
+```console
+ValidationResponse { accepted: false, message: Some("User \'alice\' cannot schedule privileged containers"), code: None }
+```
+
+Both times we did a test drive of the policy **without** providing any kind of
+setting. As the [policy's documentation](https://github.com/chimera-kube/pod-privileged-policy#configuration)
+states, this results in preventing all the users to create privileged Pods.
+
+We can change the default behaviour and allow members of the `devops-guild`
+group to create privileged Pods. This can be done by setting the `trusted_groups`
+value of the policy:
+```console
+chimera-policy-testdrive --policy module.wasm \
+  --request-file privileged-pod-req.json \
+  --settings '{"trusted_groups": ["administrators", "devops-guild"]}'
+```
+
+This time the request is accepted:
+```console
+ValidationResponse { accepted: true, message: Some(""), code: None }
+```
+
+That happens because the request is coming from the user `alice`, who is
+a member of the `devops-guild` group.
 
 ## Wrapping up
 
-We have seen how to use `chimera-policy-testdrive` to test existing
-admission policies. This allows us to integrate the logic of our
-admission policy with real resources that will be provided by
-Kubernetes, so we have yet another tool for testing the integration
-without the the need of an already existing and running Kubernetes
-cluster.
+Testing Chimera Policies is extremely important.
 
-You can record `AdmissionReview` objects, or create specific ones and
-execute the `chimera-policy-testdrive` as desired with the admission
-reviews and the Wasm module you want to test against. These Wasm
-modules are currently located in the local filesystem, but you can use
-other tools like `wasm-to-oci` to download from an OCI registry if
-that's where these modules are located.
+As a Chimera Policy author you can leverage the testing frameworks of your favorite
+programming language and combine it with the CI systems of your choice to
+ensure your code behaves as expected.
+
+As a Chimera Policy end user you can use `chimera-policy-testdrive` to test
+policies and their tuning outside of Kubernetes.
