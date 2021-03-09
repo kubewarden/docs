@@ -1,21 +1,14 @@
 # Writing Policies
 
 Chimera policies can be written using any kind of language capable of building
-[Wasm](https://webassembly.org/) binaries for the [WASI](https://wasi.dev/) target.
+[Wasm](https://webassembly.org/) binaries and that supports [waPC](https://github.com/wapc) guest SDK.
 
-The list of languages that can produce Wasm modules is continuously evolving.
-[This page](https://github.com/appcypher/awesome-wasm-langs) provides a
-nice overview.
+> **Note well:** currently Chimera supports only Validating Admission Webhooks,
+> Mutating ones are not yet implemented.
 
-> **Note well:** some languages have Wasm support, but are not yet capable
-> of building binaries for the WASI interface.
->
-> Wasm modules built for the browser target won't run inside of a WASI-compliant
-> runtime.
+## Writing a validation policy
 
-## What a policy does
-
-The Chimera admission controller receives
+The Chimera policy server receives
 [`AdmissionReview`](https://godoc.org/k8s.io/api/admission/v1#AdmissionReview)
 objects from the Kubernetes API server. It then forwards the value of
 the `request` (of type
@@ -26,18 +19,25 @@ The policy has to evaluate the `request` and state whether it should be
 accepted or not. When the request is rejected, the policy must provide the
 explanation message that is going to be shown to the end user.
 
-> **Note well:** currently Chimera supports only Validating Admission Controller,
-> Mutating ones are not yet implemented.
+By convention of the `policy-server` project, the guest has to expose
+a function named `validate`, exposed through the waPC guest SDK, so
+that the `policy-server` (waPC host) can invoke it.
 
-## Policy interface
+The `validate` function receives a `ValidationRequest` object serialized as JSON and
+returns a `ValidationResponse` object serialized as JSON. 
 
-Chimera policies have to be implemented following some simple communication
-rules:
+### The `ValidationRequest` object
 
-  * The policy program has to be written as an executable.
-  * The policy will read the `request` data from its standard input
-  * The policy will evaluate the policy and serialize a `ValidationResponse`
-    object as JSON on its standard output.
+The `ValidationRequest` is a simple JSON object that looks like that:
+
+```json
+{
+  "request": <AdmissionReview.request data>
+  "settings": {
+     // your policy configuration
+  }
+}
+```
 
 ### The `ValidationResponse` object
 
@@ -65,40 +65,21 @@ accepted, the Kubernetes API server will forward this information as
 part of the body of the error returned to the Kubernetes API server
 client that issued the rejected request.
 
-### Policy configuration
 
-The policy can read configuration values straight from its environment variables.
+## Supported lanauges
 
-The Chimera admission controller takes care of exporting certain environment
-variables from the host to the Wasm runtime.
+Languages currently exposing a waPC guest SDK are:
 
-## Recap
+- [AssemblyScript](https://github.com/wapc/as-guest)
+- [Rust](https://github.com/wapc/wapc-guest-rust)
+- [TinyGo](https://github.com/wapc/wapc-guest-tinygo)
+- [Zig](https://github.com/wapc/wapc-guest-zig)
+- [Swift](https://github.com/flavio/wapc-guest-swift)
 
-This is the minimal list of features a programming language must be able to
-support when building Wasm modules for the WASI interface:
+The list of languages that can produce Wasm modules is continuously evolving.
+[This page](https://github.com/appcypher/awesome-wasm-langs) provides a
+nice overview.
 
-  * Read from the STDIN [**mandatory**]
-  * Write to the STDOUT [**mandatory**]
-  * Handle JSON data, both marshalling and unmarshalling [**strongly recommended**]
-  * Read value of environment variables [**optional**]
-
-This is a really limited set of requirements, however, due to the early nature
-of WebAssembly and the WASI interface, not all the programming languages are
-able to satisfy them. The next sections will cover the maturity level of some
-programming languages.
-
-## FAQ
-
-### Why Policies aren't implemented as libraries?
-
-It's possible to write Wasm modules that expose functions, and
-later invoked these functions from a Wasm runtime.
-
-However WebAssembly defines only 4 data types: integer and floating point numbers (32 and 64 bits).
-Sharing other data types between the runtime and the Wasm module is not yet standardized,
-not all languages would be capable of doing that.
-
-Implementing policies as executables has a nice side effect, policies can be
-ran even from the command line. See [this](../testing-policies.md) section of
-the documentation for more information.
-
+It's possible to check what languages support waPC guest by searching
+on the [official github
+group](https://github.com/wapc?q=guest&type=&language=).
