@@ -93,7 +93,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html" class="active"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting-started/local-eval-with-k3s.html"><strong aria-hidden="true">2.1.</strong> Local evaluation with k3s</a></li><li class="chapter-item expanded "><a href="getting-started/kubernetes-deployment.html"><strong aria-hidden="true">2.2.</strong> Kubernetes deployment</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">3.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rust.html"><strong aria-hidden="true">3.1.</strong> Rust</a></li><li class="chapter-item expanded "><a href="writing-policies/swift.html"><strong aria-hidden="true">3.2.</strong> Swift</a></li><li class="chapter-item expanded "><a href="writing-policies/typescript.html"><strong aria-hidden="true">3.3.</strong> TypeScript</a></li><li class="chapter-item expanded "><a href="writing-policies/go.html"><strong aria-hidden="true">3.4.</strong> Go</a></li><li class="chapter-item expanded "><a href="writing-policies/dsl.html"><strong aria-hidden="true">3.5.</strong> Domain Specific Language</a></li><li class="chapter-item expanded "><a href="writing-policies/other-languages.html"><strong aria-hidden="true">3.6.</strong> Other languages</a></li></ol></li><li class="chapter-item expanded "><a href="testing-policies.html"><strong aria-hidden="true">4.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -164,34 +164,40 @@
 <p>Feedback is highly appreciated.</p>
 </blockquote>
 <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
-<p>Chimera is a <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Kubernetes Dynamic Admission Controller</a>
-that validates incoming requests using policies written in WebAssembly.</p>
+<p>Chimera is a <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Kubernetes Dynamic Admission
+Controller</a>
+that validates incoming requests using policies written in
+WebAssembly.</p>
 <h2><a class="header" href="#what-is-webassembly" id="what-is-webassembly">What is WebAssembly?</a></h2>
-<p>As stated on <a href="https://webassembly.org/">WebAssembly's official website</a>:</p>
+<p>As stated on <a href="https://webassembly.org/">WebAssembly's official
+website</a>:</p>
 <blockquote>
-<p>WebAssembly (abbreviated Wasm) is a binary instruction format for a stack-based virtual machine. Wasm is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications.</p>
+<p>WebAssembly (abbreviated Wasm) is a binary instruction format for a
+stack-based virtual machine. Wasm is designed as a portable
+compilation target for programming languages, enabling deployment on
+the web for client and server applications.</p>
 </blockquote>
-<p>WebAssembly has been originally conceived as an &quot;extension&quot; of browsers. However,
-recent efforts have been made by the WebAssembly community to allow the execution
-of WebAssembly code outside of the browsers. These efforts lead to the creation
-of the <a href="https://wasi.dev/">WebAssembly System Interface</a>, also known as <em>&quot;WASI&quot;</em>.</p>
-<p>Chimera policies are executed outside of a browsers, hence they target a
-WASI-compliant runtime.</p>
+<p>WebAssembly has been originally conceived as an &quot;extension&quot; of
+browsers. However, recent efforts have been made by the WebAssembly
+community to allow the execution of WebAssembly code outside of
+browsers.</p>
 <h2><a class="header" href="#why-use-webassembly" id="why-use-webassembly">Why use WebAssembly?</a></h2>
-<p>By using WebAssembly, users can write Kubernetes policies using their favorite
-programming language, as long as the language can produce Wasm binaries.</p>
-<p>Policy authors can reuse their skills, tools and best practices. Policies
-are &quot;traditional&quot; programs that can have reusable blocks (regular libraries),
-can be tested, can be linted, can be plugged into the current CI and CD
-workflows,...</p>
+<p>By using WebAssembly, users can write Kubernetes policies using their
+favorite programming language, as long as the language can produce
+Wasm binaries.</p>
+<p>Policy authors can reuse their skills, tools and best
+practices. Policies are &quot;traditional&quot; programs that can have reusable
+blocks (regular libraries), can be tested, can be linted, can be
+plugged into their current CI and CD workflows,...</p>
 <p>Wasm modules are portable, once built they can run on any kind of
-architecture and Operating System. A policy built on a Apple Silicon
-machine can be run on a x86_64 Linux server without any conversion.</p>
+processor architecture and Operating System. A policy built on a Apple
+Silicon machine can be run on a x86_64 Linux server without any
+conversion.</p>
 <h2><a class="header" href="#policy-distribution" id="policy-distribution">Policy distribution</a></h2>
 <p>Chimera Policies can be served by a regular web server or, even
 better, can be published inside of an OCI compliant registry.</p>
-<p>Chimera Policies can be stored inside of an OCI compliant registry as <a href="https://github.com/opencontainers/artifacts">OCI
-artifacts</a>.</p>
+<p>Chimera Policies can be stored inside of an OCI compliant registry as
+<a href="https://github.com/opencontainers/artifacts">OCI artifacts</a>.</p>
 
                     </main>
 
@@ -200,7 +206,7 @@ artifacts</a>.</p>
                         
 
                         
-                            <a rel="next" href="getting-started/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="quick-start.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -214,7 +220,7 @@ artifacts</a>.</p>
                 
 
                 
-                    <a rel="next" href="getting-started/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="quick-start.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

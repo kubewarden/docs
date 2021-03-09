@@ -93,7 +93,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting-started/local-eval-with-k3s.html"><strong aria-hidden="true">2.1.</strong> Local evaluation with k3s</a></li><li class="chapter-item expanded "><a href="getting-started/kubernetes-deployment.html"><strong aria-hidden="true">2.2.</strong> Kubernetes deployment</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">3.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rust.html"><strong aria-hidden="true">3.1.</strong> Rust</a></li><li class="chapter-item expanded "><a href="writing-policies/swift.html"><strong aria-hidden="true">3.2.</strong> Swift</a></li><li class="chapter-item expanded "><a href="writing-policies/typescript.html"><strong aria-hidden="true">3.3.</strong> TypeScript</a></li><li class="chapter-item expanded "><a href="writing-policies/go.html"><strong aria-hidden="true">3.4.</strong> Go</a></li><li class="chapter-item expanded "><a href="writing-policies/dsl.html"><strong aria-hidden="true">3.5.</strong> Domain Specific Language</a></li><li class="chapter-item expanded "><a href="writing-policies/other-languages.html"><strong aria-hidden="true">3.6.</strong> Other languages</a></li></ol></li><li class="chapter-item expanded "><a href="testing-policies.html" class="active"><strong aria-hidden="true">4.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="testing-policies.html" class="active"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -160,60 +160,193 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#testing-policies" id="testing-policies">Testing Policies</a></h1>
-<p>Chimera Policies are regular programs built as Wasm modules. Hence policies can
-be testes using the regular testing capabilities offered by the programming
-language of your choice.</p>
-<p>The reference policies we created do that extensively, as seen here:</p>
+<p>This section covers the topic of testing Chimera Policies. There are two possible
+personas interested in testing policies:</p>
 <ul>
-<li><a href="https://github.com/chimera-kube/pod-runtime-class-policy/tree/main/Tests">pod-runtime</a>
-policy tests</li>
-<li><a href="https://github.com/chimera-kube/pod-toleration-policy/blob/60388a054550cc94f2116c45c684b3b079bc8090/src/main.rs#L146-L306">pod-toleration</a>
-policy tests</li>
+<li>As a policy author: you're writing a Chimera Policy and you want to ensure
+your code behaves the way you expect.</li>
+<li>As an end user: you found a Chimera Policy and you want to tune/test the policy
+settings before deploying it, maybe you want to keep testing these settings
+inside of your CI/CD pipelines,...</li>
 </ul>
-<p>On top of that, Chimera Policies are also &quot;exectutable&quot; programs. Because of
-that it's really easy to run your policies from your shell.</p>
-<p>You can run the Wasm module that implements a Chimera Policy straight from
-your console by using the <a href="https://wasmtime.dev/">Wasmtime</a> runtime.</p>
-<p>Just follow the instructions on their website and install the <code>wasmtime</code> binary
-on your machine. Once this is done you can invoke your Chimera Policy in this way:</p>
-<pre><code class="language-bash">$ wasmtime run [--env POLICY_SETTING=policy-value] policy.wasm
+<h1><a class="header" href="#chimera-policy-authors" id="chimera-policy-authors">Chimera Policy authors</a></h1>
+<p>Chimera Policies are regular programs compiled as WebAssembly. As with any kind
+of program, it's important to have a good test coverage.</p>
+<p>Policy authors can leverage the testing frameworks and tools of their language
+of choice to verify the behaviour of their policies.</p>
+<p>As an example, you can take a look at these Chimera policies:</p>
+<ul>
+<li><a href="https://github.com/chimera-kube/pod-privileged-policy">pod-privileged-policy</a>: this
+is a Chimera Policy written using <a href="https://www.assemblyscript.org/">AssemblyScript</a>.</li>
+<li><a href="https://github.com/chimera-kube/pod-toleration-policy">pod-toleration-policy</a>: this
+is a Chimera Policy written using <a href="https://www.rust-lang.org/">Rust</a>.</li>
+</ul>
+<p>Both policies have integrated test suites built using the regular testing libraries
+of Rust and AssemblyScript.</p>
+<p>Both projectes also rely on GitHub actions to implement their CI pipelines.</p>
+<h1><a class="header" href="#end-users" id="end-users">End users</a></h1>
+<p>Aside from the approach of testing policy logic with the tools that
+your language toolchain already provides, Chimera has a dedicated
+project for testing policies:
+<a href="https://github.com/chimera-kube/chimera-policy-testdrive"><code>chimera-policy-testdrive</code></a>.</p>
+<p>The concept of <code>chimera-policy-testdrive</code> is quite simple from a user
+point of view. You have to provide:</p>
+<ol>
+<li>The Wasm file providing the policy to be tested. The file is specified through
+the <code>--policy</code> argument. At this  time you can only load files in the local
+filesystem.</li>
+<li>A file containing the admission request object to be evaluated by
+the policy. This is provided via the <code>--request-file</code> argument.</li>
+<li>The policy settings to be used at evaluation time, they can be provided
+via <code>--settings</code> flag. The flag takes a JSON blob as parameter.</li>
+</ol>
+<h2><a class="header" href="#install" id="install">Install</a></h2>
+<p>You can install the <code>chimera-policy-testdrive</code> with Rust's <code>cargo</code>
+package manager:</p>
+<pre><code class="language-console">cargo install --git https://github.com/chimera-kube/chimera-policy-testdrive.git --branch main
 </code></pre>
-<p>Your policy will then wait for the <code>AdmissionRequest</code> object to be provided
-on its standard input.</p>
-<p>You can create/record AdmissionRequests into json files and then feed them to
-your policy in this way:</p>
-<pre><code class="language-bash">$ cat request.json | wasmtime run policy.wasm
+<p>You should now have a <code>chimera-policy-testdrive</code> executable in your
+<code>$PATH</code>:</p>
+<pre><code class="language-console">$ which chimera-policy-testdrive
+~/.cargo/bin/chimera-policy-testdrive
 </code></pre>
-<h2><a class="header" href="#example" id="example">Example</a></h2>
-<p>The <a href="https://github.com/chimera-kube/pod-toleration-policy">pod-toleration policy</a>
-can be tested from the CLI in this way:</p>
-<pre><code class="language-shell">$ wasmtime run --env TAINT_KEY=&quot;dedicated-key&quot; --env TAINT_VALUE=&quot;tenantA&quot; --env ALLOWED_GROUPS=&quot;system:authenticated&quot; target/wasm32-wasi/release/pod-toleration-policy.wasm
+<h2><a class="header" href="#quickstart" id="quickstart">Quickstart</a></h2>
+<h3><a class="header" href="#prerequisites" id="prerequisites">Prerequisites</a></h3>
+<p>We will use <a href="https://github.com/engineerd/wasm-to-oci"><code>wasm-to-oci</code></a>
+to download a Chimera Policy published on a Container registry.</p>
+<p>Pre-built binaries of <code>wasm-to-oci</code>can be downloaded from the project's
+<a href="https://github.com/engineerd/wasm-to-oci/releases">GitHub Releases page</a>.</p>
+<h3><a class="header" href="#obtain-a-chimera-policy" id="obtain-a-chimera-policy">Obtain a Chimera policy</a></h3>
+<p>We will download the 
+<a href="https://github.com/chimera-kube/pod-privileged-policy">pod-privileged-policy</a>:</p>
+<pre><code class="language-console">wasm-to-oci pull ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
 </code></pre>
-<p>This &quot;trick&quot; is used to do some quick profiling of the policy using the
-<a href="https://github.com/sharkdp/hyperfine">hyperfine</a> utility.</p>
-<p>This is a slightly redacted snippet taken from the <code>Makefile</code> of the project:</p>
-<pre><code class="language-shell">echo Accepting policy
-hyperfine --warmup 10 &quot;cat test_data/req_pod_with_equal_toleration.json | wasmtime run --env TAINT_KEY=&quot;dedicated-key&quot; --env TAINT_VALUE=&quot;tenantA&quot; --env ALLOWED_GROUPS=&quot;system:authenticated&quot; target/wasm32-wasi/release/pod-toleration-policy.wasm&quot;
-
-echo Rejecting policy
-hyperfine --warmup 10 &quot;cat test_data/req_pod_with_equal_toleration.json | wasmtime run --env TAINT_KEY=&quot;dedicated-key&quot; --env TAINT_VALUE=&quot;tenantA&quot; --env ALLOWED_GROUPS=&quot;tenantA-users&quot; target/wasm32-wasi/release/pod-toleration-policy.wasm&quot;
-
-echo Operation not relevant
-hyperfine --warmup 10 &quot;cat test_data/req_delete.json | wasmtime run --env TAINT_KEY=&quot;dedicated-key&quot; --env TAINT_VALUE=&quot;tenantA&quot; --env ALLOWED_GROUPS=&quot;tenantA-users&quot; target/wasm32-wasi/release/pod-toleration-policy.wasm&quot;
+<p>This will produce the following output:</p>
+<pre><code class="language-console">INFO[0001] Pulled: ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+INFO[0001] Size: 21769
+INFO[0001] Digest: sha256:2d31248b45c51efbab5cb88b47ed5d6cff7611158591dbf8974e3c26589891f9
 </code></pre>
+<p>This should have created a <code>module.wasm</code> file in the current directoy.</p>
+<h3><a class="header" href="#create-admissionreview-requests" id="create-admissionreview-requests">Create <code>AdmissionReview</code> requests</a></h3>
+<p>We have to create some files holding the <code>AdmissionReview</code> objects that
+will be evaluated by the policy.</p>
+<p>Let's create a file named <code>unprivileged-pod-req.json</code> with the following
+contents:</p>
+<pre><code class="language-json">{
+  &quot;kind&quot;: {
+    &quot;kind&quot;: &quot;Pod&quot;,
+    &quot;version&quot;: &quot;v1&quot;
+  },
+  &quot;object&quot;: {
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;unprivileged-pod&quot;
+    },
+    &quot;spec&quot;: {
+      &quot;containers&quot;: [
+        {
+          &quot;image&quot;: &quot;nginx&quot;,
+          &quot;name&quot;: &quot;unprivileged-container&quot;
+        }
+      ]
+    }
+  },
+  &quot;operation&quot;: &quot;CREATE&quot;,
+  &quot;requestKind&quot;: {&quot;version&quot;: &quot;v1&quot;, &quot;kind&quot;: &quot;Pod&quot;},
+  &quot;userInfo&quot;: {
+    &quot;username&quot;: &quot;alice&quot;,
+    &quot;uid&quot;: &quot;alice-uid&quot;,
+    &quot;groups&quot;: [&quot;system:authenticated&quot;, &quot;devops-guild&quot;, &quot;agile-guild&quot;]
+  }
+}
+</code></pre>
+<p>This request has been made by the user <code>alice</code> who belongs to the following
+groups: <code>system:authenticated</code>, <code>devops-guild</code> and <code>agile-guild</code>.
+All these informations can be found inside of the <code>userInfo</code> map.</p>
+<p>Let's create a file named <code>privileged-pod-req.json</code> with the following
+contents:</p>
+<pre><code class="language-json">{
+  &quot;kind&quot;: {
+    &quot;kind&quot;: &quot;Pod&quot;,
+    &quot;version&quot;: &quot;v1&quot;
+  },
+  &quot;object&quot;: {
+    &quot;metadata&quot;: {
+      &quot;name&quot;: &quot;privileged-pod&quot;
+    },
+    &quot;spec&quot;: {
+      &quot;containers&quot;: [
+        {
+          &quot;image&quot;: &quot;nginx&quot;,
+          &quot;name&quot;: &quot;privileged-container&quot;,
+          &quot;securityContext&quot;: {
+            &quot;privileged&quot;: true
+          }
+        }
+      ]
+    }
+  },
+  &quot;operation&quot;: &quot;CREATE&quot;,
+  &quot;requestKind&quot;: {&quot;version&quot;: &quot;v1&quot;, &quot;kind&quot;: &quot;Pod&quot;},
+  &quot;userInfo&quot;: {
+    &quot;username&quot;: &quot;alice&quot;,
+    &quot;uid&quot;: &quot;alice-uid&quot;,
+    &quot;groups&quot;: [&quot;system:authenticated&quot;, &quot;devops-guild&quot;, &quot;agile-guild&quot;]
+  }
+}
+</code></pre>
+<p>This request is coming from the very same user <code>alice</code> show before.</p>
+<blockquote>
+<p><strong>Note well:</strong> these are stripped down <code>AdmissionReview</code> objects, we left
+only the fields that are relevant to our policy.</p>
+</blockquote>
+<h3><a class="header" href="#test-the-policy" id="test-the-policy">Test the policy</a></h3>
+<p>Now we can use <code>chimera-policy-testdrive</code> to test both requests:</p>
+<pre><code class="language-console">chimera-policy-testdrive --policy module.wasm --request-file unprivileged-pod-req.json
+</code></pre>
+<p>The policy will accept the request and produce the following output:</p>
+<pre><code class="language-console">ValidationResponse { accepted: true, message: Some(&quot;&quot;), code: None }
+</code></pre>
+<p>Whereas if we evaluate the privileged pod request:</p>
+<pre><code class="language-console">chimera-policy-testdrive --policy module.wasm --request-file privileged-pod-req.json
+</code></pre>
+<p>The policy will reject the request and produce the following output:</p>
+<pre><code class="language-console">ValidationResponse { accepted: false, message: Some(&quot;User \'alice\' cannot schedule privileged containers&quot;), code: None }
+</code></pre>
+<p>Both times we did a test drive of the policy <strong>without</strong> providing any kind of
+setting. As the <a href="https://github.com/chimera-kube/pod-privileged-policy#configuration">policy's documentation</a>
+states, this results in preventing all the users to create privileged Pods.</p>
+<p>We can change the default behaviour and allow members of the <code>devops-guild</code>
+group to create privileged Pods. This can be done by setting the <code>trusted_groups</code>
+value of the policy:</p>
+<pre><code class="language-console">chimera-policy-testdrive --policy module.wasm \
+  --request-file privileged-pod-req.json \
+  --settings '{&quot;trusted_groups&quot;: [&quot;administrators&quot;, &quot;devops-guild&quot;]}'
+</code></pre>
+<p>This time the request is accepted:</p>
+<pre><code class="language-console">ValidationResponse { accepted: true, message: Some(&quot;&quot;), code: None }
+</code></pre>
+<p>That happens because the request is coming from the user <code>alice</code>, who is
+a member of the <code>devops-guild</code> group.</p>
+<h2><a class="header" href="#wrapping-up" id="wrapping-up">Wrapping up</a></h2>
+<p>Testing Chimera Policies is extremely important.</p>
+<p>As a Chimera Policy author you can leverage the testing frameworks of your favorite
+programming language and combine it with the CI systems of your choice to
+ensure your code behaves as expected.</p>
+<p>As a Chimera Policy end user you can use <code>chimera-policy-testdrive</code> to test
+policies and their tuning outside of Kubernetes.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="writing-policies/other-languages.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="quick-start.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="distributing-policies.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="writing-policies/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -225,13 +358,13 @@ hyperfine --warmup 10 &quot;cat test_data/req_delete.json | wasmtime run --env T
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="writing-policies/other-languages.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="quick-start.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="distributing-policies.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="writing-policies/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

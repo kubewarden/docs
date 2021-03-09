@@ -3,9 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Chimera Kubernetes Policy Engine</title>
-        
-        <meta name="robots" content="noindex" />
+        <title>Quick Start - Chimera Kubernetes Policy Engine</title>
         
         
 
@@ -95,7 +93,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="quick-start.html" class="active"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -161,46 +159,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <blockquote>
-<p><strong>WARNING:</strong> Chimera is in early development stage, it's not production ready.</p>
-<p>Feedback is highly appreciated.</p>
-</blockquote>
-<h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
-<p>Chimera is a <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Kubernetes Dynamic Admission
-Controller</a>
-that validates incoming requests using policies written in
-WebAssembly.</p>
-<h2><a class="header" href="#what-is-webassembly" id="what-is-webassembly">What is WebAssembly?</a></h2>
-<p>As stated on <a href="https://webassembly.org/">WebAssembly's official
-website</a>:</p>
-<blockquote>
-<p>WebAssembly (abbreviated Wasm) is a binary instruction format for a
-stack-based virtual machine. Wasm is designed as a portable
-compilation target for programming languages, enabling deployment on
-the web for client and server applications.</p>
-</blockquote>
-<p>WebAssembly has been originally conceived as an &quot;extension&quot; of
-browsers. However, recent efforts have been made by the WebAssembly
-community to allow the execution of WebAssembly code outside of
-browsers.</p>
-<h2><a class="header" href="#why-use-webassembly" id="why-use-webassembly">Why use WebAssembly?</a></h2>
-<p>By using WebAssembly, users can write Kubernetes policies using their
-favorite programming language, as long as the language can produce
-Wasm binaries.</p>
-<p>Policy authors can reuse their skills, tools and best
-practices. Policies are &quot;traditional&quot; programs that can have reusable
-blocks (regular libraries), can be tested, can be linted, can be
-plugged into their current CI and CD workflows,...</p>
-<p>Wasm modules are portable, once built they can run on any kind of
-processor architecture and Operating System. A policy built on a Apple
-Silicon machine can be run on a x86_64 Linux server without any
-conversion.</p>
-<h2><a class="header" href="#policy-distribution" id="policy-distribution">Policy distribution</a></h2>
-<p>Chimera Policies can be served by a regular web server or, even
-better, can be published inside of an OCI compliant registry.</p>
-<p>Chimera Policies can be stored inside of an OCI compliant registry as
-<a href="https://github.com/opencontainers/artifacts">OCI artifacts</a>.</p>
-<h1><a class="header" href="#quick-start" id="quick-start">Quick Start</a></h1>
+                        <h1><a class="header" href="#quick-start" id="quick-start">Quick Start</a></h1>
 <p>The Chimera stack is made of the following components:</p>
 <ul>
 <li>An arbitrary number of <code>AdmissionPolicy</code> resources: this is how policies
@@ -431,284 +390,21 @@ This could bring havoc on your cluster.</p>
 a cluster operator has to manage, the rest of the resources needed to
 run the policies and configure them will be taken care of
 automatically by the <code>chimera-controller</code> project.</p>
-<h1><a class="header" href="#testing-policies" id="testing-policies">Testing Policies</a></h1>
-<p>This section covers the topic of testing Chimera Policies. There are two possible
-personas interested in testing policies:</p>
-<ul>
-<li>As a policy author: you're writing a Chimera Policy and you want to ensure
-your code behaves the way you expect.</li>
-<li>As an end user: you found a Chimera Policy and you want to tune/test the policy
-settings before deploying it, maybe you want to keep testing these settings
-inside of your CI/CD pipelines,...</li>
-</ul>
-<h1><a class="header" href="#chimera-policy-authors" id="chimera-policy-authors">Chimera Policy authors</a></h1>
-<p>Chimera Policies are regular programs compiled as WebAssembly. As with any kind
-of program, it's important to have a good test coverage.</p>
-<p>Policy authors can leverage the testing frameworks and tools of their language
-of choice to verify the behaviour of their policies.</p>
-<p>As an example, you can take a look at these Chimera policies:</p>
-<ul>
-<li><a href="https://github.com/chimera-kube/pod-privileged-policy">pod-privileged-policy</a>: this
-is a Chimera Policy written using <a href="https://www.assemblyscript.org/">AssemblyScript</a>.</li>
-<li><a href="https://github.com/chimera-kube/pod-toleration-policy">pod-toleration-policy</a>: this
-is a Chimera Policy written using <a href="https://www.rust-lang.org/">Rust</a>.</li>
-</ul>
-<p>Both policies have integrated test suites built using the regular testing libraries
-of Rust and AssemblyScript.</p>
-<p>Both projectes also rely on GitHub actions to implement their CI pipelines.</p>
-<h1><a class="header" href="#end-users" id="end-users">End users</a></h1>
-<p>Aside from the approach of testing policy logic with the tools that
-your language toolchain already provides, Chimera has a dedicated
-project for testing policies:
-<a href="https://github.com/chimera-kube/chimera-policy-testdrive"><code>chimera-policy-testdrive</code></a>.</p>
-<p>The concept of <code>chimera-policy-testdrive</code> is quite simple from a user
-point of view. You have to provide:</p>
-<ol>
-<li>The Wasm file providing the policy to be tested. The file is specified through
-the <code>--policy</code> argument. At this  time you can only load files in the local
-filesystem.</li>
-<li>A file containing the admission request object to be evaluated by
-the policy. This is provided via the <code>--request-file</code> argument.</li>
-<li>The policy settings to be used at evaluation time, they can be provided
-via <code>--settings</code> flag. The flag takes a JSON blob as parameter.</li>
-</ol>
-<h2><a class="header" href="#install-1" id="install-1">Install</a></h2>
-<p>You can install the <code>chimera-policy-testdrive</code> with Rust's <code>cargo</code>
-package manager:</p>
-<pre><code class="language-console">cargo install --git https://github.com/chimera-kube/chimera-policy-testdrive.git --branch main
-</code></pre>
-<p>You should now have a <code>chimera-policy-testdrive</code> executable in your
-<code>$PATH</code>:</p>
-<pre><code class="language-console">$ which chimera-policy-testdrive
-~/.cargo/bin/chimera-policy-testdrive
-</code></pre>
-<h2><a class="header" href="#quickstart" id="quickstart">Quickstart</a></h2>
-<h3><a class="header" href="#prerequisites" id="prerequisites">Prerequisites</a></h3>
-<p>We will use <a href="https://github.com/engineerd/wasm-to-oci"><code>wasm-to-oci</code></a>
-to download a Chimera Policy published on a Container registry.</p>
-<p>Pre-built binaries of <code>wasm-to-oci</code>can be downloaded from the project's
-<a href="https://github.com/engineerd/wasm-to-oci/releases">GitHub Releases page</a>.</p>
-<h3><a class="header" href="#obtain-a-chimera-policy" id="obtain-a-chimera-policy">Obtain a Chimera policy</a></h3>
-<p>We will download the 
-<a href="https://github.com/chimera-kube/pod-privileged-policy">pod-privileged-policy</a>:</p>
-<pre><code class="language-console">wasm-to-oci pull ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
-</code></pre>
-<p>This will produce the following output:</p>
-<pre><code class="language-console">INFO[0001] Pulled: ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
-INFO[0001] Size: 21769
-INFO[0001] Digest: sha256:2d31248b45c51efbab5cb88b47ed5d6cff7611158591dbf8974e3c26589891f9
-</code></pre>
-<p>This should have created a <code>module.wasm</code> file in the current directoy.</p>
-<h3><a class="header" href="#create-admissionreview-requests" id="create-admissionreview-requests">Create <code>AdmissionReview</code> requests</a></h3>
-<p>We have to create some files holding the <code>AdmissionReview</code> objects that
-will be evaluated by the policy.</p>
-<p>Let's create a file named <code>unprivileged-pod-req.json</code> with the following
-contents:</p>
-<pre><code class="language-json">{
-  &quot;kind&quot;: {
-    &quot;kind&quot;: &quot;Pod&quot;,
-    &quot;version&quot;: &quot;v1&quot;
-  },
-  &quot;object&quot;: {
-    &quot;metadata&quot;: {
-      &quot;name&quot;: &quot;unprivileged-pod&quot;
-    },
-    &quot;spec&quot;: {
-      &quot;containers&quot;: [
-        {
-          &quot;image&quot;: &quot;nginx&quot;,
-          &quot;name&quot;: &quot;unprivileged-container&quot;
-        }
-      ]
-    }
-  },
-  &quot;operation&quot;: &quot;CREATE&quot;,
-  &quot;requestKind&quot;: {&quot;version&quot;: &quot;v1&quot;, &quot;kind&quot;: &quot;Pod&quot;},
-  &quot;userInfo&quot;: {
-    &quot;username&quot;: &quot;alice&quot;,
-    &quot;uid&quot;: &quot;alice-uid&quot;,
-    &quot;groups&quot;: [&quot;system:authenticated&quot;, &quot;devops-guild&quot;, &quot;agile-guild&quot;]
-  }
-}
-</code></pre>
-<p>This request has been made by the user <code>alice</code> who belongs to the following
-groups: <code>system:authenticated</code>, <code>devops-guild</code> and <code>agile-guild</code>.
-All these informations can be found inside of the <code>userInfo</code> map.</p>
-<p>Let's create a file named <code>privileged-pod-req.json</code> with the following
-contents:</p>
-<pre><code class="language-json">{
-  &quot;kind&quot;: {
-    &quot;kind&quot;: &quot;Pod&quot;,
-    &quot;version&quot;: &quot;v1&quot;
-  },
-  &quot;object&quot;: {
-    &quot;metadata&quot;: {
-      &quot;name&quot;: &quot;privileged-pod&quot;
-    },
-    &quot;spec&quot;: {
-      &quot;containers&quot;: [
-        {
-          &quot;image&quot;: &quot;nginx&quot;,
-          &quot;name&quot;: &quot;privileged-container&quot;,
-          &quot;securityContext&quot;: {
-            &quot;privileged&quot;: true
-          }
-        }
-      ]
-    }
-  },
-  &quot;operation&quot;: &quot;CREATE&quot;,
-  &quot;requestKind&quot;: {&quot;version&quot;: &quot;v1&quot;, &quot;kind&quot;: &quot;Pod&quot;},
-  &quot;userInfo&quot;: {
-    &quot;username&quot;: &quot;alice&quot;,
-    &quot;uid&quot;: &quot;alice-uid&quot;,
-    &quot;groups&quot;: [&quot;system:authenticated&quot;, &quot;devops-guild&quot;, &quot;agile-guild&quot;]
-  }
-}
-</code></pre>
-<p>This request is coming from the very same user <code>alice</code> show before.</p>
-<blockquote>
-<p><strong>Note well:</strong> these are stripped down <code>AdmissionReview</code> objects, we left
-only the fields that are relevant to our policy.</p>
-</blockquote>
-<h3><a class="header" href="#test-the-policy" id="test-the-policy">Test the policy</a></h3>
-<p>Now we can use <code>chimera-policy-testdrive</code> to test both requests:</p>
-<pre><code class="language-console">chimera-policy-testdrive --policy module.wasm --request-file unprivileged-pod-req.json
-</code></pre>
-<p>The policy will accept the request and produce the following output:</p>
-<pre><code class="language-console">ValidationResponse { accepted: true, message: Some(&quot;&quot;), code: None }
-</code></pre>
-<p>Whereas if we evaluate the privileged pod request:</p>
-<pre><code class="language-console">chimera-policy-testdrive --policy module.wasm --request-file privileged-pod-req.json
-</code></pre>
-<p>The policy will reject the request and produce the following output:</p>
-<pre><code class="language-console">ValidationResponse { accepted: false, message: Some(&quot;User \'alice\' cannot schedule privileged containers&quot;), code: None }
-</code></pre>
-<p>Both times we did a test drive of the policy <strong>without</strong> providing any kind of
-setting. As the <a href="https://github.com/chimera-kube/pod-privileged-policy#configuration">policy's documentation</a>
-states, this results in preventing all the users to create privileged Pods.</p>
-<p>We can change the default behaviour and allow members of the <code>devops-guild</code>
-group to create privileged Pods. This can be done by setting the <code>trusted_groups</code>
-value of the policy:</p>
-<pre><code class="language-console">chimera-policy-testdrive --policy module.wasm \
-  --request-file privileged-pod-req.json \
-  --settings '{&quot;trusted_groups&quot;: [&quot;administrators&quot;, &quot;devops-guild&quot;]}'
-</code></pre>
-<p>This time the request is accepted:</p>
-<pre><code class="language-console">ValidationResponse { accepted: true, message: Some(&quot;&quot;), code: None }
-</code></pre>
-<p>That happens because the request is coming from the user <code>alice</code>, who is
-a member of the <code>devops-guild</code> group.</p>
-<h2><a class="header" href="#wrapping-up-1" id="wrapping-up-1">Wrapping up</a></h2>
-<p>Testing Chimera Policies is extremely important.</p>
-<p>As a Chimera Policy author you can leverage the testing frameworks of your favorite
-programming language and combine it with the CI systems of your choice to
-ensure your code behaves as expected.</p>
-<p>As a Chimera Policy end user you can use <code>chimera-policy-testdrive</code> to test
-policies and their tuning outside of Kubernetes.</p>
-<h1><a class="header" href="#writing-policies" id="writing-policies">Writing Policies</a></h1>
-<p>Chimera policies can be written using any kind of language capable of building
-<a href="https://webassembly.org/">Wasm</a> binaries and that supports <a href="https://github.com/wapc">waPC</a> guest SDK.</p>
-<blockquote>
-<p><strong>Note well:</strong> currently Chimera supports only Validating Admission Webhooks,
-Mutating ones are not yet implemented.</p>
-</blockquote>
-<h2><a class="header" href="#writing-a-validation-policy" id="writing-a-validation-policy">Writing a validation policy</a></h2>
-<p>The Chimera policy server receives
-<a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionReview"><code>AdmissionReview</code></a>
-objects from the Kubernetes API server. It then forwards the value of
-the <code>request</code> (of type
-<a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionRequest"><code>AdmissionRequest</code></a>
-key to the policy to be evaluated.</p>
-<p>The policy has to evaluate the <code>request</code> and state whether it should be
-accepted or not. When the request is rejected, the policy must provide the
-explanation message that is going to be shown to the end user.</p>
-<p>By convention of the <code>policy-server</code> project, the guest has to expose
-a function named <code>validate</code>, exposed through the waPC guest SDK, so
-that the <code>policy-server</code> (waPC host) can invoke it.</p>
-<p>The <code>validate</code> function receives a <code>ValidationRequest</code> object serialized as JSON and
-returns a <code>ValidationResponse</code> object serialized as JSON. </p>
-<h3><a class="header" href="#the-validationrequest-object" id="the-validationrequest-object">The <code>ValidationRequest</code> object</a></h3>
-<p>The <code>ValidationRequest</code> is a simple JSON object that looks like that:</p>
-<pre><code class="language-json">{
-  &quot;request&quot;: &lt;AdmissionReview.request data&gt;
-  &quot;settings&quot;: {
-     // your policy configuration
-  }
-}
-</code></pre>
-<h3><a class="header" href="#the-validationresponse-object" id="the-validationresponse-object">The <code>ValidationResponse</code> object</a></h3>
-<p>The <code>ValidationResponse</code> object is a simple JSON object like the
-following:</p>
-<pre><code class="language-json">{
-  &quot;accepted&quot;: &lt;boolean&gt;, // mandatory
-  &quot;message&quot;: &lt;string&gt;,   // optional, ignored if accepted - recommended for rejections
-  &quot;code&quot;: &lt;integer&gt;      // optional, ignored if accepted
-}
-</code></pre>
-<p>The <code>message</code> and <code>code</code> attributes can be specified when the request
-is not accepted. <code>message</code> is a free form textual error. <code>code</code>
-represents an HTTP error code.</p>
-<p>If the request is accepted, <code>message</code> and <code>code</code>
-values will be ignored by the Kubernetes API server if they are
-present.</p>
-<p>If <code>message</code> and/or <code>code</code> are provided, and the request is not
-accepted, the Kubernetes API server will forward this information as
-part of the body of the error returned to the Kubernetes API server
-client that issued the rejected request.</p>
-<h2><a class="header" href="#supported-lanauges" id="supported-lanauges">Supported lanauges</a></h2>
-<p>Languages currently exposing a waPC guest SDK are:</p>
-<ul>
-<li><a href="https://github.com/wapc/as-guest">AssemblyScript</a></li>
-<li><a href="https://github.com/wapc/wapc-guest-rust">Rust</a></li>
-<li><a href="https://github.com/wapc/wapc-guest-tinygo">TinyGo</a></li>
-<li><a href="https://github.com/wapc/wapc-guest-zig">Zig</a></li>
-<li><a href="https://github.com/flavio/wapc-guest-swift">Swift</a></li>
-</ul>
-<p>The list of languages that can produce Wasm modules is continuously evolving.
-<a href="https://github.com/appcypher/awesome-wasm-langs">This page</a> provides a
-nice overview.</p>
-<p>It's possible to check what languages support waPC guest by searching
-on the <a href="https://github.com/wapc?q=guest&amp;type=&amp;language=">official github
-group</a>.</p>
-<h1><a class="header" href="#distributing-policies" id="distributing-policies">Distributing Policies</a></h1>
-<p>Chimera policies are Wasm binaries that are evaluated by the
-Chimera Policy Server.</p>
-<p>The Chimera policy server can load policies from these
-sources:</p>
-<ul>
-<li>Local filesystem</li>
-<li>HTTP(s) server</li>
-<li>OCI compliant registry like <a href="https://github.com/distribution/distribution">distribution</a>
-and other container registries (GitHub container registry, Azure Container
-Registry, Amazon ECR, Google Container Registry, ...)</li>
-</ul>
-<p>We think distributing Chimera policies via a regular OCI compliant
-registry is the best choice. Container registries are basically a
-mandatory requirement for any Kubernetes cluster. Having a single
-place to store, and secure, all the artifacts required by a cluster
-can be really handy.</p>
-<h1><a class="header" href="#pushing-policies-to-an-oci-compliant-registry" id="pushing-policies-to-an-oci-compliant-registry">Pushing policies to an OCI compliant registry</a></h1>
-<p>The <a href="https://github.com/opencontainers/artifacts">OCI Artifacts</a>
-specification allows to store any kind of binary blob inside of a
-regular OCI compliant container registry.</p>
-<p>The target OCI compliant registry <strong>must support artifacts</strong> in order
-to successfully push a Chimera Policy to it.</p>
-<p>The <a href="https://github.com/engineerd/wasm-to-oci"><code>wasm-to-oci</code></a> command line tool
-can be used to push a Chimera Policy to an OCI compliant registry.</p>
-<p>Pushing a policy can be done in this way:</p>
-<pre><code class="language-bash">$ wasm-to-oci push pod-runtime-class-policy.wasm \
-              &lt;oci-registry&gt;/chimera-policies/pod-runtime-class-policy:v0.0.1
-</code></pre>
-<p>The policy can then be referenced from the Chimera Policy Server as
-<code>registry://&lt;oci-registry&gt;/chimera-policies/pod-runtime-class-policy:v0.0.1</code>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
+                            <a rel="prev" href="introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
 
+                        
+                            <a rel="next" href="testing-policies.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
                         
 
                         <div style="clear: both"></div>
@@ -718,7 +414,15 @@ can be used to push a Chimera Policy to an OCI compliant registry.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
+                    <a rel="prev" href="introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
 
+                
+                    <a rel="next" href="testing-policies.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
                 
             </nav>
 
@@ -751,14 +455,6 @@ can be used to push a Chimera Policy to an OCI compliant registry.</p>
         <!-- Custom JS scripts -->
         
 
-        
-        
-        <script type="text/javascript">
-        window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
-        });
-        </script>
-        
         
 
     </body>

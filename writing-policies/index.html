@@ -93,7 +93,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started/index.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting-started/local-eval-with-k3s.html"><strong aria-hidden="true">2.1.</strong> Local evaluation with k3s</a></li><li class="chapter-item expanded "><a href="../getting-started/kubernetes-deployment.html"><strong aria-hidden="true">2.2.</strong> Kubernetes deployment</a></li></ol></li><li class="chapter-item expanded "><a href="../writing-policies/index.html" class="active"><strong aria-hidden="true">3.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../writing-policies/rust.html"><strong aria-hidden="true">3.1.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../writing-policies/swift.html"><strong aria-hidden="true">3.2.</strong> Swift</a></li><li class="chapter-item expanded "><a href="../writing-policies/typescript.html"><strong aria-hidden="true">3.3.</strong> TypeScript</a></li><li class="chapter-item expanded "><a href="../writing-policies/go.html"><strong aria-hidden="true">3.4.</strong> Go</a></li><li class="chapter-item expanded "><a href="../writing-policies/dsl.html"><strong aria-hidden="true">3.5.</strong> Domain Specific Language</a></li><li class="chapter-item expanded "><a href="../writing-policies/other-languages.html"><strong aria-hidden="true">3.6.</strong> Other languages</a></li></ol></li><li class="chapter-item expanded "><a href="../testing-policies.html"><strong aria-hidden="true">4.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="../distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="../testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="../writing-policies/index.html" class="active"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li class="chapter-item expanded "><a href="../distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -161,18 +161,13 @@
                     <main>
                         <h1><a class="header" href="#writing-policies" id="writing-policies">Writing Policies</a></h1>
 <p>Chimera policies can be written using any kind of language capable of building
-<a href="https://webassembly.org/">Wasm</a> binaries for the <a href="https://wasi.dev/">WASI</a> target.</p>
-<p>The list of languages that can produce Wasm modules is continuously evolving.
-<a href="https://github.com/appcypher/awesome-wasm-langs">This page</a> provides a
-nice overview.</p>
+<a href="https://webassembly.org/">Wasm</a> binaries and that supports <a href="https://github.com/wapc">waPC</a> guest SDK.</p>
 <blockquote>
-<p><strong>Note well:</strong> some languages have Wasm support, but are not yet capable
-of building binaries for the WASI interface.</p>
-<p>Wasm modules built for the browser target won't run inside of a WASI-compliant
-runtime.</p>
+<p><strong>Note well:</strong> currently Chimera supports only Validating Admission Webhooks,
+Mutating ones are not yet implemented.</p>
 </blockquote>
-<h2><a class="header" href="#what-a-policy-does" id="what-a-policy-does">What a policy does</a></h2>
-<p>The Chimera admission controller receives
+<h2><a class="header" href="#writing-a-validation-policy" id="writing-a-validation-policy">Writing a validation policy</a></h2>
+<p>The Chimera policy server receives
 <a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionReview"><code>AdmissionReview</code></a>
 objects from the Kubernetes API server. It then forwards the value of
 the <code>request</code> (of type
@@ -181,19 +176,20 @@ key to the policy to be evaluated.</p>
 <p>The policy has to evaluate the <code>request</code> and state whether it should be
 accepted or not. When the request is rejected, the policy must provide the
 explanation message that is going to be shown to the end user.</p>
-<blockquote>
-<p><strong>Note well:</strong> currently Chimera supports only Validating Admission Controller,
-Mutating ones are not yet implemented.</p>
-</blockquote>
-<h2><a class="header" href="#policy-interface" id="policy-interface">Policy interface</a></h2>
-<p>Chimera policies have to be implemented following some simple communication
-rules:</p>
-<ul>
-<li>The policy program has to be written as an executable.</li>
-<li>The policy will read the <code>request</code> data from its standard input</li>
-<li>The policy will evaluate the policy and serialize a <code>ValidationResponse</code>
-object as JSON on its standard output.</li>
-</ul>
+<p>By convention of the <code>policy-server</code> project, the guest has to expose
+a function named <code>validate</code>, exposed through the waPC guest SDK, so
+that the <code>policy-server</code> (waPC host) can invoke it.</p>
+<p>The <code>validate</code> function receives a <code>ValidationRequest</code> object serialized as JSON and
+returns a <code>ValidationResponse</code> object serialized as JSON. </p>
+<h3><a class="header" href="#the-validationrequest-object" id="the-validationrequest-object">The <code>ValidationRequest</code> object</a></h3>
+<p>The <code>ValidationRequest</code> is a simple JSON object that looks like that:</p>
+<pre><code class="language-json">{
+  &quot;request&quot;: &lt;AdmissionReview.request data&gt;
+  &quot;settings&quot;: {
+     // your policy configuration
+  }
+}
+</code></pre>
 <h3><a class="header" href="#the-validationresponse-object" id="the-validationresponse-object">The <code>ValidationResponse</code> object</a></h3>
 <p>The <code>ValidationResponse</code> object is a simple JSON object like the
 following:</p>
@@ -213,46 +209,34 @@ present.</p>
 accepted, the Kubernetes API server will forward this information as
 part of the body of the error returned to the Kubernetes API server
 client that issued the rejected request.</p>
-<h3><a class="header" href="#policy-configuration" id="policy-configuration">Policy configuration</a></h3>
-<p>The policy can read configuration values straight from its environment variables.</p>
-<p>The Chimera admission controller takes care of exporting certain environment
-variables from the host to the Wasm runtime.</p>
-<h2><a class="header" href="#recap" id="recap">Recap</a></h2>
-<p>This is the minimal list of features a programming language must be able to
-support when building Wasm modules for the WASI interface:</p>
+<h2><a class="header" href="#supported-lanauges" id="supported-lanauges">Supported lanauges</a></h2>
+<p>Languages currently exposing a waPC guest SDK are:</p>
 <ul>
-<li>Read from the STDIN [<strong>mandatory</strong>]</li>
-<li>Write to the STDOUT [<strong>mandatory</strong>]</li>
-<li>Handle JSON data, both marshalling and unmarshalling [<strong>strongly recommended</strong>]</li>
-<li>Read value of environment variables [<strong>optional</strong>]</li>
+<li><a href="https://github.com/wapc/as-guest">AssemblyScript</a></li>
+<li><a href="https://github.com/wapc/wapc-guest-rust">Rust</a></li>
+<li><a href="https://github.com/wapc/wapc-guest-tinygo">TinyGo</a></li>
+<li><a href="https://github.com/wapc/wapc-guest-zig">Zig</a></li>
+<li><a href="https://github.com/flavio/wapc-guest-swift">Swift</a></li>
 </ul>
-<p>This is a really limited set of requirements, however, due to the early nature
-of WebAssembly and the WASI interface, not all the programming languages are
-able to satisfy them. The next sections will cover the maturity level of some
-programming languages.</p>
-<h2><a class="header" href="#faq" id="faq">FAQ</a></h2>
-<h3><a class="header" href="#why-policies-arent-implemented-as-libraries" id="why-policies-arent-implemented-as-libraries">Why Policies aren't implemented as libraries?</a></h3>
-<p>It's possible to write Wasm modules that expose functions, and
-later invoked these functions from a Wasm runtime.</p>
-<p>However WebAssembly defines only 4 data types: integer and floating point numbers (32 and 64 bits).
-Sharing other data types between the runtime and the Wasm module is not yet standardized,
-not all languages would be capable of doing that.</p>
-<p>Implementing policies as executables has a nice side effect, policies can be
-ran even from the command line. See <a href="../testing-policies.html">this</a> section of
-the documentation for more information.</p>
+<p>The list of languages that can produce Wasm modules is continuously evolving.
+<a href="https://github.com/appcypher/awesome-wasm-langs">This page</a> provides a
+nice overview.</p>
+<p>It's possible to check what languages support waPC guest by searching
+on the <a href="https://github.com/wapc?q=guest&amp;type=&amp;language=">official github
+group</a>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="../getting-started/kubernetes-deployment.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../testing-policies.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="../writing-policies/rust.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../distributing-policies.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -264,13 +248,13 @@ the documentation for more information.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="../getting-started/kubernetes-deployment.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../testing-policies.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="../writing-policies/rust.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../distributing-policies.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
