@@ -1,10 +1,10 @@
-> **WARNING:** Chimera is in early development stage, it's not production ready.
+> **WARNING:** Kubewarden is in early development stage, it's not production ready.
 >
 > Feedback is highly appreciated.
 
 # Introduction
 
-Chimera is a [Kubernetes Dynamic Admission
+Kubewarden is a [Kubernetes Dynamic Admission
 Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)
 that validates incoming requests using policies written in
 WebAssembly.
@@ -42,8 +42,8 @@ conversion.
 
 ## Policy distribution
 
-Chimera Policies can be served by a regular web server or, even
+Kubewarden Policies can be served by a regular web server or, even
 better, can be published inside of an OCI compliant registry.
 
-Chimera Policies can be stored inside of an OCI compliant registry as
+Kubewarden Policies can be stored inside of an OCI compliant registry as
 [OCI artifacts](https://github.com/opencontainers/artifacts).

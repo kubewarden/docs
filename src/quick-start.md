@@ -1,50 +1,50 @@
 # Quick Start
 
-The Chimera stack is made of the following components:
+The Kubewarden stack is made of the following components:
 
   * An arbitrary number of `AdmissionPolicy` resources: this is how policies
     are defined inside of Kubernetes
-  * A Deployment of Chimera `policy-server`: this component loads all the
+  * A Deployment of Kubewarden `policy-server`: this component loads all the
     policies defined by the administrators and evaluates them
-  * A Deployment of `chimera-controller`: this is the controller that monitors
-    the `AdmissionPolicy` resources and interacts with the Chimera `policy-server`
+  * A Deployment of `kubewarden-controller`: this is the controller that monitors
+    the `AdmissionPolicy` resources and interacts with the Kubewarden `policy-server`
 
 ## Install
 
-The Chimera stack can be deployed using a helm chart:
+The Kubewarden stack can be deployed using a helm chart:
 
 ```console
-helm repo add chimera https://chimera-kube.github.io/helm-charts/
-helm install --namespace chimera --create-namespace chimera-controller chimera/chimera-controller
+helm repo add kubewarden https://kubewarden.github.io/helm-charts/
+helm install --namespace kubewarden --create-namespace kubewarden-controller kubewarden/kubewarden-controller
 ```
 
-This will install `chimera-controller` on the Kubernetes cluster in the default
+This will install `kubewarden-controller` on the Kubernetes cluster in the default
 configuration and will register the `AdmissionPolicy` Custom Resource. The
-components of the Chimera stack will be deployed inside of a Kubernetes
-Namespace called `chimera`.
+components of the Kubewarden stack will be deployed inside of a Kubernetes
+Namespace called `kubewarden`.
 
 The default configuration values should be good enough for the majority of
-deployments, all the options are documented [here](https://chimera-kube.github.io/helm-charts/#configuration).
+deployments, all the options are documented [here](https://kubewarden.github.io/helm-charts/#configuration).
 
-The Chimera Policy Server is completely managed by the chimera-controller.
+The Kubewarden Policy Server is completely managed by the kubewarden-controller.
 
-## Chimera Policies
+## Kubewarden Policies
 
 Enforcing policies is by far the most common operation a Kubernetes
 administrator will perform. You can declare as many policies as you want,
 targeting any kind of Kubernetes resource and type of operation that can be
 done against them.
 
-The `AdmissionPolicy` resource is the core of the Chimera stack: this is
+The `AdmissionPolicy` resource is the core of the Kubewarden stack: this is
 how validating policies are defined.
 
 ```yaml
-apiVersion: chimera.suse.com/v1alpha1
+apiVersion: kubewarden.io/v1alpha1
 kind: AdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
   resources:
   - pods
   operations:
@@ -57,7 +57,7 @@ spec:
 
 This is a quick overview of the attributes of the `AdmissionPolicy` resource:
 
-* `module`: this is the location of the Chimera policy, several schemas are
+* `module`: this is the location of the Kubewarden policy, several schemas are
   supported.
   * `registry`: download from an [OCI artifacts](https://github.com/opencontainers/artifacts)
     compliant container registry
@@ -77,9 +77,9 @@ This is a quick overview of the attributes of the `AdmissionPolicy` resource:
   The default behaviour is `Fail`.
 
 The complete documentation of this Custom Resource can be found
-[here](https://github.com/chimera-kube/chimera-controller/blob/main/docs/crds/README.asciidoc)
+[here](https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc)
 or on
-[docs.crds.dev](https://doc.crds.dev/github.com/chimera-kube/chimera-controller).
+[docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
 
 > **NOTE:** Admission policies are registered with a `*` webhook
 > `scope`, which means that registered webhooks will be forwarded all
@@ -92,7 +92,7 @@ or on
 
 ## Enforce your first policy
 
-We will use the [`pod-privileged` policy](https://github.com/chimera-kube/pod-privileged-policy).
+We will use the [`pod-privileged` policy](https://github.com/kubewarden/pod-privileged-policy).
 This policy regulates who can create privileged containers inside of a Kubernetes cluster.
 Only a chosen set of users, or groups of users, will be granted the ability to
 create privileged containers.
@@ -102,12 +102,12 @@ Let's define a `AdmissionPolicy` that allows only the members of the
 
 ```console
 kubectl apply -f - <<EOF
-apiVersion: chimera.suse.com/v1alpha1
+apiVersion: kubewarden.io/v1alpha1
 kind: AdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
   resources:
   - pods
   operations:
@@ -121,11 +121,11 @@ EOF
 
 This will produce the following output:
 ```console
-admissionpolicy.chimera.suse.com/privileged-pods created
+admissionpolicy.kubewarden.io/privileged-pods created
 ```
 
-Defining the `AdmissionPolicy` will lead to a rollout of the Chimera Policy
-Server Deployment. Once the new policy is ready to be served, the `chimera-controller`
+Defining the `AdmissionPolicy` will lead to a rollout of the Kubewarden Policy
+Server Deployment. Once the new policy is ready to be served, the `kubewarden-controller`
 will register a [ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io)
 object.
 
@@ -180,7 +180,7 @@ EOF
 This time the creation of the Pod will be blocked, with the following message:
 
 ```console
-Error from server: error when creating "STDIN": admission webhook "privileged-pods.chimera.admission" denied the request: User 'minikube-user' cannot schedule privileged containers
+Error from server: error when creating "STDIN": admission webhook "privileged-pods.kubewarden.admission" denied the request: User 'minikube-user' cannot schedule privileged containers
 ```
 
 Let's update the policy to allow our ourselves to create privileged containers.
@@ -188,12 +188,12 @@ Note well: our username was part of the previous failure message:
 
 ```console
 kubectl apply -f - <<EOF
-apiVersion: chimera.suse.com/v1alpha1
+apiVersion: kubewarden.io/v1alpha1
 kind: AdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
   resources:
   - pods
   operations:
@@ -242,39 +242,39 @@ As a first step remove all the `AdmissionPolicy` resources you have created.
 This can be done with the following command:
 
 ```shell
-kubectl delete --all admissionpolicies.chimera.suse.com
+kubectl delete --all admissionpolicies.kubewarden.io
 ```
 
-Then wait for the for the `chimera-controller` to remove all the
+Then wait for the for the `kubewarden-controller` to remove all the
 Kubernetes `ValidatingWebhookConfiguration` resources it created.
 
 This can be monitored with the following command:
 
 ```shell
-kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l "chimera"
+kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
 ```
 
 If these resources are not automatically removed, you can do
 remove them manually by using the following command:
 
 ```shell
-kubectl delete -l "chimera" validatingwebhookconfigurations.admissionregistration.k8s.io
+kubectl delete -l "kubewarden" validatingwebhookconfigurations.admissionregistration.k8s.io
 ```
 
 Finally you can uninstall the Helm chart:
 
 ```shell
-helm uninstall chimera-controller
+helm uninstall kubewarden-controller
 ```
 
 Once this is done you can remove the Kubernetes namespace that was used to deploy
-the Chimera stack:
+the Kubewarden stack:
 
 ```shell
-kubectl delete namespace chimera
+kubectl delete namespace kubewarden
 ```
 
-This will delete all the resources that were created at runtime by the `chimera-controller`,
+This will delete all the resources that were created at runtime by the `kubewarden-controller`,
 like the `policy-server` Deployment.
 
 
@@ -283,7 +283,7 @@ like the `policy-server` Deployment.
 > API server will continuously face timeout errors while trying to evaluate the
 > incoming requests.
 >
-> By default the `ValidatingWebhookConfiguration` created by Chimera have `policyFailure`
+> By default the `ValidatingWebhookConfiguration` created by Kubewarden have `policyFailure`
 > set to `Fail`, which will cause all these incoming requests to be rejected.
 > This could bring havoc on your cluster.
 
@@ -292,4 +292,4 @@ like the `policy-server` Deployment.
 As we have seen, the `AdmissionPolicy` resource is the core type that
 a cluster operator has to manage, the rest of the resources needed to
 run the policies and configure them will be taken care of
-automatically by the `chimera-controller` project.
+automatically by the `kubewarden-controller` project.

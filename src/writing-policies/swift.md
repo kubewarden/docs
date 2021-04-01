@@ -16,7 +16,7 @@ capability.
 
 The Swiftwasm team is also working to upstream all these changes into the
 Swift project. In the meantime the toolchain provided by the Swiftwasm project
-can be used to build Chimera policies.
+can be used to build Kubewarden policies.
 
 **Note well:** you don't need an Apple system to write or run Swift code. Everything
 can be done also on a Linux machine or on Windows (by using Docker for Windows).
@@ -42,8 +42,8 @@ policy *"in production"*:
 
 ## Example
 
-[This GitHub repository](https://github.com/chimera-kube/pod-runtime-class-policy)
-contains a Chimera Policy written in Swift.
+[This GitHub repository](https://github.com/kubewarden/pod-runtime-class-policy)
+contains a Kubewarden Policy written in Swift.
 
 The policy's `Makefile` has a `release` target that takes care of the
 optimizations outlined above.

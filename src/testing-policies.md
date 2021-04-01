@@ -1,28 +1,28 @@
 # Testing Policies
 
-This section covers the topic of testing Chimera Policies. There are two possible
+This section covers the topic of testing Kubewarden Policies. There are two possible
 personas interested in testing policies:
 
-  * As a policy author: you're writing a Chimera Policy and you want to ensure
+  * As a policy author: you're writing a Kubewarden Policy and you want to ensure
     your code behaves the way you expect.
-  * As an end user: you found a Chimera Policy and you want to tune/test the policy
+  * As an end user: you found a Kubewarden Policy and you want to tune/test the policy
     settings before deploying it, maybe you want to keep testing these settings
     inside of your CI/CD pipelines,...
 
-# Chimera Policy authors
+# Kubewarden Policy authors
 
-Chimera Policies are regular programs compiled as WebAssembly. As with any kind
+Kubewarden Policies are regular programs compiled as WebAssembly. As with any kind
 of program, it's important to have a good test coverage.
 
 Policy authors can leverage the testing frameworks and tools of their language
 of choice to verify the behaviour of their policies.
 
-As an example, you can take a look at these Chimera policies:
+As an example, you can take a look at these Kubewarden policies:
 
-  * [pod-privileged-policy](https://github.com/chimera-kube/pod-privileged-policy): this
-    is a Chimera Policy written using [AssemblyScript](https://www.assemblyscript.org/).
-  * [pod-toleration-policy](https://github.com/chimera-kube/pod-toleration-policy): this
-    is a Chimera Policy written using [Rust](https://www.rust-lang.org/).
+  * [pod-privileged-policy](https://github.com/kubewarden/pod-privileged-policy): this
+    is a Kubewarden Policy written using [AssemblyScript](https://www.assemblyscript.org/).
+  * [pod-toleration-policy](https://github.com/kubewarden/pod-toleration-policy): this
+    is a Kubewarden Policy written using [Rust](https://www.rust-lang.org/).
 
 Both policies have integrated test suites built using the regular testing libraries
 of Rust and AssemblyScript.
@@ -32,11 +32,11 @@ Both projectes also rely on GitHub actions to implement their CI pipelines.
 # End users
 
 Aside from the approach of testing policy logic with the tools that
-your language toolchain already provides, Chimera has a dedicated
+your language toolchain already provides, Kubewarden has a dedicated
 project for testing policies:
-[`chimera-policy-testdrive`](https://github.com/chimera-kube/chimera-policy-testdrive).
+[`policy-testdrive`](https://github.com/kubewarden/policy-server/tree/main/crates/policy-testdrive).
 
-The concept of `chimera-policy-testdrive` is quite simple from a user
+The concept of `policy-testdrive` is quite simple from a user
 point of view. You have to provide:
 
 1. The Wasm file providing the policy to be tested. The file is specified through
@@ -50,19 +50,19 @@ point of view. You have to provide:
 
 ## Install
 
-You can install the `chimera-policy-testdrive` with Rust's `cargo`
+You can install the `policy-testdrive` with Rust's `cargo`
 package manager:
 
 ```console
-cargo install --git https://github.com/chimera-kube/chimera-policy-testdrive.git --branch main
+cargo install --git https://github.com/kubewarden/policy-server/crates/policy-testdrive.git --branch main
 ```
 
-You should now have a `chimera-policy-testdrive` executable in your
+You should now have a `policy-testdrive` executable in your
 `$PATH`:
 
 ```console
-$ which chimera-policy-testdrive
-~/.cargo/bin/chimera-policy-testdrive
+$ which policy-testdrive
+~/.cargo/bin/policy-testdrive
 ```
 
 ## Quickstart
@@ -70,23 +70,23 @@ $ which chimera-policy-testdrive
 ### Prerequisites
 
 We will use [`wasm-to-oci`](https://github.com/engineerd/wasm-to-oci)
-to download a Chimera Policy published on a Container registry.
+to download a Kubewarden Policy published on a Container registry.
 
 Pre-built binaries of `wasm-to-oci`can be downloaded from the project's
 [GitHub Releases page](https://github.com/engineerd/wasm-to-oci/releases).
 
-### Obtain a Chimera policy
+### Obtain a Kubewarden policy
 
 We will download the 
-[pod-privileged-policy](https://github.com/chimera-kube/pod-privileged-policy):
+[pod-privileged-policy](https://github.com/kubewarden/pod-privileged-policy):
 
 ```console
-wasm-to-oci pull ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+wasm-to-oci pull ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
 ```
 
 This will produce the following output:
 ```console
-INFO[0001] Pulled: ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+INFO[0001] Pulled: ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
 INFO[0001] Size: 21769
 INFO[0001] Digest: sha256:2d31248b45c51efbab5cb88b47ed5d6cff7611158591dbf8974e3c26589891f9
 ```
@@ -177,9 +177,9 @@ This request is coming from the very same user `alice` show before.
 
 ### Test the policy
 
-Now we can use `chimera-policy-testdrive` to test both requests:
+Now we can use `policy-testdrive` to test both requests:
 ```console
-chimera-policy-testdrive --policy module.wasm --request-file unprivileged-pod-req.json
+policy-testdrive --policy module.wasm --request-file unprivileged-pod-req.json
 ```
 
 The policy will accept the request and produce the following output:
@@ -189,7 +189,7 @@ ValidationResponse { accepted: true, message: Some(""), code: None }
 
 Whereas if we evaluate the privileged pod request:
 ```console
-chimera-policy-testdrive --policy module.wasm --request-file privileged-pod-req.json
+policy-testdrive --policy module.wasm --request-file privileged-pod-req.json
 ```
 
 The policy will reject the request and produce the following output:
@@ -198,14 +198,14 @@ ValidationResponse { accepted: false, message: Some("User \'alice\' cannot sched
 ```
 
 Both times we did a test drive of the policy **without** providing any kind of
-setting. As the [policy's documentation](https://github.com/chimera-kube/pod-privileged-policy#configuration)
+setting. As the [policy's documentation](https://github.com/kubewarden/pod-privileged-policy#configuration)
 states, this results in preventing all the users to create privileged Pods.
 
 We can change the default behaviour and allow members of the `devops-guild`
 group to create privileged Pods. This can be done by setting the `trusted_groups`
 value of the policy:
 ```console
-chimera-policy-testdrive --policy module.wasm \
+policy-testdrive --policy module.wasm \
   --request-file privileged-pod-req.json \
   --settings '{"trusted_groups": ["administrators", "devops-guild"]}'
 ```
@@ -220,11 +220,11 @@ a member of the `devops-guild` group.
 
 ## Wrapping up
 
-Testing Chimera Policies is extremely important.
+Testing Kubewarden Policies is extremely important.
 
-As a Chimera Policy author you can leverage the testing frameworks of your favorite
+As a Kubewarden Policy author you can leverage the testing frameworks of your favorite
 programming language and combine it with the CI systems of your choice to
 ensure your code behaves as expected.
 
-As a Chimera Policy end user you can use `chimera-policy-testdrive` to test
+As a Kubewarden Policy end user you can use `policy-testdrive` to test
 policies and their tuning outside of Kubernetes.

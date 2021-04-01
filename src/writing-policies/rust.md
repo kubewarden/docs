@@ -16,8 +16,8 @@ specification.
 
 ## Example
 
-[This GitHub repository](https://github.com/chimera-kube/pod-toleration-policy)
-contains a Chimera Policy written in Rust.
+[This GitHub repository](https://github.com/kubewarden/pod-toleration-policy)
+contains a Kubewarden Policy written in Rust.
 
 **Worth of note:** this repository has a series of GitHub Actions that automate
 the following tasks:

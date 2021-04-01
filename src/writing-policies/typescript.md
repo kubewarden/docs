@@ -22,7 +22,7 @@ leveraging the [as-wasi](https://github.com/jedisct1/as-wasi) project.
 ## Known limitations
 
 AssemblyScript provides all the capabilities required to
-write Chimera policies. The basic requirements of Chimera policies are outlined
+write Kubewarden policies. The basic requirements of Kubewarden policies are outlined
 [here](./index.md#recap).
 
 This is a quick schema of what works and what doesn't work with AssemblyScript
@@ -61,8 +61,8 @@ project.
 
 ## Example
 
-[This GitHub repository](https://github.com/chimera-kube/pod-privileged-policy)
-contains a Chimera Policy written in AssemblyScript.
+[This GitHub repository](https://github.com/kubewarden/pod-privileged-policy)
+contains a Kubewarden Policy written in AssemblyScript.
 
 **Worth of note:** this repository has a series of GitHub Actions that automate
 the following tasks:

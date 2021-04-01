@@ -16,7 +16,7 @@ not currently capable of producing Wasm modules targeting the WASI interface.
 [This upstream issue](https://github.com/golang/go/issues/31105) is tracking
 the evolution of this topic.
 
-Due to that, it's not possible to use the Go compiler to write Chimera policies.
+Due to that, it's not possible to use the Go compiler to write Kubewarden policies.
 
 # TinyGo
 
@@ -37,7 +37,7 @@ can produce Wasm modules targeting the WASI interface.
 ## Known limitations
 
 Currently TinyGo does not provide all the capabilities required to
-write Chimera policies. The basic requirements of Chimera policies are outlined
+write Kubewarden policies. The basic requirements of Kubewarden policies are outlined
 [here](./index.md#recap).
 
 This is a quick schema of what works and what doesn't work with TinyGo.
@@ -78,7 +78,7 @@ However, it's possible to use the [`github.com/buger/jsonparser`](https://github
 library with TinyGo. This allows to parse incoming JSON requests.
 
 The [`github.com/buger/jsonparser`](https://github.com/buger/jsonparser) library
-provides only JSON parsing capabilities.  Anyhow, a Chimera Policy has to write
+provides only JSON parsing capabilities.  Anyhow, a Kubewarden Policy has to write
 a JSON `ValidationResponse` response object to its STDOUT.
 Luckily, the [`ValidationResponse`](./index.md#the-validationresponse-object)
 object is trivial to produce, even without the help of a JSON library.
