@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Distributing Policies - Chimera Kubernetes Policy Engine</title>
+        <title>Distributing Policies - Kubewarden Kubernetes Policy Engine</title>
         
         
 
@@ -125,7 +125,7 @@
                         
                     </div>
 
-                    <h1 class="menu-title">Chimera Kubernetes Policy Engine</h1>
+                    <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
                         <a href="print.html" title="Print this book" aria-label="Print this book">
@@ -160,9 +160,9 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#distributing-policies" id="distributing-policies">Distributing Policies</a></h1>
-<p>Chimera policies are Wasm binaries that are evaluated by the
-Chimera Policy Server.</p>
-<p>The Chimera policy server can load policies from these
+<p>Kubewarden policies are Wasm binaries that are evaluated by the
+Kubewarden Policy Server.</p>
+<p>The Kubewarden policy server can load policies from these
 sources:</p>
 <ul>
 <li>Local filesystem</li>
@@ -171,7 +171,7 @@ sources:</p>
 and other container registries (GitHub container registry, Azure Container
 Registry, Amazon ECR, Google Container Registry, ...)</li>
 </ul>
-<p>We think distributing Chimera policies via a regular OCI compliant
+<p>We think distributing Kubewarden policies via a regular OCI compliant
 registry is the best choice. Container registries are basically a
 mandatory requirement for any Kubernetes cluster. Having a single
 place to store, and secure, all the artifacts required by a cluster
@@ -181,15 +181,15 @@ can be really handy.</p>
 specification allows to store any kind of binary blob inside of a
 regular OCI compliant container registry.</p>
 <p>The target OCI compliant registry <strong>must support artifacts</strong> in order
-to successfully push a Chimera Policy to it.</p>
+to successfully push a Kubewarden Policy to it.</p>
 <p>The <a href="https://github.com/engineerd/wasm-to-oci"><code>wasm-to-oci</code></a> command line tool
-can be used to push a Chimera Policy to an OCI compliant registry.</p>
+can be used to push a Kubewarden Policy to an OCI compliant registry.</p>
 <p>Pushing a policy can be done in this way:</p>
 <pre><code class="language-bash">$ wasm-to-oci push pod-runtime-class-policy.wasm \
-              &lt;oci-registry&gt;/chimera-policies/pod-runtime-class-policy:v0.0.1
+              &lt;oci-registry&gt;/kubewarden-policies/pod-runtime-class-policy:v0.0.1
 </code></pre>
-<p>The policy can then be referenced from the Chimera Policy Server as
-<code>registry://&lt;oci-registry&gt;/chimera-policies/pod-runtime-class-policy:v0.0.1</code>.</p>
+<p>The policy can then be referenced from the Kubewarden Policy Server as
+<code>registry://&lt;oci-registry&gt;/kubewarden-policies/pod-runtime-class-policy:v0.0.1</code>.</p>
 
                     </main>
 

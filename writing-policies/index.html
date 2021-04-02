@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Writing Policies - Chimera Kubernetes Policy Engine</title>
+        <title>Writing Policies - Kubewarden Kubernetes Policy Engine</title>
         
         
 
@@ -125,7 +125,7 @@
                         
                     </div>
 
-                    <h1 class="menu-title">Chimera Kubernetes Policy Engine</h1>
+                    <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -160,14 +160,14 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#writing-policies" id="writing-policies">Writing Policies</a></h1>
-<p>Chimera policies can be written using any kind of language capable of building
+<p>Kubewarden policies can be written using any kind of language capable of building
 <a href="https://webassembly.org/">Wasm</a> binaries and that supports <a href="https://github.com/wapc">waPC</a> guest SDK.</p>
 <blockquote>
-<p><strong>Note well:</strong> currently Chimera supports only Validating Admission Webhooks,
+<p><strong>Note well:</strong> currently Kubewarden supports only Validating Admission Webhooks,
 Mutating ones are not yet implemented.</p>
 </blockquote>
 <h2><a class="header" href="#writing-a-validation-policy" id="writing-a-validation-policy">Writing a validation policy</a></h2>
-<p>The Chimera policy server receives
+<p>The Kubewarden policy server receives
 <a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionReview"><code>AdmissionReview</code></a>
 objects from the Kubernetes API server. It then forwards the value of
 the <code>request</code> (of type

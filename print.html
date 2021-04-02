@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Chimera Kubernetes Policy Engine</title>
+        <title>Kubewarden Kubernetes Policy Engine</title>
         
         <meta name="robots" content="noindex" />
         
@@ -127,7 +127,7 @@
                         
                     </div>
 
-                    <h1 class="menu-title">Chimera Kubernetes Policy Engine</h1>
+                    <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
                         <a href="print.html" title="Print this book" aria-label="Print this book">
@@ -162,11 +162,11 @@
                 <div id="content" class="content">
                     <main>
                         <blockquote>
-<p><strong>WARNING:</strong> Chimera is in early development stage, it's not production ready.</p>
+<p><strong>WARNING:</strong> Kubewarden is in early development stage, it's not production ready.</p>
 <p>Feedback is highly appreciated.</p>
 </blockquote>
 <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
-<p>Chimera is a <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Kubernetes Dynamic Admission
+<p>Kubewarden is a <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Kubernetes Dynamic Admission
 Controller</a>
 that validates incoming requests using policies written in
 WebAssembly.</p>
@@ -196,45 +196,45 @@ processor architecture and Operating System. A policy built on a Apple
 Silicon machine can be run on a x86_64 Linux server without any
 conversion.</p>
 <h2><a class="header" href="#policy-distribution" id="policy-distribution">Policy distribution</a></h2>
-<p>Chimera Policies can be served by a regular web server or, even
+<p>Kubewarden Policies can be served by a regular web server or, even
 better, can be published inside of an OCI compliant registry.</p>
-<p>Chimera Policies can be stored inside of an OCI compliant registry as
+<p>Kubewarden Policies can be stored inside of an OCI compliant registry as
 <a href="https://github.com/opencontainers/artifacts">OCI artifacts</a>.</p>
 <h1><a class="header" href="#quick-start" id="quick-start">Quick Start</a></h1>
-<p>The Chimera stack is made of the following components:</p>
+<p>The Kubewarden stack is made of the following components:</p>
 <ul>
 <li>An arbitrary number of <code>AdmissionPolicy</code> resources: this is how policies
 are defined inside of Kubernetes</li>
-<li>A Deployment of Chimera <code>policy-server</code>: this component loads all the
+<li>A Deployment of Kubewarden <code>policy-server</code>: this component loads all the
 policies defined by the administrators and evaluates them</li>
-<li>A Deployment of <code>chimera-controller</code>: this is the controller that monitors
-the <code>AdmissionPolicy</code> resources and interacts with the Chimera <code>policy-server</code></li>
+<li>A Deployment of <code>kubewarden-controller</code>: this is the controller that monitors
+the <code>AdmissionPolicy</code> resources and interacts with the Kubewarden <code>policy-server</code></li>
 </ul>
 <h2><a class="header" href="#install" id="install">Install</a></h2>
-<p>The Chimera stack can be deployed using a helm chart:</p>
-<pre><code class="language-console">helm repo add chimera https://chimera-kube.github.io/helm-charts/
-helm install --namespace chimera --create-namespace chimera-controller chimera/chimera-controller
+<p>The Kubewarden stack can be deployed using a helm chart:</p>
+<pre><code class="language-console">helm repo add kubewarden https://kubewarden.github.io/helm-charts/
+helm install --namespace kubewarden --create-namespace kubewarden-controller kubewarden/kubewarden-controller
 </code></pre>
-<p>This will install <code>chimera-controller</code> on the Kubernetes cluster in the default
+<p>This will install <code>kubewarden-controller</code> on the Kubernetes cluster in the default
 configuration and will register the <code>AdmissionPolicy</code> Custom Resource. The
-components of the Chimera stack will be deployed inside of a Kubernetes
-Namespace called <code>chimera</code>.</p>
+components of the Kubewarden stack will be deployed inside of a Kubernetes
+Namespace called <code>kubewarden</code>.</p>
 <p>The default configuration values should be good enough for the majority of
-deployments, all the options are documented <a href="https://chimera-kube.github.io/helm-charts/#configuration">here</a>.</p>
-<p>The Chimera Policy Server is completely managed by the chimera-controller.</p>
-<h2><a class="header" href="#chimera-policies" id="chimera-policies">Chimera Policies</a></h2>
+deployments, all the options are documented <a href="https://kubewarden.github.io/helm-charts/#configuration">here</a>.</p>
+<p>The Kubewarden Policy Server is completely managed by the kubewarden-controller.</p>
+<h2><a class="header" href="#kubewarden-policies" id="kubewarden-policies">Kubewarden Policies</a></h2>
 <p>Enforcing policies is by far the most common operation a Kubernetes
 administrator will perform. You can declare as many policies as you want,
 targeting any kind of Kubernetes resource and type of operation that can be
 done against them.</p>
-<p>The <code>AdmissionPolicy</code> resource is the core of the Chimera stack: this is
+<p>The <code>AdmissionPolicy</code> resource is the core of the Kubewarden stack: this is
 how validating policies are defined.</p>
-<pre><code class="language-yaml">apiVersion: chimera.suse.com/v1alpha1
+<pre><code class="language-yaml">apiVersion: kubewarden.io/v1alpha1
 kind: AdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
   resources:
   - pods
   operations:
@@ -246,7 +246,7 @@ spec:
 </code></pre>
 <p>This is a quick overview of the attributes of the <code>AdmissionPolicy</code> resource:</p>
 <ul>
-<li><code>module</code>: this is the location of the Chimera policy, several schemas are
+<li><code>module</code>: this is the location of the Kubewarden policy, several schemas are
 supported.
 <ul>
 <li><code>registry</code>: download from an <a href="https://github.com/opencontainers/artifacts">OCI artifacts</a>
@@ -269,9 +269,9 @@ admission to fail and the API request to be rejected.
 The default behaviour is <code>Fail</code>.</li>
 </ul>
 <p>The complete documentation of this Custom Resource can be found
-<a href="https://github.com/chimera-kube/chimera-controller/blob/main/docs/crds/README.asciidoc">here</a>
+<a href="https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc">here</a>
 or on
-<a href="https://doc.crds.dev/github.com/chimera-kube/chimera-controller">docs.crds.dev</a>.</p>
+<a href="https://doc.crds.dev/github.com/kubewarden/kubewarden-controller">docs.crds.dev</a>.</p>
 <blockquote>
 <p><strong>NOTE:</strong> Admission policies are registered with a <code>*</code> webhook
 <code>scope</code>, which means that registered webhooks will be forwarded all
@@ -284,19 +284,19 @@ plans to also provide a namespaced version that will only impact
 registered namespaced resources on its own namespace.</p>
 </blockquote>
 <h2><a class="header" href="#enforce-your-first-policy" id="enforce-your-first-policy">Enforce your first policy</a></h2>
-<p>We will use the <a href="https://github.com/chimera-kube/pod-privileged-policy"><code>pod-privileged</code> policy</a>.
+<p>We will use the <a href="https://github.com/kubewarden/pod-privileged-policy"><code>pod-privileged</code> policy</a>.
 This policy regulates who can create privileged containers inside of a Kubernetes cluster.
 Only a chosen set of users, or groups of users, will be granted the ability to
 create privileged containers.</p>
 <p>Let's define a <code>AdmissionPolicy</code> that allows only the members of the
 <code>the_trusted_ones</code> group to create privileged containers:</p>
 <pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
-apiVersion: chimera.suse.com/v1alpha1
+apiVersion: kubewarden.io/v1alpha1
 kind: AdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
   resources:
   - pods
   operations:
@@ -308,10 +308,10 @@ spec:
 EOF
 </code></pre>
 <p>This will produce the following output:</p>
-<pre><code class="language-console">admissionpolicy.chimera.suse.com/privileged-pods created
+<pre><code class="language-console">admissionpolicy.kubewarden.io/privileged-pods created
 </code></pre>
-<p>Defining the <code>AdmissionPolicy</code> will lead to a rollout of the Chimera Policy
-Server Deployment. Once the new policy is ready to be served, the <code>chimera-controller</code>
+<p>Defining the <code>AdmissionPolicy</code> will lead to a rollout of the Kubewarden Policy
+Server Deployment. Once the new policy is ready to be served, the <code>kubewarden-controller</code>
 will register a <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io">ValidatingWebhookConfiguration</a>
 object.</p>
 <p>Once all the instances of <code>policy-server</code> are ready, the
@@ -351,17 +351,17 @@ spec:
 EOF
 </code></pre>
 <p>This time the creation of the Pod will be blocked, with the following message:</p>
-<pre><code class="language-console">Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;privileged-pods.chimera.admission&quot; denied the request: User 'minikube-user' cannot schedule privileged containers
+<pre><code class="language-console">Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;privileged-pods.kubewarden.admission&quot; denied the request: User 'minikube-user' cannot schedule privileged containers
 </code></pre>
 <p>Let's update the policy to allow our ourselves to create privileged containers.
 Note well: our username was part of the previous failure message:</p>
 <pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
-apiVersion: chimera.suse.com/v1alpha1
+apiVersion: kubewarden.io/v1alpha1
 kind: AdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
   resources:
   - pods
   operations:
@@ -397,32 +397,32 @@ EOF
 <h2><a class="header" href="#uninstall" id="uninstall">Uninstall</a></h2>
 <p>As a first step remove all the <code>AdmissionPolicy</code> resources you have created.
 This can be done with the following command:</p>
-<pre><code class="language-shell">kubectl delete --all admissionpolicies.chimera.suse.com
+<pre><code class="language-shell">kubectl delete --all admissionpolicies.kubewarden.io
 </code></pre>
-<p>Then wait for the for the <code>chimera-controller</code> to remove all the
+<p>Then wait for the for the <code>kubewarden-controller</code> to remove all the
 Kubernetes <code>ValidatingWebhookConfiguration</code> resources it created.</p>
 <p>This can be monitored with the following command:</p>
-<pre><code class="language-shell">kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l &quot;chimera&quot;
+<pre><code class="language-shell">kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l &quot;kubewarden&quot;
 </code></pre>
 <p>If these resources are not automatically removed, you can do
 remove them manually by using the following command:</p>
-<pre><code class="language-shell">kubectl delete -l &quot;chimera&quot; validatingwebhookconfigurations.admissionregistration.k8s.io
+<pre><code class="language-shell">kubectl delete -l &quot;kubewarden&quot; validatingwebhookconfigurations.admissionregistration.k8s.io
 </code></pre>
 <p>Finally you can uninstall the Helm chart:</p>
-<pre><code class="language-shell">helm uninstall chimera-controller
+<pre><code class="language-shell">helm uninstall kubewarden-controller
 </code></pre>
 <p>Once this is done you can remove the Kubernetes namespace that was used to deploy
-the Chimera stack:</p>
-<pre><code class="language-shell">kubectl delete namespace chimera
+the Kubewarden stack:</p>
+<pre><code class="language-shell">kubectl delete namespace kubewarden
 </code></pre>
-<p>This will delete all the resources that were created at runtime by the <code>chimera-controller</code>,
+<p>This will delete all the resources that were created at runtime by the <code>kubewarden-controller</code>,
 like the <code>policy-server</code> Deployment.</p>
 <blockquote>
 <p><strong>Note well:</strong> it's extremely important to remove the <code>ValidatingWebhookConfiguration</code>
 resources <strong>before</strong> the <code>policy-server</code> Deployment. Otherwise the Kubernetes
 API server will continuously face timeout errors while trying to evaluate the
 incoming requests.</p>
-<p>By default the <code>ValidatingWebhookConfiguration</code> created by Chimera have <code>policyFailure</code>
+<p>By default the <code>ValidatingWebhookConfiguration</code> created by Kubewarden have <code>policyFailure</code>
 set to <code>Fail</code>, which will cause all these incoming requests to be rejected.
 This could bring havoc on your cluster.</p>
 </blockquote>
@@ -430,38 +430,38 @@ This could bring havoc on your cluster.</p>
 <p>As we have seen, the <code>AdmissionPolicy</code> resource is the core type that
 a cluster operator has to manage, the rest of the resources needed to
 run the policies and configure them will be taken care of
-automatically by the <code>chimera-controller</code> project.</p>
+automatically by the <code>kubewarden-controller</code> project.</p>
 <h1><a class="header" href="#testing-policies" id="testing-policies">Testing Policies</a></h1>
-<p>This section covers the topic of testing Chimera Policies. There are two possible
+<p>This section covers the topic of testing Kubewarden Policies. There are two possible
 personas interested in testing policies:</p>
 <ul>
-<li>As a policy author: you're writing a Chimera Policy and you want to ensure
+<li>As a policy author: you're writing a Kubewarden Policy and you want to ensure
 your code behaves the way you expect.</li>
-<li>As an end user: you found a Chimera Policy and you want to tune/test the policy
+<li>As an end user: you found a Kubewarden Policy and you want to tune/test the policy
 settings before deploying it, maybe you want to keep testing these settings
 inside of your CI/CD pipelines,...</li>
 </ul>
-<h1><a class="header" href="#chimera-policy-authors" id="chimera-policy-authors">Chimera Policy authors</a></h1>
-<p>Chimera Policies are regular programs compiled as WebAssembly. As with any kind
+<h1><a class="header" href="#kubewarden-policy-authors" id="kubewarden-policy-authors">Kubewarden Policy authors</a></h1>
+<p>Kubewarden Policies are regular programs compiled as WebAssembly. As with any kind
 of program, it's important to have a good test coverage.</p>
 <p>Policy authors can leverage the testing frameworks and tools of their language
 of choice to verify the behaviour of their policies.</p>
-<p>As an example, you can take a look at these Chimera policies:</p>
+<p>As an example, you can take a look at these Kubewarden policies:</p>
 <ul>
-<li><a href="https://github.com/chimera-kube/pod-privileged-policy">pod-privileged-policy</a>: this
-is a Chimera Policy written using <a href="https://www.assemblyscript.org/">AssemblyScript</a>.</li>
-<li><a href="https://github.com/chimera-kube/pod-toleration-policy">pod-toleration-policy</a>: this
-is a Chimera Policy written using <a href="https://www.rust-lang.org/">Rust</a>.</li>
+<li><a href="https://github.com/kubewarden/pod-privileged-policy">pod-privileged-policy</a>: this
+is a Kubewarden Policy written using <a href="https://www.assemblyscript.org/">AssemblyScript</a>.</li>
+<li><a href="https://github.com/kubewarden/pod-toleration-policy">pod-toleration-policy</a>: this
+is a Kubewarden Policy written using <a href="https://www.rust-lang.org/">Rust</a>.</li>
 </ul>
 <p>Both policies have integrated test suites built using the regular testing libraries
 of Rust and AssemblyScript.</p>
 <p>Both projectes also rely on GitHub actions to implement their CI pipelines.</p>
 <h1><a class="header" href="#end-users" id="end-users">End users</a></h1>
 <p>Aside from the approach of testing policy logic with the tools that
-your language toolchain already provides, Chimera has a dedicated
+your language toolchain already provides, Kubewarden has a dedicated
 project for testing policies:
-<a href="https://github.com/chimera-kube/chimera-policy-testdrive"><code>chimera-policy-testdrive</code></a>.</p>
-<p>The concept of <code>chimera-policy-testdrive</code> is quite simple from a user
+<a href="https://github.com/kubewarden/policy-server/tree/main/crates/policy-testdrive"><code>policy-testdrive</code></a>.</p>
+<p>The concept of <code>policy-testdrive</code> is quite simple from a user
 point of view. You have to provide:</p>
 <ol>
 <li>The Wasm file providing the policy to be tested. The file is specified through
@@ -473,28 +473,28 @@ the policy. This is provided via the <code>--request-file</code> argument.</li>
 via <code>--settings</code> flag. The flag takes a JSON blob as parameter.</li>
 </ol>
 <h2><a class="header" href="#install-1" id="install-1">Install</a></h2>
-<p>You can install the <code>chimera-policy-testdrive</code> with Rust's <code>cargo</code>
+<p>You can install the <code>policy-testdrive</code> with Rust's <code>cargo</code>
 package manager:</p>
-<pre><code class="language-console">cargo install --git https://github.com/chimera-kube/chimera-policy-testdrive.git --branch main
+<pre><code class="language-console">cargo install --git https://github.com/kubewarden/policy-server/crates/policy-testdrive.git --branch main
 </code></pre>
-<p>You should now have a <code>chimera-policy-testdrive</code> executable in your
+<p>You should now have a <code>policy-testdrive</code> executable in your
 <code>$PATH</code>:</p>
-<pre><code class="language-console">$ which chimera-policy-testdrive
-~/.cargo/bin/chimera-policy-testdrive
+<pre><code class="language-console">$ which policy-testdrive
+~/.cargo/bin/policy-testdrive
 </code></pre>
 <h2><a class="header" href="#quickstart" id="quickstart">Quickstart</a></h2>
 <h3><a class="header" href="#prerequisites" id="prerequisites">Prerequisites</a></h3>
 <p>We will use <a href="https://github.com/engineerd/wasm-to-oci"><code>wasm-to-oci</code></a>
-to download a Chimera Policy published on a Container registry.</p>
+to download a Kubewarden Policy published on a Container registry.</p>
 <p>Pre-built binaries of <code>wasm-to-oci</code>can be downloaded from the project's
 <a href="https://github.com/engineerd/wasm-to-oci/releases">GitHub Releases page</a>.</p>
-<h3><a class="header" href="#obtain-a-chimera-policy" id="obtain-a-chimera-policy">Obtain a Chimera policy</a></h3>
+<h3><a class="header" href="#obtain-a-kubewarden-policy" id="obtain-a-kubewarden-policy">Obtain a Kubewarden policy</a></h3>
 <p>We will download the 
-<a href="https://github.com/chimera-kube/pod-privileged-policy">pod-privileged-policy</a>:</p>
-<pre><code class="language-console">wasm-to-oci pull ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+<a href="https://github.com/kubewarden/pod-privileged-policy">pod-privileged-policy</a>:</p>
+<pre><code class="language-console">wasm-to-oci pull ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
 </code></pre>
 <p>This will produce the following output:</p>
-<pre><code class="language-console">INFO[0001] Pulled: ghcr.io/chimera-kube/policies/pod-privileged:v0.1.1
+<pre><code class="language-console">INFO[0001] Pulled: ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
 INFO[0001] Size: 21769
 INFO[0001] Digest: sha256:2d31248b45c51efbab5cb88b47ed5d6cff7611158591dbf8974e3c26589891f9
 </code></pre>
@@ -572,25 +572,25 @@ contents:</p>
 only the fields that are relevant to our policy.</p>
 </blockquote>
 <h3><a class="header" href="#test-the-policy" id="test-the-policy">Test the policy</a></h3>
-<p>Now we can use <code>chimera-policy-testdrive</code> to test both requests:</p>
-<pre><code class="language-console">chimera-policy-testdrive --policy module.wasm --request-file unprivileged-pod-req.json
+<p>Now we can use <code>policy-testdrive</code> to test both requests:</p>
+<pre><code class="language-console">policy-testdrive --policy module.wasm --request-file unprivileged-pod-req.json
 </code></pre>
 <p>The policy will accept the request and produce the following output:</p>
 <pre><code class="language-console">ValidationResponse { accepted: true, message: Some(&quot;&quot;), code: None }
 </code></pre>
 <p>Whereas if we evaluate the privileged pod request:</p>
-<pre><code class="language-console">chimera-policy-testdrive --policy module.wasm --request-file privileged-pod-req.json
+<pre><code class="language-console">policy-testdrive --policy module.wasm --request-file privileged-pod-req.json
 </code></pre>
 <p>The policy will reject the request and produce the following output:</p>
 <pre><code class="language-console">ValidationResponse { accepted: false, message: Some(&quot;User \'alice\' cannot schedule privileged containers&quot;), code: None }
 </code></pre>
 <p>Both times we did a test drive of the policy <strong>without</strong> providing any kind of
-setting. As the <a href="https://github.com/chimera-kube/pod-privileged-policy#configuration">policy's documentation</a>
+setting. As the <a href="https://github.com/kubewarden/pod-privileged-policy#configuration">policy's documentation</a>
 states, this results in preventing all the users to create privileged Pods.</p>
 <p>We can change the default behaviour and allow members of the <code>devops-guild</code>
 group to create privileged Pods. This can be done by setting the <code>trusted_groups</code>
 value of the policy:</p>
-<pre><code class="language-console">chimera-policy-testdrive --policy module.wasm \
+<pre><code class="language-console">policy-testdrive --policy module.wasm \
   --request-file privileged-pod-req.json \
   --settings '{&quot;trusted_groups&quot;: [&quot;administrators&quot;, &quot;devops-guild&quot;]}'
 </code></pre>
@@ -600,21 +600,21 @@ value of the policy:</p>
 <p>That happens because the request is coming from the user <code>alice</code>, who is
 a member of the <code>devops-guild</code> group.</p>
 <h2><a class="header" href="#wrapping-up-1" id="wrapping-up-1">Wrapping up</a></h2>
-<p>Testing Chimera Policies is extremely important.</p>
-<p>As a Chimera Policy author you can leverage the testing frameworks of your favorite
+<p>Testing Kubewarden Policies is extremely important.</p>
+<p>As a Kubewarden Policy author you can leverage the testing frameworks of your favorite
 programming language and combine it with the CI systems of your choice to
 ensure your code behaves as expected.</p>
-<p>As a Chimera Policy end user you can use <code>chimera-policy-testdrive</code> to test
+<p>As a Kubewarden Policy end user you can use <code>policy-testdrive</code> to test
 policies and their tuning outside of Kubernetes.</p>
 <h1><a class="header" href="#writing-policies" id="writing-policies">Writing Policies</a></h1>
-<p>Chimera policies can be written using any kind of language capable of building
+<p>Kubewarden policies can be written using any kind of language capable of building
 <a href="https://webassembly.org/">Wasm</a> binaries and that supports <a href="https://github.com/wapc">waPC</a> guest SDK.</p>
 <blockquote>
-<p><strong>Note well:</strong> currently Chimera supports only Validating Admission Webhooks,
+<p><strong>Note well:</strong> currently Kubewarden supports only Validating Admission Webhooks,
 Mutating ones are not yet implemented.</p>
 </blockquote>
 <h2><a class="header" href="#writing-a-validation-policy" id="writing-a-validation-policy">Writing a validation policy</a></h2>
-<p>The Chimera policy server receives
+<p>The Kubewarden policy server receives
 <a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionReview"><code>AdmissionReview</code></a>
 objects from the Kubernetes API server. It then forwards the value of
 the <code>request</code> (of type
@@ -672,9 +672,9 @@ nice overview.</p>
 on the <a href="https://github.com/wapc?q=guest&amp;type=&amp;language=">official github
 group</a>.</p>
 <h1><a class="header" href="#distributing-policies" id="distributing-policies">Distributing Policies</a></h1>
-<p>Chimera policies are Wasm binaries that are evaluated by the
-Chimera Policy Server.</p>
-<p>The Chimera policy server can load policies from these
+<p>Kubewarden policies are Wasm binaries that are evaluated by the
+Kubewarden Policy Server.</p>
+<p>The Kubewarden policy server can load policies from these
 sources:</p>
 <ul>
 <li>Local filesystem</li>
@@ -683,7 +683,7 @@ sources:</p>
 and other container registries (GitHub container registry, Azure Container
 Registry, Amazon ECR, Google Container Registry, ...)</li>
 </ul>
-<p>We think distributing Chimera policies via a regular OCI compliant
+<p>We think distributing Kubewarden policies via a regular OCI compliant
 registry is the best choice. Container registries are basically a
 mandatory requirement for any Kubernetes cluster. Having a single
 place to store, and secure, all the artifacts required by a cluster
@@ -693,15 +693,15 @@ can be really handy.</p>
 specification allows to store any kind of binary blob inside of a
 regular OCI compliant container registry.</p>
 <p>The target OCI compliant registry <strong>must support artifacts</strong> in order
-to successfully push a Chimera Policy to it.</p>
+to successfully push a Kubewarden Policy to it.</p>
 <p>The <a href="https://github.com/engineerd/wasm-to-oci"><code>wasm-to-oci</code></a> command line tool
-can be used to push a Chimera Policy to an OCI compliant registry.</p>
+can be used to push a Kubewarden Policy to an OCI compliant registry.</p>
 <p>Pushing a policy can be done in this way:</p>
 <pre><code class="language-bash">$ wasm-to-oci push pod-runtime-class-policy.wasm \
-              &lt;oci-registry&gt;/chimera-policies/pod-runtime-class-policy:v0.0.1
+              &lt;oci-registry&gt;/kubewarden-policies/pod-runtime-class-policy:v0.0.1
 </code></pre>
-<p>The policy can then be referenced from the Chimera Policy Server as
-<code>registry://&lt;oci-registry&gt;/chimera-policies/pod-runtime-class-policy:v0.0.1</code>.</p>
+<p>The policy can then be referenced from the Kubewarden Policy Server as
+<code>registry://&lt;oci-registry&gt;/kubewarden-policies/pod-runtime-class-policy:v0.0.1</code>.</p>
 
                     </main>
 
