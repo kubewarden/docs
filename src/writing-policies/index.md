@@ -1,14 +1,14 @@
 # Writing Policies
 
-Chimera policies can be written using any kind of language capable of building
+Kubewarden policies can be written using any kind of language capable of building
 [Wasm](https://webassembly.org/) binaries and that supports [waPC](https://github.com/wapc) guest SDK.
 
-> **Note well:** currently Chimera supports only Validating Admission Webhooks,
+> **Note well:** currently Kubewarden supports only Validating Admission Webhooks,
 > Mutating ones are not yet implemented.
 
 ## Writing a validation policy
 
-The Chimera policy server receives
+The Kubewarden policy server receives
 [`AdmissionReview`](https://godoc.org/k8s.io/api/admission/v1#AdmissionReview)
 objects from the Kubernetes API server. It then forwards the value of
 the `request` (of type

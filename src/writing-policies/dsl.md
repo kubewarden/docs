@@ -2,7 +2,7 @@
 
 # Domain Specific Language
 
-Being able to write Chimera policies using regular programming languages provides
+Being able to write Kubewarden policies using regular programming languages provides
 many advantages, however in certain cases this could be a bit of an overkill.
 Simple policies could be written in an easier way using a domain-specific
 language.
@@ -14,6 +14,6 @@ about domain-specific languages:
 > particular application domain.
 
 We plan to provide a simple DSL that can be built as a Wasm module.
-This would allow the Chimera admission controller to use policies written
+This would allow the Kubewarden admission controller to use policies written
 using regular programming languages **and** policies written a simpler DSL
 language.
