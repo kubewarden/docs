@@ -1,12 +1,65 @@
-# Writing Policies
+# What is a Kubewarden policy
 
-Kubewarden policies can be written using any kind of language capable of building
-[Wasm](https://webassembly.org/) binaries and that supports [waPC](https://github.com/wapc) guest SDK.
+In this section we will explain what Kubewarden policies are by using some traditional computing
+analogies.
 
-> **Note well:** currently Kubewarden supports only Validating Admission Webhooks,
-> Mutating ones are not yet implemented.
+A Kubewarden policy can be seen as a regular program that does one job: it receives
+input data, performs some computation against that and it finally returns a response.
 
-## Writing a validation policy
+The input data are Kubernetes admission requests and the result of the computation
+is a validation response, something that tells to Kubernetes whether to accept, reject or
+mutate the original input data.
+
+All these operations are performed by a component of Kubewarden that is called
+[policy-server](https://github.com/kubewarden/policy-server).
+
+The policy server doesn't bundle any data processing capability. All these capabilities are
+added at runtime via add-ons: the Kubewarden policies.
+
+As a consequence, a Kubewarden policy can be seen as a [traditional plug-in](https://en.wikipedia.org/wiki/Plug-in_%28computing%29)
+of the "policy server" program.
+
+To recap:
+
+  * Kubewarden policies are plug-ins that expose a set of well-defined
+    functionalities (validate a Kubernetes request object, validate policy settings
+    provided by the user,...) using a well-defined API
+  * Policy server is the "main" program that loads the plug-ins
+    (aka policies) and leverages their exposed functionalities to validate or mutate
+    Kubernetes requests
+
+Writing Kubewarden policies consists of writing the validation business logic
+and then exposing it through a well-defined API.
+
+# Programming language requirements
+
+Kubewarden policies are delivered as [WebAssembly](https://webassembly.org/)
+binaries.
+
+Policy authors can write policies using any programming language that supports
+WebAssembly as a compilation target. The list of supported language is constantly
+evolving, [this page](https://github.com/appcypher/awesome-wasm-langs)
+provides a nice overview of the WebAssembly landscape.
+
+Currently WebAssembly doesn't have an official way to share complex data types
+between the host and a WebAssembly guest. To overcome this limitation
+Kubewarden policies leverage the [waPC](https://github.com/wapc) project, which
+provides a bi-directional communication channel.
+
+Because of that your programming language of choice must provide a waPC guest SDK.
+If that's not the case, feel free to reach out. We can help you overcome this
+limitation.
+
+# Policy API
+
+The policy evaluator interacts with Kubewarden policies using a well defined API.
+The purpose of this page is to document the API each policy must expose.
+
+> **Note well:** this section of the documentation is a bit low level, you can
+> jump straight to one of the "language focused" chapters and come back to this
+> page later.
+
+## The `validate` entry point
 
 The Kubewarden policy server receives
 [`AdmissionReview`](https://godoc.org/k8s.io/api/admission/v1#AdmissionReview)
@@ -24,31 +77,38 @@ a function named `validate`, exposed through the waPC guest SDK, so
 that the `policy-server` (waPC host) can invoke it.
 
 The `validate` function receives a `ValidationRequest` object serialized as JSON and
-returns a `ValidationResponse` object serialized as JSON. 
+returns a `ValidationResponse` object serialized as JSON.
 
 ### The `ValidationRequest` object
 
-The `ValidationRequest` is a simple JSON object that looks like that:
+The `ValidationRequest` is a simple JSON object that is received by the
+`validate` function. It looks like this:
 
 ```json
 {
-  "request": <AdmissionReview.request data>
+  "request": <AdmissionReview.request data>,
   "settings": {
      // your policy configuration
   }
 }
 ```
 
+The `settings` key points to a free-form JSON document that can hold the policy
+specific settings.
+
 ### The `ValidationResponse` object
 
-The `ValidationResponse` object is a simple JSON object like the
-following:
+The `validate` function returns the outcome of its validation using a `ValidationResponse`
+object.
+
+The `ValidationResponse` is structured in the following way:
 
 ```json
 {
-  "accepted": <boolean>, // mandatory
-  "message": <string>,   // optional, ignored if accepted - recommended for rejections
-  "code": <integer>      // optional, ignored if accepted
+  "accepted": <boolean>,   // mandatory
+  "message": <string>,     // optional, ignored if accepted - recommended for rejections
+  "code": <integer>,        // optional, ignored if accepted
+  "mutated_object": <dict> // optional, used by mutation policies
 }
 ```
 
@@ -65,21 +125,35 @@ accepted, the Kubernetes API server will forward this information as
 part of the body of the error returned to the Kubernetes API server
 client that issued the rejected request.
 
+The `mutated_object` is an optional field used only by mutating policies.
+This field contains the object the policy wants to be created inside of the
+Kubernetes cluster.
+For example, given a policy that mutates Pod objects, the `mutated_object` would
+contain the full spec of a Pod.
 
-## Supported lanauges
+## The `validate_settings` entry point
 
-Languages currently exposing a waPC guest SDK are:
+Policy behaviour can be tuned using runtime configurations. As described above, the configuration
+parameters are sent inside of each `validate` invocation via the `settings` dictionary.
 
-- [AssemblyScript](https://github.com/wapc/as-guest)
-- [Rust](https://github.com/wapc/wapc-guest-rust)
-- [TinyGo](https://github.com/wapc/wapc-guest-tinygo)
-- [Zig](https://github.com/wapc/wapc-guest-zig)
-- [Swift](https://github.com/flavio/wapc-guest-swift)
+Some policies might want to validate the settings a user provides to ensure they are correct.
+This is done with the `validate_settings` function.
 
-The list of languages that can produce Wasm modules is continuously evolving.
-[This page](https://github.com/appcypher/awesome-wasm-langs) provides a
-nice overview.
+The `validate_settings` function receives as input a JSON representation of the settings
+provided by the user. The function validates them and returns as a response a `SettingsValidationResponse`
+object.
 
-It's possible to check what languages support waPC guest by searching
-on the [official github
-group](https://github.com/wapc?q=guest&type=&language=).
+The structure of the object is the following one:
+
+```json
+{
+  "valid": <boolean>,  // mandatory
+  "message": <string>, // optional, ignored if accepted - recommended for rejections
+}
+```
+
+If the user provided settings are `valid`, the contents of `message` are ignored. Otherwise
+the contents of `message` are shown to the user.
+
+Kubewarden's policy server validates all the policy settings provided by users at start time.
+It will exit immediately with an error if one or more of its policies received wrong configuration parameters.
