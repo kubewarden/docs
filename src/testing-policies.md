@@ -21,13 +21,13 @@ As an example, you can take a look at these Kubewarden policies:
 
   * [pod-privileged-policy](https://github.com/kubewarden/pod-privileged-policy): this
     is a Kubewarden Policy written using [AssemblyScript](https://www.assemblyscript.org/).
-  * [pod-toleration-policy](https://github.com/kubewarden/pod-toleration-policy): this
+  * [psp-apparmor](https://github.com/kubewarden/psp-apparmor): this
     is a Kubewarden Policy written using [Rust](https://www.rust-lang.org/).
 
 Both policies have integrated test suites built using the regular testing libraries
 of Rust and AssemblyScript.
 
-Both projectes also rely on GitHub actions to implement their CI pipelines.
+Finally, both projects rely on GitHub actions to implement their CI pipelines.
 
 # End users
 
@@ -50,20 +50,8 @@ point of view. You have to provide:
 
 ## Install
 
-You can install the `policy-testdrive` with Rust's `cargo`
-package manager:
-
-```console
-cargo install --git https://github.com/kubewarden/policy-server/crates/policy-testdrive.git --branch main
-```
-
-You should now have a `policy-testdrive` executable in your
-`$PATH`:
-
-```console
-$ which policy-testdrive
-~/.cargo/bin/policy-testdrive
-```
+You can download pre-built binaries of `policy-testdrive`
+from [here](https://github.com/kubewarden/policy-server/releases).
 
 ## Quickstart
 
@@ -77,28 +65,28 @@ Pre-built binaries of `wasm-to-oci`can be downloaded from the project's
 
 ### Obtain a Kubewarden policy
 
-We will download the 
-[pod-privileged-policy](https://github.com/kubewarden/pod-privileged-policy):
+We will download the
+[psp-apparmor](https://github.com/kubewarden/psp-apparmor) policy:
 
 ```console
-wasm-to-oci pull ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
+wasm-to-oci pull ghcr.io/kubewarden/policies/psp-apparmor:v0.1.2
 ```
 
 This will produce the following output:
 ```console
-INFO[0001] Pulled: ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
-INFO[0001] Size: 21769
-INFO[0001] Digest: sha256:2d31248b45c51efbab5cb88b47ed5d6cff7611158591dbf8974e3c26589891f9
+INFO[0001] Pulled: ghcr.io/kubewarden/policies/psp-apparmor:v0.1.2 
+INFO[0001] Size: 2682915
+INFO[0001] Digest: sha256:5532a49834af8cc929994a65c0881190ef168295fffd2bed4e7325d2e91484b5 
 ```
 
-This should have created a `module.wasm` file in the current directoy.
+This should have created a `module.wasm` file in the current directory.
 
 ### Create `AdmissionReview` requests
 
 We have to create some files holding the `AdmissionReview` objects that
 will be evaluated by the policy.
 
-Let's create a file named `unprivileged-pod-req.json` with the following
+Let's create a file named `pod-req-no-specific-apparmor-profile.json` with the following
 contents:
 
 ```json
@@ -109,13 +97,13 @@ contents:
   },
   "object": {
     "metadata": {
-      "name": "unprivileged-pod"
+      "name": "no-apparmor"
     },
     "spec": {
       "containers": [
         {
           "image": "nginx",
-          "name": "unprivileged-container"
+          "name": "nginx"
         }
       ]
     }
@@ -125,17 +113,17 @@ contents:
   "userInfo": {
     "username": "alice",
     "uid": "alice-uid",
-    "groups": ["system:authenticated", "devops-guild", "agile-guild"]
+    "groups": ["system:authenticated"]
   }
 }
 ```
 
-This request has been made by the user `alice` who belongs to the following
-groups: `system:authenticated`, `devops-guild` and `agile-guild`.
-All these informations can be found inside of the `userInfo` map.
+This request tries to create a Pod that doesn't specify any AppArmor
+profile to be used, that's because it doesn't have an `annotation` with the
+`container.apparmor.security.beta.kubernetes.io/<name of the container>`
+key.
 
-
-Let's create a file named `privileged-pod-req.json` with the following
+Let's create a file named `pod-req-apparmor-unconfined.json` with the following
 contents:
 
 ```json
@@ -146,16 +134,16 @@ contents:
   },
   "object": {
     "metadata": {
-      "name": "privileged-pod"
+      "name": "privileged-pod",
+      "annotations": {
+        "container.apparmor.security.beta.kubernetes.io/nginx": "unconfined"
+      }
     },
     "spec": {
       "containers": [
         {
           "image": "nginx",
-          "name": "privileged-container",
-          "securityContext": {
-            "privileged": true
-          }
+          "name": "nginx"
         }
       ]
     }
@@ -165,58 +153,110 @@ contents:
   "userInfo": {
     "username": "alice",
     "uid": "alice-uid",
-    "groups": ["system:authenticated", "devops-guild", "agile-guild"]
+    "groups": ["system:authenticated"]
   }
 }
 ```
 
-This request is coming from the very same user `alice` show before.
+This request tries to create a Pod with a container called `nginx` that is going
+to be run with the `unconfined` AppArmor profile. This is considered a bad
+security practice.
+
+Finally, let's create a file named `pod-req-apparmor-custom.json` with the following
+contents:
+
+```json
+{
+  "kind": {
+    "kind": "Pod",
+    "version": "v1"
+  },
+  "object": {
+    "metadata": {
+      "name": "privileged-pod",
+      "annotations": {
+        "container.apparmor.security.beta.kubernetes.io/nginx": "localhost/nginx-custom"
+      }
+    },
+    "spec": {
+      "containers": [
+        {
+          "image": "nginx",
+          "name": "nginx"
+        }
+      ]
+    }
+  },
+  "operation": "CREATE",
+  "requestKind": {"version": "v1", "kind": "Pod"},
+  "userInfo": {
+    "username": "alice",
+    "uid": "alice-uid",
+    "groups": ["system:authenticated"]
+  }
+}
+```
+
+This request tries to create a Pod with a container called `nginx` that is going
+to be run with the profile provided by the administrators of the Kubernetes cluster.
+This profile is called `nginx-custom`.
 
 > **Note well:** these are stripped down `AdmissionReview` objects, we left
 > only the fields that are relevant to our policy.
 
 ### Test the policy
 
-Now we can use `policy-testdrive` to test both requests:
+Now we can use `policy-testdrive` to test the creation of a Pod that doesn't
+specify an AppArmor profile:
 ```console
-policy-testdrive --policy module.wasm --request-file unprivileged-pod-req.json
+policy-testdrive --policy module.wasm --request-file pod-req-no-specific-apparmor-profile.json
 ```
 
 The policy will accept the request and produce the following output:
 ```console
-ValidationResponse { accepted: true, message: Some(""), code: None }
+Settings validation result: SettingsValidationResponse { valid: true, message: None }
+Policy evaluation results:
+ValidationResponse { uid: "", allowed: true, patch_type: None, patch: None, status: None }
 ```
 
-Whereas if we evaluate the privileged pod request:
+The policy will instead reject the creation of a Pod with an `unconfined` AppArmor
+profile:
 ```console
-policy-testdrive --policy module.wasm --request-file privileged-pod-req.json
-```
+$ policy-testdrive --policy module.wasm --request-file pod-req-apparmor-unconfined.json
 
-The policy will reject the request and produce the following output:
-```console
-ValidationResponse { accepted: false, message: Some("User \'alice\' cannot schedule privileged containers"), code: None }
+Settings validation result: SettingsValidationResponse { valid: true, message: None }
+Policy evaluation results:
+ValidationResponse { uid: "", allowed: false, patch_type: None, patch: None, status: Some(ValidationResponseStatus { message: Some("These AppArmor profiles are not allowed: [\"unconfined\"]"), code: None }) }
 ```
 
 Both times we did a test drive of the policy **without** providing any kind of
-setting. As the [policy's documentation](https://github.com/kubewarden/pod-privileged-policy#configuration)
-states, this results in preventing all the users to create privileged Pods.
+setting. As the [policy's documentation](https://github.com/kubewarden/psp-apparmor#configuration)
+states, this results in preventing the usage of non-default profiles.
 
-We can change the default behaviour and allow members of the `devops-guild`
-group to create privileged Pods. This can be done by setting the `trusted_groups`
-value of the policy:
+As a matter of fact, the Pod using a custom `nginx` profile gets rejected by
+the policy too:
+
+```console
+$ policy-testdrive --policy module.wasm --request-file pod-req-apparmor-custom.json 
+
+Settings validation result: SettingsValidationResponse { valid: true, message: None }
+Policy evaluation results:
+ValidationResponse { uid: "", allowed: false, patch_type: None, patch: None, status: Some(ValidationResponseStatus { message: Some("These AppArmor profiles are not allowed: [\"localhost/nginx-custom\"]"), code: None }) }
+```
+
+We can change the default behaviour and allow some chosen AppArmor to be used:
 ```console
 policy-testdrive --policy module.wasm \
-  --request-file privileged-pod-req.json \
-  --settings '{"trusted_groups": ["administrators", "devops-guild"]}'
+  --request-file pod-req-apparmor-custom.json \
+  --settings '{"allowed_profiles": ["runtime/default", "localhost/nginx-custom"]}'
 ```
 
 This time the request is accepted:
 ```console
-ValidationResponse { accepted: true, message: Some(""), code: None }
+Settings validation result: SettingsValidationResponse { valid: true, message: None }
+Policy evaluation results:
+ValidationResponse { uid: "", allowed: true, patch_type: None, patch: None, status: None }
 ```
-
-That happens because the request is coming from the user `alice`, who is
-a member of the `devops-guild` group.
 
 ## Wrapping up
 
