@@ -203,7 +203,7 @@ better, can be published inside of an OCI compliant registry.</p>
 <h1><a class="header" href="#quick-start" id="quick-start">Quick Start</a></h1>
 <p>The Kubewarden stack is made of the following components:</p>
 <ul>
-<li>An arbitrary number of <code>ClusterAdmissionPolicy</code> resources: this is how policies
+<li>An arbitrary number of <code>AdmissionPolicy</code> resources: this is how policies
 are defined inside of Kubernetes</li>
 <li>A Deployment of Kubewarden <code>policy-server</code>: this component loads all the
 policies defined by the administrators and evaluates them</li>
@@ -212,7 +212,7 @@ the <code>AdmissionPolicy</code> resources and interacts with the Kubewarden <co
 </ul>
 <h2><a class="header" href="#install" id="install">Install</a></h2>
 <p>The Kubewarden stack can be deployed using a helm chart:</p>
-<pre><code class="language-console">helm repo add kubewarden https://charts.kubewarden.io
+<pre><code class="language-console">helm repo add kubewarden https://kubewarden.github.io/helm-charts/
 helm install --namespace kubewarden --create-namespace kubewarden-controller kubewarden/kubewarden-controller
 </code></pre>
 <p>This will install <code>kubewarden-controller</code> on the Kubernetes cluster in the default
@@ -220,34 +220,31 @@ configuration and will register the <code>AdmissionPolicy</code> Custom Resource
 components of the Kubewarden stack will be deployed inside of a Kubernetes
 Namespace called <code>kubewarden</code>.</p>
 <p>The default configuration values should be good enough for the majority of
-deployments, all the options are documented <a href="https://charts.kubewarden.io/#configuration">here</a>.</p>
+deployments, all the options are documented <a href="https://kubewarden.github.io/helm-charts/#configuration">here</a>.</p>
 <p>The Kubewarden Policy Server is completely managed by the kubewarden-controller.</p>
 <h2><a class="header" href="#kubewarden-policies" id="kubewarden-policies">Kubewarden Policies</a></h2>
 <p>Enforcing policies is by far the most common operation a Kubernetes
 administrator will perform. You can declare as many policies as you want,
 targeting any kind of Kubernetes resource and type of operation that can be
 done against them.</p>
-<p>The <code>ClusterAdmissionPolicy</code> resource is the core of the Kubewarden stack: this is
+<p>The <code>AdmissionPolicy</code> resource is the core of the Kubewarden stack: this is
 how validating policies are defined.</p>
 <pre><code class="language-yaml">apiVersion: kubewarden.io/v1alpha1
-kind: ClusterAdmissionPolicy
+kind: AdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/kubewarden/policies/psp-capabilities:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
   resources:
   - pods
   operations:
   - CREATE
   - UPDATE
-  mutating: true
   settings:
-    allowed_capabilities:
-    - CHOWN
-    required_drop_capabilities:
-    - NET_ADMIN
+    trusted_users:
+    - alice
 </code></pre>
-<p>This is a quick overview of the attributes of the <code>ClusterAdmissionPolicy</code> resource:</p>
+<p>This is a quick overview of the attributes of the <code>AdmissionPolicy</code> resource:</p>
 <ul>
 <li><code>module</code>: this is the location of the Kubewarden policy, several schemas are
 supported.
@@ -262,8 +259,6 @@ compliant container registry</li>
 <li><code>operations</code>: what operations for the previously given types should
 be forwarded to this admission policy by the API server for
 evaluation.</li>
-<li><code>mutating</code>: a boolean value that must be set to <code>true</code> for policies that can
-mutate incoming requests.</li>
 <li><code>settings</code> (optional): a free-form object that contains the policy
 configuration values.</li>
 <li><code>failurePolicy</code> (optional): how unrecognized errors and timeout errors from
@@ -278,23 +273,26 @@ The default behaviour is <code>Fail</code>.</li>
 or on
 <a href="https://doc.crds.dev/github.com/kubewarden/kubewarden-controller">docs.crds.dev</a>.</p>
 <blockquote>
-<p><strong>NOTE:</strong> ClusterAdmissionPolicy resources are registered with a <code>*</code> webhook
+<p><strong>NOTE:</strong> Admission policies are registered with a <code>*</code> webhook
 <code>scope</code>, which means that registered webhooks will be forwarded all
 requests matching the given <code>resources</code> and <code>operations</code> -- either
 namespaced (in any namespace), or cluster-wide resources.</p>
 </blockquote>
 <blockquote>
-<p><strong>NOTE:</strong> The <code>ClusterAdmissionPolicy</code> resource is cluster-wide. There are
+<p><strong>NOTE:</strong> The <code>AdmissionPolicy</code> resource is cluster-wide. There are
 plans to also provide a namespaced version that will only impact
 registered namespaced resources on its own namespace.</p>
 </blockquote>
 <h2><a class="header" href="#enforce-your-first-policy" id="enforce-your-first-policy">Enforce your first policy</a></h2>
 <p>We will use the <a href="https://github.com/kubewarden/pod-privileged-policy"><code>pod-privileged</code> policy</a>.
-This policy prevents the creation of privileged containers inside of a Kubernetes cluster.</p>
-<p>Let's define a <code>ClusterAdmissionPolicy</code> for that:</p>
+This policy regulates who can create privileged containers inside of a Kubernetes cluster.
+Only a chosen set of users, or groups of users, will be granted the ability to
+create privileged containers.</p>
+<p>Let's define a <code>AdmissionPolicy</code> that allows only the members of the
+<code>the_trusted_ones</code> group to create privileged containers:</p>
 <pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
 apiVersion: kubewarden.io/v1alpha1
-kind: ClusterAdmissionPolicy
+kind: AdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
@@ -304,12 +302,15 @@ spec:
   operations:
   - CREATE
   - UPDATE
+  settings:
+    trusted_groups:
+    - the_trusted_ones
 EOF
 </code></pre>
 <p>This will produce the following output:</p>
-<pre><code class="language-console">clusteradmissionpolicy.kubewarden.io/privileged-pods created
+<pre><code class="language-console">admissionpolicy.kubewarden.io/privileged-pods created
 </code></pre>
-<p>Defining the <code>ClusterAdmissionPolicy</code> will lead to a rollout of the Kubewarden Policy
+<p>Defining the <code>AdmissionPolicy</code> will lead to a rollout of the Kubewarden Policy
 Server Deployment. Once the new policy is ready to be served, the <code>kubewarden-controller</code>
 will register a <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io">ValidatingWebhookConfiguration</a>
 object.</p>
@@ -352,22 +353,60 @@ EOF
 <p>This time the creation of the Pod will be blocked, with the following message:</p>
 <pre><code class="language-console">Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;privileged-pods.kubewarden.admission&quot; denied the request: User 'minikube-user' cannot schedule privileged containers
 </code></pre>
+<p>Let's update the policy to allow our ourselves to create privileged containers.
+Note well: our username was part of the previous failure message:</p>
+<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+apiVersion: kubewarden.io/v1alpha1
+kind: AdmissionPolicy
+metadata:
+  name: privileged-pods
+spec:
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
+  resources:
+  - pods
+  operations:
+  - CREATE
+  - UPDATE
+  settings:
+    trusted_users:
+    - minikube-user # replace that with your username
+    trusted_groups:
+    - the_trusted_ones
+EOF
+</code></pre>
+<p>Let's wait for the Policy Server to be redeployed using the new policy configuration:</p>
+<pre><code class="language-console">kubectl rollout status deployment policy-server
+</code></pre>
+<p>Once this is done we can try again:</p>
+<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: privileged-pod
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+      securityContext:
+          privileged: true
+EOF
+</code></pre>
+<p>This time the Pod creation will succeed:</p>
+<pre><code class="language-console">pod/privileged-pod created
+</code></pre>
 <h2><a class="header" href="#uninstall" id="uninstall">Uninstall</a></h2>
-<p>As a first step remove all the <code>ClusterAdmissionPolicy</code> resources you have created.
+<p>As a first step remove all the <code>AdmissionPolicy</code> resources you have created.
 This can be done with the following command:</p>
-<pre><code class="language-shell">kubectl delete --all clusteradmissionpolicies.kubewarden.io
+<pre><code class="language-shell">kubectl delete --all admissionpolicies.kubewarden.io
 </code></pre>
 <p>Then wait for the for the <code>kubewarden-controller</code> to remove all the
-Kubernetes <code>ValidatingWebhookConfiguration</code> and the <code>MutatingWebhookConfiguration</code>
-resources it created.</p>
+Kubernetes <code>ValidatingWebhookConfiguration</code> resources it created.</p>
 <p>This can be monitored with the following command:</p>
-<pre><code class="language-shell">kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l &quot;kubewarden&quot; &amp;&amp; \
-kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io -l &quot;kubewarden&quot;
+<pre><code class="language-shell">kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l &quot;kubewarden&quot;
 </code></pre>
 <p>If these resources are not automatically removed, you can do
 remove them manually by using the following command:</p>
-<pre><code class="language-shell">kubectl delete -l &quot;kubewarden&quot; validatingwebhookconfigurations.admissionregistration.k8s.io &amp;&amp; \
-kubectl delete -l &quot;kubewarden&quot; mutatingwebhookconfigurations.admissionregistration.k8s.io
+<pre><code class="language-shell">kubectl delete -l &quot;kubewarden&quot; validatingwebhookconfigurations.admissionregistration.k8s.io
 </code></pre>
 <p>Finally you can uninstall the Helm chart:</p>
 <pre><code class="language-shell">helm uninstall kubewarden-controller
@@ -380,17 +419,15 @@ the Kubewarden stack:</p>
 like the <code>policy-server</code> Deployment.</p>
 <blockquote>
 <p><strong>Note well:</strong> it's extremely important to remove the <code>ValidatingWebhookConfiguration</code>
-and <code>MutatingWebhookConfiguration</code> resources <strong>before</strong> the
-<code>policy-server</code> Deployment. Otherwise the Kubernetes
+resources <strong>before</strong> the <code>policy-server</code> Deployment. Otherwise the Kubernetes
 API server will continuously face timeout errors while trying to evaluate the
 incoming requests.</p>
-<p>By default the <code>ValidatingWebhookConfiguration</code> and <code>MutatingWebhookConfiguration</code>
-resources created by Kubewarden have <code>policyFailure</code>
-set to <code>Fail</code>, which will cause all these incoming requests to be rejected.</p>
-<p><strong>This could bring havoc on your cluster.</strong></p>
+<p>By default the <code>ValidatingWebhookConfiguration</code> created by Kubewarden have <code>policyFailure</code>
+set to <code>Fail</code>, which will cause all these incoming requests to be rejected.
+This could bring havoc on your cluster.</p>
 </blockquote>
 <h2><a class="header" href="#wrapping-up" id="wrapping-up">Wrapping up</a></h2>
-<p>As we have seen, the <code>ClusterAdmissionPolicy</code> resource is the core type that
+<p>As we have seen, the <code>AdmissionPolicy</code> resource is the core type that
 a cluster operator has to manage, the rest of the resources needed to
 run the policies and configure them will be taken care of
 automatically by the <code>kubewarden-controller</code> project.</p>
