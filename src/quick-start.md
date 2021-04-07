@@ -123,7 +123,7 @@ This will produce the following output:
 clusteradmissionpolicy.kubewarden.io/privileged-pods created
 ```
 
-Defining the `AdmissionPolicy` will lead to a rollout of the Kubewarden Policy
+Defining the `ClusterAdmissionPolicy` will lead to a rollout of the Kubewarden Policy
 Server Deployment. Once the new policy is ready to be served, the `kubewarden-controller`
 will register a [ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io)
 object.
