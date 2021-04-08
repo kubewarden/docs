@@ -1,8 +1,13 @@
 [book]
-authors = ["Flavio Castelli"]
+title = "Kubewarden Kubernetes Policy Engine"
+description = "Documentation of Kubewarden project"
+authors = ["Flavio Castelli", "Rafael Fernández López"]
 language = "en"
 multilingual = false
 src = "src"
-title = "Kubewarden Kubernetes Policy Engine"
-git-repository-url = "https://github.com/kubewarden/kubewarden-book"
+
+
+[output.html]
+git-repository-url = "https://github.com/kubewarden/docs"
 site-url = "/"
+cname = "docs.kubewarden.io"
