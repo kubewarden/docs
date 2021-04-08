@@ -42,7 +42,7 @@ how validating policies are defined.
 apiVersion: policies.kubewarden.io/v1alpha1
 kind: ClusterAdmissionPolicy
 metadata:
-  name: privileged-pods
+  name: psp-capabilities
 spec:
   module: registry://ghcr.io/kubewarden/policies/psp-capabilities:v0.1.1
   resources:
