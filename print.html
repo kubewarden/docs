@@ -229,7 +229,7 @@ targeting any kind of Kubernetes resource and type of operation that can be
 done against them.</p>
 <p>The <code>ClusterAdmissionPolicy</code> resource is the core of the Kubewarden stack: this is
 how validating policies are defined.</p>
-<pre><code class="language-yaml">apiVersion: kubewarden.io/v1alpha1
+<pre><code class="language-yaml">apiVersion: policies.kubewarden.io/v1alpha1
 kind: ClusterAdmissionPolicy
 metadata:
   name: privileged-pods
@@ -293,21 +293,22 @@ registered namespaced resources on its own namespace.</p>
 This policy prevents the creation of privileged containers inside of a Kubernetes cluster.</p>
 <p>Let's define a <code>ClusterAdmissionPolicy</code> for that:</p>
 <pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
-apiVersion: kubewarden.io/v1alpha1
+apiVersion: policies.kubewarden.io/v1alpha1
 kind: ClusterAdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.4
   resources:
   - pods
   operations:
   - CREATE
   - UPDATE
+  mutating: false
 EOF
 </code></pre>
 <p>This will produce the following output:</p>
-<pre><code class="language-console">clusteradmissionpolicy.kubewarden.io/privileged-pods created
+<pre><code class="language-console">clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
 </code></pre>
 <p>Defining the <code>ClusterAdmissionPolicy</code> will lead to a rollout of the Kubewarden Policy
 Server Deployment. Once the new policy is ready to be served, the <code>kubewarden-controller</code>
@@ -355,7 +356,7 @@ EOF
 <h2><a class="header" href="#uninstall" id="uninstall">Uninstall</a></h2>
 <p>As a first step remove all the <code>ClusterAdmissionPolicy</code> resources you have created.
 This can be done with the following command:</p>
-<pre><code class="language-shell">kubectl delete --all clusteradmissionpolicies.kubewarden.io
+<pre><code class="language-shell">kubectl delete --all clusteradmissionpolicies.policies.kubewarden.io
 </code></pre>
 <p>Then wait for the for the <code>kubewarden-controller</code> to remove all the
 Kubernetes <code>ValidatingWebhookConfiguration</code> and the <code>MutatingWebhookConfiguration</code>
