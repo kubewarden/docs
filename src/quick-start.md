@@ -39,7 +39,7 @@ The `ClusterAdmissionPolicy` resource is the core of the Kubewarden stack: this 
 how validating policies are defined.
 
 ```yaml
-apiVersion: kubewarden.io/v1alpha1
+apiVersion: policies.kubewarden.io/v1alpha1
 kind: ClusterAdmissionPolicy
 metadata:
   name: privileged-pods
@@ -104,23 +104,24 @@ Let's define a `ClusterAdmissionPolicy` for that:
 
 ```console
 kubectl apply -f - <<EOF
-apiVersion: kubewarden.io/v1alpha1
+apiVersion: policies.kubewarden.io/v1alpha1
 kind: ClusterAdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.4
   resources:
   - pods
   operations:
   - CREATE
   - UPDATE
+  mutating: false
 EOF
 ```
 
 This will produce the following output:
 ```console
-clusteradmissionpolicy.kubewarden.io/privileged-pods created
+clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
 ```
 
 Defining the `ClusterAdmissionPolicy` will lead to a rollout of the Kubewarden Policy
@@ -188,7 +189,7 @@ As a first step remove all the `ClusterAdmissionPolicy` resources you have creat
 This can be done with the following command:
 
 ```shell
-kubectl delete --all clusteradmissionpolicies.kubewarden.io
+kubectl delete --all clusteradmissionpolicies.policies.kubewarden.io
 ```
 
 Then wait for the for the `kubewarden-controller` to remove all the
