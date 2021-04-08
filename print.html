@@ -569,14 +569,54 @@ programming language and combine it with the CI systems of your choice to
 ensure your code behaves as expected.</p>
 <p>As a Kubewarden Policy end user you can use <code>policy-testdrive</code> to test
 policies and their tuning outside of Kubernetes.</p>
-<h1><a class="header" href="#writing-policies" id="writing-policies">Writing Policies</a></h1>
-<p>Kubewarden policies can be written using any kind of language capable of building
-<a href="https://webassembly.org/">Wasm</a> binaries and that supports <a href="https://github.com/wapc">waPC</a> guest SDK.</p>
+<h1><a class="header" href="#what-is-a-kubewarden-policy" id="what-is-a-kubewarden-policy">What is a Kubewarden policy</a></h1>
+<p>In this section we will explain what Kubewarden policies are by using some traditional computing
+analogies.</p>
+<p>A Kubewarden policy can be seen as a regular program that does one job: it receives
+input data, performs some computation against that and it finally returns a response.</p>
+<p>The input data are Kubernetes admission requests and the result of the computation
+is a validation response, something that tells to Kubernetes whether to accept, reject or
+mutate the original input data.</p>
+<p>All these operations are performed by a component of Kubewarden that is called
+<a href="https://github.com/kubewarden/policy-server">policy-server</a>.</p>
+<p>The policy server doesn't bundle any data processing capability. All these capabilities are
+added at runtime via add-ons: the Kubewarden policies.</p>
+<p>As a consequence, a Kubewarden policy can be seen as a <a href="https://en.wikipedia.org/wiki/Plug-in_%28computing%29">traditional plug-in</a>
+of the &quot;policy server&quot; program.</p>
+<p>To recap:</p>
+<ul>
+<li>Kubewarden policies are plug-ins that expose a set of well-defined
+functionalities (validate a Kubernetes request object, validate policy settings
+provided by the user,...) using a well-defined API</li>
+<li>Policy server is the &quot;main&quot; program that loads the plug-ins
+(aka policies) and leverages their exposed functionalities to validate or mutate
+Kubernetes requests</li>
+</ul>
+<p>Writing Kubewarden policies consists of writing the validation business logic
+and then exposing it through a well-defined API.</p>
+<h1><a class="header" href="#programming-language-requirements" id="programming-language-requirements">Programming language requirements</a></h1>
+<p>Kubewarden policies are delivered as <a href="https://webassembly.org/">WebAssembly</a>
+binaries.</p>
+<p>Policy authors can write policies using any programming language that supports
+WebAssembly as a compilation target. The list of supported language is constantly
+evolving, <a href="https://github.com/appcypher/awesome-wasm-langs">this page</a>
+provides a nice overview of the WebAssembly landscape.</p>
+<p>Currently WebAssembly doesn't have an official way to share complex data types
+between the host and a WebAssembly guest. To overcome this limitation
+Kubewarden policies leverage the <a href="https://github.com/wapc">waPC</a> project, which
+provides a bi-directional communication channel.</p>
+<p>Because of that your programming language of choice must provide a waPC guest SDK.
+If that's not the case, feel free to reach out. We can help you overcome this
+limitation.</p>
+<h1><a class="header" href="#policy-api" id="policy-api">Policy API</a></h1>
+<p>The policy evaluator interacts with Kubewarden policies using a well defined API.
+The purpose of this page is to document the API each policy must expose.</p>
 <blockquote>
-<p><strong>Note well:</strong> currently Kubewarden supports only Validating Admission Webhooks,
-Mutating ones are not yet implemented.</p>
+<p><strong>Note well:</strong> this section of the documentation is a bit low level, you can
+jump straight to one of the &quot;language focused&quot; chapters and come back to this
+page later.</p>
 </blockquote>
-<h2><a class="header" href="#writing-a-validation-policy" id="writing-a-validation-policy">Writing a validation policy</a></h2>
+<h2><a class="header" href="#the-validate-entry-point" id="the-validate-entry-point">The <code>validate</code> entry point</a></h2>
 <p>The Kubewarden policy server receives
 <a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionReview"><code>AdmissionReview</code></a>
 objects from the Kubernetes API server. It then forwards the value of
@@ -590,23 +630,28 @@ explanation message that is going to be shown to the end user.</p>
 a function named <code>validate</code>, exposed through the waPC guest SDK, so
 that the <code>policy-server</code> (waPC host) can invoke it.</p>
 <p>The <code>validate</code> function receives a <code>ValidationRequest</code> object serialized as JSON and
-returns a <code>ValidationResponse</code> object serialized as JSON. </p>
+returns a <code>ValidationResponse</code> object serialized as JSON.</p>
 <h3><a class="header" href="#the-validationrequest-object" id="the-validationrequest-object">The <code>ValidationRequest</code> object</a></h3>
-<p>The <code>ValidationRequest</code> is a simple JSON object that looks like that:</p>
+<p>The <code>ValidationRequest</code> is a simple JSON object that is received by the
+<code>validate</code> function. It looks like this:</p>
 <pre><code class="language-json">{
-  &quot;request&quot;: &lt;AdmissionReview.request data&gt;
+  &quot;request&quot;: &lt;AdmissionReview.request data&gt;,
   &quot;settings&quot;: {
      // your policy configuration
   }
 }
 </code></pre>
+<p>The <code>settings</code> key points to a free-form JSON document that can hold the policy
+specific settings.</p>
 <h3><a class="header" href="#the-validationresponse-object" id="the-validationresponse-object">The <code>ValidationResponse</code> object</a></h3>
-<p>The <code>ValidationResponse</code> object is a simple JSON object like the
-following:</p>
+<p>The <code>validate</code> function returns the outcome of its validation using a <code>ValidationResponse</code>
+object.</p>
+<p>The <code>ValidationResponse</code> is structured in the following way:</p>
 <pre><code class="language-json">{
-  &quot;accepted&quot;: &lt;boolean&gt;, // mandatory
-  &quot;message&quot;: &lt;string&gt;,   // optional, ignored if accepted - recommended for rejections
-  &quot;code&quot;: &lt;integer&gt;      // optional, ignored if accepted
+  &quot;accepted&quot;: &lt;boolean&gt;,   // mandatory
+  &quot;message&quot;: &lt;string&gt;,     // optional, ignored if accepted - recommended for rejections
+  &quot;code&quot;: &lt;integer&gt;,        // optional, ignored if accepted
+  &quot;mutated_object&quot;: &lt;dict&gt; // optional, used by mutation policies
 }
 </code></pre>
 <p>The <code>message</code> and <code>code</code> attributes can be specified when the request
@@ -619,21 +664,29 @@ present.</p>
 accepted, the Kubernetes API server will forward this information as
 part of the body of the error returned to the Kubernetes API server
 client that issued the rejected request.</p>
-<h2><a class="header" href="#supported-lanauges" id="supported-lanauges">Supported lanauges</a></h2>
-<p>Languages currently exposing a waPC guest SDK are:</p>
-<ul>
-<li><a href="https://github.com/wapc/as-guest">AssemblyScript</a></li>
-<li><a href="https://github.com/wapc/wapc-guest-rust">Rust</a></li>
-<li><a href="https://github.com/wapc/wapc-guest-tinygo">TinyGo</a></li>
-<li><a href="https://github.com/wapc/wapc-guest-zig">Zig</a></li>
-<li><a href="https://github.com/flavio/wapc-guest-swift">Swift</a></li>
-</ul>
-<p>The list of languages that can produce Wasm modules is continuously evolving.
-<a href="https://github.com/appcypher/awesome-wasm-langs">This page</a> provides a
-nice overview.</p>
-<p>It's possible to check what languages support waPC guest by searching
-on the <a href="https://github.com/wapc?q=guest&amp;type=&amp;language=">official github
-group</a>.</p>
+<p>The <code>mutated_object</code> is an optional field used only by mutating policies.
+This field contains the object the policy wants to be created inside of the
+Kubernetes cluster.
+For example, given a policy that mutates Pod objects, the <code>mutated_object</code> would
+contain the full spec of a Pod.</p>
+<h2><a class="header" href="#the-validate_settings-entry-point" id="the-validate_settings-entry-point">The <code>validate_settings</code> entry point</a></h2>
+<p>Policy behaviour can be tuned using runtime configurations. As described above, the configuration
+parameters are sent inside of each <code>validate</code> invocation via the <code>settings</code> dictionary.</p>
+<p>Some policies might want to validate the settings a user provides to ensure they are correct.
+This is done with the <code>validate_settings</code> function.</p>
+<p>The <code>validate_settings</code> function receives as input a JSON representation of the settings
+provided by the user. The function validates them and returns as a response a <code>SettingsValidationResponse</code>
+object.</p>
+<p>The structure of the object is the following one:</p>
+<pre><code class="language-json">{
+  &quot;valid&quot;: &lt;boolean&gt;,  // mandatory
+  &quot;message&quot;: &lt;string&gt;, // optional, ignored if accepted - recommended for rejections
+}
+</code></pre>
+<p>If the user provided settings are <code>valid</code>, the contents of <code>message</code> are ignored. Otherwise
+the contents of <code>message</code> are shown to the user.</p>
+<p>Kubewarden's policy server validates all the policy settings provided by users at start time.
+It will exit immediately with an error if one or more of its policies received wrong configuration parameters.</p>
 <h1><a class="header" href="#distributing-policies" id="distributing-policies">Distributing Policies</a></h1>
 <p>Kubewarden policies are Wasm binaries that are evaluated by the
 Kubewarden Policy Server.</p>
