@@ -133,7 +133,7 @@ Once all the instances of `policy-server` are ready, the
 `ValidatingWebhookConfiguration` will be visible:
 
 ```console
-$ kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io
+$ kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kubewarden
 NAME              WEBHOOKS   AGE
 privileged-pods   1          9s
 ```
