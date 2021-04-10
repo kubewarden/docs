@@ -279,7 +279,7 @@ will register a <a href="https://kubernetes.io/docs/reference/generated/kubernet
 object.</p>
 <p>Once all the instances of <code>policy-server</code> are ready, the
 <code>ValidatingWebhookConfiguration</code> will be visible:</p>
-<pre><code class="language-console">$ kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io
+<pre><code class="language-console">$ kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kubewarden
 NAME              WEBHOOKS   AGE
 privileged-pods   1          9s
 </code></pre>
