@@ -102,7 +102,7 @@ This policy prevents the creation of privileged containers inside of a Kubernete
 
 Let's define a `ClusterAdmissionPolicy` for that:
 
-```console
+```shell
 kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1alpha1
 kind: ClusterAdmissionPolicy
@@ -120,9 +120,7 @@ EOF
 ```
 
 This will produce the following output:
-```console
-clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
-```
+`clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created`
 
 Defining the `ClusterAdmissionPolicy` will lead to a rollout of the Kubewarden Policy
 Server Deployment. Once the new policy is ready to be served, the `kubewarden-controller`
@@ -130,17 +128,22 @@ will register a [ValidatingWebhookConfiguration](https://kubernetes.io/docs/refe
 object.
 
 Once all the instances of `policy-server` are ready, the
-`ValidatingWebhookConfiguration` will be visible:
+`ValidatingWebhookConfiguration` can be shown with:
 
-```console
-$ kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kubewarden
+```shell
+kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kubewarden
+```
+
+Which will output something like
+
+```
 NAME              WEBHOOKS   AGE
 privileged-pods   1          9s
 ```
 
 Let's try to create a Pod with no privileged containers:
 
-```console
+```shell
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -156,13 +159,11 @@ EOF
 This will produce the following output, which means the Pod was successfully
 created:
 
-```console
-pod/unprivileged-pod created
-```
+`pod/unprivileged-pod created`
 
 Now, let's try to create a pod with at least one privileged container:
 
-```console
+```shell
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -179,7 +180,7 @@ EOF
 
 This time the creation of the Pod will be blocked, with the following message:
 
-```console
+```
 Error from server: error when creating "STDIN": admission webhook "privileged-pods.kubewarden.admission" denied the request: User 'minikube-user' cannot schedule privileged containers
 ```
 
