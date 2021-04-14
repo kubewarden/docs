@@ -12,3 +12,4 @@
   #- [Domain Specific Language](./writing-policies/dsl.md)
   #- [Other languages](./writing-policies/other-languages.md)
 - [Distributing Policies](./distributing-policies.md)
+- [Architecture](./architecture.md)
