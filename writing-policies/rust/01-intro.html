@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Create a new policy - Kubewarden Kubernetes Policy Engine</title>
+        <title>Rust - Kubewarden Kubernetes Policy Engine</title>
         
         
 
@@ -93,7 +93,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../../quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="../../testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="../../writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/rust/01-intro.html"><strong aria-hidden="true">4.1.</strong> Rust</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/rust/02-create-policy.html"><strong aria-hidden="true">4.1.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/03-define-policy-settings.html"><strong aria-hidden="true">4.1.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/04-write-validation-logic.html"><strong aria-hidden="true">4.1.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/05-mutation-policy.html"><strong aria-hidden="true">4.1.4.</strong> Write a mutation policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/06-build-and-distribute.html"><strong aria-hidden="true">4.1.5.</strong> Build and distribute</a></li></ol></li><li class="chapter-item expanded "><a href="../../writing-policies/go/01-intro.html"><strong aria-hidden="true">4.2.</strong> Go</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/go/02-scaffold.html" class="active"><strong aria-hidden="true">4.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/03-policy-settings.html"><strong aria-hidden="true">4.2.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/04-validation.html"><strong aria-hidden="true">4.2.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/05-e2e-tests.html"><strong aria-hidden="true">4.2.4.</strong> End-to-end testing</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/06-automate.html"><strong aria-hidden="true">4.2.5.</strong> GitHub Action integration</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/07-distribute.html"><strong aria-hidden="true">4.2.6.</strong> Distribute policy</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../../quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="../../testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="../../writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/rust/01-intro.html" class="active"><strong aria-hidden="true">4.1.</strong> Rust</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/rust/02-create-policy.html"><strong aria-hidden="true">4.1.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/03-define-policy-settings.html"><strong aria-hidden="true">4.1.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/04-write-validation-logic.html"><strong aria-hidden="true">4.1.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/05-mutation-policy.html"><strong aria-hidden="true">4.1.4.</strong> Write a mutation policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/06-build-and-distribute.html"><strong aria-hidden="true">4.1.5.</strong> Build and distribute</a></li></ol></li><li class="chapter-item expanded "><a href="../../writing-policies/go/01-intro.html"><strong aria-hidden="true">4.2.</strong> Go</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/go/02-scaffold.html"><strong aria-hidden="true">4.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/03-policy-settings.html"><strong aria-hidden="true">4.2.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/04-validation.html"><strong aria-hidden="true">4.2.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/05-e2e-tests.html"><strong aria-hidden="true">4.2.4.</strong> End-to-end testing</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/06-automate.html"><strong aria-hidden="true">4.2.5.</strong> GitHub Action integration</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/07-distribute.html"><strong aria-hidden="true">4.2.6.</strong> Distribute policy</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -163,62 +163,32 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#creating-a-new-validation-policy" id="creating-a-new-validation-policy">Creating a new validation policy</a></h1>
-<p>We are going to create a validation policy that validates the labels of generic Kubernetes
-objects.</p>
-<p>The policy will reject all the resources that use one or more labels on the deny list.
-The policy will also validate certain labels using a regular expression 
-provided by the user.</p>
-<p>To summarize, the policy settings will look like that:</p>
-<pre><code class="language-yaml"># List of labels that cannot be used
-denied_labels:
-- foo
-- bar
-
-# Labels that are validated with user-defined regular expressions
-constrained_labels:
-  priority: &quot;[123]&quot;
-  cost-center: &quot;^cc-\d+&quot;
+                        <h1><a class="header" href="#rust" id="rust">Rust</a></h1>
+<p><a href="https://www.rust-lang.org/">Rust</a> is the most mature programming language that
+can generate WebAssembly modules: WebAssembly is a first-class citizen
+in the Rust world. That means many of the tools and crates of the Rust
+ecosystem work out of the box.</p>
+<p>Kubewarden provides a <a href="https://crates.io/crates/kubewarden-policy-sdk">Rust SDK</a>
+that simplifies the process of writing policies, plus a
+<a href="https://github.com/kubewarden/policy-rust-template">template project</a> to
+quickly scaffold a policy project using the
+<a href="https://github.com/cargo-generate/cargo-generate"><code>cargo-generate</code></a> utility.</p>
+<p>This document illustrates how to take advantage of these projects to write
+Kubewarden policies using the Rust programming language.</p>
+<p>Note well, we won't cover the details of Kubewarden's Rust SDK inside of this
+page. These can be found inside of the
+<a href="https://docs.rs/kubewarden-policy-sdk/0.1.0">official crate documentation</a>.</p>
+<h2><a class="header" href="#getting-rust-dependencies" id="getting-rust-dependencies">Getting Rust dependencies</a></h2>
+<p>This section guides you through the process of installing the Rust compiler and
+its dependencies.</p>
+<p>As a first step install the Rust compiler and its tools, this can be easily done
+using <a href="https://github.com/rust-lang/rustup">rustup</a>. Please follow
+<a href="https://rust-lang.github.io/rustup/installation/index.html">rustup's install documentation</a>.</p>
+<p>Once <code>rustup</code> is installed add the Wasm target:</p>
+<pre><code class="language-shell">rustup target add wasm32-unknown-unknown
 </code></pre>
-<p>The policy would reject the creation of this Pod:</p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx
-  labels:
-    foo: hello world
-spec:
-  containers:
-    - name: nginx
-      image: nginx:latest
-</code></pre>
-<p>The policy would also reject the creation of this Pod:</p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx
-  labels:
-    cost-center: cc-marketing
-spec:
-  containers:
-    - name: nginx
-      image: nginx:latest
-</code></pre>
-<p>Policy's settings can also be used to force certain labels to be specified,
-regardless of their contents:</p>
-<pre><code class="language-yaml"># Policy's settings
-
-constrained_labels:
-  mandatory-label: &quot;.*&quot; # &lt;- this label must be present, we don't care about its value
-</code></pre>
-<h2><a class="header" href="#scaffolding-new-policy-project" id="scaffolding-new-policy-project">Scaffolding new policy project</a></h2>
-<p>The creation of a new policy project can be done by using this GitHub
-template repository: <a href="https://github.com/kubewarden/go-policy-template">kubewarden/go-policy-template</a>.
-Just press the &quot;Use  this template&quot; green button near the top of the page
-and follow GitHub's wizard.</p>
-<p>Clone the repository locally and then ensure the <code>module</code> directive inside
-of the <code>go.mod</code> file looks like that:</p>
-<pre><code class="language-go">module &lt;path to your repository&gt;
+<p>Finally, install the <a href="https://github.com/cargo-generate/cargo-generate">cargo-generate</a> utility:</p>
+<pre><code class="language-shell">cargo install cargo-generate
 </code></pre>
 
                     </main>
@@ -226,13 +196,13 @@ of the <code>go.mod</code> file looks like that:</p>
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="../../writing-policies/go/01-intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../writing-policies/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="../../writing-policies/go/03-policy-settings.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../../writing-policies/rust/02-create-policy.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -244,13 +214,13 @@ of the <code>go.mod</code> file looks like that:</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="../../writing-policies/go/01-intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../writing-policies/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="../../writing-policies/go/03-policy-settings.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../../writing-policies/rust/02-create-policy.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

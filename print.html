@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rust.html"><strong aria-hidden="true">4.1.</strong> Rust</a></li><li class="chapter-item expanded "><a href="writing-policies/go/01-intro.html"><strong aria-hidden="true">4.2.</strong> Go</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/go/02-scaffold.html"><strong aria-hidden="true">4.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/go/03-policy-settings.html"><strong aria-hidden="true">4.2.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="writing-policies/go/04-validation.html"><strong aria-hidden="true">4.2.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="writing-policies/go/05-e2e-tests.html"><strong aria-hidden="true">4.2.4.</strong> End-to-end testing</a></li><li class="chapter-item expanded "><a href="writing-policies/go/06-automate.html"><strong aria-hidden="true">4.2.5.</strong> GitHub Action integration</a></li><li class="chapter-item expanded "><a href="writing-policies/go/07-distribute.html"><strong aria-hidden="true">4.2.6.</strong> Distribute policy</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rust/01-intro.html"><strong aria-hidden="true">4.1.</strong> Rust</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rust/02-create-policy.html"><strong aria-hidden="true">4.1.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/03-define-policy-settings.html"><strong aria-hidden="true">4.1.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/04-write-validation-logic.html"><strong aria-hidden="true">4.1.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/05-mutation-policy.html"><strong aria-hidden="true">4.1.4.</strong> Write a mutation policy</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/06-build-and-distribute.html"><strong aria-hidden="true">4.1.5.</strong> Build and distribute</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/go/01-intro.html"><strong aria-hidden="true">4.2.</strong> Go</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/go/02-scaffold.html"><strong aria-hidden="true">4.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/go/03-policy-settings.html"><strong aria-hidden="true">4.2.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="writing-policies/go/04-validation.html"><strong aria-hidden="true">4.2.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="writing-policies/go/05-e2e-tests.html"><strong aria-hidden="true">4.2.4.</strong> End-to-end testing</a></li><li class="chapter-item expanded "><a href="writing-policies/go/06-automate.html"><strong aria-hidden="true">4.2.5.</strong> GitHub Action integration</a></li><li class="chapter-item expanded "><a href="writing-policies/go/07-distribute.html"><strong aria-hidden="true">4.2.6.</strong> Distribute policy</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -761,7 +761,7 @@ using <a href="https://github.com/rust-lang/rustup">rustup</a>. Please follow
 <p>Finally, install the <a href="https://github.com/cargo-generate/cargo-generate">cargo-generate</a> utility:</p>
 <pre><code class="language-shell">cargo install cargo-generate
 </code></pre>
-<h2><a class="header" href="#creating-a-new-validation-policy" id="creating-a-new-validation-policy">Creating a new validation policy</a></h2>
+<h1><a class="header" href="#creating-a-new-validation-policy" id="creating-a-new-validation-policy">Creating a new validation policy</a></h1>
 <p>We are going to create a simple validation policy that processes
 Pod creation requests.</p>
 <p>The policy will look at the <code>metadata.name</code> attribute of the Pod and reject
@@ -792,7 +792,7 @@ spec:
     - name: nginx
       image: nginx:latest
 </code></pre>
-<h3><a class="header" href="#scaffolding-new-policy-project" id="scaffolding-new-policy-project">Scaffolding new policy project</a></h3>
+<h2><a class="header" href="#scaffolding-new-policy-project" id="scaffolding-new-policy-project">Scaffolding new policy project</a></h2>
 <p>The creation of a new policy project can be done by feeding this
 <a href="https://github.com/kubewarden/policy-rust-template">template project</a>
 into <code>cargo generate</code>:</p>
@@ -805,7 +805,7 @@ into <code>cargo generate</code>:</p>
 ✨   Done! New project created /home/flavio/hacking/kubernetes/kubewarden/demo
 </code></pre>
 <p>The new policy project can now be found inside of the <code>demo</code> directory.</p>
-<h3><a class="header" href="#defining-policy-settings" id="defining-policy-settings">Defining policy settings</a></h3>
+<h1><a class="header" href="#defining-policy-settings" id="defining-policy-settings">Defining policy settings</a></h1>
 <p>As a first step we will define the structure that holds the policy settings.</p>
 <p>Open the <code>src/settings.rs</code> file and change the definition of the <code>Settings</code>
 struct to look like that:</p>
@@ -833,6 +833,7 @@ to look like that:</p>
     }
 }
 </code></pre>
+<h2><a class="header" href="#add-unit-tests" id="add-unit-tests">Add unit tests</a></h2>
 <p>Now we can write a unit test to ensure the settings validation is actually working.
 This can be done in the <a href="https://doc.rust-lang.org/stable/book/ch11-00-testing.html">usual Rust way</a>.</p>
 <p>There are already some default tests at the bottom of the <code>src/settings.rs</code>
@@ -879,7 +880,7 @@ test settings::tests::reject_settings_without_a_list_of_invalid_names ... ok
 
 test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 </code></pre>
-<h3><a class="header" href="#writing-the-validation-business-logic" id="writing-the-validation-business-logic">Writing the validation business logic</a></h3>
+<h1><a class="header" href="#writing-the-validation-logic" id="writing-the-validation-logic">Writing the validation logic</a></h1>
 <p>It's time to write the actual validation code. This is defined inside of the
 <code>src/lib.rs</code> file. Inside of this file you will find a function called <code>validate</code>.</p>
 <p>The scaffolded function is already doing something:</p>
@@ -951,6 +952,7 @@ values provided by the user via the policy settings.</p>
     }
 }
 </code></pre>
+<h2><a class="header" href="#unit-tests" id="unit-tests">Unit tests</a></h2>
 <p>Finally, we will create some unit tests to ensure the validation code works as
 expected.</p>
 <p>The <code>lib.rs</code> file has already some tests defined at the bottom of the file, as
@@ -1065,7 +1067,7 @@ test tests::reject_pod_with_invalid_name ... ok
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 </code></pre>
 <p>That's all if you want to write a simple validating policy.</p>
-<h2><a class="header" href="#creating-a-new-mutation-policy" id="creating-a-new-mutation-policy">Creating a new mutation policy</a></h2>
+<h1><a class="header" href="#creating-a-new-mutation-policy" id="creating-a-new-mutation-policy">Creating a new mutation policy</a></h1>
 <p>Mutating policies are similar to validating ones, but have also the ability to mutate an
 incoming object.</p>
 <p>They can:</p>
@@ -1101,7 +1103,7 @@ spec:
     - name: nginx
       image: nginx:latest
 </code></pre>
-<h3><a class="header" href="#write-the-mutation-code" id="write-the-mutation-code">Write the mutation code</a></h3>
+<h2><a class="header" href="#write-the-mutation-code" id="write-the-mutation-code">Write the mutation code</a></h2>
 <p>The mutation code is done inside of the <code>validate</code> function. The function should be changed
 to approve the request via the <a href="https://docs.rs/kubewarden-policy-sdk/0.1.0/kubewarden_policy_sdk/fn.mutate_request.html"><code>mutate_request</code></a>
 instead of the <a href="https://docs.rs/kubewarden-policy-sdk/0.1.0/kubewarden_policy_sdk/fn.accept_request.html"><code>accept_request</code></a>.</p>
@@ -1181,6 +1183,7 @@ test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 </code></pre>
 <p>As you can see, the <code>accept_pod_with_valid_name</code> fails because the response actually
 contains a mutated object. It looks like our code is actually working!</p>
+<h2><a class="header" href="#update-the-unit-tests" id="update-the-unit-tests">Update the unit tests</a></h2>
 <p>Let's update the <code>accept_pod_with_valid_name</code> to look like that:</p>
 <pre><code class="language-rust norun noplayground">#[test]
 fn accept_pod_with_valid_name() -&gt; Result&lt;(), ()&gt; {
@@ -1257,7 +1260,7 @@ compilation target.</p>
 target/wasm32-unknown-unknown/release/demo.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
 </code></pre>
 <h2><a class="header" href="#distributing-the-policy" id="distributing-the-policy">Distributing the policy</a></h2>
-<p>This topic is covered inside of the <a href="writing-policies//distributing-policies.html">&quot;distributing policies&quot;</a>
+<p>This topic is covered inside of the <a href="writing-policies/rust//distributing-policies.html">&quot;distributing policies&quot;</a>
 section of Kubewarden's documentation.</p>
 <h2><a class="header" href="#more-examples" id="more-examples">More examples</a></h2>
 <p>You can find more Kubewarden policies written in Rust inside of Kubewarden's
@@ -1788,7 +1791,7 @@ PASS
 ok  	command-line-arguments	0.001s
 </code></pre>
 <p>We can now move to implement the actual validation code.</p>
-<h1><a class="header" href="#writing-the-validation-logic" id="writing-the-validation-logic">Writing the validation logic</a></h1>
+<h1><a class="header" href="#writing-the-validation-logic-1" id="writing-the-validation-logic-1">Writing the validation logic</a></h1>
 <p>It's now time to write the actual validation logic. This is done
 inside of the <code>validate.go</code> file.</p>
 <p>The scaffolded policy has already a <code>validate</code> function, we will need to make
