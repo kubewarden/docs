@@ -296,7 +296,7 @@ registered namespaced resources on its own namespace.</p>
 <p>We will use the <a href="https://github.com/kubewarden/pod-privileged-policy"><code>pod-privileged</code> policy</a>.
 This policy prevents the creation of privileged containers inside of a Kubernetes cluster.</p>
 <p>Let's define a <code>ClusterAdmissionPolicy</code> for that:</p>
-<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+<pre><code class="language-shell">kubectl apply -f - &lt;&lt;EOF
 apiVersion: policies.kubewarden.io/v1alpha1
 kind: ClusterAdmissionPolicy
 metadata:
@@ -311,21 +311,22 @@ spec:
   mutating: false
 EOF
 </code></pre>
-<p>This will produce the following output:</p>
-<pre><code class="language-console">clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
-</code></pre>
+<p>This will produce the following output:
+<code>clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created</code></p>
 <p>Defining the <code>ClusterAdmissionPolicy</code> will lead to a rollout of the Kubewarden Policy
 Server Deployment. Once the new policy is ready to be served, the <code>kubewarden-controller</code>
 will register a <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io">ValidatingWebhookConfiguration</a>
 object.</p>
 <p>Once all the instances of <code>policy-server</code> are ready, the
-<code>ValidatingWebhookConfiguration</code> will be visible:</p>
-<pre><code class="language-console">$ kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kubewarden
-NAME              WEBHOOKS   AGE
+<code>ValidatingWebhookConfiguration</code> can be shown with:</p>
+<pre><code class="language-shell">kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kubewarden
+</code></pre>
+<p>Which will output something like</p>
+<pre><code>NAME              WEBHOOKS   AGE
 privileged-pods   1          9s
 </code></pre>
 <p>Let's try to create a Pod with no privileged containers:</p>
-<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+<pre><code class="language-shell">kubectl apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -338,10 +339,9 @@ EOF
 </code></pre>
 <p>This will produce the following output, which means the Pod was successfully
 created:</p>
-<pre><code class="language-console">pod/unprivileged-pod created
-</code></pre>
+<p><code>pod/unprivileged-pod created</code></p>
 <p>Now, let's try to create a pod with at least one privileged container:</p>
-<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+<pre><code class="language-shell">kubectl apply -f - &lt;&lt;EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -355,7 +355,7 @@ spec:
 EOF
 </code></pre>
 <p>This time the creation of the Pod will be blocked, with the following message:</p>
-<pre><code class="language-console">Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;privileged-pods.kubewarden.admission&quot; denied the request: User 'minikube-user' cannot schedule privileged containers
+<pre><code>Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;privileged-pods.kubewarden.admission&quot; denied the request: User 'minikube-user' cannot schedule privileged containers
 </code></pre>
 <h2><a class="header" href="#uninstall" id="uninstall">Uninstall</a></h2>
 <p>As a first step remove all the <code>ClusterAdmissionPolicy</code> resources you have created.
