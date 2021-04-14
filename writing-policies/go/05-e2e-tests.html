@@ -1,0 +1,406 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>End-to-end testing - Kubewarden Kubernetes Policy Engine</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Documentation of Kubewarden project">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="../../favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="../../favicon.png">
+        
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../../quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="../../testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="../../writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/rust.html"><strong aria-hidden="true">4.1.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/01-intro.html"><strong aria-hidden="true">4.2.</strong> Go</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/go/02-scaffold.html"><strong aria-hidden="true">4.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/03-policy-settings.html"><strong aria-hidden="true">4.2.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/04-validation.html"><strong aria-hidden="true">4.2.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/05-e2e-tests.html" class="active"><strong aria-hidden="true">4.2.4.</strong> End-to-end testing</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/06-automate.html"><strong aria-hidden="true">4.2.5.</strong> GitHub Action integration</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/07-distribute.html"><strong aria-hidden="true">4.2.6.</strong> Distribute policy</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#end-to-end-testing" id="end-to-end-testing">End-to-end testing</a></h1>
+<p>So far we have tested the policy using a set of Go unit tests. This section shows
+how we can write end-to-end test that run tests against the actual WebAssembly
+binary produced by TinyGo.</p>
+<h2><a class="header" href="#prerequisites" id="prerequisites">Prerequisites</a></h2>
+<p>These tools need to be installed on your development machine:</p>
+<ul>
+<li>docker or another container engine: used to build the WebAssembly
+policy. We will rely on the compiler shipped within the official
+TinyGo container image.</li>
+<li><a href="https://github.com/sstephenson/bats">bats</a>: used to write the
+tests and automate their execution.</li>
+<li><a href="https://github.com/kubewarden/policy-server/releases">policy-testdrive</a>:
+cli tool provided by Kubewarden to run its policies outside of
+Kubernetes. This is covered in depth inside of <a href="/testing-policies.html">this section</a>
+of the documentation.</li>
+</ul>
+<h2><a class="header" href="#building-the-policy" id="building-the-policy">Building the policy</a></h2>
+<p>As a first step we need to build the policy into a WebAssembly binary.</p>
+<p>This can be done with this simple command:</p>
+<pre><code class="language-shell">make wasm
+</code></pre>
+<p>This will pull the official TinyGo container image and run the build process
+inside of an ephemeral container.</p>
+<p>The compilation produces a file called <code>policy.wasm</code>.</p>
+<h2><a class="header" href="#writing-tests" id="writing-tests">Writing tests</a></h2>
+<p>We are going to use <a href="https://github.com/sstephenson/bats">bats</a> to write and
+automate our tests. Each test will be composed by the following steps:</p>
+<ol>
+<li>Run the policy using <code>policy-testdrive</code>.</li>
+<li>Perform some assertions against the output produced by the
+<code>policy-testdrive</code>.</li>
+</ol>
+<p>All the end-to-end tests are located inside of a file called <code>e2e.bats</code>. The
+scaffolded project already includes such a file. We will just change its
+contents to reflect how our policy behaves.</p>
+<p>As a final note, the end-to-end tests we will use the same test fixtures files
+we previously used inside of the Go unit tests.</p>
+<p>The first test ensures a request is approved when no settings are provided:</p>
+<pre><code class="language-bash">@test &quot;accept when no settings are provided&quot; {
+  run policy-testdrive -p policy.wasm -r test_data/ingress.json
+
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
+
+  # request rejected
+  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+}
+</code></pre>
+<p>We can execute the end-to-end tests by using this command:</p>
+<pre><code class="language-shell">make e2e-tests
+</code></pre>
+<p>This will produce the following output:</p>
+<pre><code class="language-shell">bats e2e.bats
+ ✓ accept when no settings are provided
+
+1 test, 0 failures
+</code></pre>
+<p>Let's write a test to ensure a request is approved when a user-defined constraint
+is respected:</p>
+<pre><code class="language-bash">@test &quot;accept user defined constraint is respected&quot; {
+  run policy-testdrive -p policy.wasm \
+    -r test_data/ingress.json \
+    -s '{&quot;constrained_labels&quot;: {&quot;owner&quot;: &quot;^team-&quot;}}'
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
+
+  # request accepted
+  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+}
+</code></pre>
+<p>Next, we can write a test to ensure a request is accepted when none of the
+labels is on the deny list:</p>
+<pre><code class="language-bash">@test &quot;accept labels are not on deny list&quot; {
+  run policy-testdrive -p policy.wasm \
+    -r test_data/ingress.json \
+    -s '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;bar&quot;]}'
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
+
+  # request accepted
+  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+}
+</code></pre>
+<p>Let's improve the test coverage by adding a test that rejects a request
+because one of the labels is on the deny list:</p>
+<pre><code class="language-bash">@test &quot;reject because label is on deny list&quot; {
+  run policy-testdrive -p policy.wasm \
+    -r test_data/ingress.json \
+    -s '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;owner&quot;]}'
+
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
+
+  # request rejected
+  [[ &quot;$output&quot; == *&quot;allowed: false&quot;* ]]
+  [[ &quot;$output&quot; == *&quot;Label owner is on the deny list&quot;* ]]
+}
+</code></pre>
+<p>The following test ensures a request is rejected when one of its labels doesn't
+satisfy the constraint provided by the user:</p>
+<pre><code class="language-bash">@test &quot;reject because label doesn't pass validation constraint&quot; {
+  run policy-testdrive -p policy.wasm \
+    -r test_data/ingress.json \
+    -s '{&quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-\\d+$&quot;}}'
+
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
+
+  # request rejected
+  [[ &quot;$output&quot; == *&quot;allowed: false&quot;* ]]
+  [[ &quot;$output&quot; == *&quot;The value of cc-center doesn\'t pass user-defined constraint&quot;* ]]
+}
+</code></pre>
+<p>We want to ensure settings' validation is working properly. This can be done
+with the following tests:</p>
+<pre><code class="language-bash">@test &quot;fail settings validation because of conflicting labels&quot; {
+  run policy-testdrive -p policy.wasm \
+    -r test_data/ingress.json \
+    -s '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;cc-center&quot;], &quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-\\d+$&quot;}}'
+
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: false&quot;* ]]
+  [[ &quot;$output&quot; == *&quot;Provided settings are not valid: These labels cannot be constrained and denied at the same time: Set{cc-center}&quot;* ]]
+}
+
+@test &quot;fail settings validation because of invalid constraint&quot; {
+  run policy-testdrive -p policy.wasm \
+    -r test_data/ingress.json \
+    -s '{&quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-[12$&quot;}}'
+
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: false&quot;* ]]
+  [[ &quot;$output&quot; == *&quot;Provided settings are not valid: error parsing regexp: missing closing ]: `[12$`&quot;* ]]
+}
+</code></pre>
+<h2><a class="header" href="#conclusion" id="conclusion">Conclusion</a></h2>
+<p>We have reached a pretty good level of coverage, let's run all the end-to-end
+tests:</p>
+<pre><code class="language-shell">$ make e2e-tests
+bats e2e.bats
+ ✓ accept when no settings are provided
+ ✓ accept user defined constraint is respected
+ ✓ accept labels are not on deny list
+ ✓ reject because label is on deny list
+ ✓ reject because label doesn't pass validation constraint
+ ✓ fail settings validation because of conflicting labels
+ ✓ fail settings validation because of invalid constraint
+
+7 tests, 0 failures
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../../writing-policies/go/04-validation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../../writing-policies/go/06-automate.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../../writing-policies/go/04-validation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../../writing-policies/go/06-automate.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

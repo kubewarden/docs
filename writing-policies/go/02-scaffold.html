@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - Kubewarden Kubernetes Policy Engine</title>
+        <title>Create a new policy - Kubewarden Kubernetes Policy Engine</title>
         
         
 
@@ -18,26 +18,26 @@
         <meta name="theme-color" content="#ffffff" />
 
         
-        <link rel="icon" href="favicon.svg">
+        <link rel="icon" href="../../favicon.svg">
         
         
-        <link rel="shortcut icon" href="favicon.png">
+        <link rel="shortcut icon" href="../../favicon.png">
         
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
         
-        <link rel="stylesheet" href="fonts/fonts.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
         
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         
@@ -47,7 +47,7 @@
     <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
-            var path_to_root = "";
+            var path_to_root = "../../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
@@ -93,7 +93,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html" class="active"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rust.html"><strong aria-hidden="true">4.1.</strong> Rust</a></li><li class="chapter-item expanded "><a href="writing-policies/go/01-intro.html"><strong aria-hidden="true">4.2.</strong> Go</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/go/02-scaffold.html"><strong aria-hidden="true">4.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/go/03-policy-settings.html"><strong aria-hidden="true">4.2.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="writing-policies/go/04-validation.html"><strong aria-hidden="true">4.2.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="writing-policies/go/05-e2e-tests.html"><strong aria-hidden="true">4.2.4.</strong> End-to-end testing</a></li><li class="chapter-item expanded "><a href="writing-policies/go/06-automate.html"><strong aria-hidden="true">4.2.5.</strong> GitHub Action integration</a></li><li class="chapter-item expanded "><a href="writing-policies/go/07-distribute.html"><strong aria-hidden="true">4.2.6.</strong> Distribute policy</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../../quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="../../testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="../../writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/rust.html"><strong aria-hidden="true">4.1.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/01-intro.html"><strong aria-hidden="true">4.2.</strong> Go</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/go/02-scaffold.html" class="active"><strong aria-hidden="true">4.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/03-policy-settings.html"><strong aria-hidden="true">4.2.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/04-validation.html"><strong aria-hidden="true">4.2.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/05-e2e-tests.html"><strong aria-hidden="true">4.2.4.</strong> End-to-end testing</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/06-automate.html"><strong aria-hidden="true">4.2.5.</strong> GitHub Action integration</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/07-distribute.html"><strong aria-hidden="true">4.2.6.</strong> Distribute policy</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -128,7 +128,7 @@
                     <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
                         
@@ -163,54 +163,76 @@
 
                 <div id="content" class="content">
                     <main>
-                        <blockquote>
-<p><strong>WARNING:</strong> Kubewarden is in early development stage, it's not production ready.</p>
-<p>Feedback is highly appreciated.</p>
-</blockquote>
-<h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
-<p>Kubewarden is a <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Kubernetes Dynamic Admission
-Controller</a>
-that validates incoming requests using policies written in
-WebAssembly.</p>
-<h2><a class="header" href="#what-is-webassembly" id="what-is-webassembly">What is WebAssembly?</a></h2>
-<p>As stated on <a href="https://webassembly.org/">WebAssembly's official
-website</a>:</p>
-<blockquote>
-<p>WebAssembly (abbreviated Wasm) is a binary instruction format for a
-stack-based virtual machine. Wasm is designed as a portable
-compilation target for programming languages, enabling deployment on
-the web for client and server applications.</p>
-</blockquote>
-<p>WebAssembly has been originally conceived as an &quot;extension&quot; of
-browsers. However, recent efforts have been made by the WebAssembly
-community to allow the execution of WebAssembly code outside of
-browsers.</p>
-<h2><a class="header" href="#why-use-webassembly" id="why-use-webassembly">Why use WebAssembly?</a></h2>
-<p>By using WebAssembly, users can write Kubernetes policies using their
-favorite programming language, as long as the language can produce
-Wasm binaries.</p>
-<p>Policy authors can reuse their skills, tools and best
-practices. Policies are &quot;traditional&quot; programs that can have reusable
-blocks (regular libraries), can be tested, can be linted, can be
-plugged into their current CI and CD workflows,...</p>
-<p>Wasm modules are portable, once built they can run on any kind of
-processor architecture and Operating System. A policy built on a Apple
-Silicon machine can be run on a x86_64 Linux server without any
-conversion.</p>
-<h2><a class="header" href="#policy-distribution" id="policy-distribution">Policy distribution</a></h2>
-<p>Kubewarden Policies can be served by a regular web server or, even
-better, can be published inside of an OCI compliant registry.</p>
-<p>Kubewarden Policies can be stored inside of an OCI compliant registry as
-<a href="https://github.com/opencontainers/artifacts">OCI artifacts</a>.</p>
+                        <h1><a class="header" href="#creating-a-new-validation-policy" id="creating-a-new-validation-policy">Creating a new validation policy</a></h1>
+<p>We are going to create a validation policy that validates the labels of generic Kubernetes
+objects.</p>
+<p>The policy will reject all the resources that use one or more labels on the deny list.
+The policy will also validate certain labels using a regular expression 
+provided by the user.</p>
+<p>To summarize, the policy settings will look like that:</p>
+<pre><code class="language-yaml"># List of labels that cannot be used
+denied_labels:
+- foo
+- bar
+
+# Labels that are validated with user-defined regular expressions
+constrained_labels:
+  priority: &quot;[123]&quot;
+  cost-center: &quot;^cc-\d+&quot;
+</code></pre>
+<p>The policy would reject the creation of this Pod:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    foo: hello world
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+</code></pre>
+<p>The policy would also reject the creation of this Pod:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    cost-center: cc-marketing
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+</code></pre>
+<p>Policy's settings can also be used to force certain labels to be specified,
+regardless of their contents:</p>
+<pre><code class="language-yaml"># Policy's settings
+
+constrained_labels:
+  mandatory-label: &quot;.*&quot; # &lt;- this label must be present, we don't care about its value
+</code></pre>
+<h2><a class="header" href="#scaffolding-new-policy-project" id="scaffolding-new-policy-project">Scaffolding new policy project</a></h2>
+<p>The creation of a new policy project can be done by using this GitHub
+template repository: <a href="https://github.com/kubewarden/go-policy-template">kubewarden/go-policy-template</a>.
+Just press the &quot;Use  this template&quot; green button near the top of the page
+and follow GitHub's wizard.</p>
+<p>Clone the repository locally and then ensure the <code>module</code> directive inside
+of the <code>go.mod</code> file looks like that:</p>
+<pre><code class="language-go">module &lt;path to your repository&gt;
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
+                            <a rel="prev" href="../../writing-policies/go/01-intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
 
                         
-                            <a rel="next" href="quick-start.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../../writing-policies/go/03-policy-settings.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -222,9 +244,13 @@ better, can be published inside of an OCI compliant registry.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
+                    <a rel="prev" href="../../writing-policies/go/01-intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
 
                 
-                    <a rel="next" href="quick-start.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../../writing-policies/go/03-policy-settings.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
@@ -247,14 +273,14 @@ better, can be published inside of an OCI compliant registry.</p>
         
 
         
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
         
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
         

@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rust.html"><strong aria-hidden="true">4.1.</strong> Rust</a></li></ol></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="testing-policies.html"><strong aria-hidden="true">3.</strong> Testing Policies</a></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rust.html"><strong aria-hidden="true">4.1.</strong> Rust</a></li><li class="chapter-item expanded "><a href="writing-policies/go/01-intro.html"><strong aria-hidden="true">4.2.</strong> Go</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/go/02-scaffold.html"><strong aria-hidden="true">4.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/go/03-policy-settings.html"><strong aria-hidden="true">4.2.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="writing-policies/go/04-validation.html"><strong aria-hidden="true">4.2.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="writing-policies/go/05-e2e-tests.html"><strong aria-hidden="true">4.2.4.</strong> End-to-end testing</a></li><li class="chapter-item expanded "><a href="writing-policies/go/06-automate.html"><strong aria-hidden="true">4.2.5.</strong> GitHub Action integration</a></li><li class="chapter-item expanded "><a href="writing-policies/go/07-distribute.html"><strong aria-hidden="true">4.2.6.</strong> Distribute policy</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -1271,6 +1271,1079 @@ into the main branch</li>
 <li>Build the policy in <code>release</code> mode and push it to a OCI registry as an
 artifact</li>
 </ul>
+<blockquote>
+<p><strong>Note well:</strong> Go's support for WebAssembly is fast evolving. The contents
+of this page have been written during April 2021, hence they could be outdated.</p>
+</blockquote>
+<h1><a class="header" href="#go" id="go">Go</a></h1>
+<p>Currently the official Go compiler cannot produce WebAssembly binaries
+that can be run <strong>outside</strong> of the browser.
+<a href="https://github.com/golang/go/issues/31105">This upstream issue</a> is tracking
+the evolution of this topic.
+Due to that, it's not possible to use the Go compiler to write Kubewarden policies.</p>
+<p>Luckily there's another Go compiler that is capable of building WebAssembly
+binaries that can be used by Kubewarden. This compiler is called <a href="https://tinygo.org/">TinyGo</a>:</p>
+<blockquote>
+<p>TinyGo is a project to bring the Go programming language to microcontrollers
+and modern web browsers by creating a new compiler based on LLVM.</p>
+<p>You can compile and run TinyGo programs on many different microcontroller
+boards such as the BBC micro:bit and the Arduino Uno.</p>
+<p>TinyGo can also be used to produce WebAssembly (Wasm) code which is very
+compact in size.</p>
+</blockquote>
+<h2><a class="header" href="#limitations" id="limitations">Limitations</a></h2>
+<p>TinyGo doesn't yet support all the Go features (see <a href="https://tinygo.org/lang-support/">here</a>
+to see the current project status). Currently its biggest limitation
+is the lack of a fully supported <code>reflect</code> package. That leads to the inability to use
+the <code>encoding/json</code> package against structures and user defined types.</p>
+<p>Kubewarden policies need to process JSON data like the policy settings and
+the actual request received by Kubernetes.</p>
+<p>Despite TinyGo's current limitations, it's still easy and doable to write Kubewarden policies
+with it.</p>
+<h2><a class="header" href="#tooling" id="tooling">Tooling</a></h2>
+<p>Writing Kubewarden policies requires a version of TinyGo greater than <code>0.17.0</code>.</p>
+<p>These Go libraries are extremely useful when writing a Kubewarden policy:</p>
+<ul>
+<li><a href="https://github.com/kubewarden/policy-sdk-go">Kubewarden Go SDK</a>: provides a series of
+structures and functions that reduce the amount of code to write. It also provides test helpers.</li>
+<li><a href="https://github.com/tidwall/gjson">gjson</a>: provides a powerful query language that allows
+quick navigation of JSON documents and data retrieval. This library doesn't use the
+<code>encoding/json</code> package provided by Go's stdlib, hence it's usable with TinyGo.</li>
+<li><a href="https://github.com/tidwall/sjson">sjson</a>: can be used to mutate JSON documents.
+This library doesn't use the <code>encoding/json</code> package provided by Go's stdlib, hence it's usable with TinyGo.</li>
+<li><a href="https://github.com/deckarep/golang-set">mapset</a>: provides a Go implementation of the
+<a href="https://en.wikipedia.org/wiki/Set_(abstract_data_type)">Set</a>
+data structure. This library significantly reduces the amount of code to be written,
+that's because operations like Set <code>union</code>, <code>intersection</code>, <code>difference</code> are pretty frequent inside
+of policies.</li>
+</ul>
+<p>Last but not least, the Kubewarden project provides a
+<a href="https://github.com/kubewarden/go-policy-template">template Go policy project</a>
+that can be used to quickly create Kubewarden policies written in Go.</p>
+<h2><a class="header" href="#getting-tinygo-dependencies" id="getting-tinygo-dependencies">Getting TinyGo dependencies</a></h2>
+<p>The easiest way to get TinyGo is by using the upstream container images.
+Official releases can be found <a href="https://hub.docker.com/r/tinygo/tinygo">here</a>, while
+builds from the development branch are automatically pushed
+<a href="https://hub.docker.com/r/tinygo/tinygo-dev">here</a>.</p>
+<p>If needed, checkout TinyGo's <a href="https://tinygo.org/getting-started/">getting started</a> page for
+more information.</p>
+<blockquote>
+<p><strong>Note well:</strong> Kubewarden's requires code that is available only on the development branch. This will
+be solved once TinyGo <code>0.17.0</code> is released. In the meantime we will use the container image
+based on the development branch: <code>tinygo/tinygo-dev:latest</code>.</p>
+</blockquote>
+<h1><a class="header" href="#creating-a-new-validation-policy-1" id="creating-a-new-validation-policy-1">Creating a new validation policy</a></h1>
+<p>We are going to create a validation policy that validates the labels of generic Kubernetes
+objects.</p>
+<p>The policy will reject all the resources that use one or more labels on the deny list.
+The policy will also validate certain labels using a regular expression 
+provided by the user.</p>
+<p>To summarize, the policy settings will look like that:</p>
+<pre><code class="language-yaml"># List of labels that cannot be used
+denied_labels:
+- foo
+- bar
+
+# Labels that are validated with user-defined regular expressions
+constrained_labels:
+  priority: &quot;[123]&quot;
+  cost-center: &quot;^cc-\d+&quot;
+</code></pre>
+<p>The policy would reject the creation of this Pod:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    foo: hello world
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+</code></pre>
+<p>The policy would also reject the creation of this Pod:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    cost-center: cc-marketing
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+</code></pre>
+<p>Policy's settings can also be used to force certain labels to be specified,
+regardless of their contents:</p>
+<pre><code class="language-yaml"># Policy's settings
+
+constrained_labels:
+  mandatory-label: &quot;.*&quot; # &lt;- this label must be present, we don't care about its value
+</code></pre>
+<h2><a class="header" href="#scaffolding-new-policy-project-1" id="scaffolding-new-policy-project-1">Scaffolding new policy project</a></h2>
+<p>The creation of a new policy project can be done by using this GitHub
+template repository: <a href="https://github.com/kubewarden/go-policy-template">kubewarden/go-policy-template</a>.
+Just press the &quot;Use  this template&quot; green button near the top of the page
+and follow GitHub's wizard.</p>
+<p>Clone the repository locally and then ensure the <code>module</code> directive inside
+of the <code>go.mod</code> file looks like that:</p>
+<pre><code class="language-go">module &lt;path to your repository&gt;
+</code></pre>
+<h1><a class="header" href="#defining-policy-settings-1" id="defining-policy-settings-1">Defining policy settings</a></h1>
+<p>As a first step we will define the structure that holds the policy settings.</p>
+<p>We will do that by adding this code inside of the <code>settings.go</code> file:</p>
+<pre><code class="language-go">import (
+	&quot;github.com/deckarep/golang-set&quot;
+	&quot;github.com/kubewarden/gjson&quot;
+	kubewarden &quot;github.com/kubewarden/policy-sdk-go&quot;
+
+	&quot;fmt&quot;
+	&quot;regexp&quot;
+)
+
+type Settings struct {
+	DeniedLabels      mapset.Set                    `json:&quot;denied_labels&quot;`
+	ConstrainedLabels map[string]*RegularExpression `json:&quot;constrained_labels&quot;`
+}
+</code></pre>
+<p>As you can see we're using the <code>regexp</code> package to handle regular expression objects, plus
+we use the <code>mapset.Set</code> structure to store the list of denied labels.</p>
+<p>The <code>Settings</code> struct has json attributes, we will use them later when writing
+our unit tests. The unit tests are going to be executed using Go official compiler, hence
+we will be able to leverage the <code>encoding/json</code> package.</p>
+<p>The <code>Settings</code> class is not using the official <code>regexp.RegExp</code> object to
+represent regular expressions. That's because the <code>regexp.RegExp</code> struct doesn't
+handle serialization and deserialization to JSON.</p>
+<p>This is the implementation of the <code>RegularExpression</code> struct:</p>
+<pre><code class="language-go">// A wrapper around the standard regexp.Regexp struct
+// that implements marshalling and unmarshalling
+type RegularExpression struct {
+	*regexp.Regexp
+}
+
+// Convenience method to build a regular expression
+func CompileRegularExpression(expr string) (*RegularExpression, error) {
+	nativeRegExp, err := regexp.Compile(expr)
+	if err != nil {
+		return nil, err
+	}
+	return &amp;RegularExpression{nativeRegExp}, nil
+}
+
+// UnmarshalText satisfies the encoding.TextMarshaler interface,
+// also used by json.Unmarshal.
+func (r *RegularExpression) UnmarshalText(text []byte) error {
+	nativeRegExp, err := regexp.Compile(string(text))
+	if err != nil {
+		return err
+	}
+	r.Regexp = nativeRegExp
+	return nil
+}
+
+// MarshalText satisfies the encoding.TextMarshaler interface,
+// also used by json.Marshal.
+func (r *RegularExpression) MarshalText() ([]byte, error) {
+	if r.Regexp != nil {
+		return []byte(r.Regexp.String()), nil
+	}
+
+	return nil, nil
+}
+</code></pre>
+<h2><a class="header" href="#building-settings-instances" id="building-settings-instances">Building <code>Settings</code> instances</a></h2>
+<p>At runtime we can't rely on the automatic struct marshalling and unmarshalling
+provided by the <code>encoding/json</code> package due to TinyGo current limitations.
+Because of that we will create two initialization helpers:</p>
+<ul>
+<li><code>NewSettingsFromValidationReq</code>: this is used when building a <code>Settings</code>
+instance starting from a <a href="writing-policies/go//writing-policies/index.html#the-validationrequest-object"><code>ValidationRequest</code></a>
+object</li>
+<li><code>NewSettingsFromValidateSettingsPayload</code>: this is used when building a
+<code>Settings</code> instance inside of the <a href="writing-policies/go//writing-policies/index.html#the-validate_settings-entry-point"><code>validate_settings</code></a> entry point. This entry point receives the &quot;naked&quot; Settings JSON
+dictionary</li>
+</ul>
+<p>This is the implementation of these functions:</p>
+<pre><code class="language-go">// Builds a new Settings instance starting from a validation
+// request payload:
+// {
+//    &quot;request&quot;: ...,
+//    &quot;settings&quot;: {
+//       &quot;denied_labels&quot;: [...],
+//       &quot;constrained_labels&quot;: { ... }
+//    }
+// }
+func NewSettingsFromValidationReq(payload []byte) (Settings, error) {
+	// Note well: we don't validate the input JSON now, this has
+	// already done inside of the `validate` function
+
+	return newSettings(
+		payload,
+		&quot;settings.denied_labels&quot;,
+		&quot;settings.constrained_labels&quot;)
+}
+
+// Builds a new Settings instance starting from a Settings
+// payload:
+// {
+//    &quot;denied_names&quot;: [ ... ],
+//    &quot;constrained_labels&quot;: { ... }
+// }
+func NewSettingsFromValidateSettingsPayload(payload []byte) (Settings, error) {
+	if !gjson.ValidBytes(payload) {
+		return Settings{}, fmt.Errorf(&quot;denied JSON payload&quot;)
+	}
+
+	return newSettings(
+		payload,
+		&quot;denied_labels&quot;,
+		&quot;constrained_labels&quot;)
+}
+</code></pre>
+<p>The heavy lifting of the setting is done inside of the <code>newSettings</code> function, which
+is invoked by both <code>NewSettingsFromValidateSettingsPayload</code> and <code>NewSettingsFromValidationReq</code>.</p>
+<p>The function takes the raw JSON payload and a list of <a href="https://github.com/tidwall/gjson">gjson</a>
+queries. These queries are used to extract the values from the JSON data and
+build the actual object:</p>
+<pre><code class="language-go">func newSettings(payload []byte, paths ...string) (Settings, error) {
+	if len(paths) != 2 {
+		return Settings{}, fmt.Errorf(&quot;wrong number of json paths&quot;)
+	}
+
+	data := gjson.GetManyBytes(payload, paths...)
+
+	deniedLabels := mapset.NewThreadUnsafeSet()
+	data[0].ForEach(func(_, entry gjson.Result) bool {
+		deniedLabels.Add(entry.String())
+		return true
+	})
+
+	constrainedLabels := make(map[string]*RegularExpression)
+	var err error
+	data[1].ForEach(func(key, value gjson.Result) bool {
+		var regExp *RegularExpression
+		regExp, err = CompileRegularExpression(value.String())
+		if err != nil {
+			return false
+		}
+
+		constrainedLabels[key.String()] = regExp
+		return true
+	})
+	if err != nil {
+		return Settings{}, err
+	}
+
+	return Settings{
+		DeniedLabels:      deniedLabels,
+		ConstrainedLabels: constrainedLabels,
+	}, nil
+}
+</code></pre>
+<p>As you can see the code above is pretty straightforward. The <code>gjson</code> package
+provides a convenient method to fetch multiple values from the JSON data.</p>
+<p>The <code>newSettings</code> function also creates instances of <code>regexp.Regexp</code> objects
+and ensures the regular expressions provided by the user are correct.</p>
+<blockquote>
+<p><strong>Note well:</strong> all the <code>mapset.Set</code> objects are deliberately created using
+their <a href="https://pkg.go.dev/github.com/deckarep/golang-set?utm_source=godoc#NewThreadUnsafeSet">thread-unsafe variant</a>.
+The WebAssembly code is executed in single thread, hence there are no
+concurrency issues.</p>
+<p>Moreover, the WebAssembly standard doesn't cover
+threads yet. See <a href="https://github.com/WebAssembly/threads">the official proposal</a>
+for more details.</p>
+</blockquote>
+<h2><a class="header" href="#implementing-settings-validation" id="implementing-settings-validation">Implementing <code>Settings</code> validation</a></h2>
+<p>All Kubewarden policies have to implement
+<a href="writing-policies/go//writing-policies/index.html#the-validate_settings-entry-point">settings validation</a>.</p>
+<p>This can be easily done by adding a <code>Valid</code> method to the <code>Settings</code> instances:</p>
+<pre><code class="language-go">func (s *Settings) Valid() (bool, error) {
+	constrainedLabels := mapset.NewThreadUnsafeSet()
+
+	for label := range s.ConstrainedLabels {
+		constrainedLabels.Add(label)
+	}
+
+	constrainedAndDenied := constrainedLabels.Intersect(s.DeniedLabels)
+	if constrainedAndDenied.Cardinality() != 0 {
+		return false,
+			fmt.Errorf(&quot;These labels cannot be constrained and denied at the same time: %v&quot;, constrainedAndDenied)
+	}
+
+	return true, nil
+}
+</code></pre>
+<p>The <code>Valid</code> method ensures no &quot;denied&quot; label is also part of the &quot;constrained&quot; map. The check
+is simplified by the usage of the <code>Intersect</code> method provided by <code>mapset.Set</code>.</p>
+<blockquote>
+<p><strong>Note well:</strong> the <code>Valid</code> method is invoked against an already instantiated <code>Setting</code> object. That means
+the validation of the regular expression provided by the user already took place at
+inside of the <code>Settings</code> constructor.</p>
+</blockquote>
+<p>Finally, we have to ensure the <code>validateSettings</code> function that was automatically generated
+is changed to look like that:</p>
+<pre><code class="language-go">func validateSettings(payload []byte) ([]byte, error) {
+	settings, err := NewSettingsFromValidateSettingsPayload(payload)
+	if err != nil {
+		// this happens when one of the user-defined regular expressions are invalid
+		return kubewarden.RejectSettings(
+			kubewarden.Message(fmt.Sprintf(&quot;Provided settings are not valid: %v&quot;, err)))
+	}
+
+	valid, err := settings.Valid()
+	if valid {
+		return kubewarden.AcceptSettings()
+	}
+	return kubewarden.RejectSettings(
+		kubewarden.Message(fmt.Sprintf(&quot;Provided settings are not valid: %v&quot;, err)))
+}
+</code></pre>
+<p>As you can see, the function takes advantage of the helper functions provided
+by <a href="https://github.com/kubewarden/policy-sdk-go">Kubewarden's SDK</a>.</p>
+<h2><a class="header" href="#testing-the-settings-code" id="testing-the-settings-code">Testing the settings code</a></h2>
+<p>As always, it's important to have good test coverage of the code we write.
+The code we generated comes with a series of unit test defined inside of
+the <code>settings_test.go</code> file.</p>
+<p>We will have to change the contents of this file to reflect the new behaviour of the
+<code>Settings</code> class.</p>
+<p>We will start by including the Go packages we will use:</p>
+<pre><code class="language-go">import (
+	&quot;encoding/json&quot;
+	&quot;testing&quot;
+
+	kubewarden_testing &quot;github.com/kubewarden/policy-sdk-go/testing&quot;
+)
+</code></pre>
+<p>As stated before, the unit tests are not part of the final WebAssembly binary, hence
+we can build them using the official Go compiler. That means we can use the <code>encoding/json</code>
+package to simplify our tests.</p>
+<p>We will start by writing a unit test that ensures we can allocate a <code>Settings</code>
+instance from a <a href="writing-policies/go//writing-policies/index.html#the-validationrequest-object"><code>ValidationRequest</code></a>
+object:</p>
+<pre><code class="language-go">func TestParseValidSettings(t *testing.T) {
+	request := `
+	{
+		&quot;request&quot;: &quot;doesn't matter here&quot;,
+		&quot;settings&quot;: {
+			&quot;denied_labels&quot;: [ &quot;foo&quot;, &quot;bar&quot; ],
+			&quot;constrained_labels&quot;: {
+				&quot;cost-center&quot;: &quot;cc-\\d+&quot;
+			}
+		}
+	}
+	`
+	rawRequest := []byte(request)
+
+	settings, err := NewSettingsFromValidationReq(rawRequest)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error %+v&quot;, err)
+	}
+
+	expected_denied_labels := []string{&quot;foo&quot;, &quot;bar&quot;}
+	for _, exp := range expected_denied_labels {
+		if !settings.DeniedLabels.Contains(exp) {
+			t.Errorf(&quot;Missing value %s&quot;, exp)
+		}
+	}
+
+	re, found := settings.ConstrainedLabels[&quot;cost-center&quot;]
+	if !found {
+		t.Error(&quot;Didn't find the expected constrained label&quot;)
+	}
+
+	expected_regexp := `cc-\d+`
+	if re.String() != expected_regexp {
+		t.Errorf(&quot;Execpted regexp to be %v - got %v instead&quot;,
+			expected_regexp, re.String())
+	}
+</code></pre>
+<p>Next we will define a test that ensures a <code>Settings</code> instance
+cannot be generated when the user provides a broken regular
+expression:</p>
+<pre><code class="language-go">func TestParseSettingsWithInvalidRegexp(t *testing.T) {
+	request := `
+	{
+		&quot;request&quot;: &quot;doesn't matter here&quot;,
+		&quot;settings&quot;: {
+			&quot;denied_labels&quot;: [ &quot;foo&quot;, &quot;bar&quot; ],
+			&quot;constrained_labels&quot;: {
+				&quot;cost-center&quot;: &quot;cc-[a+&quot;
+			}
+		}
+	}
+	`
+	rawRequest := []byte(request)
+
+	_, err := NewSettingsFromValidationReq(rawRequest)
+	if err == nil {
+		t.Errorf(&quot;Didn'g get expected error&quot;)
+	}
+}
+</code></pre>
+<p>Next we will define a test that checks the behaviour
+of the <a href="writing-policies/go//writing-policies/index.html#the-validate_settings-entry-point"><code>validate_settings</code></a>
+entry-point.</p>
+<p>In this case we actually look at the <code>SettingsValidationResponse</code> objected
+returned by our <code>validateSettings</code> function:</p>
+<pre><code class="language-go">func TestDetectValidSettings(t *testing.T) {
+	request := `
+	{
+		&quot;denied_labels&quot;: [ &quot;foo&quot;, &quot;bar&quot; ],
+		&quot;constrained_labels&quot;: {
+			&quot;cost-center&quot;: &quot;cc-\\d+&quot;
+		}
+	}
+	`
+	rawRequest := []byte(request)
+	responsePayload, err := validateSettings(rawRequest)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error %+v&quot;, err)
+	}
+
+	var response kubewarden_testing.SettingsValidationResponse
+	if err := json.Unmarshal(responsePayload, &amp;response); err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	if !response.Valid {
+		t.Errorf(&quot;Expected settings to be valid: %s&quot;, response.Message)
+	}
+}
+</code></pre>
+<p>Finally, we write two more tests to ensure the <code>validateSettings</code> function
+rejects invalid settings with the right messages:</p>
+<pre><code class="language-go">func TestDetectNotValidSettingsDueToBrokenRegexp(t *testing.T) {
+	request := `
+	{
+		&quot;denied_labels&quot;: [ &quot;foo&quot;, &quot;bar&quot; ],
+		&quot;constrained_labels&quot;: {
+			&quot;cost-center&quot;: &quot;cc-[a+&quot;
+		}
+	}
+	`
+	rawRequest := []byte(request)
+	responsePayload, err := validateSettings(rawRequest)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error %+v&quot;, err)
+	}
+
+	var response kubewarden_testing.SettingsValidationResponse
+	if err := json.Unmarshal(responsePayload, &amp;response); err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	if response.Valid {
+		t.Error(&quot;Expected settings to not be valid&quot;)
+	}
+
+	if response.Message != &quot;Provided settings are not valid: error parsing regexp: missing closing ]: `[a+`&quot; {
+		t.Errorf(&quot;Unexpected validation error message: %s&quot;, response.Message)
+	}
+}
+
+func TestDetectNotValidSettingsDueToConflictingLabels(t *testing.T) {
+	request := `
+	{
+		&quot;denied_labels&quot;: [ &quot;foo&quot;, &quot;bar&quot;, &quot;cost-center&quot; ],
+		&quot;constrained_labels&quot;: {
+			&quot;cost-center&quot;: &quot;.*&quot;
+		}
+	}
+	`
+	rawRequest := []byte(request)
+	responsePayload, err := validateSettings(rawRequest)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error %+v&quot;, err)
+	}
+
+	var response kubewarden_testing.SettingsValidationResponse
+	if err := json.Unmarshal(responsePayload, &amp;response); err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	if response.Valid {
+		t.Error(&quot;Expected settings to not be valid&quot;)
+	}
+
+	if response.Message != &quot;Provided settings are not valid: These labels cannot be constrained and denied at the same time: Set{cost-center}&quot; {
+		t.Errorf(&quot;Unexpected validation error message: %s&quot;, response.Message)
+	}
+}
+</code></pre>
+<p>Now we can run the test by using the following command:</p>
+<pre><code class="language-shell">go test -v settings.go settings_test.go
+</code></pre>
+<p>All the tests will pass with the following output:</p>
+<pre><code class="language-shell">=== RUN   TestParseValidSettings
+--- PASS: TestParseValidSettings (0.00s)
+=== RUN   TestParseSettingsWithInvalidRegexp
+--- PASS: TestParseSettingsWithInvalidRegexp (0.00s)
+=== RUN   TestDetectValidSettings
+--- PASS: TestDetectValidSettings (0.00s)
+=== RUN   TestDetectNotValidSettingsDueToBrokenRegexp
+--- PASS: TestDetectNotValidSettingsDueToBrokenRegexp (0.00s)
+=== RUN   TestDetectNotValidSettingsDueToConflictingLabels
+--- PASS: TestDetectNotValidSettingsDueToConflictingLabels (0.00s)
+PASS
+ok  	command-line-arguments	0.001s
+</code></pre>
+<p>We can now move to implement the actual validation code.</p>
+<h1><a class="header" href="#writing-the-validation-logic" id="writing-the-validation-logic">Writing the validation logic</a></h1>
+<p>It's now time to write the actual validation logic. This is done
+inside of the <code>validate.go</code> file.</p>
+<p>The scaffolded policy has already a <code>validate</code> function, we will need to make
+very few changes to it.</p>
+<p>This is how the function has to look like:</p>
+<pre><code class="language-go">func validate(payload []byte) ([]byte, error) {
+	// NOTE 1
+	if !gjson.ValidBytes(payload) {
+		return kubewarden.RejectRequest(
+			kubewarden.Message(&quot;Not a valid JSON document&quot;),
+			kubewarden.Code(400))
+	}
+
+	// NOTE 2
+	settings, err := NewSettingsFromValidationReq(payload)
+	if err != nil {
+		return kubewarden.RejectRequest(
+			kubewarden.Message(err.Error()),
+			kubewarden.Code(400))
+	}
+
+	// NOTE 3
+	data := gjson.GetBytes(
+		payload,
+		&quot;request.object.metadata.labels&quot;)
+
+	// NOTE 4
+	data.ForEach(func(key, value gjson.Result) bool {
+		label := key.String()
+
+		// NOTE 5
+		if settings.DeniedLabels.Contains(label) {
+			err = fmt.Errorf(&quot;Label %s is on the deny list&quot;, label)
+			// stop iterating over labels
+			return false
+		}
+
+		// NOTE 6
+		regExp, found := settings.ConstrainedLabels[label]
+		if found {
+			// This is a constrained label
+			if !regExp.Match([]byte(value.String())) {
+				err = fmt.Errorf(&quot;The value of %s doesn't pass user-defined constraint&quot;, label)
+				// stop iterating over labels
+				return false
+			}
+		}
+
+		return true
+	})
+
+	// NOTE 7
+	if err != nil {
+		return kubewarden.RejectRequest(
+			kubewarden.Message(err.Error()),
+			kubewarden.NoCode)
+	}
+
+	return kubewarden.AcceptRequest()
+</code></pre>
+<p>The code has some <code>NOTE</code> section inside of it. Let's get through them:</p>
+<ol>
+<li>The function ensures the JSON payload is properly formatted. This
+is done using a function provided by the <code>gjson</code> library</li>
+<li>The <code>Settings</code> instance is created using one of the constructor
+methods we defined inside of <code>settings.go</code></li>
+<li>We use a <code>gjson</code> selector to get the <code>label</code> map provided by the object
+embedded into the request</li>
+<li>We use a <code>gjson</code> helper to iterate over the results of the query. If the query
+has no results the loop will never take place.</li>
+<li>We look for the <code>label</code> of the object inside of the list of denied labels
+provided by the user via the policy settings. If the <code>label</code> is a denied
+one, we set the value of the <code>err</code> variable and exit from the loop (that
+happens by returning <code>false</code> instead of <code>true</code>).</li>
+<li>We look for the <code>label</code> of the object inside of the list of constrained labels
+provided by the user via the policy settings. When we have a match we use
+the regular expression provided by the user to validate the value of the label.
+If the validation fails, we set the value of the <code>err</code> variable and exit
+from the loop (that happens by returning <code>false</code> instead of <code>true</code>).</li>
+<li>If the <code>err</code> variable is not <code>nil</code>, we use the helper provided by Kubewarden's
+SDK to reject the request. Otherwise we accept it.</li>
+</ol>
+<h2><a class="header" href="#testing-the-validation-code" id="testing-the-validation-code">Testing the validation code</a></h2>
+<p>It's now time to write some unit tests to ensure the validation code is behaving
+properly. These tests are going to be located inside of the <code>validate_test.go</code>
+file.</p>
+<p>The tests will rely on some <a href="https://en.wikipedia.org/wiki/Test_fixture#Software">test fixtures</a>
+located inside of the <code>test_data</code> directory. This directory has already
+been populated by the template repository.</p>
+<p>We will start by including the following packages:</p>
+<pre><code class="language-go">import (
+	&quot;encoding/json&quot;
+	&quot;testing&quot;
+
+	&quot;github.com/deckarep/golang-set&quot;
+	kubewarden_testing &quot;github.com/kubewarden/policy-sdk-go/testing&quot;
+)
+</code></pre>
+<p>The first unit test will ensure that having no user settings leads
+to the request to be accepted:</p>
+<pre><code class="language-go">func TestEmptySettingsLeadsToRequestAccepted(t *testing.T) {
+	settings := Settings{}
+
+	payload, err := kubewarden_testing.BuildValidationRequest(
+		&quot;test_data/ingress.json&quot;,
+		&amp;settings)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	responsePayload, err := validate(payload)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	var response kubewarden_testing.ValidationResponse
+	if err := json.Unmarshal(responsePayload, &amp;response); err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	if response.Accepted != true {
+		t.Error(&quot;Unexpected rejection&quot;)
+	}
+}
+</code></pre>
+<p>As you can see we are using some test helper functions and structures provided
+by the Kubewarden SDK.</p>
+<p>The next test ensures a request can be accepted when none of its labels
+is relevant to the user:</p>
+<pre><code class="language-go">func TestRequestAccepted(t *testing.T) {
+	constrainedLabels := make(map[string]*RegularExpression)
+	re, err := CompileRegularExpression(`^world-`)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+	constrainedLabels[&quot;hello&quot;] = re
+
+	settings := Settings{
+		DeniedLabels:      mapset.NewThreadUnsafeSetFromSlice([]interface{}{&quot;bad1&quot;, &quot;bad2&quot;}),
+		ConstrainedLabels: constrainedLabels,
+	}
+
+	payload, err := kubewarden_testing.BuildValidationRequest(
+		&quot;test_data/ingress.json&quot;,
+		&amp;settings)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	responsePayload, err := validate(payload)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	var response kubewarden_testing.ValidationResponse
+	if err := json.Unmarshal(responsePayload, &amp;response); err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	if response.Accepted != true {
+		t.Error(&quot;Unexpected rejection&quot;)
+	}
+}
+</code></pre>
+<p>Next we will ensure a request is accepted when one of its labels satisfies
+the constraint provided by the user:</p>
+<pre><code class="language-go">func TestAcceptRequestWithConstraintLabel(t *testing.T) {
+	constrainedLabels := make(map[string]*RegularExpression)
+	re, err := CompileRegularExpression(`^team-`)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %s&quot;, err)
+	}
+	constrainedLabels[&quot;owner&quot;] = re
+	settings := Settings{
+		DeniedLabels:      mapset.NewThreadUnsafeSetFromSlice([]interface{}{&quot;bad1&quot;, &quot;bad2&quot;}),
+		ConstrainedLabels: constrainedLabels,
+	}
+
+	payload, err := kubewarden_testing.BuildValidationRequest(
+		&quot;test_data/ingress.json&quot;,
+		&amp;settings)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	responsePayload, err := validate(payload)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	var response kubewarden_testing.ValidationResponse
+	if err := json.Unmarshal(responsePayload, &amp;response); err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	if response.Accepted != true {
+		t.Error(&quot;Unexpected rejection&quot;)
+	}
+}
+</code></pre>
+<p>It's now time to test the rejection of requests.</p>
+<p>This test verifies a request is rejected when one of the labels is
+on the deny list:</p>
+<pre><code class="language-go">func TestRejectionBecauseDeniedLabel(t *testing.T) {
+	constrainedLabels := make(map[string]*RegularExpression)
+	re, err := CompileRegularExpression(`^world-`)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+	constrainedLabels[&quot;hello&quot;] = re
+
+	settings := Settings{
+		DeniedLabels:      mapset.NewThreadUnsafeSetFromSlice([]interface{}{&quot;owner&quot;}),
+		ConstrainedLabels: constrainedLabels,
+	}
+
+	payload, err := kubewarden_testing.BuildValidationRequest(
+		&quot;test_data/ingress.json&quot;,
+		&amp;settings)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	responsePayload, err := validate(payload)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	var response kubewarden_testing.ValidationResponse
+	if err := json.Unmarshal(responsePayload, &amp;response); err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	if response.Accepted != false {
+		t.Error(&quot;Unexpected accept response&quot;)
+	}
+
+	expected_message := &quot;Label owner is on the deny list&quot;
+	if response.Message != expected_message {
+		t.Errorf(&quot;Got '%s' instead of '%s'&quot;, response.Message, expected_message)
+	}
+}
+</code></pre>
+<p>The next test ensures a request is rejected when one of the user defined
+constraints is not satisfied:</p>
+<pre><code class="language-go">func TestRejectionBecauseConstrainedLabelNotValid(t *testing.T) {
+	constrainedLabels := make(map[string]*RegularExpression)
+	re, err := CompileRegularExpression(`^cc-\d+$`)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+	constrainedLabels[&quot;cc-center&quot;] = re
+
+	settings := Settings{
+		DeniedLabels:      mapset.NewThreadUnsafeSetFromSlice([]interface{}{}),
+		ConstrainedLabels: constrainedLabels,
+	}
+
+	payload, err := kubewarden_testing.BuildValidationRequest(
+		&quot;test_data/ingress.json&quot;,
+		&amp;settings)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	responsePayload, err := validate(payload)
+	if err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	var response kubewarden_testing.ValidationResponse
+	if err := json.Unmarshal(responsePayload, &amp;response); err != nil {
+		t.Errorf(&quot;Unexpected error: %+v&quot;, err)
+	}
+
+	if response.Accepted != false {
+		t.Error(&quot;Unexpected accept response&quot;)
+	}
+
+	expected_message := &quot;The value of cc-center doesn't pass user-defined constraint&quot;
+	if response.Message != expected_message {
+		t.Errorf(&quot;Got '%s' instead of '%s'&quot;, response.Message, expected_message)
+	}
+}
+</code></pre>
+<p>We can now run all the unit tests, including the one defined inside of <code>settings_test.go</code>,
+by using this simple command:</p>
+<pre><code class="language-shell">make test
+</code></pre>
+<p>This will produce the following output:</p>
+<pre><code class="language-shell">go test -v
+=== RUN   TestParseValidSettings
+--- PASS: TestParseValidSettings (0.00s)
+=== RUN   TestParseSettingsWithInvalidRegexp
+--- PASS: TestParseSettingsWithInvalidRegexp (0.00s)
+=== RUN   TestDetectValidSettings
+--- PASS: TestDetectValidSettings (0.00s)
+=== RUN   TestDetectNotValidSettingsDueToBrokenRegexp
+--- PASS: TestDetectNotValidSettingsDueToBrokenRegexp (0.00s)
+=== RUN   TestDetectNotValidSettingsDueToConflictingLabels
+--- PASS: TestDetectNotValidSettingsDueToConflictingLabels (0.00s)
+=== RUN   TestEmptySettingsLeadsToRequestAccepted
+--- PASS: TestEmptySettingsLeadsToRequestAccepted (0.00s)
+=== RUN   TestRequestAccepted
+--- PASS: TestRequestAccepted (0.00s)
+=== RUN   TestAcceptRequestWithConstraintLabel
+--- PASS: TestAcceptRequestWithConstraintLabel (0.00s)
+=== RUN   TestRejectionBecauseDeniedLabel
+--- PASS: TestRejectionBecauseDeniedLabel (0.00s)
+=== RUN   TestRejectionBecauseConstrainedLabelNotValid
+--- PASS: TestRejectionBecauseConstrainedLabelNotValid (0.00s)
+PASS
+ok  	github.com/kubewarden/safe-labels-policy	0.001s
+</code></pre>
+<p>We can now move to the next step, write some end-to-end tests.</p>
+<h1><a class="header" href="#end-to-end-testing" id="end-to-end-testing">End-to-end testing</a></h1>
+<p>So far we have tested the policy using a set of Go unit tests. This section shows
+how we can write end-to-end test that run tests against the actual WebAssembly
+binary produced by TinyGo.</p>
+<h2><a class="header" href="#prerequisites-1" id="prerequisites-1">Prerequisites</a></h2>
+<p>These tools need to be installed on your development machine:</p>
+<ul>
+<li>docker or another container engine: used to build the WebAssembly
+policy. We will rely on the compiler shipped within the official
+TinyGo container image.</li>
+<li><a href="https://github.com/sstephenson/bats">bats</a>: used to write the
+tests and automate their execution.</li>
+<li><a href="https://github.com/kubewarden/policy-server/releases">policy-testdrive</a>:
+cli tool provided by Kubewarden to run its policies outside of
+Kubernetes. This is covered in depth inside of <a href="writing-policies/go//testing-policies.html">this section</a>
+of the documentation.</li>
+</ul>
+<h2><a class="header" href="#building-the-policy-1" id="building-the-policy-1">Building the policy</a></h2>
+<p>As a first step we need to build the policy into a WebAssembly binary.</p>
+<p>This can be done with this simple command:</p>
+<pre><code class="language-shell">make wasm
+</code></pre>
+<p>This will pull the official TinyGo container image and run the build process
+inside of an ephemeral container.</p>
+<p>The compilation produces a file called <code>policy.wasm</code>.</p>
+<h2><a class="header" href="#writing-tests" id="writing-tests">Writing tests</a></h2>
+<p>We are going to use <a href="https://github.com/sstephenson/bats">bats</a> to write and
+automate our tests. Each test will be composed by the following steps:</p>
+<ol>
+<li>Run the policy using <code>policy-testdrive</code>.</li>
+<li>Perform some assertions against the output produced by the
+<code>policy-testdrive</code>.</li>
+</ol>
+<p>All the end-to-end tests are located inside of a file called <code>e2e.bats</code>. The
+scaffolded project already includes such a file. We will just change its
+contents to reflect how our policy behaves.</p>
+<p>As a final note, the end-to-end tests we will use the same test fixtures files
+we previously used inside of the Go unit tests.</p>
+<p>The first test ensures a request is approved when no settings are provided:</p>
+<pre><code class="language-bash">@test &quot;accept when no settings are provided&quot; {
+  run policy-testdrive -p policy.wasm -r test_data/ingress.json
+
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
+
+  # request rejected
+  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+}
+</code></pre>
+<p>We can execute the end-to-end tests by using this command:</p>
+<pre><code class="language-shell">make e2e-tests
+</code></pre>
+<p>This will produce the following output:</p>
+<pre><code class="language-shell">bats e2e.bats
+ ✓ accept when no settings are provided
+
+1 test, 0 failures
+</code></pre>
+<p>Let's write a test to ensure a request is approved when a user-defined constraint
+is respected:</p>
+<pre><code class="language-bash">@test &quot;accept user defined constraint is respected&quot; {
+  run policy-testdrive -p policy.wasm \
+    -r test_data/ingress.json \
+    -s '{&quot;constrained_labels&quot;: {&quot;owner&quot;: &quot;^team-&quot;}}'
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
+
+  # request accepted
+  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+}
+</code></pre>
+<p>Next, we can write a test to ensure a request is accepted when none of the
+labels is on the deny list:</p>
+<pre><code class="language-bash">@test &quot;accept labels are not on deny list&quot; {
+  run policy-testdrive -p policy.wasm \
+    -r test_data/ingress.json \
+    -s '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;bar&quot;]}'
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
+
+  # request accepted
+  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+}
+</code></pre>
+<p>Let's improve the test coverage by adding a test that rejects a request
+because one of the labels is on the deny list:</p>
+<pre><code class="language-bash">@test &quot;reject because label is on deny list&quot; {
+  run policy-testdrive -p policy.wasm \
+    -r test_data/ingress.json \
+    -s '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;owner&quot;]}'
+
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
+
+  # request rejected
+  [[ &quot;$output&quot; == *&quot;allowed: false&quot;* ]]
+  [[ &quot;$output&quot; == *&quot;Label owner is on the deny list&quot;* ]]
+}
+</code></pre>
+<p>The following test ensures a request is rejected when one of its labels doesn't
+satisfy the constraint provided by the user:</p>
+<pre><code class="language-bash">@test &quot;reject because label doesn't pass validation constraint&quot; {
+  run policy-testdrive -p policy.wasm \
+    -r test_data/ingress.json \
+    -s '{&quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-\\d+$&quot;}}'
+
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
+
+  # request rejected
+  [[ &quot;$output&quot; == *&quot;allowed: false&quot;* ]]
+  [[ &quot;$output&quot; == *&quot;The value of cc-center doesn\'t pass user-defined constraint&quot;* ]]
+}
+</code></pre>
+<p>We want to ensure settings' validation is working properly. This can be done
+with the following tests:</p>
+<pre><code class="language-bash">@test &quot;fail settings validation because of conflicting labels&quot; {
+  run policy-testdrive -p policy.wasm \
+    -r test_data/ingress.json \
+    -s '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;cc-center&quot;], &quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-\\d+$&quot;}}'
+
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: false&quot;* ]]
+  [[ &quot;$output&quot; == *&quot;Provided settings are not valid: These labels cannot be constrained and denied at the same time: Set{cc-center}&quot;* ]]
+}
+
+@test &quot;fail settings validation because of invalid constraint&quot; {
+  run policy-testdrive -p policy.wasm \
+    -r test_data/ingress.json \
+    -s '{&quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-[12$&quot;}}'
+
+  # this prints the output when one the checks below fails
+  echo &quot;output = ${output}&quot;
+
+  # settings validation passed
+  [[ &quot;$output&quot; == *&quot;valid: false&quot;* ]]
+  [[ &quot;$output&quot; == *&quot;Provided settings are not valid: error parsing regexp: missing closing ]: `[12$`&quot;* ]]
+}
+</code></pre>
+<h2><a class="header" href="#conclusion" id="conclusion">Conclusion</a></h2>
+<p>We have reached a pretty good level of coverage, let's run all the end-to-end
+tests:</p>
+<pre><code class="language-shell">$ make e2e-tests
+bats e2e.bats
+ ✓ accept when no settings are provided
+ ✓ accept user defined constraint is respected
+ ✓ accept labels are not on deny list
+ ✓ reject because label is on deny list
+ ✓ reject because label doesn't pass validation constraint
+ ✓ fail settings validation because of conflicting labels
+ ✓ fail settings validation because of invalid constraint
+
+7 tests, 0 failures
+</code></pre>
+<h1><a class="header" href="#automations" id="automations">Automations</a></h1>
+<p>This section describes how we can use GitHub Actions to automate as many tasks
+as possible.</p>
+<p>The scaffolded project already includes all the GitHub actions you need.
+These files can be found inside of the <code>.github/workflows</code> directory.</p>
+<p>The same principles can be adapted to use a different CI system.</p>
+<h2><a class="header" href="#testing" id="testing">Testing</a></h2>
+<p>We can automate the execution of the unit tests and of the end-to-end tests.</p>
+<p>This is working out of the box thanks to these files:</p>
+<ul>
+<li><code>.github/workflows/e2e-tests.yml</code></li>
+<li><code>.github/workflows/unit-tests.yml</code></li>
+</ul>
+<h2><a class="header" href="#release" id="release">Release</a></h2>
+<p>The scaffolded project created a <code>.github/workflows/release.yml.template</code>.</p>
+<p>This file defines a pipeline that performs the following steps:</p>
+<ul>
+<li>Checkout code</li>
+<li>Build the WebAssembly policy</li>
+<li>Push the policy to an OCI registry</li>
+<li>Eventually create a new GitHub Release</li>
+</ul>
+<p>To enable the pipeline you need to rename it to <code>release.yml</code> and change the
+value of the <code>OCI_TARGET</code> to match your preferences.</p>
+<p>The pipeline will act differently based on the commit that triggered its execution.</p>
+<p>Regular commits will lead to the creation of an OCI artifact called <code>&lt;policy-name&gt;:latest</code>.
+No GitHub Release will be created for this commits.</p>
+<p>On the other hand, creating a tag that matches the <code>v*</code> pattern, will lead
+to:</p>
+<ol>
+<li>Creation of an OCI artifact called <code>&lt;policy-name&gt;:&lt;tag&gt;</code>.</li>
+<li>Creation of a GitHub Release named <code>Release &lt;full tag name&gt;</code>. The release
+will include the following assets: the source code of the policy and the WebAssembly
+binary.</li>
+</ol>
+<h3><a class="header" href="#a-concrete-example" id="a-concrete-example">A concrete example</a></h3>
+<p>Let's assume we have a policy named named <code>safe-labels</code> and we want to publish
+it as <code>ghcr.io/kubewarden/policies/safe-labels</code>.</p>
+<p>The contents of the <code>jobs.env</code> section of <code>release.yml</code> should look like that:</p>
+<pre><code class="language-yaml">jobs:
+  build:
+    name: Create new release with Wasm artifact
+    runs-on: ubuntu-latest
+    env:
+      WASM_BINARY_NAME: policy.wasm
+      OCI_TARGET: ghcr.io/kubewarden/policies/safe-labels
+</code></pre>
+<p>Pushing a tag named <code>v0.1.0</code> will lead to the creation and publishing of the
+OCI artifact called <code>ghcr.io/kubewarden/policies/safe-labels:v0.1.0</code>.</p>
+<p>A GitHub Release named <code>Release v0.1.0</code> will be created. The release will
+include the following assets:</p>
+<ul>
+<li>Source code compressed as <code>zip</code> and <code>tar.gz</code></li>
+<li>A file named <code>policy.wasm</code> that is the actual WebAssembly policy</li>
+</ul>
+<h1><a class="header" href="#distribute-policy" id="distribute-policy">Distribute policy</a></h1>
+<p>Congratulations for having made this far 🎉🎉🎉</p>
+<p>We hope you enjoyed the journey!</p>
+<p>In case you haven't realized, we actually created the
+<a href="https://github.com/kubewarden/safe-labels-policy">safe-labels-policy</a>
+together.</p>
+<p>There's nothing special to be done when it comes to distributing the
+policy. If you followed this guide you have already published
+your policy using the GitHub <code>release.yml</code> Action defined in the previous
+chapter.</p>
+<p>The topic of distributing policies is covered in depth inside of the
+<a href="writing-policies/go//distributing-policies.html">&quot;distributing policies&quot;</a>
+section of Kubewarden's documentation.</p>
 <h1><a class="header" href="#distributing-policies" id="distributing-policies">Distributing Policies</a></h1>
 <p>Kubewarden policies are Wasm binaries that are evaluated by the
 Kubewarden Policy Server.</p>
