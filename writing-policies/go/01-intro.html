@@ -190,8 +190,12 @@ is the lack of a fully supported <code>reflect</code> package. That leads to the
 the <code>encoding/json</code> package against structures and user defined types.</p>
 <p>Kubewarden policies need to process JSON data like the policy settings and
 the actual request received by Kubernetes.</p>
-<p>Despite TinyGo's current limitations, it's still easy and doable to write Kubewarden policies
-with it.</p>
+<p>Despite TinyGo's current limitations, it's still easy and doable to write
+Kubewarden validation policies with it.</p>
+<blockquote>
+<p><strong>Note well:</strong> unfortunately, it's currently impossible to write mutating
+policies using TinyGo.</p>
+</blockquote>
 <h2><a class="header" href="#tooling" id="tooling">Tooling</a></h2>
 <p>Writing Kubewarden policies requires a version of TinyGo greater than <code>0.17.0</code>.</p>
 <p>These Go libraries are extremely useful when writing a Kubewarden policy:</p>
@@ -201,8 +205,6 @@ structures and functions that reduce the amount of code to write. It also provid
 <li><a href="https://github.com/tidwall/gjson">gjson</a>: provides a powerful query language that allows
 quick navigation of JSON documents and data retrieval. This library doesn't use the
 <code>encoding/json</code> package provided by Go's stdlib, hence it's usable with TinyGo.</li>
-<li><a href="https://github.com/tidwall/sjson">sjson</a>: can be used to mutate JSON documents.
-This library doesn't use the <code>encoding/json</code> package provided by Go's stdlib, hence it's usable with TinyGo.</li>
 <li><a href="https://github.com/deckarep/golang-set">mapset</a>: provides a Go implementation of the
 <a href="https://en.wikipedia.org/wiki/Set_(abstract_data_type)">Set</a>
 data structure. This library significantly reduces the amount of code to be written,
