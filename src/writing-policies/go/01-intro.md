@@ -31,8 +31,11 @@ the `encoding/json` package against structures and user defined types.
 Kubewarden policies need to process JSON data like the policy settings and
 the actual request received by Kubernetes.
 
-Despite TinyGo's current limitations, it's still easy and doable to write Kubewarden policies
-with it.
+Despite TinyGo's current limitations, it's still easy and doable to write
+Kubewarden validation policies with it.
+
+> **Note well:** unfortunately, it's currently impossible to write mutating
+> policies using TinyGo.
 
 ## Tooling
 
@@ -45,8 +48,6 @@ These Go libraries are extremely useful when writing a Kubewarden policy:
 * [gjson](https://github.com/tidwall/gjson): provides a powerful query language that allows
   quick navigation of JSON documents and data retrieval. This library doesn't use the
   `encoding/json` package provided by Go's stdlib, hence it's usable with TinyGo.
-* [sjson](https://github.com/tidwall/sjson): can be used to mutate JSON documents.
-  This library doesn't use the `encoding/json` package provided by Go's stdlib, hence it's usable with TinyGo.
 * [mapset](https://github.com/deckarep/golang-set): provides a Go implementation of the
   [Set](https://en.wikipedia.org/wiki/Set_(abstract_data_type))
   data structure. This library significantly reduces the amount of code to be written,
