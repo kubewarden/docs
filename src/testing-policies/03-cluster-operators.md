@@ -1,85 +1,68 @@
-# Testing Policies
+# Before deployment
 
-This section covers the topic of testing Kubewarden Policies. There are two possible
-personas interested in testing policies:
+As a Kubernetes cluster operator you probably want to perform some tests
+against a Kubewarden policy you just found.
 
-  * As a policy author: you're writing a Kubewarden Policy and you want to ensure
-    your code behaves the way you expect.
-  * As an end user: you found a Kubewarden Policy and you want to tune/test the policy
-    settings before deploying it, maybe you want to keep testing these settings
-    inside of your CI/CD pipelines,...
+You probably want to answer questions like:
 
-# Kubewarden Policy authors
+* What are the correct policy settings to get the validation/mutation outcome
+  I desire?
+* How can I be sure everything will keep working as expected when I upgrade
+  the policy to a newer version, when I add/change some Kubernetes resources,
+  when I change the configuration parameters of the policy,...
 
-Kubewarden Policies are regular programs compiled as WebAssembly. As with any kind
-of program, it's important to have a good test coverage.
-
-Policy authors can leverage the testing frameworks and tools of their language
-of choice to verify the behaviour of their policies.
-
-As an example, you can take a look at these Kubewarden policies:
-
-  * [pod-privileged-policy](https://github.com/kubewarden/pod-privileged-policy): this
-    is a Kubewarden Policy written using [AssemblyScript](https://www.assemblyscript.org/).
-  * [psp-apparmor](https://github.com/kubewarden/psp-apparmor): this
-    is a Kubewarden Policy written using [Rust](https://www.rust-lang.org/).
-
-Both policies have integrated test suites built using the regular testing libraries
-of Rust and AssemblyScript.
-
-Finally, both projects rely on GitHub actions to implement their CI pipelines.
-
-# End users
-
-Aside from the approach of testing policy logic with the tools that
-your language toolchain already provides, Kubewarden has a dedicated
-project for testing policies:
+Kubewarden has a dedicated utility that allows testing of the policies
+outside of Kubernetes. This utility is called
 [`policy-testdrive`](https://github.com/kubewarden/policy-server/tree/main/crates/policy-testdrive).
 
-The concept of `policy-testdrive` is quite simple from a user
-point of view. You have to provide:
+`policy-testdrive` usage is quite simple, we just have to invoke it with the
+following data as input:
 
-1. The Wasm file providing the policy to be tested. The file is specified through
-  the `--policy` argument. At this  time you can only load files in the local
-  filesystem.
-1. A file containing the admission request object to be evaluated by
-  the policy. This is provided via the `--request-file` argument.
+1. Path to the WebAssembly binary file of the policy to be run. This is
+  specified through the `--policy` argument. Currently, `policy-testdrive`
+  can only load policies from the local filesystem.
+1. Path to the file containing the admission request object to be evaluated.
+  This is provided via the `--request-file` argument.
 1. The policy settings to be used at evaluation time, they can be provided
   via `--settings` flag. The flag takes a JSON blob as parameter.
 
+Once the policy evaluation is done, `policy-testdrive` prints to the standard
+output the `SettingsValidationResponse`and the `ValidationResponse` objects.
 
 ## Install
 
 You can download pre-built binaries of `policy-testdrive`
 from [here](https://github.com/kubewarden/policy-server/releases).
 
-## Quickstart
-
-### Prerequisites
-
-We will use [`wasm-to-oci`](https://github.com/engineerd/wasm-to-oci)
-to download a Kubewarden Policy published on a Container registry.
+Currently `policy-testdrive` isn't able to download policies from OCI
+registries. This can be done using the
+[`wasm-to-oci`](https://github.com/engineerd/wasm-to-oci) tool.
 
 Pre-built binaries of `wasm-to-oci`can be downloaded from the project's
 [GitHub Releases page](https://github.com/engineerd/wasm-to-oci/releases).
 
-### Obtain a Kubewarden policy
+## Quickstart
 
-We will download the
-[psp-apparmor](https://github.com/kubewarden/psp-apparmor) policy:
+This section describes how to test the
+[psp-apparmor](https://github.com/kubewarden/psp-apparmor) policy
+with different configurations and validation request objects as input data.
 
-```console
+We begin by downloading the WebAssembly binary of the policy, we will
+do that using the `wasm-to-oci` tool:
+
+```shell
 wasm-to-oci pull ghcr.io/kubewarden/policies/psp-apparmor:v0.1.2
 ```
 
 This will produce the following output:
-```console
+
+```shell
 INFO[0001] Pulled: ghcr.io/kubewarden/policies/psp-apparmor:v0.1.2 
 INFO[0001] Size: 2682915
 INFO[0001] Digest: sha256:5532a49834af8cc929994a65c0881190ef168295fffd2bed4e7325d2e91484b5 
 ```
 
-This should have created a `module.wasm` file in the current directory.
+This creates a `module.wasm` file in the current directory.
 
 ### Create `AdmissionReview` requests
 
@@ -158,9 +141,9 @@ contents:
 }
 ```
 
-This request tries to create a Pod with a container called `nginx` that is going
-to be run with the `unconfined` AppArmor profile. This is considered a bad
-security practice.
+This request tries to create a Pod with a container called `nginx` that runs
+with the `unconfined` AppArmor profile. Note well, running in `unconfined` mode
+is a bad security practice.
 
 Finally, let's create a file named `pod-req-apparmor-custom.json` with the following
 contents:
@@ -197,9 +180,8 @@ contents:
 }
 ```
 
-This request tries to create a Pod with a container called `nginx` that is going
-to be run with the profile provided by the administrators of the Kubernetes cluster.
-This profile is called `nginx-custom`.
+This request tries to create a Pod with a container called `nginx` that uses the
+`nginx-custom` profile provided by the administrators of the Kubernetes cluster.
 
 > **Note well:** these are stripped down `AdmissionReview` objects, we left
 > only the fields that are relevant to our policy.
@@ -208,11 +190,14 @@ This profile is called `nginx-custom`.
 
 Now we can use `policy-testdrive` to test the creation of a Pod that doesn't
 specify an AppArmor profile:
+
 ```console
-policy-testdrive --policy module.wasm --request-file pod-req-no-specific-apparmor-profile.json
+policy-testdrive --policy module.wasm \
+  --request-file pod-req-no-specific-apparmor-profile.json
 ```
 
 The policy will accept the request and produce the following output:
+
 ```console
 Settings validation result: SettingsValidationResponse { valid: true, message: None }
 Policy evaluation results:
@@ -221,8 +206,10 @@ ValidationResponse { uid: "", allowed: true, patch_type: None, patch: None, stat
 
 The policy will instead reject the creation of a Pod with an `unconfined` AppArmor
 profile:
+
 ```console
-$ policy-testdrive --policy module.wasm --request-file pod-req-apparmor-unconfined.json
+$ policy-testdrive --policy module.wasm \
+  --request-file pod-req-apparmor-unconfined.json
 
 Settings validation result: SettingsValidationResponse { valid: true, message: None }
 Policy evaluation results:
@@ -237,7 +224,8 @@ As a matter of fact, the Pod using a custom `nginx` profile gets rejected by
 the policy too:
 
 ```console
-$ policy-testdrive --policy module.wasm --request-file pod-req-apparmor-custom.json 
+$ policy-testdrive --policy module.wasm \
+  --request-file pod-req-apparmor-custom.json
 
 Settings validation result: SettingsValidationResponse { valid: true, message: None }
 Policy evaluation results:
@@ -245,6 +233,7 @@ ValidationResponse { uid: "", allowed: false, patch_type: None, patch: None, sta
 ```
 
 We can change the default behaviour and allow some chosen AppArmor to be used:
+
 ```console
 policy-testdrive --policy module.wasm \
   --request-file pod-req-apparmor-custom.json \
@@ -252,19 +241,67 @@ policy-testdrive --policy module.wasm \
 ```
 
 This time the request is accepted:
+
 ```console
 Settings validation result: SettingsValidationResponse { valid: true, message: None }
 Policy evaluation results:
 ValidationResponse { uid: "", allowed: true, patch_type: None, patch: None, status: None }
 ```
 
-## Wrapping up
+## Automation
 
-Testing Kubewarden Policies is extremely important.
+All these steps shown above can be automated using
+[bats](https://github.com/sstephenson/bats).
 
-As a Kubewarden Policy author you can leverage the testing frameworks of your favorite
-programming language and combine it with the CI systems of your choice to
-ensure your code behaves as expected.
+We can write a series of tests and integrate their execution inside
+of your existing CI and CD pipelines.
 
-As a Kubewarden Policy end user you can use `policy-testdrive` to test
-policies and their tuning outside of Kubernetes.
+That would ensure changes to the policy version, policy configuration
+parameters, Kubernetes resources,... won't break the outcome of the
+validation/mutation operations.
+
+The commands used above can be easily "wrapped" into a `bats` test:
+
+```bash
+@test "all is good" {
+  run policy-testdrive --policy module.wasm \
+    --request-file pod-req-no-specific-apparmor-profile.json
+
+  # this prints the output when one the checks below fails
+  echo "output = ${output}"
+
+  # settings validation passed
+  [[ "$output" == *"valid: true"* ]]
+
+  # request accepted
+  [[ "$output" == *"allowed: true"* ]]
+}
+
+@test "reject" {
+  run policy-testdrive --policy module.wasm \
+    --request-file pod-req-apparmor-custom.json
+
+  # this prints the output when one the checks below fails
+  echo "output = ${output}"
+
+  # settings validation passed
+  [[ "$output" == *"valid: true"* ]]
+
+  # request rejected
+  [[ "$output" == *"allowed: false"* ]]
+}
+```
+
+Assuming the snippet from above is inside of a file called `e2e.bats`,
+we can run the test in this way:
+
+```
+$ bats e2e.bats
+ ✓ all is good
+ ✓ reject
+
+2 tests, 0 failures
+```
+Checkout [this section](/writing-policies/go/05-e2e-tests.html)
+of the documentation to learn more about writing end-to-end
+tests of your policies.
