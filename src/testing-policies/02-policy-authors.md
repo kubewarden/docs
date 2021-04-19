@@ -26,7 +26,7 @@ As a policy author you can also write tests that are executed against the actual
 WebAssembly binary containing your policy. This can be done without having
 to deploy a Kubernetes cluster by using these tools:
 
-* [bats](https://github.com/sstephenson/bats): used to write the
+* [bats](https://github.com/bats-core/bats-core): used to write the
   tests and automate their execution.
 * [policy-testdrive](https://github.com/kubewarden/policy-server/releases):
   cli tool provided by Kubewarden to run its policies outside of

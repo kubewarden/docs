@@ -251,7 +251,7 @@ ValidationResponse { uid: "", allowed: true, patch_type: None, patch: None, stat
 ## Automation
 
 All these steps shown above can be automated using
-[bats](https://github.com/sstephenson/bats).
+[bats](https://github.com/bats-core/bats-core).
 
 We can write a series of tests and integrate their execution inside
 of your existing CI and CD pipelines.
