@@ -11,7 +11,7 @@ These tools need to be installed on your development machine:
 * docker or another container engine: used to build the WebAssembly
   policy. We will rely on the compiler shipped within the official
   TinyGo container image.
-* [bats](https://github.com/sstephenson/bats): used to write the
+* [bats](https://github.com/bats-core/bats-core): used to write the
   tests and automate their execution.
 * [policy-testdrive](https://github.com/kubewarden/policy-server/releases):
   cli tool provided by Kubewarden to run its policies outside of
@@ -35,7 +35,7 @@ The compilation produces a file called `policy.wasm`.
 
 ## Writing tests
 
-We are going to use [bats](https://github.com/sstephenson/bats) to write and
+We are going to use [bats](https://github.com/bats-core/bats-core) to write and
 automate our tests. Each test will be composed by the following steps:
 
 1. Run the policy using `policy-testdrive`.
