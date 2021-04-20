@@ -34,8 +34,8 @@ Pushing a policy can be done in this way:
 
 ```bash
 $ wasm-to-oci push pod-runtime-class-policy.wasm \
-              <oci-registry>/kubewarden-policies/pod-runtime-class-policy:v0.0.1
+              <oci-registry>/kubewarden-policies/pod-runtime-class-policy:v0.0.2
 ```
 
 The policy can then be referenced from the Kubewarden Policy Server as
-`registry://<oci-registry>/kubewarden-policies/pod-runtime-class-policy:v0.0.1`.
+`registry://<oci-registry>/kubewarden-policies/pod-runtime-class-policy:v0.0.2`.

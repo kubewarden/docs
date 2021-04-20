@@ -44,7 +44,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: psp-capabilities
 spec:
-  module: registry://ghcr.io/kubewarden/policies/psp-capabilities:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/psp-capabilities:v0.1.2
   resources:
   - pods
   operations:
@@ -109,7 +109,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.4
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.5
   resources:
   - pods
   operations:
