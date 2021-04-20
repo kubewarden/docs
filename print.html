@@ -238,7 +238,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: psp-capabilities
 spec:
-  module: registry://ghcr.io/kubewarden/policies/psp-capabilities:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/psp-capabilities:v0.1.2
   resources:
   - pods
   operations:
@@ -302,7 +302,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.4
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.5
   resources:
   - pods
   operations:
@@ -2623,10 +2623,10 @@ to successfully push a Kubewarden Policy to it.</p>
 can be used to push a Kubewarden Policy to an OCI compliant registry.</p>
 <p>Pushing a policy can be done in this way:</p>
 <pre><code class="language-bash">$ wasm-to-oci push pod-runtime-class-policy.wasm \
-              &lt;oci-registry&gt;/kubewarden-policies/pod-runtime-class-policy:v0.0.1
+              &lt;oci-registry&gt;/kubewarden-policies/pod-runtime-class-policy:v0.0.2
 </code></pre>
 <p>The policy can then be referenced from the Kubewarden Policy Server as
-<code>registry://&lt;oci-registry&gt;/kubewarden-policies/pod-runtime-class-policy:v0.0.1</code>.</p>
+<code>registry://&lt;oci-registry&gt;/kubewarden-policies/pod-runtime-class-policy:v0.0.2</code>.</p>
 <h1><a class="header" href="#testing-policies" id="testing-policies">Testing Policies</a></h1>
 <p>This section covers the topic of testing Kubewarden Policies. There are two possible
 personas interested in testing policies:</p>
