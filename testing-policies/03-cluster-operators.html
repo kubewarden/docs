@@ -26,7 +26,9 @@
         <link rel="stylesheet" href="../css/variables.css">
         <link rel="stylesheet" href="../css/general.css">
         <link rel="stylesheet" href="../css/chrome.css">
+        
         <link rel="stylesheet" href="../css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
@@ -128,14 +130,22 @@
                     <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                         <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
                         
+                        
+                        <a href="https://github.com/kubewarden/docs/edit/main/src/testing-policies/03-cluster-operators.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+
                     </div>
                 </div>
 
@@ -163,7 +173,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#before-deployment" id="before-deployment">Before deployment</a></h1>
+                        <h1 id="before-deployment"><a class="header" href="#before-deployment">Before deployment</a></h1>
 <p>As a Kubernetes cluster operator you probably want to perform some tests
 against a Kubewarden policy you just found.</p>
 <p>You probably want to answer questions like:</p>
@@ -190,7 +200,7 @@ via <code>--settings</code> flag. The flag takes a JSON blob as parameter.</li>
 </ol>
 <p>Once the policy evaluation is done, <code>policy-testdrive</code> prints to the standard
 output the <code>SettingsValidationResponse</code>and the <code>ValidationResponse</code> objects.</p>
-<h2><a class="header" href="#install" id="install">Install</a></h2>
+<h2 id="install"><a class="header" href="#install">Install</a></h2>
 <p>You can download pre-built binaries of <code>policy-testdrive</code>
 from <a href="https://github.com/kubewarden/policy-server/releases">here</a>.</p>
 <p>Currently <code>policy-testdrive</code> isn't able to download policies from OCI
@@ -198,7 +208,7 @@ registries. This can be done using the
 <a href="https://github.com/engineerd/wasm-to-oci"><code>wasm-to-oci</code></a> tool.</p>
 <p>Pre-built binaries of <code>wasm-to-oci</code>can be downloaded from the project's
 <a href="https://github.com/engineerd/wasm-to-oci/releases">GitHub Releases page</a>.</p>
-<h2><a class="header" href="#quickstart" id="quickstart">Quickstart</a></h2>
+<h2 id="quickstart"><a class="header" href="#quickstart">Quickstart</a></h2>
 <p>This section describes how to test the
 <a href="https://github.com/kubewarden/psp-apparmor">psp-apparmor</a> policy
 with different configurations and validation request objects as input data.</p>
@@ -212,7 +222,7 @@ INFO[0001] Size: 2682915
 INFO[0001] Digest: sha256:5532a49834af8cc929994a65c0881190ef168295fffd2bed4e7325d2e91484b5 
 </code></pre>
 <p>This creates a <code>module.wasm</code> file in the current directory.</p>
-<h3><a class="header" href="#create-admissionreview-requests" id="create-admissionreview-requests">Create <code>AdmissionReview</code> requests</a></h3>
+<h3 id="create-admissionreview-requests"><a class="header" href="#create-admissionreview-requests">Create <code>AdmissionReview</code> requests</a></h3>
 <p>We have to create some files holding the <code>AdmissionReview</code> objects that
 will be evaluated by the policy.</p>
 <p>Let's create a file named <code>pod-req-no-specific-apparmor-profile.json</code> with the following
@@ -321,7 +331,7 @@ contents:</p>
 <p><strong>Note well:</strong> these are stripped down <code>AdmissionReview</code> objects, we left
 only the fields that are relevant to our policy.</p>
 </blockquote>
-<h3><a class="header" href="#test-the-policy" id="test-the-policy">Test the policy</a></h3>
+<h3 id="test-the-policy"><a class="header" href="#test-the-policy">Test the policy</a></h3>
 <p>Now we can use <code>policy-testdrive</code> to test the creation of a Pod that doesn't
 specify an AppArmor profile:</p>
 <pre><code class="language-console">policy-testdrive --policy module.wasm \
@@ -363,7 +373,7 @@ ValidationResponse { uid: &quot;&quot;, allowed: false, patch_type: None, patch:
 Policy evaluation results:
 ValidationResponse { uid: &quot;&quot;, allowed: true, patch_type: None, patch: None, status: None }
 </code></pre>
-<h2><a class="header" href="#automation" id="automation">Automation</a></h2>
+<h2 id="automation"><a class="header" href="#automation">Automation</a></h2>
 <p>All these steps shown above can be automated using
 <a href="https://github.com/bats-core/bats-core">bats</a>.</p>
 <p>We can write a series of tests and integrate their execution inside

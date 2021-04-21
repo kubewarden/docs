@@ -26,7 +26,9 @@
         <link rel="stylesheet" href="../../css/variables.css">
         <link rel="stylesheet" href="../../css/general.css">
         <link rel="stylesheet" href="../../css/chrome.css">
+        
         <link rel="stylesheet" href="../../css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
@@ -128,14 +130,22 @@
                     <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                         <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
                         
+                        
+                        <a href="https://github.com/kubewarden/docs/edit/main/src/writing-policies/spec/02-settings.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+
                     </div>
                 </div>
 
@@ -163,13 +173,13 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#policy-settings" id="policy-settings">Policy settings</a></h1>
+                        <h1 id="policy-settings"><a class="header" href="#policy-settings">Policy settings</a></h1>
 <p>Policy behaviour is not set in stone, it can be configured by providing configuration
 details to the policy at runtime. The policy author has full freedom to define
 the structure of the policy settings.</p>
 <p>Kubewarden takes care of serializing the policy settings into JSON and provide
 them to the policy every time it is invoked.</p>
-<h2><a class="header" href="#settings-validation" id="settings-validation">Settings validation</a></h2>
+<h2 id="settings-validation"><a class="header" href="#settings-validation">Settings validation</a></h2>
 <p>Some policies might want to validate the settings a user provides to ensure
 they are correct.</p>
 <p>Each policy must register a waPC function called <code>validate_settings</code> that
@@ -194,7 +204,7 @@ validates all the policy settings provided by users at start time.
 The policy-server exits immediately with an error if at least one of its
 policies received wrong configuration parameters.</p>
 </blockquote>
-<h2><a class="header" href="#example" id="example">Example</a></h2>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
 <p>Let's take as an example the <a href="https://github.com/kubewarden/psp-capabilities">psp-capabilities</a>
 policy which has the following configuration format:</p>
 <pre><code class="language-yaml">allowed_capabilities:
@@ -220,7 +230,7 @@ document:</p>
   ]
 }
 </code></pre>
-<h1><a class="header" href="#recap" id="recap">Recap</a></h1>
+<h1 id="recap"><a class="header" href="#recap">Recap</a></h1>
 <p>Each policy must register a waPC function called <code>validate_settings</code> that has
 the following API:</p>
 <table>

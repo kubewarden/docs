@@ -26,7 +26,9 @@
         <link rel="stylesheet" href="../../css/variables.css">
         <link rel="stylesheet" href="../../css/general.css">
         <link rel="stylesheet" href="../../css/chrome.css">
+        
         <link rel="stylesheet" href="../../css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
@@ -128,14 +130,22 @@
                     <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                         <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
                         
+                        
+                        <a href="https://github.com/kubewarden/docs/edit/main/src/writing-policies/go/06-automate.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+
                     </div>
                 </div>
 
@@ -163,20 +173,20 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#automations" id="automations">Automations</a></h1>
+                        <h1 id="automations"><a class="header" href="#automations">Automations</a></h1>
 <p>This section describes how we can use GitHub Actions to automate as many tasks
 as possible.</p>
 <p>The scaffolded project already includes all the GitHub actions you need.
 These files can be found inside of the <code>.github/workflows</code> directory.</p>
 <p>The same principles can be adapted to use a different CI system.</p>
-<h2><a class="header" href="#testing" id="testing">Testing</a></h2>
+<h2 id="testing"><a class="header" href="#testing">Testing</a></h2>
 <p>We can automate the execution of the unit tests and of the end-to-end tests.</p>
 <p>This is working out of the box thanks to these files:</p>
 <ul>
 <li><code>.github/workflows/e2e-tests.yml</code></li>
 <li><code>.github/workflows/unit-tests.yml</code></li>
 </ul>
-<h2><a class="header" href="#release" id="release">Release</a></h2>
+<h2 id="release"><a class="header" href="#release">Release</a></h2>
 <p>The scaffolded project created a <code>.github/workflows/release.yml.template</code>.</p>
 <p>This file defines a pipeline that performs the following steps:</p>
 <ul>
@@ -198,7 +208,7 @@ to:</p>
 will include the following assets: the source code of the policy and the WebAssembly
 binary.</li>
 </ol>
-<h3><a class="header" href="#a-concrete-example" id="a-concrete-example">A concrete example</a></h3>
+<h3 id="a-concrete-example"><a class="header" href="#a-concrete-example">A concrete example</a></h3>
 <p>Let's assume we have a policy named named <code>safe-labels</code> and we want to publish
 it as <code>ghcr.io/kubewarden/policies/safe-labels</code>.</p>
 <p>The contents of the <code>jobs.env</code> section of <code>release.yml</code> should look like that:</p>

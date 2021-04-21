@@ -26,7 +26,9 @@
         <link rel="stylesheet" href="../../css/variables.css">
         <link rel="stylesheet" href="../../css/general.css">
         <link rel="stylesheet" href="../../css/chrome.css">
+        
         <link rel="stylesheet" href="../../css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
@@ -128,14 +130,22 @@
                     <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                         <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
                         
+                        
+                        <a href="https://github.com/kubewarden/docs/edit/main/src/writing-policies/rust/06-build-and-distribute.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+
                     </div>
                 </div>
 
@@ -163,7 +173,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h2><a class="header" href="#building-the-policy" id="building-the-policy">Building the policy</a></h2>
+                        <h2 id="building-the-policy"><a class="header" href="#building-the-policy">Building the policy</a></h2>
 <p>So far we have built the policy using as a compilation target the same operating
 system and architecture of our development machine.</p>
 <p>It's now time to build the policy as a WebAssembly binary, also known as <code>.wasm</code>
@@ -177,10 +187,10 @@ compilation target.</p>
 <pre><code class="language-shell">$ file target/wasm32-unknown-unknown/release/demo.wasm
 target/wasm32-unknown-unknown/release/demo.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
 </code></pre>
-<h2><a class="header" href="#distributing-the-policy" id="distributing-the-policy">Distributing the policy</a></h2>
+<h2 id="distributing-the-policy"><a class="header" href="#distributing-the-policy">Distributing the policy</a></h2>
 <p>This topic is covered inside of the <a href="/distributing-policies.html">&quot;distributing policies&quot;</a>
 section of Kubewarden's documentation.</p>
-<h2><a class="header" href="#more-examples" id="more-examples">More examples</a></h2>
+<h2 id="more-examples"><a class="header" href="#more-examples">More examples</a></h2>
 <p>You can find more Kubewarden policies written in Rust inside of Kubewarden's
 GitHub space. <a href="https://github.com/search?l=Rust&amp;q=topic%3Apolicy-as-code+org%3Akubewarden&amp;type=Repositories">This query</a>
 can help you find them.</p>

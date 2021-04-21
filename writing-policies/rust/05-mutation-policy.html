@@ -26,7 +26,9 @@
         <link rel="stylesheet" href="../../css/variables.css">
         <link rel="stylesheet" href="../../css/general.css">
         <link rel="stylesheet" href="../../css/chrome.css">
+        
         <link rel="stylesheet" href="../../css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
@@ -128,14 +130,22 @@
                     <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                         <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
                         
+                        
+                        <a href="https://github.com/kubewarden/docs/edit/main/src/writing-policies/rust/05-mutation-policy.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+
                     </div>
                 </div>
 
@@ -163,7 +173,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#creating-a-new-mutation-policy" id="creating-a-new-mutation-policy">Creating a new mutation policy</a></h1>
+                        <h1 id="creating-a-new-mutation-policy"><a class="header" href="#creating-a-new-mutation-policy">Creating a new mutation policy</a></h1>
 <p>Mutating policies are similar to validating ones, but have also the ability to mutate an
 incoming object.</p>
 <p>They can:</p>
@@ -199,7 +209,7 @@ spec:
     - name: nginx
       image: nginx:latest
 </code></pre>
-<h2><a class="header" href="#write-the-mutation-code" id="write-the-mutation-code">Write the mutation code</a></h2>
+<h2 id="write-the-mutation-code"><a class="header" href="#write-the-mutation-code">Write the mutation code</a></h2>
 <p>The mutation code is done inside of the <code>validate</code> function. The function should be changed
 to approve the request via the <a href="https://docs.rs/kubewarden-policy-sdk/0.1.0/kubewarden_policy_sdk/fn.mutate_request.html"><code>mutate_request</code></a>
 instead of the <a href="https://docs.rs/kubewarden-policy-sdk/0.1.0/kubewarden_policy_sdk/fn.accept_request.html"><code>accept_request</code></a>.</p>
@@ -279,7 +289,7 @@ test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 </code></pre>
 <p>As you can see, the <code>accept_pod_with_valid_name</code> fails because the response actually
 contains a mutated object. It looks like our code is actually working!</p>
-<h2><a class="header" href="#update-the-unit-tests" id="update-the-unit-tests">Update the unit tests</a></h2>
+<h2 id="update-the-unit-tests"><a class="header" href="#update-the-unit-tests">Update the unit tests</a></h2>
 <p>Let's update the <code>accept_pod_with_valid_name</code> to look like that:</p>
 <pre><code class="language-rust norun noplayground">#[test]
 fn accept_pod_with_valid_name() -&gt; Result&lt;(), ()&gt; {

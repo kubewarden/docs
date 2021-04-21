@@ -26,7 +26,9 @@
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
@@ -128,14 +130,22 @@
                     <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                         <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
                         
+                        
+                        <a href="https://github.com/kubewarden/docs/edit/main/src/quick-start.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+
                     </div>
                 </div>
 
@@ -163,7 +173,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#quick-start" id="quick-start">Quick Start</a></h1>
+                        <h1 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h1>
 <p>The Kubewarden stack is made of the following components:</p>
 <ul>
 <li>An arbitrary number of <code>ClusterAdmissionPolicy</code> resources: this is how policies
@@ -173,7 +183,7 @@ policies defined by the administrators and evaluates them</li>
 <li>A Deployment of <code>kubewarden-controller</code>: this is the controller that monitors
 the <code>AdmissionPolicy</code> resources and interacts with the Kubewarden <code>policy-server</code></li>
 </ul>
-<h2><a class="header" href="#install" id="install">Install</a></h2>
+<h2 id="install"><a class="header" href="#install">Install</a></h2>
 <p>The Kubewarden stack can be deployed using a helm chart:</p>
 <pre><code class="language-console">helm repo add kubewarden https://charts.kubewarden.io
 helm install --namespace kubewarden --create-namespace kubewarden-controller kubewarden/kubewarden-controller
@@ -185,7 +195,7 @@ Namespace called <code>kubewarden</code>.</p>
 <p>The default configuration values should be good enough for the majority of
 deployments, all the options are documented <a href="https://charts.kubewarden.io/#configuration">here</a>.</p>
 <p>The Kubewarden Policy Server is completely managed by the kubewarden-controller.</p>
-<h2><a class="header" href="#kubewarden-policies" id="kubewarden-policies">Kubewarden Policies</a></h2>
+<h2 id="kubewarden-policies"><a class="header" href="#kubewarden-policies">Kubewarden Policies</a></h2>
 <p>Enforcing policies is by far the most common operation a Kubernetes
 administrator will perform. You can declare as many policies as you want,
 targeting any kind of Kubernetes resource and type of operation that can be
@@ -251,7 +261,7 @@ namespaced (in any namespace), or cluster-wide resources.</p>
 plans to also provide a namespaced version that will only impact
 registered namespaced resources on its own namespace.</p>
 </blockquote>
-<h2><a class="header" href="#enforce-your-first-policy" id="enforce-your-first-policy">Enforce your first policy</a></h2>
+<h2 id="enforce-your-first-policy"><a class="header" href="#enforce-your-first-policy">Enforce your first policy</a></h2>
 <p>We will use the <a href="https://github.com/kubewarden/pod-privileged-policy"><code>pod-privileged</code> policy</a>.
 This policy prevents the creation of privileged containers inside of a Kubernetes cluster.</p>
 <p>Let's define a <code>ClusterAdmissionPolicy</code> for that:</p>
@@ -316,7 +326,7 @@ EOF
 <p>This time the creation of the Pod will be blocked, with the following message:</p>
 <pre><code>Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;privileged-pods.kubewarden.admission&quot; denied the request: User 'minikube-user' cannot schedule privileged containers
 </code></pre>
-<h2><a class="header" href="#uninstall" id="uninstall">Uninstall</a></h2>
+<h2 id="uninstall"><a class="header" href="#uninstall">Uninstall</a></h2>
 <p>As a first step remove all the <code>ClusterAdmissionPolicy</code> resources you have created.
 This can be done with the following command:</p>
 <pre><code class="language-shell">kubectl delete --all clusteradmissionpolicies.policies.kubewarden.io
@@ -353,7 +363,7 @@ resources created by Kubewarden have <code>policyFailure</code>
 set to <code>Fail</code>, which will cause all these incoming requests to be rejected.</p>
 <p><strong>This could bring havoc on your cluster.</strong></p>
 </blockquote>
-<h2><a class="header" href="#wrapping-up" id="wrapping-up">Wrapping up</a></h2>
+<h2 id="wrapping-up"><a class="header" href="#wrapping-up">Wrapping up</a></h2>
 <p>As we have seen, the <code>ClusterAdmissionPolicy</code> resource is the core type that
 a cluster operator has to manage, the rest of the resources needed to
 run the policies and configure them will be taken care of

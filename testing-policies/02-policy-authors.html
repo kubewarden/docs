@@ -26,7 +26,9 @@
         <link rel="stylesheet" href="../css/variables.css">
         <link rel="stylesheet" href="../css/general.css">
         <link rel="stylesheet" href="../css/chrome.css">
+        
         <link rel="stylesheet" href="../css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
@@ -128,14 +130,22 @@
                     <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                         <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
                         
+                        
+                        <a href="https://github.com/kubewarden/docs/edit/main/src/testing-policies/02-policy-authors.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+
                     </div>
                 </div>
 
@@ -163,7 +173,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#while-creating-a-policy" id="while-creating-a-policy">While creating a policy</a></h1>
+                        <h1 id="while-creating-a-policy"><a class="header" href="#while-creating-a-policy">While creating a policy</a></h1>
 <p>Kubewarden Policies are regular programs compiled as WebAssembly. As with any kind
 of program, it's important to have good test coverage.</p>
 <p>Policy authors can leverage the testing frameworks and tools of their language
@@ -180,7 +190,7 @@ is a Kubewarden Policy written using <a href="https://www.assemblyscript.org/">A
 <p>All these policies have integrated test suites built using the regular testing libraries
 of Rust, Go and AssemblyScript.</p>
 <p>Finally, all these projects rely on GitHub Actions to implement their CI pipelines.</p>
-<h2><a class="header" href="#end-to-end-tests" id="end-to-end-tests">End-to-end tests</a></h2>
+<h2 id="end-to-end-tests"><a class="header" href="#end-to-end-tests">End-to-end tests</a></h2>
 <p>As a policy author you can also write tests that are executed against the actual
 WebAssembly binary containing your policy. This can be done without having
 to deploy a Kubernetes cluster by using these tools:</p>

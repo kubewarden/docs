@@ -26,7 +26,9 @@
         <link rel="stylesheet" href="../../css/variables.css">
         <link rel="stylesheet" href="../../css/general.css">
         <link rel="stylesheet" href="../../css/chrome.css">
+        
         <link rel="stylesheet" href="../../css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
@@ -128,14 +130,22 @@
                     <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                         <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
                         
+                        
+                        <a href="https://github.com/kubewarden/docs/edit/main/src/writing-policies/go/01-intro.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+
                     </div>
                 </div>
 
@@ -167,7 +177,7 @@
 <p><strong>Note well:</strong> Go's support for WebAssembly is fast evolving. The contents
 of this page have been written during April 2021, hence they could be outdated.</p>
 </blockquote>
-<h1><a class="header" href="#go" id="go">Go</a></h1>
+<h1 id="go"><a class="header" href="#go">Go</a></h1>
 <p>Currently the official Go compiler cannot produce WebAssembly binaries
 that can be run <strong>outside</strong> of the browser.
 <a href="https://github.com/golang/go/issues/31105">This upstream issue</a> is tracking
@@ -183,7 +193,7 @@ boards such as the BBC micro:bit and the Arduino Uno.</p>
 <p>TinyGo can also be used to produce WebAssembly (Wasm) code which is very
 compact in size.</p>
 </blockquote>
-<h2><a class="header" href="#limitations" id="limitations">Limitations</a></h2>
+<h2 id="limitations"><a class="header" href="#limitations">Limitations</a></h2>
 <p>TinyGo doesn't yet support all the Go features (see <a href="https://tinygo.org/lang-support/">here</a>
 to see the current project status). Currently its biggest limitation
 is the lack of a fully supported <code>reflect</code> package. That leads to the inability to use
@@ -196,7 +206,7 @@ Kubewarden validation policies with it.</p>
 <p><strong>Note well:</strong> unfortunately, it's currently impossible to write mutating
 policies using TinyGo.</p>
 </blockquote>
-<h2><a class="header" href="#tooling" id="tooling">Tooling</a></h2>
+<h2 id="tooling"><a class="header" href="#tooling">Tooling</a></h2>
 <p>Writing Kubewarden policies requires a version of TinyGo greater than <code>0.17.0</code>.</p>
 <p>These Go libraries are extremely useful when writing a Kubewarden policy:</p>
 <ul>
@@ -214,7 +224,7 @@ of policies.</li>
 <p>Last but not least, the Kubewarden project provides a
 <a href="https://github.com/kubewarden/go-policy-template">template Go policy project</a>
 that can be used to quickly create Kubewarden policies written in Go.</p>
-<h2><a class="header" href="#getting-tinygo-dependencies" id="getting-tinygo-dependencies">Getting TinyGo dependencies</a></h2>
+<h2 id="getting-tinygo-dependencies"><a class="header" href="#getting-tinygo-dependencies">Getting TinyGo dependencies</a></h2>
 <p>The easiest way to get TinyGo is by using the upstream container images.
 Official releases can be found <a href="https://hub.docker.com/r/tinygo/tinygo">here</a>, while
 builds from the development branch are automatically pushed

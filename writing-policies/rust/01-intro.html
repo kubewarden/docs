@@ -26,7 +26,9 @@
         <link rel="stylesheet" href="../../css/variables.css">
         <link rel="stylesheet" href="../../css/general.css">
         <link rel="stylesheet" href="../../css/chrome.css">
+        
         <link rel="stylesheet" href="../../css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
@@ -128,14 +130,22 @@
                     <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                         <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
                         
+                        
+                        <a href="https://github.com/kubewarden/docs/edit/main/src/writing-policies/rust/01-intro.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+
                     </div>
                 </div>
 
@@ -163,7 +173,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#rust" id="rust">Rust</a></h1>
+                        <h1 id="rust"><a class="header" href="#rust">Rust</a></h1>
 <p><a href="https://www.rust-lang.org/">Rust</a> is the most mature programming language that
 can generate WebAssembly modules: WebAssembly is a first-class citizen
 in the Rust world. That means many of the tools and crates of the Rust
@@ -178,7 +188,7 @@ Kubewarden policies using the Rust programming language.</p>
 <p>Note well, we won't cover the details of Kubewarden's Rust SDK inside of this
 page. These can be found inside of the
 <a href="https://docs.rs/kubewarden-policy-sdk/0.1.0">official crate documentation</a>.</p>
-<h2><a class="header" href="#getting-rust-dependencies" id="getting-rust-dependencies">Getting Rust dependencies</a></h2>
+<h2 id="getting-rust-dependencies"><a class="header" href="#getting-rust-dependencies">Getting Rust dependencies</a></h2>
 <p>This section guides you through the process of installing the Rust compiler and
 its dependencies.</p>
 <p>As a first step install the Rust compiler and its tools, this can be easily done

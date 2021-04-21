@@ -28,7 +28,9 @@
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
@@ -130,14 +132,18 @@
                     <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                         <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
                         
+                        
+
                     </div>
                 </div>
 
@@ -169,12 +175,12 @@
 <p><strong>WARNING:</strong> Kubewarden is in early development stage, it's not production ready.</p>
 <p>Feedback is highly appreciated.</p>
 </blockquote>
-<h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
+<h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p>Kubewarden is a <a href="https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/">Kubernetes Dynamic Admission
 Controller</a>
 that validates incoming requests using policies written in
 WebAssembly.</p>
-<h2><a class="header" href="#what-is-webassembly" id="what-is-webassembly">What is WebAssembly?</a></h2>
+<h2 id="what-is-webassembly"><a class="header" href="#what-is-webassembly">What is WebAssembly?</a></h2>
 <p>As stated on <a href="https://webassembly.org/">WebAssembly's official
 website</a>:</p>
 <blockquote>
@@ -187,7 +193,7 @@ the web for client and server applications.</p>
 browsers. However, recent efforts have been made by the WebAssembly
 community to allow the execution of WebAssembly code outside of
 browsers.</p>
-<h2><a class="header" href="#why-use-webassembly" id="why-use-webassembly">Why use WebAssembly?</a></h2>
+<h2 id="why-use-webassembly"><a class="header" href="#why-use-webassembly">Why use WebAssembly?</a></h2>
 <p>By using WebAssembly, users can write Kubernetes policies using their
 favorite programming language, as long as the language can produce
 Wasm binaries.</p>
@@ -199,12 +205,12 @@ plugged into their current CI and CD workflows,...</p>
 processor architecture and Operating System. A policy built on a Apple
 Silicon machine can be run on a x86_64 Linux server without any
 conversion.</p>
-<h2><a class="header" href="#policy-distribution" id="policy-distribution">Policy distribution</a></h2>
+<h2 id="policy-distribution"><a class="header" href="#policy-distribution">Policy distribution</a></h2>
 <p>Kubewarden Policies can be served by a regular web server or, even
 better, can be published inside of an OCI compliant registry.</p>
 <p>Kubewarden Policies can be stored inside of an OCI compliant registry as
 <a href="https://github.com/opencontainers/artifacts">OCI artifacts</a>.</p>
-<h1><a class="header" href="#quick-start" id="quick-start">Quick Start</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h1>
 <p>The Kubewarden stack is made of the following components:</p>
 <ul>
 <li>An arbitrary number of <code>ClusterAdmissionPolicy</code> resources: this is how policies
@@ -214,7 +220,7 @@ policies defined by the administrators and evaluates them</li>
 <li>A Deployment of <code>kubewarden-controller</code>: this is the controller that monitors
 the <code>AdmissionPolicy</code> resources and interacts with the Kubewarden <code>policy-server</code></li>
 </ul>
-<h2><a class="header" href="#install" id="install">Install</a></h2>
+<h2 id="install"><a class="header" href="#install">Install</a></h2>
 <p>The Kubewarden stack can be deployed using a helm chart:</p>
 <pre><code class="language-console">helm repo add kubewarden https://charts.kubewarden.io
 helm install --namespace kubewarden --create-namespace kubewarden-controller kubewarden/kubewarden-controller
@@ -226,7 +232,7 @@ Namespace called <code>kubewarden</code>.</p>
 <p>The default configuration values should be good enough for the majority of
 deployments, all the options are documented <a href="https://charts.kubewarden.io/#configuration">here</a>.</p>
 <p>The Kubewarden Policy Server is completely managed by the kubewarden-controller.</p>
-<h2><a class="header" href="#kubewarden-policies" id="kubewarden-policies">Kubewarden Policies</a></h2>
+<h2 id="kubewarden-policies"><a class="header" href="#kubewarden-policies">Kubewarden Policies</a></h2>
 <p>Enforcing policies is by far the most common operation a Kubernetes
 administrator will perform. You can declare as many policies as you want,
 targeting any kind of Kubernetes resource and type of operation that can be
@@ -292,7 +298,7 @@ namespaced (in any namespace), or cluster-wide resources.</p>
 plans to also provide a namespaced version that will only impact
 registered namespaced resources on its own namespace.</p>
 </blockquote>
-<h2><a class="header" href="#enforce-your-first-policy" id="enforce-your-first-policy">Enforce your first policy</a></h2>
+<h2 id="enforce-your-first-policy"><a class="header" href="#enforce-your-first-policy">Enforce your first policy</a></h2>
 <p>We will use the <a href="https://github.com/kubewarden/pod-privileged-policy"><code>pod-privileged</code> policy</a>.
 This policy prevents the creation of privileged containers inside of a Kubernetes cluster.</p>
 <p>Let's define a <code>ClusterAdmissionPolicy</code> for that:</p>
@@ -357,7 +363,7 @@ EOF
 <p>This time the creation of the Pod will be blocked, with the following message:</p>
 <pre><code>Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;privileged-pods.kubewarden.admission&quot; denied the request: User 'minikube-user' cannot schedule privileged containers
 </code></pre>
-<h2><a class="header" href="#uninstall" id="uninstall">Uninstall</a></h2>
+<h2 id="uninstall"><a class="header" href="#uninstall">Uninstall</a></h2>
 <p>As a first step remove all the <code>ClusterAdmissionPolicy</code> resources you have created.
 This can be done with the following command:</p>
 <pre><code class="language-shell">kubectl delete --all clusteradmissionpolicies.policies.kubewarden.io
@@ -394,12 +400,12 @@ resources created by Kubewarden have <code>policyFailure</code>
 set to <code>Fail</code>, which will cause all these incoming requests to be rejected.</p>
 <p><strong>This could bring havoc on your cluster.</strong></p>
 </blockquote>
-<h2><a class="header" href="#wrapping-up" id="wrapping-up">Wrapping up</a></h2>
+<h2 id="wrapping-up"><a class="header" href="#wrapping-up">Wrapping up</a></h2>
 <p>As we have seen, the <code>ClusterAdmissionPolicy</code> resource is the core type that
 a cluster operator has to manage, the rest of the resources needed to
 run the policies and configure them will be taken care of
 automatically by the <code>kubewarden-controller</code> project.</p>
-<h1><a class="header" href="#what-is-a-kubewarden-policy" id="what-is-a-kubewarden-policy">What is a Kubewarden policy</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="what-is-a-kubewarden-policy"><a class="header" href="#what-is-a-kubewarden-policy">What is a Kubewarden policy</a></h1>
 <p>In this section we will explain what Kubewarden policies are by using some traditional computing
 analogies.</p>
 <p>A Kubewarden policy can be seen as a regular program that does one job: it receives
@@ -424,7 +430,7 @@ Kubernetes requests</li>
 </ul>
 <p>Writing Kubewarden policies consists of writing the validation business logic
 and then exposing it through a well-defined API.</p>
-<h1><a class="header" href="#programming-language-requirements" id="programming-language-requirements">Programming language requirements</a></h1>
+<h1 id="programming-language-requirements"><a class="header" href="#programming-language-requirements">Programming language requirements</a></h1>
 <p>Kubewarden policies are delivered as <a href="https://webassembly.org/">WebAssembly</a>
 binaries.</p>
 <p>Policy authors can write policies using any programming language that supports
@@ -438,7 +444,7 @@ provides a bi-directional communication channel.</p>
 <p>Because of that your programming language of choice must provide a waPC guest SDK.
 If that's not the case, feel free to reach out. We can help you overcome this
 limitation.</p>
-<h1><a class="header" href="#policy-communication-specification" id="policy-communication-specification">Policy communication specification</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="policy-communication-specification"><a class="header" href="#policy-communication-specification">Policy communication specification</a></h1>
 <p>The policy evaluator interacts with Kubewarden policies using a well defined API.
 The purpose of this section is to document the API used by the host (
 be it <code>policy-server</code> or <code>policy-testdrive</code>) to communicate with Kubewarden's
@@ -448,13 +454,13 @@ policies.</p>
 jump straight to one of the &quot;language focused&quot; chapters and come back to this
 chapter later.</p>
 </blockquote>
-<h1><a class="header" href="#policy-settings" id="policy-settings">Policy settings</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="policy-settings"><a class="header" href="#policy-settings">Policy settings</a></h1>
 <p>Policy behaviour is not set in stone, it can be configured by providing configuration
 details to the policy at runtime. The policy author has full freedom to define
 the structure of the policy settings.</p>
 <p>Kubewarden takes care of serializing the policy settings into JSON and provide
 them to the policy every time it is invoked.</p>
-<h2><a class="header" href="#settings-validation" id="settings-validation">Settings validation</a></h2>
+<h2 id="settings-validation"><a class="header" href="#settings-validation">Settings validation</a></h2>
 <p>Some policies might want to validate the settings a user provides to ensure
 they are correct.</p>
 <p>Each policy must register a waPC function called <code>validate_settings</code> that
@@ -479,7 +485,7 @@ validates all the policy settings provided by users at start time.
 The policy-server exits immediately with an error if at least one of its
 policies received wrong configuration parameters.</p>
 </blockquote>
-<h2><a class="header" href="#example" id="example">Example</a></h2>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
 <p>Let's take as an example the <a href="https://github.com/kubewarden/psp-capabilities">psp-capabilities</a>
 policy which has the following configuration format:</p>
 <pre><code class="language-yaml">allowed_capabilities:
@@ -505,7 +511,7 @@ document:</p>
   ]
 }
 </code></pre>
-<h1><a class="header" href="#recap" id="recap">Recap</a></h1>
+<h1 id="recap"><a class="header" href="#recap">Recap</a></h1>
 <p>Each policy must register a waPC function called <code>validate_settings</code> that has
 the following API:</p>
 <table>
@@ -540,7 +546,7 @@ the following API:</p>
     </tr>
   </tbody>
 </table>
-<h1><a class="header" href="#validating-policies" id="validating-policies">Validating policies</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="validating-policies"><a class="header" href="#validating-policies">Validating policies</a></h1>
 <p>The Kubewarden policy server receives
 <a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionReview"><code>AdmissionReview</code></a>
 objects from the Kubernetes API server. It then forwards the value of
@@ -555,7 +561,7 @@ a function named <code>validate</code>, exposed through the waPC guest SDK, so
 that the <code>policy-server</code> (waPC host) can invoke it.</p>
 <p>The <code>validate</code> function receives a <code>ValidationRequest</code> object serialized as JSON and
 returns a <code>ValidationResponse</code> object serialized as JSON.</p>
-<h2><a class="header" href="#the-validationrequest-object" id="the-validationrequest-object">The <code>ValidationRequest</code> object</a></h2>
+<h2 id="the-validationrequest-object"><a class="header" href="#the-validationrequest-object">The <code>ValidationRequest</code> object</a></h2>
 <p>The <code>ValidationRequest</code> is a simple JSON object that is received by the
 <code>validate</code> function. It looks like this:</p>
 <pre><code class="language-json">{
@@ -567,7 +573,7 @@ returns a <code>ValidationResponse</code> object serialized as JSON.</p>
 </code></pre>
 <p>The <code>settings</code> key points to a free-form JSON document that can hold the policy
 specific settings. The previous chapter focused on policies and settings.</p>
-<h3><a class="header" href="#a-concrete-example" id="a-concrete-example">A concrete example</a></h3>
+<h3 id="a-concrete-example"><a class="header" href="#a-concrete-example">A concrete example</a></h3>
 <p>Given the following Kubernetes <code>AdmissionReview</code>:</p>
 <pre><code class="language-json">{
   &quot;apiVersion&quot;: &quot;admission.k8s.io/v1&quot;,
@@ -705,7 +711,7 @@ specific settings. The previous chapter focused on policies and settings.</p>
   }
 }
 </code></pre>
-<h2><a class="header" href="#the-validationresponse-object" id="the-validationresponse-object">The <code>ValidationResponse</code> object</a></h2>
+<h2 id="the-validationresponse-object"><a class="header" href="#the-validationresponse-object">The <code>ValidationResponse</code> object</a></h2>
 <p>The <code>validate</code> function returns the outcome of its validation using a <code>ValidationResponse</code>
 object.</p>
 <p>The <code>ValidationResponse</code> is structured in the following way:</p>
@@ -735,7 +741,7 @@ part of the body of the error returned to the Kubernetes API server
 client that issued the rejected request.</p>
 <p>The <code>mutated_object</code> is an optional field used only by mutating policies.
 This is going to be covered inside of the next chapter.</p>
-<h1><a class="header" href="#recap-1" id="recap-1">Recap</a></h1>
+<h1 id="recap-1"><a class="header" href="#recap-1">Recap</a></h1>
 <p>These are the functions a validating policy must implement:</p>
 <table>
   <thead>
@@ -797,7 +803,7 @@ This is going to be covered inside of the next chapter.</p>
     </tr>
   </tbody>
 </table>
-<h1><a class="header" href="#mutating-policies" id="mutating-policies">Mutating policies</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="mutating-policies"><a class="header" href="#mutating-policies">Mutating policies</a></h1>
 <p>Mutation policies are structured in the very same was as validating ones:</p>
 <ul>
 <li>They have to register a <code>validate</code> and a <code>validate_settings</code> waPC functions</li>
@@ -814,7 +820,7 @@ object by returning a <code>ValidationResponse</code> object that looks like tha
 </code></pre>
 <p>The <code>mutated_object</code> field contains the object the policy wants to be created
 inside of the Kubernetes cluster serialized to JSON.</p>
-<h2><a class="header" href="#a-concrete-example-1" id="a-concrete-example-1">A concrete example</a></h2>
+<h2 id="a-concrete-example-1"><a class="header" href="#a-concrete-example-1">A concrete example</a></h2>
 <p>Let's assume the policy received <code>ValidationRequest</code>:</p>
 <pre><code class="language-json">{
   &quot;settings&quot;: {},
@@ -914,7 +920,7 @@ spec:
 <p>As you can see the policy altered the <code>securityContext.capabilities.drop</code>
 section of the only container declared inside of the Pod.</p>
 <p>The container is now dropping the <code>BPF</code> capability thanks to our policy.</p>
-<h1><a class="header" href="#recap-2" id="recap-2">Recap</a></h1>
+<h1 id="recap-2"><a class="header" href="#recap-2">Recap</a></h1>
 <p>These are the functions a mutating policy must implement:</p>
 <table>
   <thead>
@@ -979,7 +985,7 @@ section of the only container declared inside of the Pod.</p>
     </tr>
   </tbody>
 </table>
-<h1><a class="header" href="#context-aware-policies" id="context-aware-policies">Context aware policies</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="context-aware-policies"><a class="header" href="#context-aware-policies">Context aware policies</a></h1>
 <blockquote>
 <p><strong>NOTE:</strong> This feature is a work in progress, and not to be depended upon.</p>
 <p>Feedback is highly appreciated.</p>
@@ -1004,7 +1010,7 @@ list of resources, as provided by Kubernetes.</p>
 <p>The <code>policy-server</code> will be the component responsible for refreshing
 this information when it considers, and the policy always retrieves
 the latest available information exposed by the <code>policy-server</code>.</p>
-<h1><a class="header" href="#rust" id="rust">Rust</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="rust"><a class="header" href="#rust">Rust</a></h1>
 <p><a href="https://www.rust-lang.org/">Rust</a> is the most mature programming language that
 can generate WebAssembly modules: WebAssembly is a first-class citizen
 in the Rust world. That means many of the tools and crates of the Rust
@@ -1019,7 +1025,7 @@ Kubewarden policies using the Rust programming language.</p>
 <p>Note well, we won't cover the details of Kubewarden's Rust SDK inside of this
 page. These can be found inside of the
 <a href="https://docs.rs/kubewarden-policy-sdk/0.1.0">official crate documentation</a>.</p>
-<h2><a class="header" href="#getting-rust-dependencies" id="getting-rust-dependencies">Getting Rust dependencies</a></h2>
+<h2 id="getting-rust-dependencies"><a class="header" href="#getting-rust-dependencies">Getting Rust dependencies</a></h2>
 <p>This section guides you through the process of installing the Rust compiler and
 its dependencies.</p>
 <p>As a first step install the Rust compiler and its tools, this can be easily done
@@ -1031,7 +1037,7 @@ using <a href="https://github.com/rust-lang/rustup">rustup</a>. Please follow
 <p>Finally, install the <a href="https://github.com/cargo-generate/cargo-generate">cargo-generate</a> utility:</p>
 <pre><code class="language-shell">cargo install cargo-generate
 </code></pre>
-<h1><a class="header" href="#creating-a-new-validation-policy" id="creating-a-new-validation-policy">Creating a new validation policy</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="creating-a-new-validation-policy"><a class="header" href="#creating-a-new-validation-policy">Creating a new validation policy</a></h1>
 <p>We are going to create a simple validation policy that processes
 Pod creation requests.</p>
 <p>The policy will look at the <code>metadata.name</code> attribute of the Pod and reject
@@ -1062,7 +1068,7 @@ spec:
     - name: nginx
       image: nginx:latest
 </code></pre>
-<h2><a class="header" href="#scaffolding-new-policy-project" id="scaffolding-new-policy-project">Scaffolding new policy project</a></h2>
+<h2 id="scaffolding-new-policy-project"><a class="header" href="#scaffolding-new-policy-project">Scaffolding new policy project</a></h2>
 <p>The creation of a new policy project can be done by feeding this
 <a href="https://github.com/kubewarden/policy-rust-template">template project</a>
 into <code>cargo generate</code>:</p>
@@ -1075,7 +1081,7 @@ into <code>cargo generate</code>:</p>
 ✨   Done! New project created /home/flavio/hacking/kubernetes/kubewarden/demo
 </code></pre>
 <p>The new policy project can now be found inside of the <code>demo</code> directory.</p>
-<h1><a class="header" href="#defining-policy-settings" id="defining-policy-settings">Defining policy settings</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="defining-policy-settings"><a class="header" href="#defining-policy-settings">Defining policy settings</a></h1>
 <p>As a first step we will define the structure that holds the policy settings.</p>
 <p>Open the <code>src/settings.rs</code> file and change the definition of the <code>Settings</code>
 struct to look like that:</p>
@@ -1103,7 +1109,7 @@ to look like that:</p>
     }
 }
 </code></pre>
-<h2><a class="header" href="#add-unit-tests" id="add-unit-tests">Add unit tests</a></h2>
+<h2 id="add-unit-tests"><a class="header" href="#add-unit-tests">Add unit tests</a></h2>
 <p>Now we can write a unit test to ensure the settings validation is actually working.
 This can be done in the <a href="https://doc.rust-lang.org/stable/book/ch11-00-testing.html">usual Rust way</a>.</p>
 <p>There are already some default tests at the bottom of the <code>src/settings.rs</code>
@@ -1150,7 +1156,7 @@ test settings::tests::reject_settings_without_a_list_of_invalid_names ... ok
 
 test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 </code></pre>
-<h1><a class="header" href="#writing-the-validation-logic" id="writing-the-validation-logic">Writing the validation logic</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="writing-the-validation-logic"><a class="header" href="#writing-the-validation-logic">Writing the validation logic</a></h1>
 <p>It's time to write the actual validation code. This is defined inside of the
 <code>src/lib.rs</code> file. Inside of this file you will find a function called <code>validate</code>.</p>
 <p>The scaffolded function is already doing something:</p>
@@ -1222,7 +1228,7 @@ values provided by the user via the policy settings.</p>
     }
 }
 </code></pre>
-<h2><a class="header" href="#unit-tests" id="unit-tests">Unit tests</a></h2>
+<h2 id="unit-tests"><a class="header" href="#unit-tests">Unit tests</a></h2>
 <p>Finally, we will create some unit tests to ensure the validation code works as
 expected.</p>
 <p>The <code>lib.rs</code> file has already some tests defined at the bottom of the file, as
@@ -1337,7 +1343,7 @@ test tests::reject_pod_with_invalid_name ... ok
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 </code></pre>
 <p>That's all if you want to write a simple validating policy.</p>
-<h1><a class="header" href="#creating-a-new-mutation-policy" id="creating-a-new-mutation-policy">Creating a new mutation policy</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="creating-a-new-mutation-policy"><a class="header" href="#creating-a-new-mutation-policy">Creating a new mutation policy</a></h1>
 <p>Mutating policies are similar to validating ones, but have also the ability to mutate an
 incoming object.</p>
 <p>They can:</p>
@@ -1373,7 +1379,7 @@ spec:
     - name: nginx
       image: nginx:latest
 </code></pre>
-<h2><a class="header" href="#write-the-mutation-code" id="write-the-mutation-code">Write the mutation code</a></h2>
+<h2 id="write-the-mutation-code"><a class="header" href="#write-the-mutation-code">Write the mutation code</a></h2>
 <p>The mutation code is done inside of the <code>validate</code> function. The function should be changed
 to approve the request via the <a href="https://docs.rs/kubewarden-policy-sdk/0.1.0/kubewarden_policy_sdk/fn.mutate_request.html"><code>mutate_request</code></a>
 instead of the <a href="https://docs.rs/kubewarden-policy-sdk/0.1.0/kubewarden_policy_sdk/fn.accept_request.html"><code>accept_request</code></a>.</p>
@@ -1453,7 +1459,7 @@ test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 </code></pre>
 <p>As you can see, the <code>accept_pod_with_valid_name</code> fails because the response actually
 contains a mutated object. It looks like our code is actually working!</p>
-<h2><a class="header" href="#update-the-unit-tests" id="update-the-unit-tests">Update the unit tests</a></h2>
+<h2 id="update-the-unit-tests"><a class="header" href="#update-the-unit-tests">Update the unit tests</a></h2>
 <p>Let's update the <code>accept_pod_with_valid_name</code> to look like that:</p>
 <pre><code class="language-rust norun noplayground">#[test]
 fn accept_pod_with_valid_name() -&gt; Result&lt;(), ()&gt; {
@@ -1515,7 +1521,7 @@ test tests::accept_pod_with_valid_name ... ok
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 </code></pre>
 <p>As you can see the creation of a mutation policy is pretty straightforward.</p>
-<h2><a class="header" href="#building-the-policy" id="building-the-policy">Building the policy</a></h2>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h2 id="building-the-policy"><a class="header" href="#building-the-policy">Building the policy</a></h2>
 <p>So far we have built the policy using as a compilation target the same operating
 system and architecture of our development machine.</p>
 <p>It's now time to build the policy as a WebAssembly binary, also known as <code>.wasm</code>
@@ -1529,10 +1535,10 @@ compilation target.</p>
 <pre><code class="language-shell">$ file target/wasm32-unknown-unknown/release/demo.wasm
 target/wasm32-unknown-unknown/release/demo.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
 </code></pre>
-<h2><a class="header" href="#distributing-the-policy" id="distributing-the-policy">Distributing the policy</a></h2>
+<h2 id="distributing-the-policy"><a class="header" href="#distributing-the-policy">Distributing the policy</a></h2>
 <p>This topic is covered inside of the <a href="writing-policies/rust//distributing-policies.html">&quot;distributing policies&quot;</a>
 section of Kubewarden's documentation.</p>
-<h2><a class="header" href="#more-examples" id="more-examples">More examples</a></h2>
+<h2 id="more-examples"><a class="header" href="#more-examples">More examples</a></h2>
 <p>You can find more Kubewarden policies written in Rust inside of Kubewarden's
 GitHub space. <a href="https://github.com/search?l=Rust&amp;q=topic%3Apolicy-as-code+org%3Akubewarden&amp;type=Repositories">This query</a>
 can help you find them.</p>
@@ -1544,11 +1550,11 @@ into the main branch</li>
 <li>Build the policy in <code>release</code> mode and push it to a OCI registry as an
 artifact</li>
 </ul>
-<blockquote>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><blockquote>
 <p><strong>Note well:</strong> Go's support for WebAssembly is fast evolving. The contents
 of this page have been written during April 2021, hence they could be outdated.</p>
 </blockquote>
-<h1><a class="header" href="#go" id="go">Go</a></h1>
+<h1 id="go"><a class="header" href="#go">Go</a></h1>
 <p>Currently the official Go compiler cannot produce WebAssembly binaries
 that can be run <strong>outside</strong> of the browser.
 <a href="https://github.com/golang/go/issues/31105">This upstream issue</a> is tracking
@@ -1564,7 +1570,7 @@ boards such as the BBC micro:bit and the Arduino Uno.</p>
 <p>TinyGo can also be used to produce WebAssembly (Wasm) code which is very
 compact in size.</p>
 </blockquote>
-<h2><a class="header" href="#limitations" id="limitations">Limitations</a></h2>
+<h2 id="limitations"><a class="header" href="#limitations">Limitations</a></h2>
 <p>TinyGo doesn't yet support all the Go features (see <a href="https://tinygo.org/lang-support/">here</a>
 to see the current project status). Currently its biggest limitation
 is the lack of a fully supported <code>reflect</code> package. That leads to the inability to use
@@ -1577,7 +1583,7 @@ Kubewarden validation policies with it.</p>
 <p><strong>Note well:</strong> unfortunately, it's currently impossible to write mutating
 policies using TinyGo.</p>
 </blockquote>
-<h2><a class="header" href="#tooling" id="tooling">Tooling</a></h2>
+<h2 id="tooling"><a class="header" href="#tooling">Tooling</a></h2>
 <p>Writing Kubewarden policies requires a version of TinyGo greater than <code>0.17.0</code>.</p>
 <p>These Go libraries are extremely useful when writing a Kubewarden policy:</p>
 <ul>
@@ -1595,7 +1601,7 @@ of policies.</li>
 <p>Last but not least, the Kubewarden project provides a
 <a href="https://github.com/kubewarden/go-policy-template">template Go policy project</a>
 that can be used to quickly create Kubewarden policies written in Go.</p>
-<h2><a class="header" href="#getting-tinygo-dependencies" id="getting-tinygo-dependencies">Getting TinyGo dependencies</a></h2>
+<h2 id="getting-tinygo-dependencies"><a class="header" href="#getting-tinygo-dependencies">Getting TinyGo dependencies</a></h2>
 <p>The easiest way to get TinyGo is by using the upstream container images.
 Official releases can be found <a href="https://hub.docker.com/r/tinygo/tinygo">here</a>, while
 builds from the development branch are automatically pushed
@@ -1607,7 +1613,7 @@ more information.</p>
 be solved once TinyGo <code>0.17.0</code> is released. In the meantime we will use the container image
 based on the development branch: <code>tinygo/tinygo-dev:latest</code>.</p>
 </blockquote>
-<h1><a class="header" href="#creating-a-new-validation-policy-1" id="creating-a-new-validation-policy-1">Creating a new validation policy</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="creating-a-new-validation-policy-1"><a class="header" href="#creating-a-new-validation-policy-1">Creating a new validation policy</a></h1>
 <p>We are going to create a validation policy that validates the labels of generic Kubernetes
 objects.</p>
 <p>The policy will reject all the resources that use one or more labels on the deny list.
@@ -1655,7 +1661,7 @@ regardless of their contents:</p>
 constrained_labels:
   mandatory-label: &quot;.*&quot; # &lt;- this label must be present, we don't care about its value
 </code></pre>
-<h2><a class="header" href="#scaffolding-new-policy-project-1" id="scaffolding-new-policy-project-1">Scaffolding new policy project</a></h2>
+<h2 id="scaffolding-new-policy-project-1"><a class="header" href="#scaffolding-new-policy-project-1">Scaffolding new policy project</a></h2>
 <p>The creation of a new policy project can be done by using this GitHub
 template repository: <a href="https://github.com/kubewarden/go-policy-template">kubewarden/go-policy-template</a>.
 Just press the &quot;Use  this template&quot; green button near the top of the page
@@ -1664,7 +1670,7 @@ and follow GitHub's wizard.</p>
 of the <code>go.mod</code> file looks like that:</p>
 <pre><code class="language-go">module &lt;path to your repository&gt;
 </code></pre>
-<h1><a class="header" href="#defining-policy-settings-1" id="defining-policy-settings-1">Defining policy settings</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="defining-policy-settings-1"><a class="header" href="#defining-policy-settings-1">Defining policy settings</a></h1>
 <p>As a first step we will define the structure that holds the policy settings.</p>
 <p>We will do that by adding this code inside of the <code>settings.go</code> file:</p>
 <pre><code class="language-go">import (
@@ -1726,7 +1732,7 @@ func (r *RegularExpression) MarshalText() ([]byte, error) {
 	return nil, nil
 }
 </code></pre>
-<h2><a class="header" href="#building-settings-instances" id="building-settings-instances">Building <code>Settings</code> instances</a></h2>
+<h2 id="building-settings-instances"><a class="header" href="#building-settings-instances">Building <code>Settings</code> instances</a></h2>
 <p>At runtime we can't rely on the automatic struct marshalling and unmarshalling
 provided by the <code>encoding/json</code> package due to TinyGo current limitations.
 Because of that we will create two initialization helpers:</p>
@@ -1828,7 +1834,7 @@ concurrency issues.</p>
 threads yet. See <a href="https://github.com/WebAssembly/threads">the official proposal</a>
 for more details.</p>
 </blockquote>
-<h2><a class="header" href="#implementing-settings-validation" id="implementing-settings-validation">Implementing <code>Settings</code> validation</a></h2>
+<h2 id="implementing-settings-validation"><a class="header" href="#implementing-settings-validation">Implementing <code>Settings</code> validation</a></h2>
 <p>All Kubewarden policies have to implement
 <a href="writing-policies/go//writing-policies/index.html#the-validate_settings-entry-point">settings validation</a>.</p>
 <p>This can be easily done by adding a <code>Valid</code> method to the <code>Settings</code> instances:</p>
@@ -1875,7 +1881,7 @@ is changed to look like that:</p>
 </code></pre>
 <p>As you can see, the function takes advantage of the helper functions provided
 by <a href="https://github.com/kubewarden/policy-sdk-go">Kubewarden's SDK</a>.</p>
-<h2><a class="header" href="#testing-the-settings-code" id="testing-the-settings-code">Testing the settings code</a></h2>
+<h2 id="testing-the-settings-code"><a class="header" href="#testing-the-settings-code">Testing the settings code</a></h2>
 <p>As always, it's important to have good test coverage of the code we write.
 The code we generated comes with a series of unit test defined inside of
 the <code>settings_test.go</code> file.</p>
@@ -2063,7 +2069,7 @@ PASS
 ok  	command-line-arguments	0.001s
 </code></pre>
 <p>We can now move to implement the actual validation code.</p>
-<h1><a class="header" href="#writing-the-validation-logic-1" id="writing-the-validation-logic-1">Writing the validation logic</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="writing-the-validation-logic-1"><a class="header" href="#writing-the-validation-logic-1">Writing the validation logic</a></h1>
 <p>It's now time to write the actual validation logic. This is done
 inside of the <code>validate.go</code> file.</p>
 <p>The scaffolded policy has already a <code>validate</code> function, we will need to make
@@ -2146,7 +2152,7 @@ from the loop (that happens by returning <code>false</code> instead of <code>tru
 <li>If the <code>err</code> variable is not <code>nil</code>, we use the helper provided by Kubewarden's
 SDK to reject the request. Otherwise we accept it.</li>
 </ol>
-<h2><a class="header" href="#testing-the-validation-code" id="testing-the-validation-code">Testing the validation code</a></h2>
+<h2 id="testing-the-validation-code"><a class="header" href="#testing-the-validation-code">Testing the validation code</a></h2>
 <p>It's now time to write some unit tests to ensure the validation code is behaving
 properly. These tests are going to be located inside of the <code>validate_test.go</code>
 file.</p>
@@ -2379,11 +2385,11 @@ PASS
 ok  	github.com/kubewarden/safe-labels-policy	0.001s
 </code></pre>
 <p>We can now move to the next step, write some end-to-end tests.</p>
-<h1><a class="header" href="#end-to-end-testing" id="end-to-end-testing">End-to-end testing</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="end-to-end-testing"><a class="header" href="#end-to-end-testing">End-to-end testing</a></h1>
 <p>So far we have tested the policy using a set of Go unit tests. This section shows
 how we can write end-to-end test that run tests against the actual WebAssembly
 binary produced by TinyGo.</p>
-<h2><a class="header" href="#prerequisites" id="prerequisites">Prerequisites</a></h2>
+<h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
 <p>These tools need to be installed on your development machine:</p>
 <ul>
 <li>docker or another container engine: used to build the WebAssembly
@@ -2396,7 +2402,7 @@ cli tool provided by Kubewarden to run its policies outside of
 Kubernetes. This is covered in depth inside of <a href="writing-policies/go//testing-policies.html">this section</a>
 of the documentation.</li>
 </ul>
-<h2><a class="header" href="#building-the-policy-1" id="building-the-policy-1">Building the policy</a></h2>
+<h2 id="building-the-policy-1"><a class="header" href="#building-the-policy-1">Building the policy</a></h2>
 <p>As a first step we need to build the policy into a WebAssembly binary.</p>
 <p>This can be done with this simple command:</p>
 <pre><code class="language-shell">make wasm
@@ -2404,7 +2410,7 @@ of the documentation.</li>
 <p>This will pull the official TinyGo container image and run the build process
 inside of an ephemeral container.</p>
 <p>The compilation produces a file called <code>policy.wasm</code>.</p>
-<h2><a class="header" href="#writing-tests" id="writing-tests">Writing tests</a></h2>
+<h2 id="writing-tests"><a class="header" href="#writing-tests">Writing tests</a></h2>
 <p>We are going to use <a href="https://github.com/bats-core/bats-core">bats</a> to write and
 automate our tests. Each test will be composed by the following steps:</p>
 <ol>
@@ -2536,7 +2542,7 @@ with the following tests:</p>
   [[ &quot;$output&quot; == *&quot;Provided settings are not valid: error parsing regexp: missing closing ]: `[12$`&quot;* ]]
 }
 </code></pre>
-<h2><a class="header" href="#conclusion" id="conclusion">Conclusion</a></h2>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
 <p>We have reached a pretty good level of coverage, let's run all the end-to-end
 tests:</p>
 <pre><code class="language-shell">$ make e2e-tests
@@ -2551,20 +2557,20 @@ bats e2e.bats
 
 7 tests, 0 failures
 </code></pre>
-<h1><a class="header" href="#automations" id="automations">Automations</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="automations"><a class="header" href="#automations">Automations</a></h1>
 <p>This section describes how we can use GitHub Actions to automate as many tasks
 as possible.</p>
 <p>The scaffolded project already includes all the GitHub actions you need.
 These files can be found inside of the <code>.github/workflows</code> directory.</p>
 <p>The same principles can be adapted to use a different CI system.</p>
-<h2><a class="header" href="#testing" id="testing">Testing</a></h2>
+<h2 id="testing"><a class="header" href="#testing">Testing</a></h2>
 <p>We can automate the execution of the unit tests and of the end-to-end tests.</p>
 <p>This is working out of the box thanks to these files:</p>
 <ul>
 <li><code>.github/workflows/e2e-tests.yml</code></li>
 <li><code>.github/workflows/unit-tests.yml</code></li>
 </ul>
-<h2><a class="header" href="#release" id="release">Release</a></h2>
+<h2 id="release"><a class="header" href="#release">Release</a></h2>
 <p>The scaffolded project created a <code>.github/workflows/release.yml.template</code>.</p>
 <p>This file defines a pipeline that performs the following steps:</p>
 <ul>
@@ -2586,7 +2592,7 @@ to:</p>
 will include the following assets: the source code of the policy and the WebAssembly
 binary.</li>
 </ol>
-<h3><a class="header" href="#a-concrete-example-2" id="a-concrete-example-2">A concrete example</a></h3>
+<h3 id="a-concrete-example-2"><a class="header" href="#a-concrete-example-2">A concrete example</a></h3>
 <p>Let's assume we have a policy named named <code>safe-labels</code> and we want to publish
 it as <code>ghcr.io/kubewarden/policies/safe-labels</code>.</p>
 <p>The contents of the <code>jobs.env</code> section of <code>release.yml</code> should look like that:</p>
@@ -2606,7 +2612,7 @@ include the following assets:</p>
 <li>Source code compressed as <code>zip</code> and <code>tar.gz</code></li>
 <li>A file named <code>policy.wasm</code> that is the actual WebAssembly policy</li>
 </ul>
-<h1><a class="header" href="#distribute-policy" id="distribute-policy">Distribute policy</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="distribute-policy"><a class="header" href="#distribute-policy">Distribute policy</a></h1>
 <p>Congratulations for having made this far 🎉🎉🎉</p>
 <p>We hope you enjoyed the journey!</p>
 <p>In case you haven't realized, we actually created the
@@ -2619,7 +2625,7 @@ chapter.</p>
 <p>The topic of distributing policies is covered in depth inside of the
 <a href="writing-policies/go//distributing-policies.html">&quot;distributing policies&quot;</a>
 section of Kubewarden's documentation.</p>
-<h1><a class="header" href="#distributing-policies" id="distributing-policies">Distributing Policies</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="distributing-policies"><a class="header" href="#distributing-policies">Distributing Policies</a></h1>
 <p>Kubewarden policies are Wasm binaries that are evaluated by the
 Kubewarden Policy Server.</p>
 <p>The Kubewarden policy server can load policies from these
@@ -2636,7 +2642,7 @@ registry is the best choice. Container registries are basically a
 mandatory requirement for any Kubernetes cluster. Having a single
 place to store, and secure, all the artifacts required by a cluster
 can be really handy.</p>
-<h1><a class="header" href="#pushing-policies-to-an-oci-compliant-registry" id="pushing-policies-to-an-oci-compliant-registry">Pushing policies to an OCI compliant registry</a></h1>
+<h1 id="pushing-policies-to-an-oci-compliant-registry"><a class="header" href="#pushing-policies-to-an-oci-compliant-registry">Pushing policies to an OCI compliant registry</a></h1>
 <p>The <a href="https://github.com/opencontainers/artifacts">OCI Artifacts</a>
 specification allows to store any kind of binary blob inside of a
 regular OCI compliant container registry.</p>
@@ -2650,7 +2656,7 @@ can be used to push a Kubewarden Policy to an OCI compliant registry.</p>
 </code></pre>
 <p>The policy can then be referenced from the Kubewarden Policy Server as
 <code>registry://&lt;oci-registry&gt;/kubewarden-policies/pod-runtime-class-policy:v0.0.2</code>.</p>
-<h1><a class="header" href="#testing-policies" id="testing-policies">Testing Policies</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="testing-policies"><a class="header" href="#testing-policies">Testing Policies</a></h1>
 <p>This section covers the topic of testing Kubewarden Policies. There are two possible
 personas interested in testing policies:</p>
 <ul>
@@ -2662,7 +2668,7 @@ inside of your CI/CD pipelines,...</li>
 </ul>
 <p>The next sections of the documentation will show how Kubewarden policies can
 be tested by these two personas.</p>
-<h1><a class="header" href="#while-creating-a-policy" id="while-creating-a-policy">While creating a policy</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="while-creating-a-policy"><a class="header" href="#while-creating-a-policy">While creating a policy</a></h1>
 <p>Kubewarden Policies are regular programs compiled as WebAssembly. As with any kind
 of program, it's important to have good test coverage.</p>
 <p>Policy authors can leverage the testing frameworks and tools of their language
@@ -2679,7 +2685,7 @@ is a Kubewarden Policy written using <a href="https://www.assemblyscript.org/">A
 <p>All these policies have integrated test suites built using the regular testing libraries
 of Rust, Go and AssemblyScript.</p>
 <p>Finally, all these projects rely on GitHub Actions to implement their CI pipelines.</p>
-<h2><a class="header" href="#end-to-end-tests" id="end-to-end-tests">End-to-end tests</a></h2>
+<h2 id="end-to-end-tests"><a class="header" href="#end-to-end-tests">End-to-end tests</a></h2>
 <p>As a policy author you can also write tests that are executed against the actual
 WebAssembly binary containing your policy. This can be done without having
 to deploy a Kubernetes cluster by using these tools:</p>
@@ -2739,7 +2745,7 @@ and then invoke <code>bats</code> in this way:</p>
 <p>Checkout <a href="testing-policies//writing-policies/go/05-e2e-tests.html">this section</a>
 of the documentation to learn more about writing end-to-end
 tests of your policies.</p>
-<h1><a class="header" href="#before-deployment" id="before-deployment">Before deployment</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="before-deployment"><a class="header" href="#before-deployment">Before deployment</a></h1>
 <p>As a Kubernetes cluster operator you probably want to perform some tests
 against a Kubewarden policy you just found.</p>
 <p>You probably want to answer questions like:</p>
@@ -2766,7 +2772,7 @@ via <code>--settings</code> flag. The flag takes a JSON blob as parameter.</li>
 </ol>
 <p>Once the policy evaluation is done, <code>policy-testdrive</code> prints to the standard
 output the <code>SettingsValidationResponse</code>and the <code>ValidationResponse</code> objects.</p>
-<h2><a class="header" href="#install-1" id="install-1">Install</a></h2>
+<h2 id="install-1"><a class="header" href="#install-1">Install</a></h2>
 <p>You can download pre-built binaries of <code>policy-testdrive</code>
 from <a href="https://github.com/kubewarden/policy-server/releases">here</a>.</p>
 <p>Currently <code>policy-testdrive</code> isn't able to download policies from OCI
@@ -2774,7 +2780,7 @@ registries. This can be done using the
 <a href="https://github.com/engineerd/wasm-to-oci"><code>wasm-to-oci</code></a> tool.</p>
 <p>Pre-built binaries of <code>wasm-to-oci</code>can be downloaded from the project's
 <a href="https://github.com/engineerd/wasm-to-oci/releases">GitHub Releases page</a>.</p>
-<h2><a class="header" href="#quickstart" id="quickstart">Quickstart</a></h2>
+<h2 id="quickstart"><a class="header" href="#quickstart">Quickstart</a></h2>
 <p>This section describes how to test the
 <a href="https://github.com/kubewarden/psp-apparmor">psp-apparmor</a> policy
 with different configurations and validation request objects as input data.</p>
@@ -2788,7 +2794,7 @@ INFO[0001] Size: 2682915
 INFO[0001] Digest: sha256:5532a49834af8cc929994a65c0881190ef168295fffd2bed4e7325d2e91484b5 
 </code></pre>
 <p>This creates a <code>module.wasm</code> file in the current directory.</p>
-<h3><a class="header" href="#create-admissionreview-requests" id="create-admissionreview-requests">Create <code>AdmissionReview</code> requests</a></h3>
+<h3 id="create-admissionreview-requests"><a class="header" href="#create-admissionreview-requests">Create <code>AdmissionReview</code> requests</a></h3>
 <p>We have to create some files holding the <code>AdmissionReview</code> objects that
 will be evaluated by the policy.</p>
 <p>Let's create a file named <code>pod-req-no-specific-apparmor-profile.json</code> with the following
@@ -2897,7 +2903,7 @@ contents:</p>
 <p><strong>Note well:</strong> these are stripped down <code>AdmissionReview</code> objects, we left
 only the fields that are relevant to our policy.</p>
 </blockquote>
-<h3><a class="header" href="#test-the-policy" id="test-the-policy">Test the policy</a></h3>
+<h3 id="test-the-policy"><a class="header" href="#test-the-policy">Test the policy</a></h3>
 <p>Now we can use <code>policy-testdrive</code> to test the creation of a Pod that doesn't
 specify an AppArmor profile:</p>
 <pre><code class="language-console">policy-testdrive --policy module.wasm \
@@ -2939,7 +2945,7 @@ ValidationResponse { uid: &quot;&quot;, allowed: false, patch_type: None, patch:
 Policy evaluation results:
 ValidationResponse { uid: &quot;&quot;, allowed: true, patch_type: None, patch: None, status: None }
 </code></pre>
-<h2><a class="header" href="#automation" id="automation">Automation</a></h2>
+<h2 id="automation"><a class="header" href="#automation">Automation</a></h2>
 <p>All these steps shown above can be automated using
 <a href="https://github.com/bats-core/bats-core">bats</a>.</p>
 <p>We can write a series of tests and integrate their execution inside
