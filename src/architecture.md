@@ -1,104 +1,163 @@
 # Architecture
 
-## Diagram
+Kubewarden is a Kubernetes policy engine that uses policies written using
+WebAssembly.
 
-TBD
+The Kubewarden stack is made by the following components:
 
-## Main components
-
-`kubewarden` has these main components:
+- Kubewarden Custom Resources: these are [Kubenetes Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
+  that simplify the process of managing policies.
 
 - [`kubewarden-controller`](https://github.com/kubewarden/kubewarden-controller):
-  this is the component that is deployed on top of the Kubernetes
-  cluster that you want to enrich with Wasm admission and mutation
-  policies.
+  this is a Kubernetes controller that reconciles Kubewarden's Custom Resources.
+  This component creates parts of the Kubewarden stack and, most important of
+  all, translates Kubewarden's concepts into native Kubernetes directives.
+
+- Kubewarden policies: these are WebAssembly modules that hold the validation
+  or mutation logic. These are covered in depth inside of [this chapter](/writing-policies/index.html).
 
 - [`policy-server`](https://github.com/kubewarden/policy-server):
-  its main responsibility is to instantiate the Wasm policies inside
-  safe Wasm sandboxes. A single `policy-server` can instantiate a
-  number of policies, each one running in a sandboxed environment,
-  lacking access to other policies execution environment.
+  this component receives the requests to be validated. It does that
+  by executing Kubewarden's policies.
 
-### `kubewarden-controller`
+At the bottom of the stack, Kubewarden's integrates with Kubernetes using the
+concept of [Dynamic Admission Control](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
+In particular, Kubewarden operates as a Kubernetes Admission Webhook.
+`policy-server` is the actual Webhook endpoint that is reached by Kubernetes
+API server to validate relevant requests.
 
-The `kubewarden-controller` is deployed on top of the target
-Kubernetes cluster and its main duty is to reconcile
-`ClusterAdmissionPolicy` resources.
+Kubernetes is made aware of the existence of Kubewarden's Webhook endpoints by
+`kubewarden-controller`. This is done by registering either
+a `MutatingWebhookConfiguration` or a `ValidatingWebhookConfiguration`
+object.
 
-For every discovered `ClusterAdmissionPolicy` resource, it takes care
-of reconciling the following resources in the Kubernetes cluster:
+This diagram shows the full architecture overview of a cluster running
+the Kubewarden stack:
 
-1. The `policy-server` deployment, so that this deployment
-   instantiates all policies defined in `ClusterAdmissionPolicy`
-   custom resources.
+![Full architecture](/images/architecture.jpg)
 
-1. The `policy-server` internal Kubernetes service, used by the
-   API server to communicate with the `policy-server` webhook.
+## Journey of a Kubewarden policy
 
-1. Generates secrets required for the webhook to be registered and
-   configured on the Kubernetes API server.
+The architecture diagram from above can be intimidating at first, this
+section explains it step by step.
 
-1. Once the `policy-server` deployment is ready, it registers a
-   `ValidatingWebhookConfiguration` or a
-   `MutatingWebhookConfiguration` resource on the API server, so that
-   it starts querying the webhook for resource validation or mutation.
+### Defining the first policy
 
-### `policy-server`
+On a fresh new cluster, the only Kubewarden components defined are its Custom
+Resources and the `kubewarden-controller` Deployment.
 
-The `policy-server` is a regular HTTP server exposed by a service
-created by the `kubewarden-controller`.
+This chart shows what happens when the first policy is defined inside of the
+cluster:
 
-For every registered policy, the `policy-server` performs the
-following operations:
+![Defining the first ClusterAdmissionPolicy resource](/images/architecture_sequence_01.jpg)
 
-1. Download all Wasm policy binary artifacts from each policy origin:
-    1. Local filesystem
-    1. HTTP server
-    1. OCI-artifacts enabled registry
-2. Start a threaded worker pool
-    1. For each policy,
-        1. Initialize a Wasm runtime sandbox.
-        1. Initialize a waPC host instance, so policies (waPC guests)
-           and the waPC host can communicate with each other.
-        1. Link a URL path to this policy, so when a request comes in,
-           the right policy gets called.
+`kubewarden-controller` notices the new `ClusterAdmissionPolicy` resource and,
+as a result of that, it initializes the `policy-server` component.
 
-#### Kubernetes cluster context awareness
+As stated above, Kubewarden works as a Kubernetes Admission Webhook. Kubernetes
+dictates that all the Webhook endpoints must be secured with TLS.
+`kubewarden-controller` takes care of setting up this secure communication
+by doing these steps:
 
-> **NOTE:** This feature is a work in progress, and not to be depended upon.
->
-> Feedback is highly appreciated.
+1. Generate a self-signed Certificate Authority
+1. Use this CA to generate a TLS certificate and a TLS key for the
+  `policy-server` Service.
 
-The `policy-server` has capabilities to expose cluster information to
-policies, so that they can take decisions based on other existing
-resources, and not only based on the resource they are evaluationg in
-isolation.
+All these objects are stored into Kubernetes as Secret resources.
 
-The `policy-server` being a deployment, is deployed on the Kubernetes
-cluster with a specific service account, that is able to list and
-watch a subset of Kubernetes resources, meaning:
+`kubewarden-controller` then creates a ConfigMap that
+holds the configuration of `policy-server`. This configuration includes
+the policy defined inside of the `ClusterAdmissionPolicy` resource.
 
-* Namespaces
-* Services
-* Ingresses
+Finally, `kubewarden-controller` will create the `policy-server`
+Deployment and a Kubernetes ClusterIP Service to expose it inside of
+the cluster network.
 
-This information is exposed to policies (waPC guests) through a
-well known procedure call set of endpoints, that allows to retrieve
-this cached information.
+### Initialization of `policy-server`
 
-The result of these procedure calls is the JSON-encoded result of the
-list of resources, as provided by Kubernetes.
+At start time, `policy-server` reads its configuration and downloads
+all the Kubewarden policies. Policies can be downloaded from remote
+endpoints like HTTP(s) servers and container registries.
 
-The `policy-server` will be the component responsible for refreshing
-this information when it considers, and the policy always retrieves
-tha latest available information exposed by the `policy-server`.
+Policies' behaviour can be tuned by users via policy-specific configuration
+parameters. Once all the policies are downloaded, `policy-server` will ensure
+the policy settings provided by the user are valid.
 
-## Satellite components
+`policy-server` performs the validation of policies's settings by
+invoking the `validate_setting` function exposed by each policy.
+This topic is covered more in depth inside
+of [this section](/writing-policies/spec/01-intro.html) of the documentation.
 
-Despite the `kubewarden-controller` and the `policy-server` are the
-main components, there are other satellite components worth
-mentioning. Let's go through them.
+`policy-server` will exit with an error if one or more policies received wrong
+configuration parameters from the end user.
 
-### waPC: Wasm host (`policy-server`) and guest (`policy`) intercommunication
+If all the policies are properly configured, `policy-server` will spawn a
+pool of worker threads to evaluate incoming requests using the Kubewarden
+policies specified by the user.
+ 
+Finally, `policy-server` will start a HTTPS server that listens to incoming
+validation requests. The web server is secured using the TLS key and certificate
+that have been previously created by `kubewarden-controller`.
 
-### `policy-testdrive`
+Each policy is exposed by the web server via a dedicated path that follows this
+naming convention: `/validate/<policy ID>`.
+
+This is how the cluster looks like once the initialization of `policy-server`
+is completed:
+
+![policy-server initialized](/images/architecture_sequence_02.jpg)
+
+### Making Kubernetes aware of the policy
+
+The `policy-server` Pods have a
+[`Readiness Probe`](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/),
+`kubewarden-controller` relies on that to know when the `policy-server` Deployment
+is ready to evaluate admission reviews.
+
+Once the `policy-server` Deployed is marked as `Ready`, `kubewarden-controller`
+will make the Kubernetes API server aware of the new policy by creating either a
+`MutatingWebhookConfiguration` or a `ValidatingWebhookConfiguration`
+object.
+
+Each policy has its dedicated `MutatingWebhookConfiguration`/`ValidatingWebhookConfiguration`
+which points to the Webhook endpoint served by `policy-server`. The endpoint
+is reachable by the `/validate/<policy ID>` URL mentioned before.
+
+![Kubernetes Webhook endpoint configuration](/images/architecture_sequence_03.jpg)
+
+### Policy in action
+
+Now that all the plumbing has been done, Kubernetes will start sending the
+relevant Admission Review requests to the right `policy-server` endpoint.
+
+![Policy in action](/images/architecture_sequence_04.jpg)
+
+`policy-server` receives the Admission Request object and, based on the
+endpoint that received the request, uses the right policy to evaluate it.
+
+Each policy is evaluated inside of its own dedicated WebAssembly sandbox.
+The communication between `policy-server` (the "host") and the WebAssembly
+policy (the "guest") is done using the waPC communication protocol. This is
+covered in depth inside of [this](/writing-policies/index.html)
+section of the documentation.
+
+## How multiple policies are handled
+
+A cluster can have multiple Kubewarden policies defined. This leads
+back to the initial diagram:
+
+![Full architecture](/images/architecture.jpg)
+
+Each policy is defined via its own `ClusterAdmissionPolicy` resource. All of
+them are loaded by the same instance of `policy-server`.
+
+`policy-server` defines multiple validation endpoints, one per policy defined
+inside of its configuration file. It's also possible to load the same policy
+multiple times, just with different configuration parameters.
+
+The Kubernetes API server is made aware of these policy via the
+`ValidatingWebhookConfiguration` and `MutatingWebhookConfiguration` resources
+that are kept in sync by `kubewarden-controller`.
+
+Finally, the incoming admission requests are then dispatched by the Kubernetes
+API server to the right validation endpoint exposed by `policy-server`.
