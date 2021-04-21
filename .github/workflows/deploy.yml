@@ -9,16 +9,49 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
 
-      - name: Setup mdBook
-        uses: peaceiris/actions-mdbook@v1
+      # checkout the mdbook fork that already has the "edit page" feature
+      # we can drop all these steps once the upstream mdbook includes this feature
+      - name: Checkout mdbook repo
+        uses: actions/checkout@v2
         with:
-          mdbook-version: '0.4.3'
-      - run: mdbook build
-
+          repository: flavio/mdBook
+          ref: 'feature/suggest-an-edit-link'
+      - name: Checkout main docs repo
+        uses: actions/checkout@v2
+        with:
+          path: kubewarden-docs
+      - name: Prepare Rust environment
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: Build patched mdbook
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
+      - name: Build docs website
+        uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: --release -- build kubewarden-docs
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./book
+          publish_dir: kubewarden-docs/book
+
+      # TODO: enable once we get back to use the official mdbook
+      #- name: Checkout main docs repo
+      #  uses: actions/checkout@v2
+      #- name: Setup mdBook
+      #  uses: peaceiris/actions-mdbook@v1
+      #  with:
+      #    mdbook-version: '0.4.3'
+      #- run: mdbook build
+      #- name: Deploy
+      #  uses: peaceiris/actions-gh-pages@v3
+      #  with:
+      #    github_token: ${{ secrets.GITHUB_TOKEN }}
+      #    publish_dir: ./book
