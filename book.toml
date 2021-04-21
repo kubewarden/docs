@@ -9,5 +9,6 @@ src = "src"
 
 [output.html]
 git-repository-url = "https://github.com/kubewarden/docs"
+git-repository-edit-url-template = "https://github.com/kubewarden/docs/edit/main/{path}"
 site-url = "/"
 cname = "docs.kubewarden.io"
