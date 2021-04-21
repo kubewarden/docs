@@ -164,7 +164,30 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#context-aware-policies" id="context-aware-policies">Context aware policies</a></h1>
-<p>TODO</p>
+<blockquote>
+<p><strong>NOTE:</strong> This feature is a work in progress, and not to be depended upon.</p>
+<p>Feedback is highly appreciated.</p>
+</blockquote>
+<p>The <code>policy-server</code> has capabilities to expose cluster information to
+policies, so that they can take decisions based on other existing
+resources, and not only based on the resource they are evaluated in
+isolation.</p>
+<p>The <code>policy-server</code> being a deployment, is deployed on the Kubernetes
+cluster with a specific service account, that is able to list and
+watch a subset of Kubernetes resources, meaning:</p>
+<ul>
+<li>Namespaces</li>
+<li>Services</li>
+<li>Ingresses</li>
+</ul>
+<p>This information is exposed to policies (waPC guests) through a
+well known procedure call set of endpoints, that allows to retrieve
+this cached information.</p>
+<p>The result of these procedure calls is the JSON-encoded result of the
+list of resources, as provided by Kubernetes.</p>
+<p>The <code>policy-server</code> will be the component responsible for refreshing
+this information when it considers, and the policy always retrieves
+the latest available information exposed by the <code>policy-server</code>.</p>
 
                     </main>
 
