@@ -2,6 +2,7 @@
 
 - [Introduction](./introduction.md)
 - [Quick Start](./quick-start.md)
+- [Architecture](./architecture.md)
 - [Writing Policies](./writing-policies/index.md)
   - [Policy Specification](./writing-policies/spec/01-intro.md)
     - [Settings](./writing-policies/spec/02-settings.md)
