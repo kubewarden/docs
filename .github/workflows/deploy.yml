@@ -15,8 +15,8 @@ jobs:
       - name: Checkout mdbook repo
         uses: actions/checkout@v2
         with:
-          repository: flavio/mdBook
-          ref: 'feature/suggest-an-edit-link'
+          repository: rust-lang/mdBook
+          ref: 'master'
       - name: Checkout main docs repo
         uses: actions/checkout@v2
         with:
