@@ -34,7 +34,7 @@ object.
 This diagram shows the full architecture overview of a cluster running
 the Kubewarden stack:
 
-![Full architecture](/images/architecture.jpg)
+![Full architecture](/images/architecture.png)
 
 ## Journey of a Kubewarden policy
 
@@ -49,7 +49,7 @@ Resources and the `kubewarden-controller` Deployment.
 This chart shows what happens when the first policy is defined inside of the
 cluster:
 
-![Defining the first ClusterAdmissionPolicy resource](/images/architecture_sequence_01.jpg)
+![Defining the first ClusterAdmissionPolicy resource](/images/architecture_sequence_01.png)
 
 `kubewarden-controller` notices the new `ClusterAdmissionPolicy` resource and,
 as a result of that, it initializes the `policy-server` component.
@@ -94,7 +94,7 @@ configuration parameters from the end user.
 If all the policies are properly configured, `policy-server` will spawn a
 pool of worker threads to evaluate incoming requests using the Kubewarden
 policies specified by the user.
- 
+
 Finally, `policy-server` will start a HTTPS server that listens to incoming
 validation requests. The web server is secured using the TLS key and certificate
 that have been previously created by `kubewarden-controller`.
@@ -105,7 +105,7 @@ naming convention: `/validate/<policy ID>`.
 This is how the cluster looks like once the initialization of `policy-server`
 is completed:
 
-![policy-server initialized](/images/architecture_sequence_02.jpg)
+![policy-server initialized](/images/architecture_sequence_02.png)
 
 ### Making Kubernetes aware of the policy
 
@@ -123,14 +123,14 @@ Each policy has its dedicated `MutatingWebhookConfiguration`/`ValidatingWebhookC
 which points to the Webhook endpoint served by `policy-server`. The endpoint
 is reachable by the `/validate/<policy ID>` URL mentioned before.
 
-![Kubernetes Webhook endpoint configuration](/images/architecture_sequence_03.jpg)
+![Kubernetes Webhook endpoint configuration](/images/architecture_sequence_03.png)
 
 ### Policy in action
 
 Now that all the plumbing has been done, Kubernetes will start sending the
 relevant Admission Review requests to the right `policy-server` endpoint.
 
-![Policy in action](/images/architecture_sequence_04.jpg)
+![Policy in action](/images/architecture_sequence_04.png)
 
 `policy-server` receives the Admission Request object and, based on the
 endpoint that received the request, uses the right policy to evaluate it.
@@ -146,7 +146,7 @@ section of the documentation.
 A cluster can have multiple Kubewarden policies defined. This leads
 back to the initial diagram:
 
-![Full architecture](/images/architecture.jpg)
+![Full architecture](/images/architecture.png)
 
 Each policy is defined via its own `ClusterAdmissionPolicy` resource. All of
 them are loaded by the same instance of `policy-server`.
