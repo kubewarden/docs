@@ -441,7 +441,7 @@ a <code>MutatingWebhookConfiguration</code> or a <code>ValidatingWebhookConfigur
 object.</p>
 <p>This diagram shows the full architecture overview of a cluster running
 the Kubewarden stack:</p>
-<p><img src="/images/architecture.jpg" alt="Full architecture" /></p>
+<p><img src="/images/architecture.png" alt="Full architecture" /></p>
 <h2 id="journey-of-a-kubewarden-policy"><a class="header" href="#journey-of-a-kubewarden-policy">Journey of a Kubewarden policy</a></h2>
 <p>The architecture diagram from above can be intimidating at first, this
 section explains it step by step.</p>
@@ -450,7 +450,7 @@ section explains it step by step.</p>
 Resources and the <code>kubewarden-controller</code> Deployment.</p>
 <p>This chart shows what happens when the first policy is defined inside of the
 cluster:</p>
-<p><img src="/images/architecture_sequence_01.jpg" alt="Defining the first ClusterAdmissionPolicy resource" /></p>
+<p><img src="/images/architecture_sequence_01.png" alt="Defining the first ClusterAdmissionPolicy resource" /></p>
 <p><code>kubewarden-controller</code> notices the new <code>ClusterAdmissionPolicy</code> resource and,
 as a result of that, it initializes the <code>policy-server</code> component.</p>
 <p>As stated above, Kubewarden works as a Kubernetes Admission Webhook. Kubernetes
@@ -492,7 +492,7 @@ that have been previously created by <code>kubewarden-controller</code>.</p>
 naming convention: <code>/validate/&lt;policy ID&gt;</code>.</p>
 <p>This is how the cluster looks like once the initialization of <code>policy-server</code>
 is completed:</p>
-<p><img src="/images/architecture_sequence_02.jpg" alt="policy-server initialized" /></p>
+<p><img src="/images/architecture_sequence_02.png" alt="policy-server initialized" /></p>
 <h3 id="making-kubernetes-aware-of-the-policy"><a class="header" href="#making-kubernetes-aware-of-the-policy">Making Kubernetes aware of the policy</a></h3>
 <p>The <code>policy-server</code> Pods have a
 <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/"><code>Readiness Probe</code></a>,
@@ -505,11 +505,11 @@ object.</p>
 <p>Each policy has its dedicated <code>MutatingWebhookConfiguration</code>/<code>ValidatingWebhookConfiguration</code>
 which points to the Webhook endpoint served by <code>policy-server</code>. The endpoint
 is reachable by the <code>/validate/&lt;policy ID&gt;</code> URL mentioned before.</p>
-<p><img src="/images/architecture_sequence_03.jpg" alt="Kubernetes Webhook endpoint configuration" /></p>
+<p><img src="/images/architecture_sequence_03.png" alt="Kubernetes Webhook endpoint configuration" /></p>
 <h3 id="policy-in-action"><a class="header" href="#policy-in-action">Policy in action</a></h3>
 <p>Now that all the plumbing has been done, Kubernetes will start sending the
 relevant Admission Review requests to the right <code>policy-server</code> endpoint.</p>
-<p><img src="/images/architecture_sequence_04.jpg" alt="Policy in action" /></p>
+<p><img src="/images/architecture_sequence_04.png" alt="Policy in action" /></p>
 <p><code>policy-server</code> receives the Admission Request object and, based on the
 endpoint that received the request, uses the right policy to evaluate it.</p>
 <p>Each policy is evaluated inside of its own dedicated WebAssembly sandbox.
@@ -520,7 +520,7 @@ section of the documentation.</p>
 <h2 id="how-multiple-policies-are-handled"><a class="header" href="#how-multiple-policies-are-handled">How multiple policies are handled</a></h2>
 <p>A cluster can have multiple Kubewarden policies defined. This leads
 back to the initial diagram:</p>
-<p><img src="/images/architecture.jpg" alt="Full architecture" /></p>
+<p><img src="/images/architecture.png" alt="Full architecture" /></p>
 <p>Each policy is defined via its own <code>ClusterAdmissionPolicy</code> resource. All of
 them are loaded by the same instance of <code>policy-server</code>.</p>
 <p><code>policy-server</code> defines multiple validation endpoints, one per policy defined
