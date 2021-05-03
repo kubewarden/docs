@@ -1,8 +1,3 @@
-> **Note well:** WebAssembly and WASI are fast evolving targets. The contents
-> of this page have been written during Nov 2020, hence they could be outdated.
->
-> Please open an issue if the contents of this page have become outdated.
-
 # Swift
 
 As stated on the [official website](https://swift.org/):
@@ -21,22 +16,21 @@ can be used to build Kubewarden policies.
 **Note well:** you don't need an Apple system to write or run Swift code. Everything
 can be done also on a Linux machine or on Windows (by using Docker for Windows).
 
-## Known limitations
+## Current State
 
-No severe limitations have been found, only some minor glitches.
+The creation of a Swift SDK is in progress, it can be found inside
+of [this repository](https://github.com/kubewarden/policy-sdk-swift).
+We plan to provide a template project to simplify the process of creating
+Swift-based policies, like we do with other languages.
 
-The automatic unmarshalling of JSON data into native `struct` or `class` objects
-is not working. JSON parsing is still doable, but requires significantly more
-code. Once [this issue](https://github.com/swiftwasm/swift/issues/2223)
-is solved, the Swift-based policies will be even easier to write.
+The documentation will be expanded to cover more detailed instructions for Swift
+as soon as the work on the SDK is done.
 
-We haven't done extensive testing, but from our initial research it seems the
-Wasm modules produced by the Swiftwasm compiler are not executed as fast as the
-ones produced by the Rust compiler.
+In the meantime, no severe limitations have been found inside of Swift, only
+some minor glitches:
 
-It's also critical to perform some post-build optimizations before using the
-policy *"in production"*:
-
+* It's critical to perform some post-build optimizations before using the
+  policy *"in production"*:
   1. Strip the Wasm module via `wasm-strip` to reduce its size
   1. Optimize the Wasm module via `wasm-opt`
 
