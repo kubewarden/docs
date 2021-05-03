@@ -1,8 +1,3 @@
-> **Note well:** WebAssembly and WASI are fast evolving targets. The contents
-> of this page have been written during Nov 2020, hence they could be outdated.
->
-> Please open an issue if the contents of this page have become outdated.
-
 # TypeScript
 
 As stated on the [official website](https://www.typescriptlang.org/):
@@ -16,48 +11,16 @@ TypeScript **cannot** be converted to WebAssembly, however
 [AssemblyScript](https://www.assemblyscript.org/) is a **subset** of TypeScript
 designed explicitly for WebAssembly.
 
-AssemblyScript can produce Wasm modules targeting the WASI interface by
-leveraging the [as-wasi](https://github.com/jedisct1/as-wasi) project.
+## Current State
 
-## Known limitations
+Currently there's currently no Kubewarden SDK for AssemblyScript, we haven't
+created it bacause of lack of time. We will do that in the near future.
 
-AssemblyScript provides all the capabilities required to
-write Kubewarden policies. The basic requirements of Kubewarden policies are outlined
-[here](./index.md#recap).
+In the meantime, there seem to be some limitatations affecting AssemblyScript:
 
-This is a quick schema of what works and what doesn't work with AssemblyScript
-
-Capability         | Status |
--------------------|--------|
-Read from STDIN    |   ✅   |
-Write to STDOUT    |   ✅   |
-Read env variables |   ✅   |
-Handle JSON        |   ✅   |
-
-### Write to STDOUT
-
-Writing to STDOUT can be done using the [`Console`](https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesconsolemd)
-class defined by `as-wasi`.
-
-### Read from STDIN
-
-Reading from STDIN can be done using the [`Console`](https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesconsolemd)
-class defined by `as-wasi`.
-
-This has been working properly since the `0.4.4` relase of `as-wasi`.
-
-### Read environment variables
-
-This can be done using the [`Environ`](https://github.com/jedisct1/as-wasi/blob/master/REFERENCE_API_DOCS.md#classesenvironmd)
-class provided by `as-wasi`.
-
-### Handle JSON
-
-AssemblyScript is a subset of TypeScript, hence JSON handling is not provided
-out of the box.
-
-This can be done using the [assemblyscript-json](https://github.com/nearprotocol/assemblyscript-json)
-project.
+* There's no built-in way to Serialize and Deserilize classed to
+  and from JSON. See [this issue](https://github.com/AssemblyScript/assemblyscript/issues/292)
+* It *seems* there's no JSON path library for AssemblyScript
 
 ## Example
 

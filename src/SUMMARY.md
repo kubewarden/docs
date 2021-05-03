@@ -22,9 +22,9 @@
     - [End-to-end testing](./writing-policies/go/05-e2e-tests.md)
     - [GitHub Action integration](./writing-policies/go/06-automate.md)
     - [Distribute policy](./writing-policies/go/07-distribute.md)
+  - [TypeScript](./writing-policies/typescript.md)
   # Enable these sections once we update them to waPC
   #- [Swift](./writing-policies/swift.md)
-  #- [TypeScript](./writing-policies/typescript.md)
   #- [Domain Specific Language](./writing-policies/dsl.md)
   #- [Other languages](./writing-policies/other-languages.md)
 - [Distributing Policies](./distributing-policies.md)
