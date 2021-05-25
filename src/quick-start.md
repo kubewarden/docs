@@ -39,17 +39,19 @@ The `ClusterAdmissionPolicy` resource is the core of the Kubewarden stack: this 
 how validating policies are defined.
 
 ```yaml
-apiVersion: policies.kubewarden.io/v1alpha1
+apiVersion: policies.kubewarden.io/v1alpha2
 kind: ClusterAdmissionPolicy
 metadata:
   name: psp-capabilities
 spec:
-  module: registry://ghcr.io/kubewarden/policies/psp-capabilities:v0.1.2
-  resources:
-  - pods
-  operations:
-  - CREATE
-  - UPDATE
+  module: registry://ghcr.io/kubewarden/policies/psp-capabilities:v0.1.3
+  rules:
+  - apiGroups: [""]
+    apiVersions: ["v1"]
+    resources: ["pods"]
+    operations:
+    - CREATE
+    - UPDATE
   mutating: true
   settings:
     allowed_capabilities:
@@ -104,17 +106,19 @@ Let's define a `ClusterAdmissionPolicy` for that:
 
 ```shell
 kubectl apply -f - <<EOF
-apiVersion: policies.kubewarden.io/v1alpha1
+apiVersion: policies.kubewarden.io/v1alpha2
 kind: ClusterAdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
   module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.5
-  resources:
-  - pods
-  operations:
-  - CREATE
-  - UPDATE
+  rules:
+  - apiGroups: [""]
+    apiVersions: ["v1"]
+    resources: ["pods"]
+    operations:
+    - CREATE
+    - UPDATE
   mutating: false
 EOF
 ```
