@@ -45,7 +45,15 @@ spec:
 
 The creation of a new policy project can be done by feeding this
 [template project](https://github.com/kubewarden/policy-rust-template)
-into `cargo generate`:
+into `cargo generate`.
+
+First, install `cargo-generate`. Note, this requires [openssl-devel](https://pkgs.org/download/openssl-devel).
+
+```
+cargo install cargo-generate
+```
+
+Now scaffold the project as follows:
 
 ```shell
 cargo generate --git https://github.com/kubewarden/policy-rust-template \
