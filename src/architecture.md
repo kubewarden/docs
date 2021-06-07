@@ -5,7 +5,7 @@ WebAssembly.
 
 The Kubewarden stack is made by the following components:
 
-- Kubewarden Custom Resources: these are [Kubenetes Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
+- Kubewarden Custom Resources: these are [Kubernetes Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
   that simplify the process of managing policies.
 
 - [`kubewarden-controller`](https://github.com/kubewarden/kubewarden-controller):
