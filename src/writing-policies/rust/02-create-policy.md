@@ -69,3 +69,7 @@ The command will produce the following output:
 ```
 
 The new policy project can now be found inside of the `demo` directory.
+
+Note: if you plan to make sure of the GitHub container registry
+functionality in the demo, you will need to
+[enable improved container support](https://docs.github.com/en/packages/working-with-a-github-packages-registry/enabling-improved-container-support-with-the-container-registry#enabling-the-container-registry-for-your-personal-account).
