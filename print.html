@@ -1287,6 +1287,9 @@ into <code>cargo generate</code>.</p>
 ✨   Done! New project created /home/flavio/hacking/kubernetes/kubewarden/demo
 </code></pre>
 <p>The new policy project can now be found inside of the <code>demo</code> directory.</p>
+<p>Note: if you plan to make use of the GitHub container registry
+functionality in the demo, you will need to
+<a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/enabling-improved-container-support-with-the-container-registry#enabling-the-container-registry-for-your-personal-account">enable improved container support</a>.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="defining-policy-settings"><a class="header" href="#defining-policy-settings">Defining policy settings</a></h1>
 <p>As a first step we will define the structure that holds the policy settings.</p>
 <p>Open the <code>src/settings.rs</code> file and change the definition of the <code>Settings</code>
