@@ -32,9 +32,3 @@ Once `rustup` is installed add the Wasm target:
 ```shell
 rustup target add wasm32-unknown-unknown
 ```
- 
-Finally, install the [cargo-generate](https://github.com/cargo-generate/cargo-generate) utility:
-
-```shell
-cargo install cargo-generate
-```
