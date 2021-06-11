@@ -306,6 +306,7 @@ func TestParseValidSettings(t *testing.T) {
 		t.Errorf("Execpted regexp to be %v - got %v instead",
 			expected_regexp, re.String())
 	}
+}
 ```
 
 Next we will define a test that ensures a `Settings` instance

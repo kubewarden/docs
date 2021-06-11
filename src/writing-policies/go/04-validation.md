@@ -63,6 +63,7 @@ func validate(payload []byte) ([]byte, error) {
 	}
 
 	return kubewarden.AcceptRequest()
+}
 ```
 
 The code has some `NOTE` section inside of it. Let's get through them:

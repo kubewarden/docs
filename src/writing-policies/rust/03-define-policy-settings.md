@@ -9,6 +9,7 @@ struct to look like that:
 use std::collections::HashSet;
 
 #[derive(Deserialize, Default, Debug, Serialize)]
+#[serde(default)]
 pub(crate) struct Settings {
     pub invalid_names: HashSet<String>,
 }
