@@ -6,8 +6,9 @@ The Kubewarden stack is made of the following components:
     are defined inside of Kubernetes
   * A Deployment of Kubewarden `policy-server`: this component loads all the
     policies defined by the administrators and evaluates them
-  * A Deployment of `kubewarden-controller`: this is the controller that monitors
-    the `AdmissionPolicy` resources and interacts with the Kubewarden `policy-server`
+  * A Deployment of `kubewarden-controller`: this is the controller
+    that monitors the `ClusterAdmissionPolicy` resources and interacts
+    with the Kubewarden `policy-server`
 
 ## Install
 
@@ -18,10 +19,11 @@ helm repo add kubewarden https://charts.kubewarden.io
 helm install --namespace kubewarden --create-namespace kubewarden-controller kubewarden/kubewarden-controller
 ```
 
-This will install `kubewarden-controller` on the Kubernetes cluster in the default
-configuration and will register the `AdmissionPolicy` Custom Resource. The
-components of the Kubewarden stack will be deployed inside of a Kubernetes
-Namespace called `kubewarden`.
+This will install `kubewarden-controller` on the Kubernetes cluster in
+the default configuration and will register the
+`ClusterAdmissionPolicy` Custom Resource. The components of the
+Kubewarden stack will be deployed inside of a Kubernetes Namespace
+called `kubewarden`.
 
 The default configuration values should be good enough for the majority of
 deployments, all the options are documented [here](https://charts.kubewarden.io/#configuration).
