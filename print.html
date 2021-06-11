@@ -217,18 +217,20 @@ better, can be published inside of an OCI compliant registry.</p>
 are defined inside of Kubernetes</li>
 <li>A Deployment of Kubewarden <code>policy-server</code>: this component loads all the
 policies defined by the administrators and evaluates them</li>
-<li>A Deployment of <code>kubewarden-controller</code>: this is the controller that monitors
-the <code>AdmissionPolicy</code> resources and interacts with the Kubewarden <code>policy-server</code></li>
+<li>A Deployment of <code>kubewarden-controller</code>: this is the controller
+that monitors the <code>ClusterAdmissionPolicy</code> resources and interacts
+with the Kubewarden <code>policy-server</code></li>
 </ul>
 <h2 id="install"><a class="header" href="#install">Install</a></h2>
 <p>The Kubewarden stack can be deployed using a helm chart:</p>
 <pre><code class="language-console">helm repo add kubewarden https://charts.kubewarden.io
 helm install --namespace kubewarden --create-namespace kubewarden-controller kubewarden/kubewarden-controller
 </code></pre>
-<p>This will install <code>kubewarden-controller</code> on the Kubernetes cluster in the default
-configuration and will register the <code>AdmissionPolicy</code> Custom Resource. The
-components of the Kubewarden stack will be deployed inside of a Kubernetes
-Namespace called <code>kubewarden</code>.</p>
+<p>This will install <code>kubewarden-controller</code> on the Kubernetes cluster in
+the default configuration and will register the
+<code>ClusterAdmissionPolicy</code> Custom Resource. The components of the
+Kubewarden stack will be deployed inside of a Kubernetes Namespace
+called <code>kubewarden</code>.</p>
 <p>The default configuration values should be good enough for the majority of
 deployments, all the options are documented <a href="https://charts.kubewarden.io/#configuration">here</a>.</p>
 <p>The Kubewarden Policy Server is completely managed by the kubewarden-controller.</p>
