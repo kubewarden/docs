@@ -185,13 +185,14 @@ policy. We will rely on the compiler shipped within the official
 TinyGo container image.</li>
 <li><a href="https://github.com/bats-core/bats-core">bats</a>: used to write the
 tests and automate their execution.</li>
-<li><a href="https://github.com/kubewarden/policy-server/releases">policy-testdrive</a>:
-cli tool provided by Kubewarden to run its policies outside of
-Kubernetes. This is covered in depth inside of <a href="/testing-policies.html">this section</a>
-of the documentation.</li>
+<li><a href="https://github.com/kubewarden/kwctl/releases">kwctl</a>: CLI tool
+provided by Kubewarden to run its policies outside of Kubernetes,
+among other actions. This is covered in depth inside of <a href="/testing-policies.html">this
+section</a> of the documentation.</li>
 </ul>
 <h2 id="building-the-policy"><a class="header" href="#building-the-policy">Building the policy</a></h2>
-<p>As a first step we need to build the policy into a WebAssembly binary.</p>
+<p>As a first step we need to build the policy, producing a WebAssembly
+binary.</p>
 <p>This can be done with this simple command:</p>
 <pre><code class="language-shell">make wasm
 </code></pre>
@@ -202,9 +203,9 @@ inside of an ephemeral container.</p>
 <p>We are going to use <a href="https://github.com/bats-core/bats-core">bats</a> to write and
 automate our tests. Each test will be composed by the following steps:</p>
 <ol>
-<li>Run the policy using <code>policy-testdrive</code>.</li>
+<li>Run the policy using <code>kwctl</code>.</li>
 <li>Perform some assertions against the output produced by the
-<code>policy-testdrive</code>.</li>
+<code>kwctl</code>.</li>
 </ol>
 <p>All the end-to-end tests are located inside of a file called <code>e2e.bats</code>. The
 scaffolded project already includes such a file. We will just change its
@@ -213,16 +214,13 @@ contents to reflect how our policy behaves.</p>
 we previously used inside of the Go unit tests.</p>
 <p>The first test ensures a request is approved when no settings are provided:</p>
 <pre><code class="language-bash">@test &quot;accept when no settings are provided&quot; {
-  run policy-testdrive -p policy.wasm -r test_data/ingress.json
+  run kwctl run -r test_data/ingress.json policy.wasm
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
-  # request rejected
-  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+  # request is accepted
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:true.*') -ne 0 ]
 }
 </code></pre>
 <p>We can execute the end-to-end tests by using this command:</p>
@@ -237,96 +235,90 @@ we previously used inside of the Go unit tests.</p>
 <p>Let's write a test to ensure a request is approved when a user-defined constraint
 is respected:</p>
 <pre><code class="language-bash">@test &quot;accept user defined constraint is respected&quot; {
-  run policy-testdrive -p policy.wasm \
+  run kwctl run  \
     -r test_data/ingress.json \
-    -s '{&quot;constrained_labels&quot;: {&quot;owner&quot;: &quot;^team-&quot;}}'
+    --settings-json '{&quot;constrained_labels&quot;: {&quot;owner&quot;: &quot;^team-&quot;}}' \
+    policy.wasm
+
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
-  # request accepted
-  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+  # request is accepted
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:true.*') -ne 0 ]
 }
 </code></pre>
 <p>Next, we can write a test to ensure a request is accepted when none of the
 labels is on the deny list:</p>
 <pre><code class="language-bash">@test &quot;accept labels are not on deny list&quot; {
-  run policy-testdrive -p policy.wasm \
+  run kwctl run \
     -r test_data/ingress.json \
-    -s '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;bar&quot;]}'
+    --settings-json '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;bar&quot;]}' \
+    policy.wasm
+
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
-  # request accepted
-  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+  # request is accepted
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:true.*') -ne 0 ]
 }
 </code></pre>
 <p>Let's improve the test coverage by adding a test that rejects a request
 because one of the labels is on the deny list:</p>
 <pre><code class="language-bash">@test &quot;reject because label is on deny list&quot; {
-  run policy-testdrive -p policy.wasm \
+  run kwctl run \
     -r test_data/ingress.json \
-    -s '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;owner&quot;]}'
+    --settings-json '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;owner&quot;]}' \
+    policy.wasm
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
-  # request rejected
-  [[ &quot;$output&quot; == *&quot;allowed: false&quot;* ]]
+  # request is rejected
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:false.*') -ne 0 ]
   [[ &quot;$output&quot; == *&quot;Label owner is on the deny list&quot;* ]]
 }
 </code></pre>
 <p>The following test ensures a request is rejected when one of its labels doesn't
-satisfy the constraint provided by the user:</p>
+satisfy the constraint provided by the user.</p>
 <pre><code class="language-bash">@test &quot;reject because label doesn't pass validation constraint&quot; {
-  run policy-testdrive -p policy.wasm \
+  run kwctl run \
     -r test_data/ingress.json \
-    -s '{&quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-\\d+$&quot;}}'
+    --settings-json '{&quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-\\d+$&quot;}}' \
+    policy.wasm
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
-  # request rejected
-  [[ &quot;$output&quot; == *&quot;allowed: false&quot;* ]]
-  [[ &quot;$output&quot; == *&quot;The value of cc-center doesn\'t pass user-defined constraint&quot;* ]]
+  # request is rejected
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:false.*') -ne 0 ]
+  [[ &quot;$output&quot; == *&quot;The value of cc-center doesn't pass user-defined constraint&quot;* ]]
 }
 </code></pre>
 <p>We want to ensure settings' validation is working properly. This can be done
 with the following tests:</p>
 <pre><code class="language-bash">@test &quot;fail settings validation because of conflicting labels&quot; {
-  run policy-testdrive -p policy.wasm \
+  run kwctl run \
     -r test_data/ingress.json \
-    -s '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;cc-center&quot;], &quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-\\d+$&quot;}}'
+    --settings-json '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;cc-center&quot;], &quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-\\d+$&quot;}}' \
+    policy.wasm
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: false&quot;* ]]
+  # settings validation failed
+  [ $(expr &quot;$output&quot; : '.*&quot;valid&quot;:false.*') -ne 0 ]
   [[ &quot;$output&quot; == *&quot;Provided settings are not valid: These labels cannot be constrained and denied at the same time: Set{cc-center}&quot;* ]]
 }
 
 @test &quot;fail settings validation because of invalid constraint&quot; {
-  run policy-testdrive -p policy.wasm \
+  run kwctl run \
     -r test_data/ingress.json \
-    -s '{&quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-[12$&quot;}}'
+    --settings-json '{&quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-[12$&quot;}}' \
+    policy.wasm
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: false&quot;* ]]
   [[ &quot;$output&quot; == *&quot;Provided settings are not valid: error parsing regexp: missing closing ]: `[12$`&quot;* ]]
 }
 </code></pre>

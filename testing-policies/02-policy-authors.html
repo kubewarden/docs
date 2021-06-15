@@ -197,38 +197,41 @@ to deploy a Kubernetes cluster by using these tools:</p>
 <ul>
 <li><a href="https://github.com/bats-core/bats-core">bats</a>: used to write the
 tests and automate their execution.</li>
-<li><a href="https://github.com/kubewarden/policy-server/releases">policy-testdrive</a>:
-cli tool provided by Kubewarden to run its policies outside of
-Kubernetes.</li>
+<li><a href="https://github.com/kubewarden/kwctl">kwctl</a>: Kubewarden go-to CLI
+tool that helps you with policy related operations such as pull,
+inspect, annotate, push and run.</li>
 </ul>
-<p><code>policy-testdrive</code> usage is quite simple, we just have to invoke it with the
+<p><code>kwctl run</code> usage is quite simple, we just have to invoke it with the
 following data as input:</p>
 <ol>
-<li>Path to the WebAssembly binary file of the policy to be run. This is
-specified through the <code>--policy</code> argument. Currently, <code>policy-testdrive</code>
-can only load policies from the local filesystem.</li>
-<li>Path to the file containing the admission request object to be evaluated.
-This is provided via the <code>--request-file</code> argument.</li>
-<li>The policy settings to be used at evaluation time, they can be provided
-via <code>--settings</code> flag. The flag takes a JSON blob as parameter.</li>
+<li>WebAssembly binary file reference of the policy to be run. The
+Kubewarden policy can be loaded from the local filesystem
+(<code>file://</code>), an HTTP(s) server (<code>https://</code>) or an OCI registry
+(<code>registry://</code>).</li>
+<li>The admission request object to be evaluated.  This is provided via
+the <code>--request-path</code> argument. The request can be provided through
+<code>stdin</code> by setting <code>--request-path</code> to <code>-</code>.</li>
+<li>The policy settings to be used at evaluation time, they can be
+provided as an inline JSON via <code>--settings-json</code> flag, or a JSON or
+YAML file loaded from the filesystem via <code>--settings-path</code>.</li>
 </ol>
-<p>Once the policy evaluation is done, <code>policy-testdrive</code> prints to the standard
-output the <code>SettingsValidationResponse</code>and the <code>ValidationResponse</code> objects.</p>
-<p>For example, this is how <code>policy-testdrive</code> can be used to test the
-WebAssembly binary of the <code>ingress-policy</code> linked above:</p>
-<pre><code>$ policy-testdrive -p ingress-policy.wasm \
-    -r test_data/ingress-wildcard.json \
-    -s '{&quot;allowPorts&quot;: [80], &quot;denyPorts&quot;: [3000]}'
-Settings validation result: SettingsValidationResponse { valid: true, message: None }
-Policy evaluation results:
-ValidationResponse { uid: &quot;&quot;, allowed: false, patch_type: None, patch: None, status: Some(ValidationResponseStatus { message: Some(&quot;These ports are not on the allowed list: Set{3000}&quot;), code: None }) }
+<p>Once the policy evaluation is done, <code>kwctl</code> prints the
+<code>ValidationResponse</code> object to the standard output.</p>
+<p>For example, this is how <code>kwctl</code> can be used to test the WebAssembly
+binary of the <code>ingress-policy</code> linked above:</p>
+<pre><code>$ curl https://raw.githubusercontent.com/kubewarden/ingress-policy/v0.1.8/test_data/ingress-wildcard.json 2&gt; /dev/null | \
+    kwctl run \
+        --settings-json '{&quot;allowPorts&quot;: [80], &quot;denyPorts&quot;: [3000]}' \
+        --request-path - \
+        registry://ghcr.io/kubewarden/policies/ingress:v0.1.8 | jq
 </code></pre>
 <p>Using <code>bats</code> we can can write a test that runs this command and looks for the
 expected outputs:</p>
 <pre><code class="language-bash">@test &quot;all is good&quot; {
-  run policy-testdrive -p ingress-policy.wasm \
-    -r test_data/ingress-wildcard.json \
-    -s '{&quot;allowPorts&quot;: [80], &quot;denyPorts&quot;: [3000]}'
+  run kwctl run \
+    --request-path test_data/ingress-wildcard.json \
+    --settings-json '{&quot;allowPorts&quot;: [80], &quot;denyPorts&quot;: [3000]}' \
+    ingress-policy.wasm
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;

@@ -577,10 +577,10 @@ provides a bi-directional communication channel.</p>
 If that's not the case, feel free to reach out. We can help you overcome this
 limitation.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="policy-communication-specification"><a class="header" href="#policy-communication-specification">Policy communication specification</a></h1>
-<p>The policy evaluator interacts with Kubewarden policies using a well defined API.
-The purpose of this section is to document the API used by the host (
-be it <code>policy-server</code> or <code>policy-testdrive</code>) to communicate with Kubewarden's
-policies.</p>
+<p>The policy evaluator interacts with Kubewarden policies using a well
+defined API.  The purpose of this section is to document the API used
+by the host ( be it <code>policy-server</code> or <code>kwctl</code>) to communicate with
+Kubewarden's policies.</p>
 <blockquote>
 <p><strong>Note well:</strong> this section of the documentation is a bit low level, you can
 jump straight to one of the &quot;language focused&quot; chapters and come back to this
@@ -1296,6 +1296,7 @@ struct to look like that:</p>
 <pre><code class="language-rust norun noplayground">use std::collections::HashSet;
 
 #[derive(Deserialize, Default, Debug, Serialize)]
+#[serde(default)]
 pub(crate) struct Settings {
     pub invalid_names: HashSet&lt;String&gt;,
 }
@@ -1744,8 +1745,9 @@ compilation target.</p>
 target/wasm32-unknown-unknown/release/demo.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
 </code></pre>
 <h2 id="distributing-the-policy"><a class="header" href="#distributing-the-policy">Distributing the policy</a></h2>
-<p>This topic is covered inside of the <a href="writing-policies/rust//distributing-policies.html">&quot;distributing policies&quot;</a>
-section of Kubewarden's documentation.</p>
+<p>This topic is covered inside of the <a href="writing-policies/rust//distributing-policies.html">distributing
+policies</a> section of Kubewarden's
+documentation.</p>
 <h2 id="more-examples"><a class="header" href="#more-examples">More examples</a></h2>
 <p>You can find more Kubewarden policies written in Rust inside of Kubewarden's
 GitHub space. <a href="https://github.com/search?l=Rust&amp;q=topic%3Apolicy-as-code+org%3Akubewarden&amp;type=Repositories">This query</a>
@@ -2145,6 +2147,7 @@ object:</p>
 		t.Errorf(&quot;Execpted regexp to be %v - got %v instead&quot;,
 			expected_regexp, re.String())
 	}
+}
 </code></pre>
 <p>Next we will define a test that ensures a <code>Settings</code> instance
 cannot be generated when the user provides a broken regular
@@ -2337,6 +2340,7 @@ very few changes to it.</p>
 	}
 
 	return kubewarden.AcceptRequest()
+}
 </code></pre>
 <p>The code has some <code>NOTE</code> section inside of it. Let's get through them:</p>
 <ol>
@@ -2605,13 +2609,14 @@ policy. We will rely on the compiler shipped within the official
 TinyGo container image.</li>
 <li><a href="https://github.com/bats-core/bats-core">bats</a>: used to write the
 tests and automate their execution.</li>
-<li><a href="https://github.com/kubewarden/policy-server/releases">policy-testdrive</a>:
-cli tool provided by Kubewarden to run its policies outside of
-Kubernetes. This is covered in depth inside of <a href="writing-policies/go//testing-policies.html">this section</a>
-of the documentation.</li>
+<li><a href="https://github.com/kubewarden/kwctl/releases">kwctl</a>: CLI tool
+provided by Kubewarden to run its policies outside of Kubernetes,
+among other actions. This is covered in depth inside of <a href="writing-policies/go//testing-policies.html">this
+section</a> of the documentation.</li>
 </ul>
 <h2 id="building-the-policy-1"><a class="header" href="#building-the-policy-1">Building the policy</a></h2>
-<p>As a first step we need to build the policy into a WebAssembly binary.</p>
+<p>As a first step we need to build the policy, producing a WebAssembly
+binary.</p>
 <p>This can be done with this simple command:</p>
 <pre><code class="language-shell">make wasm
 </code></pre>
@@ -2622,9 +2627,9 @@ inside of an ephemeral container.</p>
 <p>We are going to use <a href="https://github.com/bats-core/bats-core">bats</a> to write and
 automate our tests. Each test will be composed by the following steps:</p>
 <ol>
-<li>Run the policy using <code>policy-testdrive</code>.</li>
+<li>Run the policy using <code>kwctl</code>.</li>
 <li>Perform some assertions against the output produced by the
-<code>policy-testdrive</code>.</li>
+<code>kwctl</code>.</li>
 </ol>
 <p>All the end-to-end tests are located inside of a file called <code>e2e.bats</code>. The
 scaffolded project already includes such a file. We will just change its
@@ -2633,16 +2638,13 @@ contents to reflect how our policy behaves.</p>
 we previously used inside of the Go unit tests.</p>
 <p>The first test ensures a request is approved when no settings are provided:</p>
 <pre><code class="language-bash">@test &quot;accept when no settings are provided&quot; {
-  run policy-testdrive -p policy.wasm -r test_data/ingress.json
+  run kwctl run -r test_data/ingress.json policy.wasm
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
-  # request rejected
-  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+  # request is accepted
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:true.*') -ne 0 ]
 }
 </code></pre>
 <p>We can execute the end-to-end tests by using this command:</p>
@@ -2657,96 +2659,90 @@ we previously used inside of the Go unit tests.</p>
 <p>Let's write a test to ensure a request is approved when a user-defined constraint
 is respected:</p>
 <pre><code class="language-bash">@test &quot;accept user defined constraint is respected&quot; {
-  run policy-testdrive -p policy.wasm \
+  run kwctl run  \
     -r test_data/ingress.json \
-    -s '{&quot;constrained_labels&quot;: {&quot;owner&quot;: &quot;^team-&quot;}}'
+    --settings-json '{&quot;constrained_labels&quot;: {&quot;owner&quot;: &quot;^team-&quot;}}' \
+    policy.wasm
+
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
-  # request accepted
-  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+  # request is accepted
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:true.*') -ne 0 ]
 }
 </code></pre>
 <p>Next, we can write a test to ensure a request is accepted when none of the
 labels is on the deny list:</p>
 <pre><code class="language-bash">@test &quot;accept labels are not on deny list&quot; {
-  run policy-testdrive -p policy.wasm \
+  run kwctl run \
     -r test_data/ingress.json \
-    -s '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;bar&quot;]}'
+    --settings-json '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;bar&quot;]}' \
+    policy.wasm
+
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
-  # request accepted
-  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+  # request is accepted
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:true.*') -ne 0 ]
 }
 </code></pre>
 <p>Let's improve the test coverage by adding a test that rejects a request
 because one of the labels is on the deny list:</p>
 <pre><code class="language-bash">@test &quot;reject because label is on deny list&quot; {
-  run policy-testdrive -p policy.wasm \
+  run kwctl run \
     -r test_data/ingress.json \
-    -s '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;owner&quot;]}'
+    --settings-json '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;owner&quot;]}' \
+    policy.wasm
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
-  # request rejected
-  [[ &quot;$output&quot; == *&quot;allowed: false&quot;* ]]
+  # request is rejected
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:false.*') -ne 0 ]
   [[ &quot;$output&quot; == *&quot;Label owner is on the deny list&quot;* ]]
 }
 </code></pre>
 <p>The following test ensures a request is rejected when one of its labels doesn't
-satisfy the constraint provided by the user:</p>
+satisfy the constraint provided by the user.</p>
 <pre><code class="language-bash">@test &quot;reject because label doesn't pass validation constraint&quot; {
-  run policy-testdrive -p policy.wasm \
+  run kwctl run \
     -r test_data/ingress.json \
-    -s '{&quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-\\d+$&quot;}}'
+    --settings-json '{&quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-\\d+$&quot;}}' \
+    policy.wasm
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
-  # request rejected
-  [[ &quot;$output&quot; == *&quot;allowed: false&quot;* ]]
-  [[ &quot;$output&quot; == *&quot;The value of cc-center doesn\'t pass user-defined constraint&quot;* ]]
+  # request is rejected
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:false.*') -ne 0 ]
+  [[ &quot;$output&quot; == *&quot;The value of cc-center doesn't pass user-defined constraint&quot;* ]]
 }
 </code></pre>
 <p>We want to ensure settings' validation is working properly. This can be done
 with the following tests:</p>
 <pre><code class="language-bash">@test &quot;fail settings validation because of conflicting labels&quot; {
-  run policy-testdrive -p policy.wasm \
+  run kwctl run \
     -r test_data/ingress.json \
-    -s '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;cc-center&quot;], &quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-\\d+$&quot;}}'
+    --settings-json '{&quot;denied_labels&quot;: [&quot;foo&quot;, &quot;cc-center&quot;], &quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-\\d+$&quot;}}' \
+    policy.wasm
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: false&quot;* ]]
+  # settings validation failed
+  [ $(expr &quot;$output&quot; : '.*&quot;valid&quot;:false.*') -ne 0 ]
   [[ &quot;$output&quot; == *&quot;Provided settings are not valid: These labels cannot be constrained and denied at the same time: Set{cc-center}&quot;* ]]
 }
 
 @test &quot;fail settings validation because of invalid constraint&quot; {
-  run policy-testdrive -p policy.wasm \
+  run kwctl run \
     -r test_data/ingress.json \
-    -s '{&quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-[12$&quot;}}'
+    --settings-json '{&quot;constrained_labels&quot;: {&quot;cc-center&quot;: &quot;^cc-[12$&quot;}}' \
+    policy.wasm
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: false&quot;* ]]
   [[ &quot;$output&quot; == *&quot;Provided settings are not valid: error parsing regexp: missing closing ]: `[12$`&quot;* ]]
 }
 </code></pre>
@@ -2931,14 +2927,76 @@ specification allows to store any kind of binary blob inside of a
 regular OCI compliant container registry.</p>
 <p>The target OCI compliant registry <strong>must support artifacts</strong> in order
 to successfully push a Kubewarden Policy to it.</p>
-<p>The <a href="https://github.com/engineerd/wasm-to-oci"><code>wasm-to-oci</code></a> command line tool
+<p>The <a href="https://github.com/kubewarden/kwctl"><code>kwctl</code></a> command line tool
 can be used to push a Kubewarden Policy to an OCI compliant registry.</p>
-<p>Pushing a policy can be done in this way:</p>
-<pre><code class="language-bash">$ wasm-to-oci push pod-runtime-class-policy.wasm \
-              &lt;oci-registry&gt;/kubewarden-policies/pod-runtime-class-policy:v0.0.2
+<h2 id="annotating-the-policy"><a class="header" href="#annotating-the-policy">Annotating the policy</a></h2>
+<p>Annotating a policy is done by the <code>kwctl</code> CLI tool as well. The
+process of annotating a Kubewarden policy is done by adding
+WebAssembly custom sections to the policy binary. This means that the
+policy metadata travels with the policy itself.</p>
+<p>The <code>kwctl annotate</code> command needs two main inputs:</p>
+<ul>
+<li>
+<p>The Kubewarden policy to be annotated, in the form of a local file
+in the filesystem.</p>
+</li>
+<li>
+<p>The annotations file, a file containing a YAML with the policy
+metadata. This file is located somewhere in your filesystem, usually
+in the root project of your policy.</p>
+</li>
+</ul>
+<p>An example follows; we save this file as <code>metadata.yml</code> in the current
+directory:</p>
+<pre><code class="language-yaml">rules:
+- apiGroups: [&quot;*&quot;]
+  apiVersions: [&quot;*&quot;]
+  resources: [&quot;*&quot;]
+  operations: [&quot;*&quot;]
+mutating: false
+annotations:
+  io.kubewarden.policy.title: palindromify
+  io.kubewarden.policy.description: Allows you to reject palindrome names in resources and namespace names, or to only accept palindrome names
+  io.kubewarden.policy.author: Name Surname &lt;name.surname@example.com&gt;
+  io.kubewarden.policy.url: https://github.com/&lt;org&gt;/palindromify
+  io.kubewarden.policy.source: https://github.com/&lt;org&gt;/palindromify
+  io.kubewarden.policy.license: Apache-2.0
+  io.kubewarden.policy.usage: |
+    This is markdown text and as such allows you to define a free form usage text.
+
+    This policy allows you to reject requests if:
+    - The name of the resource is a palindrome name.
+    - The namespace name where this resource is created has a palindrome name.
+
+    This policy accepts the following settings:
+
+    - `invert_behavior`: bool that inverts the policy behavior. If enabled, only palindrome names will be accepted.
 </code></pre>
-<p>The policy can then be referenced from the Kubewarden Policy Server as
-<code>registry://&lt;oci-registry&gt;/kubewarden-policies/pod-runtime-class-policy:v0.0.2</code>.</p>
+<p>Now, let's annotate the policy:</p>
+<pre><code class="language-shell">$ kwctl annotate policy.wasm \
+    --metadata-path metadata.yml \
+    --output-path annotated-policy.wasm
+</code></pre>
+<p>This process performs some optimizations on the policy, so it's not
+uncommon to end up with a smaller annotated policy than the original
+one. This depends a lot on the toolchain that was used to produce the
+unannotated WebAssembly object.</p>
+<p>You can check with <code>kwctl inspect</code> that everything looks correct:</p>
+<pre><code class="language-shell">$ kwctl inspect annotated-policy.wasm
+# here you will see a colored output of the metadata you provided on the `metadata.yml` file. This information is now read from the WebAssembly custom sections
+</code></pre>
+<h2 id="pushing-the-policy"><a class="header" href="#pushing-the-policy">Pushing the policy</a></h2>
+<p>Pushing an annotated policy can be done in this way:</p>
+<pre><code class="language-shell">$ kwctl push annotated-policy.wasm \
+              &lt;oci-registry&gt;/kubewarden-policies/palindromify-policy:v0.0.1
+</code></pre>
+<p>It is discouraged to push unannotated policies. This is why by default
+<code>kwctl push</code> will reject to push such a policy to an OCI registry. If
+you really want to push an unannotated policy you can use the
+<code>--force</code> flag of <code>kwctl push</code>.</p>
+<p>The policy can then be referenced from the Kubewarden Policy Server or
+<code>kwctl</code> as
+<code>registry://&lt;oci-registry&gt;/kubewarden-policies/palindromify-policy:v0.0.1</code>.</p>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="testing-policies"><a class="header" href="#testing-policies">Testing Policies</a></h1>
 <p>This section covers the topic of testing Kubewarden Policies. There are two possible
 personas interested in testing policies:</p>
@@ -2975,38 +3033,41 @@ to deploy a Kubernetes cluster by using these tools:</p>
 <ul>
 <li><a href="https://github.com/bats-core/bats-core">bats</a>: used to write the
 tests and automate their execution.</li>
-<li><a href="https://github.com/kubewarden/policy-server/releases">policy-testdrive</a>:
-cli tool provided by Kubewarden to run its policies outside of
-Kubernetes.</li>
+<li><a href="https://github.com/kubewarden/kwctl">kwctl</a>: Kubewarden go-to CLI
+tool that helps you with policy related operations such as pull,
+inspect, annotate, push and run.</li>
 </ul>
-<p><code>policy-testdrive</code> usage is quite simple, we just have to invoke it with the
+<p><code>kwctl run</code> usage is quite simple, we just have to invoke it with the
 following data as input:</p>
 <ol>
-<li>Path to the WebAssembly binary file of the policy to be run. This is
-specified through the <code>--policy</code> argument. Currently, <code>policy-testdrive</code>
-can only load policies from the local filesystem.</li>
-<li>Path to the file containing the admission request object to be evaluated.
-This is provided via the <code>--request-file</code> argument.</li>
-<li>The policy settings to be used at evaluation time, they can be provided
-via <code>--settings</code> flag. The flag takes a JSON blob as parameter.</li>
+<li>WebAssembly binary file reference of the policy to be run. The
+Kubewarden policy can be loaded from the local filesystem
+(<code>file://</code>), an HTTP(s) server (<code>https://</code>) or an OCI registry
+(<code>registry://</code>).</li>
+<li>The admission request object to be evaluated.  This is provided via
+the <code>--request-path</code> argument. The request can be provided through
+<code>stdin</code> by setting <code>--request-path</code> to <code>-</code>.</li>
+<li>The policy settings to be used at evaluation time, they can be
+provided as an inline JSON via <code>--settings-json</code> flag, or a JSON or
+YAML file loaded from the filesystem via <code>--settings-path</code>.</li>
 </ol>
-<p>Once the policy evaluation is done, <code>policy-testdrive</code> prints to the standard
-output the <code>SettingsValidationResponse</code>and the <code>ValidationResponse</code> objects.</p>
-<p>For example, this is how <code>policy-testdrive</code> can be used to test the
-WebAssembly binary of the <code>ingress-policy</code> linked above:</p>
-<pre><code>$ policy-testdrive -p ingress-policy.wasm \
-    -r test_data/ingress-wildcard.json \
-    -s '{&quot;allowPorts&quot;: [80], &quot;denyPorts&quot;: [3000]}'
-Settings validation result: SettingsValidationResponse { valid: true, message: None }
-Policy evaluation results:
-ValidationResponse { uid: &quot;&quot;, allowed: false, patch_type: None, patch: None, status: Some(ValidationResponseStatus { message: Some(&quot;These ports are not on the allowed list: Set{3000}&quot;), code: None }) }
+<p>Once the policy evaluation is done, <code>kwctl</code> prints the
+<code>ValidationResponse</code> object to the standard output.</p>
+<p>For example, this is how <code>kwctl</code> can be used to test the WebAssembly
+binary of the <code>ingress-policy</code> linked above:</p>
+<pre><code>$ curl https://raw.githubusercontent.com/kubewarden/ingress-policy/v0.1.8/test_data/ingress-wildcard.json 2&gt; /dev/null | \
+    kwctl run \
+        --settings-json '{&quot;allowPorts&quot;: [80], &quot;denyPorts&quot;: [3000]}' \
+        --request-path - \
+        registry://ghcr.io/kubewarden/policies/ingress:v0.1.8 | jq
 </code></pre>
 <p>Using <code>bats</code> we can can write a test that runs this command and looks for the
 expected outputs:</p>
 <pre><code class="language-bash">@test &quot;all is good&quot; {
-  run policy-testdrive -p ingress-policy.wasm \
-    -r test_data/ingress-wildcard.json \
-    -s '{&quot;allowPorts&quot;: [80], &quot;denyPorts&quot;: [3000]}'
+  run kwctl run \
+    --request-path test_data/ingress-wildcard.json \
+    --settings-json '{&quot;allowPorts&quot;: [80], &quot;denyPorts&quot;: [3000]}' \
+    ingress-policy.wasm
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
@@ -3040,49 +3101,38 @@ the policy to a newer version, when I add/change some Kubernetes resources,
 when I change the configuration parameters of the policy,...</li>
 </ul>
 <p>Kubewarden has a dedicated utility that allows testing of the policies
-outside of Kubernetes. This utility is called
-<a href="https://github.com/kubewarden/policy-server/tree/main/crates/policy-testdrive"><code>policy-testdrive</code></a>.</p>
-<p><code>policy-testdrive</code> usage is quite simple, we just have to invoke it with the
+outside of Kubernetes, among other operations. This utility is called
+<a href="https://github.com/kubewarden/kwctl"><code>kwctl</code></a>.</p>
+<p><code>kwctl</code> usage is quite simple, we just have to invoke it with the
 following data as input:</p>
 <ol>
-<li>Path to the WebAssembly binary file of the policy to be run. This is
-specified through the <code>--policy</code> argument. Currently, <code>policy-testdrive</code>
-can only load policies from the local filesystem.</li>
-<li>Path to the file containing the admission request object to be evaluated.
-This is provided via the <code>--request-file</code> argument.</li>
-<li>The policy settings to be used at evaluation time, they can be provided
-via <code>--settings</code> flag. The flag takes a JSON blob as parameter.</li>
+<li>WebAssembly binary file reference of the policy to be run. The
+Kubewarden policy can be loaded from the local filesystem
+(<code>file://</code>), an HTTP(s) server (<code>https://</code>) or an OCI registry
+(<code>registry://</code>).</li>
+<li>The admission request object to be evaluated.  This is provided via
+the <code>--request-path</code> argument. The request can be provided through
+<code>stdin</code> by setting <code>--request-path</code> to <code>-</code>.</li>
+<li>The policy settings to be used at evaluation time, they can be
+provided as an inline JSON via <code>--settings-json</code> flag, or a JSON or
+YAML file loaded from the filesystem via <code>--settings-path</code>.</li>
 </ol>
-<p>Once the policy evaluation is done, <code>policy-testdrive</code> prints to the standard
-output the <code>SettingsValidationResponse</code>and the <code>ValidationResponse</code> objects.</p>
+<p>Once the policy evaluation is done, <code>kwctl</code> prints the
+<code>ValidationResponse</code> object to the standard output.</p>
 <h2 id="install-1"><a class="header" href="#install-1">Install</a></h2>
-<p>You can download pre-built binaries of <code>policy-testdrive</code>
-from <a href="https://github.com/kubewarden/policy-server/releases">here</a>.</p>
-<p>Currently <code>policy-testdrive</code> isn't able to download policies from OCI
-registries. This can be done using the
-<a href="https://github.com/engineerd/wasm-to-oci"><code>wasm-to-oci</code></a> tool.</p>
-<p>Pre-built binaries of <code>wasm-to-oci</code>can be downloaded from the project's
-<a href="https://github.com/engineerd/wasm-to-oci/releases">GitHub Releases page</a>.</p>
+<p>You can download pre-built binaries of <code>kwctl</code> from
+<a href="https://github.com/kubewarden/kwctl/releases">here</a>.</p>
 <h2 id="quickstart"><a class="header" href="#quickstart">Quickstart</a></h2>
 <p>This section describes how to test the
-<a href="https://github.com/kubewarden/psp-apparmor">psp-apparmor</a> policy
-with different configurations and validation request objects as input data.</p>
-<p>We begin by downloading the WebAssembly binary of the policy, we will
-do that using the <code>wasm-to-oci</code> tool:</p>
-<pre><code class="language-shell">wasm-to-oci pull ghcr.io/kubewarden/policies/psp-apparmor:v0.1.2
-</code></pre>
-<p>This will produce the following output:</p>
-<pre><code class="language-shell">INFO[0001] Pulled: ghcr.io/kubewarden/policies/psp-apparmor:v0.1.2 
-INFO[0001] Size: 2682915
-INFO[0001] Digest: sha256:5532a49834af8cc929994a65c0881190ef168295fffd2bed4e7325d2e91484b5 
-</code></pre>
-<p>This creates a <code>module.wasm</code> file in the current directory.</p>
+<a href="https://github.com/kubewarden/psp-apparmor">psp-apparmor</a> policy with
+different configurations and validation request objects as input data.</p>
 <h3 id="create-admissionreview-requests"><a class="header" href="#create-admissionreview-requests">Create <code>AdmissionReview</code> requests</a></h3>
-<p>We have to create some files holding the <code>AdmissionReview</code> objects that
-will be evaluated by the policy.</p>
+<p>We have to create some files holding the <code>AdmissionReview</code> objects
+that will be evaluated by the policy.</p>
 <p>Let's create a file named <code>pod-req-no-specific-apparmor-profile.json</code> with the following
 contents:</p>
 <pre><code class="language-json">{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
   &quot;kind&quot;: {
     &quot;kind&quot;: &quot;Pod&quot;,
     &quot;version&quot;: &quot;v1&quot;
@@ -3110,12 +3160,12 @@ contents:</p>
 }
 </code></pre>
 <p>This request tries to create a Pod that doesn't specify any AppArmor
-profile to be used, that's because it doesn't have an <code>annotation</code> with the
-<code>container.apparmor.security.beta.kubernetes.io/&lt;name of the container&gt;</code>
-key.</p>
-<p>Let's create a file named <code>pod-req-apparmor-unconfined.json</code> with the following
-contents:</p>
+profile to be used, that's because it doesn't have an <code>annotation</code>
+with the <code>container.apparmor.security.beta.kubernetes.io/&lt;name of the container&gt;</code> key.</p>
+<p>Let's create a file named <code>pod-req-apparmor-unconfined.json</code> with the
+following contents:</p>
 <pre><code class="language-json">{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
   &quot;kind&quot;: {
     &quot;kind&quot;: &quot;Pod&quot;,
     &quot;version&quot;: &quot;v1&quot;
@@ -3151,6 +3201,7 @@ is a bad security practice.</p>
 <p>Finally, let's create a file named <code>pod-req-apparmor-custom.json</code> with the following
 contents:</p>
 <pre><code class="language-json">{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
   &quot;kind&quot;: {
     &quot;kind&quot;: &quot;Pod&quot;,
     &quot;version&quot;: &quot;v1&quot;
@@ -3180,89 +3231,96 @@ contents:</p>
   }
 }
 </code></pre>
-<p>This request tries to create a Pod with a container called <code>nginx</code> that uses the
-<code>nginx-custom</code> profile provided by the administrators of the Kubernetes cluster.</p>
 <blockquote>
-<p><strong>Note well:</strong> these are stripped down <code>AdmissionReview</code> objects, we left
-only the fields that are relevant to our policy.</p>
+<p><strong>Note well:</strong> these are stripped down <code>AdmissionReview</code> objects, we
+left only the fields that are relevant to our policy.</p>
 </blockquote>
 <h3 id="test-the-policy"><a class="header" href="#test-the-policy">Test the policy</a></h3>
-<p>Now we can use <code>policy-testdrive</code> to test the creation of a Pod that doesn't
+<p>Now we can use <code>kwctl</code> to test the creation of a Pod that doesn't
 specify an AppArmor profile:</p>
-<pre><code class="language-console">policy-testdrive --policy module.wasm \
-  --request-file pod-req-no-specific-apparmor-profile.json
+<pre><code class="language-console">$ kwctl run \
+    --request-path pod-req-no-specific-apparmor-profile.json \
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 | jq
 </code></pre>
 <p>The policy will accept the request and produce the following output:</p>
-<pre><code class="language-console">Settings validation result: SettingsValidationResponse { valid: true, message: None }
-Policy evaluation results:
-ValidationResponse { uid: &quot;&quot;, allowed: true, patch_type: None, patch: None, status: None }
+<pre><code class="language-console">{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
+  &quot;allowed&quot;: true
+}
 </code></pre>
-<p>The policy will instead reject the creation of a Pod with an <code>unconfined</code> AppArmor
-profile:</p>
-<pre><code class="language-console">$ policy-testdrive --policy module.wasm \
-  --request-file pod-req-apparmor-unconfined.json
-
-Settings validation result: SettingsValidationResponse { valid: true, message: None }
-Policy evaluation results:
-ValidationResponse { uid: &quot;&quot;, allowed: false, patch_type: None, patch: None, status: Some(ValidationResponseStatus { message: Some(&quot;These AppArmor profiles are not allowed: [\&quot;unconfined\&quot;]&quot;), code: None }) }
+<p>The policy will instead reject the creation of a Pod with an
+<code>unconfined</code> AppArmor profile:</p>
+<pre><code class="language-console">$ kwctl run \
+    --request-path pod-req-apparmor-unconfined.json \
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 | jq
+{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
+  &quot;allowed&quot;: false,
+  &quot;status&quot;: {
+    &quot;message&quot;: &quot;These AppArmor profiles are not allowed: [\&quot;unconfined\&quot;]&quot;
+  }
+}
 </code></pre>
-<p>Both times we did a test drive of the policy <strong>without</strong> providing any kind of
-setting. As the <a href="https://github.com/kubewarden/psp-apparmor#configuration">policy's documentation</a>
+<p>Both times we ran the policy <strong>without</strong> providing any kind of
+setting. As the <a href="https://github.com/kubewarden/psp-apparmor#configuration">policy's
+documentation</a>
 states, this results in preventing the usage of non-default profiles.</p>
 <p>As a matter of fact, the Pod using a custom <code>nginx</code> profile gets rejected by
 the policy too:</p>
-<pre><code class="language-console">$ policy-testdrive --policy module.wasm \
-  --request-file pod-req-apparmor-custom.json
-
-Settings validation result: SettingsValidationResponse { valid: true, message: None }
-Policy evaluation results:
-ValidationResponse { uid: &quot;&quot;, allowed: false, patch_type: None, patch: None, status: Some(ValidationResponseStatus { message: Some(&quot;These AppArmor profiles are not allowed: [\&quot;localhost/nginx-custom\&quot;]&quot;), code: None }) }
+<pre><code class="language-console">$ kwctl run \
+    --request-path pod-req-apparmor-custom.json \
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 | jq
+{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
+  &quot;allowed&quot;: false,
+  &quot;status&quot;: {
+    &quot;message&quot;: &quot;These AppArmor profiles are not allowed: [\&quot;localhost/nginx-custom\&quot;]&quot;
+  }
+}
 </code></pre>
 <p>We can change the default behaviour and allow some chosen AppArmor to be used:</p>
-<pre><code class="language-console">policy-testdrive --policy module.wasm \
-  --request-file pod-req-apparmor-custom.json \
-  --settings '{&quot;allowed_profiles&quot;: [&quot;runtime/default&quot;, &quot;localhost/nginx-custom&quot;]}'
+<pre><code class="language-console">$ kwctl run \
+    --request-path pod-req-apparmor-custom.json \
+    --settings-json '{&quot;allowed_profiles&quot;: [&quot;runtime/default&quot;, &quot;localhost/nginx-custom&quot;]}' \
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 | jq
 </code></pre>
 <p>This time the request is accepted:</p>
-<pre><code class="language-console">Settings validation result: SettingsValidationResponse { valid: true, message: None }
-Policy evaluation results:
-ValidationResponse { uid: &quot;&quot;, allowed: true, patch_type: None, patch: None, status: None }
+<pre><code class="language-console">{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
+  &quot;allowed&quot;: true
+}
 </code></pre>
 <h2 id="automation"><a class="header" href="#automation">Automation</a></h2>
 <p>All these steps shown above can be automated using
 <a href="https://github.com/bats-core/bats-core">bats</a>.</p>
-<p>We can write a series of tests and integrate their execution inside
-of your existing CI and CD pipelines.</p>
+<p>We can write a series of tests and integrate their execution inside of
+your existing CI and CD pipelines.</p>
 <p>That would ensure changes to the policy version, policy configuration
 parameters, Kubernetes resources,... won't break the outcome of the
 validation/mutation operations.</p>
 <p>The commands used above can be easily &quot;wrapped&quot; into a <code>bats</code> test:</p>
 <pre><code class="language-bash">@test &quot;all is good&quot; {
-  run policy-testdrive --policy module.wasm \
-    --request-file pod-req-no-specific-apparmor-profile.json
+  run kwctl run \
+    --request-path pod-req-no-specific-apparmor-profile.json \
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
   # request accepted
-  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:true.*') -ne 0 ]
 }
 
 @test &quot;reject&quot; {
-  run policy-testdrive --policy module.wasm \
-    --request-file pod-req-apparmor-custom.json
+  run kwctl run \
+    --request-path pod-req-apparmor-custom.json \
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
   # request rejected
-  [[ &quot;$output&quot; == *&quot;allowed: false&quot;* ]]
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:false.*') -ne 0 ]
 }
 </code></pre>
 <p>Assuming the snippet from above is inside of a file called <code>e2e.bats</code>,
@@ -3273,9 +3331,9 @@ we can run the test in this way:</p>
 
 2 tests, 0 failures
 </code></pre>
-<p>Checkout <a href="testing-policies//writing-policies/go/05-e2e-tests.html">this section</a>
-of the documentation to learn more about writing end-to-end
-tests of your policies.</p>
+<p>Checkout <a href="testing-policies//writing-policies/go/05-e2e-tests.html">this section</a> of the
+documentation to learn more about writing end-to-end tests of your
+policies.</p>
 
                     </main>
 

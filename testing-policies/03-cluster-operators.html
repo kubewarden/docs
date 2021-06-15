@@ -185,49 +185,38 @@ the policy to a newer version, when I add/change some Kubernetes resources,
 when I change the configuration parameters of the policy,...</li>
 </ul>
 <p>Kubewarden has a dedicated utility that allows testing of the policies
-outside of Kubernetes. This utility is called
-<a href="https://github.com/kubewarden/policy-server/tree/main/crates/policy-testdrive"><code>policy-testdrive</code></a>.</p>
-<p><code>policy-testdrive</code> usage is quite simple, we just have to invoke it with the
+outside of Kubernetes, among other operations. This utility is called
+<a href="https://github.com/kubewarden/kwctl"><code>kwctl</code></a>.</p>
+<p><code>kwctl</code> usage is quite simple, we just have to invoke it with the
 following data as input:</p>
 <ol>
-<li>Path to the WebAssembly binary file of the policy to be run. This is
-specified through the <code>--policy</code> argument. Currently, <code>policy-testdrive</code>
-can only load policies from the local filesystem.</li>
-<li>Path to the file containing the admission request object to be evaluated.
-This is provided via the <code>--request-file</code> argument.</li>
-<li>The policy settings to be used at evaluation time, they can be provided
-via <code>--settings</code> flag. The flag takes a JSON blob as parameter.</li>
+<li>WebAssembly binary file reference of the policy to be run. The
+Kubewarden policy can be loaded from the local filesystem
+(<code>file://</code>), an HTTP(s) server (<code>https://</code>) or an OCI registry
+(<code>registry://</code>).</li>
+<li>The admission request object to be evaluated.  This is provided via
+the <code>--request-path</code> argument. The request can be provided through
+<code>stdin</code> by setting <code>--request-path</code> to <code>-</code>.</li>
+<li>The policy settings to be used at evaluation time, they can be
+provided as an inline JSON via <code>--settings-json</code> flag, or a JSON or
+YAML file loaded from the filesystem via <code>--settings-path</code>.</li>
 </ol>
-<p>Once the policy evaluation is done, <code>policy-testdrive</code> prints to the standard
-output the <code>SettingsValidationResponse</code>and the <code>ValidationResponse</code> objects.</p>
+<p>Once the policy evaluation is done, <code>kwctl</code> prints the
+<code>ValidationResponse</code> object to the standard output.</p>
 <h2 id="install"><a class="header" href="#install">Install</a></h2>
-<p>You can download pre-built binaries of <code>policy-testdrive</code>
-from <a href="https://github.com/kubewarden/policy-server/releases">here</a>.</p>
-<p>Currently <code>policy-testdrive</code> isn't able to download policies from OCI
-registries. This can be done using the
-<a href="https://github.com/engineerd/wasm-to-oci"><code>wasm-to-oci</code></a> tool.</p>
-<p>Pre-built binaries of <code>wasm-to-oci</code>can be downloaded from the project's
-<a href="https://github.com/engineerd/wasm-to-oci/releases">GitHub Releases page</a>.</p>
+<p>You can download pre-built binaries of <code>kwctl</code> from
+<a href="https://github.com/kubewarden/kwctl/releases">here</a>.</p>
 <h2 id="quickstart"><a class="header" href="#quickstart">Quickstart</a></h2>
 <p>This section describes how to test the
-<a href="https://github.com/kubewarden/psp-apparmor">psp-apparmor</a> policy
-with different configurations and validation request objects as input data.</p>
-<p>We begin by downloading the WebAssembly binary of the policy, we will
-do that using the <code>wasm-to-oci</code> tool:</p>
-<pre><code class="language-shell">wasm-to-oci pull ghcr.io/kubewarden/policies/psp-apparmor:v0.1.2
-</code></pre>
-<p>This will produce the following output:</p>
-<pre><code class="language-shell">INFO[0001] Pulled: ghcr.io/kubewarden/policies/psp-apparmor:v0.1.2 
-INFO[0001] Size: 2682915
-INFO[0001] Digest: sha256:5532a49834af8cc929994a65c0881190ef168295fffd2bed4e7325d2e91484b5 
-</code></pre>
-<p>This creates a <code>module.wasm</code> file in the current directory.</p>
+<a href="https://github.com/kubewarden/psp-apparmor">psp-apparmor</a> policy with
+different configurations and validation request objects as input data.</p>
 <h3 id="create-admissionreview-requests"><a class="header" href="#create-admissionreview-requests">Create <code>AdmissionReview</code> requests</a></h3>
-<p>We have to create some files holding the <code>AdmissionReview</code> objects that
-will be evaluated by the policy.</p>
+<p>We have to create some files holding the <code>AdmissionReview</code> objects
+that will be evaluated by the policy.</p>
 <p>Let's create a file named <code>pod-req-no-specific-apparmor-profile.json</code> with the following
 contents:</p>
 <pre><code class="language-json">{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
   &quot;kind&quot;: {
     &quot;kind&quot;: &quot;Pod&quot;,
     &quot;version&quot;: &quot;v1&quot;
@@ -255,12 +244,12 @@ contents:</p>
 }
 </code></pre>
 <p>This request tries to create a Pod that doesn't specify any AppArmor
-profile to be used, that's because it doesn't have an <code>annotation</code> with the
-<code>container.apparmor.security.beta.kubernetes.io/&lt;name of the container&gt;</code>
-key.</p>
-<p>Let's create a file named <code>pod-req-apparmor-unconfined.json</code> with the following
-contents:</p>
+profile to be used, that's because it doesn't have an <code>annotation</code>
+with the <code>container.apparmor.security.beta.kubernetes.io/&lt;name of the container&gt;</code> key.</p>
+<p>Let's create a file named <code>pod-req-apparmor-unconfined.json</code> with the
+following contents:</p>
 <pre><code class="language-json">{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
   &quot;kind&quot;: {
     &quot;kind&quot;: &quot;Pod&quot;,
     &quot;version&quot;: &quot;v1&quot;
@@ -296,6 +285,7 @@ is a bad security practice.</p>
 <p>Finally, let's create a file named <code>pod-req-apparmor-custom.json</code> with the following
 contents:</p>
 <pre><code class="language-json">{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
   &quot;kind&quot;: {
     &quot;kind&quot;: &quot;Pod&quot;,
     &quot;version&quot;: &quot;v1&quot;
@@ -325,89 +315,96 @@ contents:</p>
   }
 }
 </code></pre>
-<p>This request tries to create a Pod with a container called <code>nginx</code> that uses the
-<code>nginx-custom</code> profile provided by the administrators of the Kubernetes cluster.</p>
 <blockquote>
-<p><strong>Note well:</strong> these are stripped down <code>AdmissionReview</code> objects, we left
-only the fields that are relevant to our policy.</p>
+<p><strong>Note well:</strong> these are stripped down <code>AdmissionReview</code> objects, we
+left only the fields that are relevant to our policy.</p>
 </blockquote>
 <h3 id="test-the-policy"><a class="header" href="#test-the-policy">Test the policy</a></h3>
-<p>Now we can use <code>policy-testdrive</code> to test the creation of a Pod that doesn't
+<p>Now we can use <code>kwctl</code> to test the creation of a Pod that doesn't
 specify an AppArmor profile:</p>
-<pre><code class="language-console">policy-testdrive --policy module.wasm \
-  --request-file pod-req-no-specific-apparmor-profile.json
+<pre><code class="language-console">$ kwctl run \
+    --request-path pod-req-no-specific-apparmor-profile.json \
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 | jq
 </code></pre>
 <p>The policy will accept the request and produce the following output:</p>
-<pre><code class="language-console">Settings validation result: SettingsValidationResponse { valid: true, message: None }
-Policy evaluation results:
-ValidationResponse { uid: &quot;&quot;, allowed: true, patch_type: None, patch: None, status: None }
+<pre><code class="language-console">{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
+  &quot;allowed&quot;: true
+}
 </code></pre>
-<p>The policy will instead reject the creation of a Pod with an <code>unconfined</code> AppArmor
-profile:</p>
-<pre><code class="language-console">$ policy-testdrive --policy module.wasm \
-  --request-file pod-req-apparmor-unconfined.json
-
-Settings validation result: SettingsValidationResponse { valid: true, message: None }
-Policy evaluation results:
-ValidationResponse { uid: &quot;&quot;, allowed: false, patch_type: None, patch: None, status: Some(ValidationResponseStatus { message: Some(&quot;These AppArmor profiles are not allowed: [\&quot;unconfined\&quot;]&quot;), code: None }) }
+<p>The policy will instead reject the creation of a Pod with an
+<code>unconfined</code> AppArmor profile:</p>
+<pre><code class="language-console">$ kwctl run \
+    --request-path pod-req-apparmor-unconfined.json \
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 | jq
+{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
+  &quot;allowed&quot;: false,
+  &quot;status&quot;: {
+    &quot;message&quot;: &quot;These AppArmor profiles are not allowed: [\&quot;unconfined\&quot;]&quot;
+  }
+}
 </code></pre>
-<p>Both times we did a test drive of the policy <strong>without</strong> providing any kind of
-setting. As the <a href="https://github.com/kubewarden/psp-apparmor#configuration">policy's documentation</a>
+<p>Both times we ran the policy <strong>without</strong> providing any kind of
+setting. As the <a href="https://github.com/kubewarden/psp-apparmor#configuration">policy's
+documentation</a>
 states, this results in preventing the usage of non-default profiles.</p>
 <p>As a matter of fact, the Pod using a custom <code>nginx</code> profile gets rejected by
 the policy too:</p>
-<pre><code class="language-console">$ policy-testdrive --policy module.wasm \
-  --request-file pod-req-apparmor-custom.json
-
-Settings validation result: SettingsValidationResponse { valid: true, message: None }
-Policy evaluation results:
-ValidationResponse { uid: &quot;&quot;, allowed: false, patch_type: None, patch: None, status: Some(ValidationResponseStatus { message: Some(&quot;These AppArmor profiles are not allowed: [\&quot;localhost/nginx-custom\&quot;]&quot;), code: None }) }
+<pre><code class="language-console">$ kwctl run \
+    --request-path pod-req-apparmor-custom.json \
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 | jq
+{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
+  &quot;allowed&quot;: false,
+  &quot;status&quot;: {
+    &quot;message&quot;: &quot;These AppArmor profiles are not allowed: [\&quot;localhost/nginx-custom\&quot;]&quot;
+  }
+}
 </code></pre>
 <p>We can change the default behaviour and allow some chosen AppArmor to be used:</p>
-<pre><code class="language-console">policy-testdrive --policy module.wasm \
-  --request-file pod-req-apparmor-custom.json \
-  --settings '{&quot;allowed_profiles&quot;: [&quot;runtime/default&quot;, &quot;localhost/nginx-custom&quot;]}'
+<pre><code class="language-console">$ kwctl run \
+    --request-path pod-req-apparmor-custom.json \
+    --settings-json '{&quot;allowed_profiles&quot;: [&quot;runtime/default&quot;, &quot;localhost/nginx-custom&quot;]}' \
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 | jq
 </code></pre>
 <p>This time the request is accepted:</p>
-<pre><code class="language-console">Settings validation result: SettingsValidationResponse { valid: true, message: None }
-Policy evaluation results:
-ValidationResponse { uid: &quot;&quot;, allowed: true, patch_type: None, patch: None, status: None }
+<pre><code class="language-console">{
+  &quot;uid&quot;: &quot;1299d386-525b-4032-98ae-1949f69f9cfc&quot;,
+  &quot;allowed&quot;: true
+}
 </code></pre>
 <h2 id="automation"><a class="header" href="#automation">Automation</a></h2>
 <p>All these steps shown above can be automated using
 <a href="https://github.com/bats-core/bats-core">bats</a>.</p>
-<p>We can write a series of tests and integrate their execution inside
-of your existing CI and CD pipelines.</p>
+<p>We can write a series of tests and integrate their execution inside of
+your existing CI and CD pipelines.</p>
 <p>That would ensure changes to the policy version, policy configuration
 parameters, Kubernetes resources,... won't break the outcome of the
 validation/mutation operations.</p>
 <p>The commands used above can be easily &quot;wrapped&quot; into a <code>bats</code> test:</p>
 <pre><code class="language-bash">@test &quot;all is good&quot; {
-  run policy-testdrive --policy module.wasm \
-    --request-file pod-req-no-specific-apparmor-profile.json
+  run kwctl run \
+    --request-path pod-req-no-specific-apparmor-profile.json \
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
   # request accepted
-  [[ &quot;$output&quot; == *&quot;allowed: true&quot;* ]]
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:true.*') -ne 0 ]
 }
 
 @test &quot;reject&quot; {
-  run policy-testdrive --policy module.wasm \
-    --request-file pod-req-apparmor-custom.json
+  run kwctl run \
+    --request-path pod-req-apparmor-custom.json \
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4
 
   # this prints the output when one the checks below fails
   echo &quot;output = ${output}&quot;
 
-  # settings validation passed
-  [[ &quot;$output&quot; == *&quot;valid: true&quot;* ]]
-
   # request rejected
-  [[ &quot;$output&quot; == *&quot;allowed: false&quot;* ]]
+  [ $(expr &quot;$output&quot; : '.*&quot;allowed&quot;:false.*') -ne 0 ]
 }
 </code></pre>
 <p>Assuming the snippet from above is inside of a file called <code>e2e.bats</code>,
@@ -418,9 +415,9 @@ we can run the test in this way:</p>
 
 2 tests, 0 failures
 </code></pre>
-<p>Checkout <a href="/writing-policies/go/05-e2e-tests.html">this section</a>
-of the documentation to learn more about writing end-to-end
-tests of your policies.</p>
+<p>Checkout <a href="/writing-policies/go/05-e2e-tests.html">this section</a> of the
+documentation to learn more about writing end-to-end tests of your
+policies.</p>
 
                     </main>
 
