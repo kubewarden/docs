@@ -24,8 +24,9 @@ target/wasm32-unknown-unknown/release/demo.wasm: WebAssembly (wasm) binary modul
 
 ## Distributing the policy
 
-This topic is covered inside of the ["distributing policies"](/distributing-policies.html)
-section of Kubewarden's documentation.
+This topic is covered inside of the [distributing
+policies](/distributing-policies.html) section of Kubewarden's
+documentation.
 
 ## More examples
 

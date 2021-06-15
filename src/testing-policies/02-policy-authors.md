@@ -28,34 +28,36 @@ to deploy a Kubernetes cluster by using these tools:
 
 * [bats](https://github.com/bats-core/bats-core): used to write the
   tests and automate their execution.
-* [policy-testdrive](https://github.com/kubewarden/policy-server/releases):
-  cli tool provided by Kubewarden to run its policies outside of
-  Kubernetes.
+* [kwctl](https://github.com/kubewarden/kwctl): Kubewarden go-to CLI
+  tool that helps you with policy related operations such as pull,
+  inspect, annotate, push and run.
 
-`policy-testdrive` usage is quite simple, we just have to invoke it with the
+`kwctl run` usage is quite simple, we just have to invoke it with the
 following data as input:
 
-1. Path to the WebAssembly binary file of the policy to be run. This is
-  specified through the `--policy` argument. Currently, `policy-testdrive`
-  can only load policies from the local filesystem.
-1. Path to the file containing the admission request object to be evaluated.
-  This is provided via the `--request-file` argument.
-1. The policy settings to be used at evaluation time, they can be provided
-  via `--settings` flag. The flag takes a JSON blob as parameter.
+1. WebAssembly binary file reference of the policy to be run. The
+   Kubewarden policy can be loaded from the local filesystem
+   (`file://`), an HTTP(s) server (`https://`) or an OCI registry
+   (`registry://`).
+1. The admission request object to be evaluated.  This is provided via
+  the `--request-path` argument. The request can be provided through
+  `stdin` by setting `--request-path` to `-`.
+1. The policy settings to be used at evaluation time, they can be
+  provided as an inline JSON via `--settings-json` flag, or a JSON or
+  YAML file loaded from the filesystem via `--settings-path`.
 
-Once the policy evaluation is done, `policy-testdrive` prints to the standard
-output the `SettingsValidationResponse`and the `ValidationResponse` objects.
+Once the policy evaluation is done, `kwctl` prints the
+`ValidationResponse` object to the standard output.
 
-For example, this is how `policy-testdrive` can be used to test the
-WebAssembly binary of the `ingress-policy` linked above:
+For example, this is how `kwctl` can be used to test the WebAssembly
+binary of the `ingress-policy` linked above:
 
 ```
-$ policy-testdrive -p ingress-policy.wasm \
-    -r test_data/ingress-wildcard.json \
-    -s '{"allowPorts": [80], "denyPorts": [3000]}'
-Settings validation result: SettingsValidationResponse { valid: true, message: None }
-Policy evaluation results:
-ValidationResponse { uid: "", allowed: false, patch_type: None, patch: None, status: Some(ValidationResponseStatus { message: Some("These ports are not on the allowed list: Set{3000}"), code: None }) }
+$ curl https://raw.githubusercontent.com/kubewarden/ingress-policy/v0.1.8/test_data/ingress-wildcard.json 2> /dev/null | \
+    kwctl run \
+        --settings-json '{"allowPorts": [80], "denyPorts": [3000]}' \
+        --request-path - \
+        registry://ghcr.io/kubewarden/policies/ingress:v0.1.8 | jq
 ```
 
 Using `bats` we can can write a test that runs this command and looks for the
@@ -63,9 +65,10 @@ expected outputs:
 
 ```bash
 @test "all is good" {
-  run policy-testdrive -p ingress-policy.wasm \
-    -r test_data/ingress-wildcard.json \
-    -s '{"allowPorts": [80], "denyPorts": [3000]}'
+  run kwctl run \
+    --request-path test_data/ingress-wildcard.json \
+    --settings-json '{"allowPorts": [80], "denyPorts": [3000]}' \
+    ingress-policy.wasm
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
