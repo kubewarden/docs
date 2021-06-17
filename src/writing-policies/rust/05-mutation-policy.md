@@ -80,7 +80,7 @@ fn validate(payload: &[u8]) -> CallResult {
 
                 // NOTE 3
                 let mutated_object = serde_json::to_value(pod)?;
-                kubewarden::mutate_request(&mutated_object)
+                kubewarden::mutate_request(mutated_object)
             }
         }
         Err(_) => {
