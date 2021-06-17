@@ -1620,7 +1620,7 @@ instead of the <a href="https://docs.rs/kubewarden-policy-sdk/0.1.0/kubewarden_p
 
                 // NOTE 3
                 let mutated_object = serde_json::to_value(pod)?;
-                kubewarden::mutate_request(&amp;mutated_object)
+                kubewarden::mutate_request(mutated_object)
             }
         }
         Err(_) =&gt; {
