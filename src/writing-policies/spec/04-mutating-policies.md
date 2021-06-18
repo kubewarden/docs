@@ -166,7 +166,7 @@ These are the functions a mutating policy must implement:
   // <strong>mandatory</strong>
   "accepted": &lt;boolean&gt;,<br>
   // optional, ignored if accepted
-  //recommended for rejections
+  // recommended for rejections
   "message": &lt;string&gt;,<br>
   // optional, ignored if accepted
   "code": &lt;integer&gt;, <br>
