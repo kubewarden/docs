@@ -221,7 +221,7 @@ kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistrati
 Finally you can uninstall the Helm chart:
 
 ```shell
-helm uninstall kubewarden-controller
+helm uninstall --namespace kubewarden kubewarden-controller
 ```
 
 Once this is done you can remove the Kubernetes namespace that was used to deploy
