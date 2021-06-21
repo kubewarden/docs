@@ -387,7 +387,7 @@ remove them manually by using the following command:</p>
 kubectl delete -l &quot;kubewarden&quot; mutatingwebhookconfigurations.admissionregistration.k8s.io
 </code></pre>
 <p>Finally you can uninstall the Helm chart:</p>
-<pre><code class="language-shell">helm uninstall kubewarden-controller
+<pre><code class="language-shell">helm uninstall --namespace kubewarden kubewarden-controller
 </code></pre>
 <p>Once this is done you can remove the Kubernetes namespace that was used to deploy
 the Kubewarden stack:</p>
