@@ -8,7 +8,7 @@ sources:
 
   * Local filesystem
   * HTTP(s) server
-  * OCI compliant registry like [distribution](https://github.com/distribution/distribution)
+  * OCI compliant registry like [Distribution](https://github.com/distribution/distribution)
     and other container registries (GitHub container registry, Azure Container
     Registry, Amazon ECR, Google Container Registry, ...)
 
