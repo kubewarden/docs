@@ -96,7 +96,11 @@ file.
 
 The tests will rely on some [test fixtures](https://en.wikipedia.org/wiki/Test_fixture#Software)
 located inside of the `test_data` directory. This directory has already
-been populated by the template repository.
+been populated by the template repository with an example
+`admissionreview.request` object that matches this tutorial, but you would need
+to craft one with the correct Kubernetes object you are writing the policy for,
+as we covered in ["validating
+policies"](/writing-policies/spec/03-validating-policies.html)
 
 We will start by including the following packages:
 
