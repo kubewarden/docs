@@ -4,37 +4,36 @@ This section describes how we can use GitHub Actions to automate as many tasks
 as possible.
 
 The scaffolded project already includes all the GitHub actions you need.
-These files can be found inside of the `.github/workflows` directory.
+These Actions can be found in the `.github/workflows/ci.yml.template` file;
+rename it to `github/workflows.ci/yml` to enable them.
 
 The same principles can be adapted to use a different CI system.
 
 ## Testing
 
-We can automate the execution of the unit tests and of the end-to-end tests.
-
-This is working out of the box thanks to these files:
-
-  * `.github/workflows/e2e-tests.yml`
-  * `.github/workflows/unit-tests.yml`
+Automation of the unit tests and of the end-to-end tests is working out of the
+box thanks to the `unit-tests` and `e2e-tests` jobs defined in
+`.github/workflows/ci.yml.template`.
 
 ## Release
 
-The scaffolded project created a `.github/workflows/release.yml.template`.
+The scaffolded project contains a `release` job in
+`.github/workflows/ci.yml.template`.
 
-This file defines a pipeline that performs the following steps:
+This job performs the following steps:
 
   * Checkout code
   * Build the WebAssembly policy
   * Push the policy to an OCI registry
   * Eventually create a new GitHub Release
 
-To enable the pipeline you need to rename it to `release.yml` and change the
-value of the `OCI_TARGET` to match your preferences.
+To enable the job you need to rename it to `ci.yml` and change the value of the
+`OCI_TARGET` to match your preferences.
 
-The pipeline will act differently based on the commit that triggered its execution.
+The job will act differently based on the commit that triggered its execution.
 
 Regular commits will lead to the creation of an OCI artifact called `<policy-name>:latest`.
-No GitHub Release will be created for this commits.
+No GitHub Release will be created for these commits.
 
 On the other hand, creating a tag that matches the `v*` pattern, will lead
 to:
@@ -46,15 +45,15 @@ to:
 
 ### A concrete example
 
-Let's assume we have a policy named named `safe-labels` and we want to publish
+Let's assume we have a policy named `safe-labels` and we want to publish
 it as `ghcr.io/kubewarden/policies/safe-labels`.
 
-The contents of the `jobs.env` section of `release.yml` should look like that:
+The contents of the `jobs.push-to-oci-registry.env` section of `ci.yml` should
+look like this:
 
 ```yaml
 jobs:
-  build:
-    name: Create new release with Wasm artifact
+  push-to-oci-registry:
     runs-on: ubuntu-latest
     env:
       WASM_BINARY_NAME: policy.wasm
