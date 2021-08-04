@@ -235,7 +235,7 @@ very few changes to it.</p>
 	return kubewarden.AcceptRequest()
 }
 </code></pre>
-<p>The code has some <code>NOTE</code> section inside of it. Let's get through them:</p>
+<p>The code has some <code>NOTE</code> sections inside of it. Let's get through them:</p>
 <ol>
 <li>The function ensures the JSON payload is properly formatted. This
 is done using a function provided by the <code>gjson</code> library</li>
@@ -263,7 +263,11 @@ properly. These tests are going to be located inside of the <code>validate_test.
 file.</p>
 <p>The tests will rely on some <a href="https://en.wikipedia.org/wiki/Test_fixture#Software">test fixtures</a>
 located inside of the <code>test_data</code> directory. This directory has already
-been populated by the template repository.</p>
+been populated by the template repository with an example
+<code>admissionreview.request</code> object that matches this tutorial, but you would need
+to craft one with the correct Kubernetes object you are writing the policy for,
+as we covered in <a href="/writing-policies/spec/03-validating-policies.html">&quot;validating
+policies&quot;</a></p>
 <p>We will start by including the following packages:</p>
 <pre><code class="language-go">import (
 	&quot;encoding/json&quot;

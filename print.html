@@ -2189,7 +2189,7 @@ object:</p>
 
 	expected_regexp := `cc-\d+`
 	if re.String() != expected_regexp {
-		t.Errorf(&quot;Execpted regexp to be %v - got %v instead&quot;,
+		t.Errorf(&quot;Expected regexp to be %v - got %v instead&quot;,
 			expected_regexp, re.String())
 	}
 }
@@ -2220,7 +2220,7 @@ expression:</p>
 <p>Next we will define a test that checks the behaviour
 of the <a href="writing-policies/go//writing-policies/index.html#the-validate_settings-entry-point"><code>validate_settings</code></a>
 entry-point.</p>
-<p>In this case we actually look at the <code>SettingsValidationResponse</code> objected
+<p>In this case we actually look at the <code>SettingsValidationResponse</code> object
 returned by our <code>validateSettings</code> function:</p>
 <pre><code class="language-go">func TestDetectValidSettings(t *testing.T) {
 	request := `
@@ -2387,7 +2387,7 @@ very few changes to it.</p>
 	return kubewarden.AcceptRequest()
 }
 </code></pre>
-<p>The code has some <code>NOTE</code> section inside of it. Let's get through them:</p>
+<p>The code has some <code>NOTE</code> sections inside of it. Let's get through them:</p>
 <ol>
 <li>The function ensures the JSON payload is properly formatted. This
 is done using a function provided by the <code>gjson</code> library</li>
@@ -2415,7 +2415,11 @@ properly. These tests are going to be located inside of the <code>validate_test.
 file.</p>
 <p>The tests will rely on some <a href="https://en.wikipedia.org/wiki/Test_fixture#Software">test fixtures</a>
 located inside of the <code>test_data</code> directory. This directory has already
-been populated by the template repository.</p>
+been populated by the template repository with an example
+<code>admissionreview.request</code> object that matches this tutorial, but you would need
+to craft one with the correct Kubernetes object you are writing the policy for,
+as we covered in <a href="writing-policies/go//writing-policies/spec/03-validating-policies.html">&quot;validating
+policies&quot;</a></p>
 <p>We will start by including the following packages:</p>
 <pre><code class="language-go">import (
 	&quot;encoding/json&quot;
@@ -2861,29 +2865,28 @@ to other components that enable distributed tracing, such as Jaeger.</p>
 <p>This section describes how we can use GitHub Actions to automate as many tasks
 as possible.</p>
 <p>The scaffolded project already includes all the GitHub actions you need.
-These files can be found inside of the <code>.github/workflows</code> directory.</p>
+These Actions can be found in the <code>.github/workflows/ci.yml.template</code> file;
+rename it to <code>github/workflows.ci/yml</code> to enable them.</p>
 <p>The same principles can be adapted to use a different CI system.</p>
 <h2 id="testing"><a class="header" href="#testing">Testing</a></h2>
-<p>We can automate the execution of the unit tests and of the end-to-end tests.</p>
-<p>This is working out of the box thanks to these files:</p>
-<ul>
-<li><code>.github/workflows/e2e-tests.yml</code></li>
-<li><code>.github/workflows/unit-tests.yml</code></li>
-</ul>
+<p>Automation of the unit tests and of the end-to-end tests is working out of the
+box thanks to the <code>unit-tests</code> and <code>e2e-tests</code> jobs defined in
+<code>.github/workflows/ci.yml.template</code>.</p>
 <h2 id="release"><a class="header" href="#release">Release</a></h2>
-<p>The scaffolded project created a <code>.github/workflows/release.yml.template</code>.</p>
-<p>This file defines a pipeline that performs the following steps:</p>
+<p>The scaffolded project contains a <code>release</code> job in
+<code>.github/workflows/ci.yml.template</code>.</p>
+<p>This job performs the following steps:</p>
 <ul>
 <li>Checkout code</li>
 <li>Build the WebAssembly policy</li>
 <li>Push the policy to an OCI registry</li>
 <li>Eventually create a new GitHub Release</li>
 </ul>
-<p>To enable the pipeline you need to rename it to <code>release.yml</code> and change the
-value of the <code>OCI_TARGET</code> to match your preferences.</p>
-<p>The pipeline will act differently based on the commit that triggered its execution.</p>
+<p>To enable the job you need to rename it to <code>ci.yml</code> and change the value of the
+<code>OCI_TARGET</code> to match your preferences.</p>
+<p>The job will act differently based on the commit that triggered its execution.</p>
 <p>Regular commits will lead to the creation of an OCI artifact called <code>&lt;policy-name&gt;:latest</code>.
-No GitHub Release will be created for this commits.</p>
+No GitHub Release will be created for these commits.</p>
 <p>On the other hand, creating a tag that matches the <code>v*</code> pattern, will lead
 to:</p>
 <ol>
@@ -2893,12 +2896,12 @@ will include the following assets: the source code of the policy and the WebAsse
 binary.</li>
 </ol>
 <h3 id="a-concrete-example-2"><a class="header" href="#a-concrete-example-2">A concrete example</a></h3>
-<p>Let's assume we have a policy named named <code>safe-labels</code> and we want to publish
+<p>Let's assume we have a policy named <code>safe-labels</code> and we want to publish
 it as <code>ghcr.io/kubewarden/policies/safe-labels</code>.</p>
-<p>The contents of the <code>jobs.env</code> section of <code>release.yml</code> should look like that:</p>
+<p>The contents of the <code>jobs.push-to-oci-registry.env</code> section of <code>ci.yml</code> should
+look like this:</p>
 <pre><code class="language-yaml">jobs:
-  build:
-    name: Create new release with Wasm artifact
+  push-to-oci-registry:
     runs-on: ubuntu-latest
     env:
       WASM_BINARY_NAME: policy.wasm
@@ -3008,7 +3011,7 @@ sources:</p>
 <ul>
 <li>Local filesystem</li>
 <li>HTTP(s) server</li>
-<li>OCI compliant registry like <a href="https://github.com/distribution/distribution">distribution</a>
+<li>OCI compliant registry like <a href="https://github.com/distribution/distribution">Distribution</a>
 and other container registries (GitHub container registry, Azure Container
 Registry, Amazon ECR, Google Container Registry, ...)</li>
 </ul>
