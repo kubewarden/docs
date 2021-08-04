@@ -66,7 +66,7 @@ func validate(payload []byte) ([]byte, error) {
 }
 ```
 
-The code has some `NOTE` section inside of it. Let's get through them:
+The code has some `NOTE` sections inside of it. Let's get through them:
 
 1. The function ensures the JSON payload is properly formatted. This
   is done using a function provided by the `gjson` library

@@ -303,7 +303,7 @@ func TestParseValidSettings(t *testing.T) {
 
 	expected_regexp := `cc-\d+`
 	if re.String() != expected_regexp {
-		t.Errorf("Execpted regexp to be %v - got %v instead",
+		t.Errorf("Expected regexp to be %v - got %v instead",
 			expected_regexp, re.String())
 	}
 }
@@ -339,7 +339,7 @@ Next we will define a test that checks the behaviour
 of the [`validate_settings`](/writing-policies/index.html#the-validate_settings-entry-point)
 entry-point.
 
-In this case we actually look at the `SettingsValidationResponse` objected
+In this case we actually look at the `SettingsValidationResponse` object
 returned by our `validateSettings` function:
 
 ```go
