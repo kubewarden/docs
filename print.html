@@ -2943,13 +2943,16 @@ can be used to build Kubewarden policies.</p>
 <p><strong>Note well:</strong> you don't need an Apple system to write or run Swift code. Everything
 can be done also on a Linux machine or on Windows (by using Docker for Windows).</p>
 <h2 id="current-state"><a class="header" href="#current-state">Current State</a></h2>
-<p>The creation of a Swift SDK is in progress, it can be found inside
-of <a href="https://github.com/kubewarden/policy-sdk-swift">this repository</a>.
-We plan to provide a template project to simplify the process of creating
-Swift-based policies, like we do with other languages.</p>
-<p>The documentation will be expanded to cover more detailed instructions for Swift
-as soon as the work on the SDK is done.</p>
-<p>In the meantime, no severe limitations have been found inside of Swift, only
+<p>Policy authors can leverage the following resources:</p>
+<ul>
+<li><a href="https://github.com/kubewarden/policy-sdk-swift">Kubewarden Swift SDK</a>: this
+provides a set of <code>struct</code> and functions that simplify the process of
+writing policies.</li>
+<li><a href="https://github.com/kubewarden/swift-policy-template">Kubewarden Swift template project</a>:
+use this template to quickly scaffold a Swift-based policy. The template comes
+with a working policy and a set of GitHub Actions to automate its lifecycle.</li>
+</ul>
+<p>No severe limitations have been found inside of Swift, only
 some minor glitches:</p>
 <ul>
 <li>It's critical to perform some post-build optimizations before using the
@@ -2960,19 +2963,10 @@ policy <em>&quot;in production&quot;</em>:
 </ol>
 </li>
 </ul>
-<h2 id="example-1"><a class="header" href="#example-1">Example</a></h2>
+<p>The GitHub Action provided by the template repository already takes care of that.</p>
+<h2 id="more-examples-1"><a class="header" href="#more-examples-1">More examples</a></h2>
 <p><a href="https://github.com/kubewarden/pod-runtime-class-policy">This GitHub repository</a>
 contains a Kubewarden Policy written in Swift.</p>
-<p>The policy's <code>Makefile</code> has a <code>release</code> target that takes care of the
-optimizations outlined above.</p>
-<p><strong>Worth of note:</strong> this repository has a series of GitHub Actions that automate
-the following tasks:</p>
-<ul>
-<li>Run unit tests and code linting on pull requests and after code is merged
-into the main branch</li>
-<li>Build the policy in <code>release</code> mode and push it to a OCI registry as an
-artifact</li>
-</ul>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="typescript"><a class="header" href="#typescript">TypeScript</a></h1>
 <p>As stated on the <a href="https://www.typescriptlang.org/">official website</a>:</p>
 <blockquote>
@@ -2992,7 +2986,7 @@ created it bacause of lack of time. We will do that in the near future.</p>
 and from JSON. See <a href="https://github.com/AssemblyScript/assemblyscript/issues/292">this issue</a></li>
 <li>It <em>seems</em> there's no JSON path library for AssemblyScript</li>
 </ul>
-<h2 id="example-2"><a class="header" href="#example-2">Example</a></h2>
+<h2 id="example-1"><a class="header" href="#example-1">Example</a></h2>
 <p><a href="https://github.com/kubewarden/pod-privileged-policy">This GitHub repository</a>
 contains a Kubewarden Policy written in AssemblyScript.</p>
 <p><strong>Worth of note:</strong> this repository has a series of GitHub Actions that automate
