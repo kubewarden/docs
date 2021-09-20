@@ -1,5 +1,9 @@
 # Open Policy Agent
 
+> **Note well:** Open Policy Agent support has been introduced starting from these releases:
+> * kwctl: v0.2.0
+> * policy-server: v0.2.0
+
 Open Policy Agent is a general purpose policy framework that uses the
 Rego language to write policies.
 

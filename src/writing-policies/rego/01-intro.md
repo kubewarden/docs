@@ -1,5 +1,10 @@
 # Rego
 
+> **Note well:** Rego support has been introduced starting from these releases:
+> * kwctl: v0.2.0
+> * policy-server: v0.2.0
+
+
 The Rego language is a tailor made language designed to embrace
 policies as
 code. [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/)

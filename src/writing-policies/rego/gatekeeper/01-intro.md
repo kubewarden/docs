@@ -1,5 +1,9 @@
 # Gatekeeper
 
+> **Note well:** Gatekeeper support has been introduced starting from these releases:
+> * kwctl: v0.2.0
+> * policy-server: v0.2.0
+
 Gatekeeper is a project targeting Kubernetes, and as such, has some
 features that are thought out of the box for being integrated with it.
 
