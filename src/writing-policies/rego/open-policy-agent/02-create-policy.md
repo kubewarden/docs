@@ -3,6 +3,11 @@
 Let's create a sample policy that will help us go through some
 important concepts. Let's start!
 
+> **Note well:** we also provide a GitHub repository template
+> that you can use to quickly port an existing policy.
+>
+> Check it out: [kubewarden/opa-policy-template](https://github.com/kubewarden/opa-policy-template)
+
 ## Requirements
 
 We will write, compile and execute the policy on this section. You
