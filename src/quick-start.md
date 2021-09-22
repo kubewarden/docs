@@ -2,13 +2,13 @@
 
 The Kubewarden stack is made of the following components:
 
-  * An arbitrary number of `ClusterAdmissionPolicy` resources: this is how policies
-    are defined inside of Kubernetes
-  * A Deployment of Kubewarden `policy-server`: this component loads all the
-    policies defined by the administrators and evaluates them
-  * A Deployment of `kubewarden-controller`: this is the controller
-    that monitors the `ClusterAdmissionPolicy` resources and interacts
-    with the Kubewarden `policy-server`
+* An arbitrary number of `ClusterAdmissionPolicy` resources: this is how policies
+  are defined inside of Kubernetes
+* An arbitrary number of `PolicyServer` resources, which represent a Deployment of a Kubewarden `policy-server`.
+  This component loads all the policies defined by the administrators and evaluates them
+* A Deployment of `kubewarden-controller`: this is the controller
+  that monitors the `ClusterAdmissionPolicy` resources and interacts
+  with the Kubewarden `policy-server`
 
 ## Install
 
@@ -20,15 +20,46 @@ helm install --namespace kubewarden --create-namespace kubewarden-controller kub
 ```
 
 This will install `kubewarden-controller` on the Kubernetes cluster in
-the default configuration and will register the
-`ClusterAdmissionPolicy` Custom Resource. The components of the
+the default configuration, it will register the
+`ClusterAdmissionPolicy` and `PolicyServer` Custom Resources. It will create a default `PolicyServer`. The components of the
 Kubewarden stack will be deployed inside of a Kubernetes Namespace
 called `kubewarden`.
 
 The default configuration values should be good enough for the majority of
 deployments, all the options are documented [here](https://charts.kubewarden.io/#configuration).
 
-The Kubewarden Policy Server is completely managed by the kubewarden-controller.
+The Kubewarden Policy Servers are completely managed by the kubewarden-controller.
+
+## Policy Server
+
+Represents a Deployment of Kubewarden `policy-server`, which receives the requests to be validated. It does that
+by executing Kubewarden's policies
+
+```yaml
+apiVersion: policies.kubewarden.io/v1alpha2
+kind: PolicyServer
+metadata:
+  name: reserved-instance-for-tenant-a
+spec:
+  image: ghcr.io/kubewarden/policy-server:v1.0.0
+  replicaSize: 2
+  env:
+  - name: KUBEWARDEN_LOG_LEVEL
+    value: debug
+  - name: KUBEWARDEN_LOG_FMT
+    value: jaeger
+  annotations:
+    sidecar.jaegertracing.io/inject: default
+  ```
+
+Overview of the attributes of the `PolicyServer` resource:
+
+* `image`: docker image name
+* `replicaSize`: number of desired instances
+* `env` (optional): `policy-server` environment variables
+* `annotations` (optional): `policy-server` annotations
+
+Changing any of these attributes will lead to a rollout of the `policy-server` Deployment with the new configuration
 
 ## Kubewarden Policies
 
@@ -46,6 +77,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: psp-capabilities
 spec:
+  policyServer: reserved-instance-for-tenant-a
   module: registry://ghcr.io/kubewarden/policies/psp-capabilities:v0.1.3
   rules:
   - apiGroups: [""]
@@ -64,12 +96,15 @@ spec:
 
 This is a quick overview of the attributes of the `ClusterAdmissionPolicy` resource:
 
+* `policyServer`(optional): identifies an existing `PolicyServer` object. The policy will be served only by this
+  `policy-server` instance. A ClusterAdmissionPolicy that doesn't have an explicit policyServer, will be served
+  by the default one
 * `module`: this is the location of the Kubewarden policy, several schemas are
   supported.
-  * `registry`: download from an [OCI artifacts](https://github.com/opencontainers/artifacts)
-    compliant container registry
-  * `http`, `https`: download from a regular HTTP(s) server
-  * `file`: load the module from the local filesystem
+    * `registry`: download from an [OCI artifacts](https://github.com/opencontainers/artifacts)
+      compliant container registry
+    * `http`, `https`: download from a regular HTTP(s) server
+    * `file`: load the module from the local filesystem
 * `resources`: types of resources evaluated by the policy
 * `operations`: what operations for the previously given types should
   be forwarded to this admission policy by the API server for
@@ -128,12 +163,12 @@ EOF
 This will produce the following output:
 `clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created`
 
-Defining the `ClusterAdmissionPolicy` will lead to a rollout of the Kubewarden Policy
+Defining the `ClusterAdmissionPolicy` will lead to a rollout of the Kubewarden default Policy
 Server Deployment. Once the new policy is ready to be served, the `kubewarden-controller`
 will register a [ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io)
 object.
 
-Once all the instances of `policy-server` are ready, the
+Once all the instances of default `policy-server` are ready, the
 `ValidatingWebhookConfiguration` can be shown with:
 
 ```shell
@@ -192,34 +227,6 @@ Error from server: error when creating "STDIN": admission webhook "privileged-po
 
 ## Uninstall
 
-As a first step remove all the `ClusterAdmissionPolicy` resources you have created.
-This can be done with the following command:
-
-```shell
-kubectl delete --all clusteradmissionpolicies.policies.kubewarden.io
-```
-
-Then wait for the for the `kubewarden-controller` to remove all the
-Kubernetes `ValidatingWebhookConfiguration` and the `MutatingWebhookConfiguration`
-resources it created.
-
-This can be monitored with the following command:
-
-```shell
-kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden" && \
-kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
-```
-
-If these resources are not automatically removed, you can do
-remove them manually by using the following command:
-
-```shell
-kubectl delete -l "kubewarden" validatingwebhookconfigurations.admissionregistration.k8s.io && \
-kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistration.k8s.io
-```
-
-Finally you can uninstall the Helm chart:
-
 ```shell
 helm uninstall --namespace kubewarden kubewarden-controller
 ```
@@ -231,21 +238,10 @@ the Kubewarden stack:
 kubectl delete namespace kubewarden
 ```
 
-This will delete all the resources that were created at runtime by the `kubewarden-controller`,
-like the `policy-server` Deployment.
-
-
-> **Note well:** it's extremely important to remove the `ValidatingWebhookConfiguration`
-> and `MutatingWebhookConfiguration` resources **before** the
-> `policy-server` Deployment. Otherwise the Kubernetes
-> API server will continuously face timeout errors while trying to evaluate the
-> incoming requests.
->
-> By default the `ValidatingWebhookConfiguration` and `MutatingWebhookConfiguration`
-> resources created by Kubewarden have `policyFailure`
-> set to `Fail`, which will cause all these incoming requests to be rejected.
->
-> **This could bring havoc on your cluster.**
+> **Note:** kubewarden contains a helm pre-delete hook that will remove all `PolicyServers` and `ClusterAdmissionPolicies`.
+> Then the `kubewarden-controller` will delete all resources, so it is important that `kubewarden-controller` is running
+> when helm uninstall is executed. If the controller is not running, and you want to manually remove `PolicyServers` and 
+> `ClusterAdmissionPolicies` resources, you need to remove the kubewarden finalizer. 
 
 ## Wrapping up
 
