@@ -16,19 +16,19 @@ The Kubewarden stack can be deployed using a helm chart:
 
 ```console
 helm repo add kubewarden https://charts.kubewarden.io
-helm install --namespace kubewarden --create-namespace kubewarden-controller kubewarden/kubewarden-controller
+helm install --wait --namespace kubewarden --create-namespace kubewarden-controller kubewarden/kubewarden-controller
 ```
 
 This will install `kubewarden-controller` on the Kubernetes cluster in
 the default configuration, it will register the
-`ClusterAdmissionPolicy` and `PolicyServer` Custom Resources. It will create a default `PolicyServer`. The components of the
+`ClusterAdmissionPolicy` and `PolicyServer` Custom Resources. It will create a `PolicyServer` resource named `default`. The components of the
 Kubewarden stack will be deployed inside of a Kubernetes Namespace
 called `kubewarden`.
 
 The default configuration values should be good enough for the majority of
 deployments, all the options are documented [here](https://charts.kubewarden.io/#configuration).
 
-The Kubewarden Policy Servers are completely managed by the kubewarden-controller.
+The Kubewarden Policy Servers are completely managed by the `kubewarden-controller`.
 
 ## Policy Server
 
@@ -55,13 +55,13 @@ spec:
 
 Overview of the attributes of the `PolicyServer` resource:
 
-* `image`: docker image name
+* `image`: container image name
 * `replicaSize`: number of desired instances
-* `serviceAccountName` (optional): `policy-server` serviceAccount. Namespace default serviceAccount will be used if not provided
+* `serviceAccountName` (optional): `policy-server` ServiceAccount. Namespace's `default` ServiceAccount will be used if nothing is provided
 * `env` (optional): `policy-server` environment variables
 * `annotations` (optional): `policy-server` annotations
 
-Changing any of these attributes will lead to a rollout of the `policy-server` Deployment with the new configuration
+Changing any of these attributes will lead to a rollout of the `policy-server` Deployment with the new configuration.
 
 ## Kubewarden Policies
 
@@ -99,8 +99,8 @@ spec:
 This is a quick overview of the attributes of the `ClusterAdmissionPolicy` resource:
 
 * `policyServer`(optional): identifies an existing `PolicyServer` object. The policy will be served only by this
-  `policy-server` instance. A ClusterAdmissionPolicy that doesn't have an explicit policyServer, will be served
-  by the default one
+ `policy-server` instance. A `ClusterAdmissionPolicy` that doesn't have an explicit `PolicyServer`, will be served
+  by the one named `default`.
 * `module`: this is the location of the Kubewarden policy, several schemas are
   supported.
     * `registry`: download from an [OCI artifacts](https://github.com/opencontainers/artifacts)
@@ -165,12 +165,11 @@ EOF
 This will produce the following output:
 `clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created`
 
-Defining the `ClusterAdmissionPolicy` will lead to a rollout of the Kubewarden default Policy
-Server Deployment. Once the new policy is ready to be served, the `kubewarden-controller`
+Defining the `ClusterAdmissionPolicy` will lead to a rollout of the `PolicyServer` named `default`. Once the new policy is ready to be served, the `kubewarden-controller`
 will register a [ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io)
 object.
 
-Once all the instances of default `policy-server` are ready, the
+Once all the instances of Deployment rollout of the `policy-server` is done, the
 `ValidatingWebhookConfiguration` can be shown with:
 
 ```shell
@@ -240,11 +239,28 @@ the Kubewarden stack:
 kubectl delete namespace kubewarden
 ```
 
-> **Note:** kubewarden contains a helm pre-delete hook that will remove all `PolicyServers` and `ClusterAdmissionPolicies`.
+> **Note:** kubewarden contains a helm pre-delete hook that will remove all `PolicyServers` and `kubewarden-controller`.
 > Then the `kubewarden-controller` will delete all resources, so it is important that `kubewarden-controller` is running
-> when helm uninstall is executed. If the controller is not running, and you want to manually remove `PolicyServers` and 
-> `ClusterAdmissionPolicies` resources, you need to remove the kubewarden finalizer. 
+> when helm uninstall is executed. 
 
+Kubewarden pre-delete helm hook will delete all `PolicyServers`. Then the `kubewarden-controller` will do the following for each `PolicyServer`:
+* Delete all `ClusterAdmissionPolices` bounded to it. For each `ClusterAdmissionPolicy` the specified `ValidatingWebhookConfiguration` or `MutatingWebhookConfiguration` will be deleted
+* Once this is done, it will delete the `policy-server` Deployment
+
+`ValidatingWebhookConfigurations` and `MutatingWebhookConfigurations` created by kubewarden should be deleted, this can be checked with:
+
+```shell
+kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden" && \
+kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
+```
+
+If these resources are not automatically removed, you can do
+remove them manually by using the following command:
+
+```shell
+kubectl delete -l "kubewarden" validatingwebhookconfigurations.admissionregistration.k8s.io && \
+kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistration.k8s.io
+```
 ## Wrapping up
 
 As we have seen, the `ClusterAdmissionPolicy` resource is the core type that
