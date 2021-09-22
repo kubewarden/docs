@@ -43,6 +43,7 @@ metadata:
 spec:
   image: ghcr.io/kubewarden/policy-server:v1.0.0
   replicaSize: 2
+  serviceAccountName: sa
   env:
   - name: KUBEWARDEN_LOG_LEVEL
     value: debug
@@ -56,6 +57,7 @@ Overview of the attributes of the `PolicyServer` resource:
 
 * `image`: docker image name
 * `replicaSize`: number of desired instances
+* `serviceAccountName` (optional): `policy-server` serviceAccount. Namespace default serviceAccount will be used if not provided
 * `env` (optional): `policy-server` environment variables
 * `annotations` (optional): `policy-server` annotations
 
