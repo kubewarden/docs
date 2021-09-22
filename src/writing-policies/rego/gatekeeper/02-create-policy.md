@@ -4,6 +4,11 @@ Let's implement the same policy that [we wrote with Open Policy
 Agent](../open-policy-agent/02-create-policy.md): a policy that
 rejects a resource if it's targeting the `default` namespace.
 
+> **Note well:** we also provide a GitHub repository template
+> that you can use to quickly port an existing policy.
+>
+> Check it out: [kubewarden/gatekeeper-policy-template](https://github.com/kubewarden/gatekeeper-policy-template)
+
 ## Requirements
 
 As in the previous section, we will require the following tools:
