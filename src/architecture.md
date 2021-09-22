@@ -44,11 +44,14 @@ section explains it step by step.
 ### Default Policy Server
 
 On a fresh new cluster, the Kubewarden components defined are its Custom
-Resources, the `kubewarden-controller` Deployment and a default `PolicyServer`.
+Resource Definitions, the `kubewarden-controller` Deployment and a `PolicyServer`
+Custom Resource named `default`.
 
 ![Defining the first ClusterAdmissionPolicy resource](/images/architecture_sequence_01.png)
 
-`kubewarden-controller` notices the default `PolicyServer` resource and, as a result of that, it initializes the `policy-server` component.
+`kubewarden-controller` notices the default `PolicyServer` resource and, as a result of that,
+it creates a Deployment of the `policy-server` component.
+
 As stated above, Kubewarden works as a Kubernetes Admission Webhook. Kubernetes
 dictates that all the Webhook endpoints must be secured with TLS.
 `kubewarden-controller` takes care of setting up this secure communication
@@ -76,9 +79,12 @@ as a result of that, it finds the bounded `PolicyServer` and reconciles it.
 
 ### Reconciliation of `policy-server`
 
-When a `ClusterAdmissionPolicy` is created, modified or deleted a reconciliation loop for the `PolicyServer` is
-triggered inside the `kubewarden-controller`. In this reconciliation loop, a ConfigMap with all the polices bounded to 
-this `PolicyServer` is created. Then the `policy-server` is updated with the new configuration.
+When a `ClusterAdmissionPolicy` is created, modified or deleted a reconciliation loop for the `PolicyServer`
+that owns the policy is triggered inside the `kubewarden-controller`.
+In this reconciliation loop, a ConfigMap with all the polices bounded to 
+the `PolicyServer` is created. Then the a Deployment rollout of the
+interested `policy-server` is started. As a result of that, the new `policy-server`
+instance will be started with the updated configuration.
 
 At start time, `policy-server` reads its configuration and downloads
 all the Kubewarden policies. Policies can be downloaded from remote
@@ -151,8 +157,8 @@ section of the documentation.
 A cluster can have multiple policy servers and Kubewarden policies defined. 
 
 Benefits of having multiple policy servers:
-- "noisy" Namespaces/Tenants generating lots of policy evaluations can be isolated from the rest of the cluster and do not affect other users.
-- You can run mission critical policies inside of a Policy Server "pool", making your whole infrastructure more resilient.
+- Noisy Namespaces/Tenants generating lots of policy evaluations can be isolated from the rest of the cluster and do not affect other users.
+- Mission critical policies can be run inside of a Policy Server "pool", making your whole infrastructure more resilient.
 
 Each `policy-server` is defined via its own `PolicyServer` resource and each policy is defined via its own
 `ClusterAdmissionPolicy` resource. 
@@ -162,7 +168,7 @@ This leads back to the initial diagram:
 ![Full architecture](/images/architecture.png)
 
 A `ClusterAdmissionPolicy` is bounded to a `PolicyServer`. `ClusterAdmissionPolicies` that don't specify any `PolicyServer`
-will be bounded to the default `PolicyServer`. If a `ClusterAdmissionPolicy` references a `PolicyServer` that doesn't
+will be bounded to the `PolicyServer` named `default`. If a `ClusterAdmissionPolicy` references a `PolicyServer` that doesn't
 exist, it will be in an `unschedulable` state.
 
 Each `policy-server` defines multiple validation endpoints, one per policy defined
