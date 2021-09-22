@@ -165,11 +165,11 @@ EOF
 This will produce the following output:
 `clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created`
 
-Defining the `ClusterAdmissionPolicy` will lead to a rollout of the `PolicyServer` named `default`. Once the new policy is ready to be served, the `kubewarden-controller`
+Defining the `ClusterAdmissionPolicy` will set its status to `pending`, and it will lead to a rollout of the `PolicyServer` named `default`. Once the new policy is ready to be served, the `kubewarden-controller`
 will register a [ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io)
 object.
 
-Once all the instances of Deployment rollout of the `policy-server` is done, the
+`ClusterAdmissionPolicy` status will be set to `active` once all the instances of Deployment rollout of the `policy-server` is done. The
 `ValidatingWebhookConfiguration` can be shown with:
 
 ```shell
@@ -179,8 +179,8 @@ kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kube
 Which will output something like
 
 ```
-NAME              WEBHOOKS   AGE
-privileged-pods   1          9s
+NAME              WEBHOOKS   AGE     STATUS
+privileged-pods   1          9s      active
 ```
 
 Let's try to create a Pod with no privileged containers:
@@ -242,10 +242,6 @@ kubectl delete namespace kubewarden
 > **Note:** kubewarden contains a helm pre-delete hook that will remove all `PolicyServers` and `kubewarden-controller`.
 > Then the `kubewarden-controller` will delete all resources, so it is important that `kubewarden-controller` is running
 > when helm uninstall is executed. 
-
-Kubewarden pre-delete helm hook will delete all `PolicyServers`. Then the `kubewarden-controller` will do the following for each `PolicyServer`:
-* Delete all `ClusterAdmissionPolices` bounded to it. For each `ClusterAdmissionPolicy` the specified `ValidatingWebhookConfiguration` or `MutatingWebhookConfiguration` will be deleted
-* Once this is done, it will delete the `policy-server` Deployment
 
 `ValidatingWebhookConfigurations` and `MutatingWebhookConfigurations` created by kubewarden should be deleted, this can be checked with:
 
