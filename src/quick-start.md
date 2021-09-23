@@ -12,7 +12,8 @@ The Kubewarden stack is made of the following components:
 
 ## Install
 
-The Kubewarden stack can be deployed using a helm chart:
+The Kubewarden stack can be deployed using a helm chart.
+Currently, the chart depends on cert-manager. Make sure you have [`cert-manager` installed](https://cert-manager.io/docs/installation/) and then install the kubewarden-controller chart. For example:
 
 ```console
 helm repo add kubewarden https://charts.kubewarden.io
