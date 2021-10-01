@@ -18,12 +18,16 @@ Currently, the chart depends on cert-manager. Make sure you have [`cert-manager`
 ```console
 helm repo add kubewarden https://charts.kubewarden.io
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
-helm install --wait --namespace kubewarden --create-namespace kubewarden-controller kubewarden/kubewarden-controller
+helm install --create-namespace -n kubewarden kubewarden-crds kubewarden/kubewarden-crds
+helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller
 ```
 
-This will install `kubewarden-controller` on the Kubernetes cluster in
-the default configuration, it will register the
-`ClusterAdmissionPolicy` and `PolicyServer` Custom Resources. It will create a `PolicyServer` resource named `default`. The components of the
+This will install on the Kubernetes cluster:
+* `kubewarden-crds`  will register the
+`ClusterAdmissionPolicy` and `PolicyServer` Custom Resources.
+
+* `kubewarden-controller` with
+the default configuration. It will create a `PolicyServer` resource named `default`. The components of the
 Kubewarden stack will be deployed inside of a Kubernetes Namespace
 called `kubewarden`.
 
@@ -232,6 +236,7 @@ Error from server: error when creating "STDIN": admission webhook "privileged-po
 
 ```shell
 helm uninstall --namespace kubewarden kubewarden-controller
+helm uninstall --namespace kubewarden kubewarden-crds
 ```
 
 Once this is done you can remove the Kubernetes namespace that was used to deploy
