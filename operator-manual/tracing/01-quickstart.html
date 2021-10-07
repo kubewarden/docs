@@ -1,0 +1,589 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Tracing - Kubewarden Kubernetes Policy Engine</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Documentation of Kubewarden project">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="../../favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="../../favicon.png">
+        
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../../quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="../../architecture.html"><strong aria-hidden="true">3.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="../../writing-policies/index.html"><strong aria-hidden="true">4.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/spec/01-intro.html"><strong aria-hidden="true">4.1.</strong> Policy Specification</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/spec/02-settings.html"><strong aria-hidden="true">4.1.1.</strong> Settings</a></li><li class="chapter-item expanded "><a href="../../writing-policies/spec/03-validating-policies.html"><strong aria-hidden="true">4.1.2.</strong> Validating policies</a></li><li class="chapter-item expanded "><a href="../../writing-policies/spec/04-mutating-policies.html"><strong aria-hidden="true">4.1.3.</strong> Mutating policies</a></li><li class="chapter-item expanded "><a href="../../writing-policies/spec/05-context-aware-policies.html"><strong aria-hidden="true">4.1.4.</strong> Context aware policies</a></li></ol></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/01-intro.html"><strong aria-hidden="true">4.2.</strong> Rust</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/rust/02-create-policy.html"><strong aria-hidden="true">4.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/03-define-policy-settings.html"><strong aria-hidden="true">4.2.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/04-write-validation-logic.html"><strong aria-hidden="true">4.2.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/05-mutation-policy.html"><strong aria-hidden="true">4.2.4.</strong> Write a mutation policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/06-logging.html"><strong aria-hidden="true">4.2.5.</strong> Logging</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rust/07-build-and-distribute.html"><strong aria-hidden="true">4.2.6.</strong> Build and distribute</a></li></ol></li><li class="chapter-item expanded "><a href="../../writing-policies/rego/01-intro.html"><strong aria-hidden="true">4.3.</strong> Rego</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/rego/open-policy-agent/01-intro.html"><strong aria-hidden="true">4.3.1.</strong> Open Policy Agent</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/rego/open-policy-agent/02-create-policy.html"><strong aria-hidden="true">4.3.1.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rego/open-policy-agent/03-build-and-run.html"><strong aria-hidden="true">4.3.1.2.</strong> Build and run</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rego/open-policy-agent/04-distribute.html"><strong aria-hidden="true">4.3.1.3.</strong> Distribute</a></li></ol></li><li class="chapter-item expanded "><a href="../../writing-policies/rego/gatekeeper/01-intro.html"><strong aria-hidden="true">4.3.2.</strong> Gatekeeper</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/rego/gatekeeper/02-create-policy.html"><strong aria-hidden="true">4.3.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rego/gatekeeper/03-build-and-run.html"><strong aria-hidden="true">4.3.2.2.</strong> Build and run</a></li><li class="chapter-item expanded "><a href="../../writing-policies/rego/gatekeeper/04-distribute.html"><strong aria-hidden="true">4.3.2.3.</strong> Distribute</a></li></ol></li><li class="chapter-item expanded "><a href="../../writing-policies/rego/02-builtin-support.html"><strong aria-hidden="true">4.3.3.</strong> Builtin support</a></li></ol></li><li class="chapter-item expanded "><a href="../../writing-policies/go/01-intro.html"><strong aria-hidden="true">4.4.</strong> Go</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../writing-policies/go/02-scaffold.html"><strong aria-hidden="true">4.4.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/03-policy-settings.html"><strong aria-hidden="true">4.4.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/04-validation.html"><strong aria-hidden="true">4.4.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/05-e2e-tests.html"><strong aria-hidden="true">4.4.4.</strong> End-to-end testing</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/06-logging.html"><strong aria-hidden="true">4.4.5.</strong> Logging</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/07-automate.html"><strong aria-hidden="true">4.4.6.</strong> GitHub Action integration</a></li><li class="chapter-item expanded "><a href="../../writing-policies/go/08-distribute.html"><strong aria-hidden="true">4.4.7.</strong> Distribute policy</a></li></ol></li><li class="chapter-item expanded "><a href="../../writing-policies/swift.html"><strong aria-hidden="true">4.5.</strong> Swift</a></li><li class="chapter-item expanded "><a href="../../writing-policies/typescript.html"><strong aria-hidden="true">4.6.</strong> TypeScript</a></li></ol></li><li class="chapter-item expanded "><a href="../../distributing-policies.html"><strong aria-hidden="true">5.</strong> Distributing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../distributing-policies/custom-certificate-authorities.html"><strong aria-hidden="true">5.1.</strong> Custom Certificate Authorities</a></li></ol></li><li class="chapter-item expanded "><a href="../../testing-policies/01-intro.html"><strong aria-hidden="true">6.</strong> Testing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../testing-policies/02-policy-authors.html"><strong aria-hidden="true">6.1.</strong> While creating a policy</a></li><li class="chapter-item expanded "><a href="../../testing-policies/03-cluster-operators.html"><strong aria-hidden="true">6.2.</strong> Before deployment</a></li></ol></li><li class="chapter-item expanded "><a href="../../operator-manual/01-intro.html"><strong aria-hidden="true">7.</strong> Operator Manual</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../operator-manual/tracing/01-quickstart.html" class="active"><strong aria-hidden="true">7.1.</strong> Tracing</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/kubewarden/docs/edit/main/src/operator-manual/tracing/01-quickstart.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="tracing"><a class="header" href="#tracing">Tracing</a></h1>
+<p>This section illustrates how to enable tracing support of
+Policy Server.</p>
+<p>Tracing allows to collect fine grained details about policy evaluations. It can
+be a useful tool for debugging issues inside of your Kubewarden deployment and policies.</p>
+<h2 id="the-stack"><a class="header" href="#the-stack">The stack</a></h2>
+<p>We will use the following tools to enable tracing:</p>
+<ul>
+<li><a href="https://www.jaegertracing.io/">Jaeger</a>: it is used to receive, store
+and visualize trace events.</li>
+<li><a href="https://opentelemetry.io/">OpenTelemetry</a>: it is used to collect
+trace events originated by PolicyServer and forward them to Jaeger</li>
+</ul>
+<p>The OpenTelemetry collector will be deployed as a sidecar inside of each PolicyServer
+Pod.</p>
+<h2 id="setting-up-a-kubernetes-cluster"><a class="header" href="#setting-up-a-kubernetes-cluster">Setting up a Kubernetes cluster</a></h2>
+<blockquote>
+<p>This section gives step-by-step instructions to create a
+Kubernetes cluster with an ingress controller enabled.</p>
+<p>Feel free to skip this section if you already have a Kubernetes
+cluster where you can define Ingress resources.</p>
+</blockquote>
+<p>We are going to create a testing Kubernetes cluster using <a href="https://minikube.sigs.k8s.io/docs/">minikube</a>.</p>
+<p>minikube has many backends, in this case we will use the
+<a href="https://minikube.sigs.k8s.io/docs/drivers/kvm2/">kvm2</a> driver
+which relies on libvirt.</p>
+<p>Assuming <code>libvirtd</code> is properly running on your machine, issue the
+following command:</p>
+<pre><code class="language-console">minikube start --driver=kvm2
+</code></pre>
+<p>The command will produce an output similar to the following one:</p>
+<pre><code class="language-console">$ minikube start --driver=kvm2
+😄  minikube v1.23.2 on Opensuse-Leap 15.3
+✨  Using the kvm2 driver based on user configuration
+👍  Starting control plane node minikube in cluster minikube
+🔥  Creating kvm2 VM (CPUs=2, Memory=6000MB, Disk=20000MB) ...
+🐳  Preparing Kubernetes v1.22.2 on Docker 20.10.8 ...
+    ▪ Generating certificates and keys ...
+    ▪ Booting up control plane ...
+    ▪ Configuring RBAC rules ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+🌟  Enabled addons: storage-provisioner, default-storageclass
+🏄  Done! kubectl is now configured to use &quot;minikube&quot; cluster and &quot;default&quot; namespace by default
+</code></pre>
+<p>Now we have to enable the Ingress addon:</p>
+<pre><code class="language-console">minikube addons enable ingress
+</code></pre>
+<p>This will produce an output similar to the following one:</p>
+<pre><code class="language-console">$ minikube addons enable ingress
+    ▪ Using image k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.0
+    ▪ Using image k8s.gcr.io/ingress-nginx/controller:v1.0.0-beta.3
+    ▪ Using image k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.0
+🔎  Verifying ingress addon...
+🌟  The 'ingress' addon is enabled
+</code></pre>
+<h2 id="install-jaeger"><a class="header" href="#install-jaeger">Install Jaeger</a></h2>
+<p>We are going to use the <a href="https://github.com/jaegertracing/jaeger-operator">Jaeger Operator</a>
+to manage all the different Jaeger components.</p>
+<p>The operator can be installed in many ways, we are going to use
+its helm chart.</p>
+<p>As a first step, we need to add the helm repository containing the Jaeger Operator
+charts:</p>
+<pre><code class="language-console">helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+</code></pre>
+<p>Then we install the operator inside of a dedicated Namespace called <code>jaeger</code>:</p>
+<pre><code class="language-console">helm install --namespace jaeger --create-namespace jaeger-operator jaegertracing/jaeger-operator
+</code></pre>
+<p>This will produce an output similar to the following one:</p>
+<pre><code class="language-console">helm install --namespace jaeger --create-namespace jaeger-operator jaegertracing/jaeger-operator
+manifest_sorter.go:192: info: skipping unknown hook: &quot;crd-install&quot;
+NAME: jaeger-operator
+LAST DEPLOYED: Tue Sep 28 14:54:02 2021
+NAMESPACE: jaeger
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+jaeger-operator is installed.
+
+
+Check the jaeger-operator logs
+  export POD=$(kubectl get pods -l app.kubernetes.io/instance=jaeger-operator -lapp.kubernetes.io/name=jaeger-operator --namespace jaeger --output name)
+  kubectl logs $POD --namespace=jaeger
+</code></pre>
+<p>Given this is a testing environment, we will use default 
+<a href="https://www.jaegertracing.io/docs/1.26/operator/#allinone-default-strategy">&quot;AllInOne&quot;</a>
+strategy. As stated on the upstream documentation: this deployment strategy is
+meant to be used only for development, testing and demo purposes.</p>
+<blockquote>
+<p><strong>Note well:</strong> the operator can deploy Jaeger in many different ways. We strongly recommend
+to read its <a href="https://www.jaegertracing.io/docs/1.26/operator/">official documentation</a>.</p>
+</blockquote>
+<p>Let's create a Jaeger resource:</p>
+<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: all-in-one
+  namespace: jaeger
+spec:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+EOF
+</code></pre>
+<p>Once all the resources have been created by the Jaeger operator, the
+Jaeger Query UI will be reachable at the following address:</p>
+<pre><code class="language-console">echo http://`minikube ip`
+</code></pre>
+<h2 id="install-opentelemetry"><a class="header" href="#install-opentelemetry">Install OpenTelemetry</a></h2>
+<p>We are going to use the <a href="https://github.com/open-telemetry/opentelemetry-operator">OpenTelemetry Operator</a>
+to manage the automatic injection of the OpenTelemetry Collector sidecar
+inside of the PolicyServer Deployment.</p>
+<p>The OpenTelemetry Operator requires <a href="https://cert-manager.io/docs/installation/">cert-manager</a>
+to be installed inside of the cluster.</p>
+<p>This can be done with this command:</p>
+<pre><code class="language-console">kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
+</code></pre>
+<p>We can wait for cert-manager to be ready in this way:</p>
+<pre><code class="language-console">kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
+</code></pre>
+<p>Once cert-manager is up and running, the operator can be installed in this way:</p>
+<pre><code class="language-console">kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/latest/download/opentelemetry-operator.yaml
+</code></pre>
+<p>Now we have to create a <a href="https://github.com/open-telemetry/opentelemetry-operator#sidecar-injection">OpenTelemetryCollector</a>
+resource inside of the Namespace where Kubewarden is going to be deployed.</p>
+<p>As a first step we have to create a <code>kubewarden</code> Namespace:</p>
+<pre><code class="language-console">kubectl create ns kubewarden
+</code></pre>
+<p>The OpenTelemetryCollector can be created in this way:</p>
+<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: sidecar-from-otel-to-jaeger
+  namespace: kubewarden
+spec:
+  mode: sidecar
+  config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+
+    processors:
+      batch:
+
+    exporters:
+      jaeger:
+        endpoint: &quot;all-in-one-collector.jaeger.svc.cluster.local:14250&quot;
+        insecure: true
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [jaeger]
+EOF
+</code></pre>
+<p>The OpenTelemetryCollector resource comes with a simple configuration:</p>
+<ul>
+<li>The collector receives incoming traces that are delivered using the
+OpenTelemetry format. The communication between the PolicyServer and
+the sidecar collector happens over gRPC.</li>
+<li>The collector will then export all the traces in batches. The traces will
+be sent to a Jaeger collector.</li>
+<li>The Jaeger collector is exposed via the internal Service that was created
+by the Jaeger Operator.</li>
+<li>The communication between the OpenTelemetry Collector and the Jaeger endpoint
+is not secured by TLS. We are fine with this limitation because this is
+just a demo environment.</li>
+</ul>
+<p>Everything is ready, we can now deploy Kubewarden.</p>
+<h2 id="install-kubewarden"><a class="header" href="#install-kubewarden">Install Kubewarden</a></h2>
+<p>We can proceed to the deployment of Kubewarden in the usual way.</p>
+<blockquote>
+<p><strong>Note well:</strong> cert-manager is a requirement of Kubewarden, but we've already
+installed it before performing the deployment of the OpenTelemetry Operator.</p>
+</blockquote>
+<p>As a first step, we have to add the Helm repository that contains Kubewarden:</p>
+<pre><code class="language-console">helm repo add kubewarden https://charts.kubewarden.io
+</code></pre>
+<p>Then we have to install the Custom Resource Definitions (CRDs) defined by
+Kubewarden:</p>
+<pre><code class="language-console">helm install --create-namespace -n kubewarden kubewarden-crds kubewarden/kubewarden-crds
+</code></pre>
+<p>Now we can deploy the rest of the Kubewarden stack. The official
+helm chart will create a PolicyServer named <code>default</code>. We want this PolicyServer
+instance to have tracing enabled.</p>
+<p>In order to do that, we have to specify some extra values at installation time.
+Let's create a <code>values.yaml</code> file with the following contents:</p>
+<pre><code class="language-yaml">policyServer:
+  env:
+  - name: KUBEWARDEN_LOG_LEVEL
+    value: info
+  - name: KUBEWARDEN_LOG_FMT
+    value: otlp
+  annotations:
+    sidecar.opentelemetry.io/inject: &quot;true&quot;
+</code></pre>
+<p>Then we can proceed with the installation of the helm chart:</p>
+<pre><code class="language-console">helm install --wait --namespace kubewarden --values values.yaml kubewarden-controller kubewarden/kubewarden-controller
+</code></pre>
+<p>This leads to the creation of the <code>default</code> instance of <code>PolicyServer</code>:</p>
+<pre><code class="language-console">kubectl get -n kubewarden policyservers.policies.kubewarden.io
+NAME      AGE
+default   3m7s
+</code></pre>
+<p>Looking closer at the Pod running the PolicyServer instance, we will find it has
+two containers inside of it: the actual <code>policy-server</code> and the OpenTelemetry
+Collector sidecar <code>otc-container</code>.</p>
+<h2 id="enforcing-a-policy"><a class="header" href="#enforcing-a-policy">Enforcing a policy</a></h2>
+<p>We will start by deploying the <a href="https://github.com/kubewarden/safe-labels-policy">safe-labels</a>
+policy.</p>
+<p>We want the policy to be enforced only inside of Namespaces that have a
+label <code>environment</code> with value <code>production</code>.</p>
+<p>Let's create a Namespace that has such a label:</p>
+<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: team-alpha-prod
+  labels:
+    environment: production
+EOF
+</code></pre>
+<p>Next, let's define a ClusterAdmissionPolicy:</p>
+<pre><code class="language-yaml">kubectl apply -f - &lt;&lt;EOF
+apiVersion: policies.kubewarden.io/v1alpha2
+kind: ClusterAdmissionPolicy
+metadata:
+  name: safe-labels
+spec:
+  module: registry://ghcr.io/kubewarden/policies/safe-labels:v0.1.6
+  settings:
+    mandatory_labels:
+    - owner
+  rules:
+    - apiGroups:
+        - &quot;*&quot;
+      apiVersions:
+        - &quot;*&quot;
+      resources:
+        - &quot;*&quot;
+      operations:
+        - CREATE
+        - UPDATE
+  namespaceSelector:
+    matchExpressions:
+    - key: environment
+      operator: In
+      values: [&quot;production&quot;]
+  mutating: false
+EOF
+</code></pre>
+<p>We can wait for the policy to be active in this way:</p>
+<pre><code class="language-console">kubectl wait --for=condition=PolicyActive clusteradmissionpolicy/safe-labels
+</code></pre>
+<p>Once the policy is active, we can try it out in this way:</p>
+<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: team-alpha-prod
+  labels:
+    owner: flavio
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 0
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+EOF
+</code></pre>
+<p>This Deployment object will be created because it doesn't violate the policy.</p>
+<p>On the other hand, this Deployment will be blocked by the policy:</p>
+<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-without-labels
+  namespace: team-alpha-prod
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 0
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+EOF
+</code></pre>
+<p>The policy is not enforced inside of another Namespace.</p>
+<p>The following command creates a new Namespace called <code>team-alpha-staging</code>:</p>
+<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: team-alpha-staging
+  labels:
+    environment: staging
+EOF
+</code></pre>
+<p>As expected, the creation of a Deployment resource that doesn't have any label
+is allowed inside of the <code>team-alpha-staging</code> Namespace:</p>
+<pre><code>kubectl apply -f - &lt;&lt;EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-without-labels
+  namespace: team-alpha-staging
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 0
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+EOF
+</code></pre>
+<p>As expected, this resource is successfully created.</p>
+<h2 id="exploring-the-jaeger-ui"><a class="header" href="#exploring-the-jaeger-ui">Exploring the Jaeger UI</a></h2>
+<p>We can see the trace events have been sent by the PolicyServer instance to Jaeger:</p>
+<p><img src="/operator-manual/tracing/jaeger-ui-home.png" alt="Jaeger homepage" title="The homepage of Jaeger" /></p>
+<p>The Jaeger collector is properly receiving the traces generated by our PolicyServer.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../../operator-manual/01-intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../../operator-manual/01-intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
