@@ -44,3 +44,5 @@
 - [Testing Policies](./testing-policies/01-intro.md)
   - [While creating a policy](./testing-policies/02-policy-authors.md)
   - [Before deployment](./testing-policies/03-cluster-operators.md)
+- [Operator Manual](./operator-manual/01-intro.md)
+  - [Tracing](./operator-manual/tracing/01-quickstart.md)
