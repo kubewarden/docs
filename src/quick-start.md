@@ -48,7 +48,7 @@ metadata:
   name: reserved-instance-for-tenant-a
 spec:
   image: ghcr.io/kubewarden/policy-server:v1.0.0
-  replicaSize: 2
+  replicas: 2
   serviceAccountName: sa
   env:
   - name: KUBEWARDEN_LOG_LEVEL
@@ -62,7 +62,7 @@ spec:
 Overview of the attributes of the `PolicyServer` resource:
 
 * `image`: container image name
-* `replicaSize`: number of desired instances
+* `replicas`: number of desired instances
 * `serviceAccountName` (optional): `policy-server` ServiceAccount. Namespace's `default` ServiceAccount will be used if nothing is provided
 * `env` (optional): `policy-server` environment variables
 * `annotations` (optional): `policy-server` annotations
