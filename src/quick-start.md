@@ -18,6 +18,7 @@ Currently, the chart depends on cert-manager. Make sure you have [`cert-manager`
 ```console
 helm repo add kubewarden https://charts.kubewarden.io
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
+kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
 helm install --create-namespace -n kubewarden kubewarden-crds kubewarden/kubewarden-crds
 helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller
 ```
