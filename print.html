@@ -4,49 +4,28 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Kubewarden Kubernetes Policy Engine</title>
-        
         <meta name="robots" content="noindex" />
-        
-        
-
-
         <!-- Custom HTML head -->
-        
-
-
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="Documentation of Kubewarden project">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
-
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
-
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
         <link rel="stylesheet" href="tomorrow-night.css">
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
-
-        
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -105,7 +84,6 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
                 <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
@@ -122,32 +100,23 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
                         <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        
-                        
-
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
                         <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
@@ -158,8 +127,6 @@
                         </ul>
                     </div>
                 </div>
-                
-
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
@@ -210,7 +177,7 @@ conversion.</p>
 better, can be published inside of an OCI compliant registry.</p>
 <p>Kubewarden Policies can be stored inside of an OCI compliant registry as
 <a href="https://github.com/opencontainers/artifacts">OCI artifacts</a>.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h1>
 <p>The Kubewarden stack is made of the following components:</p>
 <ul>
 <li>An arbitrary number of <code>ClusterAdmissionPolicy</code> resources: this is how policies
@@ -439,7 +406,7 @@ kubectl delete -l &quot;kubewarden&quot; mutatingwebhookconfigurations.admission
 a cluster operator has to manage, the rest of the resources needed to
 run the policies and configure them will be taken care of
 automatically by the <code>kubewarden-controller</code> project.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="architecture"><a class="header" href="#architecture">Architecture</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="architecture"><a class="header" href="#architecture">Architecture</a></h1>
 <p>Kubewarden is a Kubernetes policy engine that uses policies written using
 WebAssembly.</p>
 <p>The Kubewarden stack is made by the following components:</p>
@@ -581,7 +548,7 @@ multiple times, just with different configuration parameters.</p>
 that are kept in sync by <code>kubewarden-controller</code>.</p>
 <p>Finally, the incoming admission requests are then dispatched by the Kubernetes
 API server to the right validation endpoint exposed by <code>policy-server</code>.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="what-is-a-kubewarden-policy"><a class="header" href="#what-is-a-kubewarden-policy">What is a Kubewarden policy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="what-is-a-kubewarden-policy"><a class="header" href="#what-is-a-kubewarden-policy">What is a Kubewarden policy</a></h1>
 <p>In this section we will explain what Kubewarden policies are by using some traditional computing
 analogies.</p>
 <p>A Kubewarden policy can be seen as a regular program that does one job: it receives
@@ -620,7 +587,7 @@ provides a bi-directional communication channel.</p>
 <p>Because of that your programming language of choice must provide a waPC guest SDK.
 If that's not the case, feel free to reach out. We can help you overcome this
 limitation.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="policy-communication-specification"><a class="header" href="#policy-communication-specification">Policy communication specification</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="policy-communication-specification"><a class="header" href="#policy-communication-specification">Policy communication specification</a></h1>
 <p>The policy evaluator interacts with Kubewarden policies using a well
 defined API.  The purpose of this section is to document the API used
 by the host ( be it <code>policy-server</code> or <code>kwctl</code>) to communicate with
@@ -630,7 +597,7 @@ Kubewarden's policies.</p>
 jump straight to one of the &quot;language focused&quot; chapters and come back to this
 chapter later.</p>
 </blockquote>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="policy-settings"><a class="header" href="#policy-settings">Policy settings</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="policy-settings"><a class="header" href="#policy-settings">Policy settings</a></h1>
 <p>Policy behaviour is not set in stone, it can be configured by providing configuration
 details to the policy at runtime. The policy author has full freedom to define
 the structure of the policy settings.</p>
@@ -722,7 +689,7 @@ the following API:</p>
     </tr>
   </tbody>
 </table>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="validating-policies"><a class="header" href="#validating-policies">Validating policies</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="validating-policies"><a class="header" href="#validating-policies">Validating policies</a></h1>
 <p>The Kubewarden policy server receives
 <a href="https://godoc.org/k8s.io/api/admission/v1#AdmissionReview"><code>AdmissionReview</code></a>
 objects from the Kubernetes API server. It then forwards the value of
@@ -979,7 +946,7 @@ This is going to be covered inside of the next chapter.</p>
     </tr>
   </tbody>
 </table>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="mutating-policies"><a class="header" href="#mutating-policies">Mutating policies</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mutating-policies"><a class="header" href="#mutating-policies">Mutating policies</a></h1>
 <p>Mutation policies are structured in the very same was as validating ones:</p>
 <ul>
 <li>They have to register a <code>validate</code> and a <code>validate_settings</code> waPC functions</li>
@@ -1161,7 +1128,7 @@ section of the only container declared inside of the Pod.</p>
     </tr>
   </tbody>
 </table>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="context-aware-policies"><a class="header" href="#context-aware-policies">Context aware policies</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="context-aware-policies"><a class="header" href="#context-aware-policies">Context aware policies</a></h1>
 <blockquote>
 <p><strong>NOTE:</strong> This feature is a work in progress, and not to be depended
 upon. Features described here are incomplete and subject to change
@@ -1258,7 +1225,7 @@ information from the Kubernetes API server.</p>
 to generalize what resources can be fetched from the cluster, to
 include all built-in Kubernetes types, as well as custom resources.</p>
 </blockquote>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="rust"><a class="header" href="#rust">Rust</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rust"><a class="header" href="#rust">Rust</a></h1>
 <p><a href="https://www.rust-lang.org/">Rust</a> is the most mature programming language that
 can generate WebAssembly modules: WebAssembly is a first-class citizen
 in the Rust world. That means many of the tools and crates of the Rust
@@ -1282,7 +1249,7 @@ using <a href="https://github.com/rust-lang/rustup">rustup</a>. Please follow
 <p>Once <code>rustup</code> is installed add the Wasm target:</p>
 <pre><code class="language-shell">rustup target add wasm32-unknown-unknown
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="creating-a-new-validation-policy"><a class="header" href="#creating-a-new-validation-policy">Creating a new validation policy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="creating-a-new-validation-policy"><a class="header" href="#creating-a-new-validation-policy">Creating a new validation policy</a></h1>
 <p>We are going to create a simple validation policy that processes
 Pod creation requests.</p>
 <p>The policy will look at the <code>metadata.name</code> attribute of the Pod and reject
@@ -1333,7 +1300,7 @@ into <code>cargo generate</code>.</p>
 <p>Note: if you plan to make use of the GitHub container registry
 functionality in the demo, you will need to
 <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/enabling-improved-container-support-with-the-container-registry#enabling-the-container-registry-for-your-personal-account">enable improved container support</a>.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="defining-policy-settings"><a class="header" href="#defining-policy-settings">Defining policy settings</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="defining-policy-settings"><a class="header" href="#defining-policy-settings">Defining policy settings</a></h1>
 <p>As a first step we will define the structure that holds the policy settings.</p>
 <p>Open the <code>src/settings.rs</code> file and change the definition of the <code>Settings</code>
 struct to look like that:</p>
@@ -1409,7 +1376,7 @@ test settings::tests::reject_settings_without_a_list_of_invalid_names ... ok
 
 test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="writing-the-validation-logic"><a class="header" href="#writing-the-validation-logic">Writing the validation logic</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="writing-the-validation-logic"><a class="header" href="#writing-the-validation-logic">Writing the validation logic</a></h1>
 <p>It's time to write the actual validation code. This is defined inside of the
 <code>src/lib.rs</code> file. Inside of this file you will find a function called <code>validate</code>.</p>
 <p>The scaffolded function is already doing something:</p>
@@ -1596,7 +1563,7 @@ test tests::reject_pod_with_invalid_name ... ok
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 </code></pre>
 <p>That's all if you want to write a simple validating policy.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="creating-a-new-mutation-policy"><a class="header" href="#creating-a-new-mutation-policy">Creating a new mutation policy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="creating-a-new-mutation-policy"><a class="header" href="#creating-a-new-mutation-policy">Creating a new mutation policy</a></h1>
 <p>Mutating policies are similar to validating ones, but have also the ability to mutate an
 incoming object.</p>
 <p>They can:</p>
@@ -1774,7 +1741,7 @@ test tests::accept_pod_with_valid_name ... ok
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 </code></pre>
 <p>As you can see the creation of a mutation policy is pretty straightforward.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="logging"><a class="header" href="#logging">Logging</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="logging"><a class="header" href="#logging">Logging</a></h1>
 <p>You can perform logging in your policy, so the <code>policy-server</code> or <code>kwctl</code> will forward those log
 entries with the appropriate information.</p>
 <p>The logging library chosen for the Rust SDK is <a href="https://github.com/slog-rs/slog"><code>slog</code></a>, as it is a
@@ -1819,7 +1786,7 @@ policy evaluator will log this information, adding more contextual information i
 as the Kubernetes request <code>uid</code>.</p>
 <p>More information about the <a href="https://docs.rs/slog/2.7.0/slog/macro.log.html">logging macros</a> offered
 by slog can be found inside of <a href="https://docs.rs/slog/2.7.0/slog/index.html">its documentation</a>.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h2 id="building-the-policy"><a class="header" href="#building-the-policy">Building the policy</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="building-the-policy"><a class="header" href="#building-the-policy">Building the policy</a></h2>
 <p>So far we have built the policy using as a compilation target the same operating
 system and architecture of our development machine.</p>
 <p>It's now time to build the policy as a WebAssembly binary, also known as <code>.wasm</code>
@@ -1849,7 +1816,7 @@ into the main branch</li>
 <li>Build the policy in <code>release</code> mode and push it to a OCI registry as an
 artifact</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="rego"><a class="header" href="#rego">Rego</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rego"><a class="header" href="#rego">Rego</a></h1>
 <blockquote>
 <p><strong>Note well:</strong> Rego support has been introduced starting from these releases:</p>
 <ul>
@@ -1918,7 +1885,7 @@ yet implemented mutating policies with Gatekeeper compatibility. You
 can use policies that use the Kubewarden SDK to write mutating
 policies, but at the time of writing, you cannot run Gatekeeper
 mutating policies in Kubewarden yet.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="open-policy-agent-1"><a class="header" href="#open-policy-agent-1">Open Policy Agent</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="open-policy-agent-1"><a class="header" href="#open-policy-agent-1">Open Policy Agent</a></h1>
 <blockquote>
 <p><strong>Note well:</strong> Open Policy Agent support has been introduced starting from these releases:</p>
 <ul>
@@ -1944,7 +1911,7 @@ the official <code>opa</code> CLI tool.</p>
 <p>In terms of policy execution, you can read more about the <a href="writing-policies/rego/open-policy-agent/../02-builtin-support.html">Open Policy
 Agent built-in support that is implemented in
 Kubewarden</a>.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="create-a-new-policy"><a class="header" href="#create-a-new-policy">Create a new policy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="create-a-new-policy"><a class="header" href="#create-a-new-policy">Create a new policy</a></h1>
 <p>Let's create a sample policy that will help us go through some
 important concepts. Let's start!</p>
 <blockquote>
@@ -2086,7 +2053,7 @@ with the <code>AdmissionReview</code> object, so we can inspect it quite easily.
 
 1 directory, 4 files
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="build-and-run"><a class="header" href="#build-and-run">Build and run</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="build-and-run"><a class="header" href="#build-and-run">Build and run</a></h1>
 <p>In the previous section we have written our Rego policy. The structure
 looks as the following:</p>
 <pre><code>.
@@ -2165,7 +2132,7 @@ send to the policy to evaluate.</p>
 </code></pre>
 <p>In this case, the policy is rejecting the request, and giving a reason
 back to the API server that will be returned to the user or API consumer.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="distribute"><a class="header" href="#distribute">Distribute</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="distribute"><a class="header" href="#distribute">Distribute</a></h1>
 <p>We have written, built and run our Rego policy. Now it's time to
 distribute the policy.</p>
 <p>Policies have to be annotated in order for them to be executed in the
@@ -2252,7 +2219,7 @@ spec:
 </code></pre>
 <p>You can now use this <code>ClusterAdmissionPolicy</code> as a base to target the
 resources that you want, or deploy to Kubernetes as is.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="gatekeeper-1"><a class="header" href="#gatekeeper-1">Gatekeeper</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gatekeeper-1"><a class="header" href="#gatekeeper-1">Gatekeeper</a></h1>
 <blockquote>
 <p><strong>Note well:</strong> Gatekeeper support has been introduced starting from these releases:</p>
 <ul>
@@ -2274,7 +2241,7 @@ Kubewarden.</p>
 <p>In terms of policy execution, you can read more about the <a href="writing-policies/rego/gatekeeper/../02-builtin-support.html">Open Policy
 Agent built-in support that is implemented in
 Kubewarden</a>.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="create-a-new-policy-1"><a class="header" href="#create-a-new-policy-1">Create a new policy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="create-a-new-policy-1"><a class="header" href="#create-a-new-policy-1">Create a new policy</a></h1>
 <p>Let's implement the same policy that <a href="writing-policies/rego/gatekeeper/../open-policy-agent/02-create-policy.html">we wrote with Open Policy
 Agent</a>: a policy that
 rejects a resource if it's targeting the <code>default</code> namespace.</p>
@@ -2365,7 +2332,7 @@ this file <code>other-ns.json</code>. It has the following contents:</p>
 </code></pre>
 <p>As you can see, this simulates another pod creation request, this time
 under a namespace called <code>other</code>.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="build-and-run-1"><a class="header" href="#build-and-run-1">Build and run</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="build-and-run-1"><a class="header" href="#build-and-run-1">Build and run</a></h1>
 <p>Building and running the policy is done exactly the same way as a Rego
 policy targeting Open Policy Agent. The structure of our project is
 like:</p>
@@ -2425,7 +2392,7 @@ the wasm module from it:</p>
 }
 </code></pre>
 <p>As you can see, our Gatekeeper policy rejected this resource as expected.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="distribute-1"><a class="header" href="#distribute-1">Distribute</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="distribute-1"><a class="header" href="#distribute-1">Distribute</a></h1>
 <p>Policies have to be annotated for them to be pushed, and eventually
 executed by the Kubewarden <code>policy-server</code> in a Kubernetes cluster.</p>
 <p>Annotating and distributing our Gatekeeper policy is very similar to
@@ -2491,7 +2458,7 @@ spec:
 </code></pre>
 <p>We could now use this <code>ClusterAdmissionPolicy</code> resource to deploy our
 policy to a Kubernetes cluster.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="builtin-support"><a class="header" href="#builtin-support">Builtin support</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="builtin-support"><a class="header" href="#builtin-support">Builtin support</a></h1>
 <p>Building a policy for the <code>wasm</code> target is only half of the problem,
 it needs to be executed.</p>
 <p>The Open Policy Agent team has a dedicated page you can check in order
@@ -2519,7 +2486,7 @@ comment over there to prioritize our work.</p>
 the list of built-ins used by the policy will be inspected, and if any
 of the used built-ins is missing, the program will abort execution
 logging a fatal error reporting what are the missing built-ins.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><blockquote>
+<div style="break-before: page; page-break-before: always;"></div><blockquote>
 <p><strong>Note well:</strong> Go's support for WebAssembly is fast evolving. The contents
 of this page have been written during April 2021, hence they could be outdated.</p>
 </blockquote>
@@ -2582,7 +2549,7 @@ more information.</p>
 be solved once TinyGo <code>0.17.0</code> is released. In the meantime we will use the container image
 based on the development branch: <code>tinygo/tinygo-dev:latest</code>.</p>
 </blockquote>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="creating-a-new-validation-policy-1"><a class="header" href="#creating-a-new-validation-policy-1">Creating a new validation policy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="creating-a-new-validation-policy-1"><a class="header" href="#creating-a-new-validation-policy-1">Creating a new validation policy</a></h1>
 <p>We are going to create a validation policy that validates the labels of generic Kubernetes
 objects.</p>
 <p>The policy will reject all the resources that use one or more labels on the deny list.
@@ -2639,7 +2606,7 @@ and follow GitHub's wizard.</p>
 of the <code>go.mod</code> file looks like that:</p>
 <pre><code class="language-go">module &lt;path to your repository&gt;
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="defining-policy-settings-1"><a class="header" href="#defining-policy-settings-1">Defining policy settings</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="defining-policy-settings-1"><a class="header" href="#defining-policy-settings-1">Defining policy settings</a></h1>
 <p>As a first step we will define the structure that holds the policy settings.</p>
 <p>We will do that by adding this code inside of the <code>settings.go</code> file:</p>
 <pre><code class="language-go">import (
@@ -3039,7 +3006,7 @@ PASS
 ok  	command-line-arguments	0.001s
 </code></pre>
 <p>We can now move to implement the actual validation code.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="writing-the-validation-logic-1"><a class="header" href="#writing-the-validation-logic-1">Writing the validation logic</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="writing-the-validation-logic-1"><a class="header" href="#writing-the-validation-logic-1">Writing the validation logic</a></h1>
 <p>It's now time to write the actual validation logic. This is done
 inside of the <code>validate.go</code> file.</p>
 <p>The scaffolded policy has already a <code>validate</code> function, we will need to make
@@ -3360,7 +3327,7 @@ PASS
 ok  	github.com/kubewarden/safe-labels-policy	0.001s
 </code></pre>
 <p>We can now move to the next step, write some end-to-end tests.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="end-to-end-testing"><a class="header" href="#end-to-end-testing">End-to-end testing</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="end-to-end-testing"><a class="header" href="#end-to-end-testing">End-to-end testing</a></h1>
 <p>So far we have tested the policy using a set of Go unit tests. This section shows
 how we can write end-to-end test that run tests against the actual WebAssembly
 binary produced by TinyGo.</p>
@@ -3524,7 +3491,7 @@ bats e2e.bats
 
 7 tests, 0 failures
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="logging-1"><a class="header" href="#logging-1">Logging</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="logging-1"><a class="header" href="#logging-1">Logging</a></h1>
 <p>The Go SDK integrates with the <a href="https://github.com/francoispqt/onelog"><code>onelog</code></a> project almost out
 of the box. The reasons why this library has been chosen are:</p>
 <ul>
@@ -3575,7 +3542,7 @@ information.</p>
 <p>The logging produced by the policy will be sent to the policy evaluator (<code>kwctl</code> or <code>policy-server</code>
 for example), and they will log on behalf of the policy using mechanisms that are easily pluggable
 to other components that enable distributed tracing, such as Jaeger.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="automations"><a class="header" href="#automations">Automations</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="automations"><a class="header" href="#automations">Automations</a></h1>
 <p>This section describes how we can use GitHub Actions to automate as many tasks
 as possible.</p>
 <p>The scaffolded project already includes all the GitHub actions you need.
@@ -3629,7 +3596,7 @@ include the following assets:</p>
 <li>Source code compressed as <code>zip</code> and <code>tar.gz</code></li>
 <li>A file named <code>policy.wasm</code> that is the actual WebAssembly policy</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="distribute-policy"><a class="header" href="#distribute-policy">Distribute policy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="distribute-policy"><a class="header" href="#distribute-policy">Distribute policy</a></h1>
 <p>Congratulations for having made this far 🎉🎉🎉</p>
 <p>We hope you enjoyed the journey!</p>
 <p>In case you haven't realized, we actually created the
@@ -3642,7 +3609,7 @@ chapter.</p>
 <p>The topic of distributing policies is covered in depth inside of the
 <a href="writing-policies/go//distributing-policies.html">&quot;distributing policies&quot;</a>
 section of Kubewarden's documentation.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="swift"><a class="header" href="#swift">Swift</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="swift"><a class="header" href="#swift">Swift</a></h1>
 <p>As stated on the <a href="https://swift.org/">official website</a>:</p>
 <blockquote>
 <p>Swift is a general-purpose programming language built using a modern approach
@@ -3681,7 +3648,7 @@ policy <em>&quot;in production&quot;</em>:
 <h2 id="more-examples-1"><a class="header" href="#more-examples-1">More examples</a></h2>
 <p><a href="https://github.com/kubewarden/pod-runtime-class-policy">This GitHub repository</a>
 contains a Kubewarden Policy written in Swift.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="typescript"><a class="header" href="#typescript">TypeScript</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="typescript"><a class="header" href="#typescript">TypeScript</a></h1>
 <p>As stated on the <a href="https://www.typescriptlang.org/">official website</a>:</p>
 <blockquote>
 <p>TypeScript extends JavaScript by adding types.</p>
@@ -3711,7 +3678,7 @@ into the main branch</li>
 <li>Build the policy in <code>release</code> mode and push it to a OCI registry as an
 artifact</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="distributing-policies"><a class="header" href="#distributing-policies">Distributing Policies</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="distributing-policies"><a class="header" href="#distributing-policies">Distributing Policies</a></h1>
 <p>Kubewarden policies are Wasm binaries that are evaluated by the
 Kubewarden Policy Server.</p>
 <p>The Kubewarden policy server can load policies from these
@@ -3804,7 +3771,7 @@ you really want to push an unannotated policy you can use the
 <p>The policy can then be referenced from the Kubewarden Policy Server or
 <code>kwctl</code> as
 <code>registry://&lt;oci-registry&gt;/kubewarden-policies/palindromify-policy:v0.0.1</code>.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="custom-certificate-authorities"><a class="header" href="#custom-certificate-authorities">Custom Certificate Authorities</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="custom-certificate-authorities"><a class="header" href="#custom-certificate-authorities">Custom Certificate Authorities</a></h1>
 <p>Both <code>kwctl</code> and <code>policy-server</code> allow you to pull policies from OCI registries and HTTP servers, as well as pushing to OCI registries. In this process, by default, HTTPS is enforced with host TLS verification.</p>
 <p>The system CA store is used to validate the trusted chain of certificates presented by the OCI registry. In a regular Kubewarden installation, the <code>policy-server</code> will use the CA store shipped with its Linux container. In the client side, <code>kwctl</code> will use your operating system CA store.</p>
 <blockquote>
@@ -3854,7 +3821,7 @@ source_authorities:
 <p>It is generally fine to use <code>insecure_sources</code> when using local registries or HTTP servers when developing locally, to avoid the certificate burden. However, this setting is <strong>completely discouraged</strong> as the environment is closer to production.</p>
 <h3 id="source-authorities"><a class="header" href="#source-authorities">Source authorities</a></h3>
 <p>The source authorities is a map that contains the host and a list of CA certificates used to verify the identity of OCI registries and HTTPs servers.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="testing-policies"><a class="header" href="#testing-policies">Testing Policies</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="testing-policies"><a class="header" href="#testing-policies">Testing Policies</a></h1>
 <p>This section covers the topic of testing Kubewarden Policies. There are two possible
 personas interested in testing policies:</p>
 <ul>
@@ -3866,7 +3833,7 @@ inside of your CI/CD pipelines,...</li>
 </ul>
 <p>The next sections of the documentation will show how Kubewarden policies can
 be tested by these two personas.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="while-creating-a-policy"><a class="header" href="#while-creating-a-policy">While creating a policy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="while-creating-a-policy"><a class="header" href="#while-creating-a-policy">While creating a policy</a></h1>
 <p>Kubewarden Policies are regular programs compiled as WebAssembly. As with any kind
 of program, it's important to have good test coverage.</p>
 <p>Policy authors can leverage the testing frameworks and tools of their language
@@ -3946,7 +3913,7 @@ and then invoke <code>bats</code> in this way:</p>
 <p>Checkout <a href="testing-policies//writing-policies/go/05-e2e-tests.html">this section</a>
 of the documentation to learn more about writing end-to-end
 tests of your policies.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="before-deployment"><a class="header" href="#before-deployment">Before deployment</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="before-deployment"><a class="header" href="#before-deployment">Before deployment</a></h1>
 <p>As a Kubernetes cluster operator you probably want to perform some tests
 against a Kubewarden policy you just found.</p>
 <p>You probably want to answer questions like:</p>
@@ -4191,10 +4158,10 @@ we can run the test in this way:</p>
 <p>Checkout <a href="testing-policies//writing-policies/go/05-e2e-tests.html">this section</a> of the
 documentation to learn more about writing end-to-end tests of your
 policies.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="operator-manual"><a class="header" href="#operator-manual">Operator Manual</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="operator-manual"><a class="header" href="#operator-manual">Operator Manual</a></h1>
 <p>This section covers topics related with the deployment and the operational
 aspects of Kubewarden.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="tracing"><a class="header" href="#tracing">Tracing</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="tracing"><a class="header" href="#tracing">Tracing</a></h1>
 <p>This section illustrates how to enable tracing support of
 Policy Server.</p>
 <p>Tracing allows to collect fine grained details about policy evaluations. It can
@@ -4552,59 +4519,31 @@ EOF
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
-
-                        
-
                         <div style="clear: both"></div>
                     </nav>
                 </div>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
-
-                
             </nav>
 
         </div>
 
-        
-
-        
-
-        
-
-        
         <script type="text/javascript">
             window.playground_copyable = true;
         </script>
-        
-
-        
-
-        
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
-
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
-        
-
-        
-        
         <script type="text/javascript">
         window.addEventListener('load', function() {
             window.setTimeout(window.print, 100);
         });
         </script>
-        
-        
-
     </body>
 </html>
