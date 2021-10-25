@@ -3,76 +3,15 @@
 This section illustrates how to enable tracing support of
 Policy Server.
 
+> **Note well**: before continuing, make sure you completed the previous
+> [OpenTelemetry](../opentelemetry/01-quickstart.md#install-opentelemetry) section of this book. It
+> is required for this section to work correctly.
+
 Tracing allows to collect fine grained details about policy evaluations. It can
 be a useful tool for debugging issues inside of your Kubewarden deployment and policies.
 
-## The stack
-
-We will use the following tools to enable tracing:
-
-  * [Jaeger](https://www.jaegertracing.io/): it is used to receive, store
-    and visualize trace events.
-  * [OpenTelemetry](https://opentelemetry.io/): it is used to collect
-    trace events originated by PolicyServer and forward them to Jaeger
-
-The OpenTelemetry collector will be deployed as a sidecar inside of each PolicyServer
-Pod.
-
-## Setting up a Kubernetes cluster
-
-> This section gives step-by-step instructions to create a
-> Kubernetes cluster with an ingress controller enabled.
->
-> Feel free to skip this section if you already have a Kubernetes
-> cluster where you can define Ingress resources.
-
-We are going to create a testing Kubernetes cluster using [minikube](https://minikube.sigs.k8s.io/docs/).
-
-minikube has many backends, in this case we will use the
-[kvm2](https://minikube.sigs.k8s.io/docs/drivers/kvm2/) driver
-which relies on libvirt.
-
-Assuming `libvirtd` is properly running on your machine, issue the
-following command:
-
-```console
-minikube start --driver=kvm2
-```
-
-The command will produce an output similar to the following one:
-
-```console
-$ minikube start --driver=kvm2
-😄  minikube v1.23.2 on Opensuse-Leap 15.3
-✨  Using the kvm2 driver based on user configuration
-👍  Starting control plane node minikube in cluster minikube
-🔥  Creating kvm2 VM (CPUs=2, Memory=6000MB, Disk=20000MB) ...
-🐳  Preparing Kubernetes v1.22.2 on Docker 20.10.8 ...
-    ▪ Generating certificates and keys ...
-    ▪ Booting up control plane ...
-    ▪ Configuring RBAC rules ...
-🔎  Verifying Kubernetes components...
-    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
-🌟  Enabled addons: storage-provisioner, default-storageclass
-🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
-```
-
-Now we have to enable the Ingress addon:
-
-```console
-minikube addons enable ingress
-```
-
-This will produce an output similar to the following one:
-
-```console
-$ minikube addons enable ingress
-    ▪ Using image k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.0
-    ▪ Using image k8s.gcr.io/ingress-nginx/controller:v1.0.0-beta.3
-    ▪ Using image k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.0
-🔎  Verifying ingress addon...
-🌟  The 'ingress' addon is enabled
-```
+We will use [Jaeger](https://www.jaegertracing.io/) -- used to receive, store and visualize trace
+events.
 
 ## Install Jaeger
 
@@ -115,7 +54,7 @@ Check the jaeger-operator logs
   kubectl logs $POD --namespace=jaeger
 ```
 
-Given this is a testing environment, we will use default 
+Given this is a testing environment, we will use default
 ["AllInOne"](https://www.jaegertracing.io/docs/1.26/operator/#allinone-default-strategy)
 strategy. As stated on the upstream documentation: this deployment strategy is
 meant to be used only for development, testing and demo purposes.
@@ -146,97 +85,13 @@ Jaeger Query UI will be reachable at the following address:
 ```console
 echo http://`minikube ip`
 ```
-## Install OpenTelemetry
-
-We are going to use the [OpenTelemetry Operator](https://github.com/open-telemetry/opentelemetry-operator)
-to manage the automatic injection of the OpenTelemetry Collector sidecar
-inside of the PolicyServer Deployment.
-
-The OpenTelemetry Operator requires [cert-manager](https://cert-manager.io/docs/installation/)
-to be installed inside of the cluster.
-
-This can be done with this command:
-
-```console
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
-```
-
-We can wait for cert-manager to be ready in this way:
-
-```console
-kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
-```
-
-Once cert-manager is up and running, the operator can be installed in this way:
-
-```console
-kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/latest/download/opentelemetry-operator.yaml
-```
-
-Now we have to create a [OpenTelemetryCollector](https://github.com/open-telemetry/opentelemetry-operator#sidecar-injection)
-resource inside of the Namespace where Kubewarden is going to be deployed.
-
-As a first step we have to create a `kubewarden` Namespace:
-
-```console
-kubectl create ns kubewarden
-```
-
-The OpenTelemetryCollector can be created in this way:
-
-```console
-kubectl apply -f - <<EOF
-apiVersion: opentelemetry.io/v1alpha1
-kind: OpenTelemetryCollector
-metadata:
-  name: sidecar-from-otel-to-jaeger
-  namespace: kubewarden
-spec:
-  mode: sidecar
-  config: |
-    receivers:
-      otlp:
-        protocols:
-          grpc:
-
-    processors:
-      batch:
-
-    exporters:
-      jaeger:
-        endpoint: "all-in-one-collector.jaeger.svc.cluster.local:14250"
-        insecure: true
-
-    service:
-      pipelines:
-        traces:
-          receivers: [otlp]
-          processors: [batch]
-          exporters: [jaeger]
-EOF
-```
-
-The OpenTelemetryCollector resource comes with a simple configuration:
-
-  * The collector receives incoming traces that are delivered using the
-    OpenTelemetry format. The communication between the PolicyServer and
-    the sidecar collector happens over gRPC.
-  * The collector will then export all the traces in batches. The traces will
-    be sent to a Jaeger collector.
-  * The Jaeger collector is exposed via the internal Service that was created
-    by the Jaeger Operator.
-  * The communication between the OpenTelemetry Collector and the Jaeger endpoint
-    is not secured by TLS. We are fine with this limitation because this is
-    just a demo environment.
-
-Everything is ready, we can now deploy Kubewarden.
 
 ## Install Kubewarden
 
 We can proceed to the deployment of Kubewarden in the usual way.
 
-> **Note well:** cert-manager is a requirement of Kubewarden, but we've already
-> installed it before performing the deployment of the OpenTelemetry Operator.
+> **Note well:** cert-manager is a requirement of Kubewarden, and OpenTelemetry is required for this
+> feature, but we've already installed them in a previous section of this book.
 
 As a first step, we have to add the Helm repository that contains Kubewarden:
 
@@ -248,7 +103,7 @@ Then we have to install the Custom Resource Definitions (CRDs) defined by
 Kubewarden:
 
 ```console
-helm install --create-namespace -n kubewarden kubewarden-crds kubewarden/kubewarden-crds
+helm install --wait --namespace kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
 ```
 
 Now we can deploy the rest of the Kubewarden stack. The official
@@ -260,25 +115,23 @@ Let's create a `values.yaml` file with the following contents:
 
 ```yaml
 policyServer:
-  env:
-  - name: KUBEWARDEN_LOG_LEVEL
-    value: info
-  - name: KUBEWARDEN_LOG_FMT
-    value: otlp
-  annotations:
-    sidecar.opentelemetry.io/inject: "true"
+  telemetry:
+    enabled: True
+    tracing:
+      jaeger:
+        endpoint: "all-in-one-collector.jaeger.svc.cluster.local:14250"
 ```
 
 Then we can proceed with the installation of the helm chart:
 
 ```console
-helm install --wait --namespace kubewarden --values values.yaml kubewarden-controller kubewarden/kubewarden-controller
+helm install --wait --namespace kubewarden --create-namespace --values values.yaml kubewarden-controller kubewarden/kubewarden-controller
 ```
 
 This leads to the creation of the `default` instance of `PolicyServer`:
 
 ```console
-kubectl get -n kubewarden policyservers.policies.kubewarden.io
+kubectl get policyservers.policies.kubewarden.io
 NAME      AGE
 default   3m7s
 ```
@@ -323,11 +176,11 @@ spec:
     - owner
   rules:
     - apiGroups:
-        - "*"
+        - apps
       apiVersions:
-        - "*"
+        - v1
       resources:
-        - "*"
+        - deployments
       operations:
         - CREATE
         - UPDATE
