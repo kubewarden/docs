@@ -4,8 +4,8 @@ Both `kwctl` and `policy-server` allow you to pull policies from OCI registries 
 
 The system CA store is used to validate the trusted chain of certificates presented by the OCI registry. In a regular Kubewarden installation, the `policy-server` will use the CA store shipped with its Linux container. In the client side, `kwctl` will use your operating system CA store.
 
-If you are using the Controller, you can configure the PolicyServer via their
-`spec` fields, as documented
+If you are using the [Kubewarden Controller](https://github.com/kubewarden/kubewarden-controller),
+you can configure the PolicyServer via their `spec` fields, as documented
 [here](../operator-manual/policy-servers/01-custom-cert-auths.html).
 
 > **Important**: the default behavior of `kwctl` and `policy-server` is to enforce HTTPS with trusted certificates matching the system CA store. You can interact with registries using untrusted certificates or even without TLS, by using the `insecure_sources` setting. This approach is **highly discouraged** in environments closer to production.
