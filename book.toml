@@ -1,7 +1,7 @@
 [book]
 title = "Kubewarden Kubernetes Policy Engine"
 description = "Documentation of Kubewarden project"
-authors = ["Flavio Castelli", "Rafael Fernández López"]
+authors = ["Kubewarden Developers"]
 language = "en"
 multilingual = false
 src = "src"
