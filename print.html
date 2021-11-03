@@ -227,10 +227,6 @@ spec:
   env:
   - name: KUBEWARDEN_LOG_LEVEL
     value: debug
-  - name: KUBEWARDEN_LOG_FMT
-    value: jaeger
-  annotations:
-    sidecar.jaegertracing.io/inject: default
 </code></pre>
 <p>Overview of the attributes of the <code>PolicyServer</code> resource:</p>
 <ul>
@@ -390,7 +386,7 @@ the Kubewarden stack:</p>
 <blockquote>
 <p><strong>Note:</strong> kubewarden contains a helm pre-delete hook that will remove all <code>PolicyServers</code> and <code>kubewarden-controller</code>.
 Then the <code>kubewarden-controller</code> will delete all resources, so it is important that <code>kubewarden-controller</code> is running
-when helm uninstall is executed. </p>
+when helm uninstall is executed.</p>
 </blockquote>
 <p><code>ValidatingWebhookConfigurations</code> and <code>MutatingWebhookConfigurations</code> created by kubewarden should be deleted, this can be checked with:</p>
 <pre><code class="language-shell">kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l &quot;kubewarden&quot; &amp;&amp; \
