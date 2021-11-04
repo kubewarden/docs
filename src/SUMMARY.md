@@ -41,6 +41,7 @@
   #- [Other languages](./writing-policies/other-languages.md)
 - [Distributing Policies](./distributing-policies.md)
   - [Custom Certificate Authorities](./distributing-policies/custom-certificate-authorities.md)
+  - [OCI Registries support](./distributing-policies/oci-registries-support.md)
 - [Testing Policies](./testing-policies/01-intro.md)
   - [While creating a policy](./testing-policies/02-policy-authors.md)
   - [Before deployment](./testing-policies/03-cluster-operators.md)
