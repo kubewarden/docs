@@ -164,6 +164,10 @@ using <a href="https://github.com/rust-lang/rustup">rustup</a>. Please follow
 <p>Once <code>rustup</code> is installed add the Wasm target:</p>
 <pre><code class="language-shell">rustup target add wasm32-unknown-unknown
 </code></pre>
+<h2 id="osx-specific-dependencies"><a class="header" href="#osx-specific-dependencies">OSX specific dependencies</a></h2>
+<p>In order to use <code>cargo-generate</code> you will need to add the Xcode tool set. If it isn't installed through Xcode the following command will give you the dependencies needed:</p>
+<pre><code class="language-shell">xcode-select --install
+</code></pre>
 
                     </main>
 
