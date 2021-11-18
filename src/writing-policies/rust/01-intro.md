@@ -32,3 +32,11 @@ Once `rustup` is installed add the Wasm target:
 ```shell
 rustup target add wasm32-unknown-unknown
 ```
+
+## OSX specific dependencies
+
+In order to use `cargo-generate` you will need to add the Xcode tool set. If it isn't installed through Xcode the following command will give you the dependencies needed:
+
+```shell
+xcode-select --install
+```
