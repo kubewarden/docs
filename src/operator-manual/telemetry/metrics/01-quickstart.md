@@ -83,13 +83,13 @@ helm install --wait --namespace kubewarden --create-namespace kubewarden-crds ku
 Now we can deploy the rest of the Kubewarden stack. The official helm
 chart will create a PolicyServer named `default`.
 
-Let's configure the values of the Helm Chart so that the default
-PolicyServer has metrics enabled. Write the `kubewarden-values.yaml` file:
+Let's configure the values of the Helm Chart so that we have metrics enabled 
+in Kubewarden. Write the `kubewarden-values.yaml` file with the following contents:
 
 ```yaml
+telemetry:
+  enabled: True
 policyServer:
-  telemetry:
-    enabled: True
     metrics:
       port: 8080
 ```
