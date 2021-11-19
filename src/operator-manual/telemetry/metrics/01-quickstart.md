@@ -84,7 +84,7 @@ Now we can deploy the rest of the Kubewarden stack. The official helm
 chart will create a PolicyServer named `default`.
 
 Let's configure the values of the Helm Chart so that we have metrics enabled 
-in the Kubewarden. Write the `kubewarden-values.yaml` file:
+in Kubewarden. Write the `kubewarden-values.yaml` file with the following contents:
 
 ```yaml
 telemetry:
