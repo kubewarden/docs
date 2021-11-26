@@ -50,7 +50,6 @@ metadata:
 spec:
   image: ghcr.io/kubewarden/policy-server:latest
   replicas: 2
-  serviceAccountName: sa
   env:
   - name: KUBEWARDEN_LOG_LEVEL
     value: debug
