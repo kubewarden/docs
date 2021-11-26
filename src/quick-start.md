@@ -49,6 +49,7 @@ metadata:
   name: reserved-instance-for-tenant-a
 spec:
   image: ghcr.io/kubewarden/policy-server:latest
+  serviceAccountName: policy-server
   replicas: 2
   env:
   - name: KUBEWARDEN_LOG_LEVEL
