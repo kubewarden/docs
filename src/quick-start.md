@@ -153,7 +153,8 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.5
+  policyServer: reserved-instance-for-tenant-a
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
   rules:
   - apiGroups: [""]
     apiVersions: ["v1"]
