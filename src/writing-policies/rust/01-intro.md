@@ -7,7 +7,7 @@ ecosystem work out of the box.
 
 Kubewarden provides a [Rust SDK](https://crates.io/crates/kubewarden-policy-sdk)
 that simplifies the process of writing policies, plus a
-[template project](https://github.com/kubewarden/policy-rust-template) to
+[template project](https://github.com/kubewarden/rust-policy-template) to
 quickly scaffold a policy project using the
 [`cargo-generate`](https://github.com/cargo-generate/cargo-generate) utility.
 
