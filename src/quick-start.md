@@ -48,7 +48,7 @@ kind: PolicyServer
 metadata:
   name: reserved-instance-for-tenant-a
 spec:
-  image: ghcr.io/kubewarden/policy-server:v1.0.0
+  image: ghcr.io/kubewarden/policy-server:latest
   replicas: 2
   serviceAccountName: sa
   env:
