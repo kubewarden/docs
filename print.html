@@ -1228,7 +1228,7 @@ in the Rust world. That means many of the tools and crates of the Rust
 ecosystem work out of the box.</p>
 <p>Kubewarden provides a <a href="https://crates.io/crates/kubewarden-policy-sdk">Rust SDK</a>
 that simplifies the process of writing policies, plus a
-<a href="https://github.com/kubewarden/policy-rust-template">template project</a> to
+<a href="https://github.com/kubewarden/rust-policy-template">template project</a> to
 quickly scaffold a policy project using the
 <a href="https://github.com/cargo-generate/cargo-generate"><code>cargo-generate</code></a> utility.</p>
 <p>This document illustrates how to take advantage of these projects to write
@@ -1282,13 +1282,13 @@ spec:
 </code></pre>
 <h2 id="scaffolding-new-policy-project"><a class="header" href="#scaffolding-new-policy-project">Scaffolding new policy project</a></h2>
 <p>The creation of a new policy project can be done by feeding this
-<a href="https://github.com/kubewarden/policy-rust-template">template project</a>
+<a href="https://github.com/kubewarden/rust-policy-template">template project</a>
 into <code>cargo generate</code>.</p>
 <p>First, install <code>cargo-generate</code>. Note, this requires <a href="https://pkgs.org/download/openssl-devel">openssl-devel</a>.</p>
 <pre><code>cargo install cargo-generate
 </code></pre>
 <p>Now scaffold the project as follows:</p>
-<pre><code class="language-shell">cargo generate --git https://github.com/kubewarden/policy-rust-template \
+<pre><code class="language-shell">cargo generate --git https://github.com/kubewarden/rust-policy-template \
                --branch main \
                --name demo
 </code></pre>
