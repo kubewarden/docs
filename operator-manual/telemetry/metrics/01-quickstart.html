@@ -242,14 +242,41 @@ time as we produce more requests that go through the policy.</p>
 <pre><code class="language-console">kubectl port-forward -n prometheus --address 0.0.0.0 svc/prometheus-grafana 8080:80
 </code></pre>
 <p>You can now login with the default username <code>admin</code> and password <code>prom-operator</code>.</p>
-<h3 id="import-a-grafana-dashboard"><a class="header" href="#import-a-grafana-dashboard">Import a Grafana dashboard</a></h3>
-<p>We can visit <code>/dashboard/import</code> in the Grafana dashboard. We can now download the Grafana dashboard
-we provide with the Policy Server:</p>
+<h3 id="using-kubewarden-grafana-dashboard"><a class="header" href="#using-kubewarden-grafana-dashboard">Using Kubewarden Grafana dashboard</a></h3>
+<p>The Kubewarden developers made available a Grafana dashboard with some basic metrics
+that give an overview about how Kubewarden behaves inside of cluster. This dashboard
+is available in the Kubewarden repository in a <a href="https://raw.githubusercontent.com/kubewarden/policy-server/main/kubewarden-dashboard.json">JSON file</a> 
+or in the <a href="https://grafana.com/grafana/dashboards/15314">Grafana website</a>. </p>
+<p>To import the dashboard into your environment, you can download the JSON file
+from the Grafana website or from the repository:</p>
 <pre><code class="language-console">curl https://raw.githubusercontent.com/kubewarden/policy-server/main/kubewarden-dashboard.json
 </code></pre>
-<p>We can copy this contents, paste them in the <code>Import via panel json</code> box in the Grafana UI, and
-click on the <code>Load</code> button and then click on <code>Import</code> after choosing <code>Prometheus</code> as the source.</p>
-<p>As evaluations of resources happen, we will see them in the board.</p>
+<p>Once you have the file in your machine you should access the Grafana dashboard and
+<a href="https://grafana.com/docs/grafana/latest/dashboards/export-import/#import-dashboard">import it</a>.
+Visit <code>/dashboard/import</code> in the Grafana dashboard and follow these steps:</p>
+<ol>
+<li>Copy the JSON file contents and paste them into the <code>Import via panel json</code> box in the Grafana UI</li>
+<li>Click the <code>Load</code> button</li>
+<li>Choosing <code>Prometheus</code> as the source</li>
+<li>Click the <code>Import</code> button</li>
+</ol>
+<p>Another option is import it directly from the Grafana.com website. For this:</p>
+<ol>
+<li>Copy the dashboard ID from the <a href="https://grafana.com/grafana/dashboards/15314">dashboard page</a>, </li>
+<li>Paste it in the <code>Import via grafana.com</code> field</li>
+<li>Click the <code>load</code> button.</li>
+<li>After importing the dashboard, define the Prometheus data source to use and finish
+the import process. </li>
+</ol>
+<p>You should be able to see the dashboard similar to this:</p>
+<p><img src="./images/grafana_dashboard_1.png/" alt="Dashboard 1" />
+<img src="./images/grafana_dashboard_2.png/" alt="Dashboard 2" />
+<img src="./images/grafana_dashboard_3.png/" alt="Dashboard 3" />
+<img src="./images/grafana_dashboard_4.png/" alt="Dashboard 4" /></p>
+<p>The Grafana dashboard has panes showing the state of all 
+the policies managed by Kubewarden. Plus it has policy-specific panels.</p>
+<p>Policy detailed metrics can be obtained by changing the value of the <code>policy_name</code>
+variable to match the name of the desired policy.</p>
 
                     </main>
 
