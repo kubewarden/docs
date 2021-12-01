@@ -270,7 +270,6 @@ kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l "kub
 kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
 ```
 
-You should get 
 
 If these resources are not automatically removed, you can do remove them manually by using the following command:
 
