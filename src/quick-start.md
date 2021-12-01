@@ -197,7 +197,7 @@ privileged-pods   1          9s
 
 Once the `ClusterAdmissionPolicy` is active and the `ValidatingWebhookConfiguration` is registered, you can test the policy.
 
-First, let's create a Pod without any Container `privileged` flag:
+First, let's create a Pod with a Container *not* in `privileged` mode:
 
 ```shell
 kubectl apply -f - <<EOF
