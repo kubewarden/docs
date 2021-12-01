@@ -20,7 +20,7 @@ kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/downlo
 kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
 ```
 
-The Kubewarden stack can be deployed using a `helm` charts as follow:
+The Kubewarden stack can be deployed using `helm` charts as follow:
 
 ```shell
 helm repo add kubewarden https://charts.kubewarden.io
