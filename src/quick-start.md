@@ -30,7 +30,7 @@ helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/
 helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller
 ```
 
-The following components should be installed inside the `kubewarden` namespace in your Kubernetes cluster:
+The following charts should be installed inside the `kubewarden` namespace in your Kubernetes cluster:
 
 * `kubewarden-crds` which will register the
 `ClusterAdmissionPolicy` and `PolicyServer` Custom Resources
