@@ -76,7 +76,7 @@ Overview of the attributes of the `PolicyServer` resource:
 |:--------:| ------------------- | ----------------------------- |
 | ✅ | `image`  | The name of the container image |
 | ✅ | `replicas`  | The number of desired instances |
-| - | `serviceAccountName` | The name of the `ServiceAccount` to use for the `PolicyServer` deployement. If no value is provided, the `ServiceAccount` from the `default` namespace will be used |
+| - | `serviceAccountName` | The name of the `ServiceAccount` to use for the `PolicyServer` deployment. If no value is provided, the `ServiceAccount` from the `default` namespace will be used |
 | - | `env` | The list of environment variables |
 | - | `annotations` | The list of annotations |
 
