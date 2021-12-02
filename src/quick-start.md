@@ -3,18 +3,18 @@
 The Kubewarden stack is made of the following components:
 
 * An arbitrary number of `ClusterAdmissionPolicy` resources: this is how policies are defined inside Kubernetes
-* An arbitrary number of `PolicyServer` resources: this component represents a Deployment of a Kubewarden `policy-server`. The policies defined by the administrators are loaded and evaluated by the Kubewarden `policy-server`
-* A Deployment of `kubewarden-controller`: this is the controller that monitors the `ClusterAdmissionPolicy` resources and interacts with the Kubewarden `policy-server` components
+* An arbitrary number of `PolicyServer` resources: this component represents a Deployment of a Kubewarden `PolicyServer`. The policies defined by the administrators are loaded and evaluated by the Kubewarden `PolicyServer`
+* A Deployment of `kubewarden-controller`: this is the controller that monitors the `ClusterAdmissionPolicy` resources and interacts with the Kubewarden `PolicyServer` components
 
 ## Installation
 
 > **PREREQUISITES:**
 >
-> Currently, the chart depends on cert-manager. Make sure you have [`cert-manager` installed](https://cert-manager.io/docs/installation/) *before* installing the kubewarden-controller chart.
+> Currently, the chart depends on `cert-manager`. Make sure you have [`cert-manager` installed](https://cert-manager.io/docs/installation/) *before* installing the `kubewarden-controller` chart.
 >
 > You can install the latest version of `cert-manager` by running the following commands: 
 >
-```shell
+```console
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
 
 kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
@@ -22,7 +22,7 @@ kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager -
 
 The Kubewarden stack can be deployed using `helm` charts as follow:
 
-```shell
+```console
 helm repo add kubewarden https://charts.kubewarden.io
 
 helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
@@ -54,7 +54,7 @@ A Kubewarden Policy Server is completely managed by the `kubewarden-controller` 
 
 The Policy Server is the component which executes the Kubewarden policies when requests arrive and validates them.
 
-Default `policy-server` configuration:
+Default `PolicyServer` configuration:
 
 ```yaml
 apiVersion: policies.kubewarden.io/v1alpha2
@@ -74,13 +74,13 @@ Overview of the attributes of the `PolicyServer` resource:
 
 | Required | Placeholder         | Description    |
 |:--------:| ------------------- | ----------------------------- |
-| [x] | `image`  | The name of the container image |
-| [x] | `replicas`  | The number of desired instances |
-| [] | `serviceAccountName` | The name of the `ServiceAccount` to use for the `policy-server` deployement. If no value is provided, the `ServiceAccount` from the `default` namespace will be used |
-| [] | `env` | The list of environment variables |
-| [] | `annotations` | The list of annotations |
+| ✅ | `image`  | The name of the container image |
+| ✅ | `replicas`  | The number of desired instances |
+| - | `serviceAccountName` | The name of the `ServiceAccount` to use for the `PolicyServer` deployement. If no value is provided, the `ServiceAccount` from the `default` namespace will be used |
+| - | `env` | The list of environment variables |
+| - | `annotations` | The list of annotations |
 
-Changing any of these attributes will lead to a rollout of the `policy-server` Deployment with the new configuration.
+Changing any of these attributes will lead to a rollout of the `PolicyServer` Deployment with the new configuration.
 
 ### ClusterAdmissionPolicy
 
@@ -117,16 +117,16 @@ Overview of the attributes of the `ClusterAdmissionPolicy` resource:
 
 | Required | Placeholder         | Description    |
 |:--------:| ------------------- | ----------------------------- |
-| [] | `policy-server`  | identifies an existing `PolicyServer` object. The policy will be served only by this `policy-server` instance. A `ClusterAdmissionPolicy` that doesn't have an explicit `PolicyServer`, will be served by the one named `default`. |
-| [x] | `module`  | The location of the Kubewarden policy. The following options are allowed:  |
+| - | `policy-server`  | identifies an existing `PolicyServer` object. The policy will be served only by this `PolicyServer` instance. A `ClusterAdmissionPolicy` that doesn't have an explicit `PolicyServer`, will be served by the one named `default`. |
+| ✅ | `module`  | The location of the Kubewarden policy. The following options are allowed:  |
 | | | - `registry`: The policy is downloaded from an [OCI artifacts](https://github.com/opencontainers/artifacts) compliant container registry |
 | | | - `http`, `https`: The policy is downloaded from a regular HTTP(s) server |
 | | | - `file`: The policy is loaded from a file in the computer filesystem |
-| [x] | `resources` | The Kubernetes resources evaluated by the policy |
-| [x] | `operations` | what operations for the previously given types should be forwarded to this admission policy by the API server for evaluation. |
-| [x] | `mutating` | a boolean value that must be set to `true` for policies that can mutate incoming requests |
-| [] | `settings` | The list of the policy configuration values |
-| [] | `failurePolicy` | The action to take if the policy  unrecognized or timeout error. The following options are allowed: |
+| ✅ | `resources` | The Kubernetes resources evaluated by the policy |
+| ✅ | `operations` | what operations for the previously given types should be forwarded to this admission policy by the API server for evaluation. |
+| ✅ | `mutating` | a boolean value that must be set to `true` for policies that can mutate incoming requests |
+| - | `settings` | The list of the policy configuration values |
+| - | `failurePolicy` | The action to take if the policy  unrecognized or timeout error. The following options are allowed: |
 | | | - `Ignore`: an error calling the webhook is ignored and the API request is allowed to continue |
 | | | - `Fail`: an error calling the webhook causes the admission to fail and the API request to be rejected |
 
@@ -143,7 +143,7 @@ Our goal will be to prevent the creation of privileged containers inside our Kub
 
 Let's define a `ClusterAdmissionPolicy` for that:
 
-```shell
+```console
 kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1alpha2
 kind: ClusterAdmissionPolicy
@@ -163,34 +163,34 @@ EOF
 ```
 
 This will produce the following output:
-```shell
+```console
 clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
 ```
 
 When a  `ClusterAdmissionPolicy` is defined, the status is set to `pending`, and it will force a rollout of the targeted `PolicyServer`. In our example, it's the `PolicyServer` named `default`. You can monitor the rollout by running the following command:
 
-```shell
+```console
 kubectl get clusteradmissionpolicy.policies.kubewarden.io/privileged-pods
 ```
 
 You should see the following output:
 
-```shell
+```console
 NAME              POLICY SERVER   MUTATING   STATUS
 privileged-pods   default         false      pending
 ```
 
 Once the new policy is ready to be served, the `kubewarden-controller` will register a [ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io) object.
 
-The `ClusterAdmissionPolicy` status will be set to `active` once the Deployment is done for every `policy-server` instances. The `ValidatingWebhookConfiguration` can be shown with the following command:
+The `ClusterAdmissionPolicy` status will be set to `active` once the Deployment is done for every `PolicyServer` instances. The `ValidatingWebhookConfiguration` can be shown with the following command:
 
-```shell
+```console
 kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kubewarden
 ```
 
 You should see the following output:
 
-```
+```console
 NAME              WEBHOOKS   AGE
 privileged-pods   1          9s
 ```
@@ -199,7 +199,7 @@ Once the `ClusterAdmissionPolicy` is active and the `ValidatingWebhookConfigurat
 
 First, let's create a Pod with a Container *not* in `privileged` mode:
 
-```shell
+```console
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -214,7 +214,7 @@ EOF
 
 This will produce the following output:
 
-```shell
+```console
 pod/unprivileged-pod created
 ```
 
@@ -222,7 +222,7 @@ The Pod was successfully created.
 
 Now, let's create a Pod with at least one Container `privileged` flag:
 
-```shell
+```console
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -239,7 +239,7 @@ EOF
 
 The creation of the Pod has been denied by the policy and you should see the following message:
 
-```shell
+```console
 Error from server: error when creating "STDIN": admission webhook "privileged-pods.kubewarden.admission" denied the request: User 'minikube-user' cannot schedule privileged containers
 ```
 
@@ -249,14 +249,15 @@ Error from server: error when creating "STDIN": admission webhook "privileged-po
 
 You can remove the resources created by uninstalling the `helm` charts as follow:
 
-```shell
+```console
 helm uninstall --namespace kubewarden kubewarden-controller
+
 helm uninstall --namespace kubewarden kubewarden-crds
 ```
 
 Once the `helm` charts have been uninstalled, you can remove the Kubernetes namespace that was used to deploy the Kubewarden stack:
 
-```shell
+```console
 kubectl delete namespace kubewarden
 ```
 
@@ -265,16 +266,18 @@ kubectl delete namespace kubewarden
 
 `ValidatingWebhookConfigurations` and `MutatingWebhookConfigurations` created by kubewarden should be deleted, this can be checked with:
 
-```shell
+```console
 kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
+
 kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
 ```
 
 
 If these resources are not automatically removed, you can do remove them manually by using the following command:
 
-```shell
-kubectl delete -l "kubewarden" validatingwebhookconfigurations.admissionregistration.k8s.io && \
+```console
+kubectl delete -l "kubewarden" validatingwebhookconfigurations.admissionregistration.k8s.io
+
 kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistration.k8s.io
 ```
 ## Wrapping up
