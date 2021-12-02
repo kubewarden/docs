@@ -45,7 +45,7 @@ a default configuration, and which will create a `PolicyServer` resource named `
 ## Main components
 
 Kubewarden has two main components which you will interact with:
-* The Policy Server
+* The PolicyServer
 * The ClusterAdmissionPolicy
 
 ### Policy Server
