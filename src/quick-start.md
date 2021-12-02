@@ -36,7 +36,7 @@ The following charts should be installed inside the `kubewarden` namespace in yo
 `ClusterAdmissionPolicy` and `PolicyServer` Custom Resources
 
 * `kubewarden-controller` with
-a default configuration and which will create a `PolicyServer` resource named `default`. 
+a default configuration, and which will create a `PolicyServer` resource named `default`. 
 
 > **QUICK NOTES:**
 >
