@@ -272,4 +272,4 @@ Now, you are ready to deploy Kubewarden!
 Have a look at the policies in
 [hub.kubewarden.io](https://hub.kubewarden.io),
 [find more on Github](https://github.com/topics/kubewarden-policy),
-or reuse existing Rego policies as show in the following chapters!
+or reuse existing Rego policies as shown in the following chapters!
