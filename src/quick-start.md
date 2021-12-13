@@ -273,7 +273,7 @@ kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io -l "kubew
 ```
 
 
-If these resources are not automatically removed, you can do remove them manually by using the following command:
+If these resources are not automatically removed, you can remove them manually by using the following command:
 
 ```console
 kubectl delete -l "kubewarden" validatingwebhookconfigurations.admissionregistration.k8s.io
