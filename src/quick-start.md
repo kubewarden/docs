@@ -84,7 +84,7 @@ Changing any of these attributes will lead to a rollout of the `PolicyServer` De
 
 ### ClusterAdmissionPolicy
 
-The `ClusterAdmissionPolicy` resource is the core of the Kubewarden stack. This resource defines how the policies are evaluated.
+The `ClusterAdmissionPolicy` resource is the core of the Kubewarden stack. This resource defines how policies evaluate requests.
 
 Enforcing policies is the most common operation which a Kubernetes administrator will perform. You can declare as many policies as you want, and each policy will target a specific Kubernetes resource (i.e. ` pods`) and list the type of operation that will be applied for the targeted resource. The operations available are `CREATE`, `UPDATE`, `DELETE` and `CONNECT`.
 
