@@ -121,7 +121,7 @@ Overview of the attributes of the `ClusterAdmissionPolicy` resource:
 | ✅ | `module`  | The location of the Kubewarden policy. The following options are allowed:  |
 | | | - `registry`: The policy is downloaded from an [OCI artifacts](https://github.com/opencontainers/artifacts) compliant container registry. Example: `registry://<OCI registry/policy URL>` |
 | | | - `http`, `https`: The policy is downloaded from a regular HTTP(s) server. Example: `https://<website/policy URL>` |
-| | | - `file`: The policy is loaded from a file in the computer filesystem. Example: `file://<policy WASM binary full path>` |
+| | | - `file`: The policy is loaded from a file in the computer filesystem. Example: `file:///<policy WASM binary full path>` |
 | ✅ | `resources` | The Kubernetes resources evaluated by the policy |
 | ✅ | `operations` | what operations for the previously given types should be forwarded to this admission policy by the API server for evaluation. |
 | ✅ | `mutating` | a boolean value that must be set to `true` for policies that can mutate incoming requests |
