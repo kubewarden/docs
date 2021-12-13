@@ -76,7 +76,7 @@ Overview of the attributes of the `PolicyServer` resource:
 |:--------:| ------------------- | ----------------------------- |
 | ✅ | `image`  | The name of the container image |
 | ✅ | `replicas`  | The number of desired instances |
-| - | `serviceAccountName` | The name of the `ServiceAccount` to use for the `PolicyServer` deployment. If no value is provided, the `ServiceAccount` from the `default` namespace will be used |
+| - | `serviceAccountName` | The name of the `ServiceAccount` to use for the `PolicyServer` deployment. If no value is provided, the default `ServiceAccount` from the namespace, where the `kubewarden-controller` is installed, will be used |
 | - | `env` | The list of environment variables |
 | - | `annotations` | The list of annotations |
 
@@ -86,7 +86,7 @@ Changing any of these attributes will lead to a rollout of the `PolicyServer` De
 
 The `ClusterAdmissionPolicy` resource is the core of the Kubewarden stack. This resource defines how the policies are evaluated.
 
-Enforcing policies is the most common operation which a Kubernetes administrator will perform. You can declare as many policies as you want, and each policy will target a specific Kubernetes resource (i.e. ` pods`) and list the type of operation that can be applied for the targeted resource (i.e. `CREATE` or `UPDATE`).
+Enforcing policies is the most common operation which a Kubernetes administrator will perform. You can declare as many policies as you want, and each policy will target a specific Kubernetes resource (i.e. ` pods`) and list the type of operation that will be applied for the targeted resource. The operations available are `CREATE`, `UPDATE`, `DELETE` and `CONNECT`.
 
 Default `ClusterAdmissionPolicy` configuration:
 
@@ -119,13 +119,13 @@ Overview of the attributes of the `ClusterAdmissionPolicy` resource:
 |:--------:| ------------------- | ----------------------------- |
 | - | `policy-server`  | identifies an existing `PolicyServer` object. The policy will be served only by this `PolicyServer` instance. A `ClusterAdmissionPolicy` that doesn't have an explicit `PolicyServer`, will be served by the one named `default`. |
 | ✅ | `module`  | The location of the Kubewarden policy. The following options are allowed:  |
-| | | - `registry`: The policy is downloaded from an [OCI artifacts](https://github.com/opencontainers/artifacts) compliant container registry |
-| | | - `http`, `https`: The policy is downloaded from a regular HTTP(s) server |
-| | | - `file`: The policy is loaded from a file in the computer filesystem |
+| | | - `registry`: The policy is downloaded from an [OCI artifacts](https://github.com/opencontainers/artifacts) compliant container registry. Example: `registry://<OCI registry/policy URL>` |
+| | | - `http`, `https`: The policy is downloaded from a regular HTTP(s) server. Example: `https://<website/policy URL>` |
+| | | - `file`: The policy is loaded from a file in the computer filesystem. Example: `file://<policy WASM binary full path>` |
 | ✅ | `resources` | The Kubernetes resources evaluated by the policy |
 | ✅ | `operations` | what operations for the previously given types should be forwarded to this admission policy by the API server for evaluation. |
 | ✅ | `mutating` | a boolean value that must be set to `true` for policies that can mutate incoming requests |
-| - | `settings` | The list of the policy configuration values |
+| - | `settings` | The dictionary (key/values pair) of the policy configuration |
 | - | `failurePolicy` | The action to take if the policy  unrecognized or timeout error. The following options are allowed: |
 | | | - `Ignore`: an error calling the webhook is ignored and the API request is allowed to continue |
 | | | - `Fail`: an error calling the webhook causes the admission to fail and the API request to be rejected |
@@ -150,7 +150,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.5
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
   rules:
   - apiGroups: [""]
     apiVersions: ["v1"]
