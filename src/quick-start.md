@@ -86,7 +86,7 @@ Changing any of these attributes will lead to a rollout of the `PolicyServer` De
 
 The `ClusterAdmissionPolicy` resource is the core of the Kubewarden stack. This resource defines how policies evaluate requests.
 
-Enforcing policies is the most common operation which a Kubernetes administrator will perform. You can declare as many policies as you want, and each policy will target a specific Kubernetes resource (i.e. ` pods`) and list the type of operation that will be applied for the targeted resource. The operations available are `CREATE`, `UPDATE`, `DELETE` and `CONNECT`.
+Enforcing policies is the most common operation which a Kubernetes administrator will perform. You can declare as many policies as you want, and each policy will target one or more specific Kubernetes resources (i.e. `pods`, `Custom Resource`). You will also specify the type of operation(s) that will be applied for the targeted resource(s). The operations available are `CREATE`, `UPDATE`, `DELETE` and `CONNECT`.
 
 Default `ClusterAdmissionPolicy` configuration:
 
@@ -117,22 +117,22 @@ Overview of the attributes of the `ClusterAdmissionPolicy` resource:
 
 | Required | Placeholder         | Description    |
 |:--------:| ------------------- | ----------------------------- |
-| - | `policy-server`  | identifies an existing `PolicyServer` object. The policy will be served only by this `PolicyServer` instance. A `ClusterAdmissionPolicy` that doesn't have an explicit `PolicyServer`, will be served by the one named `default`. |
-| ✅ | `module`  | The location of the Kubewarden policy. The following options are allowed:  |
+| - | `policy-server`  | Identifies an existing `PolicyServer` object. The policy will be served only by this `PolicyServer` instance. A `ClusterAdmissionPolicy` that doesn't have an explicit `PolicyServer`, will be served by the one named `default` |
+| ✅ | `module`  | The location of the Kubewarden policy. The following schemes are allowed: |
 | | | - `registry`: The policy is downloaded from an [OCI artifacts](https://github.com/opencontainers/artifacts) compliant container registry. Example: `registry://<OCI registry/policy URL>` |
 | | | - `http`, `https`: The policy is downloaded from a regular HTTP(s) server. Example: `https://<website/policy URL>` |
 | | | - `file`: The policy is loaded from a file in the computer filesystem. Example: `file:///<policy WASM binary full path>` |
 | ✅ | `resources` | The Kubernetes resources evaluated by the policy |
-| ✅ | `operations` | what operations for the previously given types should be forwarded to this admission policy by the API server for evaluation. |
-| ✅ | `mutating` | a boolean value that must be set to `true` for policies that can mutate incoming requests |
-| - | `settings` | The dictionary (key/values pair) of the policy configuration |
-| - | `failurePolicy` | The action to take if the policy  unrecognized or timeout error. The following options are allowed: |
+| ✅ | `operations` | What operations for the previously given types should be forwarded to this admission policy by the API server for evaluation. |
+| ✅ | `mutating` | A boolean value that must be set to `true` for policies that can mutate incoming requests |
+| - | `settings` | A free-form object that contains the policy configuration values |
+| - | `failurePolicy` | The action to take if the request evaluated by a policy results in an error. The following options are allowed: |
 | | | - `Ignore`: an error calling the webhook is ignored and the API request is allowed to continue |
 | | | - `Fail`: an error calling the webhook causes the admission to fail and the API request to be rejected |
 
 The complete documentation of this Custom Resource can be found [here](https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc) or on [docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
 
-> **NOTE:** The  `ClusterAdmissionPolicy` resources are registered with a `*` webhook `scope`, which means that registered webhooks will be forwarded all requests matching the given `resources` and `operations` -- either namespaced (in any namespace), or cluster-wide resources.
+> **NOTE:** The  `ClusterAdmissionPolicy` resources are registered with a `*` webhook `scope`, which means that registered webhooks will forward all requests matching the given `resources` and `operations` -- either namespaced (in any namespace), or cluster-wide resources.
 
 > **NOTE:** The `ClusterAdmissionPolicy` resource is cluster-wide. There are plans to also provide a namespaced version that will only impact registered namespaced resources on its own namespace.
 
