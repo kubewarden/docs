@@ -40,7 +40,7 @@ a default configuration, and which will create a `PolicyServer` resource named `
 
 > **QUICK NOTES:**
 >
-> The default configuration values should be good enough for the majority of deployments, and all the options are documented [here](https://charts.kubewarden.io/#configuration).
+> The default configuration values should be good enough for the majority of deployments. All options are documented [here](https://charts.kubewarden.io/#configuration).
 
 ## Main components
 
