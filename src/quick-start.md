@@ -243,7 +243,7 @@ The creation of the Pod has been denied by the policy and you should see the fol
 Error from server: error when creating "STDIN": admission webhook "privileged-pods.kubewarden.admission" denied the request: User 'minikube-user' cannot schedule privileged containers
 ```
 
-> **NOTE:** both examples didn't define a `namespace`, which means the `default` namespace was the target. However, has you could see in the second example, the policy was still applied. As stated above, this is due to the scope being cluster-wide and not targetting a specific namespace.
+> **NOTE:** both examples didn't define a `namespace`, which means the `default` namespace was the target. However, as you could see in the second example, the policy was still applied. As stated above, this is due to the scope being cluster-wide and not targeting a specific namespace.
 
 ## Uninstall
 
