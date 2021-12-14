@@ -1,13 +1,8 @@
 # Summary
 
 - [Introduction](./introduction.md)
-
 - [Quick Start](./quick-start.md)
-
-- [Common tasks](./tasks.md)
-
 - [Architecture](./architecture.md)
-
 - [Writing Policies](./writing-policies/index.md)
   - [Policy Specification](./writing-policies/spec/01-intro.md)
     - [Settings](./writing-policies/spec/02-settings.md)
@@ -44,15 +39,12 @@
   # Enable these sections once we update them to waPC
   #- [Domain Specific Language](./writing-policies/dsl.md)
   #- [Other languages](./writing-policies/other-languages.md)
-  
 - [Distributing Policies](./distributing-policies.md)
   - [Custom Certificate Authorities](./distributing-policies/custom-certificate-authorities.md)
   - [OCI Registries support](./distributing-policies/oci-registries-support.md)
-  
 - [Testing Policies](./testing-policies/01-intro.md)
   - [While creating a policy](./testing-policies/02-policy-authors.md)
   - [Before deployment](./testing-policies/03-cluster-operators.md)
-  
 - [Operator Manual](./operator-manual/01-intro.md)
   - [Configuring PolicyServers](./operator-manual/policy-servers/01-custom-cas.md)
   - [Telemetry](./operator-manual/telemetry/01-quickstart.md)
