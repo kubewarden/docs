@@ -182,7 +182,7 @@ privileged-pods   default         false      pending
 
 Once the new policy is ready to be served, the `kubewarden-controller` will register a [ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io) object.
 
-The `ClusterAdmissionPolicy` status will be set to `active` once the Deployment is done for every `PolicyServer` instances. The `ValidatingWebhookConfiguration` can be shown with the following command:
+The `ClusterAdmissionPolicy` status will be set to `active` once the Deployment is done for every `PolicyServer` instance. The `ValidatingWebhookConfiguration` can be shown with the following command:
 
 ```console
 kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kubewarden
