@@ -284,4 +284,4 @@ kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistrati
 
 As we have seen, the `ClusterAdmissionPolicy` resource is the core type that a cluster operator has to manage, the rest of the resources needed to run the policies and configure them will be taken care of automatically by the `kubewarden-controller` module.
 
-Now, you are ready to deploy Kubewarden and you can have a look at the policies in [hub.kubewarden.io](https://hub.kubewarden.io),[on Github](https://github.com/topics/kubewarden-policy), or reuse existing Rego policies as shown in the [following chapters!](./writing-policies/rego/01-intro.md) 
+Now, you are ready to deploy Kubewarden and you can have a look at the policies in [hub.kubewarden.io](https://hub.kubewarden.io), [on Github](https://github.com/topics/kubewarden-policy), or reuse existing Rego policies as shown in the [following chapters!](./writing-policies/rego/01-intro.md) 
