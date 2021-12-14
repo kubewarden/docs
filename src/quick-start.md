@@ -218,7 +218,7 @@ This will produce the following output:
 pod/unprivileged-pod created
 ```
 
-The Pod was successfully created.
+The Pod is successfully created.
 
 Now, let's create a Pod with at least one Container `privileged` flag:
 
