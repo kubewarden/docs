@@ -84,7 +84,7 @@ Changing any of these attributes will lead to a rollout of the `PolicyServer` De
 
 The `ClusterAdmissionPolicy` resource is the core of the Kubewarden stack. This resource defines how policies evaluate requests.
 
-Enforcing policies is the most common operation which a Kubernetes administrator will perform. You can declare as many policies as you want, and each policy will target one or more specific Kubernetes resources (i.e. `pods`, `Custom Resource`). You will also specify the type of operation(s) that will be applied for the targeted resource(s). The operations available are `CREATE`, `UPDATE`, `DELETE` and `CONNECT`.
+Enforcing policies is the most common operation which a Kubernetes administrator will perform. You can declare as many policies as you want, and each policy will target one or more specific Kubernetes resources (i.e., `pods`, `Custom Resource`). You will also specify the type of operation(s) that will be applied for the targeted resource(s). The operations available are `CREATE`, `UPDATE`, `DELETE` and `CONNECT`.
 
 Default `ClusterAdmissionPolicy` configuration:
 
@@ -180,7 +180,7 @@ privileged-pods   default         false      pending
 
 Once the new policy is ready to be served, the `kubewarden-controller` will register a [ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io) object.
 
-The `ClusterAdmissionPolicy` status will be set to `active` once the Deployment is done for every `PolicyServer` instances. The `ValidatingWebhookConfiguration` can be shown with the following command:
+The `ClusterAdmissionPolicy` status will be set to `active` once the Deployment is done for every `PolicyServer` instance. The `ValidatingWebhookConfiguration` can be shown with the following command:
 
 ```console
 kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kubewarden
@@ -216,7 +216,7 @@ This will produce the following output:
 pod/unprivileged-pod created
 ```
 
-The Pod was successfully created.
+The Pod is successfully created.
 
 Now, let's create a Pod with at least one Container `privileged` flag:
 
@@ -241,7 +241,7 @@ The creation of the Pod has been denied by the policy and you should see the fol
 Error from server: error when creating "STDIN": admission webhook "privileged-pods.kubewarden.admission" denied the request: User 'minikube-user' cannot schedule privileged containers
 ```
 
-> **NOTE:** both examples didn't define a `namespace`, which means the `default` namespace was the target. However, as you could see in the second example, the policy was still applied. As stated above, this is due to the scope being cluster-wide and not targeting a specific namespace.
+> **NOTE:** both examples didn't define a `namespace`, which means the `default` namespace was the target. However, as you could see in the second example, the policy is still applied. As stated above, this is due to the scope being cluster-wide and not targeting a specific namespace.
 
 ## Uninstall
 
@@ -282,4 +282,4 @@ kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistrati
 
 As we have seen, the `ClusterAdmissionPolicy` resource is the core type that a cluster operator has to manage, the rest of the resources needed to run the policies and configure them will be taken care of automatically by the `kubewarden-controller` module.
 
-Now, you are ready to deploy Kubewarden and you can have a look at the policies in [hub.kubewarden.io](https://hub.kubewarden.io),[on Github](https://github.com/topics/kubewarden-policy), or reuse existing Rego policies as shown in the [following chapters!](./writing-policies/rego/01-intro.md) 
+Now, you are ready to deploy Kubewarden and you can have a look at the policies in [hub.kubewarden.io](https://hub.kubewarden.io), [on Github](https://github.com/topics/kubewarden-policy), or reuse existing Rego policies as shown in the [following chapters!](./writing-policies/rego/01-intro.md) 
