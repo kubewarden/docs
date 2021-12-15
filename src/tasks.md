@@ -41,7 +41,7 @@ Depending on your role, `kwctl` will help you in the following non-exhaustive sc
 
 - *Inspect remote policies*: Given a policy in an OCI registry or in an HTTP server, show all static information about the policy.
 - *Dry-run of a policy in your cluster*: Test the policy against crafted Kubernetes requests and ensure the policy behaves as you expect given the input data you provide. You can even test context-aware policies that require access to a running cluster, also in a dry-run mode.
-- *Generate initial `ClusterAdmissionPolicy` scaffolding for your policy*: generates a `YAML` file with all the required settings, which can be applied to your Kubernetes cluster using `kubectl`
+- *Generate initial `ClusterAdmissionPolicy` scaffolding for your policy*: Generate a `YAML` file with all the required settings, which can be applied to your Kubernetes cluster using `kubectl`.
 
 #### Installation
 
