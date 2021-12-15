@@ -74,7 +74,7 @@ SUBCOMMANDS:
     completions    Generates shell completions
     help           Prints this message or the help of the given subcommand(s)
     inspect        Inspects Kubewarden policy
-    manifest       Scaffold a Kubernetes resource
+    manifest       Scaffolds a Kubernetes resource
     policies       Lists all downloaded policies
     pull           Pulls a Kubewarden policy from a given URI
     push           Pushes a Kubewarden policy to an OCI registry
