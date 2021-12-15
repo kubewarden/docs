@@ -35,7 +35,7 @@ Depending on your role, `kwctl` will help you in the following non-exhaustive sc
 
 - *End-to-end testing of your policy*: Test your policy against crafted Kubernetes requests and ensure your policy behaves as you expect. You can even test context-aware policies that require access to a running cluster.
 - *Embed metadata in your Wasm module*: the binary is annotated with the permissions it needs to execute
-- *Publish policies to OCI registries*: the binary is a fully compliant OCI object and can be stored in OCI registries
+- *Publish policies to OCI registries*: The binary is a fully compliant OCI object and can be stored in OCI registries.
 
 *As a cluster administrator*
 
