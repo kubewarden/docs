@@ -199,7 +199,7 @@ Here are a few examples of the commands you should run, depending on the task yo
   
     - Result: The policy denies the request
   
-    > **INFO**: if you want to see a more complex example, you can read this Kubewarden blog post: [Introducing `kwctl` to Kubernetes Administrators](https://www.kubewarden.io/blog/2021/06/kwctl-intro-for-kubernetes-administrators/)
+    > **NOTE**: If you want to see a more complex example, you can read the Kubewarden blog post [Introducing `kwctl` to Kubernetes Administrators](https://www.kubewarden.io/blog/2021/06/kwctl-intro-for-kubernetes-administrators/).
   
 ## Enforce Policies
 
