@@ -83,7 +83,7 @@ SUBCOMMANDS:
     verify         Verifies a Kubewarden policy from a given URI using Sigstore
 ```
 
-Here are few examples of the commands you should run, depending on the task you want to perform:
+Here are a few examples of the commands you should run, depending on the task you want to perform:
 
 - *List the policies*: lists all the policies stored in the local `kwctl` registry
 
