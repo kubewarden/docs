@@ -260,4 +260,4 @@ The section [Writing Policies](/writing-policies/) explains how to write policie
 
 ### Distribute Policies
 
-The section [Distributing Policies](/distributing-policies/) explains how to publish policies to [OCI registries](https://github.com/opencontainers/distribution-spec/blob/main/spec.md).
+The [Distributing Policies](/distributing-policies/) section explains how to publish policies to [OCI registries](https://github.com/opencontainers/distribution-spec/blob/main/spec.md).
