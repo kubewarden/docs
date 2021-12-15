@@ -177,7 +177,7 @@ Here are a few examples of the commands you should run, depending on the task yo
         {"uid":"C6E115F4-A789-49F8-B0C9-7F84C5961FDE","allowed":true,"status":{"message":""}}
         ```
   
-    - Result: The policy allowes the request
+    - Result: The policy allows the request
   
   - Scenario 2:
   
