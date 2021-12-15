@@ -29,7 +29,7 @@ The user experience (UX) of this tool is intended to be as easy and intuitive as
 
 #### Use cases
 
-Depending on your role, `kwctl` will help you for the following, non-exhaustive, scenarios:
+Depending on your role, `kwctl` will help you in the following non-exhaustive scenarios:
 
 *As a policy author*
 
