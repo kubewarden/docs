@@ -13,7 +13,7 @@ Kubewarden has two main tools to help you find policies and test them locally:
 
 ### Kubewarden Policy Hub
 
-The Kubewarden Policy Hub hosts a set of pre-made policies that are created by the Kubewarden developers. These policies are based on the current set of [Kubernetes Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/).
+The Kubewarden Policy Hub hosts policies contributed by the community. For example, you can find substitutes to the [deprecated Kubernetes Pod Security Policies](https://kubernetes.io/blog/2021/04/06/podsecuritypolicy-deprecation-past-present-and-future/), created by the Kubewarden developers. 
 
 As shown in the picture below, once you find the policy to be tested, you can copy the registry path<sup>1</sup> or download<sup>2</sup> the `WASM` binary containing the policy and additional metadata:
 
@@ -25,7 +25,7 @@ Once you have the policy `WASM` binary or the registry path, you can test it wit
 
 `kwctl` is a Command Line Interface (CLI) tool that will allow both the policy authors and the cluster administrators to test policies before they are applied to the Kubernetes cluster.
 
-The user experience (UX) of this tool is intended to be as easy and intuitive as possible. Think of it as the `docker` CLI tool if you were working with containers.
+The user experience (UX) of this tool is intended to be easy and intuitive like the `docker` CLI tool. 
 
 #### Use cases
 
@@ -150,14 +150,6 @@ Here are a few examples of the commands you should run, depending on the task yo
   > NOTE: Familiarity with [Kubernetes REST APIs](https://kubernetes.io/docs/reference/) is a prerequisite.
 
   - Command: `kwctl run -r <"Kubernetes Admission request" file path> -s <"JSON document" file path> <policy URI>`
-
-    - Command breakdown:
-
-      | Required | Option         | Description                                                  | Comment                                                      |
-      | :--------: | -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-      | ✅        | `-r`           | Path to a file containing the Kubernetes Admission Request to be evaluated | Unfortunately, obtaining Kubernetes Admission Requests requires some extra work. This is a “Kubernetes problem”, we plan to address it in the near future |
-      | -        | `-s`           | Path to a file containing the policy's settings              | It's also possible to use `--settings-json` followed by the settings in JSON format |
-      | ✅        | `<policy URI>` | URI pointing to the policy to be used                        | The supported schemes are: registry://, https://, file://    |
 
   - Scenario 1:
 
