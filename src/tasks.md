@@ -80,7 +80,7 @@ SUBCOMMANDS:
     push           Pushes a Kubewarden policy to an OCI registry
     rm             Removes a Kubewarden policy from the store
     run            Runs a Kubewarden policy from a given URI
-    verify         Verify a Kubewarden policy from a given URI using Sigstore
+    verify         Verifies a Kubewarden policy from a given URI using Sigstore
 ```
 
 Here are few examples of the commands you should run, depending on the task you want to perform:
