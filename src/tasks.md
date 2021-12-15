@@ -236,7 +236,7 @@ You can follow the steps described in the [Quick Start](/quick-start.md#example-
       mutating: false
     ```
   
-    > TIP: by default, the `name` value is set to `generated-policy`. You might want to edit it before you deploy the `ClusterAdmissionPolicy`. 
+    > TIP: By default, the `name` value is set to `generated-policy`. You might want to edit it before you deploy the `ClusterAdmissionPolicy`. 
     >
     > NOTE: To avoid confusion, the value above has been set to `privileged-pods`.
   
