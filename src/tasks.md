@@ -248,7 +248,7 @@ Once the `ClusterAdmissionPolicy` deployed, the requests sent to your Kubernetes
 
 ### Write Policies
 
-The section [Writing Policies](/writing-policies/) explains how to write policies in different languages and how to export them into Webassembly that can be interpreted by Kubewarden.
+The [Writing Policies](/writing-policies/) section explains how to write policies in different languages and how to export them into Webassembly so that they can be interpreted by Kubewarden.
 
 ### Distribute Policies
 
