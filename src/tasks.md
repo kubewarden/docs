@@ -45,7 +45,7 @@ Depending on your role, `kwctl` will help you in the following non-exhaustive sc
 
 #### Installation
 
-`kwctl` binaries, for the stable releases, are directly available from the [GitHub repository](https://github.com/kubewarden/kwctl/releases).
+`kwctl` binaries for the stable releases are directly available from the [GitHub repository](https://github.com/kubewarden/kwctl/releases).
 
 > **NOTE**: If you want to build `kwctl` from the development branch, you need to install [Rust](https://www.rust-lang.org/tools/install). And for building `kwctl`, please refer to the `Build kwctl from source` section in the [GitHub repo](https://github.com/kubewarden/kwctl).
 
