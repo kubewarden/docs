@@ -23,7 +23,7 @@ Once you have the policy `WASM` binary or the registry path, you can test it wit
 
 ### `kwctl` CLI tool
 
-`kwctl` is a Command Line Interface (CLI) tool that will allow both the policy authors and the cluster administrators, to test policies before they are applied to the Kubernetes cluster.
+`kwctl` is a Command Line Interface (CLI) tool that will allow both the policy authors and the cluster administrators to test policies before they are applied to the Kubernetes cluster.
 
 The user experience (UX) of this tool is intended to be as easy and intuitive as possible. Think of it as the `docker` CLI tool if you were working with containers.
 
