@@ -70,7 +70,7 @@ FLAGS:
     -v               Increase verbosity
 
 SUBCOMMANDS:
-    annotate       Add Kubewarden metadata to a WebAssembly module
+    annotate       Adds Kubewarden metadata to a WebAssembly module
     completions    Generate shell completions
     help           Prints this message or the help of the given subcommand(s)
     inspect        Inspect Kubewarden policy
