@@ -13,7 +13,7 @@ Kubewarden has two main tools to help you find policies and test them locally:
 
 ### Kubewarden Policy Hub
 
-The Kubewarden Policy Hub hosts a set of pre-made policies, created by the Kubewarden developers, and which are based on the current set of [Kubernetes Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/).
+The Kubewarden Policy Hub hosts a set of pre-made policies that are created by the Kubewarden developers. These policies are based on the current set of [Kubernetes Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/).
 
 As shown in the picture below, once you find the policy to be tested, you can copy the registry path<sup>1</sup> or download<sup>2</sup> the `WASM` binary containing the policy and additional metadata:
 
