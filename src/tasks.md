@@ -73,7 +73,7 @@ SUBCOMMANDS:
     annotate       Adds Kubewarden metadata to a WebAssembly module
     completions    Generates shell completions
     help           Prints this message or the help of the given subcommand(s)
-    inspect        Inspect Kubewarden policy
+    inspect        Inspects Kubewarden policy
     manifest       Scaffold a Kubernetes resource
     policies       Lists all downloaded policies
     pull           Pulls a Kubewarden policy from a given URI
