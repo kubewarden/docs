@@ -89,7 +89,7 @@ Here are a few examples of the commands you should run, depending on the task yo
 
   - Command: `kwctl policies`
 
-- *Obtain the policy*: download and store the policy inside the local `kwctl` registry
+- *Obtain the policy*: download and store the policy inside the local `kwctl` store
 
   - Command: `kwctl pull <policy URI>`
   - Example:
