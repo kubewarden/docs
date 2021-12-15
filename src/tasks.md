@@ -145,7 +145,7 @@ Here are a few examples of the commands you should run, depending on the task yo
     the creation of Pods that have at least a privileged container defined.
   ```
 
-- *Evaluate the policy*: assess the policy and, if available, find the right configuration values to match your requirements
+- *Evaluate the policy*: Assess the policy and, if available, find the right configuration values to match your requirements.
 
   > NOTE: Familiarity with [Kubernetes REST APIs](https://kubernetes.io/docs/reference/) is a prerequisite.
 
