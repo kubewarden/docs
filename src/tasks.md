@@ -207,7 +207,7 @@ As described in the [Quick Start](/quick-start.html#example-enforce-your-first-p
 
 `kwctl` will help to generate a `ClusterAdmissionPolicy` from the policy you want to enforce. 
 
-You can follow the steps described in the [Quick Start](/quick-start.md#example-enforce-your-first-policy) after you generated the `ClusterAdmissionPolicy` and applied it to your Kubernetes cluster, as follow:
+After you have generated the `ClusterAdmissionPolicy` and applied it to your Kubernetes cluster, you can follow the steps described in the [Quick Start](/quick-start.md#example-enforce-your-first-policy) below:
 
   - Generate the `ClusterAdmissionPolicy` from the policy `manifest` and save it to a file
   
