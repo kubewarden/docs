@@ -53,7 +53,7 @@ Depending on your role, `kwctl` will help you in the following non-exhaustive sc
 
 As stated above, `kwctl` will allow you to perform an end-to-end testing of the policies.
 
-You can list all the `kwctl` options and subcommandes by running the following command:
+You can list all the `kwctl` options and subcommands by running the following command:
 
 ```shell
 $ kwctl --help
