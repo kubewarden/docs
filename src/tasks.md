@@ -34,7 +34,7 @@ Depending on your role, `kwctl` will help you in the following non-exhaustive sc
 *As a policy author*
 
 - *End-to-end testing of your policy*: Test your policy against crafted Kubernetes requests and ensure your policy behaves as you expect. You can even test context-aware policies that require access to a running cluster.
-- *Embed metadata in your Wasm module*: the binary is annotated with the permissions it needs to execute
+- *Embed metadata in your Wasm module*: the binary contains annotations of the permissions it needs to be executed
 - *Publish policies to OCI registries*: The binary is a fully compliant OCI object and can be stored in OCI registries.
 
 *As a cluster administrator*
@@ -242,7 +242,7 @@ After you have generated the `ClusterAdmissionPolicy` and applied it to your Kub
     clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
     ```
 
-Once the `ClusterAdmissionPolicy` deployed, the requests sent to your Kubernetes cluster will be evaluated by the policy, if they're within the policy scope.
+Once the `ClusterAdmissionPolicy` is deployed, the requests sent to your Kubernetes cluster will be evaluated by the policy if they're within the policy scope.
 
 ## Next steps
 
