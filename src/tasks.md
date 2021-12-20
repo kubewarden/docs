@@ -15,11 +15,11 @@ Kubewarden has two main tools to help you find policies and test them locally:
 
 The Kubewarden Policy Hub hosts policies contributed by the community. For example, you can find substitutes to the [deprecated Kubernetes Pod Security Policies](https://kubernetes.io/blog/2021/04/06/podsecuritypolicy-deprecation-past-present-and-future/), created by the Kubewarden developers. 
 
-As shown in the picture below, once you find the policy to be tested, you can copy the registry path<sup>1</sup> or download<sup>2</sup> the `WASM` binary containing the policy and additional metadata:
+As shown in the picture below, once you find the policy to be tested, you can copy the registry path<sup>1</sup> or download<sup>2</sup> the `Wasm` binary containing the policy and additional metadata:
 
 ![Kubewarden Policy Hub](/images/tasks-policy-hub.png)
 
-Once you have the policy `WASM` binary or the registry path, you can test it with `kwctl`.
+Once you have the policy `Wasm` binary or the registry path, you can test it with `kwctl`.
 
 ### `kwctl` CLI tool
 
