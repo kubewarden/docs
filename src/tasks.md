@@ -19,7 +19,7 @@ As shown in the picture below, once you find the policy to be tested, you can co
 
 ![Kubewarden Policy Hub](/images/tasks-policy-hub.png)
 
-Once you have the policy `WASM` binary or the registry path, you can test it with `kwctl`.
+Once you have the policy `Wasm` binary or the registry path, you can test it with `kwctl`.
 
 ### `kwctl` CLI tool
 
