@@ -1,0 +1,438 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Common tasks - Kubewarden Kubernetes Policy Engine</title>
+        <!-- Custom HTML head -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new
+Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('set','anonymizeIp',!0);
+ga('create', 'UA-56382716-13', 'auto');
+ga('send', 'pageview');
+</script>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Documentation of Kubewarden project">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="tasks.html" class="active"><strong aria-hidden="true">3.</strong> Common tasks</a></li><li class="chapter-item expanded "><a href="architecture.html"><strong aria-hidden="true">4.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">5.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/spec/01-intro.html"><strong aria-hidden="true">5.1.</strong> Policy Specification</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/spec/02-settings.html"><strong aria-hidden="true">5.1.1.</strong> Settings</a></li><li class="chapter-item expanded "><a href="writing-policies/spec/03-validating-policies.html"><strong aria-hidden="true">5.1.2.</strong> Validating policies</a></li><li class="chapter-item expanded "><a href="writing-policies/spec/04-mutating-policies.html"><strong aria-hidden="true">5.1.3.</strong> Mutating policies</a></li><li class="chapter-item expanded "><a href="writing-policies/spec/05-context-aware-policies.html"><strong aria-hidden="true">5.1.4.</strong> Context aware policies</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/rust/01-intro.html"><strong aria-hidden="true">5.2.</strong> Rust</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rust/02-create-policy.html"><strong aria-hidden="true">5.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/03-define-policy-settings.html"><strong aria-hidden="true">5.2.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/04-write-validation-logic.html"><strong aria-hidden="true">5.2.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/05-mutation-policy.html"><strong aria-hidden="true">5.2.4.</strong> Write a mutation policy</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/06-logging.html"><strong aria-hidden="true">5.2.5.</strong> Logging</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/07-build-and-distribute.html"><strong aria-hidden="true">5.2.6.</strong> Build and distribute</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/rego/01-intro.html"><strong aria-hidden="true">5.3.</strong> Rego</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rego/open-policy-agent/01-intro.html"><strong aria-hidden="true">5.3.1.</strong> Open Policy Agent</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rego/open-policy-agent/02-create-policy.html"><strong aria-hidden="true">5.3.1.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/rego/open-policy-agent/03-build-and-run.html"><strong aria-hidden="true">5.3.1.2.</strong> Build and run</a></li><li class="chapter-item expanded "><a href="writing-policies/rego/open-policy-agent/04-distribute.html"><strong aria-hidden="true">5.3.1.3.</strong> Distribute</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/rego/gatekeeper/01-intro.html"><strong aria-hidden="true">5.3.2.</strong> Gatekeeper</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rego/gatekeeper/02-create-policy.html"><strong aria-hidden="true">5.3.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/rego/gatekeeper/03-build-and-run.html"><strong aria-hidden="true">5.3.2.2.</strong> Build and run</a></li><li class="chapter-item expanded "><a href="writing-policies/rego/gatekeeper/04-distribute.html"><strong aria-hidden="true">5.3.2.3.</strong> Distribute</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/rego/02-builtin-support.html"><strong aria-hidden="true">5.3.3.</strong> Builtin support</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/go/01-intro.html"><strong aria-hidden="true">5.4.</strong> Go</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/go/02-scaffold.html"><strong aria-hidden="true">5.4.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/go/03-policy-settings.html"><strong aria-hidden="true">5.4.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="writing-policies/go/04-validation.html"><strong aria-hidden="true">5.4.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="writing-policies/go/05-e2e-tests.html"><strong aria-hidden="true">5.4.4.</strong> End-to-end testing</a></li><li class="chapter-item expanded "><a href="writing-policies/go/06-logging.html"><strong aria-hidden="true">5.4.5.</strong> Logging</a></li><li class="chapter-item expanded "><a href="writing-policies/go/07-automate.html"><strong aria-hidden="true">5.4.6.</strong> GitHub Action integration</a></li><li class="chapter-item expanded "><a href="writing-policies/go/08-distribute.html"><strong aria-hidden="true">5.4.7.</strong> Distribute policy</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/swift.html"><strong aria-hidden="true">5.5.</strong> Swift</a></li><li class="chapter-item expanded "><a href="writing-policies/typescript.html"><strong aria-hidden="true">5.6.</strong> TypeScript</a></li></ol></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">6.</strong> Distributing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="distributing-policies/custom-certificate-authorities.html"><strong aria-hidden="true">6.1.</strong> Custom Certificate Authorities</a></li><li class="chapter-item expanded "><a href="distributing-policies/oci-registries-support.html"><strong aria-hidden="true">6.2.</strong> OCI Registries support</a></li></ol></li><li class="chapter-item expanded "><a href="testing-policies/01-intro.html"><strong aria-hidden="true">7.</strong> Testing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="testing-policies/02-policy-authors.html"><strong aria-hidden="true">7.1.</strong> While creating a policy</a></li><li class="chapter-item expanded "><a href="testing-policies/03-cluster-operators.html"><strong aria-hidden="true">7.2.</strong> Before deployment</a></li></ol></li><li class="chapter-item expanded "><a href="operator-manual/01-intro.html"><strong aria-hidden="true">8.</strong> Operator Manual</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="operator-manual/policy-servers/01-custom-cas.html"><strong aria-hidden="true">8.1.</strong> Configuring PolicyServers</a></li><li class="chapter-item expanded "><a href="operator-manual/telemetry/01-quickstart.html"><strong aria-hidden="true">8.2.</strong> Telemetry</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="operator-manual/telemetry/opentelemetry/01-quickstart.html"><strong aria-hidden="true">8.2.1.</strong> OpenTelemetry</a></li><li class="chapter-item expanded "><a href="operator-manual/telemetry/metrics/01-quickstart.html"><strong aria-hidden="true">8.2.2.</strong> Metrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="operator-manual/telemetry/metrics/02-reference.html"><strong aria-hidden="true">8.2.2.1.</strong> Reference</a></li></ol></li><li class="chapter-item expanded "><a href="operator-manual/telemetry/tracing/01-quickstart.html"><strong aria-hidden="true">8.2.3.</strong> Tracing</a></li></ol></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/kubewarden/docs/edit/main/src/tasks.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="common-tasks"><a class="header" href="#common-tasks">Common Tasks</a></h1>
+<p>This page lists a set of tasks that can be performed after you <a href="/quick-start.html#install">install Kubewarden</a> in your Kubernetes cluster.</p>
+<p>Each task can be done separately; however, if you're not familiar with Kubewarden, or Kubernetes policies in general, we recommend that you follow the tasks below in sequential order.</p>
+<h2 id="test-policies"><a class="header" href="#test-policies">Test Policies</a></h2>
+<p>Kubewarden has two main tools to help you find policies and test them locally:</p>
+<ul>
+<li><a href="https://hub.kubewarden.io/">Kubewarden Policy Hub</a></li>
+<li><a href="https://github.com/kubewarden/kwctl"><code>kwctl</code></a> CLI tool</li>
+</ul>
+<h3 id="kubewarden-policy-hub"><a class="header" href="#kubewarden-policy-hub">Kubewarden Policy Hub</a></h3>
+<p>The Kubewarden Policy Hub hosts policies contributed by the community. For example, you can find substitutes to the <a href="https://kubernetes.io/blog/2021/04/06/podsecuritypolicy-deprecation-past-present-and-future/">deprecated Kubernetes Pod Security Policies</a>, created by the Kubewarden developers. </p>
+<p>As shown in the picture below, once you find the policy to be tested, you can copy the registry path<sup>1</sup> or download<sup>2</sup> the <code>Wasm</code> binary containing the policy and additional metadata:</p>
+<p><img src="/images/tasks-policy-hub.png" alt="Kubewarden Policy Hub" /></p>
+<p>Once you have the policy <code>Wasm</code> binary or the registry path, you can test it with <code>kwctl</code>.</p>
+<h3 id="kwctl-cli-tool"><a class="header" href="#kwctl-cli-tool"><code>kwctl</code> CLI tool</a></h3>
+<p><code>kwctl</code> is a Command Line Interface (CLI) tool that will allow both the policy authors and the cluster administrators to test policies before they are applied to the Kubernetes cluster.</p>
+<p>The user experience (UX) of this tool is intended to be easy and intuitive like the <code>docker</code> CLI tool. </p>
+<h4 id="use-cases"><a class="header" href="#use-cases">Use cases</a></h4>
+<p>Depending on your role, <code>kwctl</code> will help you in the following non-exhaustive scenarios:</p>
+<p><em>As a policy author</em></p>
+<ul>
+<li><em>End-to-end testing of your policy</em>: Test your policy against crafted Kubernetes requests and ensure your policy behaves as you expect. You can even test context-aware policies that require access to a running cluster.</li>
+<li><em>Embed metadata in your Wasm module</em>: the binary contains annotations of the permissions it needs to be executed</li>
+<li><em>Publish policies to OCI registries</em>: The binary is a fully compliant OCI object and can be stored in OCI registries.</li>
+</ul>
+<p><em>As a cluster administrator</em></p>
+<ul>
+<li><em>Inspect remote policies</em>: Given a policy in an OCI registry or in an HTTP server, show all static information about the policy.</li>
+<li><em>Dry-run of a policy in your cluster</em>: Test the policy against crafted Kubernetes requests and ensure the policy behaves as you expect given the input data you provide. You can even test context-aware policies that require access to a running cluster, also in a dry-run mode.</li>
+<li><em>Generate initial <code>ClusterAdmissionPolicy</code> scaffolding for your policy</em>: Generate a <code>YAML</code> file with all the required settings, which can be applied to your Kubernetes cluster using <code>kubectl</code>.</li>
+</ul>
+<h4 id="installation"><a class="header" href="#installation">Installation</a></h4>
+<p><code>kwctl</code> binaries for the stable releases are directly available from the <a href="https://github.com/kubewarden/kwctl/releases">GitHub repository</a>.</p>
+<blockquote>
+<p><strong>NOTE</strong>: If you want to build <code>kwctl</code> from the development branch, you need to install <a href="https://www.rust-lang.org/tools/install">Rust</a>. And for building <code>kwctl</code>, please refer to the <code>Build kwctl from source</code> section in the <a href="https://github.com/kubewarden/kwctl">GitHub repo</a>.</p>
+</blockquote>
+<h4 id="usage"><a class="header" href="#usage">Usage</a></h4>
+<p>As stated above, <code>kwctl</code> will allow you to perform an end-to-end testing of the policies.</p>
+<p>You can list all the <code>kwctl</code> options and subcommands by running the following command:</p>
+<pre><code class="language-shell">$ kwctl --help
+kwctl 0.2.4
+Flavio Castelli &lt;fcastelli@suse.com&gt;:Rafael Fernández López &lt;rfernandezlopez@suse.com&gt;
+Tool to manage Kubewarden policies
+
+USAGE:
+    kwctl [FLAGS] &lt;SUBCOMMAND&gt;
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+    -v               Increase verbosity
+
+SUBCOMMANDS:
+    annotate       Adds Kubewarden metadata to a WebAssembly module
+    completions    Generates shell completions
+    help           Prints this message or the help of the given subcommand(s)
+    inspect        Inspects Kubewarden policy
+    manifest       Scaffolds a Kubernetes resource
+    policies       Lists all downloaded policies
+    pull           Pulls a Kubewarden policy from a given URI
+    push           Pushes a Kubewarden policy to an OCI registry
+    rm             Removes a Kubewarden policy from the store
+    run            Runs a Kubewarden policy from a given URI
+    verify         Verifies a Kubewarden policy from a given URI using Sigstore
+</code></pre>
+<p>Here are a few examples of the commands you should run, depending on the task you want to perform:</p>
+<ul>
+<li>
+<p><em>List the policies</em>: lists all the policies stored in the local <code>kwctl</code> registry</p>
+<ul>
+<li>Command: <code>kwctl policies</code></li>
+</ul>
+</li>
+<li>
+<p><em>Obtain the policy</em>: download and store the policy inside the local <code>kwctl</code> store</p>
+<ul>
+<li>Command: <code>kwctl pull &lt;policy URI&gt;</code></li>
+<li>Example:</li>
+</ul>
+<pre><code class="language-shell">$ kwctl pull registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+
+$ kwctl policies
++--------------------------------------------------------------+----------+---------------+--------------+----------+
+| Policy                                                       | Mutating | Context aware | SHA-256      | Size     |
++--------------------------------------------------------------+----------+---------------+--------------+----------+
+| registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 | no       | no            | 59e34f482b40 | 21.86 kB |
++--------------------------------------------------------------+----------+---------------+--------------+----------+
+</code></pre>
+</li>
+<li>
+<p><em>Understand how the policy works</em>: inspect the policy metadata</p>
+<ul>
+<li>Command: <code>kwctl inspect &lt;policy URI&gt;</code></li>
+<li>Example:</li>
+</ul>
+<pre><code class="language-shell">  $ kwctl inspect registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+  Details
+  title:              pod-privileged
+  description:        Limit the ability to create privileged containers
+  author:             Flavio Castelli
+  url:                https://github.com/kubewarden/pod-privileged-policy
+  source:             https://github.com/kubewarden/pod-privileged-policy
+  license:            Apache-2.0
+  mutating:           false
+  context aware:      false
+  execution mode:     kubewarden-wapc
+  protocol version:   1
+  
+  Annotations
+  io.kubewarden.kwctl 0.1.9
+  
+  Rules
+  ────────────────────
+  ---
+  - apiGroups:
+      - &quot;&quot;
+    apiVersions:
+      - v1
+    resources:
+      - pods
+    operations:
+      - CREATE
+  ────────────────────
+  
+  Usage
+  This policy doesn't have a configuration. Once enforced, it will reject
+  the creation of Pods that have at least a privileged container defined.
+</code></pre>
+</li>
+<li>
+<p><em>Evaluate the policy</em>: Assess the policy and, if available, find the right configuration values to match your requirements.</p>
+<blockquote>
+<p>NOTE: Familiarity with <a href="https://kubernetes.io/docs/reference/">Kubernetes REST APIs</a> is a prerequisite.</p>
+</blockquote>
+<ul>
+<li>
+<p>Command: <code>kwctl run -r &lt;&quot;Kubernetes Admission request&quot; file path&gt; -s &lt;&quot;JSON document&quot; file path&gt; &lt;policy URI&gt;</code></p>
+</li>
+<li>
+<p>Scenario 1:</p>
+<ul>
+<li>
+<p>Request to be evaluated: Create a pod with no 'privileged' container</p>
+</li>
+<li>
+<p>Example:</p>
+<pre><code class="language-shell">$ kwctl run registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 -r unprivileged-pod-request.json
+{&quot;uid&quot;:&quot;C6E115F4-A789-49F8-B0C9-7F84C5961FDE&quot;,&quot;allowed&quot;:true,&quot;status&quot;:{&quot;message&quot;:&quot;&quot;}}
+</code></pre>
+<ul>
+<li>
+<p>Equivalent command with the policy binary downloaded:</p>
+<pre><code class="language-shell">`$ kwctl run file://$PWD/pod-privileged-policy.wasm -r unprivileged-pod-request.json
+{&quot;uid&quot;:&quot;C6E115F4-A789-49F8-B0C9-7F84C5961FDE&quot;,&quot;allowed&quot;:true,&quot;status&quot;:{&quot;message&quot;:&quot;&quot;}}
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>Result: The policy allows the request</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Scenario 2:</p>
+<ul>
+<li>
+<p>Request to be evaluated: Create a pod with at least one 'privileged' container</p>
+</li>
+<li>
+<p>Command: </p>
+<pre><code>kwctl run registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 -r privileged-pod-request.json
+</code></pre>
+<ul>
+<li>Equivalent command with the policy binary downloaded: <code>kwctl run file://$PWD/pod-privileged-policy.wasm -r privileged-pod-request.json</code></li>
+</ul>
+</li>
+<li>
+<p>Output:</p>
+<pre><code class="language-json">{&quot;uid&quot;:&quot;8EE6AF8C-C8C8-45B0-9A86-CB52A70EC50D&quot;,&quot;allowed&quot;:false,&quot;status&quot;:{&quot;message&quot;:&quot;User 'kubernetes-admin' cannot schedule privileged containers&quot;}}
+</code></pre>
+</li>
+<li>
+<p>Result: The policy denies the request</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>NOTE</strong>: If you want to see a more complex example, you can read the Kubewarden blog post <a href="https://www.kubewarden.io/blog/2021/06/kwctl-intro-for-kubernetes-administrators/">Introducing <code>kwctl</code> to Kubernetes Administrators</a>.</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="enforce-policies"><a class="header" href="#enforce-policies">Enforce Policies</a></h2>
+<p>As described in the <a href="/quick-start.html#example-enforce-your-first-policy">Quick Start</a>, you can enforce a policy by defining a <code>ClusterAdmissionPolicy</code> and then deploy it to your cluster using <code>kubectl</code>.</p>
+<p><code>kwctl</code> will help to generate a <code>ClusterAdmissionPolicy</code> from the policy you want to enforce. </p>
+<p>After you have generated the <code>ClusterAdmissionPolicy</code> and applied it to your Kubernetes cluster, you can follow the steps described in the <a href="/quick-start.html#example-enforce-your-first-policy">Quick Start</a> below:</p>
+<ul>
+<li>
+<p>Generate the <code>ClusterAdmissionPolicy</code> from the policy <code>manifest</code> and save it to a file</p>
+<ul>
+<li>Command: <code>kwctl manifest -t ClusterAdmissionPolicy &lt;policy URI&gt; &gt; &lt;&quot;policy name&quot;.yaml&gt;</code></li>
+<li>Example:</li>
+</ul>
+<pre><code class="language-shell">$ kwctl manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+---
+apiVersion: policies.kubewarden.io/v1alpha2
+kind: ClusterAdmissionPolicy
+metadata:
+  name: privileged-pods
+spec:
+  module: &quot;registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9&quot;
+  settings: {}
+  rules:
+    - apiGroups:
+        - &quot;&quot;
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+  mutating: false
+</code></pre>
+<blockquote>
+<p>TIP: By default, the <code>name</code> value is set to <code>generated-policy</code>. You might want to edit it before you deploy the <code>ClusterAdmissionPolicy</code>. </p>
+<p>NOTE: To avoid confusion, the value above has been set to <code>privileged-pods</code>.</p>
+</blockquote>
+</li>
+<li>
+<p>Deploy the <code>ClusterAdmissionPolicy</code> to your Kubernetes cluster</p>
+<ul>
+<li>Command: <code>kubectl apply -f &lt;&quot;policy name&quot;.yaml&gt;</code></li>
+<li>Example:</li>
+</ul>
+<pre><code class="language-shell">$ kubectl apply -f pod-privileged-policy.yaml
+clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
+</code></pre>
+</li>
+</ul>
+<p>Once the <code>ClusterAdmissionPolicy</code> is deployed, the requests sent to your Kubernetes cluster will be evaluated by the policy if they're within the policy scope.</p>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next steps</a></h2>
+<h3 id="write-policies"><a class="header" href="#write-policies">Write Policies</a></h3>
+<p>The <a href="/writing-policies/">Writing Policies</a> section explains how to write policies in different languages and how to export them into Webassembly so that they can be interpreted by Kubewarden.</p>
+<h3 id="distribute-policies"><a class="header" href="#distribute-policies">Distribute Policies</a></h3>
+<p>The <a href="/distributing-policies/">Distributing Policies</a> section explains how to publish policies to <a href="https://github.com/opencontainers/distribution-spec/blob/main/spec.md">OCI registries</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="quick-start.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="architecture.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="quick-start.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="architecture.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
