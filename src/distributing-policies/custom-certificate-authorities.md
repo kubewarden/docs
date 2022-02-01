@@ -14,7 +14,13 @@ you can configure the PolicyServer via their `spec` fields, as documented
 
 The pull and push behavior of `kwctl` and `policy-server` can be tuned via the `sources.yaml` file.
 
-This file can be provided both to `kwctl` and the `policy-server` in the `--sources-path` argument. Its structure is as follows:
+This file can be provided both to `kwctl` and the `policy-server` in the `--sources-path` argument.
+`kwctl` will try to load the `sources.yaml` file from the following folders if the `--sources-path` argument is not provided:
+- Linux `$HOME/.config/kubewarden/sources.yaml` 
+- Mac `$HOME/Library/Application Support/io.kubewarden.kubewarden/sources.yaml`
+- Windows `$HOME\AppData\Roaming\kubewarden\config\sources.yaml`
+
+Its structure is as follows:
 
 ```yaml
 insecure_sources:
