@@ -4030,7 +4030,14 @@ you can configure the PolicyServer via their <code>spec</code> fields, as docume
 </blockquote>
 <h2 id="the-sourcesyaml-file"><a class="header" href="#the-sourcesyaml-file">The <code>sources.yaml</code> file</a></h2>
 <p>The pull and push behavior of <code>kwctl</code> and <code>policy-server</code> can be tuned via the <code>sources.yaml</code> file.</p>
-<p>This file can be provided both to <code>kwctl</code> and the <code>policy-server</code> in the <code>--sources-path</code> argument. Its structure is as follows:</p>
+<p>This file can be provided both to <code>kwctl</code> and the <code>policy-server</code> in the <code>--sources-path</code> argument.
+<code>kwctl</code> will try to load the <code>sources.yaml</code> file from the following folders if the <code>--sources-path</code> argument is not provided:</p>
+<ul>
+<li>Linux <code>$HOME/.config/kubewarden/sources.yaml</code> </li>
+<li>Mac <code>$HOME/Library/Application Support/io.kubewarden.kubewarden/sources.yaml</code></li>
+<li>Windows <code>$HOME\AppData\Roaming\kubewarden\config\sources.yaml</code></li>
+</ul>
+<p>Its structure is as follows:</p>
 <pre><code class="language-yaml">insecure_sources:
   - &quot;registry-dev.example.com&quot;
   - &quot;registry-dev2.example.com:5500&quot;
