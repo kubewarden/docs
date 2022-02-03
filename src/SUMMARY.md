@@ -5,6 +5,7 @@
 - [Quick Start](./quick-start.md)
 
 - [Common tasks](./tasks.md)
+  - [Mutating Policies](./mutating-policies.md)
 
 - [Architecture](./architecture.md)
 
