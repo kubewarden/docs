@@ -1,4 +1,4 @@
-### Mutating policies validation
+### Mutating policies
 
 Since [Kubewarden controller](https://github.com/kubewarden/kubewarden-controller) version v0.4.5 and [Policy Server](https://github.com/kubewarden/policy-server) version v0.2.6, the `mutating` field impacts how mutated requests are validated. If you deploy a policy which mutates requests and the `mutating` field set to `true`, the requests will act as a validated ones.
 
