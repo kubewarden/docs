@@ -1,8 +1,8 @@
 ### Mutating policies
 
-Since [Kubewarden controller](https://github.com/kubewarden/kubewarden-controller) version v0.4.5 and [Policy Server](https://github.com/kubewarden/policy-server) version v0.2.6, the `mutating` field impacts how mutated requests are validated. If you deploy a policy which mutates requests and the `mutating` field set to `true`, the requests will act as a validated ones.
+A mutating policy will rebuild the requests with definied values that are conformant with the policy definition. If you want allow the behavior of mutating requests, you need to set the `ClusterAdmissionPolicy.mutating` filed to `true`.
 
-However, if you set the `mutating` field to `false`, the mutated requests will be rejected. For example, create the following `ClusterAdmissionPolicy` with the `mutating` field set to `true`:
+However, if you set the `ClusterAdmissionPolicy.mutating` field to `false`, the mutated requests will be rejected. For example, create the following `ClusterAdmissionPolicy` with the `mutating` field set to `true`:
 
 ```bash
 # Command
