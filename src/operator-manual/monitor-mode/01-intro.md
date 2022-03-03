@@ -58,7 +58,7 @@ It's worth noting that certain attributes can be updated on policies
 once they have been deployed.
 
 For security purposes, a user with UPDATE permissions on
-`ClusterAdmissionPolicy` resources can only make the policy more
+`ClusterAdmissionPolicy` resources can make the policy more
 restrictive, so that:
 
 - Transitioning the `mode` of an existing `ClusterAdmissionPolicy`
