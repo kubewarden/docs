@@ -19,7 +19,7 @@ that:
    policy.
 1. The `policy-server` metrics are updated normally, with the mode
    included in the metric baggage. Therefore, it's easy to filter policies by
-   mode, and focus on the ones on `monitor` mode.
+   mode, and focus on the ones deployed via `monitor` mode.
 
 The `mode` is an attribute included in the `ClusterAdmissionPolicy`
 resource. If supports two modes: `monitor` and `protect`. If the
