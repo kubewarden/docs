@@ -5,7 +5,7 @@ rejecting or mutating requests. It's a binary operation, either the
 policy is taking decisions on operations it targets, or it's not
 installed at all.
 
-In order to let users deploy a policy to a cluster, but without
+In order to let users deploy a policy to a cluster, without
 letting it take final decisions, the `monitor` mode has been included.
 
 The `monitor` mode is a way to deploy policies to the cluster in a way
