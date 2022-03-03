@@ -26,7 +26,7 @@ resource. It supports two modes: `monitor` and `protect`. If the
 `mode` is omitted, it will be defaulted to `protect`.
 
 In order to create a policy in monitor mode, all you need to do is to
-include the mode on the resource:
+include the mode as part of spec for the `ClusterAdmissionPolicy` resource as shown below:
 
 ```yaml
 apiVersion: policies.kubewarden.io/v1alpha2
