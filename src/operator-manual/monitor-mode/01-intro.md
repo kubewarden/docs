@@ -23,7 +23,7 @@ that:
 
 The `mode` is an attribute included in the `ClusterAdmissionPolicy`
 resource. It supports two modes: `monitor` and `protect`. If the
-`mode` is omitted, it will be defaulted to `protect`.
+`mode` is omitted, it will default to `protect`.
 
 In order to create a policy in monitor mode, all you need to do is to
 include the mode as part of spec for the `ClusterAdmissionPolicy` resource as shown below:
