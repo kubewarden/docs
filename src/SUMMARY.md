@@ -45,15 +45,15 @@
   # Enable these sections once we update them to waPC
   #- [Domain Specific Language](./writing-policies/dsl.md)
   #- [Other languages](./writing-policies/other-languages.md)
-  
+
 - [Distributing Policies](./distributing-policies.md)
   - [Custom Certificate Authorities](./distributing-policies/custom-certificate-authorities.md)
   - [OCI Registries support](./distributing-policies/oci-registries-support.md)
-  
+
 - [Testing Policies](./testing-policies/01-intro.md)
   - [While creating a policy](./testing-policies/02-policy-authors.md)
   - [Before deployment](./testing-policies/03-cluster-operators.md)
-  
+
 - [Operator Manual](./operator-manual/01-intro.md)
   - [Configuring PolicyServers](./operator-manual/policy-servers/01-custom-cas.md)
   - [Telemetry](./operator-manual/telemetry/01-quickstart.md)
@@ -61,3 +61,4 @@
     - [Metrics](./operator-manual/telemetry/metrics/01-quickstart.md)
       - [Reference](./operator-manual/telemetry/metrics/02-reference.md)
     - [Tracing](./operator-manual/telemetry/tracing/01-quickstart.md)
+  - [Monitor mode](./operator-manual/monitor-mode/01-intro.md)
