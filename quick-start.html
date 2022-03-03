@@ -188,10 +188,11 @@ helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-co
 <p>The default configuration values should be good enough for the majority of deployments. All options are documented <a href="https://charts.kubewarden.io/#configuration">here</a>.</p>
 </blockquote>
 <h2 id="main-components"><a class="header" href="#main-components">Main components</a></h2>
-<p>Kubewarden has two main components which you will interact with:</p>
+<p>Kubewarden has three main components which you will interact with:</p>
 <ul>
 <li>The PolicyServer</li>
 <li>The ClusterAdmissionPolicy</li>
+<li>The AdmissionPolicy</li>
 </ul>
 <h3 id="policy-server"><a class="header" href="#policy-server">Policy Server</a></h3>
 <p>A Kubewarden Policy Server is completely managed by the <code>kubewarden-controller</code> and multiple Policy Servers can be deployed in the same Kubernetes cluster.</p>
@@ -258,13 +259,15 @@ spec:
 <tr><td align="center"></td><td></td><td>- <code>Ignore</code>: an error calling the webhook is ignored and the API request is allowed to continue</td></tr>
 <tr><td align="center"></td><td></td><td>- <code>Fail</code>: an error calling the webhook causes the admission to fail and the API request to be rejected</td></tr>
 </tbody></table>
-<p>The complete documentation of this Custom Resource can be found <a href="https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc">here</a> or on <a href="https://doc.crds.dev/github.com/kubewarden/kubewarden-controller">docs.crds.dev</a>.</p>
 <blockquote>
 <p><strong>NOTE:</strong> The  <code>ClusterAdmissionPolicy</code> resources are registered with a <code>*</code> webhook <code>scope</code>, which means that registered webhooks will forward all requests matching the given <code>resources</code> and <code>operations</code> -- either namespaced (in any namespace), or cluster-wide resources.</p>
 </blockquote>
+<h3 id="admissionpolicy"><a class="header" href="#admissionpolicy">AdmissionPolicy</a></h3>
+<p><code>AdmissionPolicy</code> is a namespace-wide resource. The policy will process only the requests that are targeting the Namespace where the <code>AdmissionPolicy</code> is defined. Other than that, there are no functional differences between the <code>AdmissionPolicy</code> and <code>ClusterAdmissionPolicy</code> resources.</p>
 <blockquote>
-<p><strong>NOTE:</strong> The <code>ClusterAdmissionPolicy</code> resource is cluster-wide. There are plans to also provide a namespaced version that will only impact registered namespaced resources on its own namespace.</p>
+<p><strong>NOTE:</strong>  <code>AdmissionPolicy</code> requires kubernetes 1.21.0 or above. This is because we are using the <code>kubernetes.io/metadata.name</code> label, which was introduced in kubernetes 1.21.0</p>
 </blockquote>
+<p>The complete documentation of these Custom Resources can be found <a href="https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc">here</a> or on <a href="https://doc.crds.dev/github.com/kubewarden/kubewarden-controller">docs.crds.dev</a>.</p>
 <h2 id="example-enforce-your-first-policy"><a class="header" href="#example-enforce-your-first-policy">Example: Enforce your first policy</a></h2>
 <p>For this first example, we will use the <a href="https://github.com/kubewarden/pod-privileged-policy"><code>pod-privileged</code> policy</a>.
 Our goal will be to prevent the creation of privileged containers inside our Kubernetes cluster by enforcing this policy.</p>
