@@ -87,5 +87,5 @@ that they would have produced had they been in `protect` mode.
 It's important to take this into account, given that when a mutating
 policy is in `monitor` mode, subsequent policies will evaluate a
 *slightly* different resource than they would have once the mutating policy
-is in `protect` mode, given that the mutation that it produces has not
+is in `protect` mode. This is because the mutation that it produces has not
 happened due to the mode being in `monitor` mode.
