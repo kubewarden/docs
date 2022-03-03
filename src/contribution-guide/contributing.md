@@ -21,5 +21,4 @@ To get involved with the documentation:
 and the [static site generator](https://rust-lang.github.io/mdBook/).
 - mdBook uses the [CommonMark spec](https://commonmark.org/) of Markdown.
 Ensure you're familiar with the Markdown flavour before you begin.
-- Understand how to [suggest an improvement]() and [open a pull request]().
-
+- Understand how to [suggest an improvement](./suggesting-an-improvement.md) and [open a pull request]().
