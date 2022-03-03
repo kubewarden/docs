@@ -13,7 +13,7 @@ that:
 
 1. All requests that go through the policy will be accepted, as if the
    policy didn't exist.
-1. The policy result is traced in the `policy-server`
+2. The policy result is traced in the `policy-server`
    normally. Details are included on whether the request would have
    been rejected, or if a mutation would have been proposed by the
    policy.
