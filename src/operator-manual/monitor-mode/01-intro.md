@@ -17,7 +17,7 @@ that:
    normally. Details are included on whether the request would have
    been rejected, or if a mutation would have been proposed by the
    policy.
-1. The `policy-server` metrics are updated normally, with the mode
+3. The `policy-server` metrics are updated normally, with the mode
    included in the metric baggage. Therefore, it's easy to filter policies by
    mode, and focus on the ones deployed via `monitor` mode.
 
