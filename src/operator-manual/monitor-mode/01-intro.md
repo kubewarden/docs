@@ -81,7 +81,7 @@ ensures that the user has permissions to remove policies.
 
 Mutating policies in `monitor` mode are **not** going to produce a
 mutation on the resource, since on `monitor` mode they are exclusively
-going to log what would their answer have been, including the patch
+going to log what their answer would have been, including the patch
 that they would have produced had they been in `protect` mode.
 
 It's important to take this into account, given that when a mutating
