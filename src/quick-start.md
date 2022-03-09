@@ -47,11 +47,11 @@ Kubewarden has three main components which you will interact with:
 * The ClusterAdmissionPolicy
 * The AdmissionPolicy
 
-### Policy Server
+### PolicyServer
 
-A Kubewarden Policy Server is completely managed by the `kubewarden-controller` and multiple Policy Servers can be deployed in the same Kubernetes cluster.
+A Kubewarden `PolicyServer` is completely managed by the `kubewarden-controller` and multiple `PolicyServers` can be deployed in the same Kubernetes cluster.
 
-The Policy Server is the component which executes the Kubewarden policies when requests arrive and validates them.
+The `PolicyServer` is the component which executes the Kubewarden policies when requests arrive and validates them.
 
 Default `PolicyServer` configuration:
 
