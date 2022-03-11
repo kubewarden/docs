@@ -194,9 +194,9 @@ helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-co
 <li>The ClusterAdmissionPolicy</li>
 <li>The AdmissionPolicy</li>
 </ul>
-<h3 id="policy-server"><a class="header" href="#policy-server">Policy Server</a></h3>
-<p>A Kubewarden Policy Server is completely managed by the <code>kubewarden-controller</code> and multiple Policy Servers can be deployed in the same Kubernetes cluster.</p>
-<p>The Policy Server is the component which executes the Kubewarden policies when requests arrive and validates them.</p>
+<h3 id="policyserver"><a class="header" href="#policyserver">PolicyServer</a></h3>
+<p>A Kubewarden <code>PolicyServer</code> is completely managed by the <code>kubewarden-controller</code> and multiple <code>PolicyServers</code> can be deployed in the same Kubernetes cluster.</p>
+<p>The <code>PolicyServer</code> is the component which executes the Kubewarden policies when requests arrive and validates them.</p>
 <p>Default <code>PolicyServer</code> configuration:</p>
 <pre><code class="language-yaml">apiVersion: policies.kubewarden.io/v1alpha2
 kind: PolicyServer

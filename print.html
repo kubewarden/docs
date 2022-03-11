@@ -231,9 +231,9 @@ helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-co
 <li>The ClusterAdmissionPolicy</li>
 <li>The AdmissionPolicy</li>
 </ul>
-<h3 id="policy-server"><a class="header" href="#policy-server">Policy Server</a></h3>
-<p>A Kubewarden Policy Server is completely managed by the <code>kubewarden-controller</code> and multiple Policy Servers can be deployed in the same Kubernetes cluster.</p>
-<p>The Policy Server is the component which executes the Kubewarden policies when requests arrive and validates them.</p>
+<h3 id="policyserver"><a class="header" href="#policyserver">PolicyServer</a></h3>
+<p>A Kubewarden <code>PolicyServer</code> is completely managed by the <code>kubewarden-controller</code> and multiple <code>PolicyServers</code> can be deployed in the same Kubernetes cluster.</p>
+<p>The <code>PolicyServer</code> is the component which executes the Kubewarden policies when requests arrive and validates them.</p>
 <p>Default <code>PolicyServer</code> configuration:</p>
 <pre><code class="language-yaml">apiVersion: policies.kubewarden.io/v1alpha2
 kind: PolicyServer
@@ -4849,7 +4849,7 @@ variable to match the name of the desired policy.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="metrics-reference"><a class="header" href="#metrics-reference">Metrics Reference</a></h1>
 <p>Kubewarden exposes some relevant metrics that enhance visibility of the platform, and allows cluster
 administrators and policy developers to identify patterns and potential issues.</p>
-<h2 id="policy-server-1"><a class="header" href="#policy-server-1">Policy Server</a></h2>
+<h2 id="policy-server"><a class="header" href="#policy-server">Policy Server</a></h2>
 <p>The Policy Server is the component that initializes and runs policies. Upon receiving requests from
 the Kubernetes API server, it will forward the request to the policy, and return the response
 provided by the policy to the Kubernetes API server.</p>
