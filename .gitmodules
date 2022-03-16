@@ -1,0 +1,3 @@
+[submodule "themes/projects-theme"]
+	path = themes/projects-theme
+	url = https://github.com/rancherlabs/projects-theme.git
