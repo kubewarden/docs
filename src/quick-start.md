@@ -42,15 +42,16 @@ The following charts should be installed inside the `kubewarden` namespace in yo
 
 ## Main components
 
-Kubewarden has two main components which you will interact with:
+Kubewarden has three main components which you will interact with:
 * The PolicyServer
 * The ClusterAdmissionPolicy
+* The AdmissionPolicy
 
-### Policy Server
+### PolicyServer
 
-A Kubewarden Policy Server is completely managed by the `kubewarden-controller` and multiple Policy Servers can be deployed in the same Kubernetes cluster.
+A Kubewarden `PolicyServer` is completely managed by the `kubewarden-controller` and multiple `PolicyServers` can be deployed in the same Kubernetes cluster.
 
-The Policy Server is the component which executes the Kubewarden policies when requests arrive and validates them.
+The `PolicyServer` is the component which executes the Kubewarden policies when requests arrive and validates them.
 
 Default `PolicyServer` configuration:
 
@@ -128,11 +129,14 @@ Overview of the attributes of the `ClusterAdmissionPolicy` resource:
 | | | - `Ignore`: an error calling the webhook is ignored and the API request is allowed to continue |
 | | | - `Fail`: an error calling the webhook causes the admission to fail and the API request to be rejected |
 
-The complete documentation of this Custom Resource can be found [here](https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc) or on [docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
-
 > **NOTE:** The  `ClusterAdmissionPolicy` resources are registered with a `*` webhook `scope`, which means that registered webhooks will forward all requests matching the given `resources` and `operations` -- either namespaced (in any namespace), or cluster-wide resources.
 
-> **NOTE:** The `ClusterAdmissionPolicy` resource is cluster-wide. There are plans to also provide a namespaced version that will only impact registered namespaced resources on its own namespace.
+### AdmissionPolicy
+
+`AdmissionPolicy` is a namespace-wide resource. The policy will process only the requests that are targeting the Namespace where the `AdmissionPolicy` is defined. Other than that, there are no functional differences between the `AdmissionPolicy` and `ClusterAdmissionPolicy` resources.
+> **NOTE:**  `AdmissionPolicy` requires kubernetes 1.21.0 or above. This is because we are using the `kubernetes.io/metadata.name` label, which was introduced in kubernetes 1.21.0
+
+The complete documentation of these Custom Resources can be found [here](https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc) or on [docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
 
 ## Example: Enforce your first policy
 
