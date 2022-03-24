@@ -161,7 +161,7 @@ ga('send', 'pageview');
 <blockquote>
 <p><strong>PREREQUISITES:</strong></p>
 <p>Currently, the chart depends on <code>cert-manager</code>. Make sure you have <a href="https://cert-manager.io/docs/installation/"><code>cert-manager</code> installed</a> <em>before</em> installing the <code>kubewarden-controller</code> chart.</p>
-<p>You can install the latest version of <code>cert-manager</code> by running the following commands: </p>
+<p>You can install the latest version of <code>cert-manager</code> by running the following commands:</p>
 </blockquote>
 <pre><code class="language-console">kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
 
@@ -173,6 +173,8 @@ kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager -
 helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
 
 helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller
+
+helm install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults
 </code></pre>
 <p>The following charts should be installed inside the <code>kubewarden</code> namespace in your Kubernetes cluster:</p>
 <ul>
@@ -180,9 +182,25 @@ helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-co
 <p><code>kubewarden-crds</code>, which will register the <code>ClusterAdmissionPolicy</code> and <code>PolicyServer</code> Custom Resource Definitions</p>
 </li>
 <li>
-<p><code>kubewarden-controller</code> with a default configuration, and which will create a <code>PolicyServer</code> resource named <code>default</code>. </p>
+<p><code>kubewarden-controller</code>, which will install the Kubewarden controller</p>
+</li>
+<li>
+<p><code>kubewarden-defaults</code>, which will create a <code>PolicyServer</code> resource named <code>default</code>. It can also installs a set of
+recommended policies to secure your cluster by enforcing some well known best practices.</p>
 </li>
 </ul>
+<blockquote>
+<p><strong>WARNING:</strong>
+Since <a href="https://github.com/kubewarden/kubewarden-controller/releases/tag/v0.4.0"><code>v0.4.0</code></a>, a PolicyServer resource named default will not be created using the <code>kubewarden-controller</code> chart.
+There is another Helm chart called <code>kubewarden-defaults</code>, which now installs
+the default policy server.</p>
+<p>This also means that if you are not using the latest version of the <code>kubewarden-controller</code> and are trying to upgrade,
+your default policy server will not be upgraded or deleted. As a result, you might run into
+issues if you try to install the <code>kubewarden-defaults</code> with some conflicting information, for example the same policy server name.
+Therefore, to be able to take advantage of future upgrades in the <code>kubewarden-defaults</code> helm chart you need to remove the
+existing PolicyServer resource created by the <code>kubewarden-controller</code> before installing the new chart. With this step, you ensure that you are able to update your policy server using Helm upgrades without running into
+resource conflicts. It worth mentioning that when you remove the PolicyServer, all the policies bounded to it will be removed as well.</p>
+</blockquote>
 <blockquote>
 <p><strong>QUICK NOTE:</strong></p>
 <p>The default configuration values should be good enough for the majority of deployments. All options are documented <a href="https://charts.kubewarden.io/#configuration">here</a>.</p>
@@ -346,7 +364,9 @@ EOF
 </blockquote>
 <h2 id="uninstall"><a class="header" href="#uninstall">Uninstall</a></h2>
 <p>You can remove the resources created by uninstalling the <code>helm</code> charts as follow:</p>
-<pre><code class="language-console">helm uninstall --namespace kubewarden kubewarden-controller
+<pre><code class="language-console">helm uninstall --namespace kubewarden kubewarden-defaults
+
+helm uninstall --namespace kubewarden kubewarden-controller
 
 helm uninstall --namespace kubewarden kubewarden-crds
 </code></pre>
@@ -368,8 +388,8 @@ kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io -l &quot;
 kubectl delete -l &quot;kubewarden&quot; mutatingwebhookconfigurations.admissionregistration.k8s.io
 </code></pre>
 <h2 id="wrapping-up"><a class="header" href="#wrapping-up">Wrapping up</a></h2>
-<p>As we have seen, the <code>ClusterAdmissionPolicy</code> resource is the core type that a cluster operator has to manage, the rest of the resources needed to run the policies and configure them will be taken care of automatically by the <code>kubewarden-controller</code> module.</p>
-<p>Now, you are ready to deploy Kubewarden and you can have a look at the policies in <a href="https://hub.kubewarden.io">hub.kubewarden.io</a>, <a href="https://github.com/topics/kubewarden-policy">on Github</a>, or reuse existing Rego policies as shown in the <a href="./writing-policies/rego/01-intro.html">following chapters!</a> </p>
+<p>As we have seen, <code>ClusterAdmissionPolicy</code> is the core resource that a cluster operator has to manage. The <code>kubewarden-controller</code> module automatically takes care of the configuration for the rest of the resources needed to run the policies.</p>
+<p>Now, you are ready to deploy Kubewarden! Have a look at the policies on <a href="https://hub.kubewarden.io">hub.kubewarden.io</a>, <a href="https://github.com/topics/kubewarden-policy">on Github</a>, or reuse existing Rego policies as shown in the <a href="./writing-policies/rego/01-intro.html">following chapters!</a></p>
 
                     </main>
 
