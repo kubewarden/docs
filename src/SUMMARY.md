@@ -49,6 +49,7 @@
 - [Distributing Policies](./distributing-policies.md)
   - [Custom Certificate Authorities](./distributing-policies/custom-certificate-authorities.md)
   - [OCI Registries support](./distributing-policies/oci-registries-support.md)
+  - [Secure Supply Chain](./distributing-policies/secure-supply-chain.md)
 
 - [Testing Policies](./testing-policies/01-intro.md)
   - [While creating a policy](./testing-policies/02-policy-authors.md)
