@@ -467,30 +467,31 @@ kubectl delete -l &quot;kubewarden&quot; mutatingwebhookconfigurations.admission
 <p>As stated above, <code>kwctl</code> will allow you to perform an end-to-end testing of the policies.</p>
 <p>You can list all the <code>kwctl</code> options and subcommands by running the following command:</p>
 <pre><code class="language-shell">$ kwctl --help
-kwctl 0.2.4
-Flavio Castelli &lt;fcastelli@suse.com&gt;:Rafael Fernández López &lt;rfernandezlopez@suse.com&gt;
+kwctl 0.2.5
+Kubewarden Developers &lt;kubewarden@suse.de&gt;
 Tool to manage Kubewarden policies
 
 USAGE:
-    kwctl [FLAGS] &lt;SUBCOMMAND&gt;
+    kwctl [OPTIONS] &lt;SUBCOMMAND&gt;
 
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+OPTIONS:
+    -h, --help       Print help information
     -v               Increase verbosity
+    -V, --version    Print version information
 
 SUBCOMMANDS:
-    annotate       Adds Kubewarden metadata to a WebAssembly module
-    completions    Generates shell completions
-    help           Prints this message or the help of the given subcommand(s)
-    inspect        Inspects Kubewarden policy
-    manifest       Scaffolds a Kubernetes resource
+    annotate       Add Kubewarden metadata to a WebAssembly module
+    completions    Generate shell completions
+    digest         Fetch the digest of its OCI manifest
+    help           Print this message or the help of the given subcommand(s)
+    inspect        Inspect Kubewarden policy
     policies       Lists all downloaded policies
     pull           Pulls a Kubewarden policy from a given URI
     push           Pushes a Kubewarden policy to an OCI registry
     rm             Removes a Kubewarden policy from the store
     run            Runs a Kubewarden policy from a given URI
-    verify         Verifies a Kubewarden policy from a given URI using Sigstore
+    scaffold       Scaffold a Kubernetes resource or configuration file
+    verify         Verify a Kubewarden policy from a given URI using Sigstore
 </code></pre>
 <p>Here are a few examples of the commands you should run, depending on the task you want to perform:</p>
 <ul>
@@ -628,10 +629,10 @@ $ kwctl policies
 <li>
 <p>Generate the <code>ClusterAdmissionPolicy</code> from the policy <code>manifest</code> and save it to a file</p>
 <ul>
-<li>Command: <code>kwctl manifest -t ClusterAdmissionPolicy &lt;policy URI&gt; &gt; &lt;&quot;policy name&quot;.yaml&gt;</code></li>
+<li>Command: <code>kwctl scaffold manifest -t ClusterAdmissionPolicy &lt;policy URI&gt; &gt; &lt;&quot;policy name&quot;.yaml&gt;</code></li>
 <li>Example:</li>
 </ul>
-<pre><code class="language-shell">$ kwctl manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+<pre><code class="language-shell">$ kwctl scaffold manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
 ---
 apiVersion: policies.kubewarden.io/v1alpha2
 kind: ClusterAdmissionPolicy
