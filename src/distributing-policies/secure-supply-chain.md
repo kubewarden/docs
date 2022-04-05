@@ -1,17 +1,17 @@
 # Secure Supply Chain
 
-Users can configure Kubewarden to run only policies signed by entities they trust.
-This is done using the infrastructure provided by Sigstore. This means that the
-policies developers can sign the policies and publish them in a registry. While
-the cluster operators can run the signed policies and be sure that the policies
-came from the right place.
+Users can configure Kubewarden to run policies signed by only entities that they trust by using the the [sigstore](https://www.sigstore.dev) project.
+This means that policy developers can sign their policies and publish them in a registry.
+The cluster operators can run these signed policies and ensure the validity of the policies' 
+chain of custody
 
 
 ## Signing the policies
 
-To sign the policies users must need to generate a key pair. These keys
-ensure that artifacts signed with them came from the expected user, the owner
-of the keys. It's possible to generate such keys using `cosign generate-key-pair` command:
+Kubewarden recommends using the [cosign](https://github.com/sigstore/cosign) project for signing policies. This subsection details a key-based method of signing policies in which, users need to generate a private-public key pair. The generated keys
+help in verifying whether the signed artefacts came from the expected user i.e. the owner
+of the keys. 
+Using the `cosign generate-key-pair` command, as illustrated below, it is possible to generate the aforementioned keypair.
 
 ```bash
 cosign generate-key-pair
@@ -23,7 +23,7 @@ Public key written to cosign.pub
 
 Once the keys are generated, users can use it to sign policies.
 
-> **WARNING**: The user must not share the private key file (e.g. `cosign.key`). This is a secret file that should be used only by the owner of the key
+> **WARNING**: The private key file,  `cosign.key`, should not be shared. This is a secret file that should be used only by the owner of the key for signing policies..
 
 To sign a policy users can execute the `cosign sign` command passing the `--key`
 command line argument with their private key file:
@@ -36,31 +36,31 @@ Pushing signature to: ghcr.io/jvanz/policies/user-group-psp
 ```
 
 This command will sign the policy and publish the signature data in the registry
-as well. Now the policy are ready to be used in a Kubewarden with signature
+as well. Now the policies are ready to be used in a Kubewarden installation with signature
 verification enabled.
 
 
 ### Keyless signing
 
-Many times the policies are automatically build in CI/CD pipelines which difficult
-the key generation. For this situations, and other where the key generation is not
-possible, `cosing` has experimental feature, keyless signing. This allows the users
-sign policies with no previously created key. In this cases, `cosign` will use
-[Fulcio](https://github.com/sigstore/fulcio) to generate ephemeral keys used to
+Many times the policies are automatically built in CI/CD pipelines which complicates
+the key generation process. For these situations and others where key generation is not
+possible, `cosign` has an experimental feature, keyless signing. This allows the users to
+sign policies without a previously created key. By using
+[Fulcio](https://github.com/sigstore/fulcio), ephemeral keys  are generated that can be used to
 sign the artifact only once.
 
-To ensure the identity of the user for this keys, Fulcio uses a OIDC provider
+To ensure the identity of the user for these keys, Fulcio uses an OIDC provider
 to generate the ephemeral keys. This means that, during the signing process users
-must sign-in using one of the OIDC provider, like show in the following image:
+must sign-in using one of the OIDC providers, as shown in the below image:
 
 ![Sigstore OIDC](./sigstore_oidc.png)
 
 
 After signing in, `cosign` will finish the signing process.
 
-However, during the time of this writing, this feature is not enable by default
-in `cosign`. So, it's necessary to enable experimental features. The hole command
-execution can be seen in the following example:
+However, as of this writing, this feature is not enabled by default
+in `cosign`. So, it's necessary to enable this experimental feature before proceeding with keyless signing
+as shown below:
 
 ```bash
  COSIGN_EXPERIMENTAL=1 cosign sign ghcr.io/jvanz/policies/user-group-psp:latest
@@ -74,10 +74,10 @@ tlog entry created with index: 1819248
 Pushing signature to: ghcr.io/jvanz/policies/user-group-psp
 ```
 
-### How sign artifact in Github actions workflows
+### How to sign artefacts in Github workflows
 
-When performing a keyless signing within a Github actions environment, `cosign`
-does not require the user to login into the OIDC provider. In this environment,
+`cosign` does not require the user to log on to an OIDC provider when using keyless signing
+in the context of a GitHub action environment. In this scenario,
 the Github token available during the execution of the workflow will be used to
 authenticate the user and generate the ephemeral keys.
 
@@ -108,9 +108,9 @@ The following checks were performed on each of these signatures:
 [{"critical":{"identity":{"docker-reference":"ghcr.io/jvanz/policies/user-group-psp"},"image":{"docker-manifest-digest":"sha256:af520a8ccee03811d426c48634b7007f1220c121cc23e14962bb64510585ce97"},"type":"cosign container image signature"},"optional":null}]
 ```
 
-### Signatures verification file
+### Signature verification file
 
-Users can also provide a file with all the signatures requirements they want to validate:
+Users can also provide a file with all the signature requirements they want to validate. A sample file is shown below:
 
 ```yaml
 apiVersion: v1
@@ -157,26 +157,26 @@ anyOf: # at least `anyOf.minimumMatches` are required to match
     key: .... # mandatory
 ```
 
-##### Filer structure
-The configuration is composed by two sections:
+##### File structure
+The configuration is composed of two sections:
 
-- `anyOf`:  the policy will be consider trusted if it has as least `minimumMatches`
-(default value is `1`) signatures requirements validated.
-- `allOf`: all the signatures requirements defined in this section must be valid
-in order to consider a trusted policy.
+- `anyOf`:  The policy will be trusted if the `minimumMatches` criterion is fulfilled.
+In the above example, the `minimumMatches` field has been assigned a value 2. This means that at least two of the signature requirements listed **need to be fulfilled** for the policy to be trusted. The default value that the `minimumMatches` field assumes is `1`.
+- `allOf`: All the signatures requirements defined in this section must be valid
+so that the policy can be trusted.
 
-Each of these section can container one or more signature requirements.
-Users can also define both section at the same time. In this situations, all
-the signatures requirements from the `allOf` **AND** the `minimumMatches` matches
-from the `anyOf` must be valid.
+Each of these sections can contain one or more signature requirements.
+Users can also define both sections in one file as shown above. In this situations, all
+the signatures requirements from the `allOf` **AND** a minimum number of matches
+from the `anyOf` section as described in the `minimumMatches` field must be valid.
 
 ##### Signature requirements kinds
 
-There are three signatures requirements kinds:
+There are three kinds of signatures requirements:
 
 ##### `pubKey` kind
 
-Checks if the policy is assigned with the give public key.
+Checks if the policy is assigned with the given public key.
 
 **Example**
 
@@ -261,7 +261,7 @@ kwctl verify --verification-config-path signatures_requirements.yaml ghcr.io/jva
 2022-03-29T17:34:37.847169Z  INFO kwctl::verify: Policy successfully verified
 ```
 
-While the previous example test if the policy is signed by the given key,
+While the previous example tests if the policy is signed by the given key,
 the next one checks if a given policy came from the Kubewarden organization:
 
 ```bash
@@ -275,15 +275,15 @@ kwctl verify --verification-config-path kubewarden_signatures.yaml ghcr.io/kubew
 2022-03-29T18:07:39.062292Z  INFO kwctl::verify: Policy successfully verified
 ```
 
-## How to configure policy server to check policies signatures
+## Configuring the policy server to check policy signatures
 
-To configure Kubewarden to run only the trusted policies the users must create
+To configure Kubewarden to run only trusted policies, the users must create
 `configmap` with the minimum signatures requirements to allow a policy to be
 executed in the environment. The `configmap` follows the same structure of the
-file used to verify policy in the `kwctl`. The different is that the `configmap`
-should define all the configuration under the `verification-config` field.
-As example, let's consider that the users want to run policies signed by the Kubewarden
-organization they can create a `configmap` with the following commands:
+file used to verify policy in the `kwctl` utility. The only difference in this case would be that the `configmap`
+should define all the configurations under the `verification-config` field.
+For example, let's consider that the users want to run policies signed by the Kubewarden
+organization. A sample `configmap` for this scenario has been illustrated below:
 
 ```bash
 cat kubewarden_signatures.yaml
@@ -315,7 +315,7 @@ metadata:
 
 
 After creating the `configmap` to store the signature requirements, the users
-can configure a Policy Server to start validate policy signatures setting the
+can configure a Policy Server to start validating policy signatures by setting the
 `configmap` name in the field `verificationConfig`.
 
 ```yaml
@@ -341,8 +341,8 @@ spec:
 ```
 
 If you deploy the default Policy Server using the `kubewarden-defaults`
-helm chart, you configure this field setting the `configmap` name in the
+helm chart, you can configure this field by setting the `configmap` name in the
 `policyServer.verificationConfig` value.
 
-Now, when a untrusted policy is installed the Policy Server will exit before
-start receiving any admission review requests.
+Now, when an untrusted policy is installed the Policy Server will exit before
+it starts receiving any admission review requests.
