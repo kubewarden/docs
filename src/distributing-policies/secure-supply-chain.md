@@ -1,17 +1,19 @@
 # Secure Supply Chain
 
-Users can configure Kubewarden to run policies signed by only entities that they trust by using the the [sigstore](https://www.sigstore.dev) project.
-This means that policy developers can sign their policies and publish them in a registry.
-The cluster operators can run these signed policies and ensure the validity of the policies' 
-chain of custody
+Users can configure Kubewarden to run policies signed by only entities that they
+trust by using the [sigstore](https://www.sigstore.dev) project. This means that
+policy developers can sign their policies and publish them in a registry.
+The cluster operators can run these signed policies and ensure the validity of the policies chain of custody
 
 
 ## Signing the policies
 
-Kubewarden recommends using the [cosign](https://github.com/sigstore/cosign) project for signing policies. This subsection details a key-based method of signing policies in which, users need to generate a private-public key pair. The generated keys
-help in verifying whether the signed artefacts came from the expected user i.e. the owner
-of the keys. 
-Using the `cosign generate-key-pair` command, as illustrated below, it is possible to generate the aforementioned keypair.
+Kubewarden recommends using the [cosign](https://github.com/sigstore/cosign) project
+for signing policies. This subsection details a key-based method of signing policies
+in which, users need to generate a private-public key pair. The generated keys help
+in verifying whether the signed artifacts came from the expected user i.e. the
+owner of the keys. Using the `cosign generate-key-pair` command, as illustrated
+below, it is possible to generate the aforementioned keypair.
 
 ```bash
 cosign generate-key-pair
@@ -23,7 +25,8 @@ Public key written to cosign.pub
 
 Once the keys are generated, users can use it to sign policies.
 
-> **WARNING**: The private key file,  `cosign.key`, should not be shared. This is a secret file that should be used only by the owner of the key for signing policies..
+> **WARNING**: The private key file,  `cosign.key`, should not be shared. This
+> is a secret file that should be used only by the owner of the key for signing policies.
 
 To sign a policy users can execute the `cosign sign` command passing the `--key`
 command line argument with their private key file:
@@ -46,7 +49,7 @@ Many times the policies are automatically built in CI/CD pipelines which complic
 the key generation process. For these situations and others where key generation is not
 possible, `cosign` has an experimental feature, keyless signing. This allows the users to
 sign policies without a previously created key. By using
-[Fulcio](https://github.com/sigstore/fulcio), ephemeral keys  are generated that can be used to
+[Fulcio](https://github.com/sigstore/fulcio), ephemeral keys are generated that can be used to
 sign the artifact only once.
 
 To ensure the identity of the user for these keys, Fulcio uses an OIDC provider
@@ -59,8 +62,8 @@ must sign-in using one of the OIDC providers, as shown in the below image:
 After signing in, `cosign` will finish the signing process.
 
 However, as of this writing, this feature is not enabled by default
-in `cosign`. So, it's necessary to enable this experimental feature before proceeding with keyless signing
-as shown below:
+in `cosign`. So, it's necessary to enable this experimental feature before
+proceeding with keyless signing as shown below:
 
 ```bash
  COSIGN_EXPERIMENTAL=1 cosign sign ghcr.io/jvanz/policies/user-group-psp:latest
@@ -157,11 +160,12 @@ anyOf: # at least `anyOf.minimumMatches` are required to match
     key: .... # mandatory
 ```
 
-##### File structure
 The configuration is composed of two sections:
 
 - `anyOf`:  The policy will be trusted if the `minimumMatches` criterion is fulfilled.
-In the above example, the `minimumMatches` field has been assigned a value 2. This means that at least two of the signature requirements listed **need to be fulfilled** for the policy to be trusted. The default value that the `minimumMatches` field assumes is `1`.
+In the above example, the `minimumMatches` field has been assigned a value 2.
+This means that at least two of the signature requirements listed **need to be fulfilled**
+for the policy to be trusted. The default value that the `minimumMatches` field assumes is `1`.
 - `allOf`: All the signatures requirements defined in this section must be valid
 so that the policy can be trusted.
 
@@ -170,13 +174,18 @@ Users can also define both sections in one file as shown above. In this situatio
 the signatures requirements from the `allOf` **AND** a minimum number of matches
 from the `anyOf` section as described in the `minimumMatches` field must be valid.
 
-##### Signature requirements kinds
+#### Signature validation
 
-There are three kinds of signatures requirements:
+The users can validate deferents signatures validations in the `anyOf` and
+`allOf` sections. It's possible to validate the public key and the keyless data
+used to sign the policy.
 
-##### `pubKey` kind
+#### Public key validation
 
-Checks if the policy is assigned with the given public key.
+To check if the policy is assigned with the given public key, the users can
+define the key data and the owner of the key used to sign the policy. As illustrated
+bellow, it is necessary to define the kind as `pubKey` and insert the public
+key data in the `key` field. The owner field is optional.
 
 **Example**
 
@@ -190,18 +199,23 @@ Checks if the policy is assigned with the given public key.
       -----END PUBLIC KEY-----
 ```
 
-##### `genericIssuer` kind
+#### Keyless signatures validation
 
-Signature kind used to validate signatures generated in keyless mode.  This kind
-has two fields:
+When signed in keyless mode, we do not have the public key to verify. In this
+situation the users can verify the field filled with the OIDC data used during
+the signing process. For that, it's necessary to define the kind of the signature
+validation as `genericIssuer`. Therefore, it's possible to verify three piece
+of information from the signature:
 
 - `issuer`(mandatory): matches the `Issuer` attribute in the certificate
-generated by Fulcio
+generated by Fulcio. This shows the OIDC used to sign the policy
 - `subject`: field used to match the `Subject` attribute in the Fulcio's
-certificate. The field can have two children fields: `equal` forces the `Subject`
-from the certificate to be equal to the value defined in the signature requirement;
-`urlPrefix` forces the value of the certificate's `Subject` field value to be
-prefixed by the value defined in the signature requirement.
+certificate. The `Subject` field contains the information of the user used to
+authenticate in the OIDC provider. The verification field, `subject`, can have
+two children fields: `equal` forces the `Subject` from the certificate to be
+equal to the value defined in the signature validation; `urlPrefix` forces the
+value of the certificate's `Subject` field value to be prefixed by the value
+defined in the signature requirement.
 
 **Examples**
 
@@ -225,11 +239,11 @@ from a repository owner by Flavio:
     urlPrefix: https://github.com/flavio
 ```
 
-##### `githubAction` kind
+#### Github actions signing validation
 
-This signature requirement kind is used to validate policies signed in Github
-Actions. This can also be achieve with the `genericIssuer` kind. But this kind
-simplify the signature requirement creation by defining two fields:
+This signature validation kind is used to validate policies signed in Github
+Actions. This can also be achieve with the `genericIssuer` kind as well. But
+this kind simplify the signature requirement creation by defining two fields:
 
 - `owner` (mandatory): Github ID of the user or organization to be trusted
 - `repo`: the name of the repository to be trusted
@@ -240,6 +254,30 @@ simplify the signature requirement creation by defining two fields:
 - kind: githubAction
   owner: kubewarden
 ```
+
+#### Signature annotations validation
+
+All the signature types can have one additional optional validation field, `annotations`.
+This fields are key/value data added by the users during the signing. Thus, it is
+possible to trust policies which have some required annotations.
+
+**Examples**
+
+If the users want to trust only policies which have been signed with some key
+and the annotation `environment` with the value `production`, they can define the
+following validation:
+
+```yaml
+- kind: pubKey
+  key: |
+    -----BEGIN PUBLIC KEY-----
+    MBFKHFDGHKIJH0CAQYIKoZIzj0DAQcDQgAEX0HFTtCfTtPmkx5p1RbDE6HJSGAVD
+    BVDF6SKFSF87AASUspkQsN3FO4iyWodCy5j3o0CdIJD/KJHDJFHDFIu6sA==
+    -----END PUBLIC KEY-----
+  annotation:
+    environment: production
+```
+
 
 #### How to use signatures verification file to check a policy OCI artifact
 
@@ -280,10 +318,11 @@ kwctl verify --verification-config-path kubewarden_signatures.yaml ghcr.io/kubew
 To configure Kubewarden to run only trusted policies, the users must create
 `configmap` with the minimum signatures requirements to allow a policy to be
 executed in the environment. The `configmap` follows the same structure of the
-file used to verify policy in the `kwctl` utility. The only difference in this case would be that the `configmap`
-should define all the configurations under the `verification-config` field.
-For example, let's consider that the users want to run policies signed by the Kubewarden
-organization. A sample `configmap` for this scenario has been illustrated below:
+file used to verify policy in the `kwctl` utility. The only difference in this
+case would be that the `configmap` should define all the configurations under
+the `verification-config` field.  For example, let's consider that the users
+want to run policies signed by the Kubewarden organization. A sample `configmap`
+for this scenario has been illustrated below:
 
 ```bash
 cat kubewarden_signatures.yaml
@@ -341,7 +380,7 @@ spec:
 ```
 
 If you deploy the default Policy Server using the `kubewarden-defaults`
-helm chart, you can configure this field by setting the `configmap` name in the
+Helm chart, you can configure this field by setting the `configmap` name in the
 `policyServer.verificationConfig` value.
 
 Now, when an untrusted policy is installed the Policy Server will exit before
