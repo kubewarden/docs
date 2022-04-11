@@ -78,9 +78,9 @@ Successfully verified SCT...
 tlog entry created with index: 1819248
 Pushing signature to: ghcr.io/jvanz/policies/user-group-psp
 ```
-With that, the policy has been signed and pushed to the repository. Note that there are no byproduct keys.
+With that, the policy has been signed and pushed to the repository. Note that there are no keys generated as a byproduct.
 
-### How to sign artefacts in Github workflows
+### How to sign artefacts in GitHub workflows
 
 `cosign` does not require the user to log on to an OIDC provider when using keyless signing
 in the context of a GitHub action environment. In this scenario,
@@ -115,7 +115,7 @@ runs:
         cosign sign ${IMMUTABLE_REF}
 # ... remaining of the workflow file
 ```
-> **NOTE**: This example came from the Github actions used at the time of this
+> **NOTE**: This example came from the GitHub actions used at the time of this
 > writing. It can change over time.
 
 In the example above, we demonstrate using `kwctl` to publish the container image and find
@@ -125,7 +125,7 @@ reference generated elsewhere.
 
 ## Listing policy signatures
 
-`kwctl` also allows the users to check the signatures in a published
+`kwctl` also allows users to check the signatures in a published
 policy. The `kwctl inspect` command shows all the relevant information about the
 policy and its signatures as illustrated in an example below:
 
@@ -473,7 +473,7 @@ defined in the signature requirement.
 **Examples**
 
 The following signature requires the policy to be signed by Alice in a keyless manner
-using the Github OIDC:
+using the GitHub OIDC:
 
 ```yaml
 - kind: genericIssuer
@@ -482,7 +482,7 @@ using the Github OIDC:
     equal: alice@example.com
 ```
 
-This signature requirement enforces that the policy be signed in the context of a Github actions environment
+This signature requirement enforces that the policy be signed in the context of a GitHub actions environment
 from a repository owned by Flavio:
 
 ```yaml
@@ -532,7 +532,7 @@ following validation:
 ```
 
 
-### How to use signatures verification config file to check a policy OCI artefact
+### How to use signature verification config file to check a policy OCI artefact
 
 To test if a given policy passes signature verification using the
 verification config file, use the `--verification-config-path`  flag of the `kwctl verify` command
