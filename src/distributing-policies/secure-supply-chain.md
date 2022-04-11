@@ -237,7 +237,7 @@ The following checks were performed on each of these signatures:
 ## Configuring the policy server to check policy signatures
 
 To configure Kubewarden to run only trusted policies, the users must create
-a `configmap` with the minimum signatures requirements needed for policies to be
+a `configmap` with the minimum signature requirements needed for policies to be
 executed in the environment. The `configmap` follows the same structure of the
 file described in the `Signature Config Reference` section used to verify policy
 in the `kwctl` utility. The only difference in this case would be that the
@@ -363,7 +363,7 @@ Helm chart, you can configure this field by setting the `configmap` name in the
 `policyServer.verificationConfig` value.
 
 Now, the PolicyServer will reject untrusted AdmissionPolicies and ClusterAdmissionPolicies,
-and those would never be in active status and processing admission review requests.
+and those would never be in active status or able to process admission review requests.
 
 ## Signature Config Reference
 
@@ -420,7 +420,7 @@ The configuration is composed of two sections:
 In the above example, the `minimumMatches` field has been assigned a value 2.
 This means that at least two of the signature requirements listed **need to be fulfilled**
 for the policy to be trusted. The default value that the `minimumMatches` field assumes is `1`.
-- `allOf`: All the signatures requirements defined in this section must be valid
+- `allOf`: All the signature requirements defined in this section must be valid
 so that the policy can be trusted.
 
 Each of these sections can contain one or more signature requirements.
