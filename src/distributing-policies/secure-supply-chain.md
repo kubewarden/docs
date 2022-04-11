@@ -56,7 +56,7 @@ Many times the policies are automatically built in CI/CD pipelines which complic
 the key generation process. The Sigstore keyless workflow described below is specifically designed for
 these situations and others where key generation is not possible.
 Instead of using long-lived singing keys, the keyless workflow uses certificate authorities (CAs) and
-certificate chains; a short-lived certificate key is generated, and linked into
+certificate chains. A short-lived certificate key is generated, and linked into
 a chain of trust by completing an identity challenge to confirm the signer's
 identity. The life of the certificate key is just about enough for the signing
 to occur. The identity challenge is performed by authenticating against an
