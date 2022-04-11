@@ -1,10 +1,10 @@
 # Secure Supply Chain
 
-A Secure Supply Chain infrastructure allow the developers and users to ensure
+A Secure Supply Chain infrastructure allows software developers and users to ensure
 the validity of the software artefacts' chain of custody. Thus, mitigating
-security issues in the their environments. [Sigstore project](https://sigstore.dev/)
-goal is to provide the tools and infrastructure to make that possible.
-Kubewarden leverage that to bring this security measures to its users.
+security issues in their environments. [The goal of the [Sigstore project](https://sigstore.dev/)
+is to provide the tools and infrastructure for validating the integrity of the supply chain.
+Kubewarden leverages the `cosign` and `fulcio` utilities offered by the sigstore project to bring these security measures to its users.
 
 Therefore, Cluster Operators can configure Kubewarden to only run policies signed
 by entities that they trust. While policy developers can sign their policies and
