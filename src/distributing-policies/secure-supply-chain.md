@@ -7,7 +7,7 @@ is to provide the tools and infrastructure for validating the integrity of the s
 Kubewarden leverages the `cosign` and `fulcio` utilities offered by the sigstore project to bring these security measures to its users.
 
 Therefore, cluster operators can configure Kubewarden to only run policies signed
-by entities that they trust. While policy developers can sign their policies and
+by entities that they trust while policy developers can sign their policies and
 publish them in a registry.
 
 ## Signing policies
