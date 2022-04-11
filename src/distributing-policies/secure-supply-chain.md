@@ -84,7 +84,7 @@ With that, the policy has been signed and pushed to the repository. Note that th
 
 `cosign` does not require the user to log on to an OIDC provider when using keyless signing
 in the context of a GitHub action environment. In this scenario,
-the Github token available during the execution of the workflow will be used to
+the GitHub token available during the execution of the workflow will be used to
 authenticate the user and generate the ephemeral keys. The signing process is
 the same used in the `Keyless` mode. This is an example of how Kubewarden project
 signs its policies:
