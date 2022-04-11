@@ -120,7 +120,7 @@ runs:
 
 In the example above, we demonstrate using `kwctl` to publish the container image and find
 the reference to it. This is not mandatory. You can call `cosign` with the image
-reference generated else where.
+reference generated elsewhere.
 
 
 ## Listing policy signatures
