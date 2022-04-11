@@ -126,8 +126,8 @@ reference generated elsewhere.
 ## Listing policy signatures
 
 `kwctl` also allows the users to check the signatures in a published
-policy. The `kwctl inpect` command shows all the relevant information about the
-policy and its signatures. See an example below:
+policy. The `kwctl inspect` command shows all the relevant information about the
+policy and its signatures as illustrated in an example below:
 
 ```console
 $ kwctl inspect registry://ghcr.io/kubewarden/policies/user-group-psp:v0.2.0
