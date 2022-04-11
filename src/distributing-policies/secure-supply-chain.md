@@ -492,9 +492,9 @@ from a repository owned by Flavio:
     urlPrefix: https://github.com/flavio
 ```
 
-### Github actions signature verification
+### GitHub actions signature verification
 
-This signature validation kind is used to validate policies signed in Github
+The signature validation kind, `githubAction` is used to validate policies signed in a Github
 Actions. This can be achieved with the `genericIssuer` kind as well. But
 this kind simplifies the signature requirement creation by defining two fields:
 
