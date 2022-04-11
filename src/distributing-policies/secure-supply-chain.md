@@ -511,12 +511,12 @@ this kind simplifies the signature requirement creation by defining two fields:
 ### Signature annotations validation
 
 All the signature types can have one additional optional validation field, `annotations`.
-These fields are key/value data added by the users during the signing process. Thus, it is
+These fields are key/value data added by the users during the signing process. The data makes it
 possible to trust policies that have specific required annotations.
 
 **Examples**
 
-If the users want to trust only policies which have been signed with some key
+If the users want to trust only policies which have been signed with a specific key
 and the annotation `environment` with the value `production`, they can define the
 following validation:
 
@@ -534,7 +534,7 @@ following validation:
 
 ### How to use signatures verification config file to check a policy OCI artefact
 
-To test if a given policy passes in the signatures verification using the
+To test if a given policy passes signature verification using the
 verification config file, use the `--verification-config-path`  flag of the `kwctl verify` command
 
 ```console
