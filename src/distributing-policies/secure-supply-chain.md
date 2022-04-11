@@ -472,7 +472,7 @@ defined in the signature requirement.
 
 **Examples**
 
-The following signature requirement asks the policy to be keyless signed by Alice
+The following signature requires the policy to be signed by Alice in a keyless manner
 using the Github OIDC:
 
 ```yaml
@@ -482,7 +482,7 @@ using the Github OIDC:
     equal: alice@example.com
 ```
 
-This signature requirement enforces that the policy by signed in a Github actions
+This signature requirement enforces that the policy be signed in the context of a Github actions environment
 from a repository owned by Flavio:
 
 ```yaml
@@ -495,8 +495,8 @@ from a repository owned by Flavio:
 ### GitHub actions signature verification
 
 The signature validation kind, `githubAction` is used to validate policies signed in a Github
-Actions. This can be achieved with the `genericIssuer` kind as well. But
-this kind simplifies the signature requirement creation by defining two fields:
+Actions environment. It can be achieved with the `genericIssuer` kind as well. But
+`githubAction`simplifies the signature requirement creation process by defining two additional fields:
 
 - `owner` (mandatory): Github ID of the user or organization to be trusted
 - `repo`: the name of the repository to be trusted
