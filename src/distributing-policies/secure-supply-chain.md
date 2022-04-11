@@ -483,7 +483,7 @@ using the Github OIDC:
 ```
 
 This signature requirement enforces that the policy by signed in a Github actions
-from a repository owner by Flavio:
+from a repository owned by Flavio:
 
 ```yaml
 - kind: genericIssuer
