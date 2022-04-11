@@ -125,7 +125,7 @@ reference generated elsewhere.
 
 ## Listing policy signatures
 
-`kwctl` also allows the users to check what are the signatures in a published
+`kwctl` also allows the users to check the signatures in a published
 policy. The `kwctl inpect` command shows all the relevant information about the
 policy and its signatures. See an example below:
 
