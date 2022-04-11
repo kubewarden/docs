@@ -18,10 +18,10 @@
 }
 @media (max-width: 768px) {
   #theme-main h1 {
-    font-size: 2em !important;
+    font-size: 50px !important;
     line-height: 3rem !important;
+    font-weight: 700
   }
-
   #theme-main .header-docs {
     margin-bottom: 20px;
   }
@@ -96,8 +96,6 @@ a.btn.navbar__github::before {
   background-color: #384745;
   box-shadow: inset 0 1px rgb(255 255 255 / 15%), 0 1px 1px rgb(0 0 0 / 8%);
 }
-
-
 
 .docusaurus-highlight-code-line {
   background-color: rgb(72, 77, 91);

@@ -54,20 +54,15 @@ module.exports = {
   },
   presets: [
     [
-      "@docusaurus/preset-classic",
+      '@docusaurus/preset-classic',
       {
         docs: {
-          sidebarPath: require.resolve("./sidebars.js"),
-          // Please change this to your repo.
-          editUrl:
-            "https://docs.kubewarden.io",
+          routeBasePath: '/', // Serve the docs at the site's root
+          /* other docs plugin options */
+          sidebarPath: require.resolve('./sidebars.js'),
         },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          editUrl:
-            "https://kubewarden.io/blog",
-        },
+        blog: false, // Optional: disable the blog plugin
+        // ...
         theme: {
           customCss: [require.resolve("./src/css/custom.css")],
         },

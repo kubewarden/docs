@@ -1,3 +1,7 @@
+---
+slug: /
+---
+
 # Introduction
 
 > **WARNING:** Kubewarden is in early development stage, it's not production ready.

@@ -10,19 +10,20 @@ The Kubewarden stack is made of the following components:
 
 > **PREREQUISITES:**
 >
-> Currently, the chart depends on `cert-manager`. Make sure you have [`cert-manager` installed](https://cert-manager.io/docs/installation/) *before* installing the `kubewarden-controller` chart.
+> Currently, the chart depends on `cert-manager`. Make sure you have [`cert-manager` installed](https://cert-manager.io/docs/installation) *before* installing the `kubewarden-controller` chart.
 >
 > You can install the latest version of `cert-manager` by running the following commands: 
 >
-```console
+```
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
-
+```
+```
 kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
 ```
 
 The Kubewarden stack can be deployed using `helm` charts as follows:
 
-```console
+```
 helm repo add kubewarden https://charts.kubewarden.io
 
 helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
