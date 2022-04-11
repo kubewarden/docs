@@ -498,7 +498,7 @@ The signature validation kind, `githubAction` is used to validate policies signe
 Actions environment. It can be achieved with the `genericIssuer` kind as well. But
 `githubAction`simplifies the signature requirement creation process by defining two additional fields:
 
-- `owner` (mandatory): Github ID of the user or organization to be trusted
+- `owner` (mandatory): GitHub ID of the user or organization to be trusted
 - `repo`: the name of the repository to be trusted
 
 **Example**
