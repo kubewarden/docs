@@ -6,7 +6,7 @@ security issues in their environments. [The goal of the [Sigstore project](https
 is to provide the tools and infrastructure for validating the integrity of the supply chain.
 Kubewarden leverages the `cosign` and `fulcio` utilities offered by the sigstore project to bring these security measures to its users.
 
-Therefore, Cluster Operators can configure Kubewarden to only run policies signed
+Therefore, cluster operators can configure Kubewarden to only run policies signed
 by entities that they trust. While policy developers can sign their policies and
 publish them in a registry.
 
@@ -43,7 +43,7 @@ Pushing signature to: ghcr.io/jvanz/policies/user-group-psp
 ```
 
 This command will sign the policy adding annotations in the image. The signed
-image is then upload into the registry. Now the policy is ready to be used
+image is then uploaded into the registry. Now the policy is ready to be used
 in a Kubewarden installation with signature verification enabled.
 
 > **NOTE**: For more information about how the signing process works under the hood, check
@@ -53,14 +53,14 @@ in a Kubewarden installation with signature verification enabled.
 ### Keyless signing
 
 Many times the policies are automatically built in CI/CD pipelines which complicates
-the key generation process. The Sigstore workflow is specifically designed for
+the key generation process. The Sigstore keyless workflow described below is specifically designed for
 these situations and others where key generation is not possible.
-Instead of using long-lived singing keys, the keyless workflow uses CAs and
-certificate chains: a short-lived certificate key is generated, and linked into
+Instead of using long-lived singing keys, the keyless workflow uses certificate authorities (CAs) and
+certificate chains; a short-lived certificate key is generated, and linked into
 a chain of trust by completing an identity challenge to confirm the signer's
-identity. The short-lived certificate key is around just enough for the signing
+identity. The life of the certificate key is just about enough for the signing
 to occur. The identity challenge is performed by authenticating against an
-OpenID Connect (OIDC) provider, Sigstore's Fulcio service is used for the chain of trust.
+OpenID Connect (OIDC) provider. Sigstore's Fulcio service is used for the chain of trust.
 
 For signing, we will again use Sigstore's cosign utility. However, as of this
 writing, this feature is not enabled by default in cosign. So, it's necessary
@@ -118,7 +118,7 @@ runs:
 > **NOTE**: This example came from the Github actions used at the time of this
 > writing. It can change over time.
 
-In the example above, it uses `kwctl` to publish the container image and find
+In the example above, we demonstrate using `kwctl` to publish the container image and find
 the reference to it. This is not mandatory. You can call `cosign` with the image
 reference generated else where.
 
