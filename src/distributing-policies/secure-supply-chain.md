@@ -60,7 +60,7 @@ certificate chains. A short-lived certificate key is generated, and linked into
 a chain of trust by completing an identity challenge to confirm the signer's
 identity. The life of the certificate key is just about enough for the signing
 to occur. The identity challenge is performed by authenticating against an
-OpenID Connect (OIDC) provider. Sigstore's Fulcio service is used for the chain of trust.
+OpenID Connect (OIDC) provider. Sigstore's Fulcio utility is used for the chain of trust.
 
 For signing, we will again use Sigstore's cosign utility. However, as of this
 writing, this feature is not enabled by default in cosign. So, it's necessary
