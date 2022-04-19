@@ -4,11 +4,28 @@ A Secure Supply Chain infrastructure allows software developers and users to ens
 the validity of the artefacts' chain of custody, thus mitigating
 security issues in their environments. The goal of the [Sigstore project](https://sigstore.dev/)
 is to provide the tools and infrastructure for validating the integrity of the supply chain.
-Kubewarden leverages the [`cosign`](https://github.com/sigstore/cosign) utility together with the [fulcio](https://github.com/SigStore/fulcio) and [rekor](https://github.com/sigstore/rekor) infrastructure offered by the sigstore project to bring these security measures to its users.
+Kubewarden leverages the [`cosign`](https://github.com/sigstore/cosign) utility together
+with the [fulcio](https://github.com/SigStore/fulcio) and [rekor](https://github.com/sigstore/rekor)
+infrastructure offered by the sigstore project to bring these security measures to its users.
 
 Therefore, cluster operators can configure Kubewarden to only run policies signed
 by entities that they trust while policy developers can sign their policies and
 publish them in a registry.
+
+## Requirements
+
+During following sections some tools will be required to be install in order to
+allow the users to sign and verify OCI artefacts signatures. They are
+[`cosign`](https://docs.sigstore.dev/cosign/installation/) and [`kwctl`](https://github.com/kubewarden/kwctl).
+
+Furthermore, if you want to sign you policies in Github, you can use the available
+[Github action](https://docs.sigstore.dev/cosign/installation/#github-action)
+
+This documentation uses the default [fulcio](https://github.com/SigStore/fulcio)
+and [rekor](https://github.com/sigstore/rekor) instances provided by the
+Sigstore project to perform the keyless signing. If you need to use your own
+infrastructure, check the Sigstore project documentation to learn more how to do it.
+
 
 ## Signing policies
 
