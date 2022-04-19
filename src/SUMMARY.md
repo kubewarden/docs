@@ -6,6 +6,7 @@
 
 - [Common tasks](./tasks.md)
   - [Mutating Policies](./mutating-policies.md)
+  - [PSP migration](./psp-migration.md)
 
 - [Architecture](./architecture.md)
 
