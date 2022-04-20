@@ -1,8 +1,8 @@
 # How to migrate from Kubernetes PSPs to Kubewarden policies?
-Kubewarden can be used to replace all deprecated [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/). Different from the PSPs, Kubewarden has separated
+Kubewarden can be used to replace all deprecated [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/). In contrast with the PSPs, Kubewarden has separate
 policies to achieve the same goal of different fields from the PSPs. The policies to cover each of the PSP configuration fields can be found below in the [mapping table](#mapping-kuberwarden-policies-to-psp-fields).
 
-To start deploying the Kubewarden policies to replace the PSPs, you need to install Kubewarden in your cluster. For that, please, refer to
+To start deploying the Kubewarden policies to replace the PSPs, you need to install Kubewarden in your cluster. For that, refer to
 the [installation guide](./quick-start.md).
 
 Once you have our Kubewarden instance running, it's time to deploy some policies to replace PodSecurtyPolicy and keep your cluster secure. For that, you can start by listing
@@ -221,7 +221,7 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-privileged.kubewarden.admission" denied the request: User 'system:admin' cannot schedule privileged containers
 ```
 
-To finish the migration of the PSP. It's necessary to disable host namespace sharing. As all the previous before, we can use another policy for that, the `host-namespace-psp`. It allow the cluster administrator block IPC, PID and Network namespaces individually. As well as set which ports the pods can export.
+To finish the migration of the PSP, it's necessary to disable host namespace sharing. Like the previous examples, we can use another policy for that, the `host-namespace-psp`. It allows the cluster administrator to block IPC, PID and Network namespaces individually. As well as set which ports the pods can export.
 
 ```console
 $ kubectl apply -f - <<EOF
