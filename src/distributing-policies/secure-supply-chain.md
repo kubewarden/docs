@@ -12,19 +12,19 @@ Therefore, cluster operators can configure Kubewarden to only run policies signe
 by entities that they trust while policy developers can sign their policies and
 publish them in a registry.
 
-## Requirements
+## Prerequisites
 
-During following sections some tools will be required to be install in order to
-allow the users to sign and verify OCI artefacts signatures. They are
-[`cosign`](https://docs.sigstore.dev/cosign/installation/) and [`kwctl`](https://github.com/kubewarden/kwctl).
+In the following sections, we will need a few tools to be installed so that
+users can sign and verify OCI artefacts signatures. As pre-requisites, therefore,
+[`cosign`](https://docs.sigstore.dev/cosign/installation/) and [`kwctl`](https://github.com/kubewarden/kwctl) will need to be installed.
 
-Furthermore, if you want to sign you policies in Github, you can use the available
+Users may also want to leverage GitHub to sign their policies. In which case, they can choose to install and use
 [Github action](https://docs.sigstore.dev/cosign/installation/#github-action)
 
-This documentation uses the default [fulcio](https://github.com/SigStore/fulcio)
+Keyless signing has been demonstrated using the default [fulcio](https://github.com/SigStore/fulcio)
 and [rekor](https://github.com/sigstore/rekor) instances provided by the
-Sigstore project to perform the keyless signing. If you need to use your own
-infrastructure, check the Sigstore project documentation to learn more how to do it.
+Sigstore project. Users may choose to utilise their own
+infrastructure by checking the Sigstore project documentation for more details.
 
 
 ## Signing policies
