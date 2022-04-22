@@ -1,14 +1,14 @@
 # How to migrate from Kubernetes PSPs to Kubewarden policies?
-Kubewarden can be used to replace all deprecated [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/). In contrast with the PSPs, Kubewarden has separate
-policies to achieve the same goal of different fields from the PSPs. The policies to cover each of the PSP configuration fields can be found below in the [mapping table](#mapping-kuberwarden-policies-to-psp-fields).
+With the removal of [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/)
+in Kubernetes v1.25, you can leverage Kubewarden for admission control on your Kubernetes clusters.
+In contrast with the PSPs, Kubewarden has separate policies to achieve the same goal of different
+fields from the PSPs. The policies to cover each of the PSP configuration fields can be found below
+in the [mapping table](#mapping-kuberwarden-policies-to-psp-fields).
 
-To start deploying the Kubewarden policies to replace the PSPs, you need to install Kubewarden in your cluster. For that, refer to
-the [installation guide](./quick-start.md).
+Once you have the Kubewarden instance running, it's time to deploy some policies to replace the `PodSecurityPolicy` object. Start by listing
+the PSPs in use. For the sake of this example, a PSP disabling privileged escalation, privileged containers, blocking pods running as root, forcing a particular user group, blocking host namespaces and allowing pod to use the port 443 only has been considered.
 
-Once you have our Kubewarden instance running, it's time to deploy some policies to replace PodSecurtyPolicy and keep your cluster secure. For that, you can start by listing
-the PSP in use. Let's suppose you have a PSP disabling privileged escalation, privileged containers, blocking pods running as root, forcing some user group, blocking host namespaces and allowing pod to use the port 443 only.
-
-Your PSP would be similar to this:
+The yaml definition of the aforementioned PSP would look like the below:
 
 ```console
 apiVersion: policy/v1beta1
@@ -33,9 +33,9 @@ spec:
       max: 443
 ```
 
-Now, it's necessary to create the Kuberwarden policies to archive the same goal. It will be necessary 4 different policies. One for the user and group configuration, one for the host namespace, one for the privileged escalation and another for the privileged container configuration.
+Let's create Kuberwarden policies to achieve the same goal. One thing that you need to know about Kubewarden policies is that every rule will be enforced by a separate policies. In our example, one policy each will be required for the user and group configuration, for the host namespace, for the privileged escalation and for the privileged container configuration.
 
-Let's start by blocking container escalation. For that you can deploy a policy like this:
+Let's start with blocking container escalation. For that you can deploy a policy as shown below:
 
 ```console
 $ kubectl apply -f - <<EOF
@@ -61,7 +61,7 @@ spec:
 EOF
 ```
 
-Once this policy start to run, it will block pods trying to escalate its permissions:
+If you notice, we have specified `default_allow_privilege_escalation` to assume a value `false`. Once this policy starts running, it will restrict pods trying to run with more privileges than the parent container by default.
 
 ```console
 $ kubectl apply -f - <<EOF
@@ -113,7 +113,7 @@ spec:
 EOF
 ```
 
-Notice the policy is configured as `mutation: true`. This is required because the policy will add supplemental user groups when the user does not define them.
+Notice the policy is configured as `mutation: true`. This is required because the policy will add [supplementalGroups](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups) when the user does not define them.
 
 So, now users cannot deploy pods running as root:
 
@@ -151,7 +151,7 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-usergroup-fb836.kubewarden.admission" denied the request: Invalid user ID: cannot run container with root ID (0)
 ```
 
- And a group should be added when not defined:
+Additionally, the example below also demonstrates the addition a [Supplemental group](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups), despite it not being defined by us.
 
 ```console
 kubectl apply -f - <<EOF
@@ -174,7 +174,7 @@ $ kubectl get pods -o json nginx | jq ".spec.securityContext"
 
 ```
 
-To replace the PSP configuration to block privileged containers it's necessary to deploy the pod-privileged policy. This policy does not require any settings, once running, it will block pod privileged pods.
+To replace the PSP configuration that blocks privileged containers, it's necessary to deploy the [pod-privileged policy](https://github.com/kubewarden/pod-privileged-policy). This policy does not require any settings. Once running, it will block privileged pods.
 
 ```console
 $ kubectl apply -f - <<EOF
@@ -199,7 +199,7 @@ spec:
 EOF
 ```
 
-To test the policy, we can try to run a pod with the privileged configuration enabled:
+To test the policy, we can try running a pod with privileged configuration enabled:
 
 ```console
 $ kubectl apply -f - <<EOF
@@ -221,7 +221,10 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-privileged.kubewarden.admission" denied the request: User 'system:admin' cannot schedule privileged containers
 ```
 
-To finish the migration of the PSP, it's necessary to disable host namespace sharing. Like the previous examples, we can use another policy for that, the `host-namespace-psp`. It allows the cluster administrator to block IPC, PID and Network namespaces individually. As well as set which ports the pods can export.
+To complete the PSP migration exercise, it's necessary to disable host namespace sharing.
+To do that, we shall be using the [`host-namespace-psp` policy](https://github.com/kubewarden/host-namespaces-psp-policy).
+It allows the cluster administrator to block IPC, PID, and network namespaces individually and set the ports
+that the pods can export.
 
 ```console
 $ kubectl apply -f - <<EOF
@@ -319,7 +322,7 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-hostnamespaces.kubewarden.admission" denied the request: Pod has host PID enabled, but this is not allowed
 ```
 
-And the pod can export only the port 443:
+The pod should be only able to expose the port 443 and should throw an error when port numbers are configured against the hostPort section.
 
 ```console
 $ kubectl apply -f - <<EOF
