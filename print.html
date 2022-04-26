@@ -1326,16 +1326,15 @@ This is going to be covered inside of the next chapter.</p>
   </tbody>
 </table>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="mutating-policies-1"><a class="header" href="#mutating-policies-1">Mutating policies</a></h1>
-<p>Mutation policies are structured in the very same was as validating ones:</p>
+<p>Mutating policies are structured in the very same way as validating ones:</p>
 <ul>
-<li>They have to register a <code>validate</code> and a <code>validate_settings</code> waPC functions</li>
+<li>They have to register <code>validate</code> and <code>validate_settings</code> waPC functions</li>
 <li>The communication API used between the host and the policy is the very same
 as the one used by validating policies.</li>
 </ul>
 <p>Mutating policies can accept a request and propose a mutation of the incoming
-object by returning a <code>ValidationResponse</code> object that looks like that:</p>
-<pre><code class="language-json">```json
-{
+object by returning a <code>ValidationResponse</code> object that looks like this:</p>
+<pre><code class="language-json">{
   &quot;accepted&quot;: true,
   &quot;mutated_object&quot;: &lt;object to be created&gt;
 }
@@ -1343,7 +1342,7 @@ object by returning a <code>ValidationResponse</code> object that looks like tha
 <p>The <code>mutated_object</code> field contains the object the policy wants to be created
 inside of the Kubernetes cluster serialized to JSON.</p>
 <h2 id="a-concrete-example-1"><a class="header" href="#a-concrete-example-1">A concrete example</a></h2>
-<p>Let's assume the policy received <code>ValidationRequest</code>:</p>
+<p>Let's assume the policy received this <code>ValidationRequest</code>:</p>
 <pre><code class="language-json">{
   &quot;settings&quot;: {},
   &quot;request&quot;: {
@@ -1372,10 +1371,10 @@ inside of the Kubernetes cluster serialized to JSON.</p>
 }
 </code></pre>
 <blockquote>
-<p><strong>Note well:</strong> we left some irrelevant fields out of the <code>request</code> object.</p>
+<p><strong>Note:</strong> we left some irrelevant fields out of the <code>request</code> object.</p>
 </blockquote>
 <p>This request is generated because someone tried to create a Pod that would
-look like that:</p>
+look like this:</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Pod
 metadata:
@@ -1422,7 +1421,7 @@ spec:
 }
 </code></pre>
 <p>That would lead to the request being accepted, but the final Pod would look like
-that:</p>
+this:</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Pod
 metadata:
@@ -1439,10 +1438,10 @@ spec:
         drop:
         - BPF
 </code></pre>
-<p>As you can see the policy altered the <code>securityContext.capabilities.drop</code>
+<p>As you can see, the policy altered the <code>securityContext.capabilities.drop</code>
 section of the only container declared inside of the Pod.</p>
 <p>The container is now dropping the <code>BPF</code> capability thanks to our policy.</p>
-<h1 id="recap-2"><a class="header" href="#recap-2">Recap</a></h1>
+<h2 id="recap-2"><a class="header" href="#recap-2">Recap</a></h2>
 <p>These are the functions a mutating policy must implement:</p>
 <table>
   <thead>
