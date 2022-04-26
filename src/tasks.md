@@ -57,30 +57,31 @@ You can list all the `kwctl` options and subcommands by running the following co
 
 ```shell
 $ kwctl --help
-kwctl 0.2.4
-Flavio Castelli <fcastelli@suse.com>:Rafael Fernández López <rfernandezlopez@suse.com>
+kwctl 0.2.5
+Kubewarden Developers <kubewarden@suse.de>
 Tool to manage Kubewarden policies
 
 USAGE:
-    kwctl [FLAGS] <SUBCOMMAND>
+    kwctl [OPTIONS] <SUBCOMMAND>
 
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+OPTIONS:
+    -h, --help       Print help information
     -v               Increase verbosity
+    -V, --version    Print version information
 
 SUBCOMMANDS:
-    annotate       Adds Kubewarden metadata to a WebAssembly module
-    completions    Generates shell completions
-    help           Prints this message or the help of the given subcommand(s)
-    inspect        Inspects Kubewarden policy
-    manifest       Scaffolds a Kubernetes resource
+    annotate       Add Kubewarden metadata to a WebAssembly module
+    completions    Generate shell completions
+    digest         Fetch the digest of its OCI manifest
+    help           Print this message or the help of the given subcommand(s)
+    inspect        Inspect Kubewarden policy
     policies       Lists all downloaded policies
     pull           Pulls a Kubewarden policy from a given URI
     push           Pushes a Kubewarden policy to an OCI registry
     rm             Removes a Kubewarden policy from the store
     run            Runs a Kubewarden policy from a given URI
-    verify         Verifies a Kubewarden policy from a given URI using Sigstore
+    scaffold       Scaffold a Kubernetes resource or configuration file
+    verify         Verify a Kubewarden policy from a given URI using Sigstore
 ```
 
 Here are a few examples of the commands you should run, depending on the task you want to perform:
@@ -203,11 +204,11 @@ After you have generated the `ClusterAdmissionPolicy` and applied it to your Kub
 
   - Generate the `ClusterAdmissionPolicy` from the policy `manifest` and save it to a file
   
-    - Command: `kwctl manifest -t ClusterAdmissionPolicy <policy URI> > <"policy name".yaml>`
+    - Command: `kwctl scaffold manifest -t ClusterAdmissionPolicy <policy URI> > <"policy name".yaml>`
     - Example:
     
     ```shell
-    $ kwctl manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+    $ kwctl scaffold manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
     ---
     apiVersion: policies.kubewarden.io/v1alpha2
     kind: ClusterAdmissionPolicy
