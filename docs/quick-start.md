@@ -10,32 +10,49 @@ The Kubewarden stack is made of the following components:
 
 > **PREREQUISITES:**
 >
-> Currently, the chart depends on `cert-manager`. Make sure you have [`cert-manager` installed](https://cert-manager.io/docs/installation) *before* installing the `kubewarden-controller` chart.
+> Currently, the chart depends on `cert-manager`. Make sure you have [`cert-manager` installed](https://cert-manager.io/docs/installation/) *before* installing the `kubewarden-controller` chart.
 >
-> You can install the latest version of `cert-manager` by running the following commands: 
+> You can install the latest version of `cert-manager` by running the following commands:
 >
-```
+```console
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
-```
-```
+
 kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
 ```
 
 The Kubewarden stack can be deployed using `helm` charts as follows:
 
-```
+```console
 helm repo add kubewarden https://charts.kubewarden.io
 
 helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
 
 helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller
+
+helm install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults
 ```
 
 The following charts should be installed inside the `kubewarden` namespace in your Kubernetes cluster:
 
 * `kubewarden-crds`, which will register the `ClusterAdmissionPolicy` and `PolicyServer` Custom Resource Definitions
 
-* `kubewarden-controller` with a default configuration, and which will create a `PolicyServer` resource named `default`. 
+* `kubewarden-controller`, which will install the Kubewarden controller
+
+* `kubewarden-defaults`, which will create a `PolicyServer` resource named `default`. It can also installs a set of
+recommended policies to secure your cluster by enforcing some well known best practices.
+
+
+> **WARNING:**
+> Since [`v0.4.0`](https://github.com/kubewarden/kubewarden-controller/releases/tag/v0.4.0), a PolicyServer resource named default will not be created using the `kubewarden-controller` chart.
+> There is another Helm chart called `kubewarden-defaults`, which now installs
+> the default policy server.
+>
+> This also means that if you are not using the latest version of the `kubewarden-controller` and are trying to upgrade,
+> your default policy server will not be upgraded or deleted. As a result, you might run into
+> issues if you try to install the `kubewarden-defaults` with some conflicting information, for example the same policy server name.
+> Therefore, to be able to take advantage of future upgrades in the `kubewarden-defaults` helm chart you need to remove the
+> existing PolicyServer resource created by the `kubewarden-controller` before installing the new chart. With this step, you ensure that you are able to update your policy server using Helm upgrades without running into
+> resource conflicts. It worth mentioning that when you remove the PolicyServer, all the policies bounded to it will be removed as well.
 
 > **QUICK NOTE:**
 >
@@ -43,15 +60,16 @@ The following charts should be installed inside the `kubewarden` namespace in yo
 
 ## Main components
 
-Kubewarden has two main components which you will interact with:
+Kubewarden has three main components which you will interact with:
 * The PolicyServer
 * The ClusterAdmissionPolicy
+* The AdmissionPolicy
 
-### Policy Server
+### PolicyServer
 
-A Kubewarden Policy Server is completely managed by the `kubewarden-controller` and multiple Policy Servers can be deployed in the same Kubernetes cluster.
+A Kubewarden `PolicyServer` is completely managed by the `kubewarden-controller` and multiple `PolicyServers` can be deployed in the same Kubernetes cluster.
 
-The Policy Server is the component which executes the Kubewarden policies when requests arrive and validates them.
+The `PolicyServer` is the component which executes the Kubewarden policies when requests arrive and validates them.
 
 Default `PolicyServer` configuration:
 
@@ -129,11 +147,14 @@ Overview of the attributes of the `ClusterAdmissionPolicy` resource:
 | | | - `Ignore`: an error calling the webhook is ignored and the API request is allowed to continue |
 | | | - `Fail`: an error calling the webhook causes the admission to fail and the API request to be rejected |
 
-The complete documentation of this Custom Resource can be found [here](https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc) or on [docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
-
 > **NOTE:** The  `ClusterAdmissionPolicy` resources are registered with a `*` webhook `scope`, which means that registered webhooks will forward all requests matching the given `resources` and `operations` -- either namespaced (in any namespace), or cluster-wide resources.
 
-> **NOTE:** The `ClusterAdmissionPolicy` resource is cluster-wide. There are plans to also provide a namespaced version that will only impact registered namespaced resources on its own namespace.
+### AdmissionPolicy
+
+`AdmissionPolicy` is a namespace-wide resource. The policy will process only the requests that are targeting the Namespace where the `AdmissionPolicy` is defined. Other than that, there are no functional differences between the `AdmissionPolicy` and `ClusterAdmissionPolicy` resources.
+> **NOTE:**  `AdmissionPolicy` requires kubernetes 1.21.0 or above. This is because we are using the `kubernetes.io/metadata.name` label, which was introduced in kubernetes 1.21.0
+
+The complete documentation of these Custom Resources can be found [here](https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc) or on [docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
 
 ## Example: Enforce your first policy
 
@@ -249,6 +270,8 @@ Error from server: error when creating "STDIN": admission webhook "privileged-po
 You can remove the resources created by uninstalling the `helm` charts as follow:
 
 ```console
+helm uninstall --namespace kubewarden kubewarden-defaults
+
 helm uninstall --namespace kubewarden kubewarden-controller
 
 helm uninstall --namespace kubewarden kubewarden-crds
@@ -281,6 +304,6 @@ kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistrati
 ```
 ## Wrapping up
 
-As we have seen, the `ClusterAdmissionPolicy` resource is the core type that a cluster operator has to manage, the rest of the resources needed to run the policies and configure them will be taken care of automatically by the `kubewarden-controller` module.
+As we have seen, `ClusterAdmissionPolicy` is the core resource that a cluster operator has to manage. The `kubewarden-controller` module automatically takes care of the configuration for the rest of the resources needed to run the policies.
 
-Now, you are ready to deploy Kubewarden and you can have a look at the policies in [hub.kubewarden.io](https://hub.kubewarden.io), [on Github](https://github.com/topics/kubewarden-policy), or reuse existing Rego policies as shown in the [following chapters!](./writing-policies/rego/01-intro.md) 
+Now, you are ready to deploy Kubewarden! Have a look at the policies on [hub.kubewarden.io](https://hub.kubewarden.io), [on Github](https://github.com/topics/kubewarden-policy), or reuse existing Rego policies as shown in the [following chapters!](./writing-policies/rego/01-intro.md)

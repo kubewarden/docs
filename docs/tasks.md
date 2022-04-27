@@ -1,6 +1,6 @@
 # Common Tasks
 
-This page lists a set of tasks that can be performed after you [install Kubewarden](/quick-start.md#install) in your Kubernetes cluster.
+This page lists a set of tasks that can be performed after you [install Kubewarden](/quick-start.html#install) in your Kubernetes cluster.
 
 Each task can be done separately; however, if you're not familiar with Kubewarden, or Kubernetes policies in general, we recommend that you follow the tasks below in sequential order.
 
@@ -17,7 +17,7 @@ The Kubewarden Policy Hub hosts policies contributed by the community. For examp
 
 As shown in the picture below, once you find the policy to be tested, you can copy the registry path<sup>1</sup> or download<sup>2</sup> the `Wasm` binary containing the policy and additional metadata:
 
-![Kubewarden Policy Hub](/img/tasks-policy-hub.png)
+![Kubewarden Policy Hub](/images/tasks-policy-hub.png)
 
 Once you have the policy `Wasm` binary or the registry path, you can test it with `kwctl`.
 
@@ -57,30 +57,31 @@ You can list all the `kwctl` options and subcommands by running the following co
 
 ```shell
 $ kwctl --help
-kwctl 0.2.4
-Flavio Castelli <fcastelli@suse.com>:Rafael Fernández López <rfernandezlopez@suse.com>
+kwctl 0.2.5
+Kubewarden Developers <kubewarden@suse.de>
 Tool to manage Kubewarden policies
 
 USAGE:
-    kwctl [FLAGS] <SUBCOMMAND>
+    kwctl [OPTIONS] <SUBCOMMAND>
 
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+OPTIONS:
+    -h, --help       Print help information
     -v               Increase verbosity
+    -V, --version    Print version information
 
 SUBCOMMANDS:
-    annotate       Adds Kubewarden metadata to a WebAssembly module
-    completions    Generates shell completions
-    help           Prints this message or the help of the given subcommand(s)
-    inspect        Inspects Kubewarden policy
-    manifest       Scaffolds a Kubernetes resource
+    annotate       Add Kubewarden metadata to a WebAssembly module
+    completions    Generate shell completions
+    digest         Fetch the digest of its OCI manifest
+    help           Print this message or the help of the given subcommand(s)
+    inspect        Inspect Kubewarden policy
     policies       Lists all downloaded policies
     pull           Pulls a Kubewarden policy from a given URI
     push           Pushes a Kubewarden policy to an OCI registry
     rm             Removes a Kubewarden policy from the store
     run            Runs a Kubewarden policy from a given URI
-    verify         Verifies a Kubewarden policy from a given URI using Sigstore
+    scaffold       Scaffold a Kubernetes resource or configuration file
+    verify         Verify a Kubewarden policy from a given URI using Sigstore
 ```
 
 Here are a few examples of the commands you should run, depending on the task you want to perform:
@@ -195,7 +196,7 @@ Here are a few examples of the commands you should run, depending on the task yo
   
 ## Enforce Policies
 
-As described in the [Quick Start](/quick-start.md#example-enforce-your-first-policy), you can enforce a policy by defining a `ClusterAdmissionPolicy` and then deploy it to your cluster using `kubectl`.
+As described in the [Quick Start](/quick-start.html#example-enforce-your-first-policy), you can enforce a policy by defining a `ClusterAdmissionPolicy` and then deploy it to your cluster using `kubectl`.
 
 `kwctl` will help to generate a `ClusterAdmissionPolicy` from the policy you want to enforce. 
 
@@ -203,11 +204,11 @@ After you have generated the `ClusterAdmissionPolicy` and applied it to your Kub
 
   - Generate the `ClusterAdmissionPolicy` from the policy `manifest` and save it to a file
   
-    - Command: `kwctl manifest -t ClusterAdmissionPolicy <policy URI> > <"policy name".yaml>`
+    - Command: `kwctl scaffold manifest -t ClusterAdmissionPolicy <policy URI> > <"policy name".yaml>`
     - Example:
     
     ```shell
-    $ kwctl manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+    $ kwctl scaffold manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
     ---
     apiVersion: policies.kubewarden.io/v1alpha2
     kind: ClusterAdmissionPolicy
@@ -248,8 +249,8 @@ Once the `ClusterAdmissionPolicy` is deployed, the requests sent to your Kuberne
 
 ### Write Policies
 
-The [Writing Policies](/writing-policies/index.md) section explains how to write policies in different languages and how to export them into Webassembly so that they can be interpreted by Kubewarden.
+The [Writing Policies](/writing-policies/) section explains how to write policies in different languages and how to export them into Webassembly so that they can be interpreted by Kubewarden.
 
 ### Distribute Policies
 
-The [Distributing Policies](/distributing-policies.md) section explains how to publish policies to [OCI registries](https://github.com/opencontainers/distribution-spec/blob/main/spec.md).
+The [Distributing Policies](/distributing-policies/) section explains how to publish policies to [OCI registries](https://github.com/opencontainers/distribution-spec/blob/main/spec.md).
