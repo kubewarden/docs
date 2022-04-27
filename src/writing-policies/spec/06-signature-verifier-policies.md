@@ -25,7 +25,7 @@ implementing the waPC intercommunication mechanism is able to request this
 information.
 
 The different language SDKs for Kubewarden policies take care of all that, and
-provide functions for container image verification. This ensures a safe and
+provide functions for verification of container image, Kubewarden policies, Helm charts and generally speaking any kind of OCI artifact. This ensures a safe and
 tested codepath for verification. In addition, pulling images and
 cryptographically verifying signatures can be time and computationally
 expensive, so the SDKs stack ensures that both the image pulls and the
