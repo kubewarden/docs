@@ -7,30 +7,27 @@ Part of that is to ensure that all container images running in the cluster are
 signed and verified, proving that they come from their stated authors, and
 haven't been tampered with. For further reading, do check out the docs on [how we implement a Secure Supply Chain for the policies themselves](TODO link to https://github.com/kubewarden/docs/pull/100/files)).
 
-Sigstore signatures are stored inside of container registries, next to the OCI object being signed;
-be it a container image or a more generic OCI artifact,  like a Kubewarden policy.
-Given an object to be signed, all its signatures are going to be stored as layers of a special OCI
-object created by sigstore. 
+Sigstore signatures are stored inside of container registries, next to the OCI
+object being signed; be it a container image or a more generic OCI artifact,
+like a Kubewarden policy.  Given an object to be signed, all its signatures are
+going to be stored as layers of a special OCI object created by sigstore.
 Policies that want to check Sigstore signatures of containers need then to check
 those layers, and would need to pull the signature layers to see the
 signatures themselves.
 
-Obtaining and operating with those OCI layers needs to happen outside of
-the WebAssembly guest (the policy). Hence this is done by the WebAssembly runtime: Kubewarden's
-`policy-server` or `kwctl.
-
-Just like for context-aware policies, the guest-host intercommunication is
-performed using the regular waPC host calling mechanism, and any guest
-implementing the waPC intercommunication mechanism is able to request this
-information.
+Obtaining and operating with those OCI layers needs to happen outside of the
+WebAssembly guest (the policy). Hence this is done by the WebAssembly runtime:
+Kubewarden's `policy-server` or `kwctl.
 
 The different language SDKs for Kubewarden policies take care of all that, and
-provide functions for verification of container image, Kubewarden policies, Helm charts and generally speaking any kind of OCI artifact. This ensures a safe and
+provide functions for verification of container image, Kubewarden policies, Helm
+charts and generally speaking any kind of OCI artifact. This ensures a safe and
 tested codepath for verification. In addition, pulling data from a registry and
 cryptographically verifying signatures can be time and computationally
 expensive, so the WebAssembly runtime (PolicyServer, `kwctl`) ensures both
-signature pulls and verification computations are cached.
-The cached entries are automatically expired after 60 seconds to prevent stale data from being served.
+signature pulls and verification computations are cached. The cached entries
+are automatically expired after 60 seconds to prevent stale data from being
+served.
 
 The SDKs provide functions similar to the following:
 - ```
@@ -65,8 +62,7 @@ The Kubewarden team [provides a verifier policy](https://github.com/kubewarden/v
 that enforces Sigstore signatures for all containers, built on Rust and with the
 Rust SDK. The policy ensures that the containers are signed, and optionally,
 mutates the requests substituting the container tag for the exact checksum
-of the image matching the verified signature. It has also quality of life
-additions on the UX, see its docs for specifics.
+of the image matching the verified signature. Check its docs for specifics.
 
 This policy may cover all your needs, but in case you would prefer a different
 UX, of course you can build on top of it or any of the other SDKs.
