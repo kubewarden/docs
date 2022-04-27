@@ -61,7 +61,7 @@ therefore be compromised).
 
 ## A concrete example
 
-The Kubewarden team [provides a verifier policy](TODO link to hub.kubewarden.io for the policy)
+The Kubewarden team [provides a verifier policy](https://github.com/kubewarden/verify-image-signatures)
 that enforces Sigstore signatures for all containers, built on Rust and with the
 Rust SDK. The policy ensures that the containers are signed, and optionally,
 mutates the requests substituting the container tag for the exact checksum
