@@ -7,9 +7,12 @@ Part of that is to ensure that all container images running in the cluster are
 signed and verified, proving that they come from their stated authors, and
 haven't been tampered with. For further reading, do check out the docs on [how we implement a Secure Supply Chain for the policies themselves](TODO link to https://github.com/kubewarden/docs/pull/100/files)).
 
-Sigstore signatures of containers are stored as layers of the container image.
+Sigstore signatures are stored inside of container registries, next to the OCI object being signed;
+be it a container image or a more generic OCI artifact,  like a Kubewarden policy.
+Given an object to be signed, all its signatures are going to be stored as layers of a special OCI
+object created by sigstore. 
 Policies that want to check Sigstore signatures of containers need then to check
-those container layers, and would need to pull the signature layers to see the
+those layers, and would need to pull the signature layers to see the
 signatures themselves.
 
 Obtaining and operating with those container layers needs to happen outside of
