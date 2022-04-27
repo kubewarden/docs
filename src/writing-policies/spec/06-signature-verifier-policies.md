@@ -15,9 +15,9 @@ Policies that want to check Sigstore signatures of containers need then to check
 those layers, and would need to pull the signature layers to see the
 signatures themselves.
 
-Obtaining and operating with those container layers needs to happen outside of
-the waPC guest (the policy), and on the waPC host (Kubewarden's
-`policy-server`).
+Obtaining and operating with those OCI layers needs to happen outside of
+the WebAssembly guest (the policy). Hence this is done by the WebAssembly runtime: Kubewarden's
+`policy-server` or `kwctl.
 
 Just like for context-aware policies, the guest-host intercommunication is
 performed using the regular waPC host calling mechanism, and any guest
