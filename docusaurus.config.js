@@ -8,7 +8,7 @@ module.exports = {
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
-  organizationName: "harvester", // Usually your GitHub org/user name.
+  organizationName: "kubewarden", // Usually your GitHub org/user name.
   projectName: "kubewarden.io", // Usually your repo name.
   themeConfig: {
     colorMode: {
