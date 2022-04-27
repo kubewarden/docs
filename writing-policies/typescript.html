@@ -161,23 +161,23 @@ providing fixes before you run code.</p>
 <a href="https://www.assemblyscript.org/">AssemblyScript</a> is a <strong>subset</strong> of TypeScript
 designed explicitly for WebAssembly.</p>
 <h2 id="current-state"><a class="header" href="#current-state">Current State</a></h2>
-<p>Currently there's currently no Kubewarden SDK for AssemblyScript, we haven't
-created it bacause of lack of time. We will do that in the near future.</p>
+<p>Currently there's no Kubewarden SDK for AssemblyScript. We haven't created it
+because of lack of time. We will do that in the near future.</p>
 <p>In the meantime, there seem to be some limitatations affecting AssemblyScript:</p>
 <ul>
-<li>There's no built-in way to Serialize and Deserilize classed to
+<li>There's no built-in way to serialize and deserialize Classes to
 and from JSON. See <a href="https://github.com/AssemblyScript/assemblyscript/issues/292">this issue</a></li>
 <li>It <em>seems</em> there's no JSON path library for AssemblyScript</li>
 </ul>
 <h2 id="example"><a class="header" href="#example">Example</a></h2>
 <p><a href="https://github.com/kubewarden/pod-privileged-policy">This GitHub repository</a>
 contains a Kubewarden Policy written in AssemblyScript.</p>
-<p><strong>Worth of note:</strong> this repository has a series of GitHub Actions that automate
+<p><strong>Worth noting:</strong> this repository has a series of GitHub Actions that automate
 the following tasks:</p>
 <ul>
 <li>Run unit tests and code linting on pull requests and after code is merged
 into the main branch</li>
-<li>Build the policy in <code>release</code> mode and push it to a OCI registry as an
+<li>Build the policy in <code>release</code> mode and push it to an OCI registry as an
 artifact</li>
 </ul>
 
