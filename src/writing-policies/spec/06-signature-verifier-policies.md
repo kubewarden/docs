@@ -1,7 +1,7 @@
 # Signature verifier policies
 
 Kubewarden implements support for the [Sigstore](https://www.sigstore.dev/)
-standard. This allows to implement a Secure Supply Chain for your cluster.
+project. This allows to implement a Secure Supply Chain for your cluster.
 
 Part of that is to ensure that all container images run the in the cluster are
 signed and verified, proving that they come from their stated authors, and
