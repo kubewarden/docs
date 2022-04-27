@@ -26,10 +26,11 @@ information.
 
 The different language SDKs for Kubewarden policies take care of all that, and
 provide functions for verification of container image, Kubewarden policies, Helm charts and generally speaking any kind of OCI artifact. This ensures a safe and
-tested codepath for verification. In addition, pulling images and
+tested codepath for verification. In addition, pulling data from a registry and
 cryptographically verifying signatures can be time and computationally
-expensive, so the SDKs stack ensures that both the image pulls and the
-verification computations are cached.
+expensive, so the WebAssembly runtime (PolicyServer, `kwctl`) ensures both
+signature pulls and verification computations are cached.
+The cached entries are automatically expired after 60 seconds to prevent stale data from being served.
 
 The SDKs provide functions similar to the following:
 - ```
