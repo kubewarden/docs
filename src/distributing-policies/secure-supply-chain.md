@@ -19,7 +19,7 @@ users can sign and verify OCI artefacts signatures. As pre-requisites, therefore
 [`cosign`](https://docs.sigstore.dev/cosign/installation/) and [`kwctl`](https://github.com/kubewarden/kwctl) will need to be installed.
 
 Users may also want to leverage GitHub to sign their policies. In which case, they can choose to install and use
-[Github action](https://docs.sigstore.dev/cosign/installation/#github-action)
+[Github actions](https://docs.sigstore.dev/cosign/installation/#github-action)
 
 Keyless signing has been demonstrated using the default [fulcio](https://github.com/SigStore/fulcio)
 and [rekor](https://github.com/sigstore/rekor) instances provided by the
