@@ -518,7 +518,7 @@ from a repository owned by the GitHub user `flavio`:
 
 #### GitHub actions signature verification
 
-The signature validation kind, `githubAction` is used to validate policies signed in a Github
+The signature validation kind, `githubAction` is used to validate policies signed in a GitHub
 Actions environment. It can be achieved with the `genericIssuer` kind as well. But
 `githubAction`simplifies the signature requirement creation process by defining two additional fields:
 
