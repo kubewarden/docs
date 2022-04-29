@@ -6,7 +6,7 @@ security issues in their environments. The goal of the [Sigstore project](https:
 is to provide the tools and infrastructure for validating the integrity of the supply chain.
 Kubewarden leverages the [`cosign`](https://github.com/sigstore/cosign) utility together
 with the [fulcio](https://github.com/SigStore/fulcio) and [rekor](https://github.com/sigstore/rekor)
-infrastructure offered by the sigstore project to bring these security measures to its users.
+infrastructure offered by the Sigstore project to bring these security measures to its users.
 
 Therefore, cluster operators can configure Kubewarden to only run policies signed
 by entities that they trust while policy developers can sign their policies and
