@@ -16,7 +16,7 @@ publish them in a registry.
 
 In the following sections, we will need a few tools to be installed so that
 users can sign and verify OCI artefacts signatures. For key-based signing, the examples demonstrate
-[`cosign`](https://docs.sigstore.dev/cosign/installation/) and [`kwctl`](https://github.com/kubewarden/kwctl) will need to be installed.
+the use of [`cosign`](https://docs.sigstore.dev/cosign/installation/) and [`kwctl`](https://github.com/kubewarden/kwctl) utilities for signing and inspecting policies.
 
 Users may also want to leverage GitHub to sign their policies. In which case, they can choose to install and use
 [Github actions](https://docs.sigstore.dev/cosign/installation/#github-action)
