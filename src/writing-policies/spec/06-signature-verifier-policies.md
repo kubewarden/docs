@@ -17,7 +17,7 @@ signatures themselves.
 
 Obtaining and operating with those OCI layers needs to happen outside of the
 WebAssembly guest (the policy). Hence this is done by the WebAssembly runtime:
-Kubewarden's `policy-server` or `kwctl.
+Kubewarden's `policy-server` or `kwctl`.
 
 The different language SDKs for Kubewarden policies take care of all that, and
 provide functions for verification of container image, Kubewarden policies, Helm
