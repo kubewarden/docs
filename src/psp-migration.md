@@ -43,7 +43,7 @@ spec:
       max: 443
 ```
 
-Let's create Kuberwarden policies to achieve the same goal. One thing that you need to know about Kubewarden policies is that every rule will be enforced by a separate policy. In our example, one policy each will be required for the user and group configuration, for the host namespace, for the privileged escalation and for the privileged container configuration.
+Let's create Kubewarden policies to achieve the same goal. One thing that you need to know about Kubewarden policies is that every rule will be enforced by a separate policy. In our example, individual policies will be required for the enforcement of user and group configuration, host namespaces,  privileged escalation, and for the privileged container configuration.
 
 Let's start with blocking container escalation. For that you can deploy a policy as shown below:
 
@@ -91,7 +91,7 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-allowprivilegeescalation.kubewarden.admission" denied the request: one of the containers has privilege escalation enabled
 ```
 
-Now, to enforce the user and groups configuration, you can use the [user-group-psp](https://github.com/kubewarden/user-group-psp-policy) policy
+Now, to enforce the user and groups configuration, you can use the [user-group-psp policy](https://github.com/kubewarden/user-group-psp-policy)
 
 ```console
 $ kubectl apply -f - <<EOF
@@ -234,7 +234,7 @@ Error from server: error when creating "STDIN": admission webhook "clusterwide-p
 To complete the PSP migration exercise, it's necessary to disable host namespace sharing.
 To do that, we shall be using the [`host-namespace-psp` policy](https://github.com/kubewarden/host-namespaces-psp-policy).
 It allows the cluster administrator to block IPC, PID, and network namespaces individually and set the ports
-that the pods can export.
+that the pods can be exposed on the host IP.
 
 ```console
 $ kubectl apply -f - <<EOF
