@@ -61,8 +61,8 @@ therefore be compromised).
 The Kubewarden team [provides a verifier policy](https://github.com/kubewarden/verify-image-signatures)
 that enforces Sigstore signatures for all containers, built on Rust and with the
 Rust SDK. The policy ensures that the containers are signed, and optionally,
-mutates the requests substituting the container tag for the exact checksum
-of the image matching the verified signature. Check its docs for specifics.
+mutates the requests appending the exact verified checksum to the tag of the
+image. Check its docs for specifics.
 
 This policy may cover all your needs, but in case you would prefer a different
 UX, of course you can build on top of it or any of the other SDKs.
