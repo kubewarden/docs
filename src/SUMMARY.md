@@ -15,6 +15,7 @@
     - [Validating policies](./writing-policies/spec/03-validating-policies.md)
     - [Mutating policies](./writing-policies/spec/04-mutating-policies.md)
     - [Context aware policies](./writing-policies/spec/05-context-aware-policies.md)
+    - [Signature verifier policies](./writing-policies/spec/06-signature-verifier-policies.md)
   - [Rust](./writing-policies/rust/01-intro.md)
     - [Create a new policy](./writing-policies/rust/02-create-policy.md)
     - [Define policy settings](./writing-policies/rust/03-define-policy-settings.md)
