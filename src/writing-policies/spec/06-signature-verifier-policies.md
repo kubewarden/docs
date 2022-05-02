@@ -5,7 +5,8 @@ project. This allows to implement a Secure Supply Chain for your cluster.
 
 Part of that is to ensure that all container images running in the cluster are
 signed and verified, proving that they come from their stated authors, and
-haven't been tampered with. For further reading, do check out the docs on [how we implement a Secure Supply Chain for the policies themselves](TODO link to https://github.com/kubewarden/docs/pull/100/files)).
+haven't been tampered with. For further reading, do check out the docs on
+[how we implement a Secure Supply Chain for the policies themselves](../../distributing-policies/secure-supply-chain.md)).
 
 Sigstore signatures are stored inside of container registries, next to the OCI
 object being signed; be it a container image or a more generic OCI artifact,
