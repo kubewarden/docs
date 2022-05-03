@@ -1,0 +1,533 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>PSP migration - Kubewarden Kubernetes Policy Engine</title>
+        <!-- Custom HTML head -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new
+Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('set','anonymizeIp',!0);
+ga('create', 'UA-56382716-13', 'auto');
+ga('send', 'pageview');
+</script>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Documentation of Kubewarden project">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="tasks.html"><strong aria-hidden="true">3.</strong> Common tasks</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="mutating-policies.html"><strong aria-hidden="true">3.1.</strong> Mutating Policies</a></li><li class="chapter-item expanded "><a href="psp-migration.html" class="active"><strong aria-hidden="true">3.2.</strong> PSP migration</a></li></ol></li><li class="chapter-item expanded "><a href="architecture.html"><strong aria-hidden="true">4.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="writing-policies/index.html"><strong aria-hidden="true">5.</strong> Writing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/spec/01-intro.html"><strong aria-hidden="true">5.1.</strong> Policy Specification</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/spec/02-settings.html"><strong aria-hidden="true">5.1.1.</strong> Settings</a></li><li class="chapter-item expanded "><a href="writing-policies/spec/03-validating-policies.html"><strong aria-hidden="true">5.1.2.</strong> Validating policies</a></li><li class="chapter-item expanded "><a href="writing-policies/spec/04-mutating-policies.html"><strong aria-hidden="true">5.1.3.</strong> Mutating policies</a></li><li class="chapter-item expanded "><a href="writing-policies/spec/05-context-aware-policies.html"><strong aria-hidden="true">5.1.4.</strong> Context aware policies</a></li><li class="chapter-item expanded "><a href="writing-policies/spec/06-signature-verifier-policies.html"><strong aria-hidden="true">5.1.5.</strong> Signature verifier policies</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/rust/01-intro.html"><strong aria-hidden="true">5.2.</strong> Rust</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rust/02-create-policy.html"><strong aria-hidden="true">5.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/03-define-policy-settings.html"><strong aria-hidden="true">5.2.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/04-write-validation-logic.html"><strong aria-hidden="true">5.2.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/05-mutation-policy.html"><strong aria-hidden="true">5.2.4.</strong> Write a mutation policy</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/06-logging.html"><strong aria-hidden="true">5.2.5.</strong> Logging</a></li><li class="chapter-item expanded "><a href="writing-policies/rust/07-build-and-distribute.html"><strong aria-hidden="true">5.2.6.</strong> Build and distribute</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/rego/01-intro.html"><strong aria-hidden="true">5.3.</strong> Rego</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rego/open-policy-agent/01-intro.html"><strong aria-hidden="true">5.3.1.</strong> Open Policy Agent</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rego/open-policy-agent/02-create-policy.html"><strong aria-hidden="true">5.3.1.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/rego/open-policy-agent/03-build-and-run.html"><strong aria-hidden="true">5.3.1.2.</strong> Build and run</a></li><li class="chapter-item expanded "><a href="writing-policies/rego/open-policy-agent/04-distribute.html"><strong aria-hidden="true">5.3.1.3.</strong> Distribute</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/rego/gatekeeper/01-intro.html"><strong aria-hidden="true">5.3.2.</strong> Gatekeeper</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/rego/gatekeeper/02-create-policy.html"><strong aria-hidden="true">5.3.2.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/rego/gatekeeper/03-build-and-run.html"><strong aria-hidden="true">5.3.2.2.</strong> Build and run</a></li><li class="chapter-item expanded "><a href="writing-policies/rego/gatekeeper/04-distribute.html"><strong aria-hidden="true">5.3.2.3.</strong> Distribute</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/rego/02-builtin-support.html"><strong aria-hidden="true">5.3.3.</strong> Builtin support</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/go/01-intro.html"><strong aria-hidden="true">5.4.</strong> Go</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="writing-policies/go/02-scaffold.html"><strong aria-hidden="true">5.4.1.</strong> Create a new policy</a></li><li class="chapter-item expanded "><a href="writing-policies/go/03-policy-settings.html"><strong aria-hidden="true">5.4.2.</strong> Define policy settings</a></li><li class="chapter-item expanded "><a href="writing-policies/go/04-validation.html"><strong aria-hidden="true">5.4.3.</strong> Write the validation logic</a></li><li class="chapter-item expanded "><a href="writing-policies/go/05-e2e-tests.html"><strong aria-hidden="true">5.4.4.</strong> End-to-end testing</a></li><li class="chapter-item expanded "><a href="writing-policies/go/06-logging.html"><strong aria-hidden="true">5.4.5.</strong> Logging</a></li><li class="chapter-item expanded "><a href="writing-policies/go/07-automate.html"><strong aria-hidden="true">5.4.6.</strong> GitHub Action integration</a></li><li class="chapter-item expanded "><a href="writing-policies/go/08-distribute.html"><strong aria-hidden="true">5.4.7.</strong> Distribute policy</a></li></ol></li><li class="chapter-item expanded "><a href="writing-policies/swift.html"><strong aria-hidden="true">5.5.</strong> Swift</a></li><li class="chapter-item expanded "><a href="writing-policies/typescript.html"><strong aria-hidden="true">5.6.</strong> TypeScript</a></li></ol></li><li class="chapter-item expanded "><a href="distributing-policies.html"><strong aria-hidden="true">6.</strong> Distributing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="distributing-policies/custom-certificate-authorities.html"><strong aria-hidden="true">6.1.</strong> Custom Certificate Authorities</a></li><li class="chapter-item expanded "><a href="distributing-policies/oci-registries-support.html"><strong aria-hidden="true">6.2.</strong> OCI Registries support</a></li><li class="chapter-item expanded "><a href="distributing-policies/secure-supply-chain.html"><strong aria-hidden="true">6.3.</strong> Secure Supply Chain</a></li></ol></li><li class="chapter-item expanded "><a href="testing-policies/01-intro.html"><strong aria-hidden="true">7.</strong> Testing Policies</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="testing-policies/02-policy-authors.html"><strong aria-hidden="true">7.1.</strong> While creating a policy</a></li><li class="chapter-item expanded "><a href="testing-policies/03-cluster-operators.html"><strong aria-hidden="true">7.2.</strong> Before deployment</a></li></ol></li><li class="chapter-item expanded "><a href="operator-manual/01-intro.html"><strong aria-hidden="true">8.</strong> Operator Manual</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="operator-manual/policy-servers/01-custom-cas.html"><strong aria-hidden="true">8.1.</strong> Configuring PolicyServers</a></li><li class="chapter-item expanded "><a href="operator-manual/telemetry/01-quickstart.html"><strong aria-hidden="true">8.2.</strong> Telemetry</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="operator-manual/telemetry/opentelemetry/01-quickstart.html"><strong aria-hidden="true">8.2.1.</strong> OpenTelemetry</a></li><li class="chapter-item expanded "><a href="operator-manual/telemetry/metrics/01-quickstart.html"><strong aria-hidden="true">8.2.2.</strong> Metrics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="operator-manual/telemetry/metrics/02-reference.html"><strong aria-hidden="true">8.2.2.1.</strong> Reference</a></li></ol></li><li class="chapter-item expanded "><a href="operator-manual/telemetry/tracing/01-quickstart.html"><strong aria-hidden="true">8.2.3.</strong> Tracing</a></li></ol></li><li class="chapter-item expanded "><a href="operator-manual/monitor-mode/01-intro.html"><strong aria-hidden="true">8.3.</strong> Monitor mode</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Kubewarden Kubernetes Policy Engine</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/kubewarden/docs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/kubewarden/docs/edit/main/src/psp-migration.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="how-to-migrate-from-kubernetes-psps-to-kubewarden-policies"><a class="header" href="#how-to-migrate-from-kubernetes-psps-to-kubewarden-policies">How to migrate from Kubernetes PSPs to Kubewarden policies?</a></h1>
+<p>With the removal of <a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/">PodSecurityPolicy</a>
+in Kubernetes v1.25, you can leverage Kubewarden for admission control on your Kubernetes clusters.
+Contrasting with the PSPs, Kubewarden has separate policies to achieve the same goal. Therefore, each Kubewarden policy could be likened to a different
+configuration within the spec of a PSP. A mapping of the PSP configuration fields to their respective policies can be found below
+in the <a href="#mapping-kuberwarden-policies-to-psp-fields">mapping table</a>. Therefore, the operators have more granular control
+of the configuration they want to apply in their clusters. If they want to apply part of the PSP security checks it
+is not necessary to define the configurations related to the other fields.</p>
+<p>Once you have the Kubewarden instance running, it's time to deploy some policies to replace the <code>PodSecurityPolicy</code> object. Start by listing
+the PSPs in use. For the sake of this example, the following enforcements have been considered:</p>
+<ul>
+<li>a PSP disabling privileged escalation</li>
+<li>privileged containers</li>
+<li>blocking pods running as root</li>
+<li>forcing a particular user group</li>
+<li>blocking host namespaces</li>
+<li>allowing pod to use the port 443 only</li>
+</ul>
+<p>The yaml definition of the aforementioned PSP would look like the below:</p>
+<pre><code class="language-console">apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: restricted
+spec:
+  allowPrivilegeEscalation: false
+  runAsUser:
+    rule: MustRunAsNonRoot
+  supplementalGroups:
+    rule: MustRunAs
+    ranges:
+      - min: 1000
+        max: 65535
+  privileged: false
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  hostPorts:
+    - min: 443
+      max: 443
+</code></pre>
+<p>Let's create Kubewarden policies to achieve the same goal. One thing that you need to know about Kubewarden policies is that every rule will be enforced by a separate policy. In our example, individual policies will be required for the enforcement of user and group configuration, host namespaces,  privileged escalation, and for the privileged container configuration.</p>
+<p>Let's start with blocking container escalation. For that you can deploy a policy as shown below:</p>
+<pre><code class="language-console">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: policies.kubewarden.io/v1alpha2
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-allowprivilegeescalation
+spec:
+  module: registry://ghcr.io/kubewarden/policies/allow-privilege-escalation-psp:v0.1.11
+  rules:
+    - apiGroups:
+        - &quot;&quot;
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings:
+    default_allow_privilege_escalation: false
+EOF
+</code></pre>
+<p>If you notice, we have specified <code>default_allow_privilege_escalation</code> to assume a value <code>false</code>. Once this policy starts running, it will restrict pods trying to run with more privileges than the parent container by default.</p>
+<pre><code class="language-console">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    securityContext:
+      allowPrivilegeEscalation: true
+  - name: sidecar
+    image: sidecar
+EOF
+Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;clusterwide-psp-allowprivilegeescalation.kubewarden.admission&quot; denied the request: one of the containers has privilege escalation enabled
+</code></pre>
+<p>Now, to enforce the user and groups configuration, you can use the <a href="https://github.com/kubewarden/user-group-psp-policy">user-group-psp policy</a></p>
+<pre><code class="language-console">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: policies.kubewarden.io/v1alpha2
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-usergroup
+spec:
+  module: registry://ghcr.io/kubewarden/policies/user-group-psp:v0.2.0
+  rules:
+    - apiGroups:
+        - &quot;&quot;
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: true
+  settings:
+    run_as_user:
+      rule: MustRunAsNonRoot
+    supplemental_groups:
+      rule: MustRunAs
+      ranges:
+        - min: 1000
+          max: 65535
+EOF
+</code></pre>
+<p>Notice the policy is configured as <code>mutation: true</code>. This is required because the policy will add <a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups">supplementalGroups</a> when the user does not define them.</p>
+<p>So, now users cannot deploy pods running as root:</p>
+<pre><code class="language-console">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    securityContext:
+      runAsNonRoot: false
+      runAsUser: 0
+EOF
+Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;clusterwide-psp-usergroup-fb836.kubewarden.admission&quot; denied the request: RunAsNonRoot should be set to true
+</code></pre>
+<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 0
+EOF
+Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;clusterwide-psp-usergroup-fb836.kubewarden.admission&quot; denied the request: Invalid user ID: cannot run container with root ID (0)
+</code></pre>
+<p>Also, the example below also demonstrates the addition of a <a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups">Supplemental group</a>, despite it not being defined by us.</p>
+<pre><code class="language-console">kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+EOF
+pod/nginx created
+$ kubectl get pods -o json nginx | jq &quot;.spec.securityContext&quot;
+{
+  &quot;supplementalGroups&quot;: [
+    10000
+  ]
+}
+
+</code></pre>
+<p>To replace the PSP configuration that blocks privileged containers, it's necessary to deploy the <a href="https://github.com/kubewarden/pod-privileged-policy">pod-privileged policy</a>. This policy does not require any settings. Once running, it will block privileged pods.</p>
+<pre><code class="language-console">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: policies.kubewarden.io/v1alpha2
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-privileged
+spec:
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.10
+  rules:
+    - apiGroups:
+        - &quot;&quot;
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings: null
+EOF
+</code></pre>
+<p>To test the policy, we can try running a pod with privileged configuration enabled:</p>
+<pre><code class="language-console">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+    securityContext:
+      privileged: true
+  - name: sleeping-sidecar
+    image: alpine
+    command: [&quot;sleep&quot;, &quot;1h&quot;]
+EOF
+Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;clusterwide-psp-privileged.kubewarden.admission&quot; denied the request: User 'system:admin' cannot schedule privileged containers
+</code></pre>
+<p>To complete the PSP migration exercise, it's necessary to disable host namespace sharing.
+To do that, we shall be using the <a href="https://github.com/kubewarden/host-namespaces-psp-policy"><code>host-namespace-psp</code> policy</a>.
+It allows the cluster administrator to block IPC, PID, and network namespaces individually and set the ports
+that the pods can be exposed on the host IP.</p>
+<pre><code class="language-console">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: policies.kubewarden.io/v1alpha2
+kind: ClusterAdmissionPolicy
+metadata:
+  name: psp-hostnamespaces
+spec:
+  module: registry://ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.2
+  rules:
+    - apiGroups:
+        - &quot;&quot;
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+        - UPDATE
+  mutating: false
+  settings:
+    allow_host_ipc: false
+    allow_host_pid: false
+    allow_host_ports:
+      - min: 443
+        max: 443
+    allow_host_network: false
+EOF
+</code></pre>
+<p>Again, let's validate the policy. The pod should not be able to share host namespaces:</p>
+<pre><code class="language-console">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  hostIPC: true
+  hostNetwork: false
+  hostPID: false
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  - name: sleeping-sidecar
+    image: alpine
+    command: [&quot;sleep&quot;, &quot;1h&quot;]
+EOF
+
+Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;clusterwide-psp-hostnamespaces.kubewarden.admission&quot; denied the request: Pod has IPC enabled, but this is not allowed
+</code></pre>
+<pre><code class="language-console">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  hostIPC: false
+  hostNetwork: true
+  hostPID: false
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  - name: sleeping-sidecar
+    image: alpine
+    command: [&quot;sleep&quot;, &quot;1h&quot;]
+EOF
+Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;clusterwide-psp-hostnamespaces.kubewarden.admission&quot; denied the request: Pod has host network enabled, but this is not allowed
+</code></pre>
+<pre><code class="language-console">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  hostIPC: false
+  hostNetwork: false
+  hostPID: true
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  - name: sleeping-sidecar
+    image: alpine
+    command: [&quot;sleep&quot;, &quot;1h&quot;]
+EOF
+Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;clusterwide-psp-hostnamespaces.kubewarden.admission&quot; denied the request: Pod has host PID enabled, but this is not allowed
+</code></pre>
+<p>The pod should be only able to expose the port 443 and should throw an error when other port numbers are configured against the hostPort section.</p>
+<pre><code class="language-console">$ kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+    ports:
+      - containerPort: 80
+        hostPort: 80
+  - name: sleeping-sidecar
+    image: alpine
+    command: [&quot;sleep&quot;, &quot;1h&quot;]
+EOF
+Error from server: error when creating &quot;STDIN&quot;: admission webhook &quot;clusterwide-psp-hostnamespaces.kubewarden.admission&quot; denied the request: Pod is using unallowed host ports in containers
+</code></pre>
+<h2 id="mapping-kuberwarden-policies-to-psp-fields"><a class="header" href="#mapping-kuberwarden-policies-to-psp-fields">Mapping Kuberwarden policies to PSP fields</a></h2>
+<p>The following table show which Kubewarden policy can be used to replace each PSP configuration</p>
+<table><thead><tr><th>PSP field</th><th>Kubewarden equivalent policy</th></tr></thead><tbody>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#privileged">privileged</a></td><td><a href="https://github.com/kubewarden/pod-privileged-policy">pod-privileged-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces">hostPID</a></td><td><a href="https://github.com/kubewarden/host-namespaces-psp-policy">host-namespaces-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces">hostIPC</a></td><td><a href="https://github.com/kubewarden/host-namespaces-psp-policy">host-namespaces-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces">hostNetwork</a></td><td><a href="https://github.com/kubewarden/host-namespaces-psp-policy">host-namespaces-psp-polic</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces">hostPorts</a></td><td><a href="https://github.com/kubewarden/host-namespaces-psp-policy">host-namespaces-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems">volumes</a></td><td><a href="https://github.com/kubewarden/volumes-psp-policy">volumes-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems">allowedHostPaths</a></td><td><a href="https://github.com/kubewarden/hostpaths-psp-policy">hostpaths-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems">readOnlyRootFilesystem</a></td><td><a href="https://github.com/kubewarden/readonly-root-filesystem-psp-policy">readonly-root-filesystem-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems">fsgroup</a></td><td><a href="https://github.com/kubewarden/allowed-fsgroups-psp-policy">allowed-fsgroups-psp-policy </a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#flexvolume-drivers">allowedFlexVolumes</a></td><td><a href="https://github.com/kubewarden/flexvolume-drivers-psp-policy">flexvolume-drivers-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups">runAsUser</a></td><td><a href="https://github.com/kubewarden/user-group-psp-policy">user-group-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups">runAsGroup</a></td><td><a href="https://github.com/kubewarden/user-group-psp-policy">user-group-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups">supplementalGroups</a></td><td><a href="https://github.com/kubewarden/user-group-psp-policy">user-group-psp-policy </a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#privilege-escalation">allowPrivilegeEscalation</a></td><td><a href="https://github.com/kubewarden/allow-privilege-escalation-psp-policy">allow-privilege-escalation-psp-policy </a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#privilege-escalation">defaultAllowPrivilegeEscalation</a></td><td><a href="https://github.com/kubewarden/allow-privilege-escalation-psp-policy">allow-privilege-escalation-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#capabilities">allowedCapabilities</a></td><td><a href="https://github.com/kubewarden/capabilities-psp-policy">capabilities-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#capabilities">defaultAddCapabilities</a></td><td><a href="https://github.com/kubewarden/capabilities-psp-policy">capabilities-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#capabilities">requiredDropCapabilities</a></td><td><a href="https://github.com/kubewarden/capabilities-psp-policy">capabilities-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#selinux">seLinux</a></td><td><a href="https://github.com/kubewarden/selinux-psp-policy">selinux-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#allowedprocmounttypes">allowedProcMountTypes</a></td><td><a href="https://github.com/kubewarden/allowed-proc-mount-types-psp-policy">allowed-proc-mount-types-psp-policy</a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor">apparmor</a></td><td><a href="https://github.com/kubewarden/apparmor-psp-policy">apparmor-psp-policy </a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor">seccomp</a></td><td><a href="https://github.com/kubewarden/seccomp-psp-policy">seccomp-psp-policy </a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor">forbiddenSysctls</a></td><td><a href="https://github.com/kubewarden/sysctl-psp-policy">sysctl-psp-policy </a></td></tr>
+<tr><td><a href="https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor">allowedUnsafeSysctls</a></td><td><a href="https://github.com/kubewarden/sysctl-psp-policy">sysctl-psp-policy </a></td></tr>
+</tbody></table>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="mutating-policies.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="architecture.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="mutating-policies.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="architecture.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
