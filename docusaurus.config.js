@@ -34,7 +34,7 @@ module.exports = {
           className: "navbar__docs",
         },
         {
-          href: "https://github.com/kubewarden/docs",
+          href: "https://github.com/kubewarden/",
           label: "GitHub",
           position: "right",
           className: "navbar__github btn btn-secondary icon-github",
@@ -66,46 +66,6 @@ module.exports = {
         theme: {
           customCss: [require.resolve("./src/css/custom.css")],
         },
-      },
-    ],
-  ],
-  plugins: [
-    [
-      '@docusaurus/plugin-content-blog',
-      {
-        /**
-         * Required for any multi-instance plugin
-         */
-        id: 'Policy-Hub',
-        path: './hub',
-        showReadingTime: true,
-        // Please change this to your repo.
-        editUrl:
-          "https://hub.kubewarden.io/",
-        blogTitle: 'Policy Hub',
-        routeBasePath: 'hub',
-        include: ['**/*.{md,mdx}'],
-        postsPerPage: 10,
-      },
-    ],
-  ],
-  plugins: [
-    [
-      '@docusaurus/plugin-content-blog',
-      {
-        /**
-         * Required for any multi-instance plugin
-         */
-        id: 'Helm-Charts',
-        path: './charts',
-        showReadingTime: true,
-        // Please change this to your repo.
-        editUrl:
-          "https://charts.kubewarden.io/",
-        blogTitle: 'Helm Charts',
-        routeBasePath: 'hub',
-        include: ['**/*.{md,mdx}'],
-        postsPerPage: 10,
       },
     ],
   ], 
