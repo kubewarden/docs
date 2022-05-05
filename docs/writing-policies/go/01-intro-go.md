@@ -1,3 +1,8 @@
+---
+sidebar_label: "Introduction to Go"
+title: ""
+---
+
 > **Note well:** Go's support for WebAssembly is fast evolving. The contents
 > of this page have been written during April 2021, hence they could be outdated.
 

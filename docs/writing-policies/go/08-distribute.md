@@ -1,3 +1,8 @@
+---
+sidebar_label: "Distributing Policy"
+title: ""
+---
+
 # Distribute policy
 
 Congratulations for having made this far 🎉🎉🎉

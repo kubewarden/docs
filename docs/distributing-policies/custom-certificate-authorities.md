@@ -1,3 +1,8 @@
+---
+sidebar_label: "Custom Certificate Authorities"
+title: ""
+---
+
 # Custom Certificate Authorities
 
 Both `kwctl` and `policy-server` allow you to pull policies from OCI registries and HTTP servers, as well as pushing to OCI registries. In this process, by default, HTTPS is enforced with host TLS verification.

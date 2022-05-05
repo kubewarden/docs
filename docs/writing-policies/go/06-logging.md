@@ -1,3 +1,8 @@
+---
+sidebar_label: "Logging"
+title: ""
+---
+
 # Logging
 
 The Go SDK integrates with the [`onelog`](https://github.com/francoispqt/onelog) project almost out

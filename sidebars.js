@@ -27,6 +27,7 @@ module.exports = {
                 'writing-policies/spec/validating-policies',
                 'writing-policies/spec/mutating-policies',
                 'writing-policies/spec/context-aware-policies',
+                'writing-policies/spec/signature-verifier-policies',
               ],
       },
     ],
@@ -92,6 +93,12 @@ module.exports = {
     },
     {
       type: 'category',
+      label: 'Distributing Policies',
+      link: {type: 'doc', id: 'distributing-policies',},
+      items:['distributing-policies/custom-certificate-authorities', 'distributing-policies/oci-registries-support', 'distributing-policies/secure-supply-chain',],
+    },
+    {
+      type: 'category',
       label: 'Testing Policies',
       link: {type: 'doc', id: 'testing-policies/intro'},
       items:[
@@ -122,6 +129,7 @@ module.exports = {
           [
             'operator-manual/telemetry/metrics/reference',
           ],
+          'Monitor Mode': ['operator-manual/monitor-mode/intro',],
         },
       ],
      },

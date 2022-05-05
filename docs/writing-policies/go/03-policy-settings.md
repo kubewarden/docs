@@ -1,3 +1,8 @@
+---
+sidebar_label: "Define Policy Settings"
+title: ""
+---
+
 # Defining policy settings
 
 As a first step we will define the structure that holds the policy settings.

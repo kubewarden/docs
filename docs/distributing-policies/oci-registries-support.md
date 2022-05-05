@@ -1,3 +1,8 @@
+---
+sidebar_label: "OCI Registries Support"
+title: ""
+---
+
 # OCI Registries support
 
 > **Note well**: this is not an exhaustive list. If a registry you know or use is working correctly

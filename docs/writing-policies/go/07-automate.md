@@ -1,3 +1,8 @@
+---
+sidebar_label: "GitHub Action Integration"
+title: ""
+---
+
 # Automations
 
 This section describes how we can use GitHub Actions to automate as many tasks

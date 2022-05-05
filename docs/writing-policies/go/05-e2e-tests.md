@@ -1,3 +1,8 @@
+---
+sidebar_label: "End-to-end testing"
+title: ""
+---
+
 # End-to-end testing
 
 So far we have tested the policy using a set of Go unit tests. This section shows

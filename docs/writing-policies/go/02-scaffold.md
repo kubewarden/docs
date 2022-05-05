@@ -1,3 +1,8 @@
+---
+sidebar_label: "Create a New Policy"
+title: ""
+---
+
 # Creating a new validation policy
 
 We are going to create a validation policy that validates the labels of generic Kubernetes
