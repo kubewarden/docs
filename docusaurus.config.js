@@ -34,7 +34,7 @@ module.exports = {
           className: "navbar__docs",
         },
         {
-          href: "https://github.com/harvester/harvester",
+          href: "https://github.com/kubewarden/docs",
           label: "GitHub",
           position: "right",
           className: "navbar__github btn btn-secondary icon-github",
