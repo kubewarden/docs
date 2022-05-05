@@ -1,3 +1,8 @@
+---
+sidebar_label: "Context Aware Policies"
+title: ""
+---
+
 # Context aware policies
 
 > **NOTE:** This feature is a work in progress, and not to be depended

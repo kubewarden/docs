@@ -1,3 +1,8 @@
+---
+sidebar_label: "Introduction"
+title: ""
+---
+
 # Gatekeeper
 
 > **Note well:** Gatekeeper support has been introduced starting from these releases:

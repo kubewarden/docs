@@ -1,3 +1,8 @@
+---
+sidebar_label: "Quick Start"
+title: ""
+---
+
 # Quick Start
 
 The Kubewarden stack is made of the following components:

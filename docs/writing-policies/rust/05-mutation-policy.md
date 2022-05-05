@@ -1,3 +1,8 @@
+---
+sidebar_label: "Creating a new mutation policy"
+title: ""
+---
+
 # Creating a new mutation policy
 
 Mutating policies are similar to validating ones, but have also the ability to mutate an

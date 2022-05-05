@@ -1,3 +1,8 @@
+---
+sidebar_label: "Mutating Policies"
+title: ""
+---
+
 # Mutating policies
 
 A mutating policy will rebuild the requests with definied values that are conformant with the policy definition. If you want allow the behavior of mutating requests, you need to set the `ClusterAdmissionPolicy.mutating` filed to `true`.

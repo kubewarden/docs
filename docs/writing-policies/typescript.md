@@ -1,3 +1,8 @@
+---
+sidebar_label: "TypeScript"
+title: ""
+---
+
 # TypeScript
 
 As stated on the [official website](https://www.typescriptlang.org/):

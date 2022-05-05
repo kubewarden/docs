@@ -1,3 +1,8 @@
+---
+sidebar_label: "Writing Policies"
+title: ""
+---
+
 # What is a Kubewarden policy
 
 In this section we will explain what Kubewarden policies are by using some traditional computing

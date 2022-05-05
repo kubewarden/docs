@@ -1,3 +1,8 @@
+---
+sidebar_label: "Cluster Operators"
+title: ""
+---
+
 # Before deployment
 
 As a Kubernetes cluster operator you probably want to perform some tests

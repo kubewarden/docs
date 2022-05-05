@@ -1,3 +1,8 @@
+---
+sidebar_label: "Open Telemetry Quickstart"
+title: ""
+---
+
 # OpenTelemetry
 
 [OpenTelemetry](https://opentelemetry.io/) is a Cloud Native Computing Foundation framework for

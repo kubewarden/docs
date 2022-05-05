@@ -1,3 +1,8 @@
+---
+sidebar_label: "Tracing Quickstart"
+title: ""
+---
+
 # Tracing
 
 This section illustrates how to enable tracing support of

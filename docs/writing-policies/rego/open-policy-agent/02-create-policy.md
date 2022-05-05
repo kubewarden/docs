@@ -1,3 +1,8 @@
+---
+sidebar_label: "Create a New Policy"
+title: ""
+---
+
 # Create a new policy
 
 Let's create a sample policy that will help us go through some

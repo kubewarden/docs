@@ -1,3 +1,8 @@
+---
+sidebar_label: "Distribute"
+title: ""
+---
+
 # Distribute
 
 Policies have to be annotated for them to be pushed, and eventually

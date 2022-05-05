@@ -1,3 +1,8 @@
+---
+sidebar_label: "Build and Run"
+title: ""
+---
+
 # Build and run
 
 Building and running the policy is done exactly the same way as a Rego

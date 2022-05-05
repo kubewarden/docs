@@ -1,3 +1,8 @@
+---
+sidebar_label: "Testing Policies"
+title: ""
+---
+
 # Testing Policies
 
 This section covers the topic of testing Kubewarden Policies. There are two possible

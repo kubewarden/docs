@@ -1,3 +1,8 @@
+---
+sidebar_label: "Common Tasks"
+title: ""
+---
+
 # Common Tasks
 
 This page lists a set of tasks that can be performed after you [install Kubewarden](/quick-start.html#install) in your Kubernetes cluster.
@@ -17,7 +22,7 @@ The Kubewarden Policy Hub hosts policies contributed by the community. For examp
 
 As shown in the picture below, once you find the policy to be tested, you can copy the registry path<sup>1</sup> or download<sup>2</sup> the `Wasm` binary containing the policy and additional metadata:
 
-![Kubewarden Policy Hub](/images/tasks-policy-hub.png)
+![Kubewarden Policy Hub](/img/tasks-policy-hub.png)
 
 Once you have the policy `Wasm` binary or the registry path, you can test it with `kwctl`.
 

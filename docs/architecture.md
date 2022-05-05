@@ -1,3 +1,8 @@
+---
+sidebar_label: "Architecture"
+title: ""
+---
+
 # Architecture
 
 Kubewarden is a Kubernetes policy engine that uses policies written using

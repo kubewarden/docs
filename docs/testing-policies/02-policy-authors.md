@@ -1,3 +1,8 @@
+---
+sidebar_label: "Policy Authors"
+title: ""
+---
+
 # While creating a policy
 
 Kubewarden Policies are regular programs compiled as WebAssembly. As with any kind

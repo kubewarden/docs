@@ -1,3 +1,8 @@
+---
+sidebar_label: "Logging"
+title: ""
+---
+
 # Logging
 
 You can perform logging in your policy, so the `policy-server` or `kwctl` will forward those log

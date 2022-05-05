@@ -1,3 +1,8 @@
+---
+sidebar_label: "Build and Run"
+title: ""
+---
+
 # Build and run
 
 In the previous section we have written our Rego policy. The structure

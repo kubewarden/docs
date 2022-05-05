@@ -1,3 +1,8 @@
+---
+sidebar_label: "Creating a new validation policy"
+title: ""
+---
+
 # Creating a new validation policy
 
 We are going to create a simple validation policy that processes

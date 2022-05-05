@@ -1,3 +1,8 @@
+---
+sidebar_label: "Introduction"
+title: ""
+---
+
 # Open Policy Agent
 
 > **Note well:** Open Policy Agent support has been introduced starting from these releases:

@@ -1,3 +1,8 @@
+---
+sidebar_label: "Introduction to Rust"
+title: ""
+---
+
 # Rust
 
 [Rust](https://www.rust-lang.org/) is the most mature programming language that

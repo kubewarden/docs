@@ -1,3 +1,8 @@
+---
+sidebar_label: "Building & Distributing Policies"
+title: ""
+---
+
 ## Building the policy
 
 So far we have built the policy using as a compilation target the same operating

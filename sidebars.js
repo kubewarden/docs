@@ -1,56 +1,129 @@
-/**
- * Creating a sidebar enables you to:
- - create an ordered group of docs
- - render a sidebar for each doc of that group
- - provide next/previous navigation
-
- The sidebars can be generated from the filesystem, or explicitly defined here.
-
- Create as many sidebars as you want.
- */
-
 module.exports = {
-  // By default, Docusaurus generates a sidebar from the docs folder structure
-  docs:[
+  docs: [
     'introduction',
     'quick-start',
-    'tasks',
+    {
+      type: 'category',
+      label: 'Common Tasks',
+      items: ['tasksDir/mutating-policies', 'tasksDir/psp-migration'],
+      collapsed: 'true',
+      link: 
+          {
+            type: 'doc', 
+            id: 'tasks',
+          },
+    },
     'architecture',
     {
-      type:'category',
+      type: 'category',
       label: 'Writing Policies',
-      items: ['quick-start'],
+      link: {type: 'doc', id: 'writing-policies/index'},
+      items:[
+       {
+        'Policy Specification':
+              [
+                'writing-policies/spec/intro-spec',
+                'writing-policies/spec/settings',
+                'writing-policies/spec/validating-policies',
+                'writing-policies/spec/mutating-policies',
+                'writing-policies/spec/context-aware-policies',
+              ],
+      },
+    ],
+  },
+  {  
+      type: 'category',
+      label: 'Supported Languages',
+      items:[
+        {
+          'Rust':
+          [
+            'writing-policies/rust/intro-rust',
+            'writing-policies/rust/create-policy',
+            'writing-policies/rust/define-policy-settings',
+            'writing-policies/rust/write-validation-logic',
+            'writing-policies/rust/mutation-policy',
+            'writing-policies/rust/logging',
+            'writing-policies/rust/build-and-distribute',
+          ],
+        'Go':
+          [
+            'writing-policies/go/intro-go',
+            'writing-policies/go/scaffold',
+            'writing-policies/go/policy-settings',
+            'writing-policies/go/validation',
+            'writing-policies/go/e2e-tests',
+            'writing-policies/go/logging',
+            'writing-policies/go/automate',
+            'writing-policies/go/distribute'
+          ],
+        'Rego':
+        [
+          'writing-policies/rego/intro-rego',
+          'writing-policies/rego/builtin-support',
+        ],
+        
+        'Swift':['writing-policies/swift',],
+        'TypeScript':['writing-policies/typescript',],
+        },
+     ],
+    },
+    {  
+      type: 'category',
+      label: 'Supported Frameworks',
+      items:[
+        {
+          'Open Policy Agent':
+          [
+            'writing-policies/rego/open-policy-agent/intro',
+            'writing-policies/rego/open-policy-agent/create-policy',
+            'writing-policies/rego/open-policy-agent/build-and-run',
+            'writing-policies/rego/open-policy-agent/distribute',
+          ],
+        'Gatekeeper':
+          [
+            'writing-policies/rego/gatekeeper/intro',
+            'writing-policies/rego/gatekeeper/create-policy',
+            'writing-policies/rego/gatekeeper/build-and-run',
+            'writing-policies/rego/gatekeeper/distribute',
+          ],
+        },
+     ],
     },
     {
-      type:'category',
-      label: 'Distributing Policies',
-      items: [
-          'distributing-policies',
-          'distributing-policies/custom-certificate-authorities',
-          'distributing-policies/oci-registries-support'
-      ]
-    },
-    {
-      type:'category',
+      type: 'category',
       label: 'Testing Policies',
-      items: [
-          'testing-policies/intro',
-          'testing-policies/policy-authors',
-          'testing-policies/cluster-operators'
-      ]
+      link: {type: 'doc', id: 'testing-policies/intro'},
+      items:[
+       {
+        'User Personas':
+              [
+                'testing-policies/policy-authors',
+                'testing-policies/cluster-operators',
+              ],
+      },
+     ],
     },
     {
-      type:'category',
-      label: 'Operator Manual',
-      items: [
-          'operator-manual/intro',
-          'operator-manual/policy-servers/custom-cas',
-          'operator-manual/telemetry/quickstart',
-          'operator-manual/telemetry/metrics/quickstart',
-          'operator-manual/telemetry/metrics/reference',
-          'operator-manual/telemetry/opentelemetry/quickstart',
-          'operator-manual/telemetry/tracing/quickstart'          
-      ]
-    },
-]
+        type: 'category',
+        label: 'Operator Manual',
+        link: {type: 'doc', id: 'operator-manual/intro'},
+        items:[
+         {
+          'Configuring Policy Servers': ['operator-manual/policy-servers/custom-cas',],
+          'Quickstart Guides':
+          [
+            'operator-manual/telemetry/quickstart',
+            'operator-manual/telemetry/opentelemetry/quickstart',
+            'operator-manual/telemetry/metrics/quickstart',
+            'operator-manual/telemetry/tracing/quickstart',
+          ],
+          'Reference Documentation':
+          [
+            'operator-manual/telemetry/metrics/reference',
+          ],
+        },
+      ],
+     },
+  ],
 };

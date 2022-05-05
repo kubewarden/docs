@@ -1,3 +1,7 @@
+---
+sidebar_label: "Validating Policies"
+title: ""
+---
 # Validating policies
 
 The Kubewarden policy server receives

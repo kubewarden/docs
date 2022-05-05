@@ -1,3 +1,8 @@
+---
+sidebar_label: "Swift"
+title: ""
+---
+
 # Swift
 
 As stated on the [official website](https://swift.org/):

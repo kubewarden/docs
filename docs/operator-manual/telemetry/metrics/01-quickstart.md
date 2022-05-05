@@ -1,3 +1,8 @@
+---
+sidebar_label: "Metrics Quickstart"
+title: ""
+---
+
 # Metrics
 
 This section describes how to enable metrics reporting on the Policy Server.

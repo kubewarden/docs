@@ -1,3 +1,8 @@
+---
+sidebar_label: "Writing Validation Logic"
+title: ""
+---
+
 # Writing the validation logic
 
 It's time to write the actual validation code. This is defined inside of the

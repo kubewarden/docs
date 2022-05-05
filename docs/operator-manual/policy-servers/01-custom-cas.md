@@ -1,3 +1,8 @@
+---
+sidebar_label: "Configuring PolicyServers using Custom CAs"
+title: ""
+---
+
 # Configuring PolicyServers
 
 ## Custom Certificate Authorities for Policy registries

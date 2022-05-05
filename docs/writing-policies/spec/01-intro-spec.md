@@ -1,3 +1,8 @@
+---
+sidebar_label: "Policy Communication Specification"
+title: ""
+---
+
 # Policy communication specification
 
 The policy evaluator interacts with Kubewarden policies using a well

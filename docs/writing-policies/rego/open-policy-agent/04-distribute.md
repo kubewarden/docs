@@ -1,3 +1,8 @@
+---
+sidebar_label: "Distribute"
+title: ""
+---
+
 # Distribute
 
 We have written, built and run our Rego policy. Now it's time to

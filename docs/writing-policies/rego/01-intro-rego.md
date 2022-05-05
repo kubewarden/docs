@@ -1,3 +1,8 @@
+---
+sidebar_label: "Introduction to Rego"
+title: ""
+---
+
 # Rego
 
 > **Note well:** Rego support has been introduced starting from these releases:
@@ -13,6 +18,13 @@ is a language inspired by Datalog.
 There are two ways of writing Rego policies as of today in order to
 implement policies as code in Kubernetes: Open Policy Agent and
 Gatekeeper.
+
+While the next couple of sections detail how the two frameworks are different
+even though the same language is used, if you're more interested in the Kubewarden
+implementation you may directly visit the framework-specific documentation we have linked below.
+
+- [Open Policy Agent](/open-policy-agent/01-intro.md)
+- [Gatekeeper](/gatekeeper/01-intro.md)
 
 ## One language. Two frameworks
 
@@ -36,6 +48,7 @@ it is able to replicate the configured Kubernetes resources into Rego
 lets you define policies inside Kubernetes' ConfigMap objects. You can
 read more about it on [its project
 page](https://github.com/open-policy-agent/kube-mgmt).
+
 
 ### Gatekeeper
 

@@ -1,3 +1,7 @@
+---
+sidebar_label: "Policy Settings"
+title: ""
+---
 # Policy settings
 
 Policy behaviour is not set in stone, it can be configured by providing configuration
