@@ -1,5 +1,5 @@
 {
-  "name": "harvesterhci",
+  "name": "kubewarden",
   "version": "1.22.0",
   "private": true,
   "scripts": {
@@ -37,7 +37,7 @@
     ]
   },
   "main": "index.js",
-  "repository": "https://github.com/harvester/harvester.github.io.git",
-  "author": "yzeng25 <yzeng25@wisc.edu>",
+  "repository": "https://github.com/kubewarden/docs.git",
+  "author": "divya-mohan0209 <divya.mohan0209@gmail.com>",
   "license": "MIT"
 }
