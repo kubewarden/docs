@@ -6,6 +6,7 @@
 
 - [Common tasks](./tasks.md)
   - [Mutating Policies](./mutating-policies.md)
+  - [PSP migration](./psp-migration.md)
 
 - [Architecture](./architecture.md)
 
@@ -15,6 +16,7 @@
     - [Validating policies](./writing-policies/spec/03-validating-policies.md)
     - [Mutating policies](./writing-policies/spec/04-mutating-policies.md)
     - [Context aware policies](./writing-policies/spec/05-context-aware-policies.md)
+    - [Signature verifier policies](./writing-policies/spec/06-signature-verifier-policies.md)
   - [Rust](./writing-policies/rust/01-intro.md)
     - [Create a new policy](./writing-policies/rust/02-create-policy.md)
     - [Define policy settings](./writing-policies/rust/03-define-policy-settings.md)
@@ -49,6 +51,7 @@
 - [Distributing Policies](./distributing-policies.md)
   - [Custom Certificate Authorities](./distributing-policies/custom-certificate-authorities.md)
   - [OCI Registries support](./distributing-policies/oci-registries-support.md)
+  - [Secure Supply Chain](./distributing-policies/secure-supply-chain.md)
 
 - [Testing Policies](./testing-policies/01-intro.md)
   - [While creating a policy](./testing-policies/02-policy-authors.md)
