@@ -1,8 +1,0 @@
-{
-  "extends": [
-    "config:base",
-    "group:allNonMajor",
-    "schedule:earlyMondays"
-  ],
-  "labels": ["dependencies"]
-}
