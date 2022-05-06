@@ -1,7 +1,7 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title:
-    "The open source hyperconverged infrastructure (HCI) solution for a cloud native world",
+    "Kubernetes Dynamic Admission at your fingertips",
   tagline: "",
   url: "https://kubewarden.io",
   baseUrl: "/",
@@ -44,7 +44,7 @@ module.exports = {
     footer: {
       style: "dark",
       links: [],
-      copyright: `Copyright © ${new Date().getFullYear()} kubewarden.io`,
+      copyright: `Copyright © ${new Date().getFullYear()} SUSE Rancher. All Rights Reserved.`,
     },
   },
   customFields: {
@@ -60,6 +60,8 @@ module.exports = {
           routeBasePath: '/', // Serve the docs at the site's root
           /* other docs plugin options */
           sidebarPath: require.resolve('./sidebars.js'),
+          showLastUpdateTime: true,
+          editUrl: "https://github.com/divya-mohan0209/docs-1/tree/dev-docusaurus/",
         },
         blog: false, // Optional: disable the blog plugin
         // ...
