@@ -5,7 +5,7 @@ title: ""
 
 # Common Tasks
 
-This page lists a set of tasks that can be performed after you [install Kubewarden](/quick-start.html#install) in your Kubernetes cluster.
+This page lists a set of tasks that can be performed after you [install Kubewarden](/quick-start.md#install) in your Kubernetes cluster.
 
 Each task can be done separately; however, if you're not familiar with Kubewarden, or Kubernetes policies in general, we recommend that you follow the tasks below in sequential order.
 
@@ -201,7 +201,7 @@ Here are a few examples of the commands you should run, depending on the task yo
   
 ## Enforce Policies
 
-As described in the [Quick Start](/quick-start.html#example-enforce-your-first-policy), you can enforce a policy by defining a `ClusterAdmissionPolicy` and then deploy it to your cluster using `kubectl`.
+As described in the [Quick Start](/quick-start.md#example-enforce-your-first-policy), you can enforce a policy by defining a `ClusterAdmissionPolicy` and then deploy it to your cluster using `kubectl`.
 
 `kwctl` will help to generate a `ClusterAdmissionPolicy` from the policy you want to enforce. 
 

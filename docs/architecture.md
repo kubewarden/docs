@@ -102,7 +102,7 @@ the policy settings provided by the user are valid.
 `policy-server` performs the validation of policies's settings by
 invoking the `validate_setting` function exposed by each policy.
 This topic is covered more in depth inside
-of [this section](/writing-policies/spec/01-intro.md) of the documentation.
+of [this section](/writing-policies/spec/01-intro-spec.md) of the documentation.
 
 `policy-server` will exit with an error if one or more policies received wrong
 configuration parameters from the end user.

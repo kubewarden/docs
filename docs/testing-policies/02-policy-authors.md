@@ -14,9 +14,9 @@ of choice to verify the behaviour of their policies.
 As an example, you can take a look at these Kubewarden policies:
 
 * [psp-apparmor](https://github.com/kubewarden/psp-apparmor): this
-  is a Kubewarden Policy written using [Rust](/writing-policies/rust/01-intro.md).
+  is a Kubewarden Policy written using [Rust](/writing-policies/rust/01-intro-rust.md).
 * [ingress-policy](https://github.com/kubewarden/ingress-policy): this is
-  a Kubewarden Policy written using [Go](/writing-policies/go/01-intro.md).
+  a Kubewarden Policy written using [Go](/writing-policies/go/01-intro-go.md).
 * [pod-privileged-policy](https://github.com/kubewarden/pod-privileged-policy): this
   is a Kubewarden Policy written using [AssemblyScript](https://www.assemblyscript.org/).
 
