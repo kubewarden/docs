@@ -1,11 +1,8 @@
-<<<<<<< HEAD:src/writing-policies/spec/06-signature-verifier-policies.md
-=======
 ---
 sidebar_label: "Signature Verifier Policies"
 title: ""
 ---
 
->>>>>>> 52a595110fb15d2174390f0933caff5a8223aeb3:docs/writing-policies/spec/06-signature-verifier-policies.md
 # Signature verifier policies
 
 Kubewarden implements support for the [Sigstore](https://www.sigstore.dev/)
@@ -18,11 +15,7 @@ haven't been tampered with. For further reading, do check out the docs on
 
 Sigstore signatures are stored inside of container registries, next to the OCI
 object being signed; be it a container image or a more generic OCI artifact,
-<<<<<<< HEAD:src/writing-policies/spec/06-signature-verifier-policies.md
-like a Kubewarden policy.  Given an object to be signed, all its signatures are
-=======
 like a Kubewarden policy. Given an object to be signed, all its signatures are
->>>>>>> 52a595110fb15d2174390f0933caff5a8223aeb3:docs/writing-policies/spec/06-signature-verifier-policies.md
 going to be stored as layers of a special OCI object created by sigstore.
 Policies that want to check Sigstore signatures of containers need then to check
 those layers, and would need to pull the signature layers to see the
@@ -86,82 +79,7 @@ UX, of course you can build on top of it or any of the other SDKs.
 In case you are implementing your own language SDK, these are the functions a
 policy that verifies signatures can use:
 
-<<<<<<< HEAD:src/writing-policies/spec/06-signature-verifier-policies.md
-<table>
-  <thead>
-    <tr>
-      <th>waPC function name</th>
-      <th>Input payload</th>
-      <th>Output payload</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>v1/verify</code></td>
-      <td>
-<pre>
-{
-  // <strong>mandatory</strong>:
-  "image": &lt;string&gt;, // image URI to verify
-  "pub_keys": [ // PEM-encoded public keys
-    &lt;string&gt;
-  ],
-  // optional:
-  "annotations": [ // signature annotations
-    {
-      "key": &lt;string&gt;,
-      "value": &lt;string&gt;
-    },
-  ]
-}
-</pre>
-      </td>
-      <td>
-<pre>
-{
-  "is_trusted": &lt;boolean&gt;, // true if image verified
-  "digest": &lt;string&gt;       // digest of verified image
-}
-</pre>
-      </td>
-    </tr>
-    <tr>
-      <td><code>v1/verify</code></td>
-      <td>
-<pre>
-{
-  // <strong>mandatory</strong>:
-  "image": &lt;string&gt;, // image URI to verify
-  "keyless": [ // list of (issuer, subject) tuples
-    {
-      "issuer": &lt;string&gt;, // OIDC issuer
-      "subject": &lt;string&gt; // signature subject (mail, CI URL...)
-    }
-  ],
-  // optional:
-  "annotations": [ // signature annotations
-    {
-      "key": &lt;string&gt;,
-      "value": &lt;string&gt;
-    },
-  ]
-}
-</pre>
-      </td>
-      <td>
-<pre>
-{
-  "is_trusted": &lt;boolean&gt;, // true if image verified
-  "digest": &lt;string&gt;       // digest of verified image
-}
-</pre>
-      </td>
-    </tr>
-  </tbody>
-</table>
-=======
 | **waPC function name** | **Input payload**                                                                                                                                                                                                                                                                                                                                                                                                        | **Output payload**                                                                                                       |
 |------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
 | v1/verify              | {<br/>  // **mandatory**:<br/>  "image": string, // image URI to verify<br/>  "pub_keys": [ // PEM-encoded public keys<br/>    string<br/>  ],<br/>  // optional:<br/>  "annotations": [ // signature annotations<br/>    {<br/>      "key": string,<br/>      "value": string<br/>    },<br/>  ]<br/>}                                                                                                                           | {<br/>  "is_trusted": boolean, // true if image verified<br/>  "digest": string       // digest of verified image<br/>} |
 | v1/verify              | {<br/>  // **mandatory**:<br/>  "image": string, // image URI to verify<br/>  "keyless": [ // list of (issuer, subject) tuples<br/>    {<br/>      "issuer": string, // OIDC issuer<br/>      "subject": string // signature subject (mail, CI URL...)<br/>    }<br/>  ],<br/>  // optional:<br/>  "annotations": [ // signature annotations<br/>    {<br/>      "key": string,<br/>      "value": string<br/>    },<br/>  ]<br/>} | {<br/>  "is_trusted": boolean, // true if image verified<br/>  "digest": string       // digest of verified image<br/>} |
->>>>>>> 52a595110fb15d2174390f0933caff5a8223aeb3:docs/writing-policies/spec/06-signature-verifier-policies.md
