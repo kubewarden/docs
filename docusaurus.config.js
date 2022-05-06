@@ -10,6 +10,7 @@ module.exports = {
   favicon: "img/favicon.ico",
   organizationName: "kubewarden", // Usually your GitHub org/user name.
   projectName: "docs", // Usually your repo name.
+  trailingSlash: false,
   themeConfig: {
     colorMode: {
       // "light" | "dark"
