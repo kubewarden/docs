@@ -6,8 +6,9 @@ title: ""
 
 # Introduction
 
-> **WARNING:** Kubewarden is in early development stage, it's not production ready.
+> **NOTE:** Kubewarden is still in development and not yet fully production ready.
 >
+> However, we encourage you to give Kubewarden a try.
 > Feedback is highly appreciated.
 
 Kubewarden is a [Kubernetes Dynamic Admission
