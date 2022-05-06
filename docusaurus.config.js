@@ -9,7 +9,7 @@ module.exports = {
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
   organizationName: "kubewarden", // Usually your GitHub org/user name.
-  projectName: "kubewarden.io", // Usually your repo name.
+  projectName: "docs", // Usually your repo name.
   themeConfig: {
     colorMode: {
       // "light" | "dark"
@@ -61,7 +61,7 @@ module.exports = {
           /* other docs plugin options */
           sidebarPath: require.resolve('./sidebars.js'),
           showLastUpdateTime: true,
-          editUrl: "https://github.com/divya-mohan0209/docs-1/tree/dev-docusaurus/",
+          editUrl: "https://github.com/kubewarden/docs/edit/main/",
         },
         blog: false, // Optional: disable the blog plugin
         // ...
