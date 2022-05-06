@@ -1,5 +1,3 @@
-<<<<<<< HEAD:src/distributing-policies/secure-supply-chain.md
-=======
 ---
 sidebar_label: "Secure Supply Chain"
 title: ""
