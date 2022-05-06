@@ -1,8 +1,8 @@
+
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title:
-    "Kubernetes Dynamic Admission at your fingertips",
-  tagline: "",
+  title: "Kubewarden",
+  tagline: "Kubernetes Dynamic Admission at your fingertips",
   url: "https://docs.kubewarden.io",
   baseUrl: "/",
   onBrokenLinks: "throw",
