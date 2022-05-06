@@ -3,7 +3,7 @@ module.exports = {
   title:
     "Kubernetes Dynamic Admission at your fingertips",
   tagline: "",
-  url: "https://kubewarden.io",
+  url: "https://docs.kubewarden.io",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
