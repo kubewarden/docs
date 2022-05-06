@@ -1,16 +1,18 @@
-name: Deploy to GitHub Pages
+name: GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
-    name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Checkout main docs repo
+        uses: actions/checkout@v2
+      - name: Setup Docusaurus
+        uses: actions/setup-node@v2
         with:
           node-version: 16.x
           cache: yarn
@@ -18,11 +20,8 @@ jobs:
         run: |
           yarn install --frozen-lockfile
           yarn build
-      # Popular action to deploy to GitHub Pages:
-      # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Build output to publish to the `gh-pages` branch:
           publish_dir: ./build
