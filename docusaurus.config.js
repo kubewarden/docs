@@ -1,15 +1,15 @@
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: "Kubewarden",
-  tagline: "Kubernetes Dynamic Admission at your fingertips",
-  url: "https://docs.kubewarden.io",
-  baseUrl: "/docs/",
-  onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
-  favicon: "img/favicon.ico",
-  organizationName: "kubewarden", // Usually your GitHub org/user name.
-  projectName: "docs", // Usually your repo name.
+  title: 'Kubewarden',
+  tagline: 'Kubernetes Dynamic Admission at your fingertips',
+  url: 'https://docs.kubewarden.io',
+  baseUrl: '/',
+  onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'warn',
+  favicon: 'img/favicon.ico',
+  organizationName: 'kubewarden', // Usually your GitHub org/user name.
+  projectName: 'docs', // Usually your repo name.
   trailingSlash: false,
   themeConfig: {
     colorMode: {
@@ -23,35 +23,30 @@ module.exports = {
     navbar: {
       title: "",
       logo: {
-        alt: "logo",
-        src: "img/icon-kubewarden.svg",
+        alt: 'logo',
+        src: 'img/icon-kubewarden.svg',
       },
       items: [
         {
-          type: "doc",
-          docId: "introduction",
-          position: "right",
-          label: "Docs",
-          className: "navbar__docs",
+          type: 'doc',
+          docId: 'introduction',
+          position: 'right',
+          label: 'Docs',
+          className: 'navbar__docs',
         },
         {
-          href: "https://github.com/kubewarden/",
-          label: "GitHub",
-          position: "right",
-          className: "navbar__github btn btn-secondary icon-github",
+          href: 'https://github.com/kubewarden/',
+          label: 'GitHub',
+          position: 'right',
+          className: 'navbar__github btn btn-secondary icon-github',
         },
       ],
     },
     footer: {
-      style: "dark",
+      style: 'dark',
       links: [],
       copyright: `Copyright © ${new Date().getFullYear()} SUSE Rancher. All Rights Reserved.`,
     },
-  },
-  customFields: {
-    title: "Kubewarden",
-    description:
-      "Kubernetes Dynamic Admission at your fingertips",
   },
   presets: [
     [
@@ -62,7 +57,7 @@ module.exports = {
           /* other docs plugin options */
           sidebarPath: require.resolve('./sidebars.js'),
           showLastUpdateTime: true,
-          editUrl: "https://github.com/kubewarden/docs/edit/main/",
+          editUrl: 'https://github.com/kubewarden/docs/edit/main/',
         },
         blog: false, // Optional: disable the blog plugin
         // ...
