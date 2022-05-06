@@ -21,7 +21,8 @@ The Kubewarden stack is made of the following components:
 >
 ```console
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
-
+```
+```console
 kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
 ```
 

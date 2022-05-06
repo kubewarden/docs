@@ -10,7 +10,7 @@ As a first step we will define the structure that holds the policy settings.
 Open the `src/settings.rs` file and change the definition of the `Settings`
 struct to look like that:
 
-```rust,norun,noplayground
+```rust
 use std::collections::HashSet;
 
 #[derive(Deserialize, Default, Debug, Serialize)]
@@ -31,7 +31,7 @@ This can be done by changing the implementation of the `Validatable` trait.
 Change the scaffolded implementation defined inside of `src/settings.rs`
 to look like that:
 
-```rust,norun,noplayground
+```rust
 impl kubewarden::settings::Validatable for Settings {
     fn validate(&self) -> Result<(), String> {
         if self.invalid_names.is_empty() {
@@ -51,7 +51,7 @@ This can be done in the [usual Rust way](https://doc.rust-lang.org/stable/book/c
 There are already some default tests at the bottom of the `src/settings.rs`
 file. Replace the automatically generated code to look like that:
 
-```rust,norun,noplayground
+```rust
 #[cfg(test)]
 mod tests {
     use super::*;

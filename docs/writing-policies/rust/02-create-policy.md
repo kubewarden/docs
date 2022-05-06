@@ -54,7 +54,7 @@ into `cargo generate`.
 
 First, install `cargo-generate`. Note, this requires [openssl-devel](https://pkgs.org/download/openssl-devel).
 
-```
+```shell
 cargo install cargo-generate
 ```
 
