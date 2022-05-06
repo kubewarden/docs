@@ -3,7 +3,6 @@ sidebar_label: "Secure Supply Chain"
 title: ""
 ---
 
->>>>>>> 52a595110fb15d2174390f0933caff5a8223aeb3:docs/distributing-policies/secure-supply-chain.md
 # Secure Supply Chain
 
 A Secure Supply Chain infrastructure allows software developers and users to ensure
