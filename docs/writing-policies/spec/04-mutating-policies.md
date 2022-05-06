@@ -141,73 +141,8 @@ The container is now dropping the `BPF` capability thanks to our policy.
 
 These are the functions a mutating policy must implement:
 
-<<<<<<< HEAD:src/writing-policies/spec/04-mutating-policies.md
-<table>
-  <thead>
-    <tr>
-      <th>waPC function name</th>
-      <th>Input payload</th>
-      <th>Output payload</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>validate</code></td>
-      <td>
-<pre>
-{
-  "request": {
-    // AdmissionReview.request data
-  },
-  "settings": {
-    // your policy configuration
-  }
-}
-</pre>
-      </td>
-      <td>
-<pre>
-{
-  // <strong>mandatory</strong>
-  "accepted": &lt;boolean&gt;,<br>
-  // optional, ignored if accepted
-  // recommended for rejections
-  "message": &lt;string&gt;,<br>
-  // optional, ignored if accepted
-  "code": &lt;integer&gt;, <br>
-  // JSON Object to be created
-  // Can be used only when the request is accepted
-  "mutated_object": &lt;object&gt;
-}
-</pre>
-      </td>
-    </tr>
-    <tr>
-      <td><code>validate_settings</code></td>
-      <td>
-<pre>
-{
-  // your policy configuration
-}
-</pre>
-      </td>
-      <td>
-<pre>
-{
-  // <strong>mandatory</strong>
-  "validate": &lt;boolean&gt;,<br>
-  // optional, ignored if accepted
-  // recommended for rejections
-  "message": &lt;string&gt;,
-}
-</pre>
-      </td>
-    </tr>
-  </tbody>
-</table>
-=======
+
 | **waPC function name** | **Input payload**                                                                                                                     | **Output payload**                                                                                                                                                                                                                                                                                                                                     |
 |------------------------|---------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | validate               | {<br/>  "request": {<br/>    // AdmissionReview.request data<br/>  },<br/>  "settings": {<br/>    // your policy configuration<br/>  }<br/>} | {<br/>  **// mandatory**<br/>  "accepted": boolean,<br/><br/>  // optional, ignored if accepted<br/>  // recommended for rejections<br/>  "message": string,<br/><br/>  // optional, ignored if accepted<br/>  "code": integer, <br/><br/>  // JSON Object to be created<br/>  // Can be used only when the request is accepted<br/>  "mutated_object": object<br/>} |
 | validate_settings      | {<br/><br/>  // your policy configuration<br/><br/>}                                                                                      | {<br/>  **// mandatory**<br/>  "validate": boolean,<br/><br/>  // optional, ignored if accepted<br/>  // recommended for rejections<br/>  "message": string,<br/>}                                                                                                                                                                                            |
->>>>>>> 52a595110fb15d2174390f0933caff5a8223aeb3:docs/writing-policies/spec/04-mutating-policies.md
