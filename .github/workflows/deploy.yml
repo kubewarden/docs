@@ -1,24 +1,16 @@
-name: GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   deploy:
+    name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main docs repo
-<<<<<<< HEAD
-        uses: actions/checkout@v3
-      - name: Setup mdBook
-        uses: peaceiris/actions-mdbook@v1
-=======
-        uses: actions/checkout@v2
-      - name: Setup Docusaurus
-        uses: actions/setup-node@v2
->>>>>>> 52a595110fb15d2174390f0933caff5a8223aeb3
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: 16.x
           cache: yarn
@@ -26,8 +18,11 @@ jobs:
         run: |
           yarn install --frozen-lockfile
           yarn build
+      # Popular action to deploy to GitHub Pages:
+      # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Build output to publish to the `gh-pages` branch:
           publish_dir: ./build
