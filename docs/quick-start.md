@@ -85,13 +85,15 @@ kind: PolicyServer
 metadata:
   name: reserved-instance-for-tenant-a
 spec:
-  image: ghcr.io/kubewarden/policy-server:v1.0.0
+  image: ghcr.io/kubewarden/policy-server:v0.3.0
   replicas: 2
-  serviceAccountName: sa
+  serviceAccountName: ~
   env:
   - name: KUBEWARDEN_LOG_LEVEL
     value: debug
 ```
+
+> **NOTE:** Check the [latest released PolicyServer version](https://github.com/kubewarden/policy-server/pkgs/container/policy-server) and change the tag accordantly.
 
 Overview of the attributes of the `PolicyServer` resource:
 
