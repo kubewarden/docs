@@ -18,7 +18,7 @@ If you want to suggest improvements to existing documentation content or notice 
 
 If you want to suggest new content, please file an issue following the steps above. Either
 
-- You can choose an existing page in the section you think the content belongs in and click Create an issue.
+- Choose an existing page in the section you think the content belongs in and click **Create an issue**.
 OR
 - Navigate to [GitHub](https://github.com/kubewarden/docs/issues/new/choose) and file the issue directly.
 
