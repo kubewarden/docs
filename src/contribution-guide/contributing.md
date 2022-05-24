@@ -14,7 +14,7 @@ Everybody is welcome to suggest changes by submitting a pull request
 or report a bug/typo with the help of a GitHub issue to the
 [`kubewarden/docs` repository](https://github.com/kubewarden/docs).
 Knowledge of [git](https://git-scm.com/) and [GitHub](https://lab.github.com/) is
-an essential pre-requisite to getting started.
+an essential prerequisite to getting started.
 
 To get involved with the documentation:
 - Familiarize yourself with the [documentation repository](https://github.com/kubewarden/docs)
