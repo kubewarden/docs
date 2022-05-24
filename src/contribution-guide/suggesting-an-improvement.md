@@ -27,7 +27,7 @@ OR
 No contribution is too big or small! However, to ensure that the community derives maximum value, we request that you follow the below when reporting an issue:
 
 - Focus on providing a clear description of the issue. Some key points to consider would be specifically describing what is missing, outdated, erroneous, or requires qualitative/technical improvement.
-- Detailing the specific impact the issue has on users.
+- Detail the specific impact the issue has on users.
 - Delimiting the scope of the issue. If the scope is larger, we'd request you to break it down to smaller tasks within an issue. For example, "Creating a Contribution guide" is very widely scoped since there would be multiple tasks associated with the issue. However, "Fixing grammatical error on the Quickstart page" is a more narrowly scoped issue that would, potentially, require only a single pull request.
 - Crosscheck existing issues to avoid duplicate work.
 - There is a fair chance that you're opening an issue with reference to another pull request or existing issue. Ensure you reference it in the issue you're opening to provide context for contributors who may want to work on it.
