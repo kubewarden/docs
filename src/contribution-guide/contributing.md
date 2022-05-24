@@ -8,7 +8,7 @@ You can contribute to Kubewarden documentation by
 - Creating new content
 - (_Upcoming_) Helping with translation of the documentation
 
-## Getting Started
+## Getting started
 
 Everybody is welcome to suggest changes by submitting a pull request
 or reporting a bug/typo with the help of a GitHub issue to the
