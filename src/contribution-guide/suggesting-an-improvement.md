@@ -24,7 +24,7 @@ OR
 
 ## How do I make my contribution count?
 
-No contribution is big or small! However, to ensure that the community derives maximum value we'd request you to follow the below when reporting an issue:
+No contribution is too big or small! However, to ensure that the community derives maximum value, we request that you follow the below when reporting an issue:
 
 - Focus on providing a clear description of the issue. Some key points to consider would be specifically describing what is missing, outdated, erroneous, or requires qualitative/technical improvement.
 - Detailing the specific impact the issue has on users.
