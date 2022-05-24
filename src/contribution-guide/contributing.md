@@ -11,7 +11,7 @@ You can contribute to Kubewarden documentation by
 ## Getting Started
 
 Everybody is welcome to suggest changes by submitting a pull request
-or report a bug/typo with the help of a GitHub issue to the
+or reporting a bug/typo with the help of a GitHub issue to the
 [`kubewarden/docs` repository](https://github.com/kubewarden/docs).
 Knowledge of [git](https://git-scm.com/) and [GitHub](https://lab.github.com/) is
 an essential prerequisite to getting started.
