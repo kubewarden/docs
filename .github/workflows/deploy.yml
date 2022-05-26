@@ -10,14 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main docs repo
-        uses: actions/checkout@v3
-      - name: Setup mdBook
-        uses: peaceiris/actions-mdbook@v1
+        uses: actions/checkout@v2
+      - name: Setup Docusaurus
+        uses: actions/setup-node@v2
         with:
-          mdbook-version: '0.4.14'
-      - run: mdbook build
-      - name: Deploy
+          node-version: 16.x
+          cache: yarn
+      - name: Build website
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./book
+          publish_dir: ./build
