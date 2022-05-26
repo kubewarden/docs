@@ -18,8 +18,8 @@ an essential pre-requisite to getting started.
 
 To get involved with the documentation:
 - Familiarize yourself with the [documentation repository](https://github.com/kubewarden/docs)
-and the [static site generator](https://rust-lang.github.io/mdBook/).
-- mdBook uses the [CommonMark spec](https://commonmark.org/) of Markdown.
-Ensure you're familiar with the Markdown flavour before you begin.
+and the [static site generator](https://docusaurus.io/).
+- Docusaurus makes use of the Markdown syntax and uses [MDX](https://mdxjs.com/) as the parser.
+Ensure you're familiar with the Markdown before you begin.
 - Understand how to [suggest an improvement](#) and [open a pull request](#).
 
