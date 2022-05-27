@@ -21,5 +21,4 @@ To get involved with the documentation:
 and the [static site generator](https://docusaurus.io/).
 - Docusaurus makes use of the Markdown syntax and uses [MDX](https://mdxjs.com/) as the parser.
 Ensure you're familiar with the Markdown before you begin.
-- Understand how to [suggest an improvement](#) and [open a pull request](#).
-
+- Understand how to [suggest an improvement](./suggesting-an-improvement) and [open a pull request](#).
