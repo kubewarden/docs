@@ -2,7 +2,7 @@
 
 If you notice an issue with Kubewarden documentation or want to suggest new content, then open an issue. You only require access to a [GitHub account](https://github.com/join) and a browser.
 
-In most cases, any new documentation work for Kubewarden begins with an issue in GitHub. The [documentation team for Kubewarden](https://github.com/orgs/kubewarden/teams/kubewarden-documentation) reviews, categorizes and tags them as appropriate. Everybody is welcome to work on the issue, including the reporter, but we request that you assign it to yourself before commencing any work to avoid duplicate efforts.
+In most cases, any new documentation work for Kubewarden begins with an issue in GitHub. The [documentation team for Kubewarden](https://github.com/orgs/kubewarden/teams/kubewarden-documentation) reviews, categorizes, and tags them as appropriate. Everybody is welcome to work on the issue, including the reporter, but we request that you assign it to yourself before commencing any work to avoid duplicate efforts.
 
 ## Opening an issue
 
