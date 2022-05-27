@@ -12,7 +12,7 @@ If you want to suggest improvements to existing documentation content or notice 
 - Navigate to the Issues tab and click **New issue**.
 - Describe the issue or suggestion for improvement. The more details you provide, the better!
 - Click **Submit new issue**.
-- After submitting the issue, you can either assign it to yourself or wait for a community member to pick it up. Members of the documentation team and from the community might request clarifications before they can take action on your issue, so we request that you actively check your issue or [turn on GitHub notifications](https://docs.github.com/en/account-and-profile/managing-subscriptions-and-notifications-on-github/setting-up-notifications/configuring-notifications).
+- After submitting the issue, you can either assign it to yourself or wait for a community member to pick it up. Members of the documentation team and the community might request clarifications before they can take action on your issue, so we request that you actively check your issue or [turn on GitHub notifications](https://docs.github.com/en/account-and-profile/managing-subscriptions-and-notifications-on-github/setting-up-notifications/configuring-notifications).
 
 ## New content suggestions
 
