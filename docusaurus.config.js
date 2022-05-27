@@ -20,6 +20,9 @@ module.exports = {
       // Useful if you want to support a single color mode
       disableSwitch: true,
     },
+    prism: {
+      additionalLanguages: ['rust'],
+    },
     navbar: {
       title: "",
       logo: {
