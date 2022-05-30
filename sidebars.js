@@ -22,12 +22,21 @@ module.exports = {
        {
         'Policy Specification':
               [
-                'writing-policies/spec/intro-spec',
-                'writing-policies/spec/settings',
-                'writing-policies/spec/validating-policies',
-                'writing-policies/spec/mutating-policies',
-                'writing-policies/spec/context-aware-policies',
-                'writing-policies/spec/signature-verifier-policies',
+                { type: 'doc', id: 'writing-policies/spec/intro-spec'},
+                { type: 'doc', id: 'writing-policies/spec/settings'},
+                { type: 'doc', id: 'writing-policies/spec/validating-policies'},
+                { type: 'doc', id: 'writing-policies/spec/mutating-policies'},
+                { type: 'doc', id: 'writing-policies/spec/context-aware-policies'},
+                {
+                  type: 'category',
+                  label: 'Host Capabilities',
+                  link: {type: 'doc', id: 'writing-policies/spec/host-capabilities/intro-host-capabilities'},
+                  items: [
+                    'writing-policies/spec/host-capabilities/signature-verifier-policies',
+                    'writing-policies/spec/host-capabilities/container-registry',
+                    'writing-policies/spec/host-capabilities/net'
+                  ]
+                }
               ],
       },
     ],
