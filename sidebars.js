@@ -44,19 +44,25 @@ module.exports = {
           label: 'Supported Languages',
           items:[
             {
-              'Rust':
+              type: 'category',
+              label: 'Rust',
+              link: {type: 'doc', id: 'writing-policies/rust/intro-rust'},
+              items:
               [
-                'writing-policies/rust/intro-rust',
                 'writing-policies/rust/create-policy',
                 'writing-policies/rust/define-policy-settings',
                 'writing-policies/rust/write-validation-logic',
                 'writing-policies/rust/mutation-policy',
                 'writing-policies/rust/logging',
                 'writing-policies/rust/build-and-distribute',
-              ],
-              'Go':
+              ]
+            },
+            {
+              type: 'category',
+              label: 'Go',
+              link: {type: 'doc', id: 'writing-policies/go/intro-go'},
+              items:
               [
-                'writing-policies/go/intro-go',
                 'writing-policies/go/scaffold',
                 'writing-policies/go/policy-settings',
                 'writing-policies/go/validation',
@@ -65,41 +71,52 @@ module.exports = {
                 'writing-policies/go/automate',
                 'writing-policies/go/distribute'
               ],
-              'Rego':
-              [
-                'writing-policies/rego/intro-rego',
-                'writing-policies/rego/builtin-support',
-              ],
-
-              'Swift':['writing-policies/swift',],
-              'TypeScript':['writing-policies/typescript',],
             },
-          ],
-        },
-
-        {  
-          type: 'category',
-          label: 'Supported Frameworks',
-          items:[
             {
-              'Open Policy Agent':
+              type: 'category',
+              label: 'Rego',
+              link: {type: 'doc', id: 'writing-policies/rego/intro-rego'},
+              items: 
               [
-                'writing-policies/rego/open-policy-agent/intro',
-                'writing-policies/rego/open-policy-agent/create-policy',
-                'writing-policies/rego/open-policy-agent/build-and-run',
-                'writing-policies/rego/open-policy-agent/distribute',
-              ],
-              'Gatekeeper':
-              [
-                'writing-policies/rego/gatekeeper/intro',
-                'writing-policies/rego/gatekeeper/create-policy',
-                'writing-policies/rego/gatekeeper/build-and-run',
-                'writing-policies/rego/gatekeeper/distribute',
-              ],
+                { type: 'doc', id: 'writing-policies/rego/builtin-support'},
+                {
+                  type: 'category',
+                  label: 'Open Policy Agent',
+                  link: {type: 'doc', id: 'writing-policies/rego/open-policy-agent/intro'},
+                  items:
+                  [
+                    'writing-policies/rego/open-policy-agent/create-policy',
+                    'writing-policies/rego/open-policy-agent/build-and-run',
+                    'writing-policies/rego/open-policy-agent/distribute',
+                  ]
+                },
+                {
+                  type: 'category',
+                  label: 'Gatekeeper',
+                  link: {type: 'doc', id: 'writing-policies/rego/gatekeeper/intro'},
+                  items:
+                  [
+                    'writing-policies/rego/gatekeeper/create-policy',
+                    'writing-policies/rego/gatekeeper/build-and-run',
+                    'writing-policies/rego/gatekeeper/distribute',
+                  ]
+                }
+              ]
             },
-          ],
-        },
-
+            {
+              type: 'category',
+              label: 'Swift',
+              link: {type: 'doc', id: 'writing-policies/swift'},
+              items: []
+            },
+            {
+              type: 'category',
+              label: 'TypeScript',
+              link: {type: 'doc', id: 'writing-policies/typescript'},
+              items: []
+            }
+          ]
+        }
       ],
     },
     {
