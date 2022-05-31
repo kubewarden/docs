@@ -11,7 +11,7 @@ It's time to write the actual validation code. This is defined inside of the
 
 The scaffolded function is already doing something:
 
-```rust,norun,noplayground
+```rust
 fn validate(payload: &[u8]) -> CallResult {
     // NOTE 1
     let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
@@ -56,7 +56,7 @@ values provided by the user via the policy settings.
 
 This can be done with the following code:
 
-```rust,norun,noplayground
+```rust
 fn validate(payload: &[u8]) -> CallResult {
     let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
 
@@ -100,7 +100,7 @@ admission requests to write our unit tests.
 
 Change the contents of the test section inside of `src/lib.rs` to look like that:
 
-```rust,norun,noplayground
+```rust
 #[cfg(test)]
 mod tests {
     use super::*;

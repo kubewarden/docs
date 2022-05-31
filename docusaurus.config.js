@@ -12,6 +12,13 @@ module.exports = {
   projectName: 'docs', // Usually your repo name.
   trailingSlash: false,
   themeConfig: {
+    prism: {
+      // Enable extra languages when doing syntax highlighting
+      additionalLanguages: [
+        'rust',
+        'rego',
+      ],
+    },
     colorMode: {
       // "light" | "dark"
       defaultMode: "light",

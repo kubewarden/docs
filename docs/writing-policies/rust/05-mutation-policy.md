@@ -57,7 +57,7 @@ instead of the [`accept_request`](https://docs.rs/kubewarden-policy-sdk/0.1.0/ku
 
 This is how the `validate` function has to look like:
 
-```rust,norun,noplayground
+```rust
 fn validate(payload: &[u8]) -> CallResult {
     let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
 
@@ -142,7 +142,7 @@ contains a mutated object. It looks like our code is actually working!
 
 Let's update the `accept_pod_with_valid_name` to look like that:
 
-```rust,norun,noplayground
+```rust
 #[test]
 fn accept_pod_with_valid_name() -> Result<(), ()> {
     let mut invalid_names = HashSet::new();
