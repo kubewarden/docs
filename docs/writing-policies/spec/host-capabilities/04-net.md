@@ -26,7 +26,7 @@ This is the description of the waPC protocol used to expose this capability:
 
 | **waPC function name** | **Input payload** | **Output payload** |
 |--------------------|---------------|----------------|
-| `net/dns_lookup_host` | `"<hostname>"` // A JSON encoded string | {<br/>  "ips": [] // an array of strings<br/>} |
+| `v1/dns_lookup_host` | <code>// hostname<br/>// JSON encoded string<br/>string</code>  | <code>{<br/>   // list of IPs<br/>   "ips": [<br/>     string<br/>   ]<br/>}</code> |
 
 
 All the IPs associated with the given FQDN, are going to be returned as strings
@@ -37,5 +37,5 @@ For example, when requesting the manifest digest of the `busybox:latest` image,
 the payload would be the following ones:
 
 * Input payload: `"google.com"`
-* Output payload: `{ "ips": ["IP1", "IP2"]}`
+* Output payload: `{ "ips": ["127.0.0.1"]}`
 

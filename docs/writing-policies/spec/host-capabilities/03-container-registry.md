@@ -39,7 +39,7 @@ This is the description of the waPC protocol used to expose this capability:
 
 | **waPC function name** | **Input payload** | **Output payload** |
 |--------------------|---------------|----------------|
-| `v1/manifest_digest` | `"<OCI URI>"` // A JSON encoded string | {<br/>  "digest": string // digest of the OCI object<br/>} |
+| `v1/manifest_digest` | <code>// OCI URI<br/>// JSON encoded string<br/>string</code>  | <code>{<br/>   // digest of the OCI object<br/>   "digest": string<br/>}</code> |
 
 For example, when requesting the manifest digest of the `busybox:latest` image,
 the payload would be the following ones:
