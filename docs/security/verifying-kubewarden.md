@@ -85,7 +85,7 @@ returned json contains the correct issuer, subject, and
 `github_workflow_repository` extensions.
 
 
-## kubectl
+## kwctl
 
 kwctl binaries are signed using [Sigstore's blog signing](https://docs.sigstore.dev/cosign/working_with_blobs/#signing-blobs-as-files). 
 
