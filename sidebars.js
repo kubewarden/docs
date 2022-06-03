@@ -128,6 +128,8 @@ module.exports = {
           'Reference Documentation':
           [
             'operator-manual/telemetry/metrics/reference',
+            'operator-manual/CRDs',
+            'operator-manual/verification-config',
           ],
           'Monitor Mode': ['operator-manual/monitor-mode/intro',],
         },
