@@ -119,7 +119,7 @@ All rules are reviewed and tested.
 
 **To do**
 The Kubewarden team may come up with some tests to cover the review of these rules in the future.
-We  should carefully review a PR changing the rules in the policies deployment
+In addition to the above, any change of rules during policies deployment must be carefully reviewed.
 
 ## Threat 11 - Attacker deploys workloads to namespaces that are  exempt from admission control
 An attacker is able to deploy workloads to Kubernetes namespaces that are exempt
