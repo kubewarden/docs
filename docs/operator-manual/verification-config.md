@@ -72,7 +72,7 @@ A full list of accepted keys based on different use cases is given below.
   It accepts a `subject`, which can be:
   - `equal`: the value passed here must match exactly against the `subject` in
     the signing certificate.
-  - `urlPrefix`: the value passed here is post-fixed with `\` to prevent
+  - `urlPrefix`: the value passed here is post-fixed with `/` to prevent
     typo-squatting, and must be a prefix of the `subject` in the signing
     certificate.
 
