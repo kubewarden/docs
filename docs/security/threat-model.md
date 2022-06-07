@@ -211,7 +211,11 @@ Kubewarden policies run in a restrictive environment. They do not have network a
 
 
 ## Threat Kubewarden ID 1 - Bootstrapping of trust for admission controller
-Assuming a trusted but fresh Kubernetes cluster, an attacker is able to compromise the Kubewarden stack before any of the policies securing it is deployed and enforcing. For example, by using unsigned and malicious images for kubewarden-controller, policy-server, or any of the Kubewarden dependencies (cert-manager) or optional dependencies (grafana, prometheus..), or by compromising the Helm charts payload.
+Assuming a trusted but fresh Kubernetes cluster, an attacker is able to compromise the Kubewarden stack 
+before any of the policies securing it are deployed and enforced.  For example, by using unsigned and 
+malicious images for kubewarden-controller, policy-server, or any of the Kubewarden dependencies 
+(cert-manager) or optional dependencies (grafana, prometheus, etc.), or by compromising 
+the Helm charts payload.
 
 ** Mitigation **
 1. Kubewarden provides a Software Bill Of Materials, which lists all images needed. This aids with Zero-Trust.
