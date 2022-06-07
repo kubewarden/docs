@@ -46,7 +46,7 @@ returned json contains the correct issuer, subject, and
 
 ## Container images
 
-Both our production images used in our Helm charts and our development images
+Both the production images used in our Helm charts and our development images
 (tagged `:latest`) are signed with Sigstore's keyless signing.
 
 Kubewarden follows the usual practices with regards to Helm charts. Hence, one
