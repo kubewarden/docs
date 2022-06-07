@@ -18,7 +18,7 @@ If more details about each threat is needed, refer to the [original document pub
 ## Threat 1 - Attacker floods webhook with traffic preventing its operation
 
 An attacker who has access to the Webhook endpoint, at the network level, could
-send large  quantities of traffic, causing an effective denial of service to the
+send large quantities of traffic, causing an effective denial of service to the
 admission controller.
 
 **Mitigation**
