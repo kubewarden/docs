@@ -98,7 +98,7 @@ Webhook mTLS authentication is used.
 **To do**
 Kubewarden should implement mutual TLS authentication
 We can add in the recommended policies from the `kubewarden-defaults` Helm
-chart a policy to drop the `NET_RAW` capability.
+chart a policy to drop the `NET_RAW` capability could potentially be incorporated.
 
 ### Threat 9 - Attacker steals traffic from the webhook via spoofing
 An attacker is able to redirect traffic from the API server which is intended
