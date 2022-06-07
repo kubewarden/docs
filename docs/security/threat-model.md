@@ -203,7 +203,7 @@ I don't think Kubewarden can help on this
 
 ## Threat ID 18 - Attacker uses policies to send confidential data from  admission requests to external systems
 An attacker is able to configure a policy that listens to admission requests and
-sends  sensitive data to an external system.
+sends sensitive data to an external system.
 
 **Mitigation**
 Strictly control external access for webhook
