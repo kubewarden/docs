@@ -56,7 +56,7 @@ RBAC rights are strictly controlled.
 Most of RBAC isn't within the scope of the current discussion. 
 However, we intend to provide the below in due course for helping Kubewarden users.
 - Directions around minimum RBAC to be implemented.
-- Provide a policy which detect RBAC changes and **maybe** block them.
+- Provision & documentation of a policy that detects and could potentially block RBAC changes.
 
 
 ## Threat 5 - Attacker gets access to valid credentials for the webhook
