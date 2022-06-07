@@ -118,7 +118,7 @@ such that it allows for privileged container creation
 All rules are reviewed and tested.
 
 **To do**
-We may came up with some tests to cover this rules reviews
+The Kubewarden team may come up with some tests to cover the review of these rules in the future.
 We  should carefully review a PR changing the rules in the policies deployment
 
 ## Threat 11 - Attacker deploys workloads to namespaces that are  exempt from admission control
