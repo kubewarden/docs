@@ -102,7 +102,7 @@ chart a policy to drop the `NET_RAW` capability.
 
 ### Threat 9 - Attacker steals traffic from the webhook via spoofing
 An attacker is able to redirect traffic from the API server which is intended
-for the admission  controller webhook by spoofing.
+for the admission controller webhook by spoofing.
 
 **Mitigation**
 Webhook mTLS authentication is used.
