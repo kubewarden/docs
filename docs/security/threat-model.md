@@ -219,6 +219,7 @@ the Helm charts payload.
 
 ** Mitigation **
 1. Kubewarden provides a Software Bill Of Materials, which lists all images needed. This aids with Zero-Trust.
-  The Kubernetes Administrator must verify the Kubewarden images (and its dependencies' images and charts) out of the Kubernetes cluster, in a trusted environment. This can be done with `cosign`, for example.
+  The Kubernetes Administrator must verify the Kubewarden images, its dependencies' images, and charts 
+  out of the Kubernetes cluster, in a trusted environment. This can be done with `cosign`, for example.
   Incidentally, this is part of the implementation needed for air-gapped installations.
  2. Use signed Helm charts, and verified digests (instead of tags) for Kubewarden images in those Helm charts. This doesn't secure dependencies though.
