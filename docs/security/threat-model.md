@@ -112,7 +112,7 @@ Kubewarden should implement mutual TLS authentication
 
 ### Threat 10 - Abusing a mutation rule to create a privileged container
 An attacker is able to cause a mutating admission controller to modify a workload,
-such that  it allows for privileged container creation
+such that it allows for privileged container creation
 
 **Mitigation**
 All rules are reviewed and tested.
