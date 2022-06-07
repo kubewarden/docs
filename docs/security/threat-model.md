@@ -78,7 +78,6 @@ An attacker gains access to a cluster-admin level credential in the kubernetes c
 **Mitigation**
 N/A
 
-I cannot see how Kubewarden can help here.
 
 ## Threat 7 - Attacker sniffs traffic on the container network
 An attacker who has access to the container network is able to sniff traffic
