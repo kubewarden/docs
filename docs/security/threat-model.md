@@ -38,7 +38,7 @@ Webhook fail closed and authenticate callers. We are safe, Kubewarden already do
 
 ## Threat 3 - Attacker exploits misconfiguration of webhook to bypass
 An attacker, who has rights to create workloads in the cluster, is able to exploit
-a mis-configuration to bypass the intended security control
+a misconfiguration to bypass the intended security control
 
 **Mitigation**
 Regular reviews of webhook configuration catch issues.
