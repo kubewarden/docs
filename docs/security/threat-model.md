@@ -47,7 +47,7 @@ Regular reviews of webhook configuration catch issues.
 ### Threat 4 - Attacker has rights to delete or modify the k8s webhook  object
 
 An attacker who has Kubernetes API access, has sufficient privileges to delete
-the webhook  object in the cluster.
+the webhook object in the cluster.
 
 **Mitigation**
 RBAC rights are strictly controlled.
