@@ -84,7 +84,7 @@ An attacker who has access to the container network is able to sniff traffic
 between the API  server and the admission controller webhook.
 
 **Mitigation**
-Webhook uses TLS encryption for all traffic
+Since the webhook uses TLS encryption for all traffic, Kubewarden is safe.
 
 
 ## Threat 8 - Attacker carries out a MITM attack on the webhook
