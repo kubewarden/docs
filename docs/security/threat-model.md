@@ -195,6 +195,7 @@ We can add a recommended policy in the `kubewarden-default` Helm chart to preven
 
 ## Threat ID 17 - Attacker has privileged SSH access to cluster node  running admission webhook
 An attacker is able to log into cluster nodes as a privileged user via SSH.
+
 **Mitigation**
 N/A
 
