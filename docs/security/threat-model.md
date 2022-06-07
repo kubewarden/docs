@@ -136,7 +136,7 @@ I think most of the RBAC is not Kubewarden responsability. But we can help our u
 
 ## Threat ID 12 - Block rule can be bypassed due to missing match (e.g.  missing initcontainers)
 An attacker created a workload manifest which uses a feature of the Kubernetes
-API which  is not covered by the admission controller
+API which is not covered by the admission controller
 
 **Mitigation**
 All rules are reviewed and tested.
