@@ -57,7 +57,8 @@ The config has 2 root keys:
 - `anyOf`: At least `anyOf.minimumMatches` of all info listed here must be
   satisfied for accepting a container image as signed.
   
-These 2 root keys accept an array of keys `kind`. `kind` can be:
+These two root keys accept an array of keys of type `kind`. 
+A full list of accepted keys based on different use cases is given below.
 - `pubKey`: for signatures performed with traditional public/private key
   cryptography.
 - `githubAction`: for signatures performed with Sigstore's keyless workflow
