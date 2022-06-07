@@ -52,7 +52,7 @@ anyOf: # at least `anyOf.minimumMatches` are required to match
 ## Format
 
 The config has 2 root keys:
-- `allOf`: All verification info listed here must be satisfied, for accepting a
+- `allOf`: All verification info listed here must be satisfied for accepting a
   container image as signed.
 - `anyOf`: At least `anyOf.minimumMatches` of all info listed here must be
   satisfied, for accepting a container image as signed.
