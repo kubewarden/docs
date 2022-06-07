@@ -55,7 +55,7 @@ The config has 2 root keys:
 - `allOf`: All verification info listed here must be satisfied for accepting a
   container image as signed.
 - `anyOf`: At least `anyOf.minimumMatches` of all info listed here must be
-  satisfied, for accepting a container image as signed.
+  satisfied for accepting a container image as signed.
   
 These 2 root keys accept an array of keys `kind`. `kind` can be:
 - `pubKey`: for signatures performed with traditional public/private key
