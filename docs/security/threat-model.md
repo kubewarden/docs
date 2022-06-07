@@ -86,7 +86,6 @@ between the API  server and the admission controller webhook.
 **Mitigation**
 Webhook uses TLS encryption for all traffic
 
-Kubewarden are safe. Because the webhook connections are encrypted.
 
 
 ## Threat 8 - Attacker carries out a MITM attack on the webhook
