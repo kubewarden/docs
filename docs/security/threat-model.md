@@ -65,7 +65,11 @@ An attacker gains access to valid client credentials for the admission controlle
 **Mitigation**
 Webhook fails closed.
 
-Kubewarden is failed closed. Thus, we should be fine.
+Kubewarden is failed closed. Thus, we should be fine. 
+
+(Failing closed means that if, for any reason, Kubewarden stops responding or
+crashes, the API server will reject the request by default, even if the request
+would be accepted by Kubewarden in normal situations)
 
 ## Threat  6 - Attacker gains access to a cluster admin credential
 
