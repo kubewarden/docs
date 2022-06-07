@@ -184,7 +184,7 @@ containers running in the cluster node.
 
 ## Threat ID 16 - Attacker mounts a privileged node hostpath allowing  modification of Webhook controller configuration
 An attacker, who has rights to deploy hostPath volumes with workloads, creates a
-volume  which allows for access to the admission controller pod’s files.
+volume that allows for access to the admission controller pod’s files.
 
 **Mitigation**
 Admission controller uses restrictive policies to prevent privileged  workloads
