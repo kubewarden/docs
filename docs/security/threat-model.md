@@ -90,7 +90,7 @@ Webhook uses TLS encryption for all traffic
 ## Threat 8 - Attacker carries out a MITM attack on the webhook
 An attacker on the container network, who has access to the NET_RAW capability
 can attempt to use MITM tooling to intercept traffic between the API server
-and admission  controller webhook.
+and admission controller webhook.
 
 **Mitigation**
 Webhook mTLS authentication is used.
