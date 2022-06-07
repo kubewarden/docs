@@ -55,7 +55,7 @@ RBAC rights are strictly controlled.
 **To do**
 Most of RBAC isn't within the scope of the current discussion. 
 However, we intend to provide the below in due course for helping Kubewarden users.
-- Warning them in our docs and *suggest* some minimum RBAC to be used.
+- Directions around minimum RBAC to be implemented.
 - Provide a policy which detect RBAC changes and **maybe** block them.
 
 
