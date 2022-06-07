@@ -147,7 +147,7 @@ We  should carefully review a PR changing the rules in the policies deployment
 
 ## Threat ID 13 - Attacker exploits bad string matching on a blocklist to  bypass rules
 An attacker, who has rights to create workloads, bypasses a rule by exploiting
-bad string  matching.
+bad string matching.
 
 **Mitigation**
 All rules are reviewed and tested.
