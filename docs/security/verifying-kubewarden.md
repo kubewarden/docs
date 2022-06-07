@@ -40,7 +40,7 @@ The following checks were performed on each of these signatures:
   <snipped json>
 ```
 
-You can then verify either manually or with Sigstore tools that the cert in the
+You may either verify manually or with Sigstore tools that the cert in the
 returned json contains the correct issuer, subject, and
 `github_workflow_repository` extensions.
 
