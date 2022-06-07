@@ -12,7 +12,7 @@ that cover it. Still, it is recommended for Kubewarden administrators to read
 and understand the threat model, and use it to devise their own thread model as
 needed.
 
-If more details about each threat is needed, refer to the [SIG-security original document ](https://github.com/kubernetes/sig-security/tree/main/sig-security-docs/papers/admission-control).
+If more details about each threat is needed, refer to the [original document published by SIG-security](https://github.com/kubernetes/sig-security/tree/main/sig-security-docs/papers/admission-control).
 
 
 ## Threat 1 - Attacker floods webhook with traffic preventing its operation
