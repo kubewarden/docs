@@ -8,7 +8,7 @@ title: ""
 ## Example
 
 Here you can see an example of a configuration for verifying
-signatures done with the Sigstore workflow:
+signatures using the Sigstore workflow:
 
 ```yaml
 ---
