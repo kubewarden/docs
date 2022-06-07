@@ -53,7 +53,8 @@ the webhook object in the cluster.
 RBAC rights are strictly controlled.
 
 **To do**
-I think most of the RBAC is not Kubewarden responsibility. But we can help our users if we:
+Most of RBAC isn't within the scope of the current discussion. 
+However, we intend to provide the below in due course for helping Kubewarden users.
 - Warning them in our docs and *suggest* some minimum RBAC to be used.
 - Provide a policy which detect RBAC changes and **maybe** block them.
 
