@@ -172,7 +172,7 @@ all the supported API version in theirs tests and reject all of others.
 
 ## Threat ID 15 - Attacker deploys privileged container to node running  Webhook controller
 An attacker, who has rights to deploy privileged containers to the cluster, creates
-a privileged  container on the cluster node where the admission controller webhook operates.
+a privileged container on the cluster node where the admission controller webhook operates.
 
 **Mitigation**
 Admission controller uses restrictive policies to prevent privileged  workloads
