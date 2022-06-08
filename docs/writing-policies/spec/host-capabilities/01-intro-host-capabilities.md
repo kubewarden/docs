@@ -7,7 +7,7 @@ title: ""
 
 While being evaluated, Kubewarden policies can access extra capabilities offered
 by the host environment.
-This mechanism works using an approach similar to traditional [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call).
+This mechanism uses an approach similar to traditional [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call).
 
 This is what happens when a request is issued by a Kubewarden policy:
 
