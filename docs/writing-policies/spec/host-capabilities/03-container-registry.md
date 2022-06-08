@@ -9,7 +9,7 @@ Container registries can be used to distribute many types of OCI objects, going
 from well-known container images to generic OCI Artifacts. OCI Artifacts are used
 to store objects such as Kubewarden Policies, Helm charts, and more.
 
-These are the capabilities exposed by the Kubewarden host to interact with
+Below documented are the capabilities exposed by the Kubewarden host to interact with
 container registries.
 
 ## Get OCI manifest digest
