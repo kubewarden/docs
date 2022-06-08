@@ -12,7 +12,7 @@ This mechanism uses an approach similar to traditional [RPC](https://en.wikipedi
 This is what happens when a request is issued by a Kubewarden policy:
 
 * Kubewarden policy:
-  * Invoke the capability offered by the host environment
+  * Invokes the capability offered by the host environment
   * The invocation is a blocking operation, hence the policy code will wait until the
   host provides an answer
 * Host environment:
