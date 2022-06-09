@@ -12,7 +12,7 @@ disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure) in order to
 best protect Kubewarden's user-base from the impact of security issues. On our
 side, this means:
 
-- We will respond to security incidents as a priority.
+- We will respond to security incidents on priority.
 - We will fix the issue as soon as is practical, keeping in mind that not all risks are created equal.
 - We will always transparently let the community know about any incident that affects them.
 
