@@ -168,7 +168,7 @@ All rules are reviewed and tested.
 Introduce tests to cover this rule.
 Create a configuration to reject requests where the API version not
 cover by the policy by default. Kubewarden should warn policy developers to cover all the
-supported API version in theirs tests and reject all of others.
+supported API version in their tests and reject all others.
 
 
 ## Threat ID 15 - Attacker deploys privileged container to node running  Webhook controller
