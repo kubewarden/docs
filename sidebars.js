@@ -165,5 +165,15 @@ module.exports = {
         },
       ],
     },
+    {
+      type: 'category',
+      label: 'Security',
+      link: {type: 'doc', id: 'security/intro'},
+      items:[
+        'security/threat-model',
+        'security/verifying-kubewarden',
+        `security/disclosure`
+      ],
+    },
   ],
 };
