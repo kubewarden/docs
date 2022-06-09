@@ -5,4 +5,4 @@ title: ""
 
 # Security
 
-This section covers security topics related with the Kubewarden project itself.
+This section covers security topics related to the Kubewarden project.
