@@ -132,7 +132,7 @@ RBAC rights are strictly controlled
 
 **To do**
 Most of the RBAC is out of scope with respect to this decision. However, the Kubewarden team aims to:
-- Warning users in our docs and *suggest* some minimum RBAC to be used.
+- Warn users via our docs and *suggest* some minimum RBAC to be used.
 - Provide a policy which detects RBAC changes and **maybe** block them.
 
 ## Threat ID 12 - Block rule can be bypassed due to missing match (e.g.  missing initcontainers)
