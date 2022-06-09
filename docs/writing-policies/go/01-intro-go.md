@@ -3,8 +3,10 @@ sidebar_label: "Introduction to Go"
 title: ""
 ---
 
-> **Note well:** Go's support for WebAssembly is fast evolving. The contents
-> of this page have been written during April 2021, hence they could be outdated.
+:::note
+Go's support for WebAssembly is fast evolving. The contents
+of this page were written during April 2021, hence they could be outdated.
+:::
 
 # Go
 
@@ -39,18 +41,21 @@ the actual request received by Kubernetes.
 Despite TinyGo's current limitations, it's still easy and doable to write
 Kubewarden validation policies with it.
 
-> **Note well:** unfortunately, it's currently impossible to write mutating
-> policies using TinyGo.
-
 ## Tooling
 
-Writing Kubewarden policies requires a version of TinyGo greater than `0.17.0`.
+Writing Kubewarden policies requires a version of TinyGo greater than `0.23.0`.
 
 These Go libraries are extremely useful when writing a Kubewarden policy:
 
 * [Kubewarden Go SDK](https://github.com/kubewarden/policy-sdk-go): provides a series of
   structures and functions that reduce the amount of code to write. It also provides test helpers.
-* [gjson](https://github.com/tidwall/gjson): provides a powerful query language that allows
+* [Kubernetes Go types](https://github.com/kubewarden/k8s-objects): The
+  [official Kubernetes Go Types](https://github.com/kubernetes/kubernetes/tree/master/staging/src/k8s.io)
+  cannot be used with TinyGo. This module provides all the
+  Kubernetes Types in a TinyGo-friendly way.
+* [easyjson](https://github.com/mailru/easyjson/): This provides a way to marshal and unmarshal
+  Go types without using reflection.
+* [gjson](https://github.com/tidwall/gjson): It provides a powerful query language that allows
   quick navigation of JSON documents and data retrieval. This library doesn't use the
   `encoding/json` package provided by Go's stdlib, hence it's usable with TinyGo.
 * [mapset](https://github.com/deckarep/golang-set): provides a Go implementation of the
@@ -73,6 +78,6 @@ builds from the development branch are automatically pushed
 If needed, checkout TinyGo's [getting started](https://tinygo.org/getting-started/) page for
 more information.
 
-> **Note well:** Kubewarden's requires code that is available only on the development branch. This will
-> be solved once TinyGo `0.17.0` is released. In the meantime we will use the container image
-> based on the development branch: `tinygo/tinygo-dev:latest`.
+:::note
+Kubewarden is compatible with all versions of **TinyGo** after and including 0.23.
+:::
