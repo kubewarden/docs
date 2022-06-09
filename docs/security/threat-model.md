@@ -30,7 +30,7 @@ Kubewarden default behavior already does that.
 ## Threat 2 - Attacker passes workloads which require complex  processing causing timeouts
 
 An attacker, who can access the admission controller at a network level, passes
-requests to  the admission controller which require complex processing, causing
+requests to the admission controller requiring complex processing and causing
 timeouts as the  admission controller uses compute power to process the workloads
 
 **Mitigation**
