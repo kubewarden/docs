@@ -167,7 +167,7 @@ All rules are reviewed and tested.
 **To do**
 Introduce tests to cover this rule.
 Create a configuration to reject requests where the API version not
-cover by the policy. Kubewarden should warn policy developers to cover all the
+cover by the policy by default. Kubewarden should warn policy developers to cover all the
 supported API version in theirs tests and reject all of others.
 
 
