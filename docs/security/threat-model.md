@@ -31,7 +31,7 @@ Kubewarden default behavior already does that.
 
 An attacker, who can access the admission controller at a network level, passes
 requests to the admission controller requiring complex processing and causing
-timeouts as the  admission controller uses compute power to process the workloads
+timeouts as the admission controller utilizes compute power to process the workloads
 
 **Mitigation**
 Webhook fail closed and authenticate callers. Kubewarden default behaviour
