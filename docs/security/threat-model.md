@@ -24,7 +24,7 @@ admission controller.
 **Mitigation**
 
 Webhook fails closed. In other words, if the webhook does not respond in time,
-for any reasion, API server should reject the request.
+for any reason, the API server should reject the request.
 Kubewarden default behavior already does that.
 
 ## Threat 2 - Attacker passes workloads which require complex  processing causing timeouts
