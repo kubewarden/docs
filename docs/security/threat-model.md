@@ -131,7 +131,7 @@ from the admission controller configuration.
 RBAC rights are strictly controlled
 
 **To do**
-Most of the RBAC is not Kubewarden responsability. But still Kubewarden can:
+Most of the RBAC is out of scope with respect to this decision. However, the Kubewarden team aims to:
 - Warning users in our docs and *suggest* some minimum RBAC to be used.
 - Provide a policy which detects RBAC changes and **maybe** block them.
 
