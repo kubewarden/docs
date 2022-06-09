@@ -57,6 +57,16 @@
   }
 }
 
+/*
+ * Fix spacing between the GitHub button and the theme selector
+ * See https://github.com/kubewarden/docs/pull/122#pullrequestreview-1001303794
+ */
+@media (min-width: 996px) {
+  .icon-github.navbar__github {
+    margin-right: 20px;
+  }
+}
+
 body {
   font-family: 'Roboto', sans-serif;
 }

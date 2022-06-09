@@ -25,12 +25,12 @@ as a response a `SettingsValidationResponse` object.
 
 The structure of the `SettingsValidationResponse` object is the following one:
 
-```
+```yaml
 {
-  // mandatory
+  # mandatory
   "valid": <boolean>,
 
-  // optional, ignored if accepted - recommended for rejections
+  # optional, ignored if accepted - recommended for rejections
   "message": <string>,
 }
 ```
@@ -62,7 +62,7 @@ default_add_capabilities:
 The `validate_settings` function will receive as input the following JSON
 document:
 
-```
+```json
 {
   "allowed_capabilities": [
     "CHOWN"

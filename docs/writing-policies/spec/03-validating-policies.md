@@ -27,11 +27,11 @@ returns a `ValidationResponse` object serialized as JSON.
 The `ValidationRequest` is a simple JSON object that is received by the
 `validate` function. It looks like this:
 
-```json
+```yaml
 {
   "request": <AdmissionReview.request data>,
   "settings": {
-     // your policy configuration
+    # your policy configuration
   }
 }
 ```
@@ -43,7 +43,7 @@ specific settings. The previous chapter focused on policies and settings.
 
 Given the following Kubernetes `AdmissionReview`:
 
-```json
+```yaml
 {
   "apiVersion": "admission.k8s.io/v1",
   "kind": "AdmissionReview",
@@ -114,7 +114,7 @@ Given the following Kubernetes `AdmissionReview`:
 
 The `ValidationRequest` object would look like that:
 
-```json
+```yaml
 {
   "request": {
     # Random uid uniquely identifying this admission call
@@ -191,18 +191,18 @@ object.
 
 The `ValidationResponse` is structured in the following way:
 
-```json
+```yaml
 {
-  // mandatory
+  # mandatory
   "accepted": <boolean>,
 
-  // optional, ignored if accepted - recommended for rejections
+  # optional, ignored if accepted - recommended for rejections
   "message": <string>,
 
-  // optional, ignored if accepted
+  # optional, ignored if accepted
   "code": <integer>,
 
-  // optional, used by mutation policies
+  # optional, used by mutation policies
   "mutated_object": <string>
 }
 ```

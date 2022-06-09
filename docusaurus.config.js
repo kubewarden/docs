@@ -12,13 +12,20 @@ module.exports = {
   projectName: 'docs', // Usually your repo name.
   trailingSlash: false,
   themeConfig: {
+    prism: {
+      // Enable extra languages when doing syntax highlighting
+      additionalLanguages: [
+        'rust',
+        'rego',
+      ],
+    },
     colorMode: {
       // "light" | "dark"
       defaultMode: "light",
 
       // Hides the switch in the navbar
       // Useful if you want to support a single color mode
-      disableSwitch: true,
+      disableSwitch: false,
     },
     prism: {
       additionalLanguages: ['rust'],
