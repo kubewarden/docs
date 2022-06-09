@@ -42,7 +42,7 @@ An attacker, who has rights to create workloads in the cluster, is able to explo
 a misconfiguration to bypass the intended security control.
 
 **Mitigation**
-Regular reviews of webhook configuration catch issues.
+Regular reviews of webhook configuration can help catch issues.
 
 
 ### Threat 4 - Attacker has rights to delete or modify the k8s webhook  object
