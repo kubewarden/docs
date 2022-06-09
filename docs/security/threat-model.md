@@ -159,7 +159,7 @@ As always, carefully review PRs changing the rules in the policies deployment.
 
 ## Threat ID 14 - Attacker uses new/old features of the Kubernetes API  which have no rules
 An attacker, with rights to create workloads, uses new features of the Kubernetes
-API (for  example a changed API version) to bypass a rule.
+API (for example, a changed API version) to bypass a rule.
 
 **Mitigation**
 All rules are reviewed and tested.
