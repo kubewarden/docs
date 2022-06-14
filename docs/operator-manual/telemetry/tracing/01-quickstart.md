@@ -8,9 +8,11 @@ title: ""
 This section illustrates how to enable tracing support of
 Policy Server.
 
-> **Note well**: before continuing, make sure you completed the previous
-> [OpenTelemetry](../opentelemetry/01-quickstart.md#install-opentelemetry) section of this book. It
-> is required for this section to work correctly.
+:::note
+Before continuing, make sure you completed the previous
+[OpenTelemetry](../opentelemetry/01-quickstart.md#install-opentelemetry) section of this book. It
+is required for this section to work correctly.
+:::
 
 Tracing allows to collect fine grained details about policy evaluations. It can
 be a useful tool for debugging issues inside of your Kubewarden deployment and policies.
@@ -64,8 +66,10 @@ Given this is a testing environment, we will use default
 strategy. As stated on the upstream documentation: this deployment strategy is
 meant to be used only for development, testing and demo purposes.
 
-> **Note well:** the operator can deploy Jaeger in many different ways. We strongly recommend
-> to read its [official documentation](https://www.jaegertracing.io/docs/1.26/operator/).
+:::note
+The operator can deploy Jaeger in many different ways. We strongly recommend
+to read its [official documentation](https://www.jaegertracing.io/docs/1.26/operator/).
+:::
 
 Let's create a Jaeger resource:
 
@@ -95,8 +99,10 @@ echo http://`minikube ip`
 
 We can proceed to the deployment of Kubewarden in the usual way.
 
-> **Note well:** cert-manager is a requirement of Kubewarden, and OpenTelemetry is required for this
-> feature, but we've already installed them in a previous section of this book.
+:::note
+cert-manager is a requirement of Kubewarden, and OpenTelemetry is required for this
+feature, but we've already installed them in a previous section of this book.
+:::
 
 As a first step, we have to add the Helm repository that contains Kubewarden:
 

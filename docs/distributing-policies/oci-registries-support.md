@@ -5,9 +5,11 @@ title: ""
 
 # OCI Registries support
 
-> **Note well**: this is not an exhaustive list. If a registry you know or use is working correctly
-> with Kubewarden, or if any information described here is not accurate at this time, please open a
-> [Pull Request against this documentation](https://github.com/kubewarden/docs) to fix it.
+:::note
+This is not an exhaustive list. If a registry you know or use is working correctly
+with Kubewarden, or if any information described here is not accurate at this time, please open a
+[Pull Request against this documentation](https://github.com/kubewarden/docs) to fix it.
+:::
 
 Kubewarden policies are distributed as [OCI Artifacts](https://github.com/opencontainers/artifacts)
 using regular OCI Registries.

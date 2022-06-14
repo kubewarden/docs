@@ -38,10 +38,12 @@ The structure of the `SettingsValidationResponse` object is the following one:
 If the user provided settings are `valid`, the contents of `message` are ignored.
 Otherwise the contents of `message` are shown to the user.
 
-> **Note well:** Kubewarden's [policy-server](https://github.com/chimera-kube/policy-server)
-> validates all the policy settings provided by users at start time.
-> The policy-server exits immediately with an error if at least one of its
-> policies received wrong configuration parameters.
+:::note
+Kubewarden's [policy-server](https://github.com/chimera-kube/policy-server)
+validates all the policy settings provided by users at start time.
+The policy-server exits immediately with an error if at least one of its
+policies received wrong configuration parameters.
+:::
 
 ## Example
 
