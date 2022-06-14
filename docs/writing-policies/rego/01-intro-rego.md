@@ -26,8 +26,8 @@ While the next couple of sections detail how the two frameworks are different
 even though the same language is used, if you're more interested in the Kubewarden
 implementation you may directly visit the framework-specific documentation we have linked below.
 
-- [Open Policy Agent](/open-policy-agent/01-intro.md)
-- [Gatekeeper](/gatekeeper/01-intro.md)
+- [Open Policy Agent](/writing-policies/rego/open-policy-agent/01-intro.md)
+- [Gatekeeper](/writing-policies/rego/gatekeeper/01-intro.md)
 
 ## One language. Two frameworks
 
