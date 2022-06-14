@@ -16,8 +16,10 @@ provided by the policy to the Kubernetes API server.
 
 ### Metrics
 
-> **Note**: Baggage are key-value attributes added to the metric. They are used to enrich the metric
-> with additional information.
+:::note
+Baggage are key-value attributes added to the metric. They are used to enrich the metric
+with additional information.
+:::
 
 Name | Type | |
 --- | --- | ---

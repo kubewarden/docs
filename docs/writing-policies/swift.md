@@ -18,8 +18,10 @@ The Swiftwasm team is also working to upstream all these changes into the
 Swift project. In the meantime the toolchain provided by the Swiftwasm project
 can be used to build Kubewarden policies.
 
-**Note well:** you don't need an Apple system to write or run Swift code. Everything
+:::note
+You don't need an Apple system to write or run Swift code. Everything
 can be done also on a Linux machine or on Windows (by using Docker for Windows).
+:::
 
 ## Current State
 

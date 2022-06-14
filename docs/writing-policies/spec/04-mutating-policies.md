@@ -56,7 +56,9 @@ Let's assume the policy received this `ValidationRequest`:
 }
 ```
 
-> **Note:** we left some irrelevant fields out of the `request` object.
+:::note
+We left some irrelevant fields out of the `request` object.
+:::
 
 This request is generated because someone tried to create a Pod that would
 look like this:

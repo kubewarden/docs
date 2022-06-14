@@ -7,9 +7,11 @@ title: ""
 
 This section describes how to enable metrics reporting on the Policy Server.
 
-> **Note well**: before continuing, make sure you completed the previous
-> [OpenTelemetry](../opentelemetry/01-quickstart.md#install-opentelemetry) section of this book. It
-> is required for this section to work correctly.
+:::note
+Before continuing, make sure you completed the previous
+[OpenTelemetry](../opentelemetry/01-quickstart.md#install-opentelemetry) section of this book. It
+is required for this section to work correctly.
+:::
 
 We are going to use [Prometheus](https://prometheus.io/) to scrape metrics exposed by the Policy
 Server.
@@ -69,8 +71,10 @@ helm install --wait --create-namespace --namespace prometheus --values kube-prom
 
 We can now install Kubewarden in the recommended way with the Helm chart.
 
-> **Note well:** cert-manager is a requirement of Kubewarden, and OpenTelemetry is required for this
-> feature, but we've already installed them in a previous section of this book.
+:::note
+cert-manager is a requirement of Kubewarden, and OpenTelemetry is required for this
+feature, but we've already installed them in a previous section of this book.
+:::
 
 As a first step, we have to add the Helm repository that contains Kubewarden:
 

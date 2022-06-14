@@ -13,18 +13,18 @@ The Kubewarden stack is made of the following components:
 
 ## Installation
 
-> **PREREQUISITES:**
->
-> Currently, the chart depends on `cert-manager`. Make sure you have [`cert-manager` installed](https://cert-manager.io/docs/installation/) *before* installing the `kubewarden-controller` chart.
->
-> You can install the latest version of `cert-manager` by running the following commands:
->
+:::info PREREQUISITES
+Currently, the chart depends on `cert-manager`. Make sure you have [`cert-manager`](https://cert-manager.io/docs/installation/) installed *before* installing the `kubewarden-controller` chart.
+
+You can install the latest version of `cert-manager` by running the following commands:
+
 ```console
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
 ```
 ```console
 kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
 ```
+:::
 
 The Kubewarden stack can be deployed using `helm` charts as follows:
 
@@ -48,21 +48,20 @@ The following charts should be installed inside the `kubewarden` namespace in yo
 recommended policies to secure your cluster by enforcing some well known best practices.
 
 
-> **WARNING:**
-> Since [`v0.4.0`](https://github.com/kubewarden/kubewarden-controller/releases/tag/v0.4.0), a PolicyServer resource named default will not be created using the `kubewarden-controller` chart.
-> There is another Helm chart called `kubewarden-defaults`, which now installs
-> the default policy server.
->
-> This also means that if you are not using the latest version of the `kubewarden-controller` and are trying to upgrade,
-> your default policy server will not be upgraded or deleted. As a result, you might run into
-> issues if you try to install the `kubewarden-defaults` with some conflicting information, for example the same policy server name.
-> Therefore, to be able to take advantage of future upgrades in the `kubewarden-defaults` helm chart you need to remove the
-> existing PolicyServer resource created by the `kubewarden-controller` before installing the new chart. With this step, you ensure that you are able to update your policy server using Helm upgrades without running into
-> resource conflicts. It worth mentioning that when you remove the PolicyServer, all the policies bounded to it will be removed as well.
+:::caution
+Since [`v0.4.0`](https://github.com/kubewarden/kubewarden-controller/releases/tag/v0.4.0), a PolicyServer resource named default will not be created using the `kubewarden-controller` chart.
+There is another Helm chart called `kubewarden-defaults`, which now installs
+the default policy server.
 
-> **QUICK NOTE:**
->
-> The default configuration values should be good enough for the majority of deployments. All options are documented [here](https://charts.kubewarden.io/#configuration).
+This also means that if you are not using the latest version of the `kubewarden-controller` and are trying to upgrade,
+your default policy server will not be upgraded or deleted. As a result, you might run into
+issues if you try to install the `kubewarden-defaults` with some conflicting information, for example the same policy server name.
+Therefore, to be able to take advantage of future upgrades in the `kubewarden-defaults` helm chart you need to remove the
+existing PolicyServer resource created by the `kubewarden-controller` before installing the new chart. With this step, you ensure that you are able to update your policy server using Helm upgrades without running into
+resource conflicts. It worth mentioning that when you remove the PolicyServer, all the policies bounded to it will be removed as well.
+:::
+
+The default configuration values should be good enough for the majority of deployments. All options are documented [here](https://charts.kubewarden.io/#configuration).
 
 ## Main components
 
@@ -93,7 +92,9 @@ spec:
     value: debug
 ```
 
-> **NOTE:** Check the [latest released PolicyServer version](https://github.com/kubewarden/policy-server/pkgs/container/policy-server) and change the tag accordantly.
+:::note
+Check the [latest released PolicyServer version](https://github.com/kubewarden/policy-server/pkgs/container/policy-server) and change the tag accordantly.
+:::
 
 Overview of the attributes of the `PolicyServer` resource:
 
@@ -155,12 +156,17 @@ Overview of the attributes of the `ClusterAdmissionPolicy` resource:
 | | | - `Ignore`: an error calling the webhook is ignored and the API request is allowed to continue |
 | | | - `Fail`: an error calling the webhook causes the admission to fail and the API request to be rejected |
 
-> **NOTE:** The  `ClusterAdmissionPolicy` resources are registered with a `*` webhook `scope`, which means that registered webhooks will forward all requests matching the given `resources` and `operations` -- either namespaced (in any namespace), or cluster-wide resources.
+:::note
+The  `ClusterAdmissionPolicy` resources are registered with a `*` webhook `scope`, which means that registered webhooks will forward all requests matching the given `resources` and `operations` -- either namespaced (in any namespace), or cluster-wide resources.
+:::
 
 ### AdmissionPolicy
 
 `AdmissionPolicy` is a namespace-wide resource. The policy will process only the requests that are targeting the Namespace where the `AdmissionPolicy` is defined. Other than that, there are no functional differences between the `AdmissionPolicy` and `ClusterAdmissionPolicy` resources.
-> **NOTE:**  `AdmissionPolicy` requires kubernetes 1.21.0 or above. This is because we are using the `kubernetes.io/metadata.name` label, which was introduced in kubernetes 1.21.0
+
+:::info
+`AdmissionPolicy` requires Kubernetes 1.21.0 or above. This is because we are using the `kubernetes.io/metadata.name` label, which was introduced in Kubernetes 1.21.0
+:::
 
 The complete documentation of these Custom Resources can be found [here](https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc) or on [docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
 
@@ -271,7 +277,9 @@ The creation of the Pod has been denied by the policy and you should see the fol
 Error from server: error when creating "STDIN": admission webhook "privileged-pods.kubewarden.admission" denied the request: User 'minikube-user' cannot schedule privileged containers
 ```
 
-> **NOTE:** both examples didn't define a `namespace`, which means the `default` namespace was the target. However, as you could see in the second example, the policy is still applied. As stated above, this is due to the scope being cluster-wide and not targeting a specific namespace.
+:::note
+Both examples didn't define a `namespace`, which means the `default` namespace was the target. However, as you could see in the second example, the policy is still applied. As stated above, this is due to the scope being cluster-wide and not targeting a specific namespace.
+:::
 
 ## Uninstall
 
@@ -291,8 +299,10 @@ Once the `helm` charts have been uninstalled, you can remove the Kubernetes name
 kubectl delete namespace kubewarden
 ```
 
-> **Note:** kubewarden contains a helm pre-delete hook that will remove all `PolicyServers` and `kubewarden-controller`.
-> Then the `kubewarden-controller` will delete all resources, so it is important that `kubewarden-controller` is running when helm uninstall is executed.
+:::caution
+Kubewarden contains a helm pre-delete hook that will remove all `PolicyServers` and `kubewarden-controller`.
+Then the `kubewarden-controller` will delete all resources, so it is important that `kubewarden-controller` is running when helm uninstall is executed.
+:::
 
 `ValidatingWebhookConfigurations` and `MutatingWebhookConfigurations` created by kubewarden should be deleted, this can be checked with:
 
@@ -314,4 +324,4 @@ kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistrati
 
 As we have seen, `ClusterAdmissionPolicy` is the core resource that a cluster operator has to manage. The `kubewarden-controller` module automatically takes care of the configuration for the rest of the resources needed to run the policies.
 
-Now, you are ready to deploy Kubewarden! Have a look at the policies on [hub.kubewarden.io](https://hub.kubewarden.io), [on Github](https://github.com/topics/kubewarden-policy), or reuse existing Rego policies as shown in the [following chapters!](./writing-policies/rego/01-intro-rego.md)
+Now, you are ready to deploy Kubewarden! Have a look at the policies on [hub.kubewarden.io](https://hub.kubewarden.io), on [GitHub](https://github.com/topics/kubewarden-policy), or reuse existing Rego policies as shown in the [following chapters!](./writing-policies/rego/01-intro-rego.md)

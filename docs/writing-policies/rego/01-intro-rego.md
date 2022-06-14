@@ -5,9 +5,12 @@ title: ""
 
 # Rego
 
-> **Note well:** Rego support has been introduced starting from these releases:
-> * kwctl: v0.2.0
-> * policy-server: v0.2.0
+:::note
+Rego support has been introduced starting from these releases:
+  
+  * kwctl: v0.2.0
+  * policy-server: v0.2.0
+:::
 
 
 The Rego language is a tailor made language designed to embrace
