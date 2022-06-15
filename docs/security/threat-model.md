@@ -136,7 +136,7 @@ Most of the RBAC is out of scope with respect to this decision. However, the Kub
 - Warn users via our docs and *suggest* some minimum RBAC to be used.
 - Provide a policy which detects RBAC changes and **maybe** block them.
 
-## Threat ID 12 - Block rule can be bypassed due to missing match (e.g.  missing initcontainers)
+## Threat 12 - Block rule can be bypassed due to missing match (e.g.  missing initcontainers)
 An attacker created a workload manifest which uses a feature of the Kubernetes
 API which is not covered by the admission controller
 
@@ -147,7 +147,7 @@ All rules are reviewed and tested.
 Introduce tests to cover this rule.
 As always, carefully review PRs changing the rules in the policies deployment.
 
-## Threat ID 13 - Attacker exploits bad string matching on a blocklist to  bypass rules
+## Threat 13 - Attacker exploits bad string matching on a blocklist to  bypass rules
 An attacker, who has rights to create workloads, bypasses a rule by exploiting
 bad string matching.
 
@@ -158,7 +158,7 @@ All rules are reviewed and tested.
 Introduce tests to cover this rule.
 As always, carefully review PRs changing the rules in the policies deployment.
 
-## Threat ID 14 - Attacker uses new/old features of the Kubernetes API  which have no rules
+## Threat 14 - Attacker uses new/old features of the Kubernetes API  which have no rules
 An attacker, with rights to create workloads, uses new features of the Kubernetes
 API (for example, a changed API version) to bypass a rule.
 
@@ -172,7 +172,7 @@ cover by the policy by default. Kubewarden should warn policy developers to cove
 supported API version in their tests and reject all others.
 
 
-## Threat ID 15 - Attacker deploys privileged container to node running  Webhook controller
+## Threat 15 - Attacker deploys privileged container to node running  Webhook controller
 An attacker, who has rights to deploy privileged containers to the cluster, creates
 a privileged container on the cluster node where the admission controller webhook operates.
 
@@ -180,7 +180,7 @@ a privileged container on the cluster node where the admission controller webhoo
 Admission controller uses restrictive policies to prevent privileged workloads.
 
 
-## Threat ID 16 - Attacker mounts a privileged node hostpath allowing  modification of Webhook controller configuration
+## Threat 16 - Attacker mounts a privileged node hostpath allowing  modification of Webhook controller configuration
 An attacker, who has rights to deploy hostPath volumes with workloads, creates a
 volume that allows for access to the admission controller pod’s files.
 
@@ -191,13 +191,13 @@ Admission controller uses restrictive policies to prevent privileged  workloads
 Add a recommended policy in the `kubewarden-default` Helm chart to prevent this.
 
 
-## Threat ID 17 - Attacker has privileged SSH access to cluster node  running admission webhook
+## Threat 17 - Attacker has privileged SSH access to cluster node  running admission webhook
 An attacker is able to log into cluster nodes as a privileged user via SSH.
 
 **Mitigation**
 N/A
 
-## Threat ID 18 - Attacker uses policies to send confidential data from  admission requests to external systems
+## Threat 18 - Attacker uses policies to send confidential data from  admission requests to external systems
 An attacker is able to configure a policy that listens to admission requests and
 sends sensitive data to an external system.
 
@@ -207,7 +207,7 @@ Strictly control external access for webhook
 Kubewarden policies run in a restrictive environment. They do not have network access.
 
 
-## Threat Kubewarden ID 1 - Bootstrapping of trust for admission controller
+## Threat Kubewarden 1 - Bootstrapping of trust for admission controller
 Assuming a trusted but fresh Kubernetes cluster, an attacker is able to compromise the Kubewarden stack 
 before any of the policies securing it are deployed and enforced. For example, by using unsigned and 
 malicious images for kubewarden-controller, policy-server, or any of the Kubewarden dependencies 
