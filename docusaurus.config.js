@@ -31,7 +31,7 @@ module.exports = {
       additionalLanguages: ['rust'],
     },
     navbar: {
-      title: "",
+      title: "Kubewarden, a CNCF Sandbox Project",
       logo: {
         alt: 'logo',
         src: 'img/icon-kubewarden.svg',
@@ -55,7 +55,7 @@ module.exports = {
     footer: {
       style: 'dark',
       links: [],
-      copyright: `Copyright © ${new Date().getFullYear()} SUSE Rancher. All Rights Reserved.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Kubewarden Project Authors. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks.`,
     },
   },
   presets: [
