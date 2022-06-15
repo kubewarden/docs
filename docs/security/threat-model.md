@@ -45,7 +45,7 @@ a misconfiguration to bypass the intended security control.
 Regular reviews of webhook configuration can help catch issues.
 
 
-### Threat 4 - Attacker has rights to delete or modify the k8s webhook  object
+## Threat 4 - Attacker has rights to delete or modify the k8s webhook  object
 
 An attacker who has Kubernetes API access, has sufficient privileges to delete
 the webhook object in the cluster.
@@ -103,7 +103,7 @@ Additionally, it would be possible to add a policy within the recommended
 policies section in the `kubewarden-defaults` which drops the `NET_RAW`
 capability.
 
-### Threat 9 - Attacker steals traffic from the webhook via spoofing
+## Threat 9 - Attacker steals traffic from the webhook via spoofing
 An attacker is able to redirect traffic from the API server which is intended
 for the admission controller webhook by spoofing.
 
@@ -113,7 +113,7 @@ Webhook mTLS authentication is used.
 **To do**
 Kubewarden should implement mutual TLS authentication
 
-### Threat 10 - Abusing a mutation rule to create a privileged container
+## Threat 10 - Abusing a mutation rule to create a privileged container
 An attacker is able to cause a mutating admission controller to modify a workload,
 such that it allows for privileged container creation.
 
