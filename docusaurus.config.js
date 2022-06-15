@@ -27,9 +27,6 @@ module.exports = {
       // Useful if you want to support a single color mode
       disableSwitch: false,
     },
-    prism: {
-      additionalLanguages: ['rust'],
-    },
     navbar: {
       title: "Kubewarden, a CNCF Sandbox Project",
       logo: {
