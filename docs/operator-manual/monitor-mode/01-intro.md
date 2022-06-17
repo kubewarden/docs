@@ -26,12 +26,12 @@ that:
    included in the metric baggage. Therefore, it's easy to filter policies by
    mode, and focus on the ones deployed via `monitor` mode.
 
-The `mode` is an attribute included in the `ClusterAdmissionPolicy`
-resource. It supports two modes: `monitor` and `protect`. If the
+The `mode` is an attribute included in the `ClusterAdmissionPolicy` and `AdmissionPolicy`
+resources. It supports two modes: `monitor` and `protect`. If the
 `mode` is omitted, it will default to `protect`.
 
 In order to create a policy in monitor mode, all you need to do is to
-include the mode as part of spec for the `ClusterAdmissionPolicy` resource as shown below:
+include the mode as part of spec of resource. For example, in a `ClusterAdmissionPolicy`:
 
 ```yaml
 apiVersion: policies.kubewarden.io/v1alpha2
@@ -62,24 +62,23 @@ spec:
 It's worth noting that certain attributes can be updated on policies
 once they have been deployed.
 
-For security purposes, a user with UPDATE permissions on
-`ClusterAdmissionPolicy` resources can make the policy more
-restrictive, so that:
+For security purposes, a user with UPDATE permissions on policy
+resources can make the policy more restrictive, so that:
 
-- Transitioning the `mode` of an existing `ClusterAdmissionPolicy`
-  from `monitor` to `protect` is allowed.
+- Transitioning the `mode` of an existing `ClusterAdmissionPolicy` or
+  `AdmissionPolicy` from `monitor` to `protect` is allowed.
 
 However,
 
-- Transitioning the `mode` of an existing `ClusterAdmissionPolicy`
-  from `protect` to `monitor` is **disallowed**, because it would mean
-  that the policy is effectively disabled during the time that it
-  would have been in `monitor` mode, until it was restored back to
-  `protect` mode.
+- Transitioning the `mode` of an existing `ClusterAdmissionPolicy` or
+  `AdmissionPolicy` from `protect` to `monitor` is **disallowed**,
+  because it would mean that the policy is effectively disabled during
+  the time that it would have been in `monitor` mode, until it was
+  restored back to `protect` mode.
 
-In order to change the `mode` of a `ClusterAdmissionPolicy` from
+Hence, in order to change the `mode` of a policy from
 `protect` to `monitor`, it is required to delete the
-`ClusterAdmissionPolicy` and recreate it in `monitor` mode. This
+policy and recreate it in `monitor` mode. This
 ensures that the user has permissions to remove policies.
 
 ## A note on mutating policies
