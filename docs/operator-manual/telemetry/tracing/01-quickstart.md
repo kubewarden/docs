@@ -133,10 +133,15 @@ policyServer:
         endpoint: "all-in-one-collector.jaeger.svc.cluster.local:14250"
 ```
 
-Then we can proceed with the installation of the helm chart:
+Then we can proceed with the installation of the helm charts:
 
 ```console
-helm install --wait --namespace kubewarden --create-namespace --values values.yaml kubewarden-controller kubewarden/kubewarden-controller
+helm install --wait --namespace kubewarden --create-namespace \
+  --values values.yaml \
+  kubewarden-controller kubewarden/kubewarden-controller
+helm install --wait --namespace kubewarden --create-namespace \
+  --set policyServer.telemetry.enabled=true \
+  kubewarden-defaults kubewarden/kubewarden-defaults
 ```
 
 This leads to the creation of the `default` instance of `PolicyServer`:
