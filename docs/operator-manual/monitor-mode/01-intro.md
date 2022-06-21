@@ -31,7 +31,7 @@ resources. There are two values that the `mode` attribute can assume: `monitor` 
 `mode` is omitted, it will default to `protect`.
 
 In order to create a policy in monitor mode, all you need to do is to
-include the mode as part of spec of resource. For example, in a `ClusterAdmissionPolicy`:
+include the mode as part of the spec of the resource. For example, in a `ClusterAdmissionPolicy`:
 
 ```yaml
 apiVersion: policies.kubewarden.io/v1alpha2
