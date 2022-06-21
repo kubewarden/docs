@@ -90,18 +90,22 @@ inside of the PolicyServer pod.
 The OpenTelemetry Operator requires [cert-manager](https://cert-manager.io/docs/installation/)
 to be installed inside of the cluster.
 
-This can be done with this command:
+At the time of writing, only specific versions of OpenTelemetry are compatible
+with Cert Manager, [see the compat chart](https://github.com/open-telemetry/opentelemetry-operator#opentelemetry-operator-vs-kubernetes-vs-cert-manager).
+
+We will installed the latest cert-manager with this command:
 
 ```console
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
 kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
 ```
 
 Once cert-manager is up and running, the OpenTelemetry operator can be installed in this way:
 
 ```console
-kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/latest/download/opentelemetry-operator.yaml
-kubectl wait --for=condition=Available deployment --timeout=2m -n opentelemetry-operator-system --all
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+helm install \
+  my-opentelemetry-operator open-telemetry/opentelemetry-operator
 ```
 
 ## OpenTelemetry integration

@@ -25,50 +25,48 @@ events.
 We are going to use the [Jaeger Operator](https://github.com/jaegertracing/jaeger-operator)
 to manage all the different Jaeger components.
 
-The operator can be installed in many ways, we are going to use
-its helm chart.
+At the time of writing, only specific versions of Jaeger are compatible with
+Cert Manager, [see the compat chart](https://github.com/jaegertracing/helm-charts/blob/main/charts/jaeger-operator/COMPATIBILITY.md).
 
-As a first step, we need to add the helm repository containing the Jaeger Operator
-charts:
-
-```console
-helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
-```
-
-Then we install the operator inside of a dedicated Namespace called `jaeger`:
+The operator can be installed in many ways. We are going to install via
+manifests, as it gives us RBACs already set up:
 
 ```console
-helm install --namespace jaeger --create-namespace jaeger-operator jaegertracing/jaeger-operator
+kubectl create namespace observability
+kubectl create -f https://github.com/jaegertracing/jaeger-operator/releases/download/v1.34.0/jaeger-operator.yaml -n observability
 ```
 
 This will produce an output similar to the following one:
 
 ```console
-helm install --namespace jaeger --create-namespace jaeger-operator jaegertracing/jaeger-operator
-manifest_sorter.go:192: info: skipping unknown hook: "crd-install"
-NAME: jaeger-operator
-LAST DEPLOYED: Tue Sep 28 14:54:02 2021
-NAMESPACE: jaeger
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-NOTES:
-jaeger-operator is installed.
-
-
-Check the jaeger-operator logs
-  export POD=$(kubectl get pods -l app.kubernetes.io/instance=jaeger-operator -lapp.kubernetes.io/name=jaeger-operator --namespace jaeger --output name)
-  kubectl logs $POD --namespace=jaeger
+customresourcedefinition.apiextensions.k8s.io/jaegers.jaegertracing.io created
+serviceaccount/jaeger-operator created
+role.rbac.authorization.k8s.io/leader-election-role created
+role.rbac.authorization.k8s.io/prometheus created
+clusterrole.rbac.authorization.k8s.io/jaeger-operator-metrics-reader created
+clusterrole.rbac.authorization.k8s.io/manager-role created
+clusterrole.rbac.authorization.k8s.io/proxy-role created
+rolebinding.rbac.authorization.k8s.io/leader-election-rolebinding created
+rolebinding.rbac.authorization.k8s.io/prometheus created
+clusterrolebinding.rbac.authorization.k8s.io/jaeger-operator-proxy-rolebinding created
+clusterrolebinding.rbac.authorization.k8s.io/manager-rolebinding created
+service/jaeger-operator-metrics created
+service/jaeger-operator-webhook-service created
+deployment.apps/jaeger-operator created
+certificate.cert-manager.io/jaeger-operator-serving-cert created
+issuer.cert-manager.io/jaeger-operator-selfsigned-issuer created
+mutatingwebhookconfiguration.admissionregistration.k8s.io/jaeger-operator-mutating-webhook-configuration created
+validatingwebhookconfiguration.admissionregistration.k8s.io/jaeger-operator-validating-webhook-configuration created
 ```
 
-Given this is a testing environment, we will use default
-["AllInOne"](https://www.jaegertracing.io/docs/1.26/operator/#allinone-default-strategy)
+Given this is a testing environment, we will use the default
+["AllInOne"](https://www.jaegertracing.io/docs/1.35/operator/#allinone-default-strategy)
 strategy. As stated on the upstream documentation: this deployment strategy is
 meant to be used only for development, testing and demo purposes.
 
 :::note
 The operator can deploy Jaeger in many different ways. We strongly recommend
-to read its [official documentation](https://www.jaegertracing.io/docs/1.26/operator/).
+to read its [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
 :::
 
 Let's create a Jaeger resource:
@@ -79,7 +77,7 @@ apiVersion: jaegertracing.io/v1
 kind: Jaeger
 metadata:
   name: all-in-one
-  namespace: jaeger
+  namespace: observability
 spec:
   ingress:
     enabled: true
@@ -125,12 +123,11 @@ In order to do that, we have to specify some extra values at installation time.
 Let's create a `values.yaml` file with the following contents:
 
 ```yaml
-policyServer:
-  telemetry:
-    enabled: True
-    tracing:
-      jaeger:
-        endpoint: "all-in-one-collector.jaeger.svc.cluster.local:14250"
+telemetry:
+  enabled: True
+  tracing:
+    jaeger:
+      endpoint: "all-in-one-collector.observability.svc.cluster.local:14250"
 ```
 
 Then we can proceed with the installation of the helm charts:
