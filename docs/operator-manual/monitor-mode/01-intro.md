@@ -71,7 +71,7 @@ resources can make the policy more restrictive, so that:
 However,
 
 - Transitioning the `mode` of an existing `ClusterAdmissionPolicy` or
-  `AdmissionPolicy` from `protect` to `monitor` is **disallowed**,
+  `AdmissionPolicy` from `protect` to `monitor` is **disallowed**.
   because it would mean that the policy is effectively disabled during
   the time that it would have been in `monitor` mode, until it was
   restored back to `protect` mode.
