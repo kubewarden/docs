@@ -93,7 +93,7 @@ to be installed inside of the cluster.
 At the time of writing, only specific versions of OpenTelemetry are compatible
 with Cert Manager, [see the compat chart](https://github.com/open-telemetry/opentelemetry-operator#opentelemetry-operator-vs-kubernetes-vs-cert-manager).
 
-We will installed the latest cert-manager with this command:
+We will install the latest cert-manager with this command:
 
 ```console
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
