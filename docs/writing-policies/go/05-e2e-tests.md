@@ -23,22 +23,6 @@ These tools need to be installed on your development machine:
   among other actions. This is covered in depth inside of [this
   section](/testing-policies/01-intro.md) of the documentation.
 
-## Building the policy
-
-As a first step we need to build the policy, producing a WebAssembly
-binary.
-
-This can be done with this simple command:
-
-```shell
-make wasm
-```
-
-This will pull the official TinyGo container image and run the build process
-inside of an ephemeral container.
-
-The compilation produces a file called `policy.wasm`.
-
 ## Writing tests
 
 We are going to use [bats](https://github.com/bats-core/bats-core) to write and
@@ -59,7 +43,7 @@ The first test ensures a request is approved when no settings are provided:
 
 ```bash
 @test "accept when no settings are provided" {
-  run kwctl run -r test_data/ingress.json policy.wasm
+  run kwctl run -r test_data/pod.json policy.wasm
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
@@ -88,17 +72,16 @@ Let's write a test to ensure a request is approved when a user-defined constrain
 is respected:
 
 ```bash
-@test "accept user defined constraint is respected" {
-  run kwctl run  \
-    -r test_data/ingress.json \
-    --settings-json '{"constrained_labels": {"owner": "^team-"}}' \
-    policy.wasm
+@test "accept because label is satisfying a constraint" {
+  run kwctl run annotated-policy.wasm \
+    -r test_data/pod.json \
+    --settings-json '{"constrained_labels": {"cc-center": "\\d+"}}'
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
 
-  # request is accepted
-  [ $(expr "$output" : '.*"allowed":true.*') -ne 0 ]
+  [ "$status" -eq 0 ]
+  [ $(expr "$output" : '.*allowed.*true') -ne 0 ]
 }
 ```
 
@@ -108,14 +91,13 @@ labels is on the deny list:
 ```bash
 @test "accept labels are not on deny list" {
   run kwctl run \
-    -r test_data/ingress.json \
+    -r test_data/pod.json \
     --settings-json '{"denied_labels": ["foo", "bar"]}' \
     policy.wasm
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
 
-  # request is accepted
   [ $(expr "$output" : '.*"allowed":true.*') -ne 0 ]
 }
 ```
@@ -125,17 +107,16 @@ because one of the labels is on the deny list:
 
 ```bash
 @test "reject because label is on deny list" {
-  run kwctl run \
-    -r test_data/ingress.json \
-    --settings-json '{"denied_labels": ["foo", "owner"]}' \
-    policy.wasm
+  run kwctl run annotated-policy.wasm \
+    -r test_data/pod.json \
+    --settings-json '{"denied_labels": ["foo", "owner"]}'
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
 
-  # request is rejected
-  [ $(expr "$output" : '.*"allowed":false.*') -ne 0 ]
-  [[ "$output" == *"Label owner is on the deny list"* ]]
+  [ "$status" -eq 0 ]
+  [ $(expr "$output" : '.*allowed.*false') -ne 0 ]
+  [ $(expr "$output" : ".*Label owner is on the deny list.*") -ne 0 ]
 }
 ```
 
@@ -143,18 +124,35 @@ The following test ensures a request is rejected when one of its labels doesn't
 satisfy the constraint provided by the user.
 
 ```bash
-@test "reject because label doesn't pass validation constraint" {
-  run kwctl run \
-    -r test_data/ingress.json \
-    --settings-json '{"constrained_labels": {"cc-center": "^cc-\\d+$"}}' \
-    policy.wasm
+@test "reject because label is not satisfying a constraint" {
+  run kwctl run annotated-policy.wasm \
+    -r test_data/pod.json \
+    --settings-json '{"constrained_labels": {"cc-center": "team-\\d+"}}'
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
 
-  # request is rejected
-  [ $(expr "$output" : '.*"allowed":false.*') -ne 0 ]
-  [[ "$output" == *"The value of cc-center doesn't pass user-defined constraint"* ]]
+  [ "$status" -eq 0 ]
+  [ $(expr "$output" : '.*allowed.*false') -ne 0 ]
+  [ $(expr "$output" : ".*The value of cc-center doesn't pass user-defined constraint.*") -ne 0 ]
+}
+```
+
+Now let's make sure the validation fails if one of the constrained labels is
+not found:
+
+```bash
+@test "reject because constrained label is missing" {
+  run kwctl run annotated-policy.wasm \
+    -r test_data/pod.json \
+    --settings-json '{"constrained_labels": {"organization": "\\d+"}}'
+
+  # this prints the output when one the checks below fails
+  echo "output = ${output}"
+
+  [ "$status" -eq 0 ]
+  [ $(expr "$output" : '.*allowed.*false') -ne 0 ]
+  [ $(expr "$output" : ".*Constrained label organization not found inside of Pod.*") -ne 0 ]
 }
 ```
 
@@ -164,7 +162,7 @@ with the following tests:
 ```bash
 @test "fail settings validation because of conflicting labels" {
   run kwctl run \
-    -r test_data/ingress.json \
+    -r test_data/pod.json \
     --settings-json '{"denied_labels": ["foo", "cc-center"], "constrained_labels": {"cc-center": "^cc-\\d+$"}}' \
     policy.wasm
 
@@ -173,19 +171,20 @@ with the following tests:
 
   # settings validation failed
   [ $(expr "$output" : '.*"valid":false.*') -ne 0 ]
-  [[ "$output" == *"Provided settings are not valid: These labels cannot be constrained and denied at the same time: Set{cc-center}"* ]]
+  [ $(expr "$output" : ".*Provided settings are not valid: These labels cannot be constrained and denied at the same time: Set{cc-center}.*") -ne 0 ]
 }
 
 @test "fail settings validation because of invalid constraint" {
   run kwctl run \
-    -r test_data/ingress.json \
+    -r test_data/pod.json \
     --settings-json '{"constrained_labels": {"cc-center": "^cc-[12$"}}' \
     policy.wasm
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
 
-  [[ "$output" == *"Provided settings are not valid: error parsing regexp: missing closing ]: `[12$`"* ]]
+  [ $(expr "$output" : '.*"valid":false.*') -ne 0 ]
+  [ $(expr "$output" : ".*Provided settings are not valid: Cannot compile regexp.*") -ne 0 ]
 }
 ```
 
@@ -198,10 +197,10 @@ tests:
 $ make e2e-tests
 bats e2e.bats
  ✓ accept when no settings are provided
- ✓ accept user defined constraint is respected
- ✓ accept labels are not on deny list
  ✓ reject because label is on deny list
- ✓ reject because label doesn't pass validation constraint
+ ✓ reject because label is not satisfying a constraint
+ ✓ reject because constrained label is missing
+ ✓ accept because label is satisfying a constraint
  ✓ fail settings validation because of conflicting labels
  ✓ fail settings validation because of invalid constraint
 

@@ -5,11 +5,11 @@ title: ""
 
 # Creating a new validation policy
 
-We are going to create a validation policy that validates the labels of generic Kubernetes
+We are going to create a policy that validates the labels of Pod
 objects.
 
-The policy will reject all the resources that use one or more labels on the deny list.
-The policy will also validate certain labels using a regular expression 
+The policy will reject all the Pods that use one or more labels on the deny list.
+The policy will also validate certain labels using a regular expression
 provided by the user.
 
 To summarize, the policy settings will look like that:
@@ -76,6 +76,6 @@ and follow GitHub's wizard.
 Clone the repository locally and then ensure the `module` directive inside
 of the `go.mod` file looks like that:
 
-```go
+```go-mod
 module <path to your repository>
 ```

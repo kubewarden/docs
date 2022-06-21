@@ -69,7 +69,8 @@ module.exports = {
                 'writing-policies/go/e2e-tests',
                 'writing-policies/go/logging',
                 'writing-policies/go/automate',
-                'writing-policies/go/distribute'
+                'writing-policies/go/distribute',
+                'writing-policies/go/validation-with-queries'
               ],
             },
             {
