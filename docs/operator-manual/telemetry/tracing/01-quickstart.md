@@ -33,7 +33,8 @@ manifests, as it gives us RBACs already set up:
 
 ```console
 kubectl create namespace observability
-kubectl create -f https://github.com/jaegertracing/jaeger-operator/releases/download/v1.34.0/jaeger-operator.yaml -n observability
+kubectl create -n observability \
+  -f https://github.com/jaegertracing/jaeger-operator/releases/download/v1.34.0/jaeger-operator.yaml
 ```
 
 This will produce an output similar to the following one:
@@ -64,9 +65,15 @@ Given this is a testing environment, we will use the default
 strategy. As stated on the upstream documentation: this deployment strategy is
 meant to be used only for development, testing and demo purposes.
 
-:::note
-The operator can deploy Jaeger in many different ways. We strongly recommend
-to read its [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
+:::caution
+The operator can deploy Jaeger in many different ways.
+We are going to deploy it using the
+[`AllInOne` strategy](https://www.jaegertracing.io/docs/1.35/operator/#allinone-default-strategy)
+to keep things simple.
+
+This is **not meant to be a production deployment**.
+We strongly recommend
+to read Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
 :::
 
 Let's create a Jaeger resource:
@@ -112,7 +119,10 @@ Then we have to install the Custom Resource Definitions (CRDs) defined by
 Kubewarden:
 
 ```console
-helm install --wait --namespace kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
+helm install --wait \
+  --namespace kubewarden \
+  --create-namespace \
+  kubewarden-crds kubewarden/kubewarden-crds
 ```
 
 Now we can deploy the rest of the Kubewarden stack. The official
@@ -128,7 +138,18 @@ telemetry:
   tracing:
     jaeger:
       endpoint: "all-in-one-collector.observability.svc.cluster.local:14250"
+    tls:
+      insecure: true
 ```
+
+:::caution
+To keep things simple, we are not going to encrypt the communication between the
+OpenTelemetry collector and the Jaeger endpoint.
+
+This is **not meant to be a production deployment**.
+We strongly recommend
+to read Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
+:::
 
 Then we can proceed with the installation of the helm charts:
 
