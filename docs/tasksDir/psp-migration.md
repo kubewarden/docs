@@ -410,7 +410,7 @@ The script will migrate the PSPs defined in `kubectl` default context.
 The Kubewarden policies will be printed to stdout. Thus, the users can
 apply it directly or save it for further inspection.  Let's take a look at an example:
 
-In a cluster with this PSP applied:
+In a cluster with the PSP blocking access to host namespaces, blocking privileged containers, not allowing privilege escalation, dropping all containers capabilities, listing the allowed volume types, defining the allowed user and groups to be used, controling the supplemental group applied to volumes and forcing containers to run in a read-only root filesystem:
 
 ```yaml
 apiVersion: policy/v1beta1
