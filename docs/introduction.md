@@ -6,11 +6,6 @@ title: ""
 
 # Introduction
 
-> **NOTE:** Kubewarden is still in development and not yet fully production ready.
->
-> However, we encourage you to give Kubewarden a try.
-> Feedback is highly appreciated.
-
 Kubewarden is a [Kubernetes Dynamic Admission
 Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)
 that validates incoming requests using policies written in
