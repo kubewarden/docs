@@ -12,6 +12,27 @@ module.exports = {
   projectName: 'docs', // Usually your repo name.
   trailingSlash: false,
   themeConfig: {
+    algolia: {
+      // The application ID provided by Algolia
+      appId: 'HJOF663D19',
+
+      // Public API key: it is safe to commit it
+      apiKey: 'c91fd625633c8d9b656c0b93c825660a',
+
+      indexName: 'kubewarden-docs',
+
+      // Optional: see doc section below
+      contextualSearch: true,
+
+      // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
+      // externalUrlRegex: 'external\\.com|domain\\.com',
+
+      // Optional: Algolia search parameters
+      searchParameters: {},
+
+      // Optional: path for search page that enabled by default (`false` to disable it)
+      searchPagePath: 'search',
+    },
     prism: {
       // Enable extra languages when doing syntax highlighting
       additionalLanguages: [
