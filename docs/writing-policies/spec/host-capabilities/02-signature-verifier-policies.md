@@ -79,7 +79,288 @@ UX, of course you can build on top of it or any of the other SDKs.
 In case you are implementing your own language SDK, these are the functions a
 policy that verifies signatures can use:
 
-| **waPC function name** | **Input payload**                                                                                                                                                                                                                                                                                                                                                                                                        | **Output payload**                                                                                                       |
-|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-| `v1/verify`              | <code>{<br/>  // **mandatory**: image URI to verify<br/>  "image": string,<br/>  "pub_keys": [<br/>    // PEM-encoded public keys<br/>    string<br/>  ],<br/>  // optional:<br/>  "annotations": [<br/>    // signature annotations<br/>    {<br/>      "key": string,<br/>      "value": string<br/>    },<br/>  ]<br/>}</code>                                                                                                                           | <code>{<br/>   // true if image verified<br/>   "is_trusted": boolean,<br/>   // digest of verified image<br/>   "digest": string<br/>}</code> |
-| `v1/verify`              | <code>{<br/>  // **mandatory**: image URI to verify<br/>  "image": string,<br/>  "keyless": [<br/>    // list of (issuer, subject) tuples<br/>    {<br/>      // OIDC issuer<br/>      "issuer": string,<br/>      // signature subject (mail, CI URL, ...)<br/>      "subject": string<br/>    }<br/>  ],<br/>  // optional:<br/>  "annotations": [<br/>    // signature annotations<br/>    {<br/>      "key": string,<br/>      "value": string<br/>    },<br/>  ]<br/>}</code> | <code>{<br/>  // true if image verified<br/>  "is_trusted": boolean,<br/>  // digest of verified image<br/>  "digest": string<br/>}</code> |
+<table>
+<tr>
+<td> WaPC function name </td> <td> Input payload </td> <td> Output payload </td>
+</tr>
+<tr>
+<td>
+
+`v2/verify`
+
+</td>
+<td>
+
+```json
+{
+  type: "SigstorePubKeyVerify",
+
+  // **mandatory**: image URI to verify
+  "image": string,
+  "pub_keys": [
+    // PEM-encoded public keys
+    string
+    ],
+  // optional:
+  "annotations": [
+      // signature annotations
+      {
+        "key": string,
+        "value": string
+      },
+    ]
+}
+```
+
+</td>
+<td> 
+
+```json
+{
+   // true if image verified
+   "is_trusted": boolean,
+   // digest of verified image
+   "digest": string
+}
+```
+
+</td>
+</tr>
+<tr>
+<td>
+
+`v2/verify`
+
+</td>
+<td>
+
+```json
+{
+  type: "SigstoreKeylessVerify",
+
+  // mandatory: image URI to verify
+  "image": string,
+  "keyless": [
+    // list of (issuer, subject) tuples
+    {
+      // OIDC issuer
+      "issuer": string,
+      // signature subject (mail, CI URL, ...)
+      "subject": string
+    }
+  ],
+  // optional:
+  "annotations": [
+    // signature annotations
+    {
+      "key": string,
+      "value": string
+    },
+  ]
+}
+```
+
+</td>
+<td> 
+
+```json
+{
+   // true if image verified
+   "is_trusted": boolean,
+   // digest of verified image
+   "digest": string
+}
+```
+
+</td>
+</tr>
+<tr>
+<td>
+
+`v2/verify`
+
+</td>
+<td>
+
+```json
+{
+  type: "SigstoreKeylessPrefixVerify",
+
+  // mandatory: image URI to verify
+  "image": string,
+  "keyless_prefix": [
+    // list of (issuer, url_prefix) tuples
+    {
+      // OIDC issuer
+      "issuer": string,
+      // URL Prefix of subject (CI URL, ...)
+      "url_prefix": string
+    }
+  ],
+  // optional:
+  "annotations": [
+    // signature annotations
+    {
+      "key": string,
+      "value": string
+    },
+  ]
+}
+```
+
+</td>
+<td> 
+
+```json
+{
+   // true if image verified
+   "is_trusted": boolean,
+   // digest of verified image
+   "digest": string
+}
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`v2/verify`
+
+</td>
+<td>
+
+```json
+{
+  type: "SigstoreGithubActionsVerify",
+
+  // mandatory: image URI to verify
+  "image": string,
+  // GitHub owner
+  "owner": string,
+  // optional:
+  // GitHub repository 
+  "repo": string
+  "annotations": [
+    // signature annotations
+    {
+      "key": string,
+      "value": string
+    },
+  ]
+}
+```
+
+</td>
+<td> 
+
+```json
+{
+   // true if image verified
+   "is_trusted": boolean,
+   // digest of verified image
+   "digest": string
+}
+```
+
+</td>
+</tr>
+</table>
+
+
+Marked for deprecation:
+
+<table>
+<tr>
+<td> WaPC function name </td> <td> Input payload </td> <td> Output payload </td>
+</tr>
+<tr>
+<td>
+
+`v1/verify`
+
+</td>
+<td>
+
+```json
+{
+  // **mandatory**: image URI to verify
+  "image": string,
+  "pub_keys": [
+    // PEM-encoded public keys
+    string
+    ],
+  // optional:
+  "annotations": [
+      // signature annotations
+      {
+        "key": string,
+        "value": string
+      },
+    ]
+}
+```
+
+</td>
+<td> 
+
+```json
+{
+   // true if image verified
+   "is_trusted": boolean,
+   // digest of verified image
+   "digest": string
+}
+```
+
+</td>
+</tr>
+<tr>
+<td>
+
+`v1/verify`
+
+</td>
+<td>
+
+```json
+{
+  // mandatory: image URI to verify
+  "image": string,
+  "keyless": [
+    // list of (issuer, subject) tuples
+    {
+      // OIDC issuer
+      "issuer": string,
+      // signature subject (mail, CI URL, ...)
+      "subject": string
+    }
+  ],
+  // optional:
+  "annotations": [
+    // signature annotations
+    {
+      "key": string,
+      "value": string
+    },
+  ]
+}
+```
+
+</td>
+<td> 
+
+```json
+{
+   // true if image verified
+   "is_trusted": boolean,
+   // digest of verified image
+   "digest": string
+}
+```
+
+</td>
+</tr>
+
+</table>
