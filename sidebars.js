@@ -124,7 +124,12 @@ module.exports = {
       type: 'category',
       label: 'Distributing Policies',
       link: {type: 'doc', id: 'distributing-policies',},
-      items:['distributing-policies/custom-certificate-authorities', 'distributing-policies/oci-registries-support', 'distributing-policies/secure-supply-chain',],
+      items:[
+        'distributing-policies/oci-registries-support',
+        'distributing-policies/publish-policy-to-artifact-hub',
+        'distributing-policies/custom-certificate-authorities',
+        'distributing-policies/secure-supply-chain',
+      ],
     },
 
 
