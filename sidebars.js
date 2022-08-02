@@ -7,9 +7,9 @@ module.exports = {
       label: 'Common Tasks',
       items: ['tasksDir/mutating-policies', 'tasksDir/psp-migration'],
       collapsed: 'true',
-      link: 
+      link:
       {
-        type: 'doc', 
+        type: 'doc',
         id: 'tasks',
       },
     },
@@ -77,7 +77,7 @@ module.exports = {
               type: 'category',
               label: 'Rego',
               link: {type: 'doc', id: 'writing-policies/rego/intro-rego'},
-              items: 
+              items:
               [
                 { type: 'doc', id: 'writing-policies/rego/builtin-support'},
                 {
@@ -148,7 +148,7 @@ module.exports = {
       link: {type: 'doc', id: 'operator-manual/intro'},
       items:[
         {
-          'Configuring Policy Servers': ['operator-manual/policy-servers/custom-cas',],
+          'Configuring Policy Servers': ['operator-manual/policy-servers/custom-cas', 'operator-manual/policy-servers/private-registry'],
           'Quickstart Guides':
           [
             'operator-manual/telemetry/quickstart',
