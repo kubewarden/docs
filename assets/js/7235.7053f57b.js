@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkkubewarden_docusaurus=self.webpackChunkkubewarden_docusaurus||[]).push([[7235],{7235:function(u,e,s){s.r(e)}}]);
