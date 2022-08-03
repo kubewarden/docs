@@ -5,11 +5,19 @@ title: ""
 
 # Configuring Policy Servers to use private registry
 
-It is possible to specify and configure the credentials used to authenticate
-into a private registry where your policies are stored.
+It is not uncommon that enterprises using cloud native environments have their
+own container registries to store their container images and other artefacts
+used to run their applications. As these artefacts are, most of the time, private
+it does not make sense to let their be public available in the web or even for
+some parts of the same organization. In this scenarios is common the
+use of private registries requiring authentication to access the resources stored
+on them. In that in mind, it possible to specify and configure the credentials
+used to authenticate into a private registry where your policies are stored.
+Allowing Kubewarden Policy Server to download policies from public and private
+registries.
 
 
-Before configure your Policy Server instance, you need to store the credentials
+Before configuring your Policy Server instance, you need to store the credentials
 used to access the registry in a `docker-registry` secret. The secret should be
 created in the same namespace where you run your Policy Server. This can be done
 with the following command:
@@ -25,7 +33,7 @@ If you want more information about how to create the secret. Please, go to the
 [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/secret/#docker-config-secrets).
 
 Once you have the secret created, it is necessary to configure the Policy Server
-instance setting the `imagePullSecret` field with the name of the secret created with the
+instance by setting the `imagePullSecret` field with the name of the secret created with the
 credentials:
 
 ```yaml
