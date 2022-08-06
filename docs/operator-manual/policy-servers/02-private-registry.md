@@ -7,13 +7,13 @@ title: ""
 
 It is not uncommon that enterprises using cloud native environments have their
 own container registries to store their container images and other artefacts
-used to run their applications. As these artefacts are, most of the time, private
-it does not make sense to let their be public available in the web or even for
-some parts of the same organization. In this scenarios is common the
-use of private registries requiring authentication to access the resources stored
-on them. In that in mind, it possible to specify and configure the credentials
-used to authenticate into a private registry where your policies are stored.
-Allowing Kubewarden Policy Server to download policies from public and private
+used to run their applications. As these artifacts are, most of the time, private,
+it does not make sense to let them be publicly available on the web or even to
+other teams within the same organization. In these scenarios, it is common to
+use private registries that require authentication to access the resources stored
+In them. With this in mind, we have made it possible to specify and configure the credentials
+used to authenticate into a private registry where your policies are stored and
+allowing Kubewarden Policy Server to download policies from public and private
 registries.
 
 
