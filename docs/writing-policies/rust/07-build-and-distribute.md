@@ -23,8 +23,8 @@ compilation target.
 The build will produce the following file:
 
 ```shell
-$ file target/wasm32-unknown-unknown/release/demo.wasm
-target/wasm32-unknown-unknown/release/demo.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
+$ file target/wasm32-wasi/release/demo.wasm
+target/wasm32-wasi/release/demo.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
 ```
 
 ## Distributing the policy
