@@ -32,10 +32,10 @@ As a first step install the Rust compiler and its tools, this can be easily done
 using [rustup](https://github.com/rust-lang/rustup). Please follow
 [rustup's install documentation](https://rust-lang.github.io/rustup/installation/index.html).
 
-Once `rustup` is installed add the Wasm target:
+Once `rustup` is installed add the WASI target:
 
 ```shell
-rustup target add wasm32-unknown-unknown
+rustup target add wasm32-wasi
 ```
 
 ## OSX specific dependencies
