@@ -555,7 +555,7 @@ following validation:
     MBFKHFDGHKIJH0CAQYIKoZIzj0DAQcDQgAEX0HFTtCfTtPmkx5p1RbDE6HJSGAVD
     BVDF6SKFSF87AASUspkQsN3FO4iyWodCy5j3o0CdIJD/KJHDJFHDFIu6sA==
     -----END PUBLIC KEY-----
-  annotation:
+  annotations:
     environment: production
 ```
 
