@@ -1,25 +1,35 @@
 ---
-sidebar_label: "Using private registry"
+sidebar_label: "Using private registries"
 title: ""
 ---
 
-# Configuring Policy Servers to use private registry
+# Configuring PolicyServers to use private registries
 
-It is not uncommon that enterprises using cloud native environments have their
-own container registries to store their container images and other artefacts
-used to run their applications. As these artifacts are, most of the time, private,
-it does not make sense to let them be publicly available on the web or even to
-other teams within the same organization. In these scenarios, it is common to
-use private registries that require authentication to access the resources stored
-In them. With this in mind, we have made it possible to specify and configure the credentials
-used to authenticate into a private registry where your policies are stored and
-allowing Kubewarden Policy Server to download policies from public and private
-registries.
+It is possible to configure PolicyServers to use credentials of private OCI
+registries. This will allow those PolicyServers to download policies from
+public and private registries.
 
+Once a PolicyServer is configured to access private registries, policies running
+on it and using the defined SDKs and lower level host capabilities APIs will be
+able to access private registries too, as PolicyServers expose that
+functionality through the defined policy SDKs and lower level host capability
+API. This is the case for example in policies that verify signatures of
+container images.
 
-Before configuring your Policy Server instance, you need to store the credentials
-used to access the registry in a `docker-registry` secret. The secret should be
-created in the same namespace where you run your Policy Server. This can be done
+To achieve this, we will create a Secret containing the private registry
+credentials, and configure our PolicyServers resources, and/or our Helm chart
+to use it.
+
+## Creating the Secret
+
+PolicyServers support the usual
+[Docker config Secrets](https://kubernetes.io/docs/concepts/configuration/secret/#docker-config-secrets)
+, either of type `kubernetes.io/dockercfg` or type `kubernetes.io/dockerconfigjson`.
+These secrets can be created with `kubectl create secret docker-registry`.
+
+For configuring your PolicyServer instance, store the credentials
+used to access the registry in a `docker-registry` Secret. The secret should be
+created in the same namespace where you run your PolicyServer. This can be done
 with the following command:
 
 ```shell
@@ -29,15 +39,16 @@ kubectl --namespace kubewarden create secret docker-registry secret-ghcr-docker 
   --docker-server=myregistry.io
 ```
 
-If you want more information about how to create the secret. Please, go to the
-[Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/secret/#docker-config-secrets).
+For more information on how to create the Docker Secrets, see the [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/secret/#docker-config-secrets).
 
-Once you have the secret created, it is necessary to configure the Policy Server
-instance by setting the `imagePullSecret` field with the name of the secret created with the
-credentials:
+## Consuming the Secret in PolicyServers
+
+Once you have the Secret created, it is necessary to configure the PolicyServer
+instance by setting the `spec.imagePullSecret` field with the name of the Secret that
+contains the credentials:
 
 ```yaml
-# Example of a policy server using private registry
+# Example of a PolicyServer using a private registry
 apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
 metadata:
@@ -50,10 +61,12 @@ spec:
   imagePullSecret: "secret-ghcr-docker"
 ```
 
-When deployed from the `kubewarden-defaults` Helm chart you can configure the
-`policyServer.imagePullSecret` field in the values file with the secret name. Thus,
-the policy server created will be able to download policies from your private
-registry as well:
+## Consuming the Secret in Helm charts
+
+When deployed from the `kubewarden-defaults` Helm chart, you can set the
+`policyServer.imagePullSecret` value with the Secret name. Thus,
+the created default policy server will be able to download policies from your
+private registry as well:
 
 ```yaml
 # values file example
