@@ -11,7 +11,7 @@ public and private registries.
 
 Once a PolicyServer is configured to access private registries, policies running
 on it and using the defined SDKs and lower level host capabilities APIs will be
-able to access private registries too, as PolicyServers expose that
+able to access private registries too. This is because PolicyServers expose that
 functionality through the defined policy SDKs and lower level host capability
 API. This is the case for example in policies that verify signatures of
 container images.
