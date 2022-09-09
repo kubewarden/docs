@@ -17,7 +17,7 @@ API. This is the case, for example, in policies that verify signatures of
 container images.
 
 To achieve this, we will create a Secret containing the private registry
-credentials, and configure our PolicyServers resources, and/or our Helm chart
+credentials, and configure our PolicyServers' resources, and/or our Helm chart
 to use it.
 
 ## Creating the Secret
