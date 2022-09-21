@@ -8,7 +8,7 @@ title: ""
 :::note
 This is not an exhaustive list. If a registry you know or use is working correctly
 with Kubewarden, or if any information described here is not accurate at this time, please open a
-[Pull Request against this documentation](https://github.com/kubewarden/docs) to fix it.
+[Pull Request against this documentation](https://github.com/kubewarden/docs/edit/main/docs/distributing-policies/oci-registries-support.md) to fix it.
 :::
 
 Kubewarden policies are distributed as [OCI Artifacts](https://github.com/opencontainers/artifacts)
@@ -17,11 +17,12 @@ using regular OCI Registries.
 Policies are stored side by side with container images. They don't require any extra setup or
 maintenance than regular container images do.
 
-## Projects
+## Projects that implement OCI registries
 
+- [Harbor](https://goharbor.io/)
 - [Distribution](https://github.com/distribution/distribution)
 
-## Hosted registries
+## Hosted OCI registries
 
 - [GitHub container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
 
