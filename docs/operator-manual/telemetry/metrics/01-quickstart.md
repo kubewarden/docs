@@ -64,7 +64,10 @@ then take care of generating a valid configuration file for Prometheus, and relo
 automatically after updating its configuration file.
 
 ```console
-helm install --wait --create-namespace --namespace prometheus --values kube-prometheus-stack-values.yaml prometheus prometheus-community/kube-prometheus-stack
+helm install --wait --create-namespace \
+  --namespace prometheus \
+  --values kube-prometheus-stack-values.yaml \
+  prometheus prometheus-community/kube-prometheus-stack
 ```
 
 ## Install Kubewarden
@@ -103,10 +106,20 @@ policyServer:
       port: 8080
 ```
 
-Now, let's install the helm chart:
+Now, let's install the helm charts:
 
 ```console
-helm install --wait --namespace kubewarden --values kubewarden-values.yaml kubewarden-controller kubewarden/kubewarden-controller
+helm install --wait \
+  --namespace kubewarden \
+  --values kubewarden-values.yaml \
+  kubewarden-controller kubewarden/kubewarden-controller
+
+helm install --wait \
+  --namespace kubewarden \
+  --create-namespace \
+  kubewarden-defaults kubewarden/kubewarden-defaults \
+  --set recommendedPolicies.enabled=True \
+  --set recommendedPolicies.defaultPolicyMode=monitor
 ```
 
 This leads to the creation of the `default` instance of `PolicyServer`:
