@@ -120,7 +120,7 @@ helm install --wait \
   kubewarden-defaults kubewarden/kubewarden-defaults \
   --set recommendedPolicies.enabled=True \
   --set recommendedPolicies.defaultPolicyMode=monitor \
-  --set policyServer.Telemetry.enabled=True
+  --set policyServer.telemetry.enabled=True
 ```
 
 This leads to the creation of the `default` instance of `PolicyServer`:
