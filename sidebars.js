@@ -156,7 +156,6 @@ module.exports = {
           'Configuring Policy Servers': ['operator-manual/policy-servers/custom-cas', 'operator-manual/policy-servers/private-registry'],
           'Quickstart Guides':
           [
-            'operator-manual/telemetry/quickstart',
             'operator-manual/telemetry/opentelemetry/quickstart',
             'operator-manual/telemetry/metrics/quickstart',
             'operator-manual/telemetry/tracing/quickstart',
