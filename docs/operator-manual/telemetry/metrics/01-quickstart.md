@@ -22,7 +22,7 @@ We will use the [Prometheus Operator](https://github.com/prometheus-operator/pro
 that allows us to intuitively define Prometheus' Targets.
 
 There are many ways to install and set up Prometheus. For ease of deployment, we will use the
-Prometheus community helm chart.
+Prometheus community Helm chart.
 
 Let's add the helm repository from the Prometheus Community:
 
@@ -63,6 +63,7 @@ inspect which Kubernetes Endpoints are tied to services matching this conditions
 then take care of generating a valid configuration file for Prometheus, and reloading it
 automatically after updating its configuration file.
 
+Install the Prometheus stack Helm Chart (version `40.5.0` at time of writing):
 ```console
 helm install --wait --create-namespace \
   --namespace prometheus \
@@ -72,7 +73,7 @@ helm install --wait --create-namespace \
 
 ## Install Kubewarden
 
-We can now install Kubewarden in the recommended way with the Helm chart.
+We can now install Kubewarden in the recommended way with Helm charts.
 
 :::note
 cert-manager is a requirement of Kubewarden, and OpenTelemetry is required for this
@@ -89,7 +90,9 @@ Then we have to install the Custom Resource Definitions (CRDs) defined by
 Kubewarden:
 
 ```console
-helm install --wait --namespace kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
+helm install --wait \
+  --namespace kubewarden --create-namespace \
+  kubewarden-crds kubewarden/kubewarden-crds
 ```
 
 Now we can deploy the rest of the Kubewarden stack. The official helm
@@ -101,9 +104,8 @@ in Kubewarden. Write the `kubewarden-values.yaml` file with the following conten
 ```yaml
 telemetry:
   enabled: True
-policyServer:
-    metrics:
-      port: 8080
+  metrics:
+    port: 8080
 ```
 
 Now, let's install the helm charts:

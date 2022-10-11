@@ -10,8 +10,8 @@ Policy Server.
 
 :::note
 Before continuing, make sure you completed the previous
-[OpenTelemetry](../opentelemetry/01-quickstart.md#install-opentelemetry) section of this book. It
-is required for this section to work correctly.
+[OpenTelemetry](../opentelemetry/01-quickstart.md#install-opentelemetry) section
+of this book. It is required for this section to work correctly.
 :::
 
 Tracing allows to collect fine grained details about policy evaluations. It can
@@ -23,57 +23,25 @@ events.
 ## Install Jaeger
 
 We are going to use the [Jaeger Operator](https://github.com/jaegertracing/jaeger-operator)
-to manage all the different Jaeger components.
+to manage all the different Jaeger components. The operator can be installed in many ways. We are going to install via Helm charts.
 
 At the time of writing, only specific versions of Jaeger are compatible with
 Cert Manager, [see the compat chart](https://github.com/jaegertracing/helm-charts/blob/main/charts/jaeger-operator/COMPATIBILITY.md).
 
-The operator can be installed in many ways. We are going to install via
-manifests, as it gives us RBACs already set up:
+To install the Helm chart:
 
 ```console
-kubectl create namespace observability
-kubectl create -n observability \
-  -f https://github.com/jaegertracing/jaeger-operator/releases/download/v1.34.0/jaeger-operator.yaml
+helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+
+helm upgrade -i --wait \
+  --namespace jaeger \
+  jaeger-operator jaegertracing/jaeger-operator \
+  --set rbac.clusterRole=true
 ```
-
-This will produce an output similar to the following one:
-
-```console
-customresourcedefinition.apiextensions.k8s.io/jaegers.jaegertracing.io created
-serviceaccount/jaeger-operator created
-role.rbac.authorization.k8s.io/leader-election-role created
-role.rbac.authorization.k8s.io/prometheus created
-clusterrole.rbac.authorization.k8s.io/jaeger-operator-metrics-reader created
-clusterrole.rbac.authorization.k8s.io/manager-role created
-clusterrole.rbac.authorization.k8s.io/proxy-role created
-rolebinding.rbac.authorization.k8s.io/leader-election-rolebinding created
-rolebinding.rbac.authorization.k8s.io/prometheus created
-clusterrolebinding.rbac.authorization.k8s.io/jaeger-operator-proxy-rolebinding created
-clusterrolebinding.rbac.authorization.k8s.io/manager-rolebinding created
-service/jaeger-operator-metrics created
-service/jaeger-operator-webhook-service created
-deployment.apps/jaeger-operator created
-certificate.cert-manager.io/jaeger-operator-serving-cert created
-issuer.cert-manager.io/jaeger-operator-selfsigned-issuer created
-mutatingwebhookconfiguration.admissionregistration.k8s.io/jaeger-operator-mutating-webhook-configuration created
-validatingwebhookconfiguration.admissionregistration.k8s.io/jaeger-operator-validating-webhook-configuration created
-```
-
-Given this is a testing environment, we will use the default
-["AllInOne"](https://www.jaegertracing.io/docs/1.35/operator/#allinone-default-strategy)
-strategy. As stated on the upstream documentation: this deployment strategy is
-meant to be used only for development, testing and demo purposes.
 
 :::caution
-The operator can deploy Jaeger in many different ways.
-We are going to deploy it using the
-[`AllInOne` strategy](https://www.jaegertracing.io/docs/1.35/operator/#allinone-default-strategy)
-to keep things simple.
-
 This is **not meant to be a production deployment**.
-We strongly recommend
-to read Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
+We strongly recommend to read Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
 :::
 
 Let's create a Jaeger resource:
@@ -83,8 +51,8 @@ kubectl apply -f - <<EOF
 apiVersion: jaegertracing.io/v1
 kind: Jaeger
 metadata:
-  name: all-in-one
-  namespace: observability
+  name: my-open-telemetry
+  namespace: jaeger
 spec:
   ingress:
     enabled: true
@@ -93,8 +61,9 @@ spec:
 EOF
 ```
 
-Once all the resources have been created by the Jaeger operator, the
-Jaeger Query UI will be reachable at the following address:
+Once all the resources have been created by the Jaeger operator, we will have a
+Service under `my-open-telemetry-collector.jaeger.svc.cluster.local`.
+The Jaeger Query UI will be reachable at the following address:
 
 ```console
 echo http://`minikube ip`
@@ -126,20 +95,21 @@ helm install --wait \
 ```
 
 Now we can deploy the rest of the Kubewarden stack. The official
-helm chart will create a PolicyServer named `default`. We want this PolicyServer
-instance to have tracing enabled.
+`kubewarden-defaults` helm chart will create a PolicyServer named `default`. We
+want this PolicyServer instance to have tracing enabled.
 
-In order to do that, we have to specify some extra values at installation time.
-Let's create a `values.yaml` file with the following contents:
+In order to do that, we have to specify some extra values for the
+`kubewarden-controller` chart.  Let's create a `values.yaml` file with the
+following contents:
 
 ```yaml
 telemetry:
   enabled: True
   tracing:
     jaeger:
-      endpoint: "all-in-one-collector.observability.svc.cluster.local:14250"
-    tls:
-      insecure: true
+      endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:14250"
+      tls:
+        insecure: true
 ```
 
 :::caution
@@ -157,6 +127,7 @@ Then we can proceed with the installation of the helm charts:
 helm install --wait --namespace kubewarden --create-namespace \
   --values values.yaml \
   kubewarden-controller kubewarden/kubewarden-controller
+
 helm install --wait --namespace kubewarden --create-namespace \
   --set policyServer.telemetry.enabled=true \
   kubewarden-defaults kubewarden/kubewarden-defaults
