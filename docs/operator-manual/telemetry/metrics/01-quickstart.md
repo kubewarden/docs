@@ -73,7 +73,7 @@ helm install --wait --create-namespace \
 
 ## Install Kubewarden
 
-We can now install Kubewarden in the recommended way with the Helm charts.
+We can now install Kubewarden in the recommended way with Helm charts.
 
 :::note
 cert-manager is a requirement of Kubewarden, and OpenTelemetry is required for this
