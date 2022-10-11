@@ -93,22 +93,30 @@ to be installed inside of the cluster.
 At the time of writing, only specific versions of OpenTelemetry are compatible
 with Cert Manager, [see the compat chart](https://github.com/open-telemetry/opentelemetry-operator#opentelemetry-operator-vs-kubernetes-vs-cert-manager).
 
-We will install the latest cert-manager with this command:
+We will install the latest cert-manager Helm chart (`v1.9.1` at time of writing):
 
 ```console
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
-kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
+helm repo add jetstack https://charts.jetstack.io
+
+helm install --wait \
+    --namespace cert-manager \
+    --create-namespace \
+    --set installCRDs=true \
+    cert-manager jetstack/cert-manager
 ```
 
-Once cert-manager is up and running, the OpenTelemetry operator can be installed in this way:
+Once cert-manager is up and running, the OpenTelemetry operator Helm chart (`0.13.0` at time of writing) can be installed in this way:
 
 ```console
 helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-helm install \
+
+helm install --wait \
+  --namespace open-telemetry \
+  --create-namespace \
   my-opentelemetry-operator open-telemetry/opentelemetry-operator
 ```
 
 ## OpenTelemetry integration
 
-We can now move to the next chapters of the book to enable application metrics (via Prometheus
+We can now move to the next chapters to enable application metrics (via Prometheus
 integration) and application tracing (via Jaeger integration).
