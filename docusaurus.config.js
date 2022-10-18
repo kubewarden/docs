@@ -14,12 +14,12 @@ module.exports = {
   themeConfig: {
     algolia: {
       // The application ID provided by Algolia
-      appId: 'HJOF663D19',
+      appId: 'D1IWU8P361',
 
       // Public API key: it is safe to commit it
-      apiKey: 'c91fd625633c8d9b656c0b93c825660a',
+      apiKey: '99387ef7038005749504e6845a694feb',
 
-      indexName: 'kubewarden-docs',
+      indexName: 'kubewarden',
 
       // Optional: see doc section below
       contextualSearch: true,
