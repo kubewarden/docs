@@ -79,12 +79,12 @@ The `PolicyServer` is the component which executes the Kubewarden policies when 
 Default `PolicyServer` configuration:
 
 ```yaml
-apiVersion: policies.kubewarden.io/v1alpha2
+apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
 metadata:
   name: reserved-instance-for-tenant-a
 spec:
-  image: ghcr.io/kubewarden/policy-server:v0.3.0
+  image: ghcr.io/kubewarden/policy-server:v1.3.0
   replicas: 2
   serviceAccountName: ~
   env:
@@ -117,13 +117,13 @@ Enforcing policies is the most common operation which a Kubernetes administrator
 Default `ClusterAdmissionPolicy` configuration:
 
 ```yaml
-apiVersion: policies.kubewarden.io/v1alpha2
+apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
   name: psp-capabilities
 spec:
   policyServer: reserved-instance-for-tenant-a
-  module: registry://ghcr.io/kubewarden/policies/psp-capabilities:v0.1.3
+  module: registry://ghcr.io/kubewarden/policies/psp-capabilities:v0.1.9
   rules:
   - apiGroups: [""]
     apiVersions: ["v1"]
@@ -179,12 +179,12 @@ Let's define a `ClusterAdmissionPolicy` for that:
 
 ```console
 kubectl apply -f - <<EOF
-apiVersion: policies.kubewarden.io/v1alpha2
+apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.2.2
   rules:
   - apiGroups: [""]
     apiVersions: ["v1"]
@@ -225,8 +225,8 @@ kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kube
 You should see the following output:
 
 ```console
-NAME              WEBHOOKS   AGE
-privileged-pods   1          9s
+NAME                          WEBHOOKS   AGE
+clusterwide-privileged-pods   1          9s
 ```
 
 Once the `ClusterAdmissionPolicy` is active and the `ValidatingWebhookConfiguration` is registered, you can test the policy.
@@ -274,7 +274,7 @@ EOF
 The creation of the Pod has been denied by the policy and you should see the following message:
 
 ```console
-Error from server: error when creating "STDIN": admission webhook "privileged-pods.kubewarden.admission" denied the request: User 'minikube-user' cannot schedule privileged containers
+Error from server: error when creating "STDIN": admission webhook "clusterwide-privileged-pods.kubewarden.admission" denied the request: Privileged container is not allowed
 ```
 
 :::note
