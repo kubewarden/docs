@@ -5,7 +5,10 @@ module.exports = {
     {
       type: 'category',
       label: 'Common Tasks',
-      items: ['tasksDir/mutating-policies', 'tasksDir/psp-migration', 'tasksDir/pod-security-with-kubewarden'],
+      items: [
+        'tasksDir/mutating-policies',
+        'tasksDir/psp-migration',
+        'tasksDir/pod-security-admission-with-kubewarden'],
       collapsed: 'true',
       link:
       {

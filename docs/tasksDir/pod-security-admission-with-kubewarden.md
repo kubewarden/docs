@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Pod Security Admission"
+sidebar_label: "Using Pod Security Admission with Kubewarden"
 title: ""
 ---
 
