@@ -170,6 +170,7 @@ module.exports = {
             'operator-manual/verification-config',
           ],
           'Monitor Mode': ['operator-manual/monitor-mode/intro',],
+          'Rancher UI Extension': ['operator-manual/ui-extension/install']
         },
       ],
     },
