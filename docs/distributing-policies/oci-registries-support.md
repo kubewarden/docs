@@ -20,7 +20,7 @@ maintenance than regular container images do.
 ## Projects that implement OCI registries
 
 - [Harbor](https://goharbor.io/)
-- [Distribution](https://github.com/distribution/distribution)
+- [Distribution](https://github.com/distribution/distribution) ([>= 2.7.0](https://github.com/distribution/distribution/releases/tag/v2.7.0))
 - [Quay](https://access.redhat.com/products/red-hat-quay/): Supported, but [disabled by default in v3.6](https://access.redhat.com/documentation/en-us/red_hat_quay/3/html/use_red_hat_quay/oci-intro#other-oci-artifacts-with-quay).
 
 ## Hosted OCI registries
