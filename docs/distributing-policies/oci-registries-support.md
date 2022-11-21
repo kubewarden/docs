@@ -39,8 +39,11 @@ We recommend:
 
 ### Docker Hub
 
-The Docker Hub does not support OCI artifacts at this time, and as such, it cannot be used to store
-Kubewarden policies.
+Currently, Docker Hub does not support OCI artifacts at this time, and as such,
+it cannot be used to store Kubewarden policies.
+Docker Inc. has publicly announced that Docker Hub will [support OCI artifacts
+in the near
+future](https://www.docker.com/blog/announcing-docker-hub-oci-artifacts-support/).
 
 ### JFrog
 
