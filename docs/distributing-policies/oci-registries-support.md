@@ -21,10 +21,12 @@ maintenance than regular container images do.
 
 - [Harbor](https://goharbor.io/)
 - [Distribution](https://github.com/distribution/distribution)
+- [Quay](https://access.redhat.com/products/red-hat-quay/): Supported, but [disabled by default in v3.6](https://access.redhat.com/documentation/en-us/red_hat_quay/3/html/use_red_hat_quay/oci-intro#other-oci-artifacts-with-quay).
 
 ## Hosted OCI registries
 
 - [GitHub container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+- [Quay.io](https://quay.io). See projects list above.
 
 ## Known issues
 
