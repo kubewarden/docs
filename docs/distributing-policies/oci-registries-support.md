@@ -28,6 +28,13 @@ maintenance than regular container images do.
 - [GitHub container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
 - [Quay.io](https://quay.io). See projects list above.
 
+## Tools that work with OCI registries
+
+We recommend:
+- [Kwctl](https://github.com/kubewarden/kwctl) (our cli tool)
+- [Skopeo](https://github.com/containers/skopeo) ([>= 1.9.0](https://github.com/containers/skopeo/pull/1705))
+- [Crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md)
+
 ## Known issues
 
 ### Docker Hub
