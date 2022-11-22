@@ -55,10 +55,13 @@ You need to download the following helm charts in your workstation:
 helm pull kubewarden/kubewarden-crds         
 helm pull kubewarden/kubewarden-controller
 helm pull kubewarden/kubewarden-defaults  
-helm pull jetstack/cert-manager         
 ```
 
-Then move the helm chart tar.gz files to your air gap environment.
+Download `cert-manager` if it is not installed in the air gap cluster.
+
+```
+helm pull jetstack/cert-manager
+```
 
 ## Populate private registry
 
@@ -89,10 +92,10 @@ Please refer to [this section](../../distributing-policies/custom-certificate-au
 Let's install Kubewarden now that we have everything we need in our private registry. The only difference with a normal
 Kubewarden installation is that we need to change the registry in the container images and policies to our private registry.
 
-Install cert-manager:
+Install `cert-manager` if it is not already installed in the air gap cluster:
 
 ```
-helm install --create-namespace cert-manager ./cert-manager-v1.7.1.tgz \
+helm install --create-namespace cert-manager ./cert-manager-<Version>.tgz \
     -n kubewarden \
     --set installCRDs=true \
     --set image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/quay.io/jetstack/cert-manager-controller \
