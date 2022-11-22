@@ -34,8 +34,6 @@ When the process completes, your current directory will output a tarball named `
 
 ## Save policies in your workstation
 
-[kwctl](https://github.com/kubewarden/kwctl/releases) version v1.3.1 or above is required for this step.
-
 1. Add all the policies you want to use in a `policies.txt` file. 
 Example: (TODO add link to default policies.txt once it is available) 
 ```

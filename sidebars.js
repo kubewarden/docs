@@ -170,7 +170,7 @@ module.exports = {
             'operator-manual/verification-config',
           ],
           'Monitor Mode': ['operator-manual/monitor-mode/intro',],
-          'Air gap': ['operator-manual/airgap/install',],
+          'Air gap': ['operator-manual/airgap/requirements','operator-manual/airgap/install',],
         },
       ],
     },
