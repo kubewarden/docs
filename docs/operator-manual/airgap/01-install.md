@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Airgap installation"
+sidebar_label: "Installation"
 title: ""
 ---
 
