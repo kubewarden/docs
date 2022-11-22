@@ -20,7 +20,7 @@ maintenance than regular container images do.
 ## Projects that implement OCI registries
 
 - [Harbor](https://goharbor.io/)
-- [Distribution](https://github.com/distribution/distribution)
+- [Distribution](https://github.com/distribution/distribution) ([>= 2.7.0](https://github.com/distribution/distribution/releases/tag/v2.7.0))
 - [Quay](https://access.redhat.com/products/red-hat-quay/): Supported, but [disabled by default in v3.6](https://access.redhat.com/documentation/en-us/red_hat_quay/3/html/use_red_hat_quay/oci-intro#other-oci-artifacts-with-quay).
 
 ## Hosted OCI registries
@@ -39,8 +39,11 @@ We recommend:
 
 ### Docker Hub
 
-The Docker Hub does not support OCI artifacts at this time, and as such, it cannot be used to store
-Kubewarden policies.
+Currently, Docker Hub does not support OCI artifacts at this time, and as such,
+it cannot be used to store Kubewarden policies.
+Docker Inc. has publicly announced that Docker Hub will [support OCI artifacts
+in the near
+future](https://www.docker.com/blog/announcing-docker-hub-oci-artifacts-support/).
 
 ### JFrog
 
