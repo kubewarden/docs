@@ -13,7 +13,9 @@ You need to add Kubewarden's images and policies to this OCI registry. Let's see
 ## Save container images in your workstation
 
 1. Download `kubewarden-images.txt` from the Kubewarden [release page](https://github.com/kubewarden/helm-charts/releases/). Alternatively, you can find `imagelist.txt` and `policylist.txt` files shipped inside the helm charts, that contain the used container images and policy wasm modules respectively.
-1. Optionally, you can verify the signatures of the helm charts (see "verifying Kubewarden link") prior to obtaining the list of images and policies.
+:::note
+Optionally, you can verify the signatures of the [helm charts](https://docs.kubewarden.io/security/verifying-kubewarden#helm-charts) and [container images](https://docs.kubewarden.io/security/verifying-kubewarden#container-images)
+:::
 2. Add `cert-manager` if it is not available in your private registry. 
 ```
 helm repo add jetstack https://charts.jetstack.io
