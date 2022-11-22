@@ -139,3 +139,17 @@ spec:
   mutating: false
 EOF
 ```
+
+:::caution
+PolicyServers must use the image available in your private registry. Example:
+```
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: reserved-instance-for-tenant-a
+spec:
+  image: <REGISTRY.YOURDOMAIN.COM:PORT>/kubewarden/policy-server:v1.3.0
+  replicas: 2
+  serviceAccountName: sa
+```
+:::
