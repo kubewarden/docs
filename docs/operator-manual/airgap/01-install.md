@@ -14,7 +14,7 @@ You need to add Kubewarden's images and policies to this OCI registry. Let's see
 
 1. Download `kubewarden-images.txt` from the Kubewarden [release page](https://github.com/kubewarden/helm-charts/releases/). Alternatively, you can find `imagelist.txt` and `policylist.txt` files shipped inside the helm charts, that contain the used container images and policy wasm modules respectively.
 :::note
-Optionally, you can verify the signatures of the [helm charts](https://docs.kubewarden.io/security/verifying-kubewarden#helm-charts) and [container images](https://docs.kubewarden.io/security/verifying-kubewarden#container-images)
+Optionally, you can verify the signatures of the [helm charts](../../security/verifying-kubewarden#helm-charts) and [container images](../../security/verifying-kubewarden#container-images)
 :::
 2. Add `cert-manager` if it is not available in your private registry. 
 ```
@@ -83,7 +83,7 @@ The `sources.yaml` file is needed by kwctl to connect to registries that fall in
 * Self signed certificate is being used
 * No TLS termination is done
 
-Please refer to [this section](../distributing-policies/custom-certificate-authorities.md) of our documentation to learn more about how to configure the `sources.yaml` file
+Please refer to [this section](../../distributing-policies/custom-certificate-authorities.md) of our documentation to learn more about how to configure the `sources.yaml` file
 ::: 
 
 ## Install kubewarden. 
@@ -117,7 +117,7 @@ helm install --wait -n kubewarden kubewarden-controller.tgz --set common.cattle.
 helm install --wait -n kubewarden kubewarden-defaults.tgz --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
 ```
 
-Finally, we need to configure PolicyServers to fetch policies from our private registry. See the [using private registry](https://docs.kubewarden.io/operator-manual/policy-servers/private-registry) section of the docs.
+Finally, we need to configure PolicyServers to fetch policies from our private registry. See the [using private registry](../policy-servers/private-registry) section of the docs.
 
 Now we can create Kubewarden policies in our cluster! Policies must be available in your private registry.
 
