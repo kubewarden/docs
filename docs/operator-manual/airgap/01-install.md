@@ -3,9 +3,9 @@ sidebar_label: "Installation"
 title: ""
 ---
 
-# Airgap installation
+# Air gap installation
 
-This guide will show you how to install Kubewarden in air-gapped environments. In an air-gapped installation of Kubewarden, 
+This guide will show you how to install Kubewarden in air gap environments. In an air gap installation of Kubewarden, 
 you will need a private OCI registry that is located somewhere accessible by your kubernetes cluster. Kubewarden Policies 
 are WebAssembly modules, therefore they can be stored inside of an OCI compliant registry as OCI artifacts.
 You need to add Kubewarden's images and policies to this OCI registry. Let's see how to do that.
@@ -29,7 +29,7 @@ and [kubewarden-load-images.sh](https://github.com/kubewarden/utils/blob/main/sc
 ```
 ./kubewarden-save-images.sh --image-list ./kubewarden-images.txt --images kubewarden-images.tar.gz
 ```
-Docker begins pulling the images used for an airgap install. Be patient. This process takes a few minutes. 
+Docker begins pulling the images used for an air gap install. Be patient. This process takes a few minutes. 
 When the process completes, your current directory will output a tarball named `kubewarden-images.tar.gz`. Check that the output is in the directory.
 
 ## Save policies in your workstation
@@ -60,12 +60,12 @@ helm pull kubewarden/kubewarden-defaults
 helm pull jetstack/cert-manager         
 ```
 
-Then move the helm chart tar.gz files to your air-gapped environment.
+Then move the helm chart tar.gz files to your air gap environment.
 
 ## Populate private registry
 
 Move `kubewarden-policies.tar.gz`, `kubewarden-images.tar.gz`, `kubewarden-load-images.sh`, `kubewarden-load-policies.sh` and `policies.txt`
-to the air-gapped environment.
+to the air gap environment.
 
 1. load Kubewarden images into the private registry
 ```
