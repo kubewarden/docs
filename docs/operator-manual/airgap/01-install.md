@@ -76,8 +76,14 @@ to the air-gapped environment.
 ./kubewarden-load-policies.sh --policies kubewarden-policies.tar.gz --policies-list policies.txt --registry <REGISTRY.YOURDOMAIN.COM:PORT> --sources-path sources.yml 
 ```
 
-:::note
-Go to [kwctl documentation](https://docs.kubewarden.io/distributing-policies/custom-certificate-authorities) to learn more about how to configure your sources.yaml
+:::caution
+The `sources.yaml` file is needed by kwctl to connect to registries that fall into these categories:
+
+* Authentication required
+* Self signed certificate is being used
+* No TLS termination is done
+
+Please refer to [this section](../distributing-policies/custom-certificate-authorities.md) of our documentation to learn more about how to configure the `sources.yaml` file
 ::: 
 
 ## Install kubewarden. 
