@@ -68,11 +68,11 @@ helm pull jetstack/cert-manager
 Move `kubewarden-policies.tar.gz`, `kubewarden-images.tar.gz`, `kubewarden-load-images.sh`, `kubewarden-load-policies.sh` and `policies.txt`
 to the air gap environment.
 
-1. load Kubewarden images into the private registry
+1. Load Kubewarden images into the private registry. Docker client must be authenticated against the local registry
 ```
 ./kubewarden-load-images.sh --image-list ./kubewarden-images.txt --images kubewarden-images.tar.gz --registry <REGISTRY.YOURDOMAIN.COM:PORT>
 ```
-2. load Kubewarden policies into the private registry  
+2. Load Kubewarden policies into the private registry  
 ```
 ./kubewarden-load-policies.sh --policies kubewarden-policies.tar.gz --policies-list policies.txt --registry <REGISTRY.YOURDOMAIN.COM:PORT> --sources-path sources.yml 
 ```
