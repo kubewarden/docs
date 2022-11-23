@@ -17,11 +17,7 @@ The Kubewarden UI is installed as a global extension, however, the Kubewarden co
 
 ### Create the UI extension repository
 
-With Rancher Extensions enabled, navigate to the Extensions page from the side-navigation and select "Manage Repositories" within the action menu (the three dots) in the top-right corner of the page. Create a new Git repository with `https://github.com/kubewarden/ui.git` for the Git Repo URL input and the Git Branch `main`.
-
-:::note
-As we are using the `main` branch this may cause some features to be broken or bugs to exist. This is temporary until we have proper releases in place.
-:::
+With Rancher Extensions enabled, navigate to the Extensions page from the side-navigation and select "Manage Repositories" within the action menu (the three dots) in the top-right corner of the page. Create a new Helm index repository with `https://kubewarden.github.io/ui` for the Index URL.
 
 ### Add the Kubewarden extension
 
