@@ -107,15 +107,15 @@ helm install --create-namespace cert-manager ./cert-manager-<Version>.tgz \
 Let's install the Kubewarden stack:
 
 ```
-helm install --wait -n kubewarden kubewarden-crds.tgz
+helm install --wait -n kubewarden kubewarden-crds kubewarden-crds.tgz
 ```
 
 ```
-helm install --wait -n kubewarden kubewarden-controller.tgz --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
+helm install --wait -n kubewarden kubewarden-controller kubewarden-controller.tgz --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
 ```
 
 ```
-helm install --wait -n kubewarden kubewarden-defaults.tgz --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
+helm install --wait -n kubewarden kubewarden-defaults kubewarden-defaults.tgz --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
 ```
 
 Finally, we need to configure PolicyServers to fetch policies from our private registry. See the [using private registry](../policy-servers/private-registry) section of the docs.
