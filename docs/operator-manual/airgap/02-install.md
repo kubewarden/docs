@@ -20,8 +20,8 @@ Optionally, you can verify the signatures of the [helm charts](../../security/ve
 ```
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
-helm pull jetstack/cert-manager --version v1.7.1
-helm template ./cert-manager-v1.7.1.tgz | awk '$1 ~ /image:/ {print $2}' | sed s/\"//g >> ./kubewarden-images.txt
+helm pull jetstack/cert-manager
+helm template ./cert-manager-<Version>.tgz | awk '$1 ~ /image:/ {print $2}' | sed s/\"//g >> ./kubewarden-images.txt
 ```
 3. Download [kubewarden-save-images.sh](https://github.com/kubewarden/utils/blob/main/scripts/kubewarden-save-images.sh) 
 and [kubewarden-load-images.sh](https://github.com/kubewarden/utils/blob/main/scripts/kubewarden-load-images.sh) from the Kubewarden utils repository.
