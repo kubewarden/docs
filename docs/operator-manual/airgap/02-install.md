@@ -23,8 +23,7 @@ helm repo update
 helm pull jetstack/cert-manager
 helm template ./cert-manager-<Version>.tgz | awk '$1 ~ /image:/ {print $2}' | sed s/\"//g >> ./kubewarden-images.txt
 ```
-3. Download [kubewarden-save-images.sh](https://github.com/kubewarden/utils/blob/main/scripts/kubewarden-save-images.sh) 
-and [kubewarden-load-images.sh](https://github.com/kubewarden/utils/blob/main/scripts/kubewarden-load-images.sh) from the Kubewarden utils repository.
+3. Download `kubewarden-save-images.sh` and `kubewarden-load-images.sh` from the latest kwctl [release](https://github.com/kubewarden/kwctl/releases).
 4. Save Kubewarden container images into a tar.gz file:
 ```
 ./kubewarden-save-images.sh --image-list ./kubewarden-images.txt --images kubewarden-images.tar.gz
