@@ -5,14 +5,14 @@ title: ""
 
 # Air gap installation
 
-This guide will show you how to install Kubewarden in air gap environments. In an air gap installation of Kubewarden, 
-you will need a private OCI registry that is located somewhere accessible by your kubernetes cluster. Kubewarden Policies 
-are WebAssembly modules, therefore they can be stored inside of an OCI compliant registry as OCI artifacts.
+This guide will show you how to install Kubewarden in air-gapped environments. In an air-gapped installation of Kubewarden, 
+you will need a private OCI registry accessible by your Kubernetes cluster. Kubewarden Policies 
+are WebAssembly modules; therefore, they can be stored inside an OCI-compliant registry as OCI artifacts.
 You need to add Kubewarden's images and policies to this OCI registry. Let's see how to do that.
 
 ## Save container images in your workstation
 
-1. Download `kubewarden-images.txt` from the Kubewarden [release page](https://github.com/kubewarden/helm-charts/releases/). Alternatively, you can find `imagelist.txt` and `policylist.txt` files shipped inside the helm charts, that contain the used container images and policy wasm modules respectively.
+1. Download `kubewarden-images.txt` from the Kubewarden [release page](https://github.com/kubewarden/helm-charts/releases/). Alternatively, the `imagelist.txt` and `policylist.txt` files are shipped inside the helm charts containing the used container images and policy wasm modules, respectively.
 :::note
 Optionally, you can verify the signatures of the [helm charts](../../security/verifying-kubewarden#helm-charts) and [container images](../../security/verifying-kubewarden#container-images)
 :::
@@ -24,12 +24,12 @@ helm pull jetstack/cert-manager
 helm template ./cert-manager-<Version>.tgz | awk '$1 ~ /image:/ {print $2}' | sed s/\"//g >> ./kubewarden-images.txt
 ```
 3. Download `kubewarden-save-images.sh` and `kubewarden-load-images.sh` from the latest kwctl [release](https://github.com/kubewarden/kwctl/releases).
-4. Save Kubewarden container images into a tar.gz file:
+4. Save Kubewarden container images into a .tar.gz file:
 ```
 ./kubewarden-save-images.sh --image-list ./kubewarden-images.txt --images kubewarden-images.tar.gz
 ```
 Docker begins pulling the images used for an air gap install. Be patient. This process takes a few minutes. 
-When the process completes, your current directory will output a tarball named `kubewarden-images.tar.gz`. Check that the output is in the directory.
+When the process completes, your current directory will output a tarball named `kubewarden-images.tar.gz`. It will be present in the same directory where you executed the command.
 
 ## Save policies in your workstation
 
@@ -40,7 +40,7 @@ registry://ghcr.io/kubewarden/policies/pod-privileged:v0.2.2
 registry://ghcr.io/kubewarden/policies/safe-labels:v0.1.5
 ```
 2. Download `kubewarden-save-policies.sh` and `kubewarden-load-policies.sh` from the [kwctl repository](https://github.com/kubewarden/kwctl/tree/main/scripts)
-3. Save policies into a tar.gz file:
+3. Save policies into a .tar.gz file:
 ```
 ./kubewarden-save-policies.sh --policies-list policies.txt
 ```
@@ -83,7 +83,7 @@ The `sources.yaml` file is needed by kwctl to connect to registries that fall in
 * Self signed certificate is being used
 * No TLS termination is done
 
-Please refer to [this section](../../distributing-policies/custom-certificate-authorities.md) of our documentation to learn more about how to configure the `sources.yaml` file
+Please refer to [the section on custom certificate authorities](../../distributing-policies/custom-certificate-authorities.md) in our documentation to learn more about configuring the `sources.yaml` file
 ::: 
 
 ## Install kubewarden. 
