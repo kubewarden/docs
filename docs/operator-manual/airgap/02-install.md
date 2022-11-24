@@ -44,7 +44,7 @@ registry://ghcr.io/kubewarden/policies/safe-labels:v0.1.5
 ```
 ./kubewarden-save-policies.sh --policies-list policies.txt
 ```
-kwctl downloads all the policies and stores then in `kubewarden-policies.tar.gz`
+kwctl downloads all the policies and stores them as `kubewarden-policies.tar.gz` archive.
 
 ## Helm charts
 
@@ -79,7 +79,7 @@ to the air gap environment.
 :::caution
 The `sources.yaml` file is needed by kwctl to connect to registries that fall into these categories:
 
-* Authentication required
+* Authentication is required
 * Self signed certificate is being used
 * No TLS termination is done
 
@@ -117,7 +117,7 @@ helm install --wait -n kubewarden kubewarden-controller kubewarden-controller.tg
 helm install --wait -n kubewarden kubewarden-defaults kubewarden-defaults.tgz --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
 ```
 
-Finally, we need to configure PolicyServers to fetch policies from our private registry. See the [using private registry](../policy-servers/private-registry) section of the docs.
+Finally, we need to configure Policy Server to fetch policies from our private registry. See the [using private registry](../policy-servers/private-registry) section of the docs.
 
 Now we can create Kubewarden policies in our cluster! Policies must be available in your private registry.
 
@@ -140,7 +140,7 @@ EOF
 ```
 
 :::caution
-PolicyServers must use the image available in your private registry. Example:
+`PolicyServer` resources must use the image available in your private registry. For example:
 ```
 apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
