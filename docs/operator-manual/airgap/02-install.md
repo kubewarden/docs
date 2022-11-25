@@ -33,12 +33,7 @@ When the process completes, your current directory will output a tarball named `
 
 ## Save policies in your workstation
 
-1. Add all the policies you want to use in a `policies.txt` file. 
-Example: (TODO add link to default policies.txt once it is available) 
-```
-registry://ghcr.io/kubewarden/policies/pod-privileged:v0.2.2
-registry://ghcr.io/kubewarden/policies/safe-labels:v0.1.5
-```
+1. Add all the policies you want to use in a `policies.txt` file. A file with a list of the default policies can be found in the Kubewarden defaults [release page](https://github.com/kubewarden/helm-charts/releases/)
 2. Download `kubewarden-save-policies.sh` and `kubewarden-load-policies.sh` from the [kwctl repository](https://github.com/kubewarden/kwctl/tree/main/scripts)
 3. Save policies into a .tar.gz file:
 ```
