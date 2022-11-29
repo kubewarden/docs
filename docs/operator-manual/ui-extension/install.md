@@ -36,13 +36,12 @@ After the installation is complete a few items will be listed under the Kubeward
 ___Policy Server detail view___
 ![UI PolicyServer Detail](/img/ui_policyserver_detail.png)
 
-
 ___Admission Policy creation view___
 ![UI Policy Create](/img/ui_policy_create.png)
 
----
+### Additional Features
 
-For installing additional features, which includes Metrics or Tracing, you can follow the instructions in [this wiki](https://github.com/kubewarden/ui/wiki).
+For installing additional features, follow the instructions in these docs to include [Metrics](/operator-manual/ui-extension/metrics) or [Tracing](/operator-manual/ui-extension/tracing).
 
 ___Policy tracing logs___
 ![UI Policy Tracing Logs](/img/ui_policy_tracing.png)
