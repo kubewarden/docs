@@ -170,6 +170,7 @@ module.exports = {
             'operator-manual/verification-config',
           ],
           'Monitor Mode': ['operator-manual/monitor-mode/intro',],
+          'Air gap': ['operator-manual/airgap/requirements','operator-manual/airgap/install',],
           'Rancher UI Extension': [
             'operator-manual/ui-extension/install',
             'operator-manual/ui-extension/metrics',
