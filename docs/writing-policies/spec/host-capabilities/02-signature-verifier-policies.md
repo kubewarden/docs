@@ -266,6 +266,67 @@ policy that verifies signatures can use:
 
 </td>
 </tr>
+
+<tr>
+<td>
+
+`v2/verify`
+
+</td>
+<td>
+
+```json
+{
+  type: "SigstoreCertificateVerify",
+
+  // mandatory: image URI to verify
+  "image": string,
+  // PEM-encoded certificated used to
+  // verify the signature
+  "certificate": string,
+  // Optional - certificate chain used to
+  // verify the provided certificate.
+  // When not specified, the certificate
+  // is assumed to be trusted
+  "certificate_chain": [
+    string,
+    ...
+    string
+  ], 
+  // Require the signature layer to have
+  // a Rekor bundle.
+  // Having a Rekor bundle allows further
+  // checks to be performed, e.g. ensuring
+  // the signature has been produced during
+  // the validity time frame of the cert.
+  // Recommended to set to `true`
+  require_rekor_bundle: bool,
+  // Optional:
+  "annotations": [
+    // signature annotations
+    {
+      "key": string,
+      "value": string
+    },
+  ]
+}
+```
+
+</td>
+<td> 
+
+```json
+{
+   // true if image verified
+   "is_trusted": boolean,
+   // digest of verified image
+   "digest": string
+}
+```
+
+</td>
+</tr>
+
 </table>
 
 
