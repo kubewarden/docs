@@ -7,7 +7,7 @@ title: ""
 
 This section describes how to install the Kubewarden UI as an extension of [Rancher Manager](https://github.com/rancher/rancher).
 
-:::note
+:::caution
 This requires a running instance of Rancher Manager `v2.7.0` or greater.
 :::
 
