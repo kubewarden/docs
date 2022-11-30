@@ -41,7 +41,7 @@ ___Admission Policy creation view___
 
 ### Additional Features
 
-For installing additional features, follow the instructions in these docs to include [Metrics](/operator-manual/ui-extension/metrics) or [Tracing](/operator-manual/ui-extension/tracing).
+For installing additional features, follow the instructions in these docs to include [Metrics](./metrics.md) or [Tracing](./tracing.md).
 
 ___Policy tracing logs___
 ![UI Policy Tracing Logs](/img/ui_policy_tracing.png)

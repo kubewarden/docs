@@ -10,11 +10,11 @@ We will use [Jaeger](https://www.jaegertracing.io/) -- used to receive, store an
 ## Prerequisites
 
 Cert-Manager and OpenTelemetry are required.
-Follow [these instructions](/operator-manual/telemetry/opentelemetry/quickstart#install-opentelemetry) to install Cert Manager and the OpenTelemetry Operator.
+Follow [these instructions](../telemetry/opentelemetry/01-quickstart.md#install-opentelemetry) to install Cert Manager and the OpenTelemetry Operator.
 
 ## Install Jaeger
 
-> Adapted from the [tracing quickstart](/operator-manual/telemetry/tracing/quickstart)
+> Adapted from the [tracing quickstart](../telemetry/tracing/01-quickstart.md)
 
 We first need to add the helm repository that contains the [Jaeger Operator](https://github.com/jaegertracing/jaeger-operator) charts.
 

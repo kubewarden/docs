@@ -12,7 +12,7 @@ You will need a cluster with at least 4 cores to install the Monitoring tool.
 ## Prerequisites
 
 Cert-Manager and OpenTelemetry are required.
-Follow [these instructions](/operator-manual/telemetry/opentelemetry/quickstart#install-opentelemetry) to install Cert Manager and the OpenTelemetry Operator.
+Follow [these instructions](../telemetry/opentelemetry/01-quickstart.md#install-opentelemetry) to install Cert Manager and the OpenTelemetry Operator.
 
 ## Install
 
@@ -21,7 +21,7 @@ Follow [these instructions](/operator-manual/telemetry/opentelemetry/quickstart#
   - Edit the YAML to include a Service Monitor for Kubewarden
   - You need to specify the correct namespace where you installed Kubewarden
 
-> Adapted from [here](/operator-manual/telemetry/metrics/quickstart)
+> Adapted from [here](../telemetry/metrics/01-quickstart.md)
 
 ```yml
 prometheus:
@@ -62,7 +62,7 @@ You may need to redeploy your Monitoring resources for the new ConfigMap to be l
 ### 3. Add the ConfigMap for Policies and Policy Server
 
 :::note
-This method is suited for air-gapped installations
+This method is suited for air gapped installations
 :::
 
 The dashboards are unique between Policy Server and Policies, thus will need to be created separately. 
