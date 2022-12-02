@@ -17,7 +17,7 @@ performing cryptographic checks exposed by the host:
 
 <table>
 <tr>
-<td> WaPC function name </td> <td> Input payload </td> <td> Output payload </td>
+<th> waPC function name </th> <th> Input payload </th> <th> Output payload </th>
 </tr>
 <tr>
 <td>
@@ -27,23 +27,23 @@ performing cryptographic checks exposed by the host:
 </td>
 <td>
 
-```json
+```hcl
 {
-  // **mandatory**: PEM-encoded certificate to verify
+  # **mandatory**: PEM-encoded certificate to verify
   "certificate": string,
-  // optional:
+  # optional:
   "cert_chain": [
-      // list of PEM-encoded certs, ordered by trust
-      // usage (intermediates first, root last)
-      // If empty or missing, certificate is assumed
-      // trusted
+      # list of PEM-encoded certs, ordered by trust
+      # usage (intermediates first, root last)
+      # If empty or missing, certificate is assumed
+      # trusted
       string,
       ...
       string,
     ],
-  // RFC 3339 time format string, to check expiration
-  // against.
-  // If missing, certificate is assumed never expired
+  # RFC 3339 time format string, to check expiration
+  # against.
+  # If missing, certificate is assumed never expired
   "not_after": string
 }
 ```
@@ -51,11 +51,11 @@ performing cryptographic checks exposed by the host:
 </td>
 <td> 
 
-```json
+```hcl
 {
-   // true if certificate verified:
+   # true if certificate verified:
    "trusted": boolean,
-   // empty if trusted == true:
+   # empty if trusted == true:
    "reason": string
 }
 ```
