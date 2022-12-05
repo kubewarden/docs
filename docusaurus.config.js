@@ -36,6 +36,7 @@ module.exports = {
     prism: {
       // Enable extra languages when doing syntax highlighting
       additionalLanguages: [
+        'hcl',
         'rust',
         'rego',
       ],

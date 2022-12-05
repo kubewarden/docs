@@ -36,10 +36,41 @@ from the remote registry.
 
 This is the description of the waPC protocol used to expose this capability:
 
+<table>
+<tr>
+<th> waPC function name </th> <th> Input payload </th> <th> Output payload </th>
+</tr>
 
-| **waPC function name** | **Input payload** | **Output payload** |
-|--------------------|---------------|----------------|
-| `v1/manifest_digest` | <code>// OCI URI<br/>// JSON encoded string<br/>string</code>  | <code>{<br/>   // digest of the OCI object<br/>   "digest": string<br/>}</code> |
+<tr>
+<td>
+
+`v1/manifest_digest`
+
+</td>
+<td>
+
+```hcl
+# OCI URI
+string,
+#JSON encoded string
+string
+```
+
+</td>
+
+<td>
+
+```hcl
+{
+  # digest of the OCI object
+  "digest": string
+}
+```
+
+</td>
+</tr>
+
+</table>
 
 For example, when requesting the manifest digest of the `busybox:latest` image,
 the payload would be the following ones:

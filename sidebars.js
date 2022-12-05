@@ -37,7 +37,8 @@ module.exports = {
               items: [
                 'writing-policies/spec/host-capabilities/signature-verifier-policies',
                 'writing-policies/spec/host-capabilities/container-registry',
-                'writing-policies/spec/host-capabilities/net'
+                'writing-policies/spec/host-capabilities/net',
+                'writing-policies/spec/host-capabilities/crypto'
               ]
             }
           ],
