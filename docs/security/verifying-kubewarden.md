@@ -44,13 +44,19 @@ You may either verify manually or with Sigstore tools that the cert in the
 returned json contains the correct issuer, subject, and
 `github_workflow_repository` extensions.
 
-## Container images
+### Container images & policies referenced in the charts
+
+#### Obtaining the lists
 
 Both the production images used in our Helm charts and our development images
 (tagged `:latest`) are signed with Sigstore's keyless signing.
 
-Kubewarden follows the usual practices with regards to Helm charts. Hence, one
-can find all the images in the Helm charts with a plugin such as
+Kubewarden charts ship `imagelist.txt` and (`policylist.txt` when relevant) inside
+of the chart. Hence, if you already verified the chart, you can use those lists
+to verify the consumed container images and policies.
+
+Kubewarden also follows the usual practices with regards to Helm charts. Hence, one
+can also find all the images in the Helm charts with a plugin such as
 [helm-image](https://github.com/cvila84/helm-image), or with the following script:
 
 ```bash
@@ -68,6 +74,8 @@ ghcr.io/kubewarden/kubewarden-controller:v0.5.5
 ghcr.io/kubewarden/policy-server:v0.3.1
 ghcr.io/kubewarden/kubectl:v1.21.4
 ```
+
+### Verifying the lists
 
 Now, for each image in that list you can verify their Sigstore signatures. E.g:
 ```
@@ -109,3 +117,19 @@ Verified OK
 
 You can inspect the cert signature yourself to see that indeed was authenticated
 via GitHub OIDC, and performed in our GitHub Actions workflows.
+
+## Policies
+
+Policies maintained by the Kubewarden team are also signed via Sigstore. As seen for
+usual container images, one can verify them using `cosign`:
+```
+vic@viccuad2 1 ~/suse/kw/kubewarden-controller (main $%>)$ COSIGN_EXPERIMENTAL=1 cosign verify ghcr.io/kubewarden/policies/verify-image-signatures:v0.2.0
+
+Verification for ghcr.io/kubewarden/policies/verify-image-signatures:v0.2.0 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - Any certificates were verified against the Fulcio roots.
+
+  <snipped json>
+```
