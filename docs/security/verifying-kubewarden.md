@@ -123,7 +123,7 @@ via GitHub OIDC, and performed in our GitHub Actions workflows.
 Policies maintained by the Kubewarden team are also signed using the Sigstore project. Similar to
 usual container images, one can verify them using `cosign`:
 ```
-vic@viccuad2 1 ~/suse/kw/kubewarden-controller (main $%>)$ COSIGN_EXPERIMENTAL=1 cosign verify ghcr.io/kubewarden/policies/verify-image-signatures:v0.2.0
+COSIGN_EXPERIMENTAL=1 cosign verify ghcr.io/kubewarden/policies/verify-image-signatures:v0.2.0
 
 Verification for ghcr.io/kubewarden/policies/verify-image-signatures:v0.2.0 --
 The following checks were performed on each of these signatures:
