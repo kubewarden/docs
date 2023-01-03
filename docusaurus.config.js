@@ -69,6 +69,12 @@ module.exports = {
           position: 'right',
           className: 'navbar__github btn btn-secondary icon-github',
         },
+        {
+          href: 'https://kubernetes.slack.com/archives/kubewarden',
+          position: 'right',
+          className: 'header-slack-link',
+          'aria-label': 'Slack Channel',
+        },
       ],
     },
     footer: {
