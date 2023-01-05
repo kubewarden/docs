@@ -21,12 +21,15 @@ Optionally, you can verify the signatures of the [helm charts](../../security/ve
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
 helm pull jetstack/cert-manager
-helm template ./cert-manager-<Version>.tgz | awk '$1 ~ /image:/ {print $2}' | sed s/\"//g >> ./kubewarden-images.txt
+helm template ./cert-manager-<Version>.tgz | \
+  awk '$1 ~ /image:/ {print $2}' | sed s/\"//g >> ./kubewarden-images.txt
 ```
 3. Download `kubewarden-save-images.sh` and `kubewarden-load-images.sh` from the latest kwctl [release](https://github.com/kubewarden/kwctl/releases).
 4. Save Kubewarden container images into a .tar.gz file:
 ```
-./kubewarden-save-images.sh --image-list ./kubewarden-images.txt --images kubewarden-images.tar.gz
+./kubewarden-save-images.sh \
+  --image-list ./kubewarden-images.txt \
+  --images kubewarden-images.tar.gz
 ```
 Docker begins pulling the images used for an air gap install. Be patient. This process takes a few minutes. 
 When the process completes, your current directory will output a tarball named `kubewarden-images.tar.gz`. It will be present in the same directory where you executed the command.
@@ -64,11 +67,18 @@ to the air gap environment.
 
 1. Load Kubewarden images into the private registry. Docker client must be authenticated against the local registry
 ```
-./kubewarden-load-images.sh --image-list ./kubewarden-images.txt --images kubewarden-images.tar.gz --registry <REGISTRY.YOURDOMAIN.COM:PORT>
+./kubewarden-load-images.sh \
+  --image-list ./kubewarden-images.txt \
+  --images kubewarden-images.tar.gz \
+  --registry <REGISTRY.YOURDOMAIN.COM:PORT>
 ```
-2. Load Kubewarden policies into the private registry  
+2. Load Kubewarden policies into the private registry. Kwctl must be authenticated against the local registry (`kwctl` uses the same mechanism to authenticate as `docker`, a `~/.docker/config.json` file)  
 ```
-./kubewarden-load-policies.sh --policies kubewarden-policies.tar.gz --policies-list policies.txt --registry <REGISTRY.YOURDOMAIN.COM:PORT> --sources-path sources.yml 
+./kubewarden-load-policies.sh \
+  --policies-list policies.txt \
+  --policies kubewarden-policies.tar.gz \
+  --registry <REGISTRY.YOURDOMAIN.COM:PORT> \
+  --sources-path sources.yml 
 ```
 
 :::caution
@@ -81,7 +91,7 @@ The `sources.yaml` file is needed by kwctl to connect to registries that fall in
 Please refer to [the section on custom certificate authorities](../../distributing-policies/custom-certificate-authorities.md) in our documentation to learn more about configuring the `sources.yaml` file
 ::: 
 
-## Install kubewarden. 
+## Install Kubewarden 
 
 Let's install Kubewarden now that we have everything we need in our private registry. The only difference with a normal
 Kubewarden installation is that we need to change the registry in the container images and policies to our private registry.
@@ -101,15 +111,20 @@ helm install --create-namespace cert-manager ./cert-manager-<Version>.tgz \
 Let's install the Kubewarden stack:
 
 ```
-helm install --wait -n kubewarden kubewarden-crds kubewarden-crds.tgz
+helm install --wait -n kubewarden \
+  kubewarden-crds kubewarden-crds.tgz
 ```
 
 ```
-helm install --wait -n kubewarden kubewarden-controller kubewarden-controller.tgz --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
+helm install --wait -n kubewarden \
+  kubewarden-controller kubewarden-controller.tgz \
+  --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
 ```
 
 ```
-helm install --wait -n kubewarden kubewarden-defaults kubewarden-defaults.tgz --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
+helm install --wait -n kubewarden \
+  kubewarden-defaults kubewarden-defaults.tgz \
+  --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
 ```
 
 Finally, we need to configure Policy Server to fetch policies from our private registry. See the [using private registry](../policy-servers/private-registry) section of the docs.
