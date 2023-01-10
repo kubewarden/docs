@@ -172,6 +172,7 @@ module.exports = {
           ],
           'Monitor Mode': ['operator-manual/monitor-mode/intro',],
           'Air gap': ['operator-manual/airgap/requirements','operator-manual/airgap/install',],
+          'Rancher Fleet': ['operator-manual/Rancher-Fleet',],
         },
       ],
     },
