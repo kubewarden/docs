@@ -33,7 +33,7 @@ deploying, they will be gone.
 
 :::caution
 
-When removing blindly the GitRepo, all 3 Kubewarden charts get removed at once.
+When blindly removing the GitRepo, all 3 Kubewarden charts get removed at once.
 This means the `kubewarden-crds` chart gets removed.
 
 Kubewarden uses a pre-delete helm hook job in `kubewarden-controller` chart that
