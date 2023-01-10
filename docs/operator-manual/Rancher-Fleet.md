@@ -20,7 +20,7 @@ need to be ready before the dependent chart is deployed:
 - Fourth, install `kubewarden-defaults`.
 
 On Rancher Fleet, one can codify the chart dependencies using
-[`dependsOn` in the _fleet.yaml_ file](https://fleet.rancher.io/gitrepo-structure#fleetyaml).
+`dependsOn` in the [_fleet.yaml_ file](https://fleet.rancher.io/gitrepo-structure#fleetyaml).
 
 At the time of writing and by how Rancher Fleet works, one may see transient
 errors until the charts are ready, such as:
