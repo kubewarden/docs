@@ -5,7 +5,7 @@ title: ""
 
 # Managing Kubewarden with Rancher Fleet
 
-The Kubewarden Helm charts, as other Helm charts, can be managed via [Rancher
+The Kubewarden Helm charts, like other Helm charts, can be managed via [Rancher
 Fleet](https://fleet.rancher.io/). Rancher Fleet uses Kubernetes CRDs to define
 a GitOps approach for managing Kubernetes clusters. It does this by defining
 Fleet Bundles.
