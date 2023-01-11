@@ -192,6 +192,7 @@ module.exports = {
         },
         { type: 'doc', id: 'operator-manual/monitor-mode'},
         { type: 'doc', id: 'operator-manual/Rancher-Fleet'},
+        { type: 'doc', id: 'operator-manual/policy-evaluation-timeout'},
       ],
     },
     {
