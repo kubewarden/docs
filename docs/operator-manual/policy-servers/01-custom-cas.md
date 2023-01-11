@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Configuring PolicyServers using Custom CAs"
+sidebar_label: "Using Custom CAs"
 title: ""
 ---
 
