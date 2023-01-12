@@ -39,7 +39,7 @@ the majority of long running evaluations.
 There are however certain edge cases that are not yet handled. This includes
 invoking a `sleep` instruction from within a policy and deadlocks.
 
-These scenarios are going to be handled by future release of Policy Server.
+These scenarios are going to be handled by a future release of Policy Server.
 
 Finally, the policy evaluation timeout affects all the policies hosted by a
 Policy Server instance. Currently there's no way to tune policy evaluation timeout
