@@ -130,12 +130,6 @@ module.exports = {
                 'operator-manual/telemetry/metrics/quickstart',
                 'operator-manual/telemetry/tracing/quickstart',
               ],
-              'Reference Documentation':
-              [
-                'operator-manual/telemetry/metrics/reference',
-                'operator-manual/CRDs',
-                'operator-manual/verification-config',
-              ],
               'Monitor Mode': ['operator-manual/monitor-mode/intro',],
               'Air gap': ['operator-manual/airgap/requirements','operator-manual/airgap/install',],
             },
@@ -174,6 +168,16 @@ module.exports = {
         },
         'distributing-policies/oci-registries-support',
         'security/threat-model',
+        {
+          type: 'category',
+          label: 'Operator Manual',
+          items:
+          [
+            'operator-manual/telemetry/metrics/reference',
+            'operator-manual/CRDs',
+            'operator-manual/verification-config',
+          ],
+        },
       ],
       collapsed: true,
     },
