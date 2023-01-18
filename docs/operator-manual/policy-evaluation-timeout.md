@@ -5,6 +5,10 @@ title: ""
 
 # Policy evaluation timeout protection
 
+:::info
+This feature is available starting from Kubewarden 1.5.0
+:::
+
 Policy evaluation timeout protection is a security feature of Policy Server.
 It's purpose is to limit the amount of time a request evaluation can take.
 
