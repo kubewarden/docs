@@ -151,9 +151,6 @@ Denial Of Service (DOS) attack against the Policy Server.
 
 Let's assume a scenario where the same Policy Server now has the policy evaluation timeout
 feature enabled, and the policy evaluation timeout is set to be 2 seconds.
-This server is hosting a policy that is affected by a bug which causes an
-an infinite loop to be entered.
-
 Kubernetes API server sends an admission request to be evaluated by this
 bugged policy. As a result, the policy evaluation will enter an infinite loop.
 In the meantime the Kubernetes API server will be waiting for a response.
