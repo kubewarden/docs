@@ -6,13 +6,13 @@ title: ""
 # Policy evaluation timeout protection
 
 :::info
-This feature is available starting from Kubewarden 1.5.0
+This feature is available starting from Kubewarden v1.5.0.
 :::
 
 Policy evaluation timeout protection is a security feature of Policy Server.
 It's purpose is to limit the amount of time a request evaluation can take.
 
-This feature is enabled by default.
+This feature is enabled by default from Kubewarden v1.5.0.
 
 ## Purpose
 
@@ -21,7 +21,7 @@ Kubewarden policies can be written using both traditional programming languages
 [Rust](../writing-policies/rust/01-intro-rust.md) and
 [others](../writing-policies/index.md)
 ) or using the special query language [Rego](../writing-policies/rego/01-intro-rego.md).
-Both approaches have pros and cons, the goal of Kubewarden is to allow the policy
+While both approaches have their pros and cons, the goal of Kubewarden is to allow the policy
 authors to pick the best tool to do their job.
 
 When using a traditional programming language (or, to be
@@ -33,7 +33,7 @@ because it lacks optimizations or simply because it performs computationally
 intense operations.
 
 The policy evaluation timeout protection feature terminates the evaluation of
-a request after a certain time. This ensures Policy Server has always compute
+a request after a certain time. This ensures Policy Server always has compute
 resources available to process incoming requests.
 
 ## Limitations
@@ -46,7 +46,7 @@ invoking a `sleep` instruction from within a policy and deadlocks.
 These scenarios are going to be handled by a future release of Policy Server.
 
 Finally, the policy evaluation timeout affects all the policies hosted by a
-Policy Server instance. Currently there's no way to tune policy evaluation timeout
+Policy Server instance. Currently, there's no way to tune policy evaluation timeout
 on a per-policy basis.
 
 ## Configuration
@@ -64,7 +64,7 @@ This behavior can be tuned by using these environment variables:
   value is expressed in seconds and has a default value of `2`.
 
 When using the [`PolicyServer`](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller/policies.kubewarden.io/PolicyServer/v1@v1.4.2)
-Kurnetes Custom Resource Definition, these environment variables can be set in
+Kubernetes Custom Resource Definition, these environment variables can be set in
 this way:
 
 ```yaml
@@ -92,10 +92,9 @@ spec:
 
 ## Comparison with Kubernetes Dynamic Admission Controller timeout
 
-Kubewarden is implemented as Kubernetes [Dynamic Admission Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/),
-which are implemented via [Webhooks](https://en.wikipedia.org/wiki/Webhook).
+Kubewarden is a [webook](https://en.wikipedia.org/wiki/Webhook) implementation of  the[ Kubernetes Dynamic Admission Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
 
-Under the hood, Kubernetes API server makes a HTTP request against Policy Server
+Under the hood, the Kubernetes API server makes an HTTP request against  Kubewarden's Policy Server
 describing an event that is about to happen. After the HTTP request is made,
 Kubernetes API Server waits for an answer to be provided. However, Kubernetes
 API server will not wait forever, after a certain amount of time it will
@@ -133,7 +132,7 @@ between Kubernetes' Webhook timeout and Kubewarden's policy evaluation timeout.
 
 Let's assume we have a Policy Server that has the policy evaluation timeout
 feature disabled. This server is hosting a policy that is affected by a bug
-which causes an infinite loop to be entered.
+which causes it to enter an infinite loop during evaluation.
 
 Kubernetes API server sends an admission request to be evaluated by this
 bugged policy. As a result, the policy evaluation will enter an infinite loop.
@@ -142,16 +141,16 @@ In the meantime the Kubernetes API server will be waiting for a response.
 After 10 seconds Kubernetes' webhoook timeout will take place, the request
 will be handled according to the webhook's failure policy.
 
-Unfortunately, Policy Server will be left with some computation resource stuck
-inside of this infinite loop. Over the time, with more admission requests
-triggering the bugged policy, Policy Server will run out of computation resources
+Unfortunately, the Policy Server will be left with some computation resources stuck
+inside of this infinite loop. Over time, with more admission requests
+triggering the bugged policy, the Policy Server will run out of computation resources
 and will be unable to respond to the Kubernetes API server. This is actually a
 Denial Of Service (DOS) attack against the Policy Server.
 
 ### Kubewarden policy evaluation timeout is enabled
 
-Let's assume we have a Policy Server that has the policy evaluation timeout
-feature enabled. The policy evaluation timeout is set to be 2 seconds.
+Let's assume a scenario where the same Policy Server now has the policy evaluation timeout
+feature enabled, and the policy evaluation timeout is set to be 2 seconds.
 This server is hosting a policy that is affected by a bug which causes an
 an infinite loop to be entered.
 
@@ -171,12 +170,12 @@ Setting Kubewarden's policy evaluation timeout to a value higher than the
 Kubernetes' webhook timeout is not a good choice.
 
 While the policy evaluation will still be interrupted, reducing the chances
-of a DOS attack, the final rejection response will not be produce by Policy
-Server. As a matter of fact, the rejection will be produce by the Kubernetes
+of a DOS attack, the final rejection response will not be produced by the Policy
+Server. As a matter of fact, the rejection will be produced by the Kubernetes
 API server by the webhook timeout.
 
-Because of that it will be harder for end users, and Kubernetes operators, to
-detect these slow/bugged policies. The only proof about the policy evaluation
+As a result, it will be harder for end users, and Kubernetes operators, to
+detect these slow/bugged policies. The only proof of the policy evaluation
 interruption will be inside of the Policy Server logs and trace events.
 
 :::
