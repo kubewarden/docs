@@ -130,7 +130,6 @@ module.exports = {
                 'operator-manual/telemetry/metrics/quickstart',
                 'operator-manual/telemetry/tracing/quickstart',
               ],
-              'Monitor Mode': ['operator-manual/monitor-mode',],
               'Air gap': ['operator-manual/airgap/requirements','operator-manual/airgap/install',],
             },
           ],
