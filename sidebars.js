@@ -175,9 +175,20 @@ module.exports = {
           [
             'operator-manual/telemetry/metrics/reference',
             'operator-manual/CRDs',
+            'operator-manual/telemetry/metrics/reference',
             'operator-manual/verification-config',
           ],
         },
+        {
+          type: 'category',
+          label: 'Air gap',
+          items: [
+            'operator-manual/airgap/requirements',
+            'operator-manual/airgap/install',
+          ],
+        },
+        { type: 'doc', id: 'operator-manual/monitor-mode'},
+        { type: 'doc', id: 'operator-manual/Rancher-Fleet'},
       ],
       collapsed: true,
     },

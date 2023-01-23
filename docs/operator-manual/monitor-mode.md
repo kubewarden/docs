@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Introduction to Monitor Mode"
+sidebar_label: "Monitor Mode"
 title: ""
 ---
 
