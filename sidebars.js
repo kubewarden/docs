@@ -181,7 +181,11 @@ module.exports = {
             'operator-manual/telemetry/metrics/reference',
             'operator-manual/verification-config',
           ],
-          'Rancher UI Extension': [
+        },
+        {
+          type: 'category',
+          label: 'Rancher UI Extension',
+          items: [
             'operator-manual/ui-extension/install',
             'operator-manual/ui-extension/metrics',
             'operator-manual/ui-extension/tracing'
