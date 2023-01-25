@@ -81,7 +81,7 @@ policy that verifies signatures can use:
 
 <table>
 <tr>
-<td> WaPC function name </td> <td> Input payload </td> <td> Output payload </td>
+<th> waPC function name </th> <th> Input payload </th> <th> Output payload </th>
 </tr>
 <tr>
 <td>
@@ -91,19 +91,19 @@ policy that verifies signatures can use:
 </td>
 <td>
 
-```json
+```hcl
 {
   type: "SigstorePubKeyVerify",
 
-  // **mandatory**: image URI to verify
+  # **mandatory**: image URI to verify
   "image": string,
   "pub_keys": [
-    // PEM-encoded public keys
+    # PEM-encoded public keys
     string
     ],
-  // optional:
+  # optional:
   "annotations": [
-      // signature annotations
+      # signature annotations
       {
         "key": string,
         "value": string
@@ -115,11 +115,11 @@ policy that verifies signatures can use:
 </td>
 <td> 
 
-```json
+```hcl
 {
-   // true if image verified
+   # true if image verified
    "is_trusted": boolean,
-   // digest of verified image
+   # digest of verified image
    "digest": string
 }
 ```
@@ -134,24 +134,24 @@ policy that verifies signatures can use:
 </td>
 <td>
 
-```json
+```hcl
 {
   type: "SigstoreKeylessVerify",
 
-  // mandatory: image URI to verify
+  # mandatory: image URI to verify
   "image": string,
   "keyless": [
-    // list of (issuer, subject) tuples
+    # list of (issuer, subject) tuples
     {
-      // OIDC issuer
+      # OIDC issuer
       "issuer": string,
-      // signature subject (mail, CI URL, ...)
+      # signature subject (mail, CI URL, ...)
       "subject": string
     }
   ],
-  // optional:
+  # optional:
   "annotations": [
-    // signature annotations
+    # signature annotations
     {
       "key": string,
       "value": string
@@ -163,11 +163,11 @@ policy that verifies signatures can use:
 </td>
 <td> 
 
-```json
+```hcl
 {
-   // true if image verified
+   # true if image verified
    "is_trusted": boolean,
-   // digest of verified image
+   # digest of verified image
    "digest": string
 }
 ```
@@ -182,24 +182,24 @@ policy that verifies signatures can use:
 </td>
 <td>
 
-```json
+```hcl
 {
   type: "SigstoreKeylessPrefixVerify",
 
-  // mandatory: image URI to verify
+  # mandatory: image URI to verify
   "image": string,
   "keyless_prefix": [
-    // list of (issuer, url_prefix) tuples
+    # list of (issuer, url_prefix) tuples
     {
-      // OIDC issuer
+      # OIDC issuer
       "issuer": string,
-      // URL Prefix of subject (CI URL, ...)
+      # URL Prefix of subject (CI URL, ...)
       "url_prefix": string
     }
   ],
-  // optional:
+  # optional:
   "annotations": [
-    // signature annotations
+    # signature annotations
     {
       "key": string,
       "value": string
@@ -211,11 +211,11 @@ policy that verifies signatures can use:
 </td>
 <td> 
 
-```json
+```hcl
 {
-   // true if image verified
+   # true if image verified
    "is_trusted": boolean,
-   // digest of verified image
+   # digest of verified image
    "digest": string
 }
 ```
@@ -231,19 +231,19 @@ policy that verifies signatures can use:
 </td>
 <td>
 
-```json
+```hcl
 {
   type: "SigstoreGithubActionsVerify",
 
-  // mandatory: image URI to verify
+  # mandatory: image URI to verify
   "image": string,
-  // GitHub owner
+  # GitHub owner
   "owner": string,
-  // optional:
-  // GitHub repository 
+  # optional:
+  # GitHub repository 
   "repo": string
   "annotations": [
-    // signature annotations
+    # signature annotations
     {
       "key": string,
       "value": string
@@ -255,17 +255,78 @@ policy that verifies signatures can use:
 </td>
 <td> 
 
-```json
+```hcl
 {
-   // true if image verified
+   # true if image verified
    "is_trusted": boolean,
-   // digest of verified image
+   # digest of verified image
    "digest": string
 }
 ```
 
 </td>
 </tr>
+
+<tr>
+<td>
+
+`v2/verify`
+
+</td>
+<td>
+
+```hcl
+{
+  type: "SigstoreCertificateVerify",
+
+  # mandatory: image URI to verify
+  "image": string,
+  # PEM-encoded certificated used to
+  # verify the signature
+  "certificate": string,
+  # Optional - certificate chain used to
+  # verify the provided certificate.
+  # When not specified, the certificate
+  # is assumed to be trusted
+  "certificate_chain": [
+    string,
+    ...
+    string
+  ], 
+  # Require the signature layer to have
+  # a Rekor bundle.
+  # Having a Rekor bundle allows further
+  # checks to be performed, e.g. ensuring
+  # the signature has been produced during
+  # the validity time frame of the cert.
+  # Recommended to set to `true`
+  require_rekor_bundle: bool,
+  # Optional:
+  "annotations": [
+    # signature annotations
+    {
+      "key": string,
+      "value": string
+    },
+  ]
+}
+```
+
+</td>
+<td> 
+
+```hcl
+{
+   # true if image verified
+   "is_trusted": boolean,
+   # digest of verified image
+   "digest": string
+}
+```
+
+</td>
+</tr>
+
 </table>
 
 
@@ -283,17 +344,17 @@ Marked for deprecation:
 </td>
 <td>
 
-```json
+```hcl
 {
-  // **mandatory**: image URI to verify
+  # **mandatory**: image URI to verify
   "image": string,
   "pub_keys": [
-    // PEM-encoded public keys
+    # PEM-encoded public keys
     string
     ],
-  // optional:
+  # optional:
   "annotations": [
-      // signature annotations
+      # signature annotations
       {
         "key": string,
         "value": string
@@ -305,11 +366,11 @@ Marked for deprecation:
 </td>
 <td> 
 
-```json
+```hcl
 {
-   // true if image verified
+   # true if image verified
    "is_trusted": boolean,
-   // digest of verified image
+   # digest of verified image
    "digest": string
 }
 ```
@@ -324,22 +385,22 @@ Marked for deprecation:
 </td>
 <td>
 
-```json
+```hcl
 {
-  // mandatory: image URI to verify
+  # mandatory: image URI to verify
   "image": string,
   "keyless": [
-    // list of (issuer, subject) tuples
+    # list of (issuer, subject) tuples
     {
-      // OIDC issuer
+      # OIDC issuer
       "issuer": string,
-      // signature subject (mail, CI URL, ...)
+      # signature subject (mail, CI URL, ...)
       "subject": string
     }
   ],
-  // optional:
+  # optional:
   "annotations": [
-    // signature annotations
+    # signature annotations
     {
       "key": string,
       "value": string
@@ -351,11 +412,11 @@ Marked for deprecation:
 </td>
 <td> 
 
-```json
+```hcl
 {
-   // true if image verified
+   # true if image verified
    "is_trusted": boolean,
-   // digest of verified image
+   # digest of verified image
    "digest": string
 }
 ```

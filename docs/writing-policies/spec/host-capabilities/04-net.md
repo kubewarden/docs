@@ -23,11 +23,39 @@ Lookup results are cached for 1 minute.
 
 This is the description of the waPC protocol used to expose this capability:
 
+<table>
+<tr>
+<th> waPC function name </th> <th> Input payload </th> <th> Output payload </th>
+</tr>
 
-| **waPC function name** | **Input payload** | **Output payload** |
-|--------------------|---------------|----------------|
-| `v1/dns_lookup_host` | <code>// hostname<br/>// JSON encoded string<br/>string</code>  | <code>{<br/>   // list of IPs<br/>   "ips": [<br/>     string<br/>   ]<br/>}</code> |
+<tr>
+<td>
 
+`v1/dns_lookup_host`
+
+</td>
+<td>
+
+```hcl
+# hostname - JSON encoded string
+string
+```
+
+</td>
+
+<td>
+
+```hcl
+
+{
+  # list of IPs
+  "ips": [string]
+}
+```
+
+</td>
+</tr>
+</table>
 
 All the IPs associated with the given FQDN, are going to be returned as strings
 inside of the response. Both IPv4 and IPv6 entries are going to be returned as

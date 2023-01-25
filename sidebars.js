@@ -37,7 +37,8 @@ module.exports = {
               items: [
                 'writing-policies/spec/host-capabilities/signature-verifier-policies',
                 'writing-policies/spec/host-capabilities/container-registry',
-                'writing-policies/spec/host-capabilities/net'
+                'writing-policies/spec/host-capabilities/net',
+                'writing-policies/spec/host-capabilities/crypto'
               ]
             }
           ],
@@ -156,27 +157,47 @@ module.exports = {
       link: {type: 'doc', id: 'operator-manual/intro'},
       items:[
         {
-          'Configuring Policy Servers': ['operator-manual/policy-servers/custom-cas', 'operator-manual/policy-servers/private-registry'],
-          'Quickstart Guides':
-          [
+          type: 'category',
+          label: 'Quickstart Guides',
+          items: [
             'operator-manual/telemetry/opentelemetry/quickstart',
             'operator-manual/telemetry/metrics/quickstart',
             'operator-manual/telemetry/tracing/quickstart',
           ],
-          'Reference Documentation':
-          [
-            'operator-manual/telemetry/metrics/reference',
+        },
+        {
+          type: 'category',
+          label: 'Configuring Policy Servers',
+          items: [
+            'operator-manual/policy-servers/custom-cas',
+            'operator-manual/policy-servers/private-registry',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Reference Documentation',
+          items: [
             'operator-manual/CRDs',
+            'operator-manual/telemetry/metrics/reference',
             'operator-manual/verification-config',
           ],
-          'Monitor Mode': ['operator-manual/monitor-mode/intro',],
-          'Air gap': ['operator-manual/airgap/requirements','operator-manual/airgap/install',],
           'Rancher UI Extension': [
             'operator-manual/ui-extension/install',
             'operator-manual/ui-extension/metrics',
             'operator-manual/ui-extension/tracing'
           ]
         },
+        {
+          type: 'category',
+          label: 'Air gap',
+          items: [
+            'operator-manual/airgap/requirements',
+            'operator-manual/airgap/install',
+          ],
+        },
+        { type: 'doc', id: 'operator-manual/monitor-mode'},
+        { type: 'doc', id: 'operator-manual/Rancher-Fleet'},
+        { type: 'doc', id: 'operator-manual/policy-evaluation-timeout'},
       ],
     },
     {

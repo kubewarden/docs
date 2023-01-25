@@ -36,6 +36,7 @@ module.exports = {
     prism: {
       // Enable extra languages when doing syntax highlighting
       additionalLanguages: [
+        'hcl',
         'rust',
         'rego',
       ],
@@ -67,6 +68,12 @@ module.exports = {
           label: 'GitHub',
           position: 'right',
           className: 'navbar__github btn btn-secondary icon-github',
+        },
+        {
+          href: 'https://kubernetes.slack.com/archives/kubewarden',
+          position: 'right',
+          className: 'header-slack-link',
+          'aria-label': 'Slack Channel',
         },
       ],
     },
