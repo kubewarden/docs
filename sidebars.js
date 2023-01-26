@@ -1,7 +1,6 @@
 module.exports = {
   docs: [
     'introduction',
-    `security/disclosure`,
     {
       type: 'category',
       label: 'Tutorials',
@@ -174,7 +173,6 @@ module.exports = {
           [
             'operator-manual/telemetry/metrics/reference',
             'operator-manual/CRDs',
-            'operator-manual/telemetry/metrics/reference',
             'operator-manual/verification-config',
           ],
         },
@@ -192,5 +190,6 @@ module.exports = {
       ],
       collapsed: true,
     },
+    `security/disclosure`,
   ],
 };

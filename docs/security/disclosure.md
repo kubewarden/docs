@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Disclosure"
+sidebar_label: "Security Disclosure"
 title: ""
 ---
 
