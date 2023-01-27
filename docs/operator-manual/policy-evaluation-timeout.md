@@ -106,7 +106,6 @@ Quoting the [official Kubernetes documentation](https://kubernetes.io/docs/refer
 > it is encouraged to use a short timeout for webhooks.
 > If the webhook call times out, the request is handled according to the
 > webhook's failure policy.
-
 That means that, regardless of the policy evaluation timeout feature, each
 Kubernetes admission request is subject to a timeout.
 
@@ -160,7 +159,6 @@ the policy evaluation and will produce a rejection response.
 The response will contain a message explaining that the rejection
 happened because the policy evaluation didn't complete in a timely manner.
 
-
 :::note
 
 Setting Kubewarden's policy evaluation timeout to a value higher than the
@@ -176,5 +174,3 @@ detect these slow/bugged policies. The only proof of the policy evaluation
 interruption will be inside of the Policy Server logs and trace events.
 
 :::
-
-
