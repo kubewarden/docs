@@ -2,6 +2,10 @@
 
 Rancher has a Cluster Tool for Monitoring that leverages Grafana and Prometheus. You can utilize this tool and integrate it with Kubewarden to view overall metrics for a Policy Server or metrics pertaining to a given policy.
 
+:::warning
+Issues with Rancher Manager `v2.7.1` can cause issues with the Metrics dashboard view. Version `v2.7.2` or greater is recommended.  
+:::
+
 :::caution
 You will need a cluster with at least 4 cores to install the Monitoring tool.
 :::
