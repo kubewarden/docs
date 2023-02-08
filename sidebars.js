@@ -1,52 +1,17 @@
 module.exports = {
   docs: [
     'introduction',
-    'quick-start',
     {
       type: 'category',
-      label: 'Common Tasks',
+      label: 'Tutorials',
       items: [
-        'tasksDir/mutating-policies',
-        'tasksDir/psp-migration',
-        'tasksDir/pod-security-admission-with-kubewarden'],
-      collapsed: 'true',
-      link:
-      {
-        type: 'doc',
-        id: 'tasks',
-      },
-    },
-    'architecture',
-    {
-      type: 'category',
-      label: 'Writing Policies',
-      link: {type: 'doc', id: 'writing-policies/index'},
-      items:[
-        {
-          'Policy Specification':
-          [
-            { type: 'doc', id: 'writing-policies/spec/intro-spec'},
-            { type: 'doc', id: 'writing-policies/spec/settings'},
-            { type: 'doc', id: 'writing-policies/spec/validating-policies'},
-            { type: 'doc', id: 'writing-policies/spec/mutating-policies'},
-            { type: 'doc', id: 'writing-policies/spec/context-aware-policies'},
-            {
-              type: 'category',
-              label: 'Host Capabilities',
-              link: {type: 'doc', id: 'writing-policies/spec/host-capabilities/intro-host-capabilities'},
-              items: [
-                'writing-policies/spec/host-capabilities/signature-verifier-policies',
-                'writing-policies/spec/host-capabilities/container-registry',
-                'writing-policies/spec/host-capabilities/net',
-                'writing-policies/spec/host-capabilities/crypto'
-              ]
-            }
-          ],
-        },
+        'quick-start',
+        'tasks',
         {
           type: 'category',
-          label: 'Supported Languages',
+          label: 'Writing Policies',
           items:[
+            'writing-policies/index',
             {
               type: 'category',
               label: 'Rust',
@@ -121,64 +86,93 @@ module.exports = {
               items: []
             }
           ]
-        }
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Distributing Policies',
-      link: {type: 'doc', id: 'distributing-policies',},
-      items:[
-        'distributing-policies/oci-registries-support',
+        },
         'distributing-policies/publish-policy-to-artifact-hub',
-        'distributing-policies/custom-certificate-authorities',
-        'distributing-policies/secure-supply-chain',
+        'security/verifying-kubewarden',
       ],
+      collapsed: false,
     },
-
-
     {
       type: 'category',
-      label: 'Testing Policies',
-      link: {type: 'doc', id: 'testing-policies/intro'},
-      items:[
+      label: 'Explanations',
+      items: [
+        'tasksDir/mutating-policies',
+        'distributing-policies',
         {
-          'User Personas':
+          'Policies Testing roles':
           [
             'testing-policies/policy-authors',
             'testing-policies/cluster-operators',
           ],
         },
       ],
+      collapsed: true,
     },
     {
       type: 'category',
-      label: 'Operator Manual',
-      link: {type: 'doc', id: 'operator-manual/intro'},
-      items:[
+      label: 'How-tos',
+      items: [
+        'tasksDir/psp-migration',
+        'tasksDir/pod-security-admission-with-kubewarden',
+        'distributing-policies/secure-supply-chain',
+        'distributing-policies/custom-certificate-authorities',
         {
           type: 'category',
-          label: 'Quickstart Guides',
-          items: [
-            'operator-manual/telemetry/opentelemetry/quickstart',
-            'operator-manual/telemetry/metrics/quickstart',
-            'operator-manual/telemetry/tracing/quickstart',
+          label: 'Operator Manual',
+          link: {type: 'doc', id: 'operator-manual/intro'},
+          items:[
+            {
+              'Configuring Policy Servers': ['operator-manual/policy-servers/custom-cas', 'operator-manual/policy-servers/private-registry'],
+              'Quickstart Guides':
+              [
+                'operator-manual/telemetry/opentelemetry/quickstart',
+                'operator-manual/telemetry/metrics/quickstart',
+                'operator-manual/telemetry/tracing/quickstart',
+              ],
+              'Air gap': ['operator-manual/airgap/requirements','operator-manual/airgap/install',],
+            },
           ],
         },
+      ],
+      collapsed: true,
+    },
+    {
+      type: 'category',
+      label: 'Reference documentation',
+      items: [
+        'architecture',
         {
           type: 'category',
-          label: 'Configuring Policy Servers',
-          items: [
-            'operator-manual/policy-servers/custom-cas',
-            'operator-manual/policy-servers/private-registry',
+          label: 'Policy Specification',
+          items:
+          [
+            'writing-policies/spec/intro-spec',
+            'writing-policies/spec/settings',
+            'writing-policies/spec/validating-policies',
+            'writing-policies/spec/mutating-policies',
+            'writing-policies/spec/context-aware-policies',
+            {
+              type: 'category',
+              label: 'Host Capabilities',
+              link: {type: 'doc', id: 'writing-policies/spec/host-capabilities/intro-host-capabilities'},
+              items: [
+                'writing-policies/spec/host-capabilities/signature-verifier-policies',
+                'writing-policies/spec/host-capabilities/container-registry',
+                'writing-policies/spec/host-capabilities/net',
+                'writing-policies/spec/host-capabilities/crypto'
+              ]
+            }
           ],
         },
+        'distributing-policies/oci-registries-support',
+        'security/threat-model',
         {
           type: 'category',
-          label: 'Reference Documentation',
-          items: [
-            'operator-manual/CRDs',
+          label: 'Operator Manual',
+          items:
+          [
             'operator-manual/telemetry/metrics/reference',
+            'operator-manual/CRDs',
             'operator-manual/verification-config',
           ],
         },
@@ -203,16 +197,8 @@ module.exports = {
         { type: 'doc', id: 'operator-manual/Rancher-Fleet'},
         { type: 'doc', id: 'operator-manual/policy-evaluation-timeout'},
       ],
+      collapsed: true,
     },
-    {
-      type: 'category',
-      label: 'Security',
-      link: {type: 'doc', id: 'security/intro'},
-      items:[
-        'security/threat-model',
-        'security/verifying-kubewarden',
-        `security/disclosure`
-      ],
-    },
+    `security/disclosure`,
   ],
 };
