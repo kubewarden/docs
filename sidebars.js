@@ -178,6 +178,15 @@ module.exports = {
         },
         {
           type: 'category',
+          label: 'Rancher UI Extension',
+          items: [
+            'operator-manual/ui-extension/install',
+            'operator-manual/ui-extension/metrics',
+            'operator-manual/ui-extension/tracing'
+          ]
+        },
+        {
+          type: 'category',
           label: 'Air gap',
           items: [
             'operator-manual/airgap/requirements',
