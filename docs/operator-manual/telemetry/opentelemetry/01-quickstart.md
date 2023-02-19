@@ -74,9 +74,9 @@ This will produce an output similar to the following one:
 
 ```console
 $ minikube addons enable ingress
-    ▪ Using image k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.0
-    ▪ Using image k8s.gcr.io/ingress-nginx/controller:v1.0.0-beta.3
-    ▪ Using image k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.0
+    ▪ Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.0
+    ▪ Using image registry.k8s.io/ingress-nginx/controller:v1.0.0-beta.3
+    ▪ Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.0
 🔎  Verifying ingress addon...
 🌟  The 'ingress' addon is enabled
 ```

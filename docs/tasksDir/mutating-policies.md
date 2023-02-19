@@ -58,7 +58,7 @@ metadata:
 spec:
   containers:
     - name: pause
-      image: k8s.gcr.io/pause
+      image: registry.k8s.io/pause
 EOF
 
 # Output
@@ -124,7 +124,7 @@ metadata:
 spec:
   containers:
     - name: pause
-      image: k8s.gcr.io/pause
+      image: registry.k8s.io/pause
 EOF
 
 # Output
