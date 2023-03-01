@@ -4,7 +4,7 @@
   <ShortName>Kubewarden</ShortName>
   <Description>Search Kubewarden</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://docs.kubewarden.io/img/favicon.ico</Image>
+  <Image width="16" height="16" type="image/x-icon">https://docs.kubewarden.io/img/favicon.svg</Image>
   <Url type="text/html" method="get" template="https://docs.kubewarden.io/search?q={searchTerms}"/>
   <Url type="application/opensearchdescription+xml" rel="self" template="https://docs.kubewarden.io/opensearch.xml" />
   <moz:SearchForm>https://docs.kubewarden.io/</moz:SearchForm>
