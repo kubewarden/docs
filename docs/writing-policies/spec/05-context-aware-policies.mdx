@@ -1,0 +1,47 @@
+---
+sidebar_label: "Context Aware Policies"
+title: ""
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Context aware policies
+
+The `policy-server` has capabilities to expose cluster information to
+policies, so that they can take decisions based on other existing
+resources, and not only based on the details provided by the admission request.
+
+The retrieval of Kubernetes resources is performed by the Policy Server hosting the policy.
+Access to Kubernetes is regulated by RBAC rules applied to the Service Account used by the Policy Server.
+
+The `default` Policy Server deployed by Kubewarden helm charts has access to the following Kubernetes resources:
+
+* Namespaces
+* Services
+* Ingresses
+
+:::info
+Access to Kubernetes resources is currently available only to Kubewarden policies written using traditional programming languages. This is not available yet for Rego-based policies.
+:::
+
+:::caution
+The policy server performs caching of the results obtained from the Kubernetes API server to reduce the amount of load of this core piece of Kubernetes.
+That means some information might be stale or missing.
+:::
+
+Language SDK's that support cluster context at this time will expose
+functions that allow policies to retrieve the current state of the
+cluster.
+
+
+<Tabs>
+  <TabItem value="rust" label="Rust SDK" default>
+  See the functions exposing this functionality at the <a href="https://docs.rs/kubewarden-policy-sdk/0.8.7/kubewarden_policy_sdk">Rust SDK reference docs</a>
+  </TabItem>
+  <TabItem value="go" label="Go SDK">
+  See the functions exposing this functionality at the <a href="https://pkg.go.dev/github.com/kubewarden/policy-sdk-go">Go SDK reference docs</a>
+  </TabItem>
+</Tabs>
+
+If you want more information about the WaPC function used by the SDKs, check the [Kubernetes capabilities](/docs/writing-policies/spec/host-capabilities/06-kubernetes.md) reference documentation.

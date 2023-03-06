@@ -105,6 +105,7 @@ module.exports = {
             'testing-policies/cluster-operators',
           ],
         },
+	"explanations/context-aware-policies"
       ],
       collapsed: true,
     },
@@ -159,7 +160,8 @@ module.exports = {
                 'writing-policies/spec/host-capabilities/signature-verifier-policies',
                 'writing-policies/spec/host-capabilities/container-registry',
                 'writing-policies/spec/host-capabilities/net',
-                'writing-policies/spec/host-capabilities/crypto'
+                'writing-policies/spec/host-capabilities/crypto',
+                'writing-policies/spec/host-capabilities/kubernetes'
               ]
             }
           ],
