@@ -35,25 +35,24 @@ prometheus:
           app: kubewarden-policy-server-default
       namespaceSelector:
         matchNames:
-          - kubewarden
+          - cattle-kubewarden-system
       endpoints:
         - port: metrics
           interval: 10s
   annotations: {}
 ```
 
-### 2. Enable telemetry for your `kubewarden-controller` resource
+### 2. Enable telemetry for your `rancher-kubewarden-controller` resource
 
   - Navigate to Apps & Marketplace -> Installed Apps
-  - Select the `Edit/Upgrade` action for your `kubewarden-controller` resource
+  - Select the `Edit/Upgrade` action for your `rancher-kubewarden-controller` resource
   - Edit the YAML for `telemetry` to be `enabled: "true"` and ensure the metrics port is correct
 
 ```yml
 telemetry:
   enabled: True
-policyServer:
-    metrics:
-      port: 8080
+  metrics:
+    port: 8080
 ```
 
 :::note
