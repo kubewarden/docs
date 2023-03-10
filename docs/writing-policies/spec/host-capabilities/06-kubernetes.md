@@ -7,17 +7,17 @@ title: ""
 
 Kubewarden context aware policies requires access to resources from the Kubernetes
 cluster where they are running on. For that, the Kubewarden SDKs expose functions
-that uses the waPC communication protocol to talk with the host system asking for
+that use the waPC communication protocol to talk with the host system asking for
 data about the cluster.
 
 ## waPC protocol contract
 
-Under the hood, the SDKs functions rely on these functions exposed by
+Under the hood, the SDKs rely on these functions exposed by
 the policy host environment:
 
-- `list_resources_by_namespace` : waPC function to request resources information from a given namespace
-- `list_resources_all`: waPC function to request resources information from the whole cluster
-- `get_resource`:  WaPC function to request a resource information by its name
+- `list_resources_by_namespace` : given a resource type and a namespace, list all the resources of that type that are defined inside of it. This cannot be used to list cluster-wide resources, like `Namespace`.
+- `list_resources_all`: given a resource type, list all the resources of that type that are defined inside the whole cluster. This can be used to list cluster-wide resources, like `Namespace`.
+- `get_resource`:  find the exact resource identified by a the given resource type, given name and an optional namespace identifier.
 
 
 This guest-host intercommunication is performed using the regular waPC
