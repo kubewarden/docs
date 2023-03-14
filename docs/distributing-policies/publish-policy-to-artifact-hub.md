@@ -59,12 +59,16 @@ Before publishing the policy, ensure your Git repository has the proper layout.
 If you created the policy using one of our templates, then you have a `make
 artifacthub-pkg.yml` target. Execute that target to generate the
 `artifacthub-pkg.yml` file programmatically from `metadata.yml` and other
-inputs.
+inputs. These target gets called as part as a normal build of a policy, so
+your task is to commit the resulting changes to `artifacthub-pkg.yml`.
 
 The `artifacthub-pkg.yml` contains fields such as `version: `, `createdAt: `,
-that need to match specific format, and be up-to-date. You can enable automated
-checking of the `artifacthub-pkg.yml` file in the provided GitHub workflows.
-Change the `artifacthhub` input variable to `true` in the test.yml workflow:
+that need to match specific format, and be up-to-date.
+
+If you are consuming our GitHub Actions >= `v2`, the wokflows provide by default
+automated checking of the `artifacthub-pkg.yml` file.
+If you are still consuming our GitHub Actions on `v1`, change the `artifacthhub`
+input variable to `true` in the test.yml workflow:
 
 ```diff
 --- # .github/workflows/test.yml
