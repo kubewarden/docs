@@ -55,31 +55,33 @@ Before publishing a policy to Artifact Hub, you must create an account on
 the [website](https://artifacthub.io/).
 
 Before publishing the policy, ensure your Git repository has the proper layout.
+The `artifacthub-pkg.yml` contains fields such as `version: `, `createdAt: `,
+that need to match specific format, and be up-to-date. The format of the
+`artifacthub-pkg.yml` is described
+[here](https://github.com/artifacthub/hub/blob/master/docs/metadata/artifacthub-pkg.yml).
 
 If you created the policy using one of our templates, then you have a `make
 artifacthub-pkg.yml` target. Execute that target to generate the
 `artifacthub-pkg.yml` file programmatically from `metadata.yml` and other
-inputs. These target gets called as part as a normal build of a policy, so
+inputs. This target gets called as part as a normal build of a policy, so
 your task is to commit the resulting changes to `artifacthub-pkg.yml`.
 
-The `artifacthub-pkg.yml` contains fields such as `version: `, `createdAt: `,
-that need to match specific format, and be up-to-date.
+The policy templates make use of our GitHub Actions at
+[github.com/kubewarden/github-actions](https://github.com/kubewarden/github-actions):
+- If you are using the GitHub Actions >= `v2`, the workflows provide by default automated checking of the
+  `artifacthub-pkg.yml` file.
+- If you are still consuming our GitHub Actions on `v1`, change the `artifacthhub`
+  input variable to `true` in the test.yml workflow:
 
-If you are consuming our GitHub Actions >= `v2`, the wokflows provide by default
-automated checking of the `artifacthub-pkg.yml` file.
-If you are still consuming our GitHub Actions on `v1`, change the `artifacthhub`
-input variable to `true` in the test.yml workflow:
+  ```diff
+  --- # .github/workflows/test.yml
+      name: run tests and linters
+      uses: kubewarden/github-actions/.github/workflows/reusable-test-policy-rego.yml@v1
+      with:
+  -      artifacthub: false # change to true to check artifacthub-pkg.yml
+  +      artifacthub: true
+  ```
 
-```diff
---- # .github/workflows/test.yml
-     name: run tests and linters
-     uses: kubewarden/github-actions/.github/workflows/reusable-test-policy-rego.yml@v1
-     with:
--      artifacthub: false # change to true to check artifacthub-pkg.yml
-+      artifacthub: true
-```
-
-The format of the `artifacthub-pkg.yml` is described [here](https://github.com/artifacthub/hub/blob/master/docs/metadata/artifacthub-pkg.yml).
 
 Finally, ensure your policy is published inside of a container registry or on a
 web server.
