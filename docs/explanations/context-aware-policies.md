@@ -12,7 +12,7 @@ deployed in the cluster.
 For example, a policy could cross validate information among two different resources type.
 
 :::caution
-Context aware policies are available only in Kubewarden version vX.X.X or greater.
+Context aware policies are available only in Kubewarden version v1.6.0 or greater.
 :::
 
 
