@@ -29,20 +29,21 @@ To verify a Helm chart, you need `cosign` installed. Then execute the following
 command, for example:
 
 ```
-COSIGN_EXPERIMENTAL=1 cosign verify ghrc.io/kubewarden/charts/kubewarden-controller:0.4.6 | jq
+cosign verify ghrc.io/kubewarden/charts/kubewarden-defaults:1.5.4 \
+  --certificate-identity-regexp 'https://github.com/kubewarden/*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
-Verification for ghcr.io/kubewarden/charts/kubewarden-controller:0.4.6 --
+Verification for ghcr.io/kubewarden/charts/kubewarden-defaults:1.5.4 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
-  - Any certificates were verified against the Fulcio roots.
+  - The code-signing certificate was verified using trusted certificate authority certificates
 
-  <snipped json>
+<snipped json>
 ```
 
-You may either verify manually or with Sigstore tools that the cert in the
-returned json contains the correct issuer, subject, and
-`github_workflow_repository` extensions.
+You can then verify that the cert in the returned json contains the correct
+issuer, subject, and `github_workflow_repository` extensions.
 
 ### Container images & policies referenced in the charts
 
@@ -79,18 +80,21 @@ ghcr.io/kubewarden/kubectl:v1.21.4
 
 Now, for each image in that list you can verify their Sigstore signatures. E.g:
 ```
-COSIGN_EXPERIMENTAL=1 cosign verify ghcr.io/kubewarden/policy-server:v0.3.1 | jq
+cosign verify ghcr.io/kubewarden/policy-server:v1.5.3 \
+  --certificate-identity-regexp 'https://github.com/kubewarden/*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+
+Verification for ghcr.io/kubewarden/policy-server:v1.5.3 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
-  - Any certificates were verified against the Fulcio roots.
+  - The code-signing certificate was verified using trusted certificate authority certificates
 
-  <snipped json>
+<snipped json>
 ```
 
-You can then verify either manually or with Sigstore tools that the cert in the
-returned json contains the correct issuer, subject, and
-`github_workflow_repository` extensions.
+You can then verify that the cert in the returned json contains the correct
+issuer, subject, and `github_workflow_repository` extensions.
 
 
 ## kwctl
@@ -105,31 +109,35 @@ In order to verify kwctl you need cosign installed, and then execute the
 following command:
 
 ```
-COSIGN_EXPERIMENTAL=1 cosign verify-blob  --signature kwctl-linux-x86_64.sig --cert kwctl-linux-x86_64.pem kwctl-linux-x86_64
-```
+cosign verify-blob \
+  --signature kwctl-linux-x86_64.sig \
+  --cert kwctl-linux-x86_64.pem kwctl-linux-x86_64 
+  --certificate-identity-regexp 'https://github.com/kubewarden/*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
-The output should be:
-
-```
-tlog entry verified with uuid: 7e5a4fac8f45cdddeafd6901af566b9576be307a06caa3fbc45f91da102214e0 index: 2435066
 Verified OK
 ```
 
-You can inspect the cert signature yourself to see that indeed was authenticated
-via GitHub OIDC, and performed in our GitHub Actions workflows.
+You can then verify that the cert in the returned json contains the correct
+issuer, subject, and `github_workflow_repository` extensions.
 
 ## Policies
 
 Policies maintained by the Kubewarden team are also signed using the Sigstore project. Similar to
 usual container images, one can verify them using `cosign`:
 ```
-COSIGN_EXPERIMENTAL=1 cosign verify ghcr.io/kubewarden/policies/verify-image-signatures:v0.2.0
+cosign verify ghcr.io/kubewarden/policies/verify-image-signatures:v0.2.5 \
+  --certificate-identity-regexp 'https://github.com/kubewarden/*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
-Verification for ghcr.io/kubewarden/policies/verify-image-signatures:v0.2.0 --
+Verification for ghcr.io/kubewarden/policies/verify-image-signatures:v0.2.5 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
-  - Any certificates were verified against the Fulcio roots.
+  - The code-signing certificate was verified using trusted certificate authority certificates
 
   <snipped json>
 ```
+
+You can then verify that the cert in the returned json contains the correct
+issuer, subject, and `github_workflow_repository` extensions.
