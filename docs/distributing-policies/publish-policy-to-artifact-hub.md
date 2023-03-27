@@ -68,20 +68,13 @@ your task is to commit the resulting changes to `artifacthub-pkg.yml`.
 
 The policy templates make use of our GitHub Actions at
 [github.com/kubewarden/github-actions](https://github.com/kubewarden/github-actions):
-- If you are using the GitHub Actions >= `v2`, the workflows provide by default automated checking of the
-  `artifacthub-pkg.yml` file.
-- If you are still consuming our GitHub Actions on `v1`, change the `artifacthhub`
-  input variable to `true` in the test.yml workflow:
-
-  ```diff
-  --- # .github/workflows/test.yml
-      name: run tests and linters
-      uses: kubewarden/github-actions/.github/workflows/reusable-test-policy-rego.yml@v1
-      with:
-  -      artifacthub: false # change to true to check artifacthub-pkg.yml
-  +      artifacthub: true
-  ```
-
+- If you are using our GitHub Actions >= `v3.1.0`, the workflows provide by
+  default automated checking of the `artifacthub-pkg.yml` file.
+- After a successful release, that is, after the policy has been successfully
+  built, signed, and pushed, our GitHub Actions have a last job that pushes the
+  files needed by Artifact Hub to an orphan `artifacthub` branch. The canonical
+  files are always the ones in the `main` branch, and the GHA job overwrites the
+  ones in `artifacthub` branch every time.
 
 Finally, ensure your policy is published inside of a container registry or on a
 web server.
@@ -101,6 +94,7 @@ Then press the *"Add"* button and fill the form:
   * Choose *"Kubewarden policies"* as kind.
   * Enter a *"Name"* and *"Display name"* of your choice.
   * Enter the URL to your Git repository.
+  * Enter `artifacthub` as the branch to track.
 
 Finally, press the *"Add"* button. This will bring you back to the *"Repositories"*
 page, where you will see your freshly created repository.
