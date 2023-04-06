@@ -31,6 +31,8 @@ The Kubewarden stack can be deployed using `helm` charts as follows:
 ```console
 helm repo add kubewarden https://charts.kubewarden.io
 
+help repo update kubewarden
+
 helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
 
 helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller
