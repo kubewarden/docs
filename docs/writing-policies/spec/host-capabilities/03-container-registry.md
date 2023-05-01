@@ -50,9 +50,7 @@ This is the description of the waPC protocol used to expose this capability:
 <td>
 
 ```hcl
-# OCI URI
-string,
-#JSON encoded string
+# OCI URI - JSON encoded string
 string
 ```
 

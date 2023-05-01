@@ -282,16 +282,22 @@ policy that verifies signatures can use:
   # mandatory: image URI to verify
   "image": string,
   # PEM-encoded certificated used to
-  # verify the signature
-  "certificate": string,
+  # verify the signature.
+  # The certificate is UTF-8 encoded.
+  # It's an array of bytes of the unicode code pointers of a PEM encoded
+  # certificate string.
+  "certificate": [byte(int), ..., byte(int)],
   # Optional - certificate chain used to
   # verify the provided certificate.
   # When not specified, the certificate
-  # is assumed to be trusted
+  # is assumed to be trusted.
+  # The certificate is UTF-8 encoded.
+  # It's an array of bytes of the unicode code pointers of a PEM encoded
+  # certificate string.
   "certificate_chain": [
-    string,
+    [byte(int), ..., byte(int)],
     ...
-    string
+    [byte(int), ..., byte(int)]
   ], 
   # Require the signature layer to have
   # a Rekor bundle.
@@ -346,20 +352,22 @@ Marked for deprecation:
 
 ```hcl
 {
-  # **mandatory**: image URI to verify
-  "image": string,
-  "pub_keys": [
-    # PEM-encoded public keys
-    string
+  "SigstorePubKeyVerify": {
+    # **mandatory**: image URI to verify
+    "image": string,
+    "pub_keys": [
+      # PEM-encoded public keys
+      string
     ],
-  # optional:
-  "annotations": [
+    # optional:
+    "annotations": [
       # signature annotations
       {
         "key": string,
         "value": string
       },
     ]
+  }
 }
 ```
 
@@ -387,25 +395,27 @@ Marked for deprecation:
 
 ```hcl
 {
-  # mandatory: image URI to verify
-  "image": string,
-  "keyless": [
-    # list of (issuer, subject) tuples
-    {
-      # OIDC issuer
-      "issuer": string,
-      # signature subject (mail, CI URL, ...)
-      "subject": string
-    }
-  ],
-  # optional:
-  "annotations": [
-    # signature annotations
-    {
-      "key": string,
-      "value": string
-    },
-  ]
+  "SigstoreKeylessVerify": {
+    # mandatory: image URI to verify
+    "image": string,
+    "keyless": [
+      # list of (issuer, subject) tuples
+      {
+        # OIDC issuer
+        "issuer": string,
+        # signature subject (mail, CI URL, ...)
+        "subject": string
+      }
+    ],
+    # optional:
+    "annotations": [
+      # signature annotations
+      {
+        "key": string,
+        "value": string
+      },
+    ]
+  }
 }
 ```
 
