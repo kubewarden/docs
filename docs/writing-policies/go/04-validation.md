@@ -240,7 +240,7 @@ func TestValidateLabel(t *testing.T) {
 		}
 
 		pod := corev1.Pod{
-			Metadata: metav1.ObjectMeta{
+			Metadata: &metav1.ObjectMeta{
 				Name:      "test-pod",
 				Namespace: "default",
 				Labels:    testCase.podLabels,
