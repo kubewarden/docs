@@ -28,7 +28,12 @@ to manage all the different Jaeger components. The operator can be installed in 
 At the time of writing, only specific versions of Jaeger are compatible with
 Cert Manager, [see the compat chart](https://github.com/jaegertracing/helm-charts/blob/main/charts/jaeger-operator/COMPATIBILITY.md).
 
-To install the Helm chart: (`v2.36.0` at time of writing)
+To install the Helm chart:
+
+:::note
+At time of writing the latest chart version is `2.43.0`
+
+:::
 
 ```console
 helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
@@ -130,7 +135,6 @@ helm install --wait --namespace kubewarden --create-namespace \
   kubewarden-controller kubewarden/kubewarden-controller
 
 helm install --wait --namespace kubewarden --create-namespace \
-  --set policyServer.telemetry.enabled=true \
   kubewarden-defaults kubewarden/kubewarden-defaults
 ```
 
