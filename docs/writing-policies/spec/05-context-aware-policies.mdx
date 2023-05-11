@@ -30,6 +30,55 @@ The policy server performs caching of the results obtained from the Kubernetes A
 That means some information might be stale or missing.
 :::
 
+### ClusterAdmissionPolicies & AdmissionPolicies
+
+Both ClusterAdmissionPolicy & AdmissionPolicy CRD have the field [spec.contextAwareResources](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller/policies.kubewarden.io/ClusterAdmissionPolicy/v1#spec-contextAwareResources). This field provides a list a GroupVersionKind resources that the policy needs to access. This allows policy writers to ship the "permissions" that the policy needs together with the policy. And allows policy operators to review the "permissions" needed by the policy at deployment time.
+
+### Testing context aware policies locally
+
+Apart from running policies in cluster for end-to-end tests, one can use our `kwctl` CLI utility to run policies and mock requests against the cluster.
+
+For that, `kwctl run` can first record all the interactions with the cluster into a file:
+
+```console
+kwctl run \
+    --allow-context-aware \
+    -r request.json \
+    --record-host-capabilities-interactions replay-session.yml \
+    annotated-policy.wasm
+```
+
+which creates the following `replay-session.yml` file:
+
+```yaml
+# replay-session.yml
+---
+- type: Exchange
+  request: |
+    !KubernetesGetResource
+    api_version: /v1
+    kind: Pod
+    name: p-testing
+    namespace: local
+    disable_cache: true
+  response:
+    type: Success
+    payload: '{"apiVersion":"","kind":"Pod", <snipped> }'
+```
+
+With the replay session, one can now mock the cluster interactions without the need
+of a cluster, perfect for CI and end-to-end tests:
+
+```console
+kwctl run \
+    --allow-context-aware \
+    -r request.json \
+    --replay-host-capabilities-interactions replay-session.yml \
+    annotated-policy.wasm
+``` 
+
+### Language SDKs
+
 Language SDK's that support cluster context at this time will expose
 functions that allow policies to retrieve the current state of the
 cluster.
