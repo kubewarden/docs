@@ -63,7 +63,12 @@ inspect which Kubernetes Endpoints are tied to services matching this conditions
 then take care of generating a valid configuration file for Prometheus, and reloading it
 automatically after updating its configuration file.
 
-Install the Prometheus stack Helm Chart (version `40.5.0` at time of writing):
+Install the Prometheus stack Helm Chart :
+
+:::note
+At time of writing the latest chart version is `45.27.1`
+:::
+
 ```console
 helm install --wait --create-namespace \
   --namespace prometheus \
@@ -98,7 +103,7 @@ helm install --wait \
 Now we can deploy the rest of the Kubewarden stack. The official helm
 chart will create a PolicyServer named `default`.
 
-Let's configure the values of the Helm Chart so that we have metrics enabled 
+Let's configure the values of the Helm Chart so that we have metrics enabled
 in Kubewarden. Write the `kubewarden-values.yaml` file with the following contents:
 
 ```yaml
@@ -121,8 +126,7 @@ helm install --wait \
   --create-namespace \
   kubewarden-defaults kubewarden/kubewarden-defaults \
   --set recommendedPolicies.enabled=True \
-  --set recommendedPolicies.defaultPolicyMode=monitor \
-  --set policyServer.telemetry.enabled=True
+  --set recommendedPolicies.defaultPolicyMode=monitor
 ```
 
 This leads to the creation of the `default` instance of `PolicyServer`:
@@ -164,8 +168,8 @@ You can now login with the default username `admin` and password `prom-operator`
 
 The Kubewarden developers made available a Grafana dashboard with some basic metrics
 that give an overview about how Kubewarden behaves inside of cluster. This dashboard
-is available in the Kubewarden repository in a [JSON file](https://raw.githubusercontent.com/kubewarden/policy-server/main/kubewarden-dashboard.json) 
-or in the [Grafana website](https://grafana.com/grafana/dashboards/15314). 
+is available in the Kubewarden repository in a [JSON file](https://raw.githubusercontent.com/kubewarden/policy-server/main/kubewarden-dashboard.json)
+or in the [Grafana website](https://grafana.com/grafana/dashboards/15314).
 
 To import the dashboard into your environment, you can download the JSON file
 from the Grafana website or from the repository:
@@ -185,11 +189,11 @@ Visit `/dashboard/import` in the Grafana dashboard and follow these steps:
 
 Another option is import it directly from the Grafana.com website. For this:
 
-  1. Copy the dashboard ID from the [dashboard page](https://grafana.com/grafana/dashboards/15314), 
+  1. Copy the dashboard ID from the [dashboard page](https://grafana.com/grafana/dashboards/15314),
   2. Paste it in the `Import via grafana.com` field
   3. Click the `load` button.
   4. After importing the dashboard, define the Prometheus data source to use and finish
-the import process. 
+the import process.
 
 You should be able to see the dashboard similar to this:
 
@@ -199,7 +203,7 @@ You should be able to see the dashboard similar to this:
 ![Dashboard 4](/img/grafana_dashboard_4.png)
 
 
-The Grafana dashboard has panes showing the state of all 
+The Grafana dashboard has panes showing the state of all
 the policies managed by Kubewarden. Plus it has policy-specific panels.
 
 Policy detailed metrics can be obtained by changing the value of the `policy_name`

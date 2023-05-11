@@ -93,7 +93,11 @@ to be installed inside of the cluster.
 At the time of writing, only specific versions of OpenTelemetry are compatible
 with Cert Manager, [see the compat chart](https://github.com/open-telemetry/opentelemetry-operator#opentelemetry-operator-vs-kubernetes-vs-cert-manager).
 
-We will install the latest cert-manager Helm chart (`v1.9.1` at time of writing):
+We will install the latest cert-manager Helm chart:
+
+:::note
+At time of writing the latest cert-manager chart version is `v1.11.2`
+:::
 
 ```console
 helm repo add jetstack https://charts.jetstack.io
@@ -105,7 +109,11 @@ helm install --wait \
     cert-manager jetstack/cert-manager
 ```
 
-Once cert-manager is up and running, the OpenTelemetry operator Helm chart (`0.13.0` at time of writing) can be installed in this way:
+Once cert-manager is up and running, the OpenTelemetry operator Helm chart can be installed in this way:
+
+:::note
+At time of writing the latest OpenTelemetry chart version is `0.29.0`
+:::
 
 ```console
 helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
