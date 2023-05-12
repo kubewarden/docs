@@ -32,7 +32,7 @@ That means some information might be stale or missing.
 
 ### ClusterAdmissionPolicies & AdmissionPolicies
 
-Both ClusterAdmissionPolicy & AdmissionPolicy CRD have the field [spec.contextAwareResources](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller/policies.kubewarden.io/ClusterAdmissionPolicy/v1#spec-contextAwareResources). This field provides a list a GroupVersionKind resources that the policy needs to access. This allows policy writers to ship the "permissions" that the policy needs together with the policy. And allows policy operators to review the "permissions" needed by the policy at deployment time.
+Both ClusterAdmissionPolicy & AdmissionPolicy CRD have the field [spec.contextAwareResources](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller/policies.kubewarden.io/ClusterAdmissionPolicy/v1#spec-contextAwareResources). This field provides a list a `GroupVersionKind` resources that the policy needs to access. This allows policy writers to ship the "permissions" that the policy needs together with the policy. And allows policy operators to review the "permissions" needed by the policy at deployment time.
 
 ### Testing context aware policies locally
 
