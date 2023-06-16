@@ -14,7 +14,7 @@ file.
 This can be done with a simple command:
 
 ```shell
-make build
+make policy.wasm
 ```
 
 This command will build the code in release mode, with WebAssembly as
