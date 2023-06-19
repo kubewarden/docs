@@ -5,8 +5,8 @@ title: ""
 
 # Air gap installation
 
-This guide will show you how to install Kubewarden in air-gapped environments. In an air-gapped installation of Kubewarden, 
-you will need a private OCI registry accessible by your Kubernetes cluster. Kubewarden Policies 
+This guide will show you how to install Kubewarden in air-gapped environments. In an air-gapped installation of Kubewarden,
+you will need a private OCI registry accessible by your Kubernetes cluster. Kubewarden Policies
 are WebAssembly modules; therefore, they can be stored inside an OCI-compliant registry as OCI artifacts.
 You need to add Kubewarden's images and policies to this OCI registry. Let's see how to do that.
 
@@ -16,7 +16,7 @@ You need to add Kubewarden's images and policies to this OCI registry. Let's see
 :::note
 Optionally, you can verify the signatures of the [helm charts](../../security/verifying-kubewarden#helm-charts) and [container images](../../security/verifying-kubewarden#container-images)
 :::
-2. Add `cert-manager` if it is not available in your private registry. 
+2. Add `cert-manager` if it is not available in your private registry.
 ```
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
@@ -24,14 +24,14 @@ helm pull jetstack/cert-manager
 helm template ./cert-manager-<Version>.tgz | \
   awk '$1 ~ /image:/ {print $2}' | sed s/\"//g >> ./kubewarden-images.txt
 ```
-3. Download `kubewarden-save-images.sh` and `kubewarden-load-images.sh` from the latest kwctl [release](https://github.com/kubewarden/kwctl/releases).
+3. Download `kubewarden-save-images.sh` and `kubewarden-load-images.sh` from the [utils repository](https://github.com/kubewarden/utils).
 4. Save Kubewarden container images into a .tar.gz file:
 ```
 ./kubewarden-save-images.sh \
   --image-list ./kubewarden-images.txt \
   --images kubewarden-images.tar.gz
 ```
-Docker begins pulling the images used for an air gap install. Be patient. This process takes a few minutes. 
+Docker begins pulling the images used for an air gap install. Be patient. This process takes a few minutes.
 When the process completes, your current directory will output a tarball named `kubewarden-images.tar.gz`. It will be present in the same directory where you executed the command.
 
 ## Save policies in your workstation
@@ -49,9 +49,9 @@ kwctl downloads all the policies and stores them as `kubewarden-policies.tar.gz`
 You need to download the following helm charts in your workstation:
 
 ```
-helm pull kubewarden/kubewarden-crds         
+helm pull kubewarden/kubewarden-crds
 helm pull kubewarden/kubewarden-controller
-helm pull kubewarden/kubewarden-defaults  
+helm pull kubewarden/kubewarden-defaults
 ```
 
 Download `cert-manager` if it is not installed in the air gap cluster.
@@ -72,13 +72,13 @@ to the air gap environment.
   --images kubewarden-images.tar.gz \
   --registry <REGISTRY.YOURDOMAIN.COM:PORT>
 ```
-2. Load Kubewarden policies into the private registry. Kwctl must be authenticated against the local registry (`kwctl` uses the same mechanism to authenticate as `docker`, a `~/.docker/config.json` file)  
+2. Load Kubewarden policies into the private registry. Kwctl must be authenticated against the local registry (`kwctl` uses the same mechanism to authenticate as `docker`, a `~/.docker/config.json` file)
 ```
 ./kubewarden-load-policies.sh \
   --policies-list policies.txt \
   --policies kubewarden-policies.tar.gz \
   --registry <REGISTRY.YOURDOMAIN.COM:PORT> \
-  --sources-path sources.yml 
+  --sources-path sources.yml
 ```
 
 :::caution
@@ -89,9 +89,9 @@ The `sources.yaml` file is needed by kwctl to connect to registries that fall in
 * No TLS termination is done
 
 Please refer to [the section on custom certificate authorities](../../distributing-policies/custom-certificate-authorities.md) in our documentation to learn more about configuring the `sources.yaml` file
-::: 
+:::
 
-## Install Kubewarden 
+## Install Kubewarden
 
 Let's install Kubewarden now that we have everything we need in our private registry. The only difference with a normal
 Kubewarden installation is that we need to change the registry in the container images and policies to our private registry.
@@ -127,13 +127,34 @@ helm install --wait -n kubewarden \
   --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
 ```
 
+:::caution
+To download the recommended policies installed by the `kubewarden-defaults` Helm
+Chart from a registry other than `common.cattle.systemDefaultRegistry`, you can
+utilize the `recommendedPolicies.defaultPoliciesRegistry` configuration. This
+configuration allows users to specify a registry dedicated to pulling the OCI
+artifacts of the policies. It is particularly useful when their container image
+repository does not support OCI artifacts.
+
+To install and wait for the installation to complete, use the following command:
+
+```console
+helm install --wait -n kubewarden \
+  kubewarden-defaults kubewarden-defaults.tgz \
+  --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \
+  --set recommendedPolicies.defaultPoliciesRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
+```
+
+If the `recommendedPolicies.defaultPoliciesRegistry` configuration is not set,
+the `common.cattle.systemDefaultRegistry` will be used as the default registry.
+:::
+
 Finally, we need to configure Policy Server to fetch policies from our private registry. See the [using private registry](../policy-servers/private-registry) section of the docs.
 
 Now we can create Kubewarden policies in our cluster! Policies must be available in your private registry.
 
 ```
-kubectl apply -f - <<EOF                                                                                        
-apiVersion: policies.kubewarden.io/v1      
+kubectl apply -f - <<EOF
+apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
   name: privileged-pods
