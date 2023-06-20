@@ -75,6 +75,12 @@ module.exports = {
             },
             {
               type: 'category',
+              label: 'C#',
+              link: {type: 'doc', id: 'writing-policies/dotnet'},
+              items: []
+            },
+            {
+              type: 'category',
               label: 'Swift',
               link: {type: 'doc', id: 'writing-policies/swift'},
               items: []
