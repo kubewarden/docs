@@ -90,6 +90,12 @@ module.exports = {
               label: 'TypeScript',
               link: {type: 'doc', id: 'writing-policies/typescript'},
               items: []
+            },
+            {
+              type: 'category',
+              label: 'WASI',
+              link: {type: 'doc', id: 'writing-policies/wasi'},
+              items: []
             }
           ]
         },
