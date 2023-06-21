@@ -118,18 +118,18 @@ helm install --wait -n kubewarden \
 ```
 helm install --wait -n kubewarden \
   kubewarden-controller kubewarden-controller.tgz \
-  --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
+  --set global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
 ```
 
 ```
 helm install --wait -n kubewarden \
   kubewarden-defaults kubewarden-defaults.tgz \
-  --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
+  --set global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
 ```
 
 :::caution
 To download the recommended policies installed by the `kubewarden-defaults` Helm
-Chart from a registry other than `common.cattle.systemDefaultRegistry`, you can
+Chart from a registry other than `global.cattle.systemDefaultRegistry`, you can
 utilize the `recommendedPolicies.defaultPoliciesRegistry` configuration. This
 configuration allows users to specify a registry dedicated to pulling the OCI
 artifacts of the policies. It is particularly useful when their container image
@@ -140,12 +140,12 @@ To install and wait for the installation to complete, use the following command:
 ```console
 helm install --wait -n kubewarden \
   kubewarden-defaults kubewarden-defaults.tgz \
-  --set common.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \
+  --set global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \
   --set recommendedPolicies.defaultPoliciesRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
 ```
 
 If the `recommendedPolicies.defaultPoliciesRegistry` configuration is not set,
-the `common.cattle.systemDefaultRegistry` will be used as the default registry.
+the `global.cattle.systemDefaultRegistry` will be used as the default registry.
 :::
 
 Finally, we need to configure Policy Server to fetch policies from our private registry. See the [using private registry](../policy-servers/private-registry) section of the docs.
