@@ -27,7 +27,7 @@ project to implement a bi-directional communication between the
 policy and the policy runtime (`kwctl` or `policy-server`).
 
 There are however some special cases when the waPC project cannot be
-used. In these limited circumstances it's possible to write a policy
+used yet. In these limited circumstances it's possible to write a policy
 just by using the interfaces provided by WASI.
 
 ## Limitations
