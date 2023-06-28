@@ -130,4 +130,6 @@ executionMode: wasi
 
 ## Template project
 
-TODO: create a Go-based template project
+[This GitHub repository](https://github.com/kubewarden/go-wasi-policy-template)
+contains a template of a Go-based policy that leverages the WASI protocol.
+contains a Kubewarden Policy written in Swift.
