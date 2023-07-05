@@ -68,7 +68,7 @@ pulling policy...
 We can now create a scaffold `ClusterAdmissionPolicy` resource:
 
 ```console
-$ kwctl manifest registry://registry.my-company.com/kubewarden/no-default-namespace-gatekeeper:v0.0.1 --type ClusterAdmissionPolicy
+$ kwctl scaffold manifest registry://registry.my-company.com/kubewarden/no-default-namespace-gatekeeper:v0.0.1 --type ClusterAdmissionPolicy
 ---
 apiVersion: policies.kubewarden.io/v1alpha2
 kind: ClusterAdmissionPolicy
