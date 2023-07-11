@@ -115,6 +115,8 @@ module.exports = {
         {
           Comparisons: ["explanations/opa-comparison"],
         },
+	"explanations/context-aware-policies",
+	"explanations/audit-scanner"
       ],
       collapsed: true,
     },
@@ -145,6 +147,7 @@ module.exports = {
             },
           ],
         },
+	"howtos/audit-scanner"
       ],
       collapsed: true,
     },

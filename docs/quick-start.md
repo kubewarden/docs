@@ -57,9 +57,16 @@ helm repo update kubewarden
 
 Install the following Helm charts inside the `kubewarden` namespace in your Kubernetes cluster:
 
-* `kubewarden-crds`, which will register the `ClusterAdmissionPolicy` and `PolicyServer` Custom Resource Definitions
+* `kubewarden-crds`, which will register the `ClusterAdmissionPolicy`,
+  `AdmissionPolicy` and `PolicyServer` Custom Resource Definitions.  As well as
+  the `PolicyReport` Custom Resource Definitions used by the audit scanner
 
-* `kubewarden-controller`, which will install the Kubewarden controller
+* `kubewarden-controller`, which will install the Kubewarden controller and the
+  audit scanner
+:::note
+If you want to disable the audit scanner component. Please check out the audit
+scanner installation [docs page](../howtos/audit-scanner).
+:::
 
 * `kubewarden-defaults`, which will create a `PolicyServer` resource named `default`. It can also install a set of
 recommended policies to secure your cluster by enforcing some best practices.
