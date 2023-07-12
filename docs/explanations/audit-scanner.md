@@ -9,7 +9,7 @@ Beginning with version `v1.7.0`, Kubewarden has a new feature called "Audit Scan
 A new component, called "audit-scanner", constantly checks the resources declared in the
 cluster, flagging the ones that do not adhere with the deployed Kubewarden policies.
 
-Policies evolve over the time: new ones are deployed and the existing ones can be
+Policies evolve over time: new ones are deployed and the existing ones can be
 updated, both in terms of version and configuration settings.
 This can lead to situations where resources already inside of the cluster
 are no longer compliant. The audit scanner feature provides Kubernetes administrators

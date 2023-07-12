@@ -87,12 +87,13 @@ module.exports = {
               items: [],
             },
             {
-              type: "category",
-              label: "WASI",
-              link: { type: "doc", id: "writing-policies/wasi" },
-              items: [],
+              type: 'category',
+              label: 'WASI',
+              link: {type: 'doc', id: 'writing-policies/wasi'},
+              items: []
             },
-          ],
+            "writing-policies/metadata",
+          ]
         },
         {
           type: "category",
