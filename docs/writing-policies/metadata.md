@@ -7,7 +7,7 @@ title: "Policy metadata"
 
 The Kubewarden metadata file, `metadata.yaml`, serves as a vital configuration
 file that contains important information and settings related to the policies
-used within Kubewarden. This documentation aims to provide an overview of the
+used within Kubewarden. This documentation provides an overview of the
 purpose and usage of the metadata file.
 
 The policy `metadata.yaml` file contains defaults for the policy, in addition
