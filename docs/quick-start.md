@@ -69,7 +69,7 @@ scanner installation [docs page](../howtos/audit-scanner).
 :::
 
 * `kubewarden-defaults`, which will create a `PolicyServer` resource named `default`. It can also install a set of
-recommended policies to secure your cluster by enforcing some best practices.
+recommended policies to secure your cluster by enforcing some well known best practices.
 
 ```console
 helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
