@@ -31,6 +31,9 @@ maintenance than regular container images do.
 - [Google Artifact Registry](https://cloud.google.com/artifact-registry). See [here](https://cloud.google.com/anthos-config-management/docs/how-to/sync-oci-artifacts-from-artifact-registry).
 - [Azure Container Registry](https://azure.microsoft.com/en-us/products/container-registry/). See [here](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-oci-artifacts).
 - [Bundle Bar](https://bundle.bar). See [here](https://bundle.bar/docs/#open-container-initiative-oci).
+- [Docker Hub](https://hub.docker.com/). See [here](https://docs.docker.com/docker-hub/oci-artifacts/).
+- [IBM Cloud Container Registry](https://cloud.ibm.com/docs/Registry). See [here](https://cloud.ibm.com/docs/Registry?topic=Registry-registry_helm_charts).
+- [JFrog Artifactory](https://jfrog.com/artifactory/). See [here](https://jfrog.com/help/r/jfrog-artifactory-documentation/docker-registry).
 
 ## Tools that work with OCI registries
 
