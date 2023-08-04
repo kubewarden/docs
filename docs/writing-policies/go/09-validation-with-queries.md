@@ -82,12 +82,9 @@ func validate(payload []byte) ([]byte, error) {
 		// highlight-next-line
 		// NOTE 3
 		validationErr = validateLabel(label, value.String(), &settings)
-		if validationErr != nil {
-			return false
-		}
 
-		// keep iterating
-		return true
+        // keep iterating if there are no errors
+		return validationErr == nil
 	})
 
 	// highlight-next-line
