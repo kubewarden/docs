@@ -25,16 +25,15 @@ Go types. The second approach is described [later](validation-with-queries).
 Relying on Kubernetes objects instead of doing jq-like searches
 leads to bigger WebAssembly modules being produced.
 A policy using Kubernetes objects can be around 1.5 Mb versus the 300 Kb of
-a policy that using gjson.
+a policy that uses gjson.
 
 Leaving the WebAssembly module dimension aside, the policy using Kubernetes
 objects will take significantly more time during its first execution.
-Subsequent invocation will be fast because Kubewarden leverages Wasmtime's
+Subsequent invocations will be fast because Kubewarden leverages Wasmtime's
 cache feature.
-First execution can take approximatively 21 seconds with kwctl, later executions
+The first execution can take approximatively 21 seconds with kwctl, later executions
 take close to 1.5 seconds.
-Kubewarden Policy Server will just have a slower start-up time, policy evaluation
-times is not going to be affected by the usage of Kubernetes objects.
+Kubewarden Policy Server will just have a slower start-up time, policy evaluation times are not going to be affected by the usage of Kubernetes objects.
 :::
 
 ## The `validate` function
@@ -50,7 +49,7 @@ func validate(payload []byte) ([]byte, error) {
 	// NOTE 1
 	// Create a ValidationRequest instance from the incoming payload
 	validationRequest := kubewarden_protocol.ValidationRequest{}
-	err := easyjson.Unmarshal(payload, &validationRequest)
+	err := json.Unmarshal(payload, &validationRequest)
 	if err != nil {
 		return kubewarden.RejectRequest(
 			kubewarden.Message(err.Error()),
@@ -77,7 +76,7 @@ func validate(payload []byte) ([]byte, error) {
 	// Try to create a Pod instance using the RAW JSON we got from the
 	// ValidationRequest.
 	pod := &corev1.Pod{}
-	if err := easyjson.Unmarshal([]byte(podJSON), pod); err != nil {
+	if err := json.Unmarshal([]byte(podJSON), pod); err != nil {
 		return kubewarden.RejectRequest(
 			kubewarden.Message(
 				fmt.Sprintf("Cannot decode Pod object: %s", err.Error())),
@@ -106,13 +105,13 @@ func validate(payload []byte) ([]byte, error) {
 The code has some `NOTE` sections inside of it, let's get through them:
 
 1. We create a `kubewarden_protocol.ValidationRequest` by unmarshaling the
-  JSON payload
+   JSON payload
 2. We create a `Settings` object by using the function we previously defined
-  inside of the `settings.go` file.
+   inside of the `settings.go` file.
 3. We access the raw JSON representation of the Pod that is part of the `ValidationRequest`.
 4. We unmarshal the Pod object
 5. We iterate over the labels of the Pod. We use a new function called `validateLabel`
-  to identify labels that are violating the policy
+   to identify labels that are violating the policy
 
 Let's define the `validateLabel` function at the bottom of the `validate.go` file:
 
@@ -147,13 +146,16 @@ ones:
 package main
 
 import (
+	"regexp"
 	"testing"
 
+	"encoding/json"
+
+	mapset "github.com/deckarep/golang-set/v2"
 	corev1 "github.com/kubewarden/k8s-objects/api/core/v1"
 	metav1 "github.com/kubewarden/k8s-objects/apimachinery/pkg/apis/meta/v1"
 	kubewarden_protocol "github.com/kubewarden/policy-sdk-go/protocol"
 	kubewarden_testing "github.com/kubewarden/policy-sdk-go/testing"
-	"github.com/mailru/easyjson"
 )
 
 func TestValidateLabel(t *testing.T) {
@@ -161,16 +163,16 @@ func TestValidateLabel(t *testing.T) {
 	// NOTE 1
 	cases := []struct {
 		podLabels         map[string]string
-		deniedLabels      []string
-		constrainedLabels map[string]string
+		deniedLabels      mapset.Set[string]
+		constrainedLabels map[string]*RegularExpression
 		expectedIsValid   bool
 	}{
 		{
 			// highlight-next-line
 			// Pod has no labels -> should be accepted
-			podLabels:         make(map[string]string),
-			deniedLabels:      []string{"owner"},
-			constrainedLabels: make(map[string]string),
+			podLabels:         map[string]string{},
+			deniedLabels:      mapset.NewThreadUnsafeSet[string]("owner"),
+			constrainedLabels: map[string]*RegularExpression{},
 			expectedIsValid:   true,
 		},
 		{
@@ -179,8 +181,8 @@ func TestValidateLabel(t *testing.T) {
 			podLabels: map[string]string{
 				"hello": "world",
 			},
-			deniedLabels:      []string{"owner"},
-			constrainedLabels: make(map[string]string),
+			deniedLabels:      mapset.NewThreadUnsafeSet[string]("owner"),
+			constrainedLabels: map[string]*RegularExpression{},
 			expectedIsValid:   true,
 		},
 		{
@@ -189,8 +191,8 @@ func TestValidateLabel(t *testing.T) {
 			podLabels: map[string]string{
 				"hello": "world",
 			},
-			deniedLabels:      []string{"hello"},
-			constrainedLabels: make(map[string]string),
+			deniedLabels:      mapset.NewThreadUnsafeSet[string]("hello"),
+			constrainedLabels: map[string]*RegularExpression{},
 			expectedIsValid:   false,
 		},
 		{
@@ -199,9 +201,11 @@ func TestValidateLabel(t *testing.T) {
 			podLabels: map[string]string{
 				"cc-center": "team-123",
 			},
-			deniedLabels: []string{"hello"},
-			constrainedLabels: map[string]string{
-				"cc-center": `team-\d+`,
+			deniedLabels: mapset.NewThreadUnsafeSet[string]("hello"),
+			constrainedLabels: map[string]*RegularExpression{
+				"cc-center": {
+					Regexp: regexp.MustCompile(`team-\d+`),
+				},
 			},
 			expectedIsValid: true,
 		},
@@ -211,9 +215,11 @@ func TestValidateLabel(t *testing.T) {
 			podLabels: map[string]string{
 				"cc-center": "team-kubewarden",
 			},
-			deniedLabels: []string{"hello"},
-			constrainedLabels: map[string]string{
-				"cc-center": `team-\d+`,
+			deniedLabels: mapset.NewThreadUnsafeSet[string]("hello"),
+			constrainedLabels: map[string]*RegularExpression{
+				"cc-center": {
+					Regexp: regexp.MustCompile(`team-\d+`),
+				},
 			},
 			expectedIsValid: false,
 		},
@@ -223,9 +229,11 @@ func TestValidateLabel(t *testing.T) {
 			podLabels: map[string]string{
 				"owner": "team-kubewarden",
 			},
-			deniedLabels: []string{"hello"},
-			constrainedLabels: map[string]string{
-				"cc-center": `team-\d+`,
+			deniedLabels: mapset.NewThreadUnsafeSet[string]("hello"),
+			constrainedLabels: map[string]*RegularExpression{
+				"cc-center": {
+					Regexp: regexp.MustCompile(`team-\d+`),
+				},
 			},
 			expectedIsValid: false,
 		},
@@ -234,7 +242,7 @@ func TestValidateLabel(t *testing.T) {
 	// highlight-next-line
 	// NOTE 2
 	for _, testCase := range cases {
-		basicSettings := BasicSettings{
+		settings := Settings{
 			DeniedLabels:      testCase.deniedLabels,
 			ConstrainedLabels: testCase.constrainedLabels,
 		}
@@ -247,7 +255,7 @@ func TestValidateLabel(t *testing.T) {
 			},
 		}
 
-		payload, err := kubewarden_testing.BuildValidationRequest(&pod, &basicSettings)
+		payload, err := kubewarden_testing.BuildValidationRequest(&pod, &settings)
 		if err != nil {
 			t.Errorf("Unexpected error: %+v", err)
 		}
@@ -258,17 +266,18 @@ func TestValidateLabel(t *testing.T) {
 		}
 
 		var response kubewarden_protocol.ValidationResponse
-		if err := easyjson.Unmarshal(responsePayload, &response); err != nil {
+		if err := json.Unmarshal(responsePayload, &response); err != nil {
 			t.Errorf("Unexpected error: %+v", err)
 		}
 
 		if testCase.expectedIsValid && !response.Accepted {
-			t.Errorf("Unexpected rejection: msg %s - code %d with test case %v",
-				*response.Message, *response.Code, testCase)
+			t.Errorf("Unexpected rejection: msg %s - code %d with pod labels: %v, denied labels: %v, constrained labels: %v",
+				*response.Message, *response.Code, testCase.podLabels, testCase.deniedLabels, testCase.constrainedLabels)
 		}
 
 		if !testCase.expectedIsValid && response.Accepted {
-			t.Errorf("Unexpected acceptance with test case %v", testCase)
+			t.Errorf("Unexpected acceptance with pod labels: %v, denied labels: %v, constrained labels: %v",
+				testCase.podLabels, testCase.deniedLabels, testCase.constrainedLabels)
 		}
 	}
 }
@@ -280,8 +289,8 @@ holds the data needed by a test case, see `NOTE 1`:
 ```go
 struct {
 		podLabels         map[string]string
-		deniedLabels      []string
-		constrainedLabels map[string]string
+		deniedLabels      mapset.Set[string]
+		constrainedLabels map[string]*RegularExpression
 		expectedIsValid   bool
 }
 ```
@@ -294,25 +303,24 @@ with these input values:
 
 ```go
 {
-  podLabels:         make(map[string]string),
-  deniedLabels:      []string{"owner"},
-  constrainedLabels: make(map[string]string),
+  podLabels:         map[string]string{},
+  deniedLabels:      mapset.NewThreadUnsafeSet[string]("owner"),
+  constrainedLabels: map[string]*RegularExpression{},
   expectedIsValid:   true,
 }
 ```
 
-The test keeps defining new scenarios in this way, until we reach `NOTE 2`. This
-where we iterate over the different test cases and perform the following code:
+The test keeps defining new scenarios in this way until we reach `NOTE 2`.
+This is where we iterate over the different test cases and perform the following code:
 
 1. Create a `BasicSettings` object by using the data provided by the `testCase`
-1. Create a `Pod` object, assign to it the labels defined inside of the `testCase`
-1. Create a `payload` object. This is done using an helper function of the Kubewarden SDK:
-  `kubewarden_testing.BuildValidationRequest`. This function takes as input the object
-  the request is about (the `Pod` in our case) and the object that describes the settings (the
-  `BasicSettings` instance in our case)
-1. Finally, the code invokes our `validate` function and performs a check against its
-  outcome
-
+2. Create a `Pod` object, assign to it the labels defined inside of the `testCase`
+3. Create a `payload` object. This is done using a helper function of the Kubewarden SDK:
+   `kubewarden_testing.BuildValidationRequest`. This function takes as input the object
+   the request is about (the `Pod` in our case) and the object that describes the settings (the
+   `BasicSettings` instance in our case)
+4. Finally, the code invokes our `validate` function and performs a check against its
+   outcome
 
 We can now run all the unit tests, including the one defined inside of `settings_test.go`,
 by using this simple command:
@@ -348,24 +356,23 @@ NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","n
 |
 NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
 |
-    validate_test.go:115: Unexpected acceptance with test case {map[owner:team-kubewarden] [hello] map[cc-center:team-\d+] false}
+    validate_test.go:134: Unexpected acceptance with pod labels: map[owner:team-kubewarden], denied labels: Set{hello}, constrained labels: map[cc-center:team-\d+]
 --- FAIL: TestValidateLabel (0.00s)
 FAIL
 exit status 1
-FAIL	github.com/kubewarden/go-policy-template	0.002s
-make: *** [Makefile:24: test] Error 1
+FAIL    github.com/kubewarden/go-policy-template        0.003s
+make: *** [Makefile:29: test] Error 1
 ```
 
 As we can see all the `Settings` tests are passing, but there's one test case of the
 `TestValidateLabel` that is not:
 
 ```console
-validate_test.go:115: Unexpected acceptance with test case
-{map[owner:team-kubewarden] [hello] map[cc-center:team-\d+] false}
+validate_test.go:134: Unexpected acceptance with pod labels: map[owner:team-kubewarden], denied labels: Set{hello}, constrained labels: map[cc-center:team-\d+]
 ```
 
-In this scenario our policy settings dictate that Pods must have a label with
-key `cc-center` that satisfies the `team-\d+` regular expression.
+In this scenario, our policy settings dictate that Pods must have a label with
+a key `cc-center` that satisfies the `team-\d+` regular expression.
 The Pod being tested doesn't have this label, hence it should be rejected. This
 isn't happening however.
 
@@ -396,7 +403,7 @@ for label, value := range pod.Metadata.Labels {
 }
 ```
 
-Here we iterate over each label to ensure that it is not denied and 
+Here we iterate over each label to ensure that it is not denied and
 that it doesn't violate one of the constraints specified by the user.
 However, we are not making sure that the Pod has all the labels specified inside
 of the `Settings.ConstrainedLabels`.
@@ -405,15 +412,15 @@ Let's add some new code, right after the `for` loop shown above:
 
 ```go
 for requiredLabel := range settings.ConstrainedLabels {
-  _, found := pod.Metadata.Labels[requiredLabel]
-  if !found {
-    return kubewarden.RejectRequest(
-      kubewarden.Message(fmt.Sprintf(
-        "Constrained label %s not found inside of Pod",
-        requiredLabel)
-      ),
-      kubewarden.NoCode)
-    }
+	_, found := pod.Metadata.Labels[requiredLabel]
+	if !found {
+		return kubewarden.RejectRequest(
+			kubewarden.Message(fmt.Sprintf(
+				"Constrained label %s not found inside of Pod",
+				requiredLabel),
+			),
+			kubewarden.NoCode)
+	}
 }
 ```
 
@@ -452,7 +459,7 @@ NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","n
 |
 --- PASS: TestValidateLabel (0.00s)
 PASS
-ok  	github.com/kubewarden/go-policy-template	0.002s
+ok      github.com/kubewarden/go-policy-template        0.003s
 ```
 
 As you can see, this time all the tests are passing.
