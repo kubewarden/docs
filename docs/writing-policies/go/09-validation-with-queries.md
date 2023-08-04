@@ -11,8 +11,8 @@ policy by using Go types that describe Kubernetes objects.
 There is however another way to write validation logic: by extracting the
 relevant data from the JSON document using ad-hoc queries.
 
-This *"jq-like"* approach can be pretty handy when the policy has to look
-deep inside of a Kubernetes object. This is especially helpful when dealing with
+This _"jq-like"_ approach can be pretty handy when the policy has to look
+deep inside a Kubernetes object. This is especially helpful when dealing with
 inner objects that are optional.
 
 This section of the document reimplements the previous code by doing JSON queries
@@ -31,12 +31,12 @@ has to look like:
 
 ```go
 import (
+    "encoding/json"
 	"fmt"
 
-	mapset "github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set/v2"
 	kubewarden "github.com/kubewarden/policy-sdk-go"
 	kubewarden_protocol "github.com/kubewarden/policy-sdk-go/protocol"
-	"github.com/mailru/easyjson"
 	"github.com/tidwall/gjson"
 )
 ```
@@ -47,7 +47,7 @@ The validation function has to be changed to look like that:
 func validate(payload []byte) ([]byte, error) {
 	// Create a ValidationRequest instance from the incoming payload
 	validationRequest := kubewarden_protocol.ValidationRequest{}
-	err := easyjson.Unmarshal(payload, &validationRequest)
+	err := json.Unmarshal(payload, &validationRequest)
 	if err != nil {
 		return kubewarden.RejectRequest(
 			kubewarden.Message(err.Error()),
@@ -72,7 +72,7 @@ func validate(payload []byte) ([]byte, error) {
 		"metadata.labels")
 
 	var validationErr error
-	labels := mapset.NewThreadUnsafeSet()
+	labels := mapset.NewThreadUnsafeSet[string]()
 	data.ForEach(func(key, value gjson.Result) bool {
 		// highlight-next-line
 		// NOTE 2
@@ -117,17 +117,17 @@ start to change only as soon as we reach the `NOTE` sections.
 Let's get through them:
 
 1. We use a `gjson` selector to get the `label` map provided by the object
-  embedded into the request
+   embedded into the request
 2. We use a `gjson` helper to iterate over the results of the query. If the query
-  has no results the loop will never take place.
+   has no results the loop will never take place.
 3. We use the `validateLabel` function to validate the label and its value, like
-  we did before. We're also adding the labels found inside of the Pod to a
-  `mapset.Set` that we previously defined.
+   we did before. We're also adding the labels found inside of the Pod to a
+   `mapset.Set` that we previously defined.
 4. If the validation produced an error, we immediately return with a validation
-  rejection reply.
+   rejection reply.
 5. Like before, we iterate over the `constrainedLabels` to make sure all of them
-  have been specified inside of the Pod. The code has been slightly changed
-  to make use of the `mapset.Set` object we previously populated.
+   have been specified inside of the Pod. The code has been slightly changed
+   to make use of the `mapset.Set` object we previously populated.
 
 ## Testing the validation code
 
@@ -170,15 +170,17 @@ This is the output we will get:
 
 ```shell
 bats e2e.bats
+e2e.bats
  ✓ accept when no settings are provided
+ ✓ accept because label is satisfying a constraint
+ ✓ accept labels are not on deny list
  ✓ reject because label is on deny list
  ✓ reject because label is not satisfying a constraint
  ✓ reject because constrained label is missing
- ✓ accept because label is satisfying a constraint
  ✓ fail settings validation because of conflicting labels
  ✓ fail settings validation because of invalid constraint
 
-7 tests, 0 failures
+8 tests, 0 failures
 ```
 
 Again, all the tests are working as expected.
