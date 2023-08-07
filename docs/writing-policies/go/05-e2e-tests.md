@@ -6,22 +6,21 @@ title: ""
 # End-to-end testing
 
 So far we have tested the policy using a set of Go unit tests. This section shows
-how we can write end-to-end test that run tests against the actual WebAssembly
+how we can write end-to-end tests that run against the actual WebAssembly
 binary produced by TinyGo.
 
 ## Prerequisites
 
 These tools need to be installed on your development machine:
 
-* docker or another container engine: used to build the WebAssembly
+- docker or another container engine: used to build the WebAssembly
   policy. We will rely on the compiler shipped within the official
   TinyGo container image.
-* [bats](https://github.com/bats-core/bats-core): used to write the
+- [bats](https://github.com/bats-core/bats-core): used to write the
   tests and automate their execution.
-* [kwctl](https://github.com/kubewarden/kwctl/releases): CLI tool
+- [kwctl](https://github.com/kubewarden/kwctl/releases): CLI tool
   provided by Kubewarden to run its policies outside of Kubernetes,
-  among other actions. This is covered in depth inside of [this
-  section](/testing-policies/01-intro.md) of the documentation.
+  among other actions. This is covered in depth inside of [this section](/testing-policies/01-intro.md)](/testing-policies/01-intro.md) of the documentation.
 
 ## Writing tests
 
@@ -30,13 +29,13 @@ automate our tests. Each test will be composed by the following steps:
 
 1. Run the policy using `kwctl`.
 1. Perform some assertions against the output produced by the
-  `kwctl`.
+   `kwctl`.
 
-All the end-to-end tests are located inside of a file called `e2e.bats`. The
+All the end-to-end tests are located inside a file called `e2e.bats`. The
 scaffolded project already includes such a file. We will just change its
 contents to reflect how our policy behaves.
 
-As a final note, the end-to-end tests we will use the same test fixtures files
+As a final note, for the end-to-end tests, we will use the same test fixtures files
 we previously used inside of the Go unit tests.
 
 The first test ensures a request is approved when no settings are provided:
@@ -184,7 +183,7 @@ with the following tests:
   echo "output = ${output}"
 
   [ $(expr "$output" : '.*"valid":false.*') -ne 0 ]
-  [ $(expr "$output" : ".*Provided settings are not valid: Cannot compile regexp.*") -ne 0 ]
+  [ $(expr "$output" : ".*Provided settings are not valid: error parsing regexp.*") -ne 0 ]
 }
 ```
 
@@ -196,13 +195,15 @@ tests:
 ```shell
 $ make e2e-tests
 bats e2e.bats
+e2e.bats
  ✓ accept when no settings are provided
+ ✓ accept because label is satisfying a constraint
+ ✓ accept labels are not on deny list
  ✓ reject because label is on deny list
  ✓ reject because label is not satisfying a constraint
  ✓ reject because constrained label is missing
- ✓ accept because label is satisfying a constraint
  ✓ fail settings validation because of conflicting labels
  ✓ fail settings validation because of invalid constraint
 
-7 tests, 0 failures
+8 tests, 0 failures
 ```

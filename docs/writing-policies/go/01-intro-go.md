@@ -5,7 +5,7 @@ title: ""
 
 :::note
 Go's support for WebAssembly is fast evolving. The contents
-of this page were written during April 2021, hence they could be outdated.
+of this page were written during June 2023, hence they could be outdated.
 :::
 
 # Go
@@ -32,8 +32,8 @@ binaries that can be used by Kubewarden. This compiler is called [TinyGo](https:
 
 TinyGo doesn't yet support all the Go features (see [here](https://tinygo.org/lang-support/)
 to see the current project status). Currently its biggest limitation
-is the lack of a fully supported `reflect` package. That leads to the inability to use
-the `encoding/json` package against structures and user defined types.
+is the lack of a fully supported `reflect` package. That leads to the inability to compile
+official Kubernetes Go API types (e.g.: `k8s.io/api/core/v1`).
 
 Kubewarden policies need to process JSON data like the policy settings and
 the actual request received by Kubernetes.
@@ -43,23 +43,25 @@ Kubewarden validation policies with it.
 
 ## Tooling
 
-Writing Kubewarden policies requires a version of TinyGo greater than `0.23.0`.
+Writing Kubewarden policies requires a version of TinyGo greater than `v0.28.1`.
+
+:::warning
+Using an older version of TinyGo will result in runtime errors due to the limited support for Go reflection.
+:::
 
 These Go libraries are extremely useful when writing a Kubewarden policy:
 
-* [Kubewarden Go SDK](https://github.com/kubewarden/policy-sdk-go): provides a series of
+- [Kubewarden Go SDK](https://github.com/kubewarden/policy-sdk-go): provides a series of
   structures and functions that reduce the amount of code to write. It also provides test helpers.
-* [Kubernetes Go types](https://github.com/kubewarden/k8s-objects): The
+- [Kubernetes Go types](https://github.com/kubewarden/k8s-objects): The
   [official Kubernetes Go Types](https://github.com/kubernetes/kubernetes/tree/master/staging/src/k8s.io)
   cannot be used with TinyGo. This module provides all the
   Kubernetes Types in a TinyGo-friendly way.
-* [easyjson](https://github.com/mailru/easyjson/): This provides a way to marshal and unmarshal
-  Go types without using reflection.
-* [gjson](https://github.com/tidwall/gjson): It provides a powerful query language that allows
+- [gjson](https://github.com/tidwall/gjson): It provides a powerful query language that allows
   quick navigation of JSON documents and data retrieval. This library doesn't use the
   `encoding/json` package provided by Go's stdlib, hence it's usable with TinyGo.
-* [mapset](https://github.com/deckarep/golang-set): provides a Go implementation of the
-  [Set](https://en.wikipedia.org/wiki/Set_(abstract_data_type))
+- [mapset](https://github.com/deckarep/golang-set): provides a Go implementation of the
+  [Set](<https://en.wikipedia.org/wiki/Set_(abstract_data_type)>)
   data structure. This library significantly reduces the amount of code to be written,
   that's because operations like Set `union`, `intersection`, `difference` are pretty frequent inside
   of policies.
@@ -77,7 +79,3 @@ builds from the development branch are automatically pushed
 
 If needed, checkout TinyGo's [getting started](https://tinygo.org/getting-started/) page for
 more information.
-
-:::note
-Kubewarden is compatible with all versions of **TinyGo** after and including 0.23.
-:::
