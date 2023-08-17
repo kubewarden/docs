@@ -8,8 +8,12 @@ keywords: [Kubewarden, installation, quick start, policyserver, clusteradmission
 
 The Kubewarden stack comprises:
 
-* Some `ClusterAdmissionPolicy` resources: this is how policies are defined inside Kubernetes
+* Some `ClusterAdmissionPolicy` resources: this is how policies are defined inside Kubernetes clusters
+
 * Some `PolicyServer` resources: representing a deployment of a Kubewarden `PolicyServer`. Your administrator's policies are loaded and evaluated by the Kubewarden `PolicyServer`
+
+* Some `AdmissionPolicy` resources: policies for a named namespace
+
 * A deployment of a `kubewarden-controller`: this controller monitors the `ClusterAdmissionPolicy` resources and interacts with the Kubewarden `PolicyServer` components.
 
 ## Installation
