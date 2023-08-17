@@ -8,8 +8,7 @@ title: ""
 
 Kubewarden is a [Kubernetes Dynamic Admission
 Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)
-that validates incoming requests using policies written in
-WebAssembly.
+that validates incoming requests against WebAssembly policies. The policies can be developed in any programming language that generates WebAssembly binaries.
 
 ## What is WebAssembly?
 
