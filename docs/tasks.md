@@ -1,6 +1,8 @@
 ---
 sidebar_label: "Common tasks"
 title: "Common tasks"
+description: Description of some common tasks undertaken after installing Kubewarden. Provides examples of these tasks using kwctl
+keywords: [kubewarden, kubernetes, kwctl, policy, policyserver, clusteradmissionpolicy, admissionpolicy]
 ---
 
 This describes tasks that can be performed after you [install Kubewarden](/quick-start.md#install) in your Kubernetes cluster.
