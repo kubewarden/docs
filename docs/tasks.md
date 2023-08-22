@@ -230,7 +230,11 @@ After you have generated the `ClusterAdmissionPolicy` and applied it to your clu
       mutating: false
     ```
   
-    > TIP: By default, the `name` value is set to `generated-policy`. You might want to edit it before you deploy the `ClusterAdmissionPolicy`. The name in the immediately previous example has been set to `privileged-pods`.
+    :::tip
+    By default, the `name` value is set to `generated-policy`.
+    You might want to edit it before you deploy the `ClusterAdmissionPolicy`.
+    The name in the immediately previous example has been set to `privileged-pods`.
+    :::
   
   - Deploy the `ClusterAdmissionPolicy` to your Kubernetes cluster
 
