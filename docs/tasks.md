@@ -39,7 +39,7 @@ You can use `kwctl` to help in these scenarios:
 *As a policy author*
 
 - *End-to-end testing of your policy*: Test your policy against crafted Kubernetes requests and ensure your policy behaves as you expect. You can even test context-aware policies that require access to a running cluster.
-- *Embed metadata in your Wasm module*: the binary contains annotations of the permissions it needs to be executed. <!--TODO: What does this mean?-->
+- *Embed metadata in your Wasm module*: the binary contains annotations of the permissions it needs to be executed. You can inspect and modify these annotations with `kwctl`.
 - *Publish policies to OCI registries*: The binary is a fully compliant OCI object and can be stored in OCI registries.
 
 *As a cluster administrator*
@@ -50,9 +50,7 @@ You can use `kwctl` to help in these scenarios:
 
 #### Installation
 
-`kwctl` binaries for the stable releases are available from the [GitHub repository](https://github.com/kubewarden/kwctl/releases).
-
-> **NOTE**: If you want to build `kwctl` from the development branch, you need a [Rust](https://www.rust-lang.org/tools/install) development environment. To build `kwctl`, refer to the "Build kwctl from source" section in the [GitHub repo](https://github.com/kubewarden/kwctl).  <!--FIXME: Can't find this section.-->
+`kwctl` binaries for the stable releases are available from the [GitHub repository](https://github.com/kubewarden/kwctl/releases).  To build `kwctl` from the GitHub [repo](https://github.com/kubewarden/kwctl), you will need a [Rust](https://www.rust-lang.org/tools/install) development environment.
 
 #### Usage
 
