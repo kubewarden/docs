@@ -1,45 +1,45 @@
 ---
-sidebar_label: "Common Tasks"
-title: ""
+sidebar_label: "Common tasks"
+title: "Common tasks"
 ---
 
-# Common Tasks
+This describes tasks that can be performed after you [install Kubewarden](/quick-start.md#install) in your Kubernetes cluster.
 
-This page lists a set of tasks that can be performed after you [install Kubewarden](/quick-start.md#install) in your Kubernetes cluster.
-
-Each task can be done separately; however, if you're not familiar with Kubewarden, or Kubernetes policies in general, we recommend that you follow the tasks below in sequential order.
+Each task can be done separately; they are show here in a logical ordering.
 
 ## Test Policies
 
-Kubewarden has two main tools to help you find policies and test them locally:
+Kubewarden has two tools to help you find policies and test them locally:
 
-- [Kubewarden Policy Hub](https://hub.kubewarden.io/)
+- [Artifact Hub](https://artifacthub.io/packages/search?kind=13&sort=relevance&page=1) using their package filter for Kubewarden policies.
 - [`kwctl`](https://github.com/kubewarden/kwctl) CLI tool
 
-### Kubewarden Policy Hub
+### Artifact hub
 
-The Kubewarden Policy Hub hosts policies contributed by the community. For example, you can find substitutes to the [deprecated Kubernetes Pod Security Policies](https://kubernetes.io/blog/2021/04/06/podsecuritypolicy-deprecation-past-present-and-future/), created by the Kubewarden developers. 
+Artifact hub hosts policies contributed by the community. For example, you can find substitutes to the [deprecated Kubernetes Pod Security Policies](https://kubernetes.io/blog/2021/04/06/podsecuritypolicy-deprecation-past-present-and-future/), created by the Kubewarden developers.
 
-As shown in the picture below, once you find the policy to be tested, you can copy the registry path<sup>1</sup> or download<sup>2</sup> the `Wasm` binary containing the policy and additional metadata:
+As shown in the screenshot below, once you find a policy of interest, select the `Install` button and use `kwctl` to fetch the policy for your cluster.
 
-![Kubewarden Policy Hub](/img/tasks-policy-hub.png)
+![Artifact Hub](/img/tasks-artifact-hub.png)
 
-Once you have the policy `Wasm` binary or the registry path, you can test it with `kwctl`.
+:::note
+Previously, Kubewarden policies could be found at the [Kubewarden Policy Hub](https://hub.kubewarden.io). This has been [retired](https://www.kubewarden.io/blog/2022/07/artifact-hub-supports-kubewarden/). Policies are now available from [https://artifacthub.io](https://artifacthub.io/packages/search?kind=13&sort=relevance&page=1).
+:::
 
 ### `kwctl` CLI tool
 
-`kwctl` is a Command Line Interface (CLI) tool that will allow both the policy authors and the cluster administrators to test policies before they are applied to the Kubernetes cluster.
+`kwctl` is our CLI tool for policy authors and the cluster administrators to test policies before they are applied to the Kubernetes cluster.
 
-The user experience (UX) of this tool is intended to be easy and intuitive like the `docker` CLI tool. 
+This tool has a similar interface to the `docker` CLI tool.
 
 #### Use cases
 
-Depending on your role, `kwctl` will help you in the following non-exhaustive scenarios:
+You can use `kwctl` to help in these scenarios:
 
 *As a policy author*
 
 - *End-to-end testing of your policy*: Test your policy against crafted Kubernetes requests and ensure your policy behaves as you expect. You can even test context-aware policies that require access to a running cluster.
-- *Embed metadata in your Wasm module*: the binary contains annotations of the permissions it needs to be executed
+- *Embed metadata in your Wasm module*: the binary contains annotations of the permissions it needs to be executed. <!--TODO: What does this mean?-->
 - *Publish policies to OCI registries*: The binary is a fully compliant OCI object and can be stored in OCI registries.
 
 *As a cluster administrator*
@@ -50,13 +50,11 @@ Depending on your role, `kwctl` will help you in the following non-exhaustive sc
 
 #### Installation
 
-`kwctl` binaries for the stable releases are directly available from the [GitHub repository](https://github.com/kubewarden/kwctl/releases).
+`kwctl` binaries for the stable releases are available from the [GitHub repository](https://github.com/kubewarden/kwctl/releases).
 
-> **NOTE**: If you want to build `kwctl` from the development branch, you need to install [Rust](https://www.rust-lang.org/tools/install). And for building `kwctl`, please refer to the `Build kwctl from source` section in the [GitHub repo](https://github.com/kubewarden/kwctl).
+> **NOTE**: If you want to build `kwctl` from the development branch, you need a [Rust](https://www.rust-lang.org/tools/install) development environment. To build `kwctl`, refer to the "Build kwctl from source" section in the [GitHub repo](https://github.com/kubewarden/kwctl).  <!--FIXME: Can't find this section.-->
 
 #### Usage
-
-As stated above, `kwctl` will allow you to perform an end-to-end testing of the policies.
 
 You can list all the `kwctl` options and subcommands by running the following command:
 
@@ -89,7 +87,7 @@ SUBCOMMANDS:
     verify         Verify a Kubewarden policy from a given URI using Sigstore
 ```
 
-Here are a few examples of the commands you should run, depending on the task you want to perform:
+Here are a few command usage examples:
 
 - *List the policies*: lists all the policies stored in the local `kwctl` registry
 
@@ -153,7 +151,7 @@ Here are a few examples of the commands you should run, depending on the task yo
 
 - *Evaluate the policy*: Assess the policy and, if available, find the right configuration values to match your requirements.
 
-  > NOTE: Familiarity with [Kubernetes REST APIs](https://kubernetes.io/docs/reference/) is a prerequisite.
+  You will need some familiarity with the [Kubernetes REST APIs](https://kubernetes.io/docs/reference/).
 
   - Command: `kwctl run -r <"Kubernetes Admission request" file path> -s <"JSON document" file path> <policy URI>`
 
@@ -197,15 +195,15 @@ Here are a few examples of the commands you should run, depending on the task yo
   
     - Result: The policy denies the request
   
-    > **NOTE**: If you want to see a more complex example, you can read the Kubewarden blog post [Introducing `kwctl` to Kubernetes Administrators](https://www.kubewarden.io/blog/2021/06/kwctl-intro-for-kubernetes-administrators/).
+    For some more complex examples, see the blog post [Introducing `kwctl` to Kubernetes Administrators](https://www.kubewarden.io/blog/2021/06/kwctl-intro-for-kubernetes-administrators/).
   
 ## Enforce Policies
 
-As described in the [Quick Start](/quick-start.md#example-enforce-your-first-policy), you can enforce a policy by defining a `ClusterAdmissionPolicy` and then deploy it to your cluster using `kubectl`.
+You enforce a policy by defining a `ClusterAdmissionPolicy` and then deploy it to your cluster using `kubectl`.
 
-`kwctl` will help to generate a `ClusterAdmissionPolicy` from the policy you want to enforce. 
+`kwctl` helps generate a `ClusterAdmissionPolicy` from the policy you want to enforce.
 
-After you have generated the `ClusterAdmissionPolicy` and applied it to your Kubernetes cluster, you can follow the steps described in the [Quick Start](/quick-start.md#example-enforce-your-first-policy) below:
+After you have generated the `ClusterAdmissionPolicy` and applied it to your cluster, you can follow the steps described in the [Quick Start](/quick-start.md#example-enforce-your-first-policy) below:
 
   - Generate the `ClusterAdmissionPolicy` from the policy `manifest` and save it to a file
   
@@ -234,9 +232,7 @@ After you have generated the `ClusterAdmissionPolicy` and applied it to your Kub
       mutating: false
     ```
   
-    > TIP: By default, the `name` value is set to `generated-policy`. You might want to edit it before you deploy the `ClusterAdmissionPolicy`. 
-    >
-    > NOTE: To avoid confusion, the value above has been set to `privileged-pods`.
+    > TIP: By default, the `name` value is set to `generated-policy`. You might want to edit it before you deploy the `ClusterAdmissionPolicy`. The name in the immediately previous example has been set to `privileged-pods`.
   
   - Deploy the `ClusterAdmissionPolicy` to your Kubernetes cluster
 
@@ -248,14 +244,10 @@ After you have generated the `ClusterAdmissionPolicy` and applied it to your Kub
     clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
     ```
 
-Once the `ClusterAdmissionPolicy` is deployed, the requests sent to your Kubernetes cluster will be evaluated by the policy if they're within the policy scope.
+After the `ClusterAdmissionPolicy` is deployed, all requests sent to your cluster will be evaluated by the policy if they're within the policy scope.
 
 ## Next steps
 
-### Write Policies
+- [Writing Policies](/writing-policies/) explains how to write policies in different languages and generate Webassembly binaries so they can be used by Kubewarden.
 
-The [Writing Policies](/writing-policies/) section explains how to write policies in different languages and how to export them into Webassembly so that they can be interpreted by Kubewarden.
-
-### Distribute Policies
-
-The [Distributing Policies](/distributing-policies/) section explains how to publish policies to [OCI registries](https://github.com/opencontainers/distribution-spec/blob/main/spec.md).
+- [Distributing Policies](/distributing-policies/) explains how to publish policies to [OCI registries](https://github.com/opencontainers/distribution-spec/blob/main/spec.md).
