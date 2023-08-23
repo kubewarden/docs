@@ -1,13 +1,13 @@
 ---
 sidebar_label: "Mutating Policies"
-title: ""
+title: "Mutating policies"
 ---
 
-# Mutating policies
+A mutating policy will rebuild the requests with defined values that comply with the policy definition.
+If you want to allow the behavior of mutating requests, set the `ClusterAdmissionPolicy.mutating` field to `true`.
 
-A mutating policy will rebuild the requests with definied values that are conformant with the policy definition. If you want allow the behavior of mutating requests, you need to set the `ClusterAdmissionPolicy.mutating` filed to `true`.
-
-However, if you set the `ClusterAdmissionPolicy.mutating` field to `false`, the mutated requests will be rejected. For example, create the following `ClusterAdmissionPolicy` with the `mutating` field set to `true`:
+However, if you set the `ClusterAdmissionPolicy.mutating` field to `false`, the mutated requests will be rejected.
+For example, create the following `ClusterAdmissionPolicy` with the `mutating` field set to `true`:
 
 ```bash
 # Command
@@ -131,4 +131,4 @@ EOF
 Error from server: error when creating ".\\pause-user-group.yaml": admission webhook "psp-user-group.kubewarden.admission" denied the request: Request rejected by policy psp-user-group. The policy attempted to mutate the request, but it is currently configured to not allow mutations.
 ```
 
-As a conclusion, you can see that Kubewarden allows you to replicate the exact same behavior as the deprecated Kubernetes Pod Security Polices (PSP).
+In conclusion, you can see Kubewarden replicates the same behavior as the deprecated Kubernetes Pod Security Polices (PSP).
