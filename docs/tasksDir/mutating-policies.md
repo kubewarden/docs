@@ -1,6 +1,8 @@
 ---
 sidebar_label: "Mutating Policies"
 title: "Mutating policies"
+description: Explains mutating policies in the context of Kubewarden
+keywords: [kubewarden policy mutating kubernetes clusteradmissionpolicy admissionpolicy]
 ---
 
 A mutating policy will rebuild the requests with defined values that comply with the policy definition.
