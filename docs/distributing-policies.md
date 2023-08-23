@@ -1,4 +1,9 @@
-# Distributing Policies
+---
+sidebar_label: "Distributing policies"
+title: Distributing policies
+description: A description of how Kubewarden policies are distributed from OCI compliant repositories.
+keywords: [oci, kubewarden, policy]
+---
 
 Kubewarden policies are Wasm binaries that are evaluated by the
 Kubewarden Policy Server.
@@ -6,47 +11,49 @@ Kubewarden Policy Server.
 The Kubewarden policy server can load policies from these
 sources:
 
-  * Local filesystem
-  * HTTP(s) server
-  * OCI compliant registry like [Distribution](https://github.com/distribution/distribution)
-    and other container registries (GitHub container registry, Azure Container
-    Registry, Amazon ECR, Google Container Registry, ...)
+- Local filesystem
+- HTTP(s) server
+- OCI compliant registries:
+  - [Distribution](https://github.com/distribution/distribution)
+  - [GitHub container registry](https://ghcr.io)
+  - [Azure container registry](https://azure.microsoft.com/en-us/products/container-registry/)
+  - [Amazon ECR](https://aws.amazon.com/ecr/)
+  - [Google container registry](https://cloud.google.com/artifact-registry/)
 
 We think distributing Kubewarden policies via a regular OCI compliant
-registry is the best choice. Container registries are basically a
-mandatory requirement for any Kubernetes cluster. Having a single
-place to store, and secure, all the artifacts required by a cluster
-can be really handy.
+registry is the best choice.
+Container registries are a
+mandatory requirement for any Kubernetes cluster.
+Having a single
+place to store, and secure, all the artifacts required by a cluster is beneficial.
 
 # Pushing policies to an OCI compliant registry
 
+<!--TODO: This has been archived so I need to revisit this with someone.-->
 The [OCI Artifacts](https://github.com/opencontainers/artifacts)
-specification allows to store any kind of binary blob inside of a
+specification allows to store any kind of binary blob inside a
 regular OCI compliant container registry.
 
-The target OCI compliant registry **must support artifacts** in order
-to successfully push a Kubewarden Policy to it.
+The target OCI compliant registry **must support artifacts** to successfully push a Kubewarden Policy to it.
 
-The [`kwctl`](https://github.com/kubewarden/kwctl) command line tool
+The [`kwctl`](https://github.com/kubewarden/kwctl) CLI tool
 can be used to push a Kubewarden Policy to an OCI compliant registry.
 
 ## Annotating the policy
 
-Annotating a policy is done by the `kwctl` CLI tool as well. The
+Annotating a policy is also done with the `kwctl`. The
 process of annotating a Kubewarden policy is done by adding
 WebAssembly custom sections to the policy binary. This means that the
-policy metadata travels with the policy itself.
+policy metadata is packaged with the policy itself.
 
 The `kwctl annotate` command needs two main inputs:
 
-* The Kubewarden policy to be annotated, in the form of a local file
-  in the filesystem.
+* the Kubewarden policy to annotate, a local file in the filesystem.
 
-* The annotations file, a file containing a YAML with the policy
-  metadata. This file is located somewhere in your filesystem, usually
-  in the root project of your policy.
+* the annotations file, a file containing a YAML description of the policy metadata.
+This file is usually located root project folder of your policy.
 
-An example follows; we save this file as `metadata.yml` in the current
+For example, we save this file as `metadata.yml` in the current
 directory:
 
 ```yaml
@@ -83,13 +90,14 @@ $ kwctl annotate policy.wasm \
     --output-path annotated-policy.wasm
 ```
 
-This process performs some optimizations on the policy, so it's not
-uncommon to end up with a smaller annotated policy than the original
-one. This depends a lot on the toolchain that was used to produce the
-unannotated WebAssembly object.
+This process performs some optimizations on the policy, so often
+the annotated policy is smaller than the original.
+It depends considerably on the toolchain that was used to produce the
+original WebAssembly object.
 
-You can check with `kwctl inspect` that everything looks correct:
+You can check with `kwctl inspect` that everything is correct:
 
+<!--TODO: An actual example here? What to look for when correct/incorrect?-->
 ```shell
 $ kwctl inspect annotated-policy.wasm
 # here you will see a colored output of the metadata you provided on the `metadata.yml` file. This information is now read from the WebAssembly custom sections
@@ -97,13 +105,14 @@ $ kwctl inspect annotated-policy.wasm
 
 ## Pushing the policy
 
-Pushing an annotated policy can be done in this way:
+Pushing an annotated policy can be done like this:
 
 ```shell
 $ kwctl push annotated-policy.wasm \
               <oci-registry>/kubewarden-policies/palindromify-policy:v0.0.1
 ```
 
+<!--TODO: A why or a reference would be good for this next paragraph.-->
 It is discouraged to push unannotated policies. This is why by default
 `kwctl push` will reject to push such a policy to an OCI registry. If
 you really want to push an unannotated policy you can use the
