@@ -113,7 +113,7 @@ $ kwctl push annotated-policy.wasm \
 ```
 
 <!--TODO: A why or a reference would be good for this next paragraph.-->
-It is discouraged to push unannotated policies. This is why by default
+It is discouraged to push unannotated policies. This is why, by default,
 `kwctl push` will reject to push such a policy to an OCI registry. If
 you really want to push an unannotated policy you can use the
 `--force` flag of `kwctl push`.
