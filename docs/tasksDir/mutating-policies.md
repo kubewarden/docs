@@ -5,10 +5,13 @@ description: Explains mutating policies in the context of Kubewarden
 keywords: [kubewarden policy mutating kubernetes clusteradmissionpolicy admissionpolicy]
 ---
 
-A mutating policy will rebuild the requests with defined values that comply with the policy definition.
-If you want to allow the behavior of mutating requests, set the `ClusterAdmissionPolicy.mutating` field to `true`.
+A mutating policy will rebuild the requests with
+defined values that comply with the policy definition.
+If you want to allow the behavior of mutating requests,
+set the `ClusterAdmissionPolicy.mutating` field to `true`.
 
-However, if you set the `ClusterAdmissionPolicy.mutating` field to `false`, the mutated requests will be rejected.
+However, if you set the `ClusterAdmissionPolicy.mutating` field to `false`,
+the mutated requests will be rejected.
 For example, create the following `ClusterAdmissionPolicy` with the `mutating` field set to `true`:
 
 ```bash
@@ -46,7 +49,8 @@ EOF
 clusteradmissionpolicy.policies.kubewarden.io/psp-user-group created
 ```
 
-The [`psp-user-group`](https://github.com/kubewarden/user-group-psp-policy) policy is used to control users and groups in containers and can mutate the requests. In the example above, the `runAsUser` field is set and it will be added to the container `securityContext` section. 
+The [`psp-user-group`](https://github.com/kubewarden/user-group-psp-policy) policy is used to control users and groups in containers and can mutate the requests.
+In the example above, the `runAsUser` field is set and it will be added to the container `securityContext` section.
 
 As the `mutating` field is set to `true`, the following request will be applied successfully:
 
@@ -66,7 +70,6 @@ EOF
 # Output
 pod/pause-user-group created
 ```
-
 Once the request is applied, you can see the results of the container's `securityContext`:
 
 ```bash
