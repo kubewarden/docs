@@ -30,7 +30,7 @@ place to store, and secure, all the artifacts required by a cluster is beneficia
 # Pushing policies to an OCI compliant registry
 
 <!--TODO: This has been archived so I need to revisit this with someone.-->
-The [OCI Artifacts](https://github.com/opencontainers/artifacts)
+The [OCI Artifacts](https://github.com/opencontainers/image-spec)
 specification allows to store any kind of binary blob inside a
 regular OCI compliant container registry.
 
