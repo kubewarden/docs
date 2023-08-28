@@ -15,6 +15,10 @@ This requires a running instance of Rancher Manager `v2.7.0` or greater.
 
 The Kubewarden UI is installed as a global extension, however, the Kubewarden controller will be installed through the Rancher UI as a cluster scoped resource.
 
+:::note
+For air-gapped installations, follow [these steps](#airgap-installation).
+:::
+
 Within the Extensions page, click on the "Enable" button and select the option to add the Rancher Extensions Repository, once enabled the "Kubewarden" extension item will appear automatically. Click on this item to install the extension. Once installed, you will then be able to install Kubewarden into your desired Cluster.
 
 ### Install Kubewarden
@@ -59,4 +63,40 @@ ___Policy Grid___
 
 ### Additional Features
 
-For installing additional features, follow the instructions in these docs to include [Metrics](./metrics.md) or [Tracing](./tracing.md).
+For installing additional features, follow the instructions in these docs to include [Metrics](./02-metrics.md) or [Tracing](./03-tracing.md).
+
+## Airgap Installation
+
+:::caution
+This requires Rancher Manager version `v2.8.0` or greater.
+:::
+
+As Kubewarden is considered a Rancher Official Extension, the Rancher team provides a mechanism to automatically generate an Extension Catalog Image that will be added to the `rancher-images.txt` file when [installing Rancher Manager](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/air-gapped-helm-cli-install/publish-images#1-find-the-required-assets-for-your-rancher-version) for air-gapped instances.
+
+Once this image has been mirrored to a registry that is accessible to your air-gapped cluster, you will be able to import the image within the Rancher UI, and this will create a local Helm repository with the Kubewarden UI chart for installation.
+
+### Installation Steps
+
+1. [Create](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-resources-setup/secrets) a registry secret within the `cattle-ui-plugin-system` namespace. Enter the domain of the image address in the **Registry Domain Name** field.
+
+1. Navigate back to the **Extensions** page (e.g. `https://cluster-ip/dashboard/c/local/uiplugins`).
+
+1. On the top right, click **⋮ > Manage Extension Catalogs**.
+![Manage Catalogs](/img/ui_airgap_01.png)
+
+1. Select the **Import Extension Catalog** button.
+![Import Catalogs](/img/ui_airgap_02.png)
+
+1. Enter the image address in the **Catalog Image Reference** field.
+
+1. Select the secret you just created from the **Pull Secrets** drop-down menu.
+![Enter Catalog Info](/img/ui_airgap_03.png)
+
+1. Click **Load**. The extension will now be **Pending**.
+
+1. Return to the **Extensions** page.
+
+1. Select the **Available** tab, and click the **Reload** button to make sure that the list of extensions is up to date.
+![Install Kubewarden](/img/ui_airgap_04.png)
+
+1. Find the Kubewarden extension you just added, and click the **Install** button.
