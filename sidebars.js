@@ -100,9 +100,10 @@ module.exports = {
           ]
         },
         {
-          'Testing policies':
-          [
-            'testing-policies/intro',
+          type: 'category',
+          label: 'Testing policies',
+          link: {type: 'doc', id: 'testing-policies/intro'},
+          items: [
             'testing-policies/policy-authors',
             'testing-policies/cluster-operators',
           ],
