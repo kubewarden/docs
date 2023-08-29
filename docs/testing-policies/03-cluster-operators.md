@@ -1,60 +1,49 @@
 ---
-sidebar_label: "Cluster Operators"
-title: ""
+sidebar_label: "Cluster operators"
+title: "Testing for cluster operators"
+description: An introduction to testing Kubewarden policies for cluster operators.
 ---
 
-# Before deployment
+As a Kubernetes cluster operator, you will want to perform testing against Kubewarden policies you want to use.
 
-As a Kubernetes cluster operator you probably want to perform some tests
-against a Kubewarden policy you just found.
+You will have questions like:
 
-You probably want to answer questions like:
+- What are the correct policy settings to get the validation/mutation outcome I need?
+- How can I be sure everything will keep working as expected when:
+  - I upgrade the policy to a newer version
+  - I add/change some Kubernetes resources
+  - I change the configuration parameters of the policy
+  - and so on?
 
-* What are the correct policy settings to get the validation/mutation outcome
-  I desire?
-* How can I be sure everything will keep working as expected when I upgrade
-  the policy to a newer version, when I add/change some Kubernetes resources,
-  when I change the configuration parameters of the policy,...
+Kubewarden has a utility, [`kwctl`](https://github.com/kubewarden/kwctl), that allows testing of the policies outside of Kubernetes.
 
-Kubewarden has a dedicated utility that allows testing of the policies
-outside of Kubernetes, among other operations. This utility is called
-[`kwctl`](https://github.com/kubewarden/kwctl).
+To use `kwctl` we invoke it with following inputs:
 
-`kwctl` usage is quite simple, we just have to invoke it with the
-following data as input:
+1. A WebAssembly binary file URI of the policy to be run.
+The Kubewarden policy can be loaded from the local filesystem `file://`, an HTTP(s) server `https://`, or an OCI registry `registry://`.
+1. The admission request object to be evaluated.
+This is provided via the `--request-path` argument.
+Use `stdin` by setting `--request-path` to `-`.
+1. Policy settings to be used at evaluation time can be provided as an inline JSON via `--settings-json` flag, or a JSON or YAML file loaded from the filesystem using `--settings-path`.
 
-1. WebAssembly binary file reference of the policy to be run. The
-   Kubewarden policy can be loaded from the local filesystem
-   (`file://`), an HTTP(s) server (`https://`) or an OCI registry
-   (`registry://`).
-1. The admission request object to be evaluated.  This is provided via
-  the `--request-path` argument. The request can be provided through
-  `stdin` by setting `--request-path` to `-`.
-1. The policy settings to be used at evaluation time, they can be
-  provided as an inline JSON via `--settings-json` flag, or a JSON or
-  YAML file loaded from the filesystem via `--settings-path`.
+Once the policy evaluation is done, `kwctl` prints the `ValidationResponse` object to the standard output.
 
-Once the policy evaluation is done, `kwctl` prints the
-`ValidationResponse` object to the standard output.
+You can download pre-built binaries of `kwctl` from [here](https://github.com/kubewarden/kwctl/releases).
 
-## Install
+## A testing example
 
-You can download pre-built binaries of `kwctl` from
-[here](https://github.com/kubewarden/kwctl/releases).
-
-## Quickstart
-
-This section describes how to test the
-[psp-apparmor](https://github.com/kubewarden/psp-apparmor) policy with
-different configurations and validation request objects as input data.
+This section describes how to test the [psp-apparmor](https://github.com/kubewarden/psp-apparmor) policy with different configurations and validation request objects.
 
 ### Create `AdmissionReview` requests
 
 We have to create some files holding the `AdmissionReview` objects
 that will be evaluated by the policy.
 
-Let's create a file named `pod-req-no-specific-apparmor-profile.json` with the following
-contents:
+You can create a file named `pod-req-no-specific-apparmor-profile.json` with the following contents:
+
+<details>
+
+<summary><code>pod-req-no-specific-apparmor-profile.json</code></summary>
 
 ```json
 {
@@ -86,13 +75,17 @@ contents:
 }
 ```
 
-This request tries to create a Pod that doesn't specify any AppArmor
-profile to be used, that's because it doesn't have an `annotation`
-with the `container.apparmor.security.beta.kubernetes.io/<name of the
-container>` key.
+</details>
 
-Let's create a file named `pod-req-apparmor-unconfined.json` with the
+This request tries to create a Pod that doesn't specify any AppArmor profile to be used.
+Because it doesn't have an `annotation` with the `container.apparmor.security.beta.kubernetes.io/<container-name>` key.
+
+You can create a file named `pod-req-apparmor-unconfined.json` with the
 following contents:
+
+<details>
+
+<summary><code>pod-req-apparmor-unconfined.json</code></summary>
 
 ```json
 {
@@ -127,12 +120,16 @@ following contents:
 }
 ```
 
-This request tries to create a Pod with a container called `nginx` that runs
-with the `unconfined` AppArmor profile. Note well, running in `unconfined` mode
-is a bad security practice.
+</details>
 
-Finally, let's create a file named `pod-req-apparmor-custom.json` with the following
-contents:
+This request tries to create a Pod with a container called `nginx` running with the `unconfined` AppArmor profile.
+Note that, running in `unconfined` mode is a bad security practice.
+
+Now you can create a file named `pod-req-apparmor-custom.json` with the following contents:
+
+<details>
+
+<summary><code>pod-req-apparmor-custom.json</code></summary>
 
 ```json
 {
@@ -167,22 +164,25 @@ contents:
 }
 ```
 
-> **Note well:** these are stripped down `AdmissionReview` objects, we
-> left only the fields that are relevant to our policy.
+</details>
 
+:::note
+These are all simplified `AdmissionReview` objects.
+We left only the fields relevant to our testing of the policy.
+:::
 
 ### Test the policy
 
-Now we can use `kwctl` to test the creation of a Pod that doesn't
-specify an AppArmor profile:
+Now we can use `kwctl` to test the creation of a Pod not specifying an AppArmor profile:
 
 ```console
 $ kwctl run \
     --request-path pod-req-no-specific-apparmor-profile.json \
-    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 | jq
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 \
+    | jq
 ```
 
-The policy will accept the request and produce the following output:
+The policy will accept the request and produce output similar to:
 
 ```console
 {
@@ -197,7 +197,8 @@ The policy will instead reject the creation of a Pod with an
 ```console
 $ kwctl run \
     --request-path pod-req-apparmor-unconfined.json \
-    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 | jq
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 \
+    | jq
 {
   "uid": "1299d386-525b-4032-98ae-1949f69f9cfc",
   "allowed": false,
@@ -207,18 +208,15 @@ $ kwctl run \
 }
 ```
 
-Both times we ran the policy **without** providing any kind of
-setting. As the [policy's
-documentation](https://github.com/kubewarden/psp-apparmor#configuration)
-states, this results in preventing the usage of non-default profiles.
+Both times we ran the policy **without** providing any kind of setting. As the [policy's documentation](https://github.com/kubewarden/psp-apparmor#configuration) states, this results in preventing the usage of non-default profiles.
 
-As a matter of fact, the Pod using a custom `nginx` profile gets rejected by
-the policy too:
+The Pod using a custom `nginx` profile gets rejected by the policy too:
 
 ```console
 $ kwctl run \
     --request-path pod-req-apparmor-custom.json \
-    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 | jq
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 \
+    | jq
 {
   "uid": "1299d386-525b-4032-98ae-1949f69f9cfc",
   "allowed": false,
@@ -228,13 +226,14 @@ $ kwctl run \
 }
 ```
 
-We can change the default behaviour and allow some chosen AppArmor to be used:
+We can change the default behavior and allow some chosen AppArmor to be used:
 
 ```console
 $ kwctl run \
     --request-path pod-req-apparmor-custom.json \
     --settings-json '{"allowed_profiles": ["runtime/default", "localhost/nginx-custom"]}' \
-    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 | jq
+    registry://ghcr.io/kubewarden/policies/psp-apparmor:v0.1.4 \
+    | jq
 ```
 
 This time the request is accepted:
@@ -248,17 +247,15 @@ This time the request is accepted:
 
 ## Automation
 
-All these steps shown above can be automated using
-[bats](https://github.com/bats-core/bats-core).
+All these steps shown above can be automated using [bats](https://github.com/bats-core/bats-core).
 
-We can write a series of tests and integrate their execution inside of
-your existing CI and CD pipelines.
+You can write a series of tests and integrate their execution inside your existing CI and CD pipelines.
 
-That would ensure changes to the policy version, policy configuration
-parameters, Kubernetes resources,... won't break the outcome of the
-validation/mutation operations.
+The commands above can be "wrapped" into a `bats` test:
 
-The commands used above can be easily "wrapped" into a `bats` test:
+<details>
+
+<summary>A <code>bats</code>test</summary>
 
 ```bash
 @test "all is good" {
@@ -286,10 +283,11 @@ The commands used above can be easily "wrapped" into a `bats` test:
 }
 ```
 
-Assuming the snippet from above is inside of a file called `e2e.bats`,
-we can run the test in this way:
+</details>
 
-```
+If the `bats` code above is in the file `e2e.bats`, we can run the test as:
+
+```console
 $ bats e2e.bats
  ✓ all is good
  ✓ reject
@@ -297,6 +295,4 @@ $ bats e2e.bats
 2 tests, 0 failures
 ```
 
-Checkout [this section](/writing-policies/go/05-e2e-tests.md) of the
-documentation to learn more about writing end-to-end tests of your
-policies.
+[This](/writing-policies/go/05-e2e-tests.md) section has more about writing end-to-end tests of your policies.
