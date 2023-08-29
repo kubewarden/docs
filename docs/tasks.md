@@ -7,7 +7,7 @@ keywords: [kubewarden, kubernetes, kwctl, policy, policyserver, clusteradmission
 
 This describes tasks that can be performed after you [install Kubewarden](/quick-start.md#install) in your Kubernetes cluster.
 
-Each task can be done separately; they are show here in a logical ordering.
+Each task can be done separately; they are shown here in a logical ordering.
 
 ## Test Policies
 
@@ -56,7 +56,7 @@ You can use `kwctl` to help in these scenarios:
 
 #### Usage
 
-You can list all the `kwctl` options and subcommands by running the following command:
+You can list all the `kwctl` options and sub-commands by running the following command:
 
 ```shell
 $ kwctl --help
@@ -96,58 +96,56 @@ Here are a few command usage examples:
 - *Obtain the policy*: download and store the policy inside the local `kwctl` store
 
   - Command: `kwctl pull <policy URI>`
-  - Example:
 
-  ```shell
-  $ kwctl pull registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+    ```shell
+    $ kwctl pull registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
   
-  $ kwctl policies
-  +--------------------------------------------------------------+----------+---------------+--------------+----------+
-  | Policy                                                       | Mutating | Context aware | SHA-256      | Size     |
-  +--------------------------------------------------------------+----------+---------------+--------------+----------+
-  | registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 | no       | no            | 59e34f482b40 | 21.86 kB |
-  +--------------------------------------------------------------+----------+---------------+--------------+----------+
-  ```
+    $ kwctl policies
+    +--------------------------------------------------------------+----------+---------------+--------------+----------+
+    | Policy                                                       | Mutating | Context aware | SHA-256      | Size     |
+    +--------------------------------------------------------------+----------+---------------+--------------+----------+
+    | registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 | no       | no            | 59e34f482b40 | 21.86 kB |
+    +--------------------------------------------------------------+----------+---------------+--------------+----------+
+    ```
 
 - *Understand how the policy works*: inspect the policy metadata
 
   - Command: `kwctl inspect <policy URI>`
-  - Example:
 
-  ```shell
-    $ kwctl inspect registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
-    Details
-    title:              pod-privileged
-    description:        Limit the ability to create privileged containers
-    author:             Flavio Castelli
-    url:                https://github.com/kubewarden/pod-privileged-policy
-    source:             https://github.com/kubewarden/pod-privileged-policy
-    license:            Apache-2.0
-    mutating:           false
-    context aware:      false
-    execution mode:     kubewarden-wapc
-    protocol version:   1
-    
-    Annotations
-    io.kubewarden.kwctl 0.1.9
-    
-    Rules
-    ────────────────────
-    ---
-    - apiGroups:
-        - ""
-      apiVersions:
-        - v1
-      resources:
-        - pods
-      operations:
-        - CREATE
-    ────────────────────
-    
-    Usage
-    This policy doesn't have a configuration. Once enforced, it will reject
-    the creation of Pods that have at least a privileged container defined.
-  ```
+    ```shell
+      $ kwctl inspect registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+      Details
+      title:              pod-privileged
+      description:        Limit the ability to create privileged containers
+      author:             Flavio Castelli
+      url:                https://github.com/kubewarden/pod-privileged-policy
+      source:             https://github.com/kubewarden/pod-privileged-policy
+      license:            Apache-2.0
+      mutating:           false
+      context aware:      false
+      execution mode:     kubewarden-wapc
+      protocol version:   1
+
+      Annotations
+      io.kubewarden.kwctl 0.1.9
+
+      Rules
+      ────────────────────
+      ---
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        resources:
+          - pods
+        operations:
+          - CREATE
+      ────────────────────
+
+      Usage
+      This policy doesn't have a configuration. Once enforced, it will reject
+      the creation of Pods that have at least a privileged container defined.
+    ```
 
 - *Evaluate the policy*: Assess the policy and, if available, find the right configuration values to match your requirements.
 
@@ -159,19 +157,17 @@ Here are a few command usage examples:
 
     - Request to be evaluated: Create a pod with no 'privileged' container
 
-    - Example:
-
       ```shell
       $ kwctl run registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 -r unprivileged-pod-request.json
       {"uid":"C6E115F4-A789-49F8-B0C9-7F84C5961FDE","allowed":true,"status":{"message":""}}
       ```
   
-      - Equivalent command with the policy binary downloaded:
+    - Equivalent command with the policy binary downloaded:
   
-         ```shell
-        `$ kwctl run file://$PWD/pod-privileged-policy.wasm -r unprivileged-pod-request.json
-        {"uid":"C6E115F4-A789-49F8-B0C9-7F84C5961FDE","allowed":true,"status":{"message":""}}
-        ```
+      ```shell
+      `$ kwctl run file://$PWD/pod-privileged-policy.wasm -r unprivileged-pod-request.json
+      {"uid":"C6E115F4-A789-49F8-B0C9-7F84C5961FDE","allowed":true,"status":{"message":""}}
+      ```
   
     - Result: The policy allows the request
   
@@ -179,13 +175,13 @@ Here are a few command usage examples:
   
     - Request to be evaluated: Create a pod with at least one 'privileged' container
   
-    - Command: 
+    - Command:
   
-      ```
+      ```shell
       kwctl run registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 -r privileged-pod-request.json
       ```
   
-      - Equivalent command with the policy binary downloaded: `kwctl run file://$PWD/pod-privileged-policy.wasm -r privileged-pod-request.json`
+    - Equivalent command with the policy binary downloaded: `kwctl run file://$PWD/pod-privileged-policy.wasm -r privileged-pod-request.json`
   
     - Output:
   
@@ -208,29 +204,28 @@ After you have generated the `ClusterAdmissionPolicy` and applied it to your clu
   - Generate the `ClusterAdmissionPolicy` from the policy `manifest` and save it to a file
   
     - Command: `kwctl scaffold manifest -t ClusterAdmissionPolicy <policy URI> > <"policy name".yaml>`
-    - Example:
-    
-    ```shell
-    $ kwctl scaffold manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
-    ---
-    apiVersion: policies.kubewarden.io/v1alpha2
-    kind: ClusterAdmissionPolicy
-    metadata:
-      name: privileged-pods
-    spec:
-      module: "registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9"
-      settings: {}
-      rules:
-        - apiGroups:
-            - ""
-          apiVersions:
-            - v1
-          resources:
-            - pods
-          operations:
-            - CREATE
-      mutating: false
-    ```
+
+      ```shell
+      $ kwctl scaffold manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
+      ---
+      apiVersion: policies.kubewarden.io/v1alpha2
+      kind: ClusterAdmissionPolicy
+      metadata:
+        name: privileged-pods
+      spec:
+        module: "registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9"
+        settings: {}
+        rules:
+          - apiGroups:
+              - ""
+            apiVersions:
+              - v1
+            resources:
+              - pods
+            operations:
+              - CREATE
+        mutating: false
+      ```
   
     :::tip
     By default, the `name` value is set to `generated-policy`.
@@ -241,17 +236,16 @@ After you have generated the `ClusterAdmissionPolicy` and applied it to your clu
   - Deploy the `ClusterAdmissionPolicy` to your Kubernetes cluster
 
     - Command: `kubectl apply -f <"policy name".yaml>`
-    - Example:
-    
-    ```shell
-    $ kubectl apply -f pod-privileged-policy.yaml
-    clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
-    ```
+
+      ```shell
+      $ kubectl apply -f pod-privileged-policy.yaml
+      clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
+      ```
 
 After the `ClusterAdmissionPolicy` is deployed, all requests sent to your cluster will be evaluated by the policy if they're within the policy scope.
 
 ## Next steps
 
-- [Writing Policies](/writing-policies/) explains how to write policies in different languages and generate Webassembly binaries so they can be used by Kubewarden.
+- [Writing Policies](/writing-policies/) explains how to write policies in different languages and generate WebAssembly binaries, so they can be used by Kubewarden.
 
 - [Distributing Policies](/distributing-policies/) explains how to publish policies to [OCI registries](https://github.com/opencontainers/distribution-spec/blob/main/spec.md).
