@@ -51,6 +51,10 @@ $ curl https://raw.githubusercontent.com/kubewarden/ingress-policy/v0.1.8/test_d
 
 Using `bats` you can write a test that runs this command and looks for the expected outputs:
 
+<details>
+
+<summary>A <code>bats</code> test</summary>
+
 ```bash
 @test "all is good" {
   run kwctl run \
@@ -68,6 +72,8 @@ Using `bats` you can write a test that runs this command and looks for the expec
   [[ "$output" == *"allowed: true"* ]]
 }
 ```
+
+</details>
 
 You can put the code in a file, `e2e.bats`, for example, and then invoke `bats` by:
 
