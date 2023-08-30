@@ -22,11 +22,11 @@ To use `kwctl` we invoke it with following inputs:
 1. A WebAssembly binary file URI of the policy to be run.
 The Kubewarden policy can be loaded from the local filesystem `file://`, an HTTP(s) server `https://`, or an OCI registry `registry://`.
 1. The admission request object to be evaluated.
-This is provided via the `--request-path` argument.
+You provide it with the `--request-path` argument.
 Use `stdin` by setting `--request-path` to `-`.
-1. Policy settings to be used at evaluation time can be provided as an inline JSON via `--settings-json` flag, or a JSON or YAML file loaded from the filesystem using `--settings-path`.
+1. You provide run time policy settings as inline JSON via `--settings-json` flag. Or with a JSON or YAML file from the filesystem using `--settings-path`.
 
-Once the policy evaluation is done, `kwctl` prints the `ValidationResponse` object to the standard output.
+After the test `kwctl` prints the `ValidationResponse` object to the standard output.
 
 You can download pre-built binaries of `kwctl` from [here](https://github.com/kubewarden/kwctl/releases).
 
@@ -36,8 +36,7 @@ This section describes how to test the [psp-apparmor](https://github.com/kubewar
 
 ### Create `AdmissionReview` requests
 
-We have to create some files holding the `AdmissionReview` objects
-that will be evaluated by the policy.
+We have to create files holding the `AdmissionReview` objects to test the policy.
 
 You can create a file named `pod-req-no-specific-apparmor-profile.json` with the following contents:
 
@@ -168,7 +167,7 @@ Now you can create a file named `pod-req-apparmor-custom.json` with the followin
 
 :::note
 These are all simplified `AdmissionReview` objects.
-We left only the fields relevant to our testing of the policy.
+We have only the fields relevant to our testing of the policy.
 :::
 
 ### Test the policy
@@ -182,7 +181,7 @@ $ kwctl run \
     | jq
 ```
 
-The policy will accept the request and produce output similar to:
+The policy will accept the request and produce output like:
 
 ```console
 {
@@ -226,7 +225,7 @@ $ kwctl run \
 }
 ```
 
-We can change the default behavior and allow some chosen AppArmor to be used:
+You can change the default behavior, allowing some chosen AppArmor to be used:
 
 ```console
 $ kwctl run \
@@ -236,7 +235,7 @@ $ kwctl run \
     | jq
 ```
 
-This time the request is accepted:
+Now the request succeeds:
 
 ```console
 {
@@ -247,7 +246,7 @@ This time the request is accepted:
 
 ## Automation
 
-All these steps shown above can be automated using [bats](https://github.com/bats-core/bats-core).
+All these steps, shown above, can be automated using [bats](https://github.com/bats-core/bats-core).
 
 You can write a series of tests and integrate their execution inside your existing CI and CD pipelines.
 

@@ -8,20 +8,20 @@ keywords: [kubewarden, policy testing, policy author, rust, go, assemblyscript, 
 Kubewarden policies are regular programs compiled as WebAssembly (Wasm).
 As with any kind of program, good test coverage is important.
 
-Policy authors can use their favorite development environments, tools and, testing frameworks to verify their development.
+Policy authors can use their favorite development environments. You can use familiar tools, and testing frameworks to verify development.
 
 These two Kubewarden policies provide an example written in [Rust](/writing-policies/rust/01-intro-rust.md) and [Go](/writing-policies/go/01-intro-go.md):
 
 - [psp-apparmor](https://github.com/kubewarden/psp-apparmor)
 - [ingress-policy](https://github.com/kubewarden/ingress-policy)
 
-These policies have integrated test suites using the regular testing libraries of their development environments.
+They both have test suites using standard testing for their development environments.
 
-Also, the projects that develop these policies use GitHub Actions to implement their CI pipelines.
+The policies use GitHub Actions for their CI pipelines.
 
 ## End-to-end tests
 
-Policy authors can also write tests that are executed against the actual Wasm binary containing your policy.
+You can also write tests that execute against the Wasm binary containing your policy.
 This can be done without having to deploy a Kubernetes cluster by using these tools:
 
 - [bats](https://github.com/bats-core/bats-core): is used to write tests and automate their execution.
@@ -30,17 +30,16 @@ This can be done without having to deploy a Kubernetes cluster by using these to
 To use `kwctl run` the following input is needed:
 
 1. Wasm binary file reference of the policy to be run.
-The Kubewarden policy can be loaded from the local filesystem (`file://`), an HTTP(s) server (`https://`) or an OCI registry (`registry://`).
-1. The admission request object to be evaluated.
-This is provided via the `--request-path` argument.
-The request can be provided on `stdin` by setting `--request-path` to `-`.
-1. The policy settings to be used at evaluation time, can be provided as an inline JSON via `--settings-json` flag.
+The Kubewarden policy can be loaded from the local filesystem (`file://`), an HTTP(s) server (`https://`), or an OCI registry (`registry://`).
+1. The admission request object to be tested.
+You provide it via the `--request-path` argument.
+Or you can provide it on `stdin` by setting `--request-path` to `-`.
+1. Provide policy settings for run time as an inline JSON via `--settings-json` flag.
 Or a JSON, or a YAML file loaded from the filesystem via `--settings-path`.
 
-Once the policy evaluation is done, `kwctl` prints the `ValidationResponse` object to the standard output.
+After the test `kwctl` prints the `ValidationResponse` object to standard output.
 
-For example, this is how `kwctl` can be used to test the Wasm
-binary of the `ingress-policy` linked above:
+This is how you use `kwctl` to test the Wasm binary of `ingress-policy` linked to above:
 
 ```
 $ curl https://raw.githubusercontent.com/kubewarden/ingress-policy/v0.1.8/test_data/ingress-wildcard.json 2> /dev/null | \
