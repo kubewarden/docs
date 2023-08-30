@@ -99,6 +99,15 @@ module.exports = {
             }
           ]
         },
+        {
+          type: 'category',
+          label: 'Testing policies',
+          link: {type: 'doc', id: 'testing-policies/intro'},
+          items: [
+            'testing-policies/policy-authors',
+            'testing-policies/cluster-operators',
+          ],
+        },
         'distributing-policies/publish-policy-to-artifact-hub',
         'security/verifying-kubewarden',
       ],
@@ -110,14 +119,7 @@ module.exports = {
       items: [
         'tasksDir/mutating-policies',
         'distributing-policies',
-        {
-          'Policies Testing roles':
-          [
-            'testing-policies/policy-authors',
-            'testing-policies/cluster-operators',
-          ],
-        },
-	"explanations/context-aware-policies"
+        "explanations/context-aware-policies"
       ],
       collapsed: true,
     },
