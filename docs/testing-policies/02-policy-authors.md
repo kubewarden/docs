@@ -10,11 +10,10 @@ As with any kind of program, good test coverage is important.
 
 Policy authors can use their favorite development environments, tools and, testing frameworks to verify their development.
 
-These three Kubewarden policies provide an example written in each of [Rust](/writing-policies/rust/01-intro-rust.md), [Go](/writing-policies/go/01-intro-go.md) and [AssemblyScript](https://www.assemblyscript.org/) respectively:
+These two Kubewarden policies provide an example written in [Rust](/writing-policies/rust/01-intro-rust.md) and [Go](/writing-policies/go/01-intro-go.md):
 
 - [psp-apparmor](https://github.com/kubewarden/psp-apparmor)
 - [ingress-policy](https://github.com/kubewarden/ingress-policy)
-- [pod-privileged-policy](https://github.com/kubewarden/pod-privileged-policy)
 
 These policies have integrated test suites using the regular testing libraries of their development environments.
 
