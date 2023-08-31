@@ -1,8 +1,8 @@
 ---
 sidebar_label: "Context aware policies"
 title: "Context aware policies"
-description: The description
-keywords: [kubewarden, context-aware]
+description: A description of Kubewarden context aware policies, what they are and how they are useful.
+keywords: [kubewarden, context-aware policy, clusteradmissionpolicy, admissionpolicy, admissionrequest, cluster administrator]
 ---
 
 Developers can create policies that fetch information from a Kubernetes cluster at run time.
