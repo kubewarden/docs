@@ -1,30 +1,28 @@
 ---
-sidebar_label: "Context Aware Policies"
-title: ""
+sidebar_label: "Context aware policies"
+title: "Context aware policies"
+description: The description
+keywords: [kubewarden, context-aware]
 ---
 
-# Context Aware Policies
+Developers can create policies that fetch information from a Kubernetes cluster at run time.
+These are context aware policies.
+Context aware policies can determine whether an `AdmissionRequest` is acceptable using information from resources deployed in the cluster.
 
-Context aware policies allow policy authors to fetch information from the
-Kubernetes cluster at evaluation time. This means that context aware policies can determine
-whether a `AdmissionRequest` has to be accepted or rejected based on other resources already
-deployed in the cluster.
-For example, a policy could cross validate information among two different resources type.
-
-:::caution
-Context aware policies are available only in Kubewarden version v1.6.0 or greater.
+:::note
+Context aware policies are only available in Kubewarden versions ≥ v1.6.0.
 :::
 
+Resources a policy can access in the cluster is controlled by the policy server's [Service Account](https://kubernetes.io/docs/concepts/security/service-accounts/).
+A cluster administrator controls what a policy can access via Kubernetes RBAC rules.
+Context aware policies have only **read** access to the requested resources.
 
-What a policy can access in the cluster is regulated by the [Service Account](https://kubernetes.io/docs/concepts/security/service-accounts/) of the Policy Server where the policy runs.
-This allows the cluster administrator to control what a policy can access via traditional Kubernetes RBAC rules. Furthermore, context aware policies have only **read** access to the requested resources.
+For security reasons, only `ClusterAdmissionPolicy` policies can fetch information from the Kubernetes cluster.
+This is because `AdmissionPolicy` resources can be deployed by unprivileged users.
+If a context aware policy is deployed as an `AdmissionPolicy` all attempts to access Kubernetes resources are blocked and reported to the cluster administrator.
 
-For security reasons, only `ClusterAdmissionPolicy` policies are able fetch information from the Kubernetes cluster. This has been done because `AdmissionPolicy` resources can be deployed by unprivileged users.
-Therefore, if the policy is deployed in a Policy Server with broad access to the resources in the cluster, unprivileged users could get access to prohibited resources.
-To avoid that, if a context aware policy is deployed as an `AdmissionPolicy` all the attempts to get access to Kubernetes resources will be blocked and reported to the cluster administrator.
-
-By default, all the cluster resources are blocked. Thus, at deployment time, the Kubewarden administrator
-must define which Kubernetes resources each context aware policy is allowed to read.
+By default, all the cluster resources are blocked.
+A Kubewarden administrator defines which Kubernetes resources each context aware policy is allowed to read.
 This is done in the `ClusterAdmissionPolicy` definition using the field `contextAwareResources` .
 
 The following example deploys a policy that requires access to the `Deployment` and `Pod` resources:
@@ -54,27 +52,29 @@ spec:
   mutating: false
 ```
 
-Policy authors can provide the list of Kubernetes resources accessed by their context aware policy by annotating the policy file. Kubewarden administrators can look into the policy metadata using the `kwctl inspect` command and obtain a list of Kubernetes resources the policy requires access to. This list can then be used to populate the `ClusterAdmissionPolicy` definition.
+Once deployed, this policy can read the data of the `deployment` and `pod` resources.
+
+Policy authors provide lists of Kubernetes resources for their context aware policy.
+This is done by annotating the policy.
+Kubewarden administrators view policy metadata using the `kwctl inspect` command.
+They can get a list of resources the policy needs access to.
+An administrator uses this list to populate the `ClusterAdmissionPolicy` definition.
 
 :::danger
-Kubewarden administrators must review carefully the kind of resources the policy is going to access
-to prevent system abuses.
+To prevent system abuse, Kubewarden administrators must review the resources the policy will access.
 
-For example, a policy evaluating Ingress objects would have very good reasons to read all the `Ingress`
-resources already defined inside of the cluster. However it would be hard to justify why the same policy
-would also require access to `Secret` resources.
+For example, a policy evaluating Ingress objects would have good reasons to read the `Ingress` resources defined in the cluster.
+The same policy can't justify having access to `Secret` resources.
 
-When reviewing the list of resources a context aware policy wants to have access to, approach this process with the same mindset used when evaluating the privileges granted to a smart phone App you're about to install on your mobile device.
-Would you install a torch App that requires access to your address book or your location?
+Policies should have the least access needed to function correctly.
 
-While policies have read-only access to Kubernetes resources, a malicious attacker might abuse a Kubewarden policy to exfiltrate sensitive data from the cluster.
 :::
 
+<!--TODO: What is this note for? what does it mean? Is it relevant to context aware policies?-->
 :::note
 Resources from the `core` API Group do not need to define the group name, only the version  (e.g. `v1`) is required.
 
 All the remaining Kubernetes resources require the full definition: `groupName/groupVersion`.
 :::
 
-Once deployed, this policy will be able to read the data of the `deployment` and `pod` resources during its evaluations.
 
