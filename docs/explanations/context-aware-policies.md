@@ -63,18 +63,34 @@ An administrator uses this list to populate the `ClusterAdmissionPolicy` definit
 :::danger
 To prevent system abuse, Kubewarden administrators must review the resources the policy will access.
 
-For example, a policy evaluating Ingress objects would have good reasons to read the `Ingress` resources defined in the cluster.
+For example, a policy evaluating ingress objects would have good reasons to read the `Ingress` resources defined in the cluster.
 The same policy can't justify having access to `Secret` resources.
 
 Policies should have the least access needed to function correctly.
 
 :::
 
-<!--TODO: What is this note for? what does it mean? Is it relevant to context aware policies?-->
 :::note
-Resources from the `core` API Group do not need to define the group name, only the version  (e.g. `v1`) is required.
 
-All the remaining Kubernetes resources require the full definition: `groupName/groupVersion`.
+Kubernetes resources are identified by `apiVersion` and `kind`.
+
+Usually, `apiVersion` is a string in the format `<api>/<version>`.
+Resources from the `core` API group (Pod, Service, and others) should not define the group name, `<api>`.
+They should only define the `<version>` (for example, `v1`).
+
+For a core resource, the first will not work, the second will.
+
+```console
+- apiVersion: "core/v1"
+  kind: "pod"
+```
+
+
+```console
+- apiVersion: "v1"
+  kind: "pod"
+```
+
+All other Kubernetes resources need the full definition: `<api>/<version>`.
+
 :::
-
-
