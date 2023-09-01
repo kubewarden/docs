@@ -1,30 +1,32 @@
 ---
-sidebar_label: "PSP Migration"
-title: ""
+sidebar_label: "PSP migration"
+title: "PodSecurityPolicy migration"
+description: Discusses PSP migration to Kubewarden policies after Kubernetes v1.25.
+keywords: [kubewarden, kubernetes, appvia, psp, podsecuritypolicy]
 ---
 
-# PSP Migration
+With the removal of [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/) (PSP)
+in Kubernetes v1.25, you can use Kubewarden for admission control on your Kubernetes clusters.
+In contrast to the PSP, Kubewarden has separate policies to achieve the same goal.
+Each Kubewarden policy is like a different configuration within the specification of a PSP.
+The mapping of PSP configuration fields to their respective Kubewarden policies is in the [mapping table](#mapping-kuberwarden-policies-to-psp-fields).
+With Kubewarden, operators have granular control of policy configuration in their clusters.
 
-With the removal of [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/)
-in Kubernetes v1.25, you can leverage Kubewarden for admission control on your Kubernetes clusters.
-Contrasting with the PSPs, Kubewarden has separate policies to achieve the same goal. Therefore, each Kubewarden policy could be likened to a different
-configuration within the spec of a PSP. A mapping of the PSP configuration fields to their respective policies can be found below
-in the [mapping table](#mapping-kuberwarden-policies-to-psp-fields). Therefore, the operators have more granular control
-of the configuration they want to apply in their clusters. If they want to apply part of the PSP security checks it
-is not necessary to define the configurations related to the other fields.
-
-Once you have the Kubewarden instance running, it's time to deploy some policies to replace the `PodSecurityPolicy` object. Start by listing
-the PSPs in use. For the sake of this example, the following enforcements have been considered:
+With a Kubewarden instance, you can deploy policies to replace the `PodSecurityPolicy` object.
+We consider these enforcements in this example::
 
 - a PSP disabling privileged escalation
 - privileged containers
 - blocking pods running as root
 - forcing a particular user group
 - blocking host namespaces
-- allowing pod to use the port 443 only
+- allowing a pod to use the port 443 only
 
+The YAML definition of this PSP is:
 
-The yaml definition of the aforementioned PSP would look like the below:
+<details>
+
+<summary>PSP YAML definition</summary>
 
 ```console
 apiVersion: policy/v1beta1
@@ -49,9 +51,26 @@ spec:
       max: 443
 ```
 
-Let's create Kubewarden policies to achieve the same goal. One thing that you need to know about Kubewarden policies is that every rule will be enforced by a separate policy. In our example, individual policies will be required for the enforcement of user and group configuration, host namespaces,  privileged escalation, and for the privileged container configuration.
+</details>
 
-Let's start with blocking container escalation. For that you can deploy a policy as shown below:
+## Kubewarden replacements for PSP
+
+Now we will create Kubewarden policies to achieve the same goal.
+You enforce each rule with a separate Kubewarden policy.
+So, in this example, you need a separate policy for the enforcement of each of:
+
+- privileged escalation
+- user and group configuration
+- host namespaces
+- privileged container configuration.
+
+### Blocking container privilege escalation
+
+You can deploy a policy as shown below:
+
+<details>
+
+<summary><code>kubectl</code> command for policy</summary>
 
 ```console
 $ kubectl apply -f - <<EOF
@@ -77,7 +96,14 @@ spec:
 EOF
 ```
 
-If you notice, we have specified `default_allow_privilege_escalation` to assume a value `false`. Once this policy starts running, it will restrict pods trying to run with more privileges than the parent container by default.
+</details>
+
+In that command, we have specified `default_allow_privilege_escalation` to be `false`.
+This policy restricts pods that try to run with more privileges than the parent container.
+
+<details>
+
+<summary>Output from <code>kubectl</code> that attempts to raise privilege</summary>
 
 ```console
 $ kubectl apply -f - <<EOF
@@ -96,6 +122,10 @@ spec:
 EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-allowprivilegeescalation.kubewarden.admission" denied the request: one of the containers has privilege escalation enabled
 ```
+
+</details>
+
+### User and groups configuration
 
 Now, to enforce the user and groups configuration, you can use the [user-group-psp policy](https://github.com/kubewarden/user-group-psp-policy)
 
@@ -129,7 +159,8 @@ spec:
 EOF
 ```
 
-Notice the policy is configured as `mutation: true`. This is required because the policy will add [supplementalGroups](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups) when the user does not define them.
+Notice the policy is configured as `mutation: true`.
+This is required because the policy will add [supplementalGroups](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups) when the user does not define them.
 
 So, now users cannot deploy pods running as root:
 
@@ -190,7 +221,11 @@ $ kubectl get pods -o json nginx | jq ".spec.securityContext"
 
 ```
 
-To replace the PSP configuration that blocks privileged containers, it's necessary to deploy the [pod-privileged policy](https://github.com/kubewarden/pod-privileged-policy). This policy does not require any settings. Once running, it will block privileged pods.
+### Privileged container configuration
+
+To replace the PSP configuration that blocks privileged containers, it's necessary to deploy the [pod-privileged policy](https://github.com/kubewarden/pod-privileged-policy).
+This policy does not require any settings.
+Once running, it will block privileged pods.
 
 ```console
 $ kubectl apply -f - <<EOF
@@ -239,8 +274,7 @@ Error from server: error when creating "STDIN": admission webhook "clusterwide-p
 
 To complete the PSP migration exercise, it's necessary to disable host namespace sharing.
 To do that, we shall be using the [`host-namespace-psp` policy](https://github.com/kubewarden/host-namespaces-psp-policy).
-It allows the cluster administrator to block IPC, PID, and network namespaces individually and set the ports
-that the pods can be exposed on the host IP.
+It allows the cluster administrator to block IPC, PID, and network namespaces individually and set the ports that the pods can be exposed on the host IP.
 
 ```console
 $ kubectl apply -f - <<EOF
@@ -271,7 +305,8 @@ spec:
 EOF
 ```
 
-Again, let's validate the policy. The pod should not be able to share host namespaces:
+Again, let's validate the policy.
+The pod should not be able to share host namespaces:
 
 ```console
 $ kubectl apply -f - <<EOF
@@ -394,21 +429,26 @@ The following table show which Kubewarden policy can be used to replace each PSP
 
 ## PSP migration script
 
-The Kubewarden team has written a script that leverages the migration tool written
-by [AppVia](https://github.com/appvia/psp-migration), to migrate PSP
-automatically. The tool is capable of reading PSPs YAML and generate the equivalent
-policies in many different policy engines. Therefore, our simple script will migrate
-your PSPs to the equivalent Kuberwarden policies.
+The Kubewarden team has written a script that leverages the migration tool written by [AppVia](https://github.com/appvia/psp-migration), to migrate PSP automatically.
+The tool is capable of reading PSPs YAML and generate the equivalent policies in many different policy engines.
+Therefore, our simple script will migrate your PSPs to the equivalent Kuberwarden policies.
+
+:::caution
+<!--TODO:Warning-->
+Warning about current status of AppVia script in relation to KW
+:::
 
 The script is available in the [utils repository](https://github.com/kubewarden/utils/blob/main/scripts/psp-to-kubewarden)
-in the Kubewarden GitHub organization. It's quite simple. It will download the
-migration tool in the working directory and run it over all your PSPs printing
-the equivalent Kuberwarden policies definition in the standard output. Therefore,
-users can redirect the content to a file or to `kubectl` directly.
+in the Kubewarden GitHub organization.
+It's quite simple.
+It will download the migration tool in the working directory and run it over all your PSPs printing
+the equivalent Kuberwarden policies definition in the standard output.
+Therefore, users can redirect the content to a file or to `kubectl` directly.
 
 The script will migrate the PSPs defined in `kubectl` default context.
-The Kubewarden policies will be printed to stdout. Thus, the users can
-apply it directly or save it for further inspection.  Let's take a look at an example:
+The Kubewarden policies will be printed to stdout.
+Thus, the users can apply it directly or save it for further inspection.
+Let's take a look at an example:
 
 In a cluster with the PSP blocking access to host namespaces, blocking privileged containers, not allowing privilege escalation, dropping all containers capabilities, listing the allowed volume types, defining the allowed user and groups to be used, controling the supplemental group applied to volumes and forcing containers to run in a read-only root filesystem:
 
@@ -462,8 +502,7 @@ spec:
 
 ```
 
-The equivalent Kubewarden policies can be applied directly to a cluster with
-Kubewarden installed using the following command:
+The equivalent Kubewarden policies can be applied directly to a cluster with Kubewarden installed using the following command:
 
 ```console
 $ ./psp-to-kubewarden | kubectl apply -f -
@@ -479,8 +518,7 @@ clusteradmissionpolicy.policies.kubewarden.io/psp-fsgroup-3b08e created
 clusteradmissionpolicy.policies.kubewarden.io/psp-defaultallowprivilegeescalation-b7e87 created
 ```
 
-If users want to inspect the policies before applying, it's possible to redirect
-the content to a file or review it directly in the console
+If users want to inspect the policies before applying, it's possible to redirect the content to a file or review it directly in the console
 
 ```console
 $ ./psp-to-kubewarden > policies.yaml
