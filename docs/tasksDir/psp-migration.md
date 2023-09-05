@@ -5,22 +5,24 @@ description: Discusses PSP migration to Kubewarden policies after Kubernetes v1.
 keywords: [kubewarden, kubernetes, appvia, psp, podsecuritypolicy]
 ---
 
-With the removal of [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/) (PSP)
-in Kubernetes v1.25, you can use Kubewarden for admission control on your Kubernetes clusters.
-In contrast to the PSP, Kubewarden has separate policies to achieve the same goal.
-Each Kubewarden policy is like a different configuration within the specification of a PSP.
-The mapping of PSP configuration fields to their respective Kubewarden policies is in the [mapping table](#mapping-kuberwarden-policies-to-psp-fields).
+For Kubernetes ≥ v1.25. [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/) (PSP) is removed.
+Now you can use Kubewarden for admission control on your Kubernetes clusters.
+
+Kubewarden has separate policies to achieve the same goal as a monolithic PSP configuration.
+Each Kubewarden policy definition functions as a different configuration section in the specification of a PSP.
+The mapping of PSP configuration fields to their respective Kubewarden policies is in the [mapping table](#mapping-kuberwarden-policies-to-psp-fields) below.
+
 With Kubewarden, operators have granular control of policy configuration in their clusters.
 
 With a Kubewarden instance, you can deploy policies to replace the `PodSecurityPolicy` object.
-We consider these enforcements in this example::
+We consider these rules in this example::
 
 - a PSP disabling privileged escalation
 - privileged containers
 - blocking pods running as root
 - forcing a particular user group
 - blocking host namespaces
-- allowing a pod to use the port 443 only
+- allowing a pod to use only port 443
 
 The YAML definition of this PSP is:
 
@@ -125,9 +127,9 @@ Error from server: error when creating "STDIN": admission webhook "clusterwide-p
 
 </details>
 
-### User and groups configuration
+### User and group configuration
 
-Now, to enforce the user and groups configuration, you can use the [user-group-psp policy](https://github.com/kubewarden/user-group-psp-policy)
+Now, to enforce the user and group configuration, you can use the [user-group-psp policy](https://github.com/kubewarden/user-group-psp-policy)
 
 <details>
 
@@ -166,7 +168,7 @@ EOF
 </details>
 
 You should configure the policy with `mutation: true`.
-This is required because the policy will add [supplementalGroups](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups) when the user does not define them.
+It's required because the policy will add [supplementalGroups](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups) when the user does not define them.
 
 So, now users cannot deploy pods running as root:
 
@@ -422,7 +424,7 @@ Error from server: error when creating "STDIN": admission webhook "clusterwide-p
 
 </details>
 
-In this last example, the pod should only be able to expose the port 443.
+In this last example, the pod should only be able to expose port 443.
 If other ports are configured in `hostPorts` then an error should happen.
 
 <details>
@@ -492,14 +494,15 @@ It then generates the corresponding policies.
 It does this for Kubewarden and other policy engines.
 
 :::caution
-<!--TODO:Warning-->
-Warning about current status of AppVia script in relation to KW
+
+Currently, the AppVia migration tool generates out-of-date Kubewarden policies. Use with caution. We need a pull request for AppVia for which work is ongoing. Contact us for more information if you need to.
+
 :::
 
 The script is available in the Kubewraden [utils](https://github.com/kubewarden/utils/blob/main/scripts/psp-to-kubewarden) repository.
 It downloads the AppVia migration tool into the working directory to use.
 It processes the PSPs defined in the `kubectl` default context.
-Then it then prints the Kuberwarden policies definitions on the standard output.
+Then it prints the Kuberwarden policies definitions on the standard output.
 Users can redirect the content to a file or to `kubectl` directly.
 
 Let's take a look at an example. In a cluster with the PSP:
@@ -507,13 +510,13 @@ Let's take a look at an example. In a cluster with the PSP:
 - blocking access to host namespaces
 - blocking privileged containers
 - not allowing privilege escalation
-- dropping all containers capabilities
+- dropping container capabilities
 - listing the allowed volume types
-- defining the allowed user and groups to be used
-- controling the supplemental group applied to volumes
-- forcing containers to run in a read-only root filesystem:
+- defining the allowed users and groups to be used
+- controlling the supplemental group applied to volumes
+- forcing containers to run in a read-only root filesystem
 
-the following YAML could be used.
+The following YAML could be used.
 
 <details>
 
@@ -803,5 +806,5 @@ You may want to change the name to something more meaningful.
 :::
 
 :::note
-This script works only in Linux x86_64 machines.
+This script only works in Linux x86_64 machines.
 :::
