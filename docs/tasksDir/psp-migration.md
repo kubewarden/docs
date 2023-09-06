@@ -1,32 +1,36 @@
 ---
-sidebar_label: "PSP Migration"
-title: ""
+sidebar_label: "PSP migration"
+title: "PodSecurityPolicy migration"
+description: Discusses PSP migration to Kubewarden policies after Kubernetes v1.25.
+keywords: [kubewarden, kubernetes, appvia, psp, podsecuritypolicy]
 ---
 
-# PSP Migration
+For Kubernetes ≥ v1.25. [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/) (PSP) is removed.
+Now you can use Kubewarden for admission control on your Kubernetes clusters.
 
-With the removal of [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/)
-in Kubernetes v1.25, you can leverage Kubewarden for admission control on your Kubernetes clusters.
-Contrasting with the PSPs, Kubewarden has separate policies to achieve the same goal. Therefore, each Kubewarden policy could be likened to a different
-configuration within the spec of a PSP. A mapping of the PSP configuration fields to their respective policies can be found below
-in the [mapping table](#mapping-kuberwarden-policies-to-psp-fields). Therefore, the operators have more granular control
-of the configuration they want to apply in their clusters. If they want to apply part of the PSP security checks it
-is not necessary to define the configurations related to the other fields.
+Kubewarden has separate policies to achieve the same goal as a monolithic PSP configuration.
+Each Kubewarden policy definition functions as a different configuration section in the specification of a PSP.
+The mapping of PSP configuration fields to their respective Kubewarden policies is in the [mapping table](#mapping-kuberwarden-policies-to-psp-fields) below.
 
-Once you have the Kubewarden instance running, it's time to deploy some policies to replace the `PodSecurityPolicy` object. Start by listing
-the PSPs in use. For the sake of this example, the following enforcements have been considered:
+With Kubewarden, operators have granular control of policy configuration in their clusters.
+
+With a Kubewarden instance, you can deploy policies to replace the `PodSecurityPolicy` object.
+We consider these rules in this example::
 
 - a PSP disabling privileged escalation
 - privileged containers
 - blocking pods running as root
 - forcing a particular user group
 - blocking host namespaces
-- allowing pod to use the port 443 only
+- allowing a pod to use only port 443
 
+The YAML definition of this PSP is:
 
-The yaml definition of the aforementioned PSP would look like the below:
+<details>
 
-```console
+<summary>PSP YAML definition</summary>
+
+```yaml
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
@@ -49,18 +53,35 @@ spec:
       max: 443
 ```
 
-Let's create Kubewarden policies to achieve the same goal. One thing that you need to know about Kubewarden policies is that every rule will be enforced by a separate policy. In our example, individual policies will be required for the enforcement of user and group configuration, host namespaces,  privileged escalation, and for the privileged container configuration.
+</details>
 
-Let's start with blocking container escalation. For that you can deploy a policy as shown below:
+## Kubewarden replacements for PSP
 
-```console
+Now we will create Kubewarden policies to achieve the same goal.
+You enforce each rule with a separate Kubewarden policy.
+So, in this example, you need a separate policy for the enforcement of each of:
+
+- privileged escalation
+- user and group configuration
+- host namespaces
+- privileged container configuration.
+
+### Blocking container privilege escalation
+
+You can deploy a policy as shown below:
+
+<details>
+
+<summary><code>kubectl</code> command for policy deployment</summary>
+
+```shell
 $ kubectl apply -f - <<EOF
-apiVersion: policies.kubewarden.io/v1alpha2
+apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
-  name: psp-allowprivilegeescalation
+  name: psp-allow-privilege-escalation
 spec:
-  module: registry://ghcr.io/kubewarden/policies/allow-privilege-escalation-psp:v0.1.11
+  module: ghcr.io/kubewarden/policies/allow-privilege-escalation-psp:v0.2.6
   rules:
     - apiGroups:
         - ""
@@ -77,9 +98,16 @@ spec:
 EOF
 ```
 
-If you notice, we have specified `default_allow_privilege_escalation` to assume a value `false`. Once this policy starts running, it will restrict pods trying to run with more privileges than the parent container by default.
+</details>
 
-```console
+In that command, we have specified `default_allow_privilege_escalation` to be `false`.
+This policy restricts pods that try to run with more privileges than the parent container.
+
+<details>
+
+<summary>Output from <code>kubectl</code> that attempts to raise privilege</summary>
+
+```shell
 $ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -94,19 +122,27 @@ spec:
   - name: sidecar
     image: sidecar
 EOF
-Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-allowprivilegeescalation.kubewarden.admission" denied the request: one of the containers has privilege escalation enabled
+Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-allow-privilege-escalation.kubewarden.admission" denied the request: one of the containers has privilege escalation enabled
 ```
 
-Now, to enforce the user and groups configuration, you can use the [user-group-psp policy](https://github.com/kubewarden/user-group-psp-policy)
+</details>
 
-```console
+### User and group configuration
+
+Now, to enforce the user and group configuration, you can use the [user-group-psp policy](https://github.com/kubewarden/user-group-psp-policy)
+
+<details>
+
+<summary><code>kubectl</code> command to use <code>user-group-psp-policy</code></summary>
+
+```shell
 $ kubectl apply -f - <<EOF
-apiVersion: policies.kubewarden.io/v1alpha2
+apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
-  name: psp-usergroup
+  name: psp-user-group
 spec:
-  module: registry://ghcr.io/kubewarden/policies/user-group-psp:v0.2.0
+  module: ghcr.io/kubewarden/policies/user-group-psp:v0.4.9
   rules:
     - apiGroups:
         - ""
@@ -129,11 +165,18 @@ spec:
 EOF
 ```
 
-Notice the policy is configured as `mutation: true`. This is required because the policy will add [supplementalGroups](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups) when the user does not define them.
+</details>
+
+You should configure the policy with `mutation: true`.
+It's required because the policy will add [supplementalGroups](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups) when the user does not define them.
 
 So, now users cannot deploy pods running as root:
 
-```console
+<details>
+
+<summary>Example output where <code>runAsNonRoot: false</code></summary>
+
+```shell
 $ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -147,10 +190,16 @@ spec:
       runAsNonRoot: false
       runAsUser: 0
 EOF
-Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-usergroup-fb836.kubewarden.admission" denied the request: RunAsNonRoot should be set to true
+Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-user-group-fb836.kubewarden.admission" denied the request: RunAsNonRoot should be set to true
 ```
 
-```console
+</details>
+
+<details>
+
+<summary>Example output where <code>runAsUser: 0</code></summary>
+
+```shell
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -164,12 +213,18 @@ spec:
       runAsNonRoot: true
       runAsUser: 0
 EOF
-Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-usergroup-fb836.kubewarden.admission" denied the request: Invalid user ID: cannot run container with root ID (0)
+Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-user-group-fb836.kubewarden.admission" denied the request: Invalid user ID: cannot run container with root ID (0)
 ```
 
-Also, the example below also demonstrates the addition of a [Supplemental group](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups), despite it not being defined by us.
+</details>
 
-```console
+This example below shows the addition of a [supplemental group](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups), despite it not being defined by us.
+
+<details>
+
+<summary>Example addition of a supplemental group</summary>
+
+```shell
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -190,16 +245,27 @@ $ kubectl get pods -o json nginx | jq ".spec.securityContext"
 
 ```
 
-To replace the PSP configuration that blocks privileged containers, it's necessary to deploy the [pod-privileged policy](https://github.com/kubewarden/pod-privileged-policy). This policy does not require any settings. Once running, it will block privileged pods.
+</details>
 
-```console
+### Privileged container configuration
+
+You need to replace the older PSP configuration that blocks privileged containers.
+It's necessary to deploy the [pod-privileged policy](https://github.com/kubewarden/pod-privileged-policy).
+This policy does not need any settings.
+Once running, it will block privileged pods.
+
+<details>
+
+<summary>Applying the <code>pod-privileged-policy</code></summary>
+
+```shell
 $ kubectl apply -f - <<EOF
-apiVersion: policies.kubewarden.io/v1alpha2
+apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
   name: psp-privileged
 spec:
-  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.10
+  module: ghcr.io/kubewarden/policies/pod-privileged:v0.2.7
   rules:
     - apiGroups:
         - ""
@@ -215,9 +281,15 @@ spec:
 EOF
 ```
 
+</details>
+
 To test the policy, we can try running a pod with privileged configuration enabled:
 
-```console
+<details>
+
+<summary>Pod run with privileged configuration enabled</summary>
+
+```shell
 $ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -237,19 +309,25 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-privileged.kubewarden.admission" denied the request: User 'system:admin' cannot schedule privileged containers
 ```
 
-To complete the PSP migration exercise, it's necessary to disable host namespace sharing.
-To do that, we shall be using the [`host-namespace-psp` policy](https://github.com/kubewarden/host-namespaces-psp-policy).
-It allows the cluster administrator to block IPC, PID, and network namespaces individually and set the ports
-that the pods can be exposed on the host IP.
+</details>
 
-```console
+To finish the PSP migration exercise, you need to disable host namespace sharing.
+For that, we shall be using the [`host-namespace-psp` policy](https://github.com/kubewarden/host-namespaces-psp-policy).
+It allows the cluster administrator to block IPC, PID, and network namespaces individually.
+It also sets the ports that the pods can be open on, on the host IP.
+
+<details>
+
+<summary>Disabling namespace sharing and setting ports</summary>
+
+```shell
 $ kubectl apply -f - <<EOF
-apiVersion: policies.kubewarden.io/v1alpha2
+apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
   name: psp-hostnamespaces
 spec:
-  module: registry://ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.2
+  module: pull ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.6
   rules:
     - apiGroups:
         - ""
@@ -271,9 +349,16 @@ spec:
 EOF
 ```
 
-Again, let's validate the policy. The pod should not be able to share host namespaces:
+</details>
 
-```console
+We can validate the policy.
+The pod should not be able to share host namespaces:
+
+<details>
+
+<summary>Blocking namespace example</summary>
+
+```shell
 $ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -295,8 +380,7 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-hostnamespaces.kubewarden.admission" denied the request: Pod has IPC enabled, but this is not allowed
 ```
 
-
-```console
+```shell
 $ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -317,7 +401,7 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-hostnamespaces.kubewarden.admission" denied the request: Pod has host network enabled, but this is not allowed
 ```
 
-```console
+```shell
 $ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -338,9 +422,16 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-hostnamespaces.kubewarden.admission" denied the request: Pod has host PID enabled, but this is not allowed
 ```
 
-The pod should be only able to expose the port 443 and should throw an error when other port numbers are configured against the hostPort section.
+</details>
 
-```console
+In this last example, the pod should only be able to expose port 443.
+If other ports are configured in `hostPorts` then an error should happen.
+
+<details>
+
+<summary>Attempting to use port 80 in <code>hostPorts</code></summary>
+
+```shell
 $ kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -361,56 +452,75 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-hostnamespaces.kubewarden.admission" denied the request: Pod is using unallowed host ports in containers
 ```
 
+</details>
+
 ## Mapping Kuberwarden policies to PSP fields
 
-The following table show which Kubewarden policy can be used to replace each PSP configuration
+This table maps PSP configuration fields to corresponding Kubewarden policies.
 
-| PSP field      | Kubewarden equivalent policy  |
-|--------------|-------------------------------  |
-| [privileged](https://kubernetes.io/docs/concepts/security/pod-security-policy/#privileged)                      | [pod-privileged-policy](https://github.com/kubewarden/pod-privileged-policy) |
-| [hostPID](https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces)                         | [host-namespaces-psp-policy](https://github.com/kubewarden/host-namespaces-psp-policy) |
-| [hostIPC](https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces)                         | [host-namespaces-psp-policy](https://github.com/kubewarden/host-namespaces-psp-policy) |
-| [hostNetwork](https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces)                     | [host-namespaces-psp-polic](https://github.com/kubewarden/host-namespaces-psp-policy)|
-| [hostPorts](https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces)                       | [host-namespaces-psp-policy](https://github.com/kubewarden/host-namespaces-psp-policy) |
-| [volumes](https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems)                         | [volumes-psp-policy](https://github.com/kubewarden/volumes-psp-policy) |
-| [allowedHostPaths](https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems)                | [hostpaths-psp-policy](https://github.com/kubewarden/hostpaths-psp-policy) |
-| [readOnlyRootFilesystem](https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems)          | [readonly-root-filesystem-psp-policy](https://github.com/kubewarden/readonly-root-filesystem-psp-policy) |
-| [fsgroup](https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems)                         | [allowed-fsgroups-psp-policy ](https://github.com/kubewarden/allowed-fsgroups-psp-policy ) |
-| [allowedFlexVolumes](https://kubernetes.io/docs/concepts/security/pod-security-policy/#flexvolume-drivers)              | [flexvolume-drivers-psp-policy](https://github.com/kubewarden/flexvolume-drivers-psp-policy) |
-| [runAsUser](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups)                       | [user-group-psp-policy](https://github.com/kubewarden/user-group-psp-policy) |
-| [runAsGroup](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups)                      | [user-group-psp-policy](https://github.com/kubewarden/user-group-psp-policy) |
-| [supplementalGroups](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups)              | [user-group-psp-policy ](https://github.com/kubewarden/user-group-psp-policy ) |
-| [allowPrivilegeEscalation](https://kubernetes.io/docs/concepts/security/pod-security-policy/#privilege-escalation)        | [allow-privilege-escalation-psp-policy ](https://github.com/kubewarden/allow-privilege-escalation-psp-policy ) |
-| [defaultAllowPrivilegeEscalation](https://kubernetes.io/docs/concepts/security/pod-security-policy/#privilege-escalation) | [allow-privilege-escalation-psp-policy](https://github.com/kubewarden/allow-privilege-escalation-psp-policy) |
-| [allowedCapabilities](https://kubernetes.io/docs/concepts/security/pod-security-policy/#capabilities)             | [capabilities-psp-policy](https://github.com/kubewarden/capabilities-psp-policy) |
-| [defaultAddCapabilities](https://kubernetes.io/docs/concepts/security/pod-security-policy/#capabilities)          | [capabilities-psp-policy](https://github.com/kubewarden/capabilities-psp-policy) |
-| [requiredDropCapabilities](https://kubernetes.io/docs/concepts/security/pod-security-policy/#capabilities)        | [capabilities-psp-policy](https://github.com/kubewarden/capabilities-psp-policy) |
-| [seLinux](https://kubernetes.io/docs/concepts/security/pod-security-policy/#selinux)                         | [selinux-psp-policy](https://github.com/kubewarden/selinux-psp-policy) |
-| [allowedProcMountTypes](https://kubernetes.io/docs/concepts/security/pod-security-policy/#allowedprocmounttypes)           | [allowed-proc-mount-types-psp-policy](https://github.com/kubewarden/allowed-proc-mount-types-psp-policy) |
-| [apparmor](https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor)                        | [apparmor-psp-policy ](https://github.com/kubewarden/apparmor-psp-policy ) |
-| [seccomp](https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor)                         | [seccomp-psp-policy ](https://github.com/kubewarden/seccomp-psp-policy ) |
-| [forbiddenSysctls](https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor)                | [sysctl-psp-policy ](https://github.com/kubewarden/sysctl-psp-policy ) |
-| [allowedUnsafeSysctls](https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor)            | [sysctl-psp-policy ](https://github.com/kubewarden/sysctl-psp-policy ) |
+| PSP field                                                                                                                 | Kubewarden equivalent policy                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| [privileged](https://kubernetes.io/docs/concepts/security/pod-security-policy/#privileged)                                | [pod-privileged-policy](https://github.com/kubewarden/pod-privileged-policy)                                  |
+| [hostPID](https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces)                              | [host-namespaces-psp-policy](https://github.com/kubewarden/host-namespaces-psp-policy)                        |
+| [hostIPC](https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces)                              | [host-namespaces-psp-policy](https://github.com/kubewarden/host-namespaces-psp-policy)                        |
+| [hostNetwork](https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces)                          | [host-namespaces-psp-polic](https://github.com/kubewarden/host-namespaces-psp-policy)                         |
+| [hostPorts](https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces)                            | [host-namespaces-psp-policy](https://github.com/kubewarden/host-namespaces-psp-policy)                        |
+| [volumes](https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems)                     | [volumes-psp-policy](https://github.com/kubewarden/volumes-psp-policy)                                        |
+| [allowedHostPaths](https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems)            | [hostpaths-psp-policy](https://github.com/kubewarden/hostpaths-psp-policy)                                    |
+| [readOnlyRootFilesystem](https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems)      | [readonly-root-filesystem-psp-policy](https://github.com/kubewarden/readonly-root-filesystem-psp-policy)      |
+| [fsgroup](https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems)                     | [allowed-fsgroups-psp-policy ](https://github.com/kubewarden/allowed-fsgroups-psp-policy)                     |
+| [allowedFlexVolumes](https://kubernetes.io/docs/concepts/security/pod-security-policy/#flexvolume-drivers)                | [flexvolume-drivers-psp-policy](https://github.com/kubewarden/flexvolume-drivers-psp-policy)                  |
+| [runAsUser](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups)                           | [user-group-psp-policy](https://github.com/kubewarden/user-group-psp-policy)                                  |
+| [runAsGroup](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups)                          | [user-group-psp-policy](https://github.com/kubewarden/user-group-psp-policy)                                  |
+| [supplementalGroups](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups)                  | [user-group-psp-policy ](https://github.com/kubewarden/user-group-psp-policy)                                 |
+| [allowPrivilegeEscalation](https://kubernetes.io/docs/concepts/security/pod-security-policy/#privilege-escalation)        | [allow-privilege-escalation-psp-policy ](https://github.com/kubewarden/allow-privilege-escalation-psp-policy) |
+| [defaultAllowPrivilegeEscalation](https://kubernetes.io/docs/concepts/security/pod-security-policy/#privilege-escalation) | [allow-privilege-escalation-psp-policy](https://github.com/kubewarden/allow-privilege-escalation-psp-policy)  |
+| [allowedCapabilities](https://kubernetes.io/docs/concepts/security/pod-security-policy/#capabilities)                     | [capabilities-psp-policy](https://github.com/kubewarden/capabilities-psp-policy)                              |
+| [defaultAddCapabilities](https://kubernetes.io/docs/concepts/security/pod-security-policy/#capabilities)                  | [capabilities-psp-policy](https://github.com/kubewarden/capabilities-psp-policy)                              |
+| [requiredDropCapabilities](https://kubernetes.io/docs/concepts/security/pod-security-policy/#capabilities)                | [capabilities-psp-policy](https://github.com/kubewarden/capabilities-psp-policy)                              |
+| [seLinux](https://kubernetes.io/docs/concepts/security/pod-security-policy/#selinux)                                      | [selinux-psp-policy](https://github.com/kubewarden/selinux-psp-policy)                                        |
+| [allowedProcMountTypes](https://kubernetes.io/docs/concepts/security/pod-security-policy/#allowedprocmounttypes)          | [allowed-proc-mount-types-psp-policy](https://github.com/kubewarden/allowed-proc-mount-types-psp-policy)      |
+| [apparmor](https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor)                                    | [apparmor-psp-policy ](https://github.com/kubewarden/apparmor-psp-policy)                                     |
+| [seccomp](https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor)                                     | [seccomp-psp-policy ](https://github.com/kubewarden/seccomp-psp-policy)                                       |
+| [forbiddenSysctls](https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor)                            | [sysctl-psp-policy ](https://github.com/kubewarden/sysctl-psp-policy)                                         |
+| [allowedUnsafeSysctls](https://kubernetes.io/docs/concepts/security/pod-security-policy/#apparmor)                        | [sysctl-psp-policy ](https://github.com/kubewarden/sysctl-psp-policy)                                         |
 
 ## PSP migration script
 
-The Kubewarden team has written a script that leverages the migration tool written
-by [AppVia](https://github.com/appvia/psp-migration), to migrate PSP
-automatically. The tool is capable of reading PSPs YAML and generate the equivalent
-policies in many different policy engines. Therefore, our simple script will migrate
-your PSPs to the equivalent Kuberwarden policies.
+The Kubewarden team has developed a script for PSP migration.
+It uses the migration tool from [AppVia](https://github.com/appvia/psp-migration).
+The AppVia tool reads a PSP YAML configuration.
+It then generates the corresponding policies.
+It does this for Kubewarden and other policy engines.
 
-The script is available in the [utils repository](https://github.com/kubewarden/utils/blob/main/scripts/psp-to-kubewarden)
-in the Kubewarden GitHub organization. It's quite simple. It will download the
-migration tool in the working directory and run it over all your PSPs printing
-the equivalent Kuberwarden policies definition in the standard output. Therefore,
-users can redirect the content to a file or to `kubectl` directly.
+:::caution
 
-The script will migrate the PSPs defined in `kubectl` default context.
-The Kubewarden policies will be printed to stdout. Thus, the users can
-apply it directly or save it for further inspection.  Let's take a look at an example:
+Currently, the AppVia migration tool generates out-of-date Kubewarden policies. Use with caution. We need a pull request for AppVia for which work is ongoing. Contact us for more information if you need to.
 
-In a cluster with the PSP blocking access to host namespaces, blocking privileged containers, not allowing privilege escalation, dropping all containers capabilities, listing the allowed volume types, defining the allowed user and groups to be used, controling the supplemental group applied to volumes and forcing containers to run in a read-only root filesystem:
+:::
+
+The script is available in the Kubewraden [utils](https://github.com/kubewarden/utils/blob/main/scripts/psp-to-kubewarden) repository.
+It downloads the AppVia migration tool into the working directory to use.
+It processes the PSPs defined in the `kubectl` default context.
+Then it prints the Kuberwarden policies definitions on the standard output.
+Users can redirect the content to a file or to `kubectl` directly.
+
+Let's take a look at an example. In a cluster with the PSP:
+
+- blocking access to host namespaces
+- blocking privileged containers
+- not allowing privilege escalation
+- dropping container capabilities
+- listing the allowed volume types
+- defining the allowed users and groups to be used
+- controlling the supplemental group applied to volumes
+- forcing containers to run in a read-only root filesystem
+
+The following YAML could be used.
+
+<details>
+
+<summary>The PSP configuration</summary>
 
 ```yaml
 apiVersion: policy/v1beta1
@@ -431,41 +541,41 @@ spec:
     - ALL
   # Allow core volume types.
   volumes:
-    - 'configMap'
-    - 'emptyDir'
-    - 'projected'
-    - 'secret'
-    - 'downwardAPI'
+    - "configMap"
+    - "emptyDir"
+    - "projected"
+    - "secret"
+    - "downwardAPI"
     # Assume that ephemeral CSI drivers & persistentVolumes set up by the cluster admin are safe to use.
-    - 'csi'
-    - 'persistentVolumeClaim'
-    - 'ephemeral'
+    - "csi"
+    - "persistentVolumeClaim"
+    - "ephemeral"
   runAsUser:
     # Require the container to run without root privileges.
-    rule: 'MustRunAsNonRoot'
+    rule: "MustRunAsNonRoot"
   seLinux:
     # This policy assumes the nodes are using AppArmor rather than SELinux.
-    rule: 'RunAsAny'
+    rule: "RunAsAny"
   supplementalGroups:
-    rule: 'MustRunAs'
+    rule: "MustRunAs"
     ranges:
       # Forbid adding the root group.
       - min: 1
         max: 65535
   fsGroup:
-    rule: 'MustRunAs'
+    rule: "MustRunAs"
     ranges:
       # Forbid adding the root group.
       - min: 1
         max: 65535
   readOnlyRootFilesystem: true
-
 ```
 
-The equivalent Kubewarden policies can be applied directly to a cluster with
-Kubewarden installed using the following command:
+</details>
 
-```console
+Kubewarden policies can be applied directly to a cluster using the following command:
+
+```shell
 $ ./psp-to-kubewarden | kubectl apply -f -
 Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
 Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
@@ -479,10 +589,19 @@ clusteradmissionpolicy.policies.kubewarden.io/psp-fsgroup-3b08e created
 clusteradmissionpolicy.policies.kubewarden.io/psp-defaultallowprivilegeescalation-b7e87 created
 ```
 
-If users want to inspect the policies before applying, it's possible to redirect
-the content to a file or review it directly in the console
+If users want to inspect the policies before applying, it's possible to redirect the content to a file or review it directly in the console
 
-```console
+To store the generated policies and view them:
+
+<details>
+
+<summary>
+<code>
+$ ./psp-to-kubewarden &gt; policies.yaml &amp;&amp; cat policies.yaml
+</code>
+</summary>
+
+```shell
 $ ./psp-to-kubewarden > policies.yaml
 $ cat policies.yaml
 ---
@@ -678,11 +797,13 @@ spec:
 
 ```
 
+</details>
+
 :::tip
 The policy names are generated by the PSP migration tool.
 You may want to change the name to something more meaningful.
 :::
 
 :::note
-This script works only in Linux x86_64 machines.
+This script only works in Linux x86_64 machines.
 :::
