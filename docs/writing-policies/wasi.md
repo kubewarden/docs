@@ -13,18 +13,23 @@ This page is meant to be used by Kubewarden maintainers/low level
 policy authors who want to experiment with bleeding edge WASM platforms.
 :::
 
+:::info
+Kubewarden WASI policies are supported starting from Kubewarden 1.7.0 release
+:::
+
 [WASI](https://wasi.dev/) is a WebAssembly standard that provides a set of
 interfaces that allow the execution of WebAssembly outside of the browser.
 
-Thanks to WASI, it's possible to compile to WebAssembly code that interacts
-with system primitives like stdout, stderr, stdin, environment variables and
+Thanks to WASI, it's possible to have a WebAssembly module that interacts
+with system primitives like STDOUT, STDERR, STDIN, environment variables and
 more.
 
 Actually, many of the compilers used to compile Kubewarden policies
 produce WebAssembly modules that targets the WASI interfaces.
 However, Kubewarden policies leverage the [waPC](https://github.com/wapc)
 project to implement a bi-directional communication between the
-policy and the policy runtime (`kwctl` or `policy-server`).
+policy and the policy runtime (`kwctl` or `policy-server`); this communication
+protocol is described [here](./spec/01-intro-spec.md).
 
 There are however some special cases when the waPC project cannot be
 used yet. In these limited circumstances it's possible to write a policy
@@ -35,11 +40,11 @@ just by using the interfaces provided by WASI.
 WASI policies should not be used under regular circumstances because
 they suffer from the following limitations:
 
-* No bi-directional communication, hence
+- No bi-directional communication, hence
   [host capabilities](./spec/host-capabilities/01-intro-host-capabilities.md)
   are not available
-* No [context-aware](../explanations/context-aware-policies.md) capabilities
-* Inferior performance at evaluation time compared to waPC/Rego based policies
+- No [context-aware](../explanations/context-aware-policies.md) capabilities
+- Inferior performance at evaluation time compared to waPC/Rego based policies
 
 ## Use cases
 
@@ -49,7 +54,7 @@ mechanism cannot be leveraged.
 Currently (as of June 2023), the only good reason to do that is when using the
 official Go compiler to produce a WebAssembly module.
 
-Starting from the 1.21 release, the Go compiler is able to produce WebAssembly
+Starting from the 1.21 release, the official Go compiler is able to produce WebAssembly
 modules targeting the WASI interface. However, these modules cannot yet
 export functions to the WebAssembly runtime. This limitation, tracked by
 [this dedicated issue](https://github.com/golang/go/issues/42372), prevents
@@ -70,9 +75,9 @@ This section describes how to write a plain WASI policy.
 The code has to be written as a regular CLI program. The program must take
 the following subcommands:
 
-* `validate`: this command is invoked by the policy engine to evaluate
+- `validate`: this command is invoked by the policy engine to evaluate
   an admission request
-* `validate-settings`: this command is invoked by the policy engine to
+- `validate-settings`: this command is invoked by the policy engine to
   validate the policy settings
 
 In both cases, the data to be validated is provided via the STDIN. The policy
@@ -84,9 +89,9 @@ The STDERR can be used to provide debug or error messages.
 The validation of a request is done when the policy CLI program is invoked using
 the `validate` subcommand.
 
-The STDIN will contain a JSON document describing a `ValidationRequest` object.
-The policy has to write on the STDOUT a JSON document that contains a
-`ValidationResponse`.
+The STDIN must contain a JSON document describing a `ValidationRequest` object.
+The policy must to write to the STDOUT a JSON document that contains a
+`ValidationResponse` object.
 
 Both the `ValidationRequest` and `ValidationResponse` objects are described
 [here](./spec/03-validating-policies.md).
@@ -96,8 +101,9 @@ Both the `ValidationRequest` and `ValidationResponse` objects are described
 Mutating policies work in the same way as validating ones. The policy CLI program
 is invoked using the `validate` subcommand.
 
-The STDIN will contain a JSON document describing a `ValidationRequest` object.
-The policy has to write on the STDOUT a JSON document that contains a `ValidationResponse`.
+The STDIN must contain a JSON document describing a `ValidationRequest` object.
+The policy must to write to the STDOUT a JSON document that contains a
+`ValidationResponse` object.
 
 Both the `ValidationRequest` and `ValidationResponse` objects are described
 [here](./spec/03-validating-policies.md).
@@ -111,10 +117,10 @@ This is described [here](./spec/04-mutating-policies.md).
 The policy must provide a subcommand named `validate-settings`. This command
 is used to validate the settings that have been provided by the user.
 
-The program will receive on the STDIN a JSON object that holds the settings
+The program must receive on the STDIN a JSON object that holds the settings
 provided by the user.
-It will then validate them and provide a `SettingsValidationResponse` on the
-STDOUT.
+It will then validate them and write a `SettingsValidationResponse` object
+to the STDOUT.
 
 The format of the `SettingsValidationResponse` and the settings validation
 process is described [here](./spec/02-settings.md).
@@ -132,4 +138,3 @@ executionMode: wasi
 
 [This GitHub repository](https://github.com/kubewarden/go-wasi-policy-template)
 contains a template of a Go-based policy that leverages the WASI protocol.
-contains a Kubewarden Policy written in Swift.
