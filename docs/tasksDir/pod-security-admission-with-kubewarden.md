@@ -1,50 +1,44 @@
 ---
-sidebar_label: "Using Pod Security Admission with Kubewarden"
-title: ""
+sidebar_label: "Pod Security Admission with KW"
+title: " Using Pod Security Admission with Kubewarden"
+description: Using Pod Security Admission with Kubewarden, since the Kubernetes 1.25 release.
+keywords: [kubewarden, pod security admission, pod security policy, kubernetes]
 ---
 
-# Using Pod Security Admission with Kubewarden
+Since Kubernetes 1.25, Pod Security Policies (PSP) have been removed.
+They're replaced by [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/) (PSA).
 
-Starting from Kubernetes 1.25 release, the Pod Security Policies have been removed
-and have been replaced by [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/),
-also known as *"PSA"*.
+PSA simplifies securing the Pods in Kubernetes clusters.
 
-Pod Security Admission has been created to simplify the process of securing Pods
-defined inside of Kubernetes clusters. Because of that it doesn't expose the
-same amount of configuration knobs provided by Pod Security Policies.
+PSA has three profiles for namespaces: `privileged`, `baseline`, and `restricted`.
 
-Pod Security Admission works at the Namespace level and provides three profiles
-that can be applied: `privileged`, `baseline` and `restricted`.
-The `privileged` profile has few limitations, while the `restricted` one is the
-one that tightens Pod permissions.
+The `privileged` profile has few limitations.
+The `restricted` profile tightens Pod permissions.
 
-In addition to choosing the profile to be used, the Kubernetes operators can decide
-what kind of action is going to be performed by Pod Security Admission controller
-once a violation is detected. The possible actions are: `enforce`, `audit` and
-`warn`.
+A PSA controller can perform actions when a violation is detected.
+The actions are: `enforce`, `audit`, and `warn` and can be configured.
 
-Pod Security Admission is not a full replacement for the old Pod Security Policies.
+<!--TODO:Still suffering these limitations? Next three paras may need update.-->
+PSA is not a full replacement for the old Pod Security Policies.
 Currently, with the Kubernetes 1.25 release, it suffers the following limitations:
 
 * No mutation capabilities
 * Higher level objects (like `Deployment`, `Job`) are evaluated only when the
   `audit` or `warn` modes are enabled
 
-A solution like Kubewarden can be used to **integrate** a Pod Security Admission
+A solution like Kubewarden can be used to **integrate** a PSA
 profile to workaround these limitations.
 
 :::note
-Kubewarden can be used to replace all the previous Pod Security Policies
-as shown [here](../tasksDir/psp-migration.md).
-However, the goal of this article is to demonstrate how Kubewarden can complement
-the new Pod Security Admission.
+You can use Kubewarden replace the previous PSP configuration as shown [here](../tasksDir/psp-migration.md).
+However, the goal of this article is to show how Kubewarden can complement the new PSA.
 :::
 
 ## Example
 
-Now let's take a look in the example creating a Namespace where the most restrictive Pod Security Admission policies are enforced:
+In this example we are creating a Namespace and applying the most restrictive PSA policies:
 
-```console
+```shell
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Namespace
@@ -57,13 +51,19 @@ EOF
 ```
 
 This PSA profile does not allow the creation of containers that run their
-application as root user.
-In other words, when defining a container, the `runAsNonRoot` attribute must be set to `true`
-and the `runAsUser` one cannot be set to `0`.
+application as the `root` user.
+When defining this container:
+
+- the `runAsNonRoot` attribute must be set to `true`
+- the `runAsUser` one cannot be set to `0`.
 
 Therefore, the following resource will not reach its desired state:
 
-```console
+<details>
+
+<summary><code>kubectl</code> command configuring a resource with <code>runAsUser: 0</code></summary>
+
+```shell
 kubectl apply -n my-namespace -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
@@ -98,10 +98,11 @@ spec:
 EOF
 ```
 
-If we check the Deployment, we can see the Pod Security Admission is preventing
-its Pod from being created:
+</details>
 
-```console
+If we check the deployment, we can see the PSA prevents the pod creation:
+
+```shell
 kubectl get deploy -n my-namespace nginx-deployment -o json | jq ".status.conditions[] | select(.reason == \"FailedCreate\")"
 {
   "lastTransitionTime": "2022-10-28T19:09:56Z",
@@ -113,7 +114,11 @@ kubectl get deploy -n my-namespace nginx-deployment -o json | jq ".status.condit
 }
 ```
 
-The user can fix this issue removing the `runAsUser` from the container definition:
+You can fix this by removing the `runAsUser: 0` from the container definition:
+
+<details>
+
+<summary><code>kubectl</code> command configuring a resource without <code>runAsUser: 0</code></summary>
 
 ```console
 kubectl apply -n my-namespace -f - <<EOF
@@ -150,20 +155,38 @@ spec:
 EOF
 ```
 
-This time the Pod Security Admission will allow the Pod to be created, but the Pod creation will still fail.
+</details>
 
-```console
+<!--TODO:Better technical description needed-->
+
+<!--
+
+Current sentence is
+
+Now PSA allows the pod to be created, but the Pod creation will still fail.
+
+Is this better?
+
+Now the PSA process passes pod creation but the Kubewarden process of pod creation fails.
+
+Still not great.
+
+-->
+
+Now PSA allows the pod to be created, but the Pod creation will still fail.
+
+```shell
 kubectl get pods -n my-namespace
 NAME                                READY   STATUS                       RESTARTS   AGE
 nginx-deployment-57d8568bbb-h4bx7   0/1     CreateContainerConfigError   0          47s
 
 ```
 
-That's happening because the container definition didn't specify which user should
-be used when starting a program inside of the container. That results with the
-the root user (`0`) being used, which is not allowed by the `runAsNonRoot` directive:
+It's because the container definition didn't specify a user to be used when starting a program inside the container.
+The default is to run as the root user.
+Which is not allowed by the `runAsNonRoot` directive:
 
-```console
+```shell
 kubectl get pods -n my-namespace nginx-deployment-57d8568bbb-h4bx7 -o json | jq ".status.containerStatuses"
 [
   {
@@ -184,22 +207,24 @@ kubectl get pods -n my-namespace nginx-deployment-57d8568bbb-h4bx7 -o json | jq 
 ]
 ```
 
-This is where Kubewarden can help. In this case the 
-[`user-group-policy`]
-(https://artifacthub.io/packages/kubewarden/user-group-psp/user-group-psp)
-policy can be used to mutate the Deployment definition, configuring a default
-user to be used to all the containers that omit this information.
-Or even enforcing a user ID range. Let's apply the policy:
-The policy even allows to set a user ID range:
+This is where Kubewarden can help.
+You can use the [`user-group-policy`](https://artifacthub.io/packages/kubewarden/user-group-psp/user-group-psp) policy to mutate the Deployment definition.
+This configures a default user for containers omitting that information.
 
 :::note
-This example assumes the Kubewarden stack is already installed inside of your
-Kubernetes cluster.
-See the [QuickStart](../quick-start.md) article
-for more details.
+
+You need the Kubewarden stack in the Kubernetes cluster for this example.
+See the [QuickStart](../quick-start.md) for more details.
+
 :::
 
-```console
+It's possible to enforce a user ID range:
+
+<details>
+
+<summary><code>kubectl</code> command enforcing a user id range</summary>
+
+```shell
 kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
@@ -232,16 +257,21 @@ spec:
 EOF
 ```
 
-Before moving forward, we have to wait for the policy to be active. This can be
-checked with the following command:
+</details>
 
-```console
+Before continuing, we have to wait for the policy to be active. This is checked with:
+
+```shell
 kubectl get clusteradmissionpolicy.policies.kubewarden.io/user-group-psp
 ```
 
-Once the policy is active, we can re-create the Deployment:
+Once the policy is active, we can recreate the deployment:
 
-```console
+<details>
+
+<summary><code>kubectl</code> command recreating the deployment</summary>
+
+```shell
 kubectl delete deployment -n my-namespace nginx-deployment && \
 kubectl apply -n my-namespace -f - <<EOF
 apiVersion: apps/v1
@@ -277,11 +307,13 @@ spec:
 EOF
 ```
 
-This time the Deployment definition is mutated by Kubewarden's policy, allowing
-the Pod to be started.
+</details>
+
+Now the deployment definition is mutated by Kubewarden's policy.
+This now allows the Pod to be started.
 The container defined inside of the Pod will have a default `runAsUser` value:
 
-```console
+```shell
 kubectl get pods -n my-namespace nginx-deployment-57d8568bbb-nv8fj -o json | jq ".spec.containers[].securityContext"
 {
   "allowPrivilegeEscalation": false,
@@ -298,13 +330,16 @@ kubectl get pods -n my-namespace nginx-deployment-57d8568bbb-nv8fj -o json | jq 
 }
 ```
 
-The Kubewarden integration can do even more in this scenario: it can
-validate the value of the `runAsUser` provided by the users.
+The Kubewarden integration can do more in this scenario.
+It can check the value of the `runAsUser` provided.
 
-For example, the following resource will be reject by the Kubewarden policy
-we previously enforced:
+This resource is rejected by the Kubewarden policy from earlier:
 
-```console
+<details>
+
+<summary><code>kubectl</code> command to show resource rejection</summary>
+
+```shell
 kubectl apply -n my-namespace -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
@@ -339,10 +374,11 @@ spec:
 EOF
 ```
 
-The rejection happens because the `runAsUser` value is set to `7000`,
-which is outside of the ranges allowed by the policy:
+</details>
 
-```console
+It's rejected because the `runAsUser` value is set to `7000`, which is outside the ranges allowed by the policy:
+
+```shell
 kubectl get deploy -n my-namespace nginx-deployment -o json | jq ".status.conditions[] | select(.reason == \"FailedCreate\")"
 {
   "lastTransitionTime": "2022-10-28T19:22:04Z",
@@ -356,8 +392,7 @@ kubectl get deploy -n my-namespace nginx-deployment -o json | jq ".status.condit
 
 ## Summary
 
-Pod Security Admission provide an easy way to secure Kubernetes clusters.
-The main goal of PSA is simplicity, because of that they do not offer all the
-power and flexibility of the previous Pod Security Policies.
+PSA provides an easy way to secure Kubernetes clusters.
+The main goal of PSA is simplicity and it doesn't provide the power and flexibility of the previous PSP.
 
-Kubewarden can be used together with Pod Security Admission to fill this gap.
+Using Kubewarden together with PSA fills this gap.
