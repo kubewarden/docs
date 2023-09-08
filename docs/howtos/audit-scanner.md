@@ -29,21 +29,21 @@ higher.
    ```console
    helm install kubewarden-crds kubewarden/kubewarden-crds
    ```
-   :::caution
-      To store the results of policy reports, you need to have the PolicyReport
-      Custom Resource Definitions (CRDs) available. If the necessary
-      PolicyReport CRDs are already in the cluster, you cannot install them
-      using the kubewarden-crds chart. In such case, you can disable the
-      installation of PolicyReport CRDs by setting `installPolicyReportCRDs` to
-      `false` in the chart. This means that the Kubewarden stack will not manage
-      those CRDs, and the responsibility will be with the administrator.
 
-      See more info about the CRDs at the [policy work group
-      repository](https://github.com/kubernetes-sigs/wg-policy-prototypes)
+   :::caution
+   To store the results of policy reports, you need to have the PolicyReport
+   Custom Resource Definitions (CRDs) available. If the necessary
+   PolicyReport CRDs are already in the cluster, you cannot install them
+   using the kubewarden-crds chart. In such case, you can disable the
+   installation of PolicyReport CRDs by setting `installPolicyReportCRDs` to
+   `false` in the chart. This means that the Kubewarden stack will not manage
+   those CRDs, and the responsibility will be with the administrator.
+
+   See more info about the CRDs at the [policy work group
+   repository](https://github.com/kubernetes-sigs/wg-policy-prototypes)
    :::
 
-2. Install the `kubewarden-controller` Helm chart. Remember to enable the audit
-   scanner component.
+2. Install the `kubewarden-controller` Helm chart.
 
    ```console
    helm install kubewarden-controller kubewarden/kubewarden-controller
@@ -55,7 +55,6 @@ higher.
    :::
 
    For more information about the installation of Kubewarden see the [Quick Start guide](../quick-start.md)
-
 
 By default, the Audit Scanner is implemented as a
 [Cronjob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs)
