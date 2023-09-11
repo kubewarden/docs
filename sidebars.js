@@ -87,13 +87,13 @@ module.exports = {
               items: [],
             },
             {
-              type: 'category',
-              label: 'WASI',
-              link: {type: 'doc', id: 'writing-policies/wasi'},
-              items: []
+              type: "category",
+              label: "WASI",
+              link: { type: "doc", id: "writing-policies/wasi" },
+              items: [],
             },
             "writing-policies/metadata",
-          ]
+          ],
         },
         {
           type: "category",
@@ -116,10 +116,16 @@ module.exports = {
         {
           Comparisons: ["explanations/opa-comparison"],
         },
-	"explanations/context-aware-policies",
+        "explanations/context-aware-policies",
         {
-          "Audit Scanner": [ "explanations/audit-scanner/audit-scanner", "explanations/audit-scanner/limitations", "explanations/audit-scanner/policy-reports"],
-	},
+          type: "category",
+          label: "Audit Scanner",
+          link: { type: "doc", id: "explanations/audit-scanner/audit-scanner" },
+          items: [
+            "explanations/audit-scanner/limitations",
+            "explanations/audit-scanner/policy-reports",
+          ],
+        },
       ],
       collapsed: true,
     },
@@ -150,7 +156,7 @@ module.exports = {
             },
           ],
         },
-	"howtos/audit-scanner"
+        "howtos/audit-scanner",
       ],
       collapsed: true,
     },
