@@ -138,3 +138,11 @@ executionMode: wasi
 
 [This GitHub repository](https://github.com/kubewarden/go-wasi-policy-template)
 contains a template of a Go-based policy that leverages the WASI protocol.
+
+## Demo policy
+
+The [`kyverno-dsl`](https://github.com/kubewarden/kyverno-dsl-policy) is currently written
+as a Kubewarden WASI policy.
+
+This policy makes use of the Kyverno Go libraries, which are too complex to be compiled with
+the TinyGo compilier. Because of that the policy has to be built using the official Go compiler.
