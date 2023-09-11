@@ -67,7 +67,7 @@ Furthermore, policies in Kubewarden now support two optional annotations:
   policy based on a specific domain or purpose, such as `PSP`, `compliance`, or
   `performance`.
 
-See the policy authors [docs](../writing-policies/index.md) for more info.
+See the policy authors [docs](../../writing-policies/index.md) for more info.
 
 ## Permissions and ServiceAccounts
 
