@@ -20,7 +20,7 @@ A PSA controller performs actions on violation detection.
 The actions are: `enforce`, `audit`, and `warn`.
 They can be configured.
 
-With the Kubernetes 1.26 release, the PSA controller has  the following limitations:
+At the time of writing, with Kubernetes 1.28, the PSA controller has  the following limitations:
 
 - No mutation capabilities
 - Higher level objects (like `Deployment`, `Job`) are evaluated only when the `audit` or `warn` modes are enabled
