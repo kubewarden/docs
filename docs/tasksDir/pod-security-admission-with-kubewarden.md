@@ -13,7 +13,7 @@ PSA simplifies securing the Pods in Kubernetes clusters.
 PSA has three profiles (described [in Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/)) for namespaces:
 
 - **privileged**, providing the widest range of permissions
-- **baseline**, to prevent now privilege escalations
+- **baseline**, to prevent new privilege escalations
 - **restricted**, restricted to harden Pods
 
 A PSA controller performs actions on violation detection.
