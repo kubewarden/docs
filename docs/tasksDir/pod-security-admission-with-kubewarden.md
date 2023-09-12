@@ -120,7 +120,7 @@ You can fix this by removing the `runAsUser: 0` from the container definition:
 
 <summary><code>kubectl</code> command configuring a resource without <code>runAsUser: 0</code></summary>
 
-```console
+```shell
 kubectl apply -n my-namespace -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
