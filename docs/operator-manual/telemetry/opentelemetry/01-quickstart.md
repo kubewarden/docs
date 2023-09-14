@@ -16,8 +16,8 @@ By following this documentation, we will integrate OpenTelemetry using the follo
 - Each Pod of the Kubewarden stack will have a OpenTelemetry sidecar.
 - The sidecar receives tracing and monitoring information from the Kubewarden component via the OpenTelemetry Protocol (OTLP)
 - The OpenTelemetry collector will:
-    - Send the trace events to a central Jaeger instance
-    - Expose Prometheus metrics on a specific port
+  - Send the trace events to a central Jaeger instance
+  - Expose Prometheus metrics on a specific port
 
 For more information about the other deployment modes, please refer to the [OpenTelemetry official
 documentation](https://opentelemetry.io/docs/).
@@ -96,7 +96,7 @@ with Cert Manager, [see the compat chart](https://github.com/open-telemetry/open
 We will install the latest cert-manager Helm chart:
 
 :::note
-At time of writing the latest cert-manager chart version is `v1.11.2`
+At time of writing the latest cert-manager chart version is `v1.13.0`
 :::
 
 ```console
@@ -112,7 +112,7 @@ helm install --wait \
 Once cert-manager is up and running, the OpenTelemetry operator Helm chart can be installed in this way:
 
 :::note
-At time of writing the latest OpenTelemetry chart version is `0.29.0`
+At time of writing the latest OpenTelemetry operator chart version is `0.37.0`
 :::
 
 ```console

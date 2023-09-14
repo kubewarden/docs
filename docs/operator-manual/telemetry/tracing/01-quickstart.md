@@ -31,7 +31,7 @@ Cert Manager, [see the compat chart](https://github.com/jaegertracing/helm-chart
 To install the Helm chart:
 
 :::note
-At time of writing the latest chart version is `2.43.0`
+At time of writing the latest chart version is `2.46.2`
 
 :::
 
@@ -105,7 +105,7 @@ Now we can deploy the rest of the Kubewarden stack. The official
 want this PolicyServer instance to have tracing enabled.
 
 In order to do that, we have to specify some extra values for the
-`kubewarden-controller` chart.  Let's create a `values.yaml` file with the
+`kubewarden-controller` chart. Let's create a `values.yaml` file with the
 following contents:
 
 ```yaml

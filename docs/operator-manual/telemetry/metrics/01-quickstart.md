@@ -51,6 +51,16 @@ prometheus:
       endpoints:
         - port: metrics
           interval: 10s
+    - name: kubewarden-controller
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: kubewarden-controller
+      namespaceSelector:
+        matchNames:
+          - kubewarden
+      endpoints:
+        - port: metrics
+          interval: 10s
 ```
 
 The `prometheus-operator` deployed as part of this Helm chart defines the concept of [Service
@@ -58,15 +68,15 @@ Monitors](https://github.com/prometheus-operator/prometheus-operator/blob/master
 used to declaratively define which services should be monitored by Prometheus.
 
 In our case, we are adding a Service monitor targeting the `kubewarden` namespace, for services that
-match labels `app=kubewarden-policy-server-default`. This way, the Prometheus Operator is able to
-inspect which Kubernetes Endpoints are tied to services matching this conditions. The operator will
-then take care of generating a valid configuration file for Prometheus, and reloading it
+match labels `app=kubewarden-policy-server-default` and `app.kubernetes.io/name: kubewarden-controller`.
+This way, the Prometheus Operator is able to inspect which Kubernetes Endpoints are tied to services matching this conditions.
+The operator will then take care of generating a valid configuration file for Prometheus, and reloading it
 automatically after updating its configuration file.
 
 Install the Prometheus stack Helm Chart :
 
 :::note
-At time of writing the latest chart version is `45.27.1`
+At time of writing the latest chart version is `51.0.2`
 :::
 
 ```console
@@ -182,18 +192,18 @@ Once you have the file in your machine you should access the Grafana dashboard a
 [import it](https://grafana.com/docs/grafana/latest/dashboards/export-import/#import-dashboard).
 Visit `/dashboard/import` in the Grafana dashboard and follow these steps:
 
-  1. Copy the JSON file contents and paste them into the `Import via panel json` box in the Grafana UI
-  2. Click the `Load` button
-  3. Choosing `Prometheus` as the source
-  4. Click the `Import` button
+1. Copy the JSON file contents and paste them into the `Import via panel json` box in the Grafana UI
+2. Click the `Load` button
+3. Choosing `Prometheus` as the source
+4. Click the `Import` button
 
 Another option is import it directly from the Grafana.com website. For this:
 
-  1. Copy the dashboard ID from the [dashboard page](https://grafana.com/grafana/dashboards/15314),
-  2. Paste it in the `Import via grafana.com` field
-  3. Click the `load` button.
-  4. After importing the dashboard, define the Prometheus data source to use and finish
-the import process.
+1. Copy the dashboard ID from the [dashboard page](https://grafana.com/grafana/dashboards/15314),
+2. Paste it in the `Import via grafana.com` field
+3. Click the `load` button.
+4. After importing the dashboard, define the Prometheus data source to use and finish
+   the import process.
 
 You should be able to see the dashboard similar to this:
 
@@ -202,10 +212,8 @@ You should be able to see the dashboard similar to this:
 ![Dashboard 3](/img/grafana_dashboard_3.png)
 ![Dashboard 4](/img/grafana_dashboard_4.png)
 
-
 The Grafana dashboard has panes showing the state of all
 the policies managed by Kubewarden. Plus it has policy-specific panels.
 
 Policy detailed metrics can be obtained by changing the value of the `policy_name`
 variable to match the name of the desired policy.
-
