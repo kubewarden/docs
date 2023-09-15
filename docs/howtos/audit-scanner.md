@@ -77,7 +77,7 @@ This will install only part of the Policy Reporter upstream chart, the UI, which
 of the PolicyReports and ClusterPolicyReports in cluster.
 See [here](../explanations/audit-scanner) more information about the Policy Reporter UI.
 
-For now, the Policy Reporter UI is only exposed as a ClusterIP service under `kubewarden-controller-ui` in the namespace
+For now, the Policy Reporter UI is only exposed as a ClusterIP service with name `kubewarden-controller-ui` in the namespace
 where the `kubewarden-controller` chart was installed. Users need to provide their own Ingress configuration.
 
 For a quick look or debugging, one can setup a port-forwarding to the service with:
