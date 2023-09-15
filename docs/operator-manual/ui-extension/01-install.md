@@ -19,7 +19,10 @@ The Kubewarden UI is installed as a global extension, however, the Kubewarden co
 For air-gapped installations, follow [these steps](#airgap-installation).
 :::
 
-Within the Extensions page, click on the "Enable" button and select the option to add the Rancher Extensions Repository, once enabled the "Kubewarden" extension item will appear automatically. Click on this item to install the extension. Once installed, you will then be able to install Kubewarden into your desired Cluster.
+Within the Extensions page, click on the "Enable" button and select the option to add the Rancher Extensions Repository.
+Once enabled the "Kubewarden" extension item will appear automatically. 
+Click on this item to install the extension. 
+Once installed, you will then be able to install Kubewarden into your desired Cluster.
 
 ### Install Kubewarden
 
@@ -71,15 +74,17 @@ For installing additional features, follow the instructions in these docs to inc
 This requires Rancher Manager version `v2.8.0` or greater.
 :::
 
-As Kubewarden is considered a Rancher Official Extension, the Rancher team provides a mechanism to automatically generate an Extension Catalog Image that will be added to the `rancher-images.txt` file when [installing Rancher Manager](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/air-gapped-helm-cli-install/publish-images#1-find-the-required-assets-for-your-rancher-version) for air-gapped instances.
+As Kubewarden is considered a Rancher Official Extension, the Rancher team provides a mechanism to automatically generate an Extension Catalog Image.
+This will be added to the `rancher-images.txt` file when [installing Rancher Manager](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/air-gapped-helm-cli-install/publish-images#1-find-the-required-assets-for-your-rancher-version) for air-gapped instances.
 
-Once this image has been mirrored to a registry that is accessible to your air-gapped cluster, you will be able to import the image within the Rancher UI, and this will create a local Helm repository with the Kubewarden UI chart for installation.
+Once this image has been mirrored to a registry that is accessible to your air-gapped cluster, you will be able to import the image within the Rancher UI.
+This creates a local Helm repository with the Kubewarden UI chart for installation.
 
 ### Installation Steps
 
 1. [Create](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-resources-setup/secrets) a registry secret within the `cattle-ui-plugin-system` namespace. Enter the domain of the image address in the **Registry Domain Name** field.
 
-1. Navigate back to the **Extensions** page (e.g. `https://cluster-ip/dashboard/c/local/uiplugins`).
+1. Navigate back to the **Extensions** page (for example, `https://cluster-ip/dashboard/c/local/uiplugins`).
 
 1. On the top right, click **⋮ > Manage Extension Catalogs**.
 ![Manage Catalogs](/img/ui_airgap_01.png)
