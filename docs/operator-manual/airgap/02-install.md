@@ -121,6 +121,28 @@ helm install --wait -n kubewarden \
   --set global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
 ```
 
+:::caution
+If you want to use the Policy Reported subchart available in the
+`kubewarden-controller` chart you need to define other values specific for the
+subchart in an air-gapped environment. See an example below:
+
+```console
+helm install --wait -n kubewarden kubewarden-controller kubewarden-controller.tgz \
+	--set global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \
+	--set auditScanner.policyReporter=true \
+	--set policy-reporter.image.registry=<REGISTRY.YOURDOMAIN.COM:PORT> \
+	--set policy-reporter.ui.image.registry=<REGISTRY.YOURDOMAIN.COM:PORT> \
+	--set policy-reporter.image.repository=kyverno/policy-reporter \
+	--set policy-reporter.ui.image.repository=kyverno/policy-reporter-ui
+```
+
+Note that is necessary to define `auditScanner.policyReporter` to enable the
+subchart and 4 more additional values to configure the registry and repository
+where the Policy Reporter images are stored. For more information about the
+policy report subchart values take a look in [chart
+repository](https://github.com/kyverno/policy-reporter/tree/policy-reporter-2.19.4/charts/policy-reporter).
+:::
+
 ```
 helm install --wait -n kubewarden \
   kubewarden-defaults kubewarden-defaults.tgz \
