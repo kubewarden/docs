@@ -80,10 +80,28 @@ By default, the Policy Reporter UI is only exposed as a ClusterIP service with
 name `kubewarden-controller-ui` in the namespace where the
 `kubewarden-controller` chart was installed.
 
-Users can enable an Ingress via the subchart configuration (see the `ingress`
+#### Ingress
+
+Users can provide their own Ingress configuration, or enable an Ingress via the subchart configuration (see the `ingress`
 config of the UI subchart
-[here](https://github.com/kyverno/policy-reporter/blob/policy-reporter-2.19.4/charts/policy-reporter/charts/ui/values.yaml#L172-L189)),
-or provide their own Ingress configuration.
+[here](https://github.com/kyverno/policy-reporter/blob/policy-reporter-2.19.4/charts/policy-reporter/charts/ui/values.yaml#L172-L189)).
+
+See this example of an Ingress configuration via the subchart:
+
+```yaml
+auditScanner:
+  policyReporter: true
+policy-reporter: # subchart values settings
+  ingress:
+    enabled: true
+    hosts:
+      - host: "*.local"
+        paths:
+          - path: /ui
+            pathType: Exact
+```
+
+#### Port-forwarding
 
 For a quick look or debugging, one can setup a port-forwarding to the service with:
 
