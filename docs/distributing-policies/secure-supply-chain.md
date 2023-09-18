@@ -1,98 +1,111 @@
 ---
-sidebar_label: "Secure Supply Chain"
-title: ""
+sidebar_label: "Secure supply chain"
+title: "Secure supply chain"
+description: A secure supply chain infrastructure using Kubewarden.
+keywords: [kubewarden, kubernetes, secure supply chain, infrastructure]
 ---
 
-# Secure Supply Chain
+A secure supply chain infrastructure can verify the validity of its parts, or links.
+It lets users and developers show the chain of custody of its software components, or artifacts.
+It's an active approach to mitigate security issues.
 
-A Secure Supply Chain infrastructure allows software developers and users to ensure
-the validity of the artefacts' chain of custody, thus mitigating
-security issues in their environments. The goal of the [Sigstore project](https://sigstore.dev/)
-is to provide the tools and infrastructure for validating the integrity of the supply chain.
-Kubewarden leverages the [`cosign`](https://github.com/sigstore/cosign) utility together
-with the [fulcio](https://github.com/SigStore/fulcio) and [rekor](https://github.com/sigstore/rekor)
-infrastructure offered by the Sigstore project to bring these security measures to its users.
+The [Sigstore](https://sigstore.dev/) project provides tools and infrastructure for this.
+It's for validating the integrity of the artifact supply chain.
 
-Therefore, cluster operators can configure Kubewarden to only run policies signed
-by entities that they trust while policy developers can sign their policies and
-publish them in a registry.
+Kubewarden uses [`cosign`](https://github.com/sigstore/cosign) together with the [fulcio](https://github.com/SigStore/fulcio) and [rekor](https://github.com/sigstore/rekor) infrastructure offered by the Sigstore project.
+
+Cluster operators can configure Kubewarden to only run policies signed by trusted entities.
+Policy developers can sign their policies and publish them in a registry.
 
 ## Prerequisites
 
-In the following sections, we will need a few tools to be installed so that
-users can sign and verify OCI artefacts signatures. For key-based signing, the examples demonstrate
-the use of [`cosign`](https://docs.sigstore.dev/cosign/installation/) and [`kwctl`](https://github.com/kubewarden/kwctl) utilities for signing and inspecting policies.
+In the following sections, you need a few tools to be installed.
+These are so users can sign and verify OCI artifacts signatures.
+The examples show the use of [`cosign`](https://docs.sigstore.dev/cosign/installation/) and [`kwctl`](https://github.com/kubewarden/kwctl) utilities for signing and inspecting policies.
 
-Users may also want to leverage GitHub to sign their policies. In which case, they can choose to install and use
-[Github actions](https://docs.sigstore.dev/cosign/installation/#github-action)
+Users may also want to use GitHub to sign their policies. In which case, they need to install [Github actions](https://docs.sigstore.dev/cosign/installation/#github-action)
 
-Keyless signing has been demonstrated using the default [fulcio](https://github.com/SigStore/fulcio)
+Keyless signing uses the default [fulcio](https://github.com/SigStore/fulcio)
 and [rekor](https://github.com/sigstore/rekor) instances provided by the
-Sigstore project. Users may choose to utilise their own
-infrastructure by checking the Sigstore project documentation for more details.
-
+Sigstore project.
+Check the Sigstore documentation for details on how to use your own infrastructure for this, if needed.
 
 ## Signing policies
 
-Kubewarden recommends using Sigstore's [cosign](https://github.com/sigstore/cosign) utility
-for signing policies. This subsection details a key-based method of signing policies
-in which, users need to generate a private-public key pair. The generated keys help
-in verifying whether the signed artefacts came from the expected user i.e. the
-owner of the keys. Using the `cosign generate-key-pair` command, as illustrated
-below, it is possible to generate the aforementioned keypair.
+Kubewarden recommends using Sigstore's [cosign](https://github.com/sigstore/cosign) utility to signing policies.
+This section shows a key-based method of signing policies.
+Users need to generate a private-public key-pair for this.
+The generated keys help to verify if the signed artifacts came from the expected user.
+To generate this key-pair use this `cosign generate-key-pair` command:
 
 ```bash
 cosign generate-key-pair
-Enter password for private key:
-Enter password for private key again:
+```
+
+Resulting in a prompt to type and verify a password:
+
+```console
+Enter password for private key: ●●●●●●●●
+Enter password for private key again: ●●●●●●●●
 Private key written to cosign.key
 Public key written to cosign.pub
 ```
 
-Once the keys are generated, users can use it to sign policies.
+Now you can use this key to sign policies.
 
-> **WARNING**: The private key file, `cosign.key`, should not be shared. This
-> is a secret file that should be used only by the owner of the key for signing policies.
+The private key file, `cosign.key`, shouldn't be shared.
+This is a secret file only for use by the key owner for signing policies.
 
-To sign a policy users can execute the `cosign sign` command passing the `--key`
-command line argument with their private key file:
+To sign a policy you can use `cosign sign` passing the `--key` command line argument with your private key file:
 
 ```bash
 cosign sign --key cosign.key ghcr.io/jvanz/policies/user-group-psp:latest
+```
+
+Resulting in a prompt for the password, for the specified private key:
+
+```console
 an error occurred: no provider found for that key reference, will try to load key from disk...
-Enter password for private key:
+Enter password for private key: ●●●●●●●●
 Pushing signature to: ghcr.io/jvanz/policies/user-group-psp
 ```
 
-This command will sign the policy by creating a new signature object. The signature
-object is then uploaded into the registry, next to the policy. Now the policy is ready to be used
-in a Kubewarden installation with signature verification enabled.
+This command signs the policy by creating a new signature object.
+The signature object is then uploaded into the registry, with the policy.
+Now the policy is ready to use in a Kubewarden installation using signature verification.
 
-The same policy can be signed multiple times, either by the same user or by different ones. All these signatures are appended to the same signature object.
+The same policy can be signed multiple times, by the same user or different ones.
+These signatures are added to the signature object along with the original signature.
 
-> **NOTE**: For more information about how the signing process works under the hood, check
-> out the [Sigstore project documentation](https://docs.sigstore.dev/)
-
+For more information about how the signing process works, check out the [Sigstore project documentation](https://docs.sigstore.dev/).
 
 ### Keyless signing
 
-Many times the policies are automatically built in CI/CD pipelines which complicates
-the key generation process. The Sigstore keyless workflow described below is specifically designed for
-these situations and others where key generation is not possible.
-Instead of using long-lived singing keys, the keyless workflow uses certificate authorities (CAs) and
-certificate chains. A short-lived certificate key is generated, and linked into
-a chain of trust by completing an identity challenge to confirm the signer's
-identity. The life of the certificate key is just about enough for the signing
-to occur. The identity challenge is performed by authenticating against an
-OpenID Connect (OIDC) provider. Sigstore's Fulcio public infrastructure is used for the chain of trust.
+Often policies are automatically built in CI/CD pipelines.
+This complicates the key generation process.
+This Sigstore keyless workflow is for these situations.
+Instead of using long-lived singing keys, the keyless workflow uses certificate authorities (CAs) and certificate chains.
 
-For signing, we will again use Sigstore's cosign utility. However, as of this
-writing, this feature is not enabled by default in cosign. So, it's necessary
-to enable this experimental feature before proceeding with keyless signing as shown below:
+A short-lived certificate key is generated, and linked into a chain of trust.
+It's done by an identity challenge to confirm the signer's identity.
+The life of the certificate key is long enough for the signing to occur.
+The identity challenge is done by authenticating against an OpenID Connect (OIDC) provider.
+Sigstore's Fulcio public infrastructure is used for the chain of trust.
 
+Signing uses Sigstore's cosign utility.
+At the time of writing, this feature isn't enabled by default in cosign.
+It's still experimental and needs to be explicitly used.
+
+<!--TODO: Is this still experimental?-->
+```bash
+$ COSIGN_EXPERIMENTAL=1 cosign sign ghcr.io/jvanz/policies/user-group-psp:latest
+```
+
+<details>
+
+<summary><code>cosign</code> output</summary>
 
 ```console
-$ COSIGN_EXPERIMENTAL=1 cosign sign ghcr.io/jvanz/policies/user-group-psp:latest
 Generating ephemeral keys...
 Retrieving signed certificate...
 Your browser will now be opened to:
@@ -102,16 +115,24 @@ Successfully verified SCT...
 tlog entry created with index: 1819248
 Pushing signature to: ghcr.io/jvanz/policies/user-group-psp
 ```
-With that, the policy has been signed and pushed to the repository. Note that there are no keys generated as a byproduct.
 
-### How to sign artefacts in GitHub workflows
+</details>
 
-`cosign` does not require the user to log on to an OIDC provider when using keyless signing
-in the context of a GitHub action environment. In this scenario,
-the GitHub token available during the execution of the workflow will be used to
-authenticate the user and generate the ephemeral keys. The signing process is
-the same used in the `Keyless` mode. This is an example of how Kubewarden project
-signs its policies:
+This signs the policy and pushes it to the repository.
+There are no keys generated as a byproduct.
+
+### How to sign artifacts in GitHub workflows
+
+When using keyless signing, in a GitHub action,
+`cosign` doesn't need the user to log in to an OIDC provider.
+A GitHub token is available during the execution of the GitHub workflow.
+It's used to authenticate the user and generate the ephemeral keys.
+The signing process is the same used in the keyless mode.
+This is an example of how the Kubewarden project signs its policies:
+
+<details>
+
+<summary>YAML describing Kubewarden policy signing</summary>
 
 ```yaml
 # ... beginning of the workflow file ...
@@ -142,22 +163,35 @@ jobs:
         cosign sign ${IMMUTABLE_REF}
       # ... other build steps ...
 
-# ... remaining of the workflow file ...
+# ... remainder of the workflow file ...
 ```
-> **NOTE**: The policy templates repositories provided by the Kubewarden team
-> already have Github actions to build, test, sign and publish policies. It's
-highly recommended that policy developers use those templates.
 
-In the example above, we demonstrate using `kwctl` to publish the container image and find
-the reference to it. This is not mandatory. You can call `cosign` with the image
-reference generated elsewhere.
+</details>
 
+<!--TODO: In the note below, why is it highly recommended?-->
+:::note
+
+The Kubewarden policy templates already have Github actions to build, test, sign and publish policies.
+It's highly recommended that policy developers use those templates.
+
+:::
+
+<!--TODO:
+I need someone to explain what we are trying to say here.
+To be completely clear we should maybe reference the example more directly, say how we found the reference and what it was in the example, why isn't it mandatory and why might you want to do it. Where else and how would you get the image reference?
+-->
+In the example above, we demonstrated using `kwctl` to publish the container image and find the reference to it.
+This is not mandatory.
+You can call `cosign` with the image reference generated elsewhere.
 
 ## Listing policy signatures
 
-`kwctl` also allows users to check the signatures in a published
-policy. The `kwctl inspect` command shows all the relevant information about the
-policy and its signatures as illustrated in an example below:
+You can check signature in a published policy with `kwctl inspect`.
+This shows the information about the policy and its signatures as shown below:
+
+<details>
+
+<summary><code>kwctl inspect registry://ghcr.io/kubewarden/policies/us....</code></summary>
 
 ```console
 $ kwctl inspect registry://ghcr.io/kubewarden/policies/user-group-psp:v0.2.0
@@ -236,13 +270,13 @@ dev.sigstore.cosign/chain          -----BEGIN CERTIFICATE-----
 dev.cosignproject.cosign/signature MEYCIQCW5fQgPTQ7ZNSnFHslrNNQkKgSIQi8cR159PA1sK8TiQIhAJwL9bOqBJmWn7YKdoSzo4slOgk8JBBjqXdsrt3ryQtB
 ```
 
+</details>
 
 ## Verifying policies
 
-Users can check if a policy is properly signed with  `cosign` or `kwctl`.
-Both have similar command line flags which allow users to check the policy
-signatures. To check if the binary is signed with a key, the users can use `kwctl`
-like this:
+You can check if a policy is correctly signed with  `cosign` or `kwctl`.
+They have similar command line options for checking policy signatures.
+To check if the binary is signed with a key, use `kwctl` like this:
 
 ```console
 $ kwctl verify -k cosign.pub ghcr.io/jvanz/policies/user-group-psp:latest
@@ -265,14 +299,16 @@ The following checks were performed on each of these signatures:
 
 ## Configuring the policy server to check policy signatures
 
-To configure Kubewarden to run only trusted policies, the users must create
-a `ConfigMap` with the minimum signature requirements needed for policies to be
-executed in the environment. The `ConfigMap` follows the same structure of the
-file described in the [Signature Config Reference](#signature-config-reference) section used to verify policy
-in the `kwctl` utility. The only difference in this case would be that the
-`ConfigMap` should define all the configurations under the `verification-config`
-field.  For example, let's consider that the users want to run policies signed
-by the Kubewarden GitHub organization. A sample `ConfigMap` for this scenario would be:
+You can configure Kubewarden with a `ConfigMap` to only run trusted policies.
+The `ConfigMap` structure described in [Signature Config Reference](#signature-config-reference).
+It's used to verify a policy using `kwctl`.
+The `ConfigMap` should define allowable configurations under the `verification-config` field.
+
+For example, you want to run policies signed by the Kubewarden GitHub organization. Then a sample `ConfigMap` for this scenario would be:
+
+<details>
+
+<summary><code>$ cat kubewarden_signatures.yaml</code></summary>
 
 ```console
 $ cat kubewarden_signatures.yaml
@@ -301,8 +337,18 @@ metadata:
   uid: d53e1c56-1fee-45de-92f5-9bd73b8cead4
 ```
 
-It is also possible to use the `kwctl scaffold verification-config` to generate
-a default verification config file to be used in the `ConfigMap`:
+</details>
+
+
+You can use `kwctl scaffold verification-config` to generate a default verification configuration file for the `ConfigMap`:
+
+```console
+$ kwctl scaffold verification-config > verification_config.yaml
+```
+
+<details>
+
+<summary><code>$ cat verification_config.yaml</code></summary>
 
 ```console
 $ kwctl scaffold verification-config > verification_config.yaml
@@ -325,9 +371,24 @@ allOf:
     repo: ~
     annotations: ~
 anyOf: ~
+```
+</details>
 
-$ kubectl create configmap my-signatures-configuration --from-file=verification-config=verification_config.yaml
+
+You can use this `verification_config.yml` to create the `ConfigMap`.
+
+```console
+$ kubectl create configmap my-signatures-configuration --from-file==verification_config.yaml
 configmap/my-signatures-configuration created
+```
+
+Then we can inspect with `get configmap`.
+
+<details>
+
+<summary><code>kubectl get configmap</code></summary>
+
+```console
 $ kubectl get configmap -o yaml my-signatures-configuration
 apiVersion: v1
 data:
@@ -360,9 +421,10 @@ metadata:
   uid: 74dec846-7fcd-4b4b-8184-700c816f685a
 ```
 
-After creating the `ConfigMap` to store the signature requirements, the users
-can configure a Policy Server to start validating policy signatures by setting the
-`ConfigMap` name in the field `verificationConfig`.
+</details>
+
+After creating the `ConfigMap` to store the signature requirements, you can configure a Policy Server.
+To start validating policy signatures by setting the `ConfigMap` name in the highlighted field `verificationConfig`.
 
 ```yaml
 apiVersion: policies.kubewarden.io/v1alpha2
@@ -375,6 +437,7 @@ spec:
   image: ghcr.io/kubewarden/policy-server:v0.2.7
   serviceAccountName: policy-server
   replicas: 1
+//highlight-next-line
   verificationConfig: your_configmap   #name of the confimap with the signatures requirements
   env:
     - name: KUBEWARDEN_ENABLE_METRICS
@@ -386,26 +449,33 @@ spec:
 ```
 
 If you deploy the default Policy Server using the `kubewarden-defaults`
-Helm chart, you can configure this field by setting the `ConfigMap` name in the
+Helm chart then you configure this field by setting the `ConfigMap` name in the
 `policyServer.verificationConfig` value.
 
-Now, the PolicyServer will reject untrusted AdmissionPolicies and ClusterAdmissionPolicies,
-by refusing to start. The user must remove the untrusted policy or fix the
-signatures requirements in order to get the PolicyServer running again.
+Now, the PolicyServer rejects untrusted AdmissionPolicies and ClusterAdmissionPolicies by refusing to start.
+You need to remove the untrusted policy, or change the signatures requirement, for a running PolicyServer.
 
 ## Signature Config Reference
 
-Users can also provide a file with all the signature requirements they want to validate. A sample file is shown below:
+You can validate signature requirements contained in a file. Here is an example:
+
+<details>
+
+<summary>
+A file of signature requirements
+</summary>
 
 ```yaml
 apiVersion: v1
 
+//highlight-next-line
 allOf:
   - kind: githubAction
     owner: kubewarden   # mandatory
     annotations:
       env: prod
 
+//highlight-next-line
 anyOf: # at least `anyOf.minimumMatches` are required to match
   minimumMatches: 2 # default is 1
   signatures:
@@ -442,33 +512,30 @@ anyOf: # at least `anyOf.minimumMatches` are required to match
     key: .... # mandatory
 ```
 
-The configuration is composed of two sections:
+</details>
 
-- `anyOf`:  The policy will be trusted if the `minimumMatches` criterion is fulfilled.
-In the above example, the `minimumMatches` field has been assigned a value 2.
-This means that at least two of the signature requirements listed **need to be fulfilled**
-for the policy to be trusted. The default value that the `minimumMatches` field assumes is `1`.
-- `allOf`: All the signature requirements defined in this section must be valid
-so that the policy can be trusted.
+The configuration contains the two highlighted sections:
 
-Each of these sections can contain one or more signature requirements.
-Users can also define both sections in one file as shown above. In this situations, all
-the signatures requirements from the `allOf` **AND** a minimum number of matches
-from the `anyOf` section as described in the `minimumMatches` field must be satisfied.
+- `allOf`: The policy is trusted only if all signature requirements in this section are valid.
+
+- `anyOf`:  The policy is trusted if the `minimumMatches` criterion is met.
+Above, the `minimumMatches` field is 2.
+So, at least two of the signature requirements must be fulfilled.
+The default value for `minimumMatches` field is `1`.
+
+All the signatures requirements from `allOf` **and** a minimum number from `anyOf` must be met.
 
 ### Signature validation
 
-The users can validate different signatures in the `anyOf` and `allOf` sections.
+<!--TODO:What are we trying to say here?-->
+You can validate different signatures in the `anyOf` and `allOf` sections.
 It's possible to validate the public key and the keyless data used to sign the policy.
 
 #### Public key validation
 
-To ensure a policy is signed with the given public key, the users can
-define the key data and the owner of the key used to sign the policy. As illustrated
-bellow, it is necessary to define the kind as `pubKey` and insert the public
-key data in the `key` field. The owner field is optional, but can be useful to clarify who owns the key.
-
-**Example**
+To check a policy is signed with the correct public key, you specify the key data and the owner of the key.
+In this example, `kind` is set to `pubKey` and the `key` has the public key.
+The owner field is optional, but can be useful to clarify who owns the key.
 
 ```  yaml
   - kind: pubKey
@@ -480,29 +547,30 @@ key data in the `key` field. The owner field is optional, but can be useful to c
       -----END PUBLIC KEY-----
 ```
 
-#### Keyless signatures validation
+#### Keyless signature validation
 
-When signed in keyless mode, we do not have the public key to verify. In this
-situation, the users can verify the field filled with the OIDC data used during
-the signing process. For that, it's necessary to define the kind of the signature
-validation as `genericIssuer`. Therefore, it's possible to verify three pieces
-of information from the signature:
+A policy signed in keyless mode doesn't have a public key we can verify.
+You can still verify the policy with the OIDC data used during the signing process.
+For that, it's necessary to define the signature validation as `genericIssuer`.
 
-- `issuer`(mandatory): matches the `Issuer` attribute in the certificate
-generated by Fulcio. This shows the OIDC used to sign the policy
-- `subject`: field used to match the `Subject` attribute in Fulcio's
-certificate. The `Subject` field contains the information of the user used to
-authenticate again the OIDC provider. The verification field, `subject`, can have
-two children fields: `equal` forces the `Subject` from the certificate to be
-equal to the value defined in the signature validation; `urlPrefix` forces the
-value of the certificate's `Subject` field value to be prefixed by the value
-defined in the signature requirement.
+It's possible to verify information from the signature:
 
-> Note well: both the `cosign verify` and the `kwctl inspect` commands can be used to show the information about keyless signatures.
-**Examples**
+<!--TODO:I would like to check carefully that I have the this correct. Down to the note.-->
+- `issuer`(mandatory): this matches the `Issuer` attribute in the certificate generated by Fulcio.
+This shows the OIDC used to sign the policy.
+- `subject`: field used to match the `Subject` attribute in Fulcio's certificate.
+The `Subject` (Fulcio) field contains the user used to authenticate against the OIDC provider.
+The verification field, `subject`, can have two sub fields:
+  - `equal`: the `Subject` (Fulcio) from the certificate must be equal to the value in the signature validation;
+  - `urlPrefix`: the value of the certificate's `Subject` field value must be prefixed by the value defined in the signature requirement.
 
-The following configuration requires the policy to be signed by Alice in a keyless manner
-using the GitHub OIDC:
+:::note
+
+Both the `cosign verify` and the `kwctl inspect` can show information about keyless signatures.
+
+:::
+
+For example, this configuration means the policy must have a keyless signature from Alice using the GitHub OIDC:
 
 ```yaml
 - kind: genericIssuer
@@ -511,7 +579,7 @@ using the GitHub OIDC:
     equal: alice@example.com
 ```
 
-While the next configuration enforces the policy to be signed in the context of a GitHub actions environment
+This configuration needs the policy to be signed in GitHub actions environment,
 from a repository owned by the GitHub user `flavio`:
 
 ```yaml
@@ -523,14 +591,15 @@ from a repository owned by the GitHub user `flavio`:
 
 #### GitHub actions signature verification
 
-The signature validation kind, `githubAction` is used to validate policies signed in a GitHub
-Actions environment. It can be achieved with the `genericIssuer` kind as well. But
-`githubAction`simplifies the signature requirement creation process by defining two additional fields:
+The signature validation kind, `githubAction` is for validating policies signed in a GitHub Actions environment.
+It can be done with the `genericIssuer` kind as well.
+You can simplify the signature requirement process using two additional fields for `githubAction`:
 
-- `owner` (mandatory): GitHub ID of the user or organization to be trusted
-- `repo`: the name of the repository to be trusted
+- `owner` (mandatory): GitHub ID of the user or organization to trust
+- `repo`: the name of the repository to trust
 
-For example, the last configuration snippet shown above that leveraged a `genericIssuer`, could be rewritten in this way:
+For example, the last configuration snippet above, that used a `genericIssuer`, could be rewritten as:
+
 ```yaml
 - kind: githubAction
   owner: flavio
@@ -538,15 +607,11 @@ For example, the last configuration snippet shown above that leveraged a `generi
 
 #### Signature annotations validation
 
-All the signature types can have one additional optional validation field, `annotations`.
-These fields are key/value data added by the users during the signing process. Kubewarden
-makes possible to ensure that policies are signed by trusted users **and** have specific annotations.
+All signature types can have other optional validation fields, `annotations`.
+These fields are key/value data added by during the signing process.
+With Kubewarden you can ensure policies are signed by trusted users **and** have specific annotations.
 
-**Examples**
-
-If the users want to trust only policies which have been signed with a specific key
-and the annotation `environment` with the value `production`, they can define the
-following validation:
+The next validation checks signing with a specific key, and production environment annotation.
 
 ```yaml
 - kind: pubKey
@@ -559,11 +624,9 @@ following validation:
     environment: production
 ```
 
+### How to use a signature verification configuration file to check a policy OCI artifact
 
-### How to use signature verification config file to check a policy OCI artefact
-
-To test if a given policy passes signature verification using the
-verification config file, use the `--verification-config-path`  flag of the `kwctl verify` command
+To test if a given policy passes signature verification using the verification config file, use the `--verification-config-path`  flag of the `kwctl verify` command
 
 ```console
 $ cat signatures_requirements.yaml
@@ -580,8 +643,7 @@ $ kwctl verify --verification-config-path signatures_requirements.yaml ghcr.io/j
 2022-03-29T17:34:37.847169Z  INFO kwctl::verify: Policy successfully verified
 ```
 
-While the previous example tests if the policy is signed by the given key,
-the next one checks if a given policy came from the Kubewarden organization:
+This last example tests if a given policy came from the Kubewarden organization:
 
 ```console
 $ cat kubewarden_signatures.yaml
