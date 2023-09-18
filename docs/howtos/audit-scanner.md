@@ -65,7 +65,6 @@ scanner settings by changing the kubewarden-controller chart
 See [here](../explanations/audit-scanner) more information about the Audit
 Scanner.
 
-
 ## Optional: Installation of Policy Reporter UI
 
 The `kubewarden-controller` chart comes with a subchart of the [Policy Reporter](https://kyverno.github.io/policy-reporter).
@@ -77,11 +76,19 @@ This will install only part of the Policy Reporter upstream chart, the UI, which
 of the PolicyReports and ClusterPolicyReports in cluster.
 See [here](../explanations/audit-scanner) more information about the Policy Reporter UI.
 
-For now, the Policy Reporter UI is only exposed as a ClusterIP service with name `kubewarden-controller-ui` in the namespace
-where the `kubewarden-controller` chart was installed. Users need to provide their own Ingress configuration.
+By default, the Policy Reporter UI is only exposed as a ClusterIP service with
+name `kubewarden-controller-ui` in the namespace where the
+`kubewarden-controller` chart was installed.
+
+Users can enable an Ingress via the subchart configuration (see the `ingress`
+config of the UI subchart
+[here](https://github.com/kyverno/policy-reporter/blob/policy-reporter-2.19.4/charts/policy-reporter/charts/ui/values.yaml#L172-L189)),
+or provide their own Ingress configuration.
 
 For a quick look or debugging, one can setup a port-forwarding to the service with:
+
 ```
 kubectl port-forward service/kubewarden-controller-ui 8082:8080 -n kubewarden
 ```
+
 Which will make the Policy Reporter UI available at http://localhost:8082.
