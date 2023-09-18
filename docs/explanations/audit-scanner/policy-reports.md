@@ -60,8 +60,8 @@ PolicyReport results:
 Additional features of Policy Reporter include forwarding of results to
 different clients (like Grafana Loki, Elasticsearch, chat applications),
 metrics endpoint, etc. Please refer to the
-[policy-reporter](https://kyverno.github.io/policy-reporter) docs for more
-info.
+[policy-reporter's community docs](https://kyverno.github.io/policy-reporter)
+for more info.
 
 ## Cluster-Wide Audit Results example
 
