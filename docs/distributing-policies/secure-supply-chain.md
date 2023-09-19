@@ -59,7 +59,7 @@ This is a secret file only for use by the key owner for signing policies.
 To sign a policy you can use `cosign sign` passing the `--key` command line argument with your private key file:
 
 ```bash
-cosign sign --key cosign.key ghcr.io/jvanz/policies/user-group-psp:latest
+cosign sign --key cosign.key ghcr.io/kubewarden/policies/user-group-psp:latest
 ```
 
 Resulting in a prompt for the password, for the specified private key:
@@ -67,7 +67,7 @@ Resulting in a prompt for the password, for the specified private key:
 ```console
 an error occurred: no provider found for that key reference, will try to load key from disk...
 Enter password for private key: ●●●●●●●●
-Pushing signature to: ghcr.io/jvanz/policies/user-group-psp
+Pushing signature to: ghcr.io/kubewarden/policies/user-group-psp
 ```
 
 This command signs the policy by creating a new signature object.
@@ -93,12 +93,9 @@ The identity challenge is done by authenticating against an OpenID Connect (OIDC
 Sigstore's Fulcio public infrastructure is used for the chain of trust.
 
 Signing uses Sigstore's cosign utility.
-At the time of writing, this feature isn't enabled by default in cosign.
-It's still experimental and needs to be explicitly used.
 
-<!--TODO: Is this still experimental?-->
 ```bash
-$ COSIGN_EXPERIMENTAL=1 cosign sign ghcr.io/jvanz/policies/user-group-psp:latest
+$ cosign sign ghcr.io/kubewarden/policies/user-group-psp:latest
 ```
 
 <details>
@@ -113,7 +110,7 @@ https://oauth2.sigstore.dev/auth/auth?access_type=online&client_id=sigstore&code
 client.go:196: root pinning is not supported in Spec 1.0.19
 Successfully verified SCT...
 tlog entry created with index: 1819248
-Pushing signature to: ghcr.io/jvanz/policies/user-group-psp
+Pushing signature to: ghcr.io/kubewarden/policies/user-group-psp
 ```
 
 </details>
@@ -168,21 +165,11 @@ jobs:
 
 </details>
 
-<!--TODO: In the note below, why is it highly recommended?-->
 :::note
 
-The Kubewarden policy templates already have Github actions to build, test, sign and publish policies.
-It's highly recommended that policy developers use those templates.
+Policy developers can use the Kubewarden policy templates. They have GitHub actions to build, test, sign and publish policies.
 
 :::
-
-<!--TODO:
-I need someone to explain what we are trying to say here.
-To be completely clear we should maybe reference the example more directly, say how we found the reference and what it was in the example, why isn't it mandatory and why might you want to do it. Where else and how would you get the image reference?
--->
-In the example above, we demonstrated using `kwctl` to publish the container image and find the reference to it.
-This is not mandatory.
-You can call `cosign` with the image reference generated elsewhere.
 
 ## Listing policy signatures
 
@@ -279,22 +266,22 @@ They have similar command line options for checking policy signatures.
 To check if the binary is signed with a key, use `kwctl` like this:
 
 ```console
-$ kwctl verify -k cosign.pub ghcr.io/jvanz/policies/user-group-psp:latest
+$ kwctl verify -k cosign.pub ghcr.io/kubewarden/policies/user-group-psp:latest
 2022-03-29T14:49:31.878180Z  INFO kwctl::verify: Policy successfully verified
 ```
 
 Or `cosign` :
 
 ```console
-$ cosign verify --key cosign.pub ghcr.io/jvanz/policies/user-group-psp:latest
+$ cosign verify --key cosign.pub ghcr.io/kubewarden/policies/user-group-psp:latest
 
-Verification for ghcr.io/jvanz/policies/user-group-psp:latest --
+Verification for ghcr.io/kubewarden/policies/user-group-psp:latest --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - The signatures were verified against the specified public key
   - Any certificates were verified against the Fulcio roots.
 
-[{"critical":{"identity":{"docker-reference":"ghcr.io/jvanz/policies/user-group-psp"},"image":{"docker-manifest-digest":"sha256:af520a8ccee03811d426c48634b7007f1220c121cc23e14962bb64510585ce97"},"type":"cosign container image signature"},"optional":null}]
+[{"critical":{"identity":{"docker-reference":"ghcr.io/kubewarden/policies/user-group-psp"},"image":{"docker-manifest-digest":"sha256:af520a8ccee03811d426c48634b7007f1220c121cc23e14962bb64510585ce97"},"type":"cosign container image signature"},"optional":null}]
 ```
 
 ## Configuring the policy server to check policy signatures
@@ -359,7 +346,7 @@ $ cat verification_config.yaml
 # infrastructure.
 #
 # This config can be saved to its default location (for this OS) with:
-#   kwctl scaffold verification-config > /home/jvanz/.config/kubewarden/verification-config.yml
+#   kwctl scaffold verification-config > /home/kubewarden/.config/kubewarden/verification-config.yml
 #
 # Providing a config in the default location enables Sigstore verification.
 # See https://docs.kubewarden.io for more Sigstore verification options.
@@ -399,7 +386,7 @@ data:
     # infrastructure.
     #
     # This config can be saved to its default location (for this OS) with:
-    #   kwctl scaffold verification-config > /home/jvanz/.config/kubewarden/verification-config.yml
+    #   kwctl scaffold verification-config > /home/kubewarden/.config/kubewarden/verification-config.yml
     #
     # Providing a config in the default location enables Sigstore verification.
     # See https://docs.kubewarden.io for more Sigstore verification options.
@@ -527,8 +514,12 @@ All the signatures requirements from `allOf` **and** a minimum number from `anyO
 
 ### Signature validation
 
-<!--TODO:What are we trying to say here?-->
-You can validate different signatures in the `anyOf` and `allOf` sections.
+<!--TODO:I think this is better. Not sure about the last line-->
+You can validate many signatures in the `anyOf` and `allOf` sections.
+The `anyOf` section allows you specify trusted users that must have signed the policy.
+You use `anyOf.minimumMatches` to specify the minimum number to do so.
+The `allOf` section specifies all trusted users that must sign for a policy to be valid.
+<!--TODO:Not sure about this. Is it a general statement or does it say something specific about this paragraph?-->
 It's possible to validate the public key and the keyless data used to sign the policy.
 
 #### Public key validation
@@ -555,14 +546,14 @@ For that, it's necessary to define the signature validation as `genericIssuer`.
 
 It's possible to verify information from the signature:
 
-<!--TODO:I would like to check carefully that I have the this correct. Down to the note.-->
+<!--TODO:I would like to check carefully that I have the this correct. Down to the :::note. I have used subject and Subject (Fulcio) to better try and distinguish between subject and Subject in the original text. Does it work?-->
 - `issuer`(mandatory): this matches the `Issuer` attribute in the certificate generated by Fulcio.
 This shows the OIDC used to sign the policy.
 - `subject`: field used to match the `Subject` attribute in Fulcio's certificate.
 The `Subject` (Fulcio) field contains the user used to authenticate against the OIDC provider.
-The verification field, `subject`, can have two sub fields:
+The verification field, `subject`, can have one of two sub fields:
   - `equal`: the `Subject` (Fulcio) from the certificate must be equal to the value in the signature validation;
-  - `urlPrefix`: the value of the certificate's `Subject` field value must be prefixed by the value defined in the signature requirement.
+  - `urlPrefix`: the value of the certificate's `Subject` (Fulcio) field value must be prefixed by the value defined in the signature validation.
 
 :::note
 
@@ -626,7 +617,8 @@ The next validation checks signing with a specific key, and production environme
 
 ### How to use a signature verification configuration file to check a policy OCI artifact
 
-To test if a given policy passes signature verification using the verification config file, use the `--verification-config-path`  flag of the `kwctl verify` command
+You can test if a given policy passes signature verification using the verification config file.
+Use the `--verification-config-path`  flag of the `kwctl verify` command
 
 ```console
 $ cat signatures_requirements.yaml
@@ -639,7 +631,7 @@ allOf:
       Mc+raYce2Wthrd30MSgFtoh5ADAkCd/nML2Nx8UD9KBuASRb0gG5jXqgMQ==
       -----END PUBLIC KEY-----
 
-$ kwctl verify --verification-config-path signatures_requirements.yaml ghcr.io/jvanz/policies/user-group-psp:latest
+$ kwctl verify --verification-config-path signatures_requirements.yaml ghcr.io/kubewarden/policies/user-group-psp:latest
 2022-03-29T17:34:37.847169Z  INFO kwctl::verify: Policy successfully verified
 ```
 
