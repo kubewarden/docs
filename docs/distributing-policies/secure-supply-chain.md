@@ -516,7 +516,7 @@ All the signatures requirements from `allOf` **and** a minimum number from `anyO
 
 <!--TODO:I think this is better. Not sure about the last line-->
 You can validate many signatures in the `anyOf` and `allOf` sections.
-The `anyOf` section allows you specify trusted users that must have signed the policy.
+The `anyOf` section allows you specify trusted users, of which some, should have signed the policy.
 You use `anyOf.minimumMatches` to specify the minimum number to do so.
 The `allOf` section specifies all trusted users that must sign for a policy to be valid.
 <!--TODO:Not sure about this. Is it a general statement or does it say something specific about this paragraph?-->
