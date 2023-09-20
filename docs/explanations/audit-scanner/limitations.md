@@ -36,7 +36,22 @@ Policies can request and use external data when performing an evaluation. These
 policies can be evaluated by the audit checks, but their outcome can change
 over time depending on the external data.
 
-## Policies targeting `*`
+## Usage of `*` by policies
 
-Policies targeting any kind of Kubernetes resources are not being evaluated for
-now. Because of that they are going to be ignored by the audit scanner.
+Both the `AdmissionPolicy` and the `ClusterAdmissionPolicy` custom resources have the following fields:
+
+```yaml
+spec:
+  rules:
+    - apiGroups: [""]
+      apiVersions: ["v1"]
+      resources: ["pods"]
+      operations:
+        - CREATE
+        - UPDATE
+```
+
+The `apiGroups`, `apiVersions` and `resources` attributes can use the special `*` inside of them. This is a wildcard
+symbol that causes the policy to match all the values used inside of the field.
+
+Policies that make use of the `*` symbol are going to be ignored by the audit scanner.
