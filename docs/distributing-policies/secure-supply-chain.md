@@ -442,7 +442,7 @@ Helm chart then you configure this field by setting the `ConfigMap` name in the
 Now, the PolicyServer rejects untrusted AdmissionPolicies and ClusterAdmissionPolicies by refusing to start.
 You need to remove the untrusted policy, or change the signatures requirement, for a running PolicyServer.
 
-## Signature Config Reference
+## Signature configuration reference
 
 You can validate signature requirements contained in a file. Here is an example:
 
@@ -501,28 +501,20 @@ anyOf: # at least `anyOf.minimumMatches` are required to match
 
 </details>
 
-The configuration contains the two highlighted sections:
+### Signature validation
 
-- `allOf`: The policy is trusted only if all signature requirements in this section are valid.
+The configuration above contains the two highlighted sections, `allOf` and `anyOf`:
+
+- `allOf`: The policy is trusted only if all signature requirements here are valid.
 
 - `anyOf`:  The policy is trusted if the `minimumMatches` criterion is met.
 Above, the `minimumMatches` field is 2.
-So, at least two of the signature requirements must be fulfilled.
+So, at least two of the signature requirements must be met.
 The default value for `minimumMatches` field is `1`.
 
-All the signatures requirements from `allOf` **and** a minimum number from `anyOf` must be met.
+All the signatures requirements from `allOf` **and** the minimum number from `anyOf` must be met.
 
-### Signature validation
-
-<!--TODO:I think this is better. Not sure about the last line-->
-You can validate many signatures in the `anyOf` and `allOf` sections.
-The `anyOf` section allows you specify trusted users, of which some, should have signed the policy.
-You use `anyOf.minimumMatches` to specify the minimum number to do so.
-The `allOf` section specifies all trusted users that must sign for a policy to be valid.
-<!--TODO:Not sure about this. Is it a general statement or does it say something specific about this paragraph?-->
-It's possible to validate the public key and the keyless data used to sign the policy.
-
-#### Public key validation
+### Public key validation
 
 To check a policy is signed with the correct public key, you specify the key data and the owner of the key.
 In this example, `kind` is set to `pubKey` and the `key` has the public key.
@@ -538,7 +530,7 @@ The owner field is optional, but can be useful to clarify who owns the key.
       -----END PUBLIC KEY-----
 ```
 
-#### Keyless signature validation
+### Keyless signature validation
 
 A policy signed in keyless mode doesn't have a public key we can verify.
 You can still verify the policy with the OIDC data used during the signing process.
@@ -570,7 +562,7 @@ For example, this configuration means the policy must have a keyless signature f
     equal: alice@example.com
 ```
 
-This configuration needs the policy to be signed in GitHub actions environment,
+This configuration needs the policy to be signed in GitHub actions,
 from a repository owned by the GitHub user `flavio`:
 
 ```yaml
@@ -580,29 +572,34 @@ from a repository owned by the GitHub user `flavio`:
     urlPrefix: https://github.com/flavio
 ```
 
-#### GitHub actions signature verification
+### GitHub actions signature verification
 
-The signature validation kind, `githubAction` is for validating policies signed in a GitHub Actions environment.
-It can be done with the `genericIssuer` kind as well.
-You can simplify the signature requirement process using two additional fields for `githubAction`:
+The "kind", `githubAction` is to validate policies signed in GitHub Actions.
+You can do this with the `genericIssuer` kind as well.
+To simplify the signature requirement process, use two extra fields for `githubAction`:
 
 - `owner` (mandatory): GitHub ID of the user or organization to trust
 - `repo`: the name of the repository to trust
 
-For example, the last configuration snippet above, that used a `genericIssuer`, could be rewritten as:
+For example, the last snippet, using `genericIssuer`, could be rewritten as:
 
 ```yaml
 - kind: githubAction
   owner: flavio
 ```
 
-#### Signature annotations validation
+### Signature annotations validation
 
 All signature types can have other optional validation fields, `annotations`.
 These fields are key/value data added by during the signing process.
-With Kubewarden you can ensure policies are signed by trusted users **and** have specific annotations.
 
-The next validation checks signing with a specific key, and production environment annotation.
+With Kubewarden, you can ensure policies are signed by trusted users
+**and** have specific annotations.
+
+The next validation checks 2 conditions for the policy:
+
+- that it's signed with a specific key
+- it has a production environment annotation.
 
 ```yaml
 - kind: pubKey
@@ -615,9 +612,9 @@ The next validation checks signing with a specific key, and production environme
     environment: production
 ```
 
-### How to use a signature verification configuration file to check a policy OCI artifact
+### Using a signature verification configuration file to check a policy OCI artifact
 
-You can test if a given policy passes signature verification using the verification config file.
+You can test if a policy passes verification using the verification config file.
 Use the `--verification-config-path`  flag of the `kwctl verify` command
 
 ```console
