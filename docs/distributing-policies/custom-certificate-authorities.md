@@ -5,22 +5,33 @@ title: ""
 
 # Custom Certificate Authorities
 
-Both `kwctl` and `policy-server` allow you to pull policies from OCI registries and HTTP servers, as well as pushing to OCI registries. In this process, by default, HTTPS is enforced with host TLS verification.
+With both of `kwctl` and `policy-server`
+you can pull policies from Open Container Initiative (OCI) registries and HTTP servers.
+You can only push policies to OCI registries.
+By default, HTTPS is used with host TLS verification for this.
 
-The system CA store is used to validate the trusted chain of certificates presented by the OCI registry. In a regular Kubewarden installation, the `policy-server` will use the CA store shipped with its Linux container. In the client side, `kwctl` will use your operating system CA store.
+The system certificate authority (CA) store is used to validate the trusted chain of certificates from the OCI registry.
+In a standard Kubewarden installation, the `policy-server` uses the CA store shipped with its Linux container.
+On the client side, `kwctl` uses your operating system CA store.
 
-If you are using the [Kubewarden Controller](https://github.com/kubewarden/kubewarden-controller),
-you can configure the PolicyServer via their `spec` fields, as documented
-[here](/operator-manual/policy-servers/01-custom-cas.md).
+If you are using the
+[Kubewarden Controller](https://github.com/kubewarden/kubewarden-controller),
+you can configure the PolicyServer via its
+[`spec` fields](/operator-manual/policy-servers/01-custom-cas.md).
 
-> **Important**: the default behavior of `kwctl` and `policy-server` is to enforce HTTPS with trusted certificates matching the system CA store. You can interact with registries using untrusted certificates or even without TLS, by using the `insecure_sources` setting. This approach is **highly discouraged** in environments closer to production.
+:::note
+The default behavior of `kwctl` and `policy-server` is to enforce HTTPS with trusted certificates matching the system CA store.
+You can interact with registries using untrusted certificates or even without TLS, by using the `insecure_sources` setting.
+Clearly, this isn't for production environments.
+:::
 
 ## The `sources.yaml` file
 
-The pull and push behavior of `kwctl` and `policy-server` can be tuned via the `sources.yaml` file.
+You can tune the push-pull behavior of `kwctl` and `policy-server` using the `sources.yaml` file.
 
-This file can be provided both to `kwctl` and the `policy-server` in the `--sources-path` argument.
-`kwctl` will try to load the `sources.yaml` file from the following folders if the `--sources-path` argument is not provided:
+The `--sources-path` argument to both tools specifies the file.
+
+The command `kwctl` tries to load the `sources.yaml` file from these folders if the `--sources-path` argument is omitted:
 - Linux `$HOME/.config/kubewarden/sources.yaml` 
 - Mac `$HOME/Library/Application Support/io.kubewarden.kubewarden/sources.yaml`
 - Windows `$HOME\AppData\Roaming\kubewarden\config\sources.yaml`
@@ -45,13 +56,14 @@ source_authorities:
             -----END CERTIFICATE-----
 ```
 
-This file can be provided in YAML or JSON format. All keys are optional, so the following are also valid `sources.yaml` files:
+This file is in either YAML or JSON format.
+All keys are optional, so the following are also valid `sources.yaml` files:
 
 ```yaml
 insecure_sources: ["dev.registry.example.com"]
 ```
 
-As well as:
+As is:
 
 ```json
 {
