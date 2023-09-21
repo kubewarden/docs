@@ -22,7 +22,7 @@ you can configure the PolicyServer via its
 :::note
 The default behavior of `kwctl` and `policy-server` is to enforce HTTPS with trusted certificates matching the system CA store.
 You can interact with registries using untrusted certificates or even without TLS, by using the `insecure_sources` setting.
-Clearly, this isn't for production environments.
+Clearly, it's not for production environments.
 :::
 
 ## The `sources.yaml` file
@@ -78,32 +78,39 @@ As is:
 
 ### Insecure sources
 
-Hosts listed in the `insecure_sources` configuration behave in a different way than hosts that are not listed.
+Hosts in the `insecure_sources` section behave differently to those not listed.
 
-* Unlisted hosts (default)
-  * Try to connect using HTPS, verifying the server identity. If the connection fails, operation is aborted.
+- Hosts not listed, try:
+  - to connect using HTTPS, verifying the server identity
 
-* Listed hosts
-  * Try to connect using HTTPS verifying the server identity. If the connection fails,
-  * Try to connect using HTTPS, skipping host verification. If the connection fails,
-  * Try to connect using HTTP. If the connection fails, operation is aborted.
+  If the connection fails, then the operation stops.
 
-It is generally fine to use `insecure_sources` when using local registries or
-HTTP servers when developing locally, to avoid the certificate burden. However,
-this setting is **completely discouraged** for environments closer to
-production.
+- Hosts listed in `insecure_sources`, try in order:
+  - to connect using HTTPS verifying the server identity
+  - to connect using HTTPS, skipping host verification
+  - to connect using HTTP
+
+  The operation stops if all fail.
+
+:::note
+
+It's usually fine to use `insecure_sources` when using local registries or
+HTTP servers for development.
+It avoids the burden of managing certificates.
+Clearly, it's not for production use.
+
+:::
 
 ### Source authorities
 
-The `source_authorities` is a map that contains URIs and a list of CA
-certificates that form a certificate chain for that URI, used to verify the
-identity of OCI registries and HTTPs servers.
+The `source_authorities` section contains URIs and CA certificates.
+It forms a certificate chain for that URI.
+It's used to verify the identity of OCI registries and HTTPS servers.
 
-These certificates can be encoded in PEM or DER format. Certificates in binary
-DER format can be provided as a path to a file containing the certificate,
-meanwhile certificates in PEM format can either by a path to the certificate
-file, or a string with the certificate contents. Both possibilities are
-specified via a `type` key:
+These certificates can be encoded in either PEM or DER format.
+You specify DER format certificates as path to a file containing the certificate.
+In PEM format you can specify either a path to the certificate file, or a string with the actual certificate.
+You specify both with a `type` key:
 
 ```yaml
 source_authorities:
@@ -115,7 +122,7 @@ source_authorities:
     - type: Data
       data: |
             -----BEGIN CERTIFICATE-----
-            ca-pre1-3 PEM cert
+            A string with the ca-pre1-3 PEM cert
             -----END CERTIFICATE-----
   "registry-pre2.example.com:5500":
     - type: Path
