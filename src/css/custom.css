@@ -66,7 +66,11 @@
     margin-right: 20px;
   }
 }
-
+/* Reverting to default fonts, maybe the below was an experiment?
+ * Anyway, the code font is the problem, it drops below the font baseline
+ * set by the proportional font. I don't think they work well together.
+ */
+/*
 body {
   font-family: 'Roboto', sans-serif;
 }
@@ -78,6 +82,7 @@ h1, h2, h3, h4, h5, h6 {
 code {
   font-family: 'Space Mono', monospace;
 }
+*/
 
 hr {
   background-image: -webkit-linear-gradient(left,#f3f3f3,#adadb1,#f3f3f3);
