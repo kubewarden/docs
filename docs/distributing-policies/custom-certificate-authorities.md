@@ -10,8 +10,10 @@ you can pull policies from Open Container Initiative (OCI) registries and HTTP s
 You can only push policies to OCI registries.
 By default, HTTPS is used with host TLS verification for this.
 
-The system certificate authority (CA) store is used to validate the trusted chain of certificates from the OCI registry.
-In a standard Kubewarden installation, the `policy-server` uses the CA store shipped with its Linux container.
+The system's certificate authority (CA) store is used to
+validate the trusted chain of certificates from the OCI registry.
+In a standard Kubewarden installation, the `policy-server` uses the
+CA store shipped with its Linux container.
 On the client side, `kwctl` uses your operating system CA store.
 
 If you are using the
@@ -20,9 +22,11 @@ you can configure the PolicyServer via its
 [`spec` fields](/operator-manual/policy-servers/01-custom-cas.md).
 
 :::note
-The default behavior of `kwctl` and `policy-server` is to enforce HTTPS with trusted certificates matching the system CA store.
+
+The default behavior of `kwctl` and `policy-server` enforces HTTPS with trusted certificates matching the system CA store.
 You can interact with registries using untrusted certificates or even without TLS, by using the `insecure_sources` setting.
 Clearly, it's not for production environments.
+
 :::
 
 ## The `sources.yaml` file
@@ -32,9 +36,9 @@ You can tune the push-pull behavior of `kwctl` and `policy-server` using the `so
 The `--sources-path` argument to both tools specifies the file.
 
 The command `kwctl` tries to load the `sources.yaml` file from these folders if the `--sources-path` argument is omitted:
-- Linux `$HOME/.config/kubewarden/sources.yaml` 
-- Mac `$HOME/Library/Application Support/io.kubewarden.kubewarden/sources.yaml`
-- Windows `$HOME\AppData\Roaming\kubewarden\config\sources.yaml`
+- Linux: `$HOME/.config/kubewarden/sources.yaml`
+- Mac: `$HOME/Library/Application Support/io.kubewarden.kubewarden/sources.yaml`
+- Windows: `$HOME\AppData\Roaming\kubewarden\config\sources.yaml`
 
 Its structure is as follows:
 
@@ -57,7 +61,7 @@ source_authorities:
 ```
 
 This file is in either YAML or JSON format.
-All keys are optional, so the following are also valid `sources.yaml` files:
+All keys are optional, so the following is a valid `sources.yaml` file:
 
 ```yaml
 insecure_sources: ["dev.registry.example.com"]
@@ -107,9 +111,9 @@ The `source_authorities` section contains URIs and CA certificates.
 It forms a certificate chain for that URI.
 It's used to verify the identity of OCI registries and HTTPS servers.
 
-These certificates can be encoded in either PEM or DER format.
+These certificates are encoded in either PEM or DER format.
 You specify DER format certificates as path to a file containing the certificate.
-In PEM format you can specify either a path to the certificate file, or a string with the actual certificate.
+In PEM format you specify either a path to the certificate file, or a string with the actual certificate.
 You specify both with a `type` key:
 
 ```yaml
