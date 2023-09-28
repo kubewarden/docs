@@ -42,6 +42,8 @@ Kubernetes discovers Kubewarden's Webhook endpoints using `kubewarden-controller
 This works by Kubewarden registering either a `MutatingWebhookConfiguration`
 or a `ValidatingWebhookConfiguration` object with Kubernetes.
 
+<!--TODO:@vicuad points out we need a paragraph about the Audit Scanner here-->
+
 The diagram shows the architecture of a cluster running the Kubewarden stack:
 
 <!--TODO:To be clear. The stack refers to the entire diagram rather that the
@@ -225,7 +227,7 @@ from the rest of the cluster so as not to affect other users.
 making your infrastructure more resilient.
 
 A `PolicyServer` resource defines each `policy-server`
-and a `ClusterAdmissionPolicy` resource defines each policy.
+and a `ClusterAdmissionPolicy` or `AdmissionPolicy` resource defines each policy.
 
 This leads back to the initial diagram:
 
