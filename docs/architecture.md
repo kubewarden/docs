@@ -67,7 +67,7 @@ On a new cluster, the Kubewarden components defined are:
 
 ![Defining the first ClusterAdmissionPolicy resource](/img/architecture_sequence_01.png)
 
-<!--TODO:For the next paragraph. What sort of an architecture diagram is this? In the
+<!--TODO:For the next paragraph. What type of architecture diagram is this? In the
 diagram, which is `policy-server`. The aquamarine box with 'Kubewarden Policy
 Server'? Is 'Deployment' capitalization correct? What does 'notices' mean
 exactly? For the diagram, what's the difference between solid box, dashed box,
@@ -227,7 +227,7 @@ There are benefits of having many policy servers:
 those generating many policy evaluations,
 from the rest of the cluster so as not to adversely affect other cluster operations.
 
-- You can run mission critical policies in a dedicated Policy Server pool,
+- You can run mission-critical policies in a dedicated Policy Server pool,
 making your infrastructure more resilient.
 
 A `PolicyServer` resource defines each `policy-server`
