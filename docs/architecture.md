@@ -42,7 +42,7 @@ Kubernetes discovers Kubewarden's Webhook endpoints using `kubewarden-controller
 This works by Kubewarden registering either a `MutatingWebhookConfiguration`
 or a `ValidatingWebhookConfiguration` object with Kubernetes.
 
-<!--TODO:@vicuad points out we need a paragraph about the Audit Scanner here-->
+<!--TODO:@vicuad points out we need a paragraph about the Audit Scanner.-->
 
 The diagram shows the architecture of a cluster running the Kubewarden stack:
 
@@ -51,7 +51,7 @@ stacked components for e.g., CAP.-->
 
 ![Full architecture](/img/architecture.png)
 
-## Journey of a Kubewarden policy
+## The journey of a Kubewarden policy
 
 The architecture diagram appears complex at first. This section covers it step by step.
 
@@ -67,7 +67,7 @@ On a new cluster, the Kubewarden components defined are:
 
 ![Defining the first ClusterAdmissionPolicy resource](/img/architecture_sequence_01.png)
 
-<!--TODO:For the next paragraph. What sort of a diagram is this? In the
+<!--TODO:For the next paragraph. What sort of an architecture diagram is this? In the
 diagram, which is `policy-server`. The aquamarine box with 'Kubewarden Policy
 Server'? Is 'Deployment' capitalization correct? What does 'notices' mean
 exactly? For the diagram, what's the difference between solid box, dashed box,
@@ -99,8 +99,10 @@ to expose it inside the cluster network.
 
 ### Defining the first policy
 
+<!--TODO:First mention of 'bound'. I'd like to define what binding or to
+be bound is, how it happens, where, etc?-->
+
 This diagram shows what happens when defining the first policy
-that's
 bound to the default `policy-server` in the cluster:
 
 ![Defining the first ClusterAdmissionPolicy resource](/img/architecture_sequence_02.png)
@@ -133,9 +135,8 @@ and downloads all the Kubewarden policies specified.
 You can download policies from remote HTTP servers and container registries.
 
 You use policy configuration parameters to tune a policies' behavior.
-When the policies have been downloaded
-the `policy-server`
-ensures the policy settings provided by the user are valid.
+After startup and policy download the `policy-server`
+checks the policy settings provided by the user are valid.
 
 The `policy-server` validates policy settings by invoking
 the `validate_setting` function exposed by each policy.
@@ -164,8 +165,9 @@ box, the 'Kubewarden Policy Server-->
 
 Finally, the `policy-server` starts a HTTPS server
 listening to incoming validation requests.
-The web server is secured using the TLS key and certificate
-created before by `kubewarden-controller`.
+Kubewarden uses the TLS key and certificate
+created by `kubewarden-controller`
+to secure the web server.
 
 The web server exposes each policy by a dedicated path
 following the naming convention: `/validate/<policy ID>`.
@@ -181,11 +183,13 @@ This diagram shows the cluster when initialization of `policy-server` is complet
 
 The `policy-server` Pods have a
 [`Readiness Probe`](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/),
-that `kubewarden-controller` uses to know when
+that `kubewarden-controller` uses to check when
 the `policy-server` Deployment is ready to evaluate admission reviews.
 
-Once the `policy-server` Deployment is marked as `Ready`,
-the `kubewarden-controller` makes the Kubernetes API server aware of the new policy
+<!--TODO:Aware? Is notified? Notifies? Is 'notifies' technically correct? Messages?-->
+
+Once the readiness probe marks a `policy-server` Deployment as `Ready`,
+the `kubewarden-controller` notifies the Kubernetes API server about the new policy
 by creating either a `MutatingWebhookConfiguration`
 or a `ValidatingWebhookConfiguration` object.
 
@@ -198,16 +202,17 @@ The endpoint is reachable by the `/validate/<policy ID>` URL.
 
 ### Policy in action
 
+<!--TODO:I made enpoints plural. I think there are many. Is that correct?-->
 Now that all the necessary plumbing is complete,
-Kubernetes starts sending Admission Review requests to the right `policy-server` endpoint.
+Kubernetes starts sending Admission Review requests to the right `policy-server` endpoints.
 
 ![Policy in action](/img/architecture_sequence_05.png)
 
-The `policy-server` receives the Admission Request object and,
+A `policy-server` receives the Admission Request object and,
 based on the endpoint that received the request,
 uses the correct policy to evaluate it.
 
-Each policy is evaluated inside its own dedicated WebAssembly sandbox.
+Each policy evaluates inside its own dedicated WebAssembly sandbox.
 The communication between `policy-server` (the "host")
 and the WebAssembly policy (the "guest")
 uses the waPC communication protocol.
@@ -216,14 +221,13 @@ There is a description of using the protocol in the [writing policies](/writing-
 ## How Kubewarden handles many policy servers and policies
 
 A cluster can have many policy servers and Kubewarden policies defined.
-
-Benefits of having many policy servers:
+There are benefits of having many policy servers:
 
 - You can isolate noisy namespaces or tenants,
 those generating many policy evaluations,
-from the rest of the cluster so as not to affect other users.
+from the rest of the cluster so as not to adversely affect other cluster operations.
 
-- You can run mission critical policies in a dedicated Policy Server "pool",
+- You can run mission critical policies in a dedicated Policy Server pool,
 making your infrastructure more resilient.
 
 A `PolicyServer` resource defines each `policy-server`
@@ -233,6 +237,8 @@ This leads back to the initial diagram:
 
 ![Full architecture](/img/architecture.png)
 
+<!--TODO:is/are bound or binds? What does the binding and how?-->
+
 A `ClusterAdmissionPolicy` is bound to a `PolicyServer`.
 Any `ClusterAdmissionPolicies` not specifying a `PolicyServer`
 are bound to the `default` `PolicyServer`.
@@ -240,12 +246,14 @@ If a `ClusterAdmissionPolicy` references a `PolicyServer`
 that doesn't exist, its state is `unschedulable`.
 
 Each `policy-server` defines many validation endpoints,
-one per policy. defined inside its configuration file.
+one for each policy defined in its configuration file.
 You can load the same policy many times,
 with different configuration parameters.
 
-The `ValidatingWebhookConfiguration` and `MutatingWebhookConfiguration` resources make the Kubernetes API server aware of these policies.
-The `kubewarden-controller` keeps the API server and configuration resources in synchronization.
+The `ValidatingWebhookConfiguration` and `MutatingWebhookConfiguration` resources
+make the Kubernetes API server aware of these policies.
+The `kubewarden-controller` keeps the API server
+and configuration resources in synchronization.
 
 Finally, the Kubernetes API server dispatches incoming admission requests
 to the correct validation endpoint exposed by `policy-server`.
