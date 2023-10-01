@@ -6,7 +6,7 @@ keywords: [kubewarden, kubernetes, architecture]
 ---
 
 <!--TODO:Where did the diagrams come from, what tool? Originals or code still
-exist?-->
+exist? What type of architecture diagrams are they.-->
 
 Kubewarden is a Kubernetes policy engine.
 It uses policies written in a programming language of your choosing.
@@ -15,7 +15,8 @@ This language must generate a WebAssembly binary for Kubewarden to use.
 The Kubewarden stack consists of these components:
 
 - Kubewarden Custom Resources:
-These are [Kubernetes Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) that simplify the process of managing policies.
+These are [Kubernetes Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
+that simplify the process of managing policies.
 
 - [`kubewarden-controller`](https://github.com/kubewarden/kubewarden-controller):
 This is a Kubernetes controller that reconciles Kubewarden's Custom Resources.
@@ -24,8 +25,8 @@ It also translates Kubewarden configuration into Kubernetes directives.
 
 - Kubewarden policies:
 These are WebAssembly modules holding the validation or mutation logic.
-WebAssembly modules have detailed documentation in
-[the 'writing policies' sections](/writing-policies/index.md).
+WebAssembly modules have detailed documentation in the
+[writing policies](/writing-policies/index.md) sections.
 
 - [`policy-server`](https://github.com/kubewarden/policy-server):
 The `policy-server` receives requests for validation.
@@ -55,7 +56,7 @@ stacked components for e.g., CAP.-->
 
 The architecture diagram appears complex at first. This section covers it step by step.
 
-### Default Policy Server
+### Default policy server
 
 On a new cluster, the Kubewarden components defined are:
 
@@ -74,7 +75,7 @@ exactly? For the diagram, what's the difference between solid box, dashed box,
 white box, aquamarine box? What are the arrows showing, should they be
 labelled?-->
 
-When the `kubewarden-controller` notices the default `PolicyServer` resource
+When the `kubewarden-controller` notices the default `PolicyServer` resource,
 it creates a Deployment of the `policy-server` component.
 
 Kubewarden works as a Kubernetes Admission Webhook.
@@ -202,7 +203,7 @@ The endpoint is reachable by the `/validate/<policy ID>` URL.
 
 ### Policy in action
 
-<!--TODO:I made enpoints plural. I think there are many. Is that correct?-->
+<!--TODO:I made endpoints plural. I think there are many. Is that correct?-->
 Now that all the necessary plumbing is complete,
 Kubernetes starts sending Admission Review requests to the right `policy-server` endpoints.
 
@@ -252,8 +253,8 @@ with different configuration parameters.
 
 The `ValidatingWebhookConfiguration` and `MutatingWebhookConfiguration` resources
 make the Kubernetes API server aware of these policies.
-The `kubewarden-controller` keeps the API server
+Then `kubewarden-controller` keeps the API server
 and configuration resources in synchronization.
 
-Finally, the Kubernetes API server dispatches incoming admission requests
+The Kubernetes API server dispatches incoming admission requests
 to the correct validation endpoint exposed by `policy-server`.
