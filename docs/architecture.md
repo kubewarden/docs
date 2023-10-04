@@ -32,6 +32,9 @@ WebAssembly modules have detailed documentation in the
 The `policy-server` receives requests for validation.
 It validates the requests by executing Kubewarden policies.
 
+- [audit-scanner](https://github.com/kubewarden/audit-scanner): It inspects the resources already in the cluster and identifies the ones that are violating Kubewarden policies.
+
+
 Kubewarden integrates with Kubernetes using
 [Dynamic Admission Control](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
 In particular, Kubewarden operates as a Kubernetes Admission Webhook.
@@ -135,11 +138,11 @@ It results in starting the new `policy-server` instance with the updated configu
 <!--TODO:Next paragraph. Download all the policies, that the configuration
 specifies, right?-->
 
-At start time, the `policy-server` reads its configuration
+At start time, the `policy-server` reads its configuration from the ConfigMap
 and downloads all the Kubewarden policies specified.
 You can download policies from remote HTTP servers and container registries.
 
-You use policy configuration parameters to tune a policies' behavior.
+You use policy settings parameters to tune a policies' behavior.
 After startup and policy download the `policy-server`
 checks the policy settings provided by the user are valid.
 
@@ -221,7 +224,7 @@ Each policy evaluates inside its own dedicated WebAssembly sandbox.
 The communication between `policy-server` (the "host")
 and the WebAssembly policy (the "guest")
 uses the waPC communication protocol.
-There is a description of using the protocol in the [writing policies](/writing-policies/index.md) documentation.
+The protocol description is part of the [writing policies](/writing-policies/index.md) documentation.
 
 ## How Kubewarden handles many policy servers and policies
 
