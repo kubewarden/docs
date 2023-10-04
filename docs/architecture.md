@@ -50,11 +50,15 @@ The diagram shows the architecture of a cluster running the Kubewarden stack:
 <!--TODO:To be clear. The stack refers to the entire diagram rather that the
 stacked components for e.g., CAP.-->
 
+<!--TODO:Do we really need the full diagram at this point. Maybe start
+with the simpler one in the next section-->
+
 ![Full architecture](/img/architecture.png)
 
 ## The journey of a Kubewarden policy
 
-The architecture diagram appears complex at first. This section covers it step by step.
+The architecture diagram appears complex at first.
+This section covers it step by step.
 
 ### Default policy server
 
