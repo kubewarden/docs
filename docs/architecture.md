@@ -49,12 +49,6 @@ flagging the ones that no longer adhere with the deployed Kubewarden policies.
 
 The diagram shows the architecture of a cluster running the Kubewarden stack:
 
-<!--TODO:To be clear. The stack refers to the entire diagram rather that the
-stacked components for e.g., CAP.-->
-
-<!--TODO:Do we really need the full diagram at this point. Maybe start
-with the simpler one in the next section-->
-
 ![Full architecture](/img/architecture.png)
 
 ## The journey of a Kubewarden policy
@@ -90,9 +84,6 @@ and a Kubernetes ClusterIP Service
 to expose it inside the cluster network.
 
 ### Defining the first policy
-
-<!--TODO:First mention of 'bound'. I'd like to define what binding or to
-be bound is, how it happens, where, etc?-->
 
 This diagram shows what happens when defining the first policy
 bound to the default `policy-server` in the cluster:
@@ -214,8 +205,6 @@ and a `ClusterAdmissionPolicy` or `AdmissionPolicy` resource defines each policy
 This leads back to the initial diagram:
 
 ![Full architecture](/img/architecture.png)
-
-<!--TODO:is/are bound or binds? What does the binding and how?-->
 
 A `ClusterAdmissionPolicy` is bound to a `PolicyServer`.
 Any `ClusterAdmissionPolicies` not specifying a `PolicyServer`
