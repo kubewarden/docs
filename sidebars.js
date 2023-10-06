@@ -116,7 +116,6 @@ module.exports = {
         {
           Comparisons: ["explanations/opa-comparison"],
         },
-        "explanations/context-aware-policies",
         {
           type: "category",
           label: "Audit Scanner",
