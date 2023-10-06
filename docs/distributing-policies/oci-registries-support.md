@@ -1,23 +1,27 @@
 ---
-sidebar_label: "OCI Registries Support"
-title: ""
+sidebar_label: "OCI registry support"
+title: "OCI registry support"
+description: OCI registry support
 ---
 
-# OCI Registries support
+Kubewarden policies are distributed as
+[OCI Artifacts](https://github.com/opencontainers/artifacts)
+using regular Open Container Initiative (OCI) registries.
+
+Policies are stored alongside container images.
+They don't require extra setup or maintenance
+other than that needed for regular container images.
 
 :::note
-This is not an exhaustive list. If a registry you know or use is working correctly
-with Kubewarden, or if any information described here is not accurate at this time, please open a
-[Pull Request against this documentation](https://github.com/kubewarden/docs/edit/main/docs/distributing-policies/oci-registries-support.md) to fix it.
+
+You can add a registry that works with Kubewarden or
+correct any registry inaccuracies with a pull request against
+[this document](https://github.com/kubewarden/docs/edit/main/docs/distributing-policies/oci-registries-support.md)
+to fix it.
+
 :::
 
-Kubewarden policies are distributed as [OCI Artifacts](https://github.com/opencontainers/artifacts)
-using regular OCI Registries.
-
-Policies are stored side by side with container images. They don't require any extra setup or
-maintenance than regular container images do.
-
-## Projects that implement OCI registries
+## Projects implementing OCI registries
 
 - [Harbor](https://goharbor.io/).
 - [Distribution](https://github.com/distribution/distribution) ([>= 2.7.0](https://github.com/distribution/distribution/releases/tag/v2.7.0)).
@@ -25,7 +29,7 @@ maintenance than regular container images do.
 
 ## Hosted OCI registries
 
-- [GitHub Container Registry](https://github.com/container-registry/).See [here](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).
+- [GitHub Container Registry](https://github.com/container-registry/). See [here](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).
 - [Quay.io](https://quay.io). See projects list above.
 - [Amazon ECR](https://aws.amazon.com/ecr/): See [here](https://aws.amazon.com/blogs/containers/oci-artifact-support-in-amazon-ecr/).
 - [Google Artifact Registry](https://cloud.google.com/artifact-registry). See [here](https://cloud.google.com/anthos-config-management/docs/how-to/sync-oci-artifacts-from-artifact-registry).
@@ -46,13 +50,12 @@ We recommend:
 
 ### Docker Hub
 
-Currently, Docker Hub does not support OCI artifacts at this time, and as such,
-it cannot be used to store Kubewarden policies.
-Docker Inc. has publicly announced that Docker Hub will [support OCI artifacts
-in the near
-future](https://www.docker.com/blog/announcing-docker-hub-oci-artifacts-support/).
+Currently, Docker Hub doesn't support OCI artifacts so can't be used to store Kubewarden policies.
+Docker Inc. has announced that Docker Hub will support OCI artifacts in the
+[future](https://www.docker.com/blog/announcing-docker-hub-oci-artifacts-support/).
 
 ### JFrog
 
-Although JFrog supports OCI artifacts, it is only partially possible to push to it when following
-the specification. [Read more here](https://github.com/kubewarden/kwctl/issues/59)
+Although JFrog supports OCI artifacts,
+it's only partially possible to push to it, when following their specification.
+[Read more here](https://github.com/kubewarden/kwctl/issues/59).
