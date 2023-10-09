@@ -41,6 +41,7 @@ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 helm upgrade -i --wait \
   --namespace jaeger \
   --create-namespace \
+  --version 2.46.2 \
   jaeger-operator jaegertracing/jaeger-operator \
   --set rbac.clusterRole=true
 ```

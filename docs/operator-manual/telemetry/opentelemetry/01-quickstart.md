@@ -121,6 +121,7 @@ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm
 helm install --wait \
   --namespace open-telemetry \
   --create-namespace \
+  --version 0.37.0 \
   my-opentelemetry-operator open-telemetry/opentelemetry-operator
 ```
 

@@ -82,6 +82,7 @@ At time of writing the latest chart version is `51.0.2`
 ```console
 helm install --wait --create-namespace \
   --namespace prometheus \
+  --version 51.0.2 \
   --values kube-prometheus-stack-values.yaml \
   prometheus prometheus-community/kube-prometheus-stack
 ```
