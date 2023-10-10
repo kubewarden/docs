@@ -36,7 +36,7 @@ This includes the WordPress Pod created by Bob.
 The audit scanner operates by:
 
 - identifying all the resources to audit
-- for each it builds a fake admission request with the resource's data
+- for each it builds a synthetic admission request with the resource's data
 - it sends each admission request to a policy server endpoint which is only for audit requests
 
 For the policy evaluating the request,
