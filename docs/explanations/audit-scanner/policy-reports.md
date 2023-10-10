@@ -68,7 +68,7 @@ for more information.
 
 In the next example, the audit scanner has evaluated the `cap-testing-cap-policy` on many namespaces in the cluster.
 The results indicate that all the namespaces passed the policy validation.
-The `summary` section provides a summary of the audit results, showing there were no errors, failures, or warnings.
+The `summary` section summarizes the audit results, showing there were no errors, failures, or warnings.
 
 ```yaml
 apiVersion: wgpolicyk8s.io/v1beta1
