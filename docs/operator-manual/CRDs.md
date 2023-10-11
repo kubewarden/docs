@@ -1,13 +1,14 @@
 ---
 sidebar_label: "Custom Resources Definitions (CRDs)"
-title: ""
+title: "Custom Resource Definitions (CRD)"
 ---
 
-# Custom Resources Definitions
-
-You can find the definitions for the Kubewarden Custom Resources
+You can find the definitions for the Kubewarden Custom Resources both on this page and
 [here under docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
 
+<!-- API REFERENCE GOES BELOW.
+From a file generated in the kubewarden/kubewarden-controller repo
+in docs/crds. Make sure to delete the old stuff below this line first!-->
 # API Reference
 
 ## Packages
