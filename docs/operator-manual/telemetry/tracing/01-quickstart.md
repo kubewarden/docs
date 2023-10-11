@@ -111,8 +111,8 @@ following contents:
 
 ```yaml
 telemetry:
-  enabled: True
   tracing:
+    enabled: True
     jaeger:
       endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:14250"
       tls:

@@ -119,8 +119,8 @@ in Kubewarden. Write the `kubewarden-values.yaml` file with the following conten
 
 ```yaml
 telemetry:
-  enabled: True
   metrics:
+    enabled: True
     port: 8080
 ```
 
