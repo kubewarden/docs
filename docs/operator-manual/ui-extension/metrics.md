@@ -18,9 +18,10 @@ Follow [these instructions](../telemetry/opentelemetry/01-quickstart.md#install-
 ## Install
 
 ### 1. Within the cluster explorer click on `Cluster Tools` in the side navigation
-  - `Install` the Monitoring tool
-  - Edit the YAML to include a Service Monitor for Kubewarden
-  - You need to specify the correct namespace where you installed Kubewarden
+
+- `Install` the Monitoring tool
+- Edit the YAML to include a Service Monitor for Kubewarden
+- You need to specify the correct namespace where you installed Kubewarden
 
 > Adapted from [here](../telemetry/metrics/01-quickstart.md)
 
@@ -44,14 +45,14 @@ prometheus:
 
 ### 2. Enable telemetry for your `rancher-kubewarden-controller` resource
 
-  - Navigate to Apps & Marketplace -> Installed Apps
-  - Select the `Edit/Upgrade` action for your `rancher-kubewarden-controller` resource
-  - Edit the YAML for `telemetry` to be `enabled: "true"` and ensure the metrics port is correct
+- Navigate to Apps & Marketplace -> Installed Apps
+- Select the `Edit/Upgrade` action for your `rancher-kubewarden-controller` resource
+- Edit the YAML for `telemetry` to be `enabled: "true"` and ensure the metrics port is correct
 
 ```yml
 telemetry:
-  enabled: True
   metrics:
+    enabled: True
     port: 8080
 ```
 
@@ -65,9 +66,10 @@ You may need to redeploy your Monitoring resources for the new ConfigMap to be l
 This method is suited for air gapped installations
 :::
 
-The dashboards are unique between Policy Server and Policies, thus will need to be created separately. 
+The dashboards are unique between Policy Server and Policies, thus will need to be created separately.
 
 Within the detail view for a Policy Server or a specific Policy:
+
 - Navigate to the "Metrics" tab
 - Follow the prompt to create the ConfigMap
 - Reload the page to update the Grafana view (Grafana may be slow to acknowledge the new dashboard)
