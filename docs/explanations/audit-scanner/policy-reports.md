@@ -44,7 +44,7 @@ open source project for monitoring and observability of the PolicyReport CRDs.
 ## Policy Reporter UI
 
 The Policy Reporter is shipped as a subchart of `kubewarden-controller`.
-Se the [Audit Scanner Installation](../../howtos/audit-scanner)
+To the [Audit Scanner Installation](../../howtos/audit-scanner)
 page for more information.
 
 The Policy Reporter UI provides a dashboard showcasing all violations
