@@ -29,7 +29,7 @@ This endpoint may be unique depending on your configuration. You can find the en
 
 ### Update `rancher-kubewarden-controller` with Jaeger endpoint
 
-You will need to edit the `rancher-kubewarden-controller` resource to add the Jaeger endpoint "my-open-telemetry-collector.jaeger.svc.cluster.local:14250".
+You will need to edit the `rancher-kubewarden-controller` resource to add the Jaeger endpoint "my-open-telemetry-collector.jaeger.svc.cluster.local:4317".
 
 For instance:
 
@@ -38,7 +38,7 @@ telemetry:
   tracing:
     enabled: True
     jaeger:
-      endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:14250"
+      endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:4317"
       tls:
         insecure: true
 ```

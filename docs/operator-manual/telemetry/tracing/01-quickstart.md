@@ -114,7 +114,7 @@ telemetry:
   tracing:
     enabled: True
     jaeger:
-      endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:14250"
+      endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:4317"
       tls:
         insecure: true
 ```
