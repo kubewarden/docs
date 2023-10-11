@@ -52,10 +52,6 @@ spec:
         - UPDATE
 ```
 
-<!--TODO:Is this OK, to me it looks like we are saying how to use a
-wildcard. Then we say that wildcards are ignored. Is that right?-->
-
 The `apiGroups`, `apiVersions` and `resources` attributes can use the wildcard `*`.
 This wildcard symbol causes the policy to match all the values used in the field.
-
 The audit scanner ignores policies that make use of the `*` symbol.
