@@ -31,7 +31,7 @@ Cert Manager, [see the compat chart](https://github.com/jaegertracing/helm-chart
 To install the Helm chart:
 
 :::note
-At time of writing the latest chart version is `2.46.2`
+At time of writing the latest chart version is `2.49.0`
 
 :::
 
@@ -41,7 +41,7 @@ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 helm upgrade -i --wait \
   --namespace jaeger \
   --create-namespace \
-  --version 2.46.2 \
+  --version 2.49.0 \
   jaeger-operator jaegertracing/jaeger-operator \
   --set rbac.clusterRole=true
 ```
