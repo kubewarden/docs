@@ -96,7 +96,7 @@ with Cert Manager, [see the compat chart](https://github.com/open-telemetry/open
 We will install the latest cert-manager Helm chart:
 
 :::note
-At time of writing the latest cert-manager chart version is `v1.13.0`
+At time of writing the latest cert-manager chart version is `v1.13.1`
 :::
 
 ```console
@@ -106,6 +106,7 @@ helm install --wait \
     --namespace cert-manager \
     --create-namespace \
     --set installCRDs=true \
+    --version 1.13.1 \
     cert-manager jetstack/cert-manager
 ```
 
