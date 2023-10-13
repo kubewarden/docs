@@ -16,6 +16,12 @@ The Kubewarden stack comprises:
 
 * A deployment of a `kubewarden-controller`: this controller monitors the `ClusterAdmissionPolicy` resources and interacts with the Kubewarden `PolicyServer` components.
 
+:::tip
+
+The Kubernetes Custom Resource Definitions (CRD) defined by Kubewarden are described [here](operator-manual/CRDs.md).
+
+:::
+
 ## Installation
 
 :::info Prerequisites
