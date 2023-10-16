@@ -1,25 +1,24 @@
-
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: 'Kubewarden',
-  tagline: 'Kubernetes Dynamic Admission at your fingertips',
-  url: 'https://docs.kubewarden.io',
-  baseUrl: '/',
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.svg',
-  organizationName: 'kubewarden', // Usually your GitHub org/user name.
-  projectName: 'docs', // Usually your repo name.
+  title: "Kubewarden",
+  tagline: "Kubernetes Dynamic Admission at your fingertips",
+  url: "https://docs.kubewarden.io",
+  baseUrl: "/",
+  onBrokenLinks: "throw",
+  onBrokenMarkdownLinks: "warn",
+  favicon: "img/favicon.svg",
+  organizationName: "kubewarden", // Usually your GitHub org/user name.
+  projectName: "docs", // Usually your repo name.
   trailingSlash: false,
   themeConfig: {
     algolia: {
       // The application ID provided by Algolia
-      appId: 'D1IWU8P361',
+      appId: "D1IWU8P361",
 
       // Public API key: it is safe to commit it
-      apiKey: '99387ef7038005749504e6845a694feb',
+      apiKey: "99387ef7038005749504e6845a694feb",
 
-      indexName: 'kubewarden',
+      indexName: "kubewarden",
 
       // Optional: see doc section below
       contextualSearch: true,
@@ -31,15 +30,11 @@ module.exports = {
       searchParameters: {},
 
       // Optional: path for search page that enabled by default (`false` to disable it)
-      searchPagePath: 'search',
+      searchPagePath: "search",
     },
     prism: {
       // Enable extra languages when doing syntax highlighting
-      additionalLanguages: [
-        'hcl',
-        'rust',
-        'rego',
-      ],
+      additionalLanguages: ["hcl", "rust", "rego"],
     },
     colorMode: {
       // "light" | "dark"
@@ -52,47 +47,57 @@ module.exports = {
     navbar: {
       title: "Kubewarden, a CNCF Sandbox Project",
       logo: {
-        alt: 'logo',
-        src: 'img/icon-kubewarden.svg',
+        alt: "logo",
+        src: "img/icon-kubewarden.svg",
       },
       items: [
         {
-          type: 'doc',
-          docId: 'introduction',
-          position: 'right',
-          label: 'Docs',
-          className: 'navbar__docs',
+          type: "docsVersionDropdown",
+          position: "right",
+          dropdownActiveClassDisabled: true,
         },
         {
-          href: 'https://github.com/kubewarden/',
-          label: 'GitHub',
-          position: 'right',
-          className: 'navbar__github btn btn-secondary icon-github',
+          type: "doc",
+          docId: "introduction",
+          position: "right",
+          label: "Docs",
+          className: "navbar__docs",
         },
         {
-          href: 'https://kubernetes.slack.com/archives/kubewarden',
-          position: 'right',
-          className: 'header-slack-link',
-          'aria-label': 'Slack Channel',
+          href: "https://github.com/kubewarden/",
+          label: "GitHub",
+          position: "right",
+          className: "navbar__github btn btn-secondary icon-github",
+        },
+        {
+          href: "https://kubernetes.slack.com/archives/kubewarden",
+          position: "right",
+          className: "header-slack-link",
+          "aria-label": "Slack Channel",
         },
       ],
     },
     footer: {
-      style: 'dark',
+      style: "dark",
       links: [],
       copyright: `Copyright © ${new Date().getFullYear()} Kubewarden Project Authors. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks.`,
     },
   },
   presets: [
     [
-      '@docusaurus/preset-classic',
+      "@docusaurus/preset-classic",
       {
         docs: {
-          routeBasePath: '/', // Serve the docs at the site's root
+          routeBasePath: "/", // Serve the docs at the site's root
           /* other docs plugin options */
-          sidebarPath: require.resolve('./sidebars.js'),
+          sidebarPath: require.resolve("./sidebars.js"),
           showLastUpdateTime: true,
-          editUrl: 'https://github.com/kubewarden/docs/edit/main/',
+          editUrl: "https://github.com/kubewarden/docs/edit/main/",
+          versions: {
+            current: {
+              label: "Next 🚧",
+            },
+          },
         },
         blog: false, // Optional: disable the blog plugin
         // ...
@@ -100,10 +105,10 @@ module.exports = {
           customCss: [require.resolve("./src/css/custom.css")],
         },
         googleAnalytics: {
-          trackingID: 'UA-56382716-13',
+          trackingID: "UA-56382716-13",
           anonymizeIP: true,
         },
       },
     ],
-  ], 
+  ],
 };
