@@ -1,0 +1,96 @@
+---
+sidebar_label: "Context Aware Policies"
+title: ""
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Context aware policies
+
+The `policy-server` has capabilities to expose cluster information to
+policies, so that they can take decisions based on other existing
+resources, and not only based on the details provided by the admission request.
+
+The retrieval of Kubernetes resources is performed by the Policy Server hosting the policy.
+Access to Kubernetes is regulated by RBAC rules applied to the Service Account used by the Policy Server.
+
+The `default` Policy Server deployed by Kubewarden helm charts has access to the following Kubernetes resources:
+
+* Namespaces
+* Services
+* Ingresses
+
+:::info
+Access to Kubernetes resources is currently available only to Kubewarden policies written using traditional programming languages. This is not available yet for Rego-based policies.
+:::
+
+:::caution
+The policy server performs caching of the results obtained from the Kubernetes API server to reduce the amount of load of this core piece of Kubernetes.
+That means some information might be stale or missing.
+:::
+
+### ClusterAdmissionPolicies
+
+ClusterAdmissionPolicies have the field [spec.contextAwareResources](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller/policies.kubewarden.io/ClusterAdmissionPolicy/v1#spec-contextAwareResources). This field provides a list a `GroupVersionKind` resources that the policy needs to access. This allows policy writers to ship the "permissions" that the policy needs together with the policy. Moreover, this allows policy operators to review the "permissions" needed by the policy at deployment time.
+
+### Testing context aware policies locally
+
+Apart from running policies in cluster for end-to-end tests, one can use our `kwctl` CLI utility to run policies and mock requests against the cluster.
+
+For that, `kwctl run` can first record all the interactions with the cluster into a file:
+
+```console
+kwctl run \
+    --allow-context-aware \
+    -r request.json \
+    --record-host-capabilities-interactions replay-session.yml \
+    annotated-policy.wasm
+```
+
+which creates the following `replay-session.yml` file:
+
+```yaml
+# replay-session.yml
+---
+- type: Exchange
+  request: |
+    !KubernetesGetResource
+    api_version: /v1
+    kind: Pod
+    name: p-testing
+    namespace: local
+    disable_cache: true
+  response:
+    type: Success
+    payload: '{"apiVersion":"","kind":"Pod", <snipped> }'
+```
+
+With the replay session, one can now mock the cluster interactions without the need
+of a cluster, perfect for CI and end-to-end tests:
+
+```console
+kwctl run \
+    --allow-context-aware \
+    -r request.json \
+    --replay-host-capabilities-interactions replay-session.yml \
+    annotated-policy.wasm
+``` 
+
+### Language SDKs
+
+Language SDK's that support cluster context at this time will expose
+functions that allow policies to retrieve the current state of the
+cluster.
+
+
+<Tabs>
+  <TabItem value="rust" label="Rust SDK" default>
+  See the functions exposing this functionality at the <a href="https://docs.rs/kubewarden-policy-sdk/0.8.7/kubewarden_policy_sdk">Rust SDK reference docs</a>
+  </TabItem>
+  <TabItem value="go" label="Go SDK">
+  See the functions exposing this functionality at the <a href="https://pkg.go.dev/github.com/kubewarden/policy-sdk-go">Go SDK reference docs</a>
+  </TabItem>
+</Tabs>
+
+If you want more information about the WaPC function used by the SDKs, check the [Kubernetes capabilities](/docs/writing-policies/spec/host-capabilities/06-kubernetes.md) reference documentation.
