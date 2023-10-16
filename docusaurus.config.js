@@ -93,6 +93,11 @@ module.exports = {
           sidebarPath: require.resolve("./sidebars.js"),
           showLastUpdateTime: true,
           editUrl: "https://github.com/kubewarden/docs/edit/main/",
+          versions: {
+            current: {
+              label: "Next 🚧",
+            },
+          },
         },
         blog: false, // Optional: disable the blog plugin
         // ...
