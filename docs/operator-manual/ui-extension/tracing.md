@@ -4,7 +4,7 @@ Tracing allows to collect fine grained details about policy evaluations. It can 
 
 We will use [Jaeger](https://www.jaegertracing.io/) to receive, store and visualize trace events.
 
-___Policy tracing logs___
+**_Policy tracing logs_**
 ![UI Policy Tracing Logs](/img/ui_policy_tracing.png)
 
 ## Prerequisites
@@ -29,16 +29,16 @@ This endpoint may be unique depending on your configuration. You can find the en
 
 ### Update `rancher-kubewarden-controller` with Jaeger endpoint
 
-You will need to edit the `rancher-kubewarden-controller` resource to add the Jaeger endpoint "my-open-telemetry-collector.jaeger.svc.cluster.local:14250".
+You will need to edit the `rancher-kubewarden-controller` resource to add the Jaeger endpoint "my-open-telemetry-collector.jaeger.svc.cluster.local:4317".
 
 For instance:
 
 ```yaml
 telemetry:
-  enabled: True
   tracing:
+    enabled: True
     jaeger:
-      endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:14250"
+      endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:4317"
       tls:
         insecure: true
 ```
@@ -53,6 +53,5 @@ This is **not meant to be a production deployment**.
 We strongly recommend
 to read Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
 :::
-
 
 You should now be able to view any failed requests for policies tied to a specific Policy Server or the detail view for any given policy. You can get a more in-depth view into the traces from the Jaeger UI.

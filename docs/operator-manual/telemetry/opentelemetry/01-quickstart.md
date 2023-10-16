@@ -96,7 +96,7 @@ with Cert Manager, [see the compat chart](https://github.com/open-telemetry/open
 We will install the latest cert-manager Helm chart:
 
 :::note
-At time of writing the latest cert-manager chart version is `v1.13.0`
+At time of writing the latest cert-manager chart version is `v1.13.1`
 :::
 
 ```console
@@ -106,13 +106,14 @@ helm install --wait \
     --namespace cert-manager \
     --create-namespace \
     --set installCRDs=true \
+    --version 1.13.1 \
     cert-manager jetstack/cert-manager
 ```
 
 Once cert-manager is up and running, the OpenTelemetry operator Helm chart can be installed in this way:
 
 :::note
-At time of writing the latest OpenTelemetry operator chart version is `0.37.0`
+At time of writing the latest OpenTelemetry operator chart version is `0.39.2`
 :::
 
 ```console
@@ -121,7 +122,7 @@ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm
 helm install --wait \
   --namespace open-telemetry \
   --create-namespace \
-  --version 0.37.0 \
+  --version 0.39.2 \
   my-opentelemetry-operator open-telemetry/opentelemetry-operator
 ```
 
