@@ -8,8 +8,8 @@ keywords: [kubernetes, admission control threat model, kubewarden]
 <!--TODO: There are a number of To-dos in here. Are they still to-do?-->
 
 The [Kubernetes Security Special Interest Group (SIG)](https://github.com/kubernetes/community/tree/master/sig-security) has defined an Admission Control Threat Model for Kubernetes.
-The Kubewarden team evaluates Kubewarden against this threat model, and strives to provide secure defaults that cover it.
-It's recommended that Kubewarden administrators to read and understand the threat model, and use it to devise their own threat model as needed.
+The Kubewarden team continuously evaluates Kubewarden against this threat model, and works to provide secure defaults.
+It's recommended that Kubewarden administrators read and understand the threat model, and use it to devise their own circumstance specific threat model as needed.
 
 Details about each threat is provided in the [document published by SIG Security](https://github.com/kubernetes/sig-security/tree/main/sig-security-docs/papers/admission-control).
 
@@ -33,7 +33,7 @@ This is Kubewarden's default behavior.
 
 Failing closed means that if, for any reason,
 Kubewarden stops responding or crashes,
-the API server will reject the request by default.
+the API server rejects the request by default.
 This is even if the request would be accepted by Kubewarden in normal situations.
 
 ### Threat 2 - Attacker passes workloads which require complex processing causing timeouts
@@ -60,7 +60,7 @@ a mis-configuration to bypass the intended security control.
 
 Regular reviews of webhook configuration can help catch issues.
 
-### Threat 4 - Attacker has rights to delete or modify the k8s webhook object
+### Threat 4 - Attacker has rights to delete or modify the Kubernetes webhook object
 
 #### Scenario
 
@@ -217,7 +217,9 @@ As always, you should review PRs changing the rules in the policies deployment.
 An attacker, with rights to create workloads, uses new features of the Kubernetes
 API (for example, a changed API version) to bypass a rule.
 
-#### Mitigation: All rules are reviewed and tested.
+#### Mitigation
+
+All rules are reviewed and tested.
 
 #### To-do
 
@@ -294,7 +296,8 @@ For example, by:
 
 1. Kubewarden provides a Software Bill Of Materials, which lists all images needed. This aids with Zero-Trust.
 The Kubernetes Administrator must verify the Kubewarden images, its dependencies' images, and charts
-out of the Kubernetes cluster, in a trusted environment. This can be done with `cosign`, for example.
+out of the Kubernetes cluster, in a trusted environment.
+This can be done with `cosign`, for example.
 Incidentally, this is part of the implementation needed for air-gapped installations.
 2. Use signed Helm charts, and verified digests instead of tags for Kubewarden images in those Helm charts.
 This doesn't secure dependencies though.
