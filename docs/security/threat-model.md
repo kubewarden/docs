@@ -34,7 +34,7 @@ This is Kubewarden's default behavior.
 Failing closed means that if, for any reason,
 Kubewarden stops responding or crashes,
 the API server rejects the request by default.
-This is even if the request would be accepted by Kubewarden in normal situations.
+This is even if the request would normally be accepted by Kubewarden.
 
 ### Threat 2 - Attacker passes workloads which require complex processing causing timeouts
 
@@ -69,7 +69,7 @@ the webhook object in the cluster.
 
 #### Mitigation
 
-RBAC rights are strictly controlled.
+RBAC rights should be strictly controlled.
 
 #### To-do
 
@@ -117,12 +117,13 @@ Since the webhook uses TLS encryption for all traffic, Kubewarden is safe.
 #### Scenario
 
 An attacker on the container network, who has access to the NET_RAW capability
-can attempt to use MITM tooling to intercept traffic between the API server
+can try to use MITM tooling to intercept traffic between the API server
 and admission controller webhook.
 
 #### Mitigation
 
-Webhook mTLS authentication is used.
+Webhook mTLS authentication should be used.
+You should also use [capabilities-psp](https://artifacthub.io/packages/kubewarden/capabilities-psp/capabilities-psp) and configure it to drop NET_RAW capabilities.
 
 #### To-do
 
@@ -155,12 +156,7 @@ such that it allows for privileged container creation.
 
 #### Mitigation
 
-All rules are reviewed and tested.
-
-#### To-do
-
-The Kubewarden team may come up with some tests to cover the review of these rules in the future.
-Any change of rules during policies deployment must be carefully reviewed.
+All rules should be reviewed and tested.
 
 ### Threat 11 - Attacker deploys workloads to namespaces that are exempt from admission control
 
@@ -169,7 +165,9 @@ Any change of rules during policies deployment must be carefully reviewed.
 An attacker is able to deploy workloads to Kubernetes namespaces that are exempt
 from the admission controller configuration.
 
-#### Mitigation: RBAC rights are strictly controlled
+#### Mitigation
+
+RBAC rights are strictly controlled
 
 #### To-do
 
@@ -187,12 +185,7 @@ API which is not covered by the admission controller
 
 #### Mitigation
 
-All rules are reviewed and tested.
-
-#### To-do
-
-Introduce tests to cover this rule.
-As always, you should review PRs changing the rules in the policies deployment.
+All rules should be reviewed and tested. You should review PRs changing any rules in policies deployment.
 
 ### Threat 13 - Attacker exploits bad string matching on a blocklist to bypass rules
 
@@ -219,13 +212,7 @@ API (for example, a changed API version) to bypass a rule.
 
 #### Mitigation
 
-All rules are reviewed and tested.
-
-#### To-do
-
-Introduce tests to cover this rule.
-Create a configuration to reject requests where the API version doesn't cover by the policy by default.
-Kubewarden should warn policy developers to cover all the supported API version in their tests and reject all others.
+All rules should be reviewed and tested. There is a policy that tests for the use of deprecated resources. It's available from [the deprecated-api-versions-policy](https://github.com/kubewarden/deprecated-api-versions-policy).
 
 ### Threat 15 - Attacker deploys privileged container to node running Webhook controller
 
