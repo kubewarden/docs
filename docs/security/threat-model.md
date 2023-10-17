@@ -5,8 +5,6 @@ descriptions: The Kubernetes Admission Control Threat Model and Kubewarden.
 keywords: [kubernetes, admission control threat model, kubewarden]
 ---
 
-<!--TODO: There are a number of To-dos in here. Are they still to-do?-->
-
 The [Kubernetes Security Special Interest Group (SIG)](https://github.com/kubernetes/community/tree/master/sig-security) has defined an Admission Control Threat Model for Kubernetes.
 The Kubewarden team continuously evaluates Kubewarden against this threat model, and works to provide secure defaults.
 It's recommended that Kubewarden administrators read and understand the threat model, and use it to devise their own circumstance specific threat model as needed.
