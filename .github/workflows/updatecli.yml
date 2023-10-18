@@ -1,0 +1,42 @@
+---
+name: "Updatecli: Dependency Management"
+
+on:
+  workflow_dispatch:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron: '0 * * * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  updatecli:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      #   cache: yarn
+
+      #  https://github.com/actions/setup-node/issues/490
+      - name: Repair NPM  # Update to latest npm and yarn
+        run: "npm install -g npm yarn"
+
+      - name: Install Dependencies
+        run: "yarn install --frozen-lockfile"
+
+      - name: Install Updatecli Binary
+        uses: updatecli/updatecli-action@v2
+
+      - name: Run Updatecli in enforce mode
+        run: "updatecli compose apply --experimental"
+        env:
+          UPDATECLI_GITHUB_ACTOR: ${{ github.actor }}
+          UPDATECLI_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
