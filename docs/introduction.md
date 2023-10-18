@@ -10,7 +10,7 @@ Kubewarden is a [Kubernetes Dynamic Admission
 Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)
 that validates incoming requests against WebAssembly policies. The policies can be developed in any programming language that generates WebAssembly binaries.
 
-Kubewarden is a [CNCF](https://cncf.io) Sandbox project that was initially created by [Rancher](https://www.rancher.com/).
+Kubewarden is a [CNCF](https://cncf.io) Sandbox project, initially created by [Rancher](https://www.rancher.com/).
 
 ## What is WebAssembly?
 
