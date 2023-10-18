@@ -11,6 +11,12 @@ module.exports = {
   projectName: "docs", // Usually your repo name.
   trailingSlash: false,
   themeConfig: {
+    docs: {
+      sidebar: {
+        hideable: true,
+        autoCollapseCategories: true,
+      },
+    },
     algolia: {
       // The application ID provided by Algolia
       appId: "D1IWU8P361",
