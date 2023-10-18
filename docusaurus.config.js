@@ -45,42 +45,47 @@ module.exports = {
       disableSwitch: false,
     },
     navbar: {
-      title: "Kubewarden, a CNCF Sandbox Project",
+      title: "Kubewarden",
       logo: {
-        alt: "logo",
+        alt: "The Kubewarden Project logo",
         src: "img/icon-kubewarden.svg",
       },
       items: [
         {
           type: "docsVersionDropdown",
-          position: "right",
+          position: "left",
           dropdownActiveClassDisabled: true,
         },
         {
-          type: "doc",
-          docId: "introduction",
-          position: "right",
-          label: "Docs",
-          className: "navbar__docs",
+          type: 'search',
+          position: 'left',
         },
         {
           href: "https://github.com/kubewarden/",
           label: "GitHub",
           position: "right",
-          className: "navbar__github btn btn-secondary icon-github",
         },
         {
-          href: "https://kubernetes.slack.com/archives/kubewarden",
-          position: "right",
-          className: "header-slack-link",
-          "aria-label": "Slack Channel",
+          type: 'dropdown',
+          label: 'Community',
+          position: 'right',
+          items: [
+            {
+              label: 'Slack',
+              href: "https://kubernetes.slack.com/archives/kubewarden",
+            },
+            {
+              label: 'X/Twitter',
+              href: "https://twitter.com/kubewarden",
+            },
+          ],
         },
       ],
     },
     footer: {
       style: "dark",
       links: [],
-      copyright: `Copyright © ${new Date().getFullYear()} Kubewarden Project Authors. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Kubewarden project authors. All rights reserved.`,
     },
   },
   presets: [
