@@ -22,8 +22,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18.x
-      #   cache: yarn
+          node-version: 20.x
 
       #  https://github.com/actions/setup-node/issues/490
       - name: Repair NPM  # Update to latest npm and yarn
