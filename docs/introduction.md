@@ -6,9 +6,12 @@ title: ""
 
 # Introduction
 
-Kubewarden is a [Kubernetes Dynamic Admission
+Kubewarden is a Kubernetes Policy Engine.
+It performs the tasks of a [Kubernetes Dynamic Admission
 Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)
-that validates incoming requests against WebAssembly policies. The policies can be developed in any programming language that generates WebAssembly binaries.
+that validates incoming requests using WebAssembly policies.
+Kubewarden also provides an audit scanner to actively check policy enforcement over time.
+You can develop policies in any programming language that generates WebAssembly binaries.
 
 ## What is WebAssembly?
 
