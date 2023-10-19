@@ -1,17 +1,20 @@
 ---
 slug: /
 sidebar_label: "Introduction"
-title: ""
+title: "Introduction"
+description: Introducing Kubewarden, a CNCF Sandbox project.
+keywords: [kubewarden, cncf, cncf sandbox, kubernetes]
 ---
 
 # Introduction
 
 Kubewarden is a Kubernetes Policy Engine.
-It performs the tasks of a [Kubernetes Dynamic Admission
-Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)
+It performs the tasks of a [Kubernetes Dynamic Admission Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/)
 that validates incoming requests using WebAssembly policies.
 Kubewarden also provides an audit scanner to actively check policy enforcement over time.
 You can develop policies in any programming language that generates WebAssembly binaries.
+
+Kubewarden is a [CNCF](https://cncf.io) Sandbox project, initially created by [Rancher](https://www.rancher.com/).
 
 ## What is WebAssembly?
 
