@@ -11,7 +11,7 @@ There is a `monitor` mode so you can deploy a policy to a cluster without it imm
 
 The `monitor` mode is a way to deploy policies to the cluster so that:
 
-1. The policy accepts all requests, as if the policy was not installed.
+1. The policy accepts all requests, as if the policy wasn't installed.
 1. The `policy-server` traces the policy normally.
 Details are included in the trace on whether the request would have been rejected,
 or if a mutation would have been proposed by the policy.
@@ -20,7 +20,7 @@ Therefore, it's easy to filter policies by mode, and focus on the ones deployed 
 
 The `mode` is an attribute included in the `ClusterAdmissionPolicy` and `AdmissionPolicy` resources.
 There are two values that the `mode` attribute can assume: `monitor` and `protect`.
-If the `mode` is omitted, it will default to `protect`.
+The `mode` defaults to `protect` if omitted.
 
 To create a policy in `monitor mode` you need include the `mode` as part of the specification of the resource.
 For example, as highlighted, in this `ClusterAdmissionPolicy`:
