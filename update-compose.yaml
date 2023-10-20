@@ -6,4 +6,4 @@ policies:
   #   GITHUB_ACTOR: Set to the username associated with the GITHUB_TOKEN
   # 
   # Instruction to retrieve your PAT is documented on https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
-  - policy: ghcr.io/olblak/policies/rancher/docusaurus/kubewarden:0.0.5
+  - policy: ghcr.io/olblak/policies/rancher/docusaurus/kubewarden:0.0.5@sha256:81488900553174be2348b859f88f35c6ff0a6cab7342d8d4142bfec372fddb95
