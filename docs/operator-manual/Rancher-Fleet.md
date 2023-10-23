@@ -2,7 +2,7 @@
 sidebar_label: "Rancher Fleet"
 title: "Managing Kubewarden with Rancher Fleet"
 description: Managing Kubewarden with Rancher Fleet.
-keywords: [kubernetes, kubewerden, rancher fleet]
+keywords: [kubernetes, kubewarden, rancher fleet]
 ---
 
 You can manage Kubewarden Helm charts,
@@ -27,12 +27,14 @@ Using Rancher Fleet, you can code the chart dependencies using
 
 You may see transient errors until the charts are ready, such as:
 
-```
+```console
 ErrApplied(1) [Cluster fleet-local/local: dependent bundle(s) are not ready:
 [kubewarden-example-helm-kubewarden-controller]]
 ```
 
-These errors don't signify a problem, and once the charts have finished deployment, they will no longer appear.
+These errors don't signify a problem,
+and once the charts have finished deployment,
+they no longer appear.
 
 ## Removing
 
@@ -44,19 +46,24 @@ This means the `kubewarden-crds` chart gets removed.
 Kubewarden uses a pre-delete helm hook job in `kubewarden-controller` chart that deletes the default policy-server.
 This pre-delete hook is necessary to vacate the webhooks of the policies before deleting the PolicyServer.
 This is true any Policy Engine.
-If not, the cluster will have webhooks for policies that don't exist anymore so rejecting everything and being in a failed state.
+If not, the cluster may have webhooks for policies that don't exist anymore
+so rejecting everything and being in a failed state.
 
 Removing the GitRepo, and hence the `kubewarden-crds` chart,
-at the same time as the `kubewarden-controller` chart makes the pre-delete hook job fail. It means the removal is incomplete, leaving 'debris' in the cluster.
+at the same time as the `kubewarden-controller` chart makes the pre-delete hook job fail.
+It means the removal is incomplete, leaving 'debris' in the cluster.
 
 :::
 
 Uninstalling CRDs automatically isn't normally supported by any tooling, and
 Rancher Fleet is no exception.
 
-To perform a correct removal, make sure to first remove the Bundle for `kubewarden-defaults` from the cluster.
-Do this by committing those changes to the repo holding the Fleet configuration and waiting for it to be applied.
-Then remove `kubewarden-controller` in the same way, and lastly, remove `kubewarden-crds`.
+To perform a correct removal,
+make sure to first remove the Bundle for `kubewarden-defaults` from the cluster.
+Do this by committing those changes to the repository holding
+the Fleet configuration and then waiting until it's applied.
+Then remove `kubewarden-controller` in the same way,
+and lastly, remove `kubewarden-crds`.
 
 Another option is to add 2 GitRepos, one for the CRDs only,
 and another for the rest of the Kubewarden charts.
@@ -64,4 +71,5 @@ This lets you remove the Kubewarden charts first and the Kubewarden CRDs last.
 
 ## Example
 
-For an example of Fleet bundle definitions see [github.com/kubewarden/fleet-example](https://github.com/kubewarden/fleet-example).
+For an example of Fleet bundle definitions see
+[github.com/kubewarden/fleet-example](https://github.com/kubewarden/fleet-example).
