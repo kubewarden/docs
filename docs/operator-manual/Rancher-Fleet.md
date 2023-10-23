@@ -32,7 +32,7 @@ ErrApplied(1) [Cluster fleet-local/local: dependent bundle(s) are not ready:
 [kubewarden-example-helm-kubewarden-controller]]
 ```
 
-These errors don't signify a problem, and once the charts have finished deployment, they finish.
+These errors don't signify a problem, and once the charts have finished deployment, they will no longer appear.
 
 ## Removing
 
