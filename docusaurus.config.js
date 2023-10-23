@@ -86,45 +86,6 @@ module.exports = {
             },
           ],
         },
-        {
-          type: 'dropdown',
-          label: 'More from SUSE',
-          position: 'right',
-          items: [
-            {
-              href: 'https://rancher.com',
-              label: 'Rancher'
-            },
-            {
-              href: 'https://elemental.docs.rancher.com',
-              label: 'Elemental'
-            },
-            {
-              href: 'https://epinio.io',
-              label: 'Epinio'
-            },
-            {
-              href: 'https://fleet.rancher.io',
-              label: 'Fleet'
-            },
-            {
-              href: 'https://harvesterhci.io',
-              label: 'Harvester'
-            },
-            {
-              href: 'https://opni.io',
-              label: 'Opni'
-            },
-            {
-              href: 'https://rancherdesktop.io',
-              label: 'Rancher Desktop'
-            },
-            {
-              href: 'https://opensource.suse.com',
-              label: 'More projects'
-            }
-          ]
-        },
       ],
     },
     footer: {
