@@ -11,7 +11,7 @@ keywords: [kubewarden, cncf, cncf sandbox, kubernetes]
 Kubewarden is a Kubernetes Policy Engine.
 It aims to be the Universal Policy Engine for Kubernetes
 
-You can reuse policies from other policy engines without writing any code.
+You can reuse policies from other policy engines without having to rewrite them.
 You can write your own policies in any programming language
 that generates WebAssembly binaries,
 reusing your language tooling and libraries.
