@@ -8,7 +8,7 @@ keywords: [kubernetes, kubewarden, monitor mode]
 When defining a policy,
 you can choose between two modes,
 specified in its [`spec.mode`](CRDs#admissionpolicyspec).
-By default, the policy is deployed in `modeprotect`,
+By default, the policy is deployed in `mode: protect`,
 where it accepts, rejects, or mutates requests.
 
 One can choose to deploy a policy in monitor mode. In monitor mode:
