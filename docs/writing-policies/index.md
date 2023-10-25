@@ -14,7 +14,7 @@ It receives input data, performs computation with that data and returns a result
 
 The input data is Kubernetes admission requests.
 The result of the computation is a validation response,
-which tells Kubernetes whether to accept, reject, or mutate the original input data.
+which tells Kubernetes whether to accept, reject, or mutate the input data, the admission request.
 
 The [policy-server](https://github.com/kubewarden/policy-server)
 component of Kubewarden performs these operations.
@@ -23,7 +23,8 @@ The policy server doesn't include any data processing capability.
 You add processing capabilities at runtime with add-ons.
 These add-ons are the Kubewarden policies.
 
-As a consequence, a Kubewarden policy is like a [traditional plug-in](https://en.wikipedia.org/wiki/Plug-in_%28computing%29)
+So, a Kubewarden policy is like a
+[traditional plug-in](https://en.wikipedia.org/wiki/Plug-in_%28computing%29)
 of the "policy server" program.
 
 To recap:
@@ -31,7 +32,7 @@ To recap:
 - Kubewarden policies are plug-ins that expose a set of well-defined
 functionalities (validate a Kubernetes request object, validate policy settings provided by the user, and other functions) using a well-defined API
 - Policy server is the "main" program that loads the plug-ins
-(aka policies) and uses their exposed functionalities to reject, validate, or mutate Kubernetes requests
+(aka policies) and uses their exposed functionalities to accept, reject, or mutate Kubernetes requests
 
 Writing Kubewarden policies consists of writing the validation business logic and then exposing it through a well-defined API.
 
