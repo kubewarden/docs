@@ -212,6 +212,8 @@ API (for example, a changed API version) to bypass a rule.
 
 All rules should be reviewed and tested. There is a policy that tests for the use of deprecated resources. It's available from [the deprecated-api-versions-policy](https://github.com/kubewarden/deprecated-api-versions-policy).
 
+Note:  `deprecated-api-versions-policy` only deals with Custom Resources known to it. The threat is both deprecated resource versions, and new unknown ones that are misused, hence the policy only covers part
+of the problem.
 ### Threat 15 - Attacker deploys privileged container to node running Webhook controller
 
 #### Scenario
