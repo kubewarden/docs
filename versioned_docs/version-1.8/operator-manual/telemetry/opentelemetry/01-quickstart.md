@@ -132,7 +132,7 @@ We can now move to the next chapters to enable application metrics (via Promethe
 integration) and application tracing (via Jaeger integration).
 
 :::note
-The OpenTelemetry operator must be ready, to create the needed sidecars
+The OpenTelemetry operator must be ready to create the needed sidecars
 for the Kubewarden deployments. Consider deploying the OpenTelemetry Operator
 in HA in production.  
 :::
