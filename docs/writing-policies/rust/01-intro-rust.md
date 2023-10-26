@@ -22,13 +22,13 @@ Install the Rust compiler and its tools using
 [rustup](https://github.com/rust-lang/rustup).
 Refer to the rustup [install documentation](https://rust-lang.github.io/rustup/installation/index.html).
 
-Once you have installed `rustup` add the WASI target:
+Once you have installed `rustup` add the WebAssembly System Interface (WASI) target:
 
 ```console
 rustup target add wasm32-wasi
 ```
 
-## OSX specific dependencies
+## OSX dependencies
 
 To use `cargo-generate` you need to add the Xcode tool set.
 If it isn't installed through Xcode the following command gives you the dependencies needed:
