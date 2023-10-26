@@ -1,6 +1,10 @@
 ---
 sidebar_label: "Creating a policy"
 title: "Creating a policy"
+description: Creating a Kubewarden policy using Rust.
+keywords: [kubewarden, kubernetes, policy creation]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rust, creating-policies]
 ---
 
 As an example, we create a simple validation policy that processes Pod creation requests.

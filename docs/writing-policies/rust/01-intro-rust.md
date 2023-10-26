@@ -2,7 +2,7 @@
 title: "Rust"
 description: An introduction to writing Kubewarden policies with Rust.
 keywords: [kubewarden, kubernetes, writing policies, introduction]
-doc-type: [tutorial, how-to]
+doc-type: [tutorial]
 doc-topic: [writing-policies, rust, introduction]
 ---
 
