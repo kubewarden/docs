@@ -7,13 +7,15 @@ title: ""
 
 :::note
 Rego support has been introduced starting from these releases:
-  
-  * kwctl: v0.2.0
-  * policy-server: v0.2.0
+
+- kwctl: v0.2.0
+- policy-server: v0.2.0
+
+Rego policies support context aware data starting from the Kubewarden 1.9 release.
+
 :::
 
-
-The Rego language is a tailor made language designed to embrace
+The Rego language is a domain specific language designed to embrace
 policies as
 code. [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/)
 is a language inspired by Datalog.
@@ -52,7 +54,6 @@ lets you define policies inside Kubernetes' ConfigMap objects. You can
 read more about it on [its project
 page](https://github.com/open-policy-agent/kube-mgmt).
 
-
 ### Gatekeeper
 
 Gatekeeper is very different from Open Policy Agent in this regard. It
@@ -90,9 +91,9 @@ resources, so your policy might want to evaluate a request based on
 currently persisted custom resources as well.
 
 Both Open Policy Agent and Gatekeeper support context-aware
-policies. Right now Kubewarden implements this functionality only for
-policies written with the Kubewarden SDK. We have plans to fill this
-gap, to allow Rego policies to be context-aware policies too.
+policies starting from the Kubewarden 1.9 release.
+
+More details about context aware policies can be found [here](../../writing-policies/spec/05-context-aware-policies.md).
 
 ### Mutating policies
 

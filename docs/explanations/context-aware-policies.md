@@ -2,7 +2,15 @@
 sidebar_label: "Context aware policies"
 title: "Context aware policies"
 description: A description of Kubewarden context aware policies, what they are and how they are useful.
-keywords: [kubewarden, context-aware policy, clusteradmissionpolicy, admissionpolicy, admissionrequest, cluster administrator]
+keywords:
+  [
+    kubewarden,
+    context-aware policy,
+    clusteradmissionpolicy,
+    admissionpolicy,
+    admissionrequest,
+    cluster administrator,
+  ]
 ---
 
 Developers can create policies that fetch information from a Kubernetes cluster at run time.
@@ -85,7 +93,6 @@ For a core resource, the first will not work, the second will.
   kind: "pod"
 ```
 
-
 ```console
 - apiVersion: "v1"
   kind: "pod"
@@ -94,3 +101,8 @@ For a core resource, the first will not work, the second will.
 All other Kubernetes resources need the full definition: `<api>/<version>`.
 
 :::
+
+## Further readings
+
+More detailed information about context aware policies can be found in [this section](../writing-policies/spec/05-context-aware-policies.md)
+of our reference documentation.
