@@ -1,14 +1,35 @@
 ---
-sidebar_label: "Defining Policy Settings"
-title: ""
+sidebar_label: "Defining policy settings"
+title: "Defining policy settings"
+description: Defining policy settings for a Kubewarden policy developed using Rust
+keywords: [kubewarden, kubernetes, writing policies, policy settings, rust]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rust, policy-settings]
 ---
 
-# Defining policy settings
+<!--TODO:
 
-As a first step we will define the structure that holds the policy settings.
+These steps are not working for me. I get a few errors on
 
-Open the `src/settings.rs` file and change the definition of the `Settings`
-struct to look like that:
+cargo test
+cargo test
+   Compiling demo v0.1.0 (/home/jhk/projects/suse/tmp/demo)
+error[E0063]: missing field `invalid_names` in initializer of `settings::Settings`
+  \-\-> src/lib.rs:80:23
+   |
+80 |             settings: Settings {},
+   |                       ^^^^^^^^ missing `invalid_names`
+
+Three of those errors. Any suggestions?
+
+-->
+
+## The policy settings structure
+
+Firstly, define the structure that holds the policy settings.
+
+Open the `demo/src/settings.rs` file and change the definition of the `Settings`
+`struct` to look like:
 
 ```rust
 use std::collections::HashSet;
@@ -20,16 +41,15 @@ pub(crate) struct Settings {
 }
 ```
 
-This will automatically put the list of invalid names inside of
-a Set collection.
+This automatically puts the list of invalid names in a Set collection.
 
-Next we will write a settings validation function: we want to ensure
-the policy is always run with at least one invalid name.
+## The settings validation function
 
-This can be done by changing the implementation of the `Validatable` trait.
+Next, write a settings validation function to make sure the policy is always run with at least one invalid name.
 
-Change the scaffolded implementation defined inside of `src/settings.rs`
-to look like that:
+You do this by changing the implementation of the `Validatable` trait.
+
+Change the scaffolding implementation defined in `src/settings.rs` to look like:
 
 ```rust
 impl kubewarden::settings::Validatable for Settings {
@@ -45,10 +65,10 @@ impl kubewarden::settings::Validatable for Settings {
 
 ## Add unit tests
 
-Now we can write a unit test to ensure the settings validation is actually working.
-This can be done in the [usual Rust way](https://doc.rust-lang.org/stable/book/ch11-00-testing.html).
+Now you can write a unit test to make sure the settings validation is working.
+You can do this in the [usual Rust way](https://doc.rust-lang.org/stable/book/ch11-00-testing.html).
 
-There are already some default tests at the bottom of the `src/settings.rs`
+There are already a few default tests at the bottom of the `src/settings.rs`
 file. Replace the automatically generated code to look like that:
 
 ```rust
@@ -81,13 +101,13 @@ mod tests {
 }
 ```
 
-We can now run the unit tests by doing:
+You can now run the unit tests by doing:
 
 ```shell
 cargo test
 ```
 
-This will produce an output similar to the following one:
+This produces an output similar to the following one:
 
 ```shell
   Compiling demo v0.1.0 (/home/flavio/hacking/kubernetes/kubewarden/demo)
