@@ -5,17 +5,22 @@ description: Discusses PSP migration to Kubewarden policies after Kubernetes v1.
 keywords: [kubewarden, kubernetes, appvia, psp, podsecuritypolicy]
 ---
 
-For Kubernetes ≥ v1.25. [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/) (PSP) is removed.
-Now you can use Kubewarden for admission control on your Kubernetes clusters.
+For Kubernetes ≥ v1.25.
+[PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/)
+(PSP) is removed. Now you can use Kubewarden for admission control on your
+Kubernetes clusters.
 
-Kubewarden has separate policies to achieve the same goal as a monolithic PSP configuration.
-Each Kubewarden policy definition functions as a different configuration section in the specification of a PSP.
-The mapping of PSP configuration fields to their respective Kubewarden policies is in the [mapping table](#mapping-kuberwarden-policies-to-psp-fields) below.
+Kubewarden has separate policies to achieve the same goal as a monolithic PSP
+configuration. Each Kubewarden policy definition functions as a different
+configuration section in the specification of a PSP. The mapping of PSP
+configuration fields to their respective Kubewarden policies is in the [mapping
+table](#mapping-kuberwarden-policies-to-psp-fields) below.
 
-With Kubewarden, operators have granular control of policy configuration in their clusters.
+With Kubewarden, operators have granular control of policy configuration in
+their clusters.
 
-With a Kubewarden instance, you can deploy policies to replace the `PodSecurityPolicy` object.
-We consider these rules in this example::
+With a Kubewarden instance, you can deploy policies to replace the
+`PodSecurityPolicy` object. We consider these rules in this example:
 
 - a PSP disabling privileged escalation
 - privileged containers
@@ -100,8 +105,9 @@ EOF
 
 </details>
 
-In that command, we have specified `default_allow_privilege_escalation` to be `false`.
-This policy restricts pods that try to run with more privileges than the parent container.
+In that command, we have specified `default_allow_privilege_escalation` to be
+`false`. This policy restricts pods that try to run with more privileges than
+the parent container.
 
 <details>
 
@@ -129,7 +135,8 @@ Error from server: error when creating "STDIN": admission webhook "clusterwide-p
 
 ### User and group configuration
 
-Now, to enforce the user and group configuration, you can use the [user-group-psp policy](https://github.com/kubewarden/user-group-psp-policy)
+Now, to enforce the user and group configuration, you can use the
+[user-group-psp policy](https://github.com/kubewarden/user-group-psp-policy)
 
 <details>
 
@@ -167,8 +174,10 @@ EOF
 
 </details>
 
-You should configure the policy with `mutation: true`.
-It's required because the policy will add [supplementalGroups](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups) when the user does not define them.
+You should configure the policy with `mutation: true`. It's required because
+the policy will add
+[supplementalGroups](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups)
+when the user does not define them.
 
 So, now users cannot deploy pods running as root:
 
@@ -218,7 +227,9 @@ Error from server: error when creating "STDIN": admission webhook "clusterwide-p
 
 </details>
 
-This example below shows the addition of a [supplemental group](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups), despite it not being defined by us.
+This example below shows the addition of a [supplemental
+group](https://kubernetes.io/docs/concepts/security/pod-security-policy/#users-and-groups),
+despite it not being defined by us.
 
 <details>
 
@@ -249,10 +260,10 @@ $ kubectl get pods -o json nginx | jq ".spec.securityContext"
 
 ### Privileged container configuration
 
-You need to replace the older PSP configuration that blocks privileged containers.
-It's necessary to deploy the [pod-privileged policy](https://github.com/kubewarden/pod-privileged-policy).
-This policy does not need any settings.
-Once running, it will block privileged pods.
+You need to replace the older PSP configuration that blocks privileged
+containers. It's necessary to deploy the [pod-privileged
+policy](https://github.com/kubewarden/pod-privileged-policy). This policy does
+not need any settings. Once running, it will block privileged pods.
 
 <details>
 
@@ -306,15 +317,19 @@ spec:
     image: alpine
     command: ["sleep", "1h"]
 EOF
-Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-privileged.kubewarden.admission" denied the request: User 'system:admin' cannot schedule privileged containers
+Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-privileged.kubewarden.admission" denied the request: Privileged container is not allowed
 ```
 
 </details>
 
-To finish the PSP migration exercise, you need to disable host namespace sharing.
-For that, we shall be using the [`host-namespace-psp` policy](https://github.com/kubewarden/host-namespaces-psp-policy).
-It allows the cluster administrator to block IPC, PID, and network namespaces individually.
-It also sets the ports that the pods can be open on, on the host IP.
+### Host namespace configuration
+
+To finish the PSP migration exercise, you need to disable host namespace
+sharing. For that, we shall be using the [`host-namespace-psp`
+policy](https://github.com/kubewarden/host-namespaces-psp-policy). It allows
+the cluster administrator to block IPC, PID, and network namespaces
+individually. It also sets the ports that the pods can be open on, on the host
+IP.
 
 <details>
 
@@ -327,7 +342,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: psp-hostnamespaces
 spec:
-  module: pull ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.6
+  module: ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.6
   rules:
     - apiGroups:
         - ""
@@ -487,23 +502,32 @@ This table maps PSP configuration fields to corresponding Kubewarden policies.
 
 ## PSP migration script
 
-The Kubewarden team has developed a script for PSP migration.
-It uses the migration tool from [AppVia](https://github.com/appvia/psp-migration).
-The AppVia tool reads a PSP YAML configuration.
-It then generates the corresponding policies.
-It does this for Kubewarden and other policy engines.
+The Kubewarden team has developed a script for PSP migration. It uses the
+migration tool from [AppVia](https://github.com/appvia/psp-migration). The
+AppVia tool reads a PSP YAML configuration. It then generates the corresponding
+policies. It does this for Kubewarden and other policy engines.
 
 :::caution
 
-Currently, the AppVia migration tool generates out-of-date Kubewarden policies. Use with caution. We need a pull request for AppVia for which work is ongoing. Contact us for more information if you need to.
+The AppVia migration tool is out of control of the Kuberwarden maintainers.
+This means that it's possible it generates out-of-date Kubewarden policies. Use
+with caution. We need a pull request for AppVia for which work is ongoing.
+Contact us for more information if you need to.
 
 :::
 
-The script is available in the Kubewraden [utils](https://github.com/kubewarden/utils/blob/main/scripts/psp-to-kubewarden) repository.
-It downloads the AppVia migration tool into the working directory to use.
-It processes the PSPs defined in the `kubectl` default context.
-Then it prints the Kuberwarden policies definitions on the standard output.
-Users can redirect the content to a file or to `kubectl` directly.
+The script is available in the Kubewarden
+[utils](https://github.com/kubewarden/utils/blob/main/scripts/psp-to-kubewarden)
+repository. It downloads the AppVia migration tool into the working directory
+to use. It processes the PSPs defined in the `kubectl` default context. Then it
+prints the Kuberwarden policies definitions on the standard output. Users can
+redirect the content to a file or to `kubectl` directly.
+
+:::note 
+
+This script only works in Linux x86_64 machines. 
+
+:::
 
 Let's take a look at an example. In a cluster with the PSP:
 
@@ -608,9 +632,9 @@ $ cat policies.yaml
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
-  name: psp-privileged-82bf2
+  name: psp-privileged-eebb9
 spec:
-  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.10
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v0.2.7
   rules:
     - apiGroups:
         - ""
@@ -628,9 +652,9 @@ spec:
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
-  name: psp-readonlyrootfilesystem-b4a55
+  name: psp-readonlyrootfilesystem-34d7c
 spec:
-  module: registry://ghcr.io/kubewarden/policies/readonly-root-filesystem-psp:v0.1.3
+  module: registry://ghcr.io/kubewarden/policies/readonly-root-filesystem-psp:v0.1.6
   rules:
     - apiGroups:
         - ""
@@ -648,9 +672,9 @@ spec:
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
-  name: psp-hostnamespaces-a25a2
+  name: psp-hostnamespaces-41314
 spec:
-  module: registry://ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.2
+  module: registry://ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.6
   rules:
     - apiGroups:
         - ""
@@ -674,9 +698,9 @@ spec:
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
-  name: psp-volumes-cee05
+  name: psp-volumes-2fd34
 spec:
-  module: registry://ghcr.io/kubewarden/policies/volumes-psp:v0.1.6
+  module: registry://ghcr.io/kubewarden/policies/volumes-psp:v0.1.11
   rules:
     - apiGroups:
         - ""
@@ -703,9 +727,9 @@ spec:
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
-  name: psp-capabilities-34d8e
+  name: psp-capabilities-340fe
 spec:
-  module: registry://ghcr.io/kubewarden/policies/capabilities-psp:v0.1.9
+  module: registry://ghcr.io/kubewarden/policies/capabilities-psp:v0.1.13
   rules:
     - apiGroups:
         - ""
@@ -726,9 +750,9 @@ spec:
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
-  name: psp-usergroup-878b0
+  name: psp-usergroup-19f7a
 spec:
-  module: registry://ghcr.io/kubewarden/policies/user-group-psp:v0.2.0
+  module: registry://ghcr.io/kubewarden/policies/user-group-psp:v0.4.9
   rules:
     - apiGroups:
         - ""
@@ -753,9 +777,9 @@ spec:
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
-  name: psp-fsgroup-3b08e
+  name: psp-fsgroup-52337
 spec:
-  module: registry://ghcr.io/kubewarden/policies/allowed-fsgroups-psp:v0.1.4
+  module: registry://ghcr.io/kubewarden/policies/allowed-fsgroups-psp:v0.1.10
   rules:
     - apiGroups:
         - ""
@@ -777,10 +801,9 @@ spec:
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
-  name: psp-defaultallowprivilegeescalation-b7e87
+  name: psp-defaultallowprivilegeescalation-6f11b
 spec:
-  module: >-
-    registry://ghcr.io/kubewarden/policies/allow-privilege-escalation-psp:v0.1.11
+  module: registry://ghcr.io/kubewarden/policies/allow-privilege-escalation-psp:v0.2.6
   rules:
     - apiGroups:
         - ""
@@ -804,6 +827,3 @@ The policy names are generated by the PSP migration tool.
 You may want to change the name to something more meaningful.
 :::
 
-:::note
-This script only works in Linux x86_64 machines.
-:::
