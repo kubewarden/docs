@@ -8,7 +8,7 @@ As an example, we create a simple validation policy that processes Pod creation 
 The policy looks at the `metadata.name` attribute of the Pod and rejects pods having an invalid name.
 The list of invalid names should be configurable by end users of the policy.
 
-The policy settings will be like:
+The policy settings look something like:
 
 ```yaml
 invalid_names:
@@ -65,16 +65,16 @@ cargo generate --git https://github.com/kubewarden/rust-policy-template \
 
 The command produces output like:
 
-```
+```console
 🔧   Creating project called `demo`...
 ✨   Done! New project created /<some-path-name>/demo
 ```
 
-The new policy project was created in the `demo` sub-directory.
+This creates the new policy project in the `demo` sub-directory.
 
 :::note
 
-If you plan to make use of the GitHub container registry functionality in the demo, you will need to
+If you plan to make use of the GitHub container registry functionality in the demo, you need to
 [enable improved container support](https://docs.github.com/en/packages/working-with-a-github-packages-registry/enabling-improved-container-support-with-the-container-registry#enabling-the-container-registry-for-your-personal-account).
 
 :::
