@@ -10,7 +10,7 @@ doc-topic: [writing-policies, rust, validation-logic]
 You define validation code in the `src/lib.rs` file.
 In this file there is a `validate` function.
 
-The scaffolding has already inserted a function that can be used and adapted.
+The scaffolding has already inserted a function to use and adapt.
 
 ```rust
 fn validate(payload: &[u8]) -> CallResult {
@@ -39,6 +39,7 @@ fn validate(payload: &[u8]) -> CallResult {
     }
 }
 ```
+
 This code performs the following operations:
 
 1. Parses the incoming `payload` into a `ValidationRequest<Setting>` object.
@@ -91,7 +92,8 @@ The `lib.rs` file already tests defined at the bottom of the file and, as
 you can see, Kubewarden's Rust SDK provides test helpers too.
 
 Moreover, the scaffolding ships with default [test fixtures](https://en.wikipedia.org/wiki/Test_fixture#Software) in the `test_data` directory.
-You can take advantage of these recorded admission requests to write our unit tests.
+<!--TODO: Is that the right word, 'recorded'?-->
+You can use the recorded admission requests to write your unit tests.
 
 Change the contents of the test section inside of `src/lib.rs` to look like that:
 
@@ -202,5 +204,3 @@ test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 ```
 
 That's all that's needed for writing a simple validating policy.
-
-
