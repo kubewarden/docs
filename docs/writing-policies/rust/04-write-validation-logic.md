@@ -1,15 +1,16 @@
 ---
-sidebar_label: "Writing Validation Logic"
-title: ""
+sidebar_label: "Writing validation logic"
+title: "Writing validation logic"
+description: This tutorial covers writing validation logic for a Kubewarden policy being developed in Rust.
+keywords: [kubewarden, kubernetes, policy development, rust, validation logic]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rust, validation-logic]
 ---
 
-# Writing the validation logic
+You define validation code in the `src/lib.rs` file.
+In this file there is a `validate` function.
 
-It's time to write the actual validation code. This is defined inside of the
-`src/lib.rs` file. Inside of this file you will find a function called `validate`.
-
-
-The scaffolded function is already doing something:
+The scaffolding has already inserted a function that can be used and adapted.
 
 ```rust
 fn validate(payload: &[u8]) -> CallResult {
@@ -38,23 +39,19 @@ fn validate(payload: &[u8]) -> CallResult {
     }
 }
 ```
+This code performs the following operations:
 
-This is a walk-through the code described above:
+1. Parses the incoming `payload` into a `ValidationRequest<Setting>` object.
+This populates the `Settings` instance inside of `ValidationRequest` with the parameters from by the user.
+1. Converts the Kubernetes raw JSON object, embedded into the request, into an instance of the
+[Pod struct](https://arnavion.github.io/k8s-openapi/v0.11.x/k8s_openapi/api/core/v1/struct.Pod.html)
+1. If the request has a Pod object, the code approves only the requests that don't have `metadata.name` equal to the hard-coded value `invalid-pod-name`
+1. If the request doesn't contain a Pod object, the policy accepts the request
 
-  1. Parse the incoming `payload` into a `ValidationRequest<Setting>` object. This
-    automatically populates the `Settings` instance inside of `ValidationRequest` with
-    the params provided by the user.
-  2. Convert the Kubernetes raw JSON object embedded into the request
-    into an instance of the [Pod struct](https://arnavion.github.io/k8s-openapi/v0.11.x/k8s_openapi/api/core/v1/struct.Pod.html)
-  3. The request contains a Pod object, the code approves only the requests
-    that do not have `metadata.name` equal to the hard-coded value `invalid-pod-name`
-  4. The request doesn't contain a Pod object, hence the policy accepts the request
+As you can see the code is already doing a validation that resembles the one required.
+You need to remove the hard-coded value instead using the values, provided by the caller, in the policy settings.
 
-As you can see the code is already doing a validation that resembles the one we
-want to implement. We just have to get rid of the hard-coded value and use the
-values provided by the user via the policy settings.
-
-This can be done with the following code:
+You do this with the following code:
 
 ```rust
 fn validate(payload: &[u8]) -> CallResult {
@@ -87,16 +84,14 @@ fn validate(payload: &[u8]) -> CallResult {
 
 ## Unit tests
 
-Finally, we will create some unit tests to ensure the validation code works as
+Now, you need to create unit tests to check the validation code works as
 expected.
 
-The `lib.rs` file has already some tests defined at the bottom of the file, as
-you can see Kubewarden's Rust SDK provides some test helpers too.
+The `lib.rs` file already tests defined at the bottom of the file and, as
+you can see, Kubewarden's Rust SDK provides test helpers too.
 
-Moreover, the scaffolded project already ships with some default
-[test fixtures](https://en.wikipedia.org/wiki/Test_fixture#Software) inside of
-the `test_data` directory. We are going to take advantage of these recorded
-admission requests to write our unit tests.
+Moreover, the scaffolding ships with default [test fixtures](https://en.wikipedia.org/wiki/Test_fixture#Software) in the `test_data` directory.
+You can take advantage of these recorded admission requests to write our unit tests.
 
 Change the contents of the test section inside of `src/lib.rs` to look like that:
 
@@ -182,18 +177,15 @@ mod tests {
 }
 ```
 
-We now have three unit tests defined inside of this file:
+You now have three unit tests defined inside of this file:
 
-  * `accept_pod_with_valid_name`: ensures a Pod with a valid
-    name is accepted
-  * `reject_pod_with_invalid_name`: ensures a Pod with an invalid
-    name is rejected
-  * `accept_request_with_non_pod_resource`: ensure the policy accepts
-    request that do not have a `Pod` as object
+- `accept_pod_with_valid_name`: ensures acceptance of a Pod with a valid name
+- `reject_pod_with_invalid_name`: ensures rejection a Pod with an invalid name
+- `accept_request_with_non_pod_resource`: ensures the policy accepts request without  a `Pod` as object
 
-We can run the unit tests again:
+You can run the unit tests again:
 
-```shell
+```console
 $ cargo test
    Compiling demo v0.1.0 (/home/flavio/hacking/kubernetes/kubewarden/demo)
     Finished test [unoptimized + debuginfo] target(s) in 3.45s
@@ -209,6 +201,6 @@ test tests::reject_pod_with_invalid_name ... ok
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
 
-That's all if you want to write a simple validating policy.
+That's all that's needed for writing a simple validating policy.
 
 
