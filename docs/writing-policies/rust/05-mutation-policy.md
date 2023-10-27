@@ -2,7 +2,7 @@
 sidebar_label: "Mutation"
 title: "Creating a new mutation policy"
 description: Creating a new mutation policy for a Kubewarden policy in Rust.
-keywords: []
+keywords: [kubewarden, kubernetes, writing policies, policy mutation]
 doc-type: [tutorial]
 doc-topic: [writing-policies, rust, mutation]
 ---
