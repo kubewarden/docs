@@ -17,20 +17,24 @@ Access to Kubernetes is regulated by RBAC rules applied to the Service Account u
 
 The `default` Policy Server deployed by Kubewarden helm charts has access to the following Kubernetes resources:
 
-* Namespaces
-* Services
-* Ingresses
-
-:::info
-Access to Kubernetes resources is currently available only to Kubewarden policies written using traditional programming languages. This is not available yet for Rego-based policies.
-:::
+- Namespaces
+- Services
+- Ingresses
 
 :::caution
-The policy server performs caching of the results obtained from the Kubernetes API server to reduce the amount of load of this core piece of Kubernetes.
+The policy server performs caching of the results obtained from the Kubernetes API server to reduce the amount of load on this core part of Kubernetes.
 That means some information might be stale or missing.
 :::
 
-### ClusterAdmissionPolicies
+## Support Matrix
+
+| Policy type                       | Support | Notes                                  |
+| --------------------------------- | :-----: | -------------------------------------- |
+| Traditional programming languages |   ✅    | -                                      |
+| Rego                              |   ✅    | Available since Kubewarden 1.9 release |
+| WASI                              |   ❌    | -                                      |
+
+## ClusterAdmissionPolicies
 
 ClusterAdmissionPolicies have the field [spec.contextAwareResources](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller/policies.kubewarden.io/ClusterAdmissionPolicy/v1#spec-contextAwareResources). This field provides a list a `GroupVersionKind` resources that the policy needs to access. This allows policy writers to ship the "permissions" that the policy needs together with the policy. Moreover, this allows policy operators to review the "permissions" needed by the policy at deployment time.
 
@@ -75,22 +79,37 @@ kwctl run \
     -r request.json \
     --replay-host-capabilities-interactions replay-session.yml \
     annotated-policy.wasm
-``` 
+```
 
-### Language SDKs
+## Language SDKs
 
 Language SDK's that support cluster context at this time will expose
 functions that allow policies to retrieve the current state of the
 cluster.
 
+:::tip
+If you want more information about the waPC function used by the SDKs, check the [Kubernetes capabilities](/docs/writing-policies/spec/host-capabilities/06-kubernetes.md) reference documentation.
+:::
 
-<Tabs>
-  <TabItem value="rust" label="Rust SDK" default>
-  See the functions exposing this functionality at the <a href="https://docs.rs/kubewarden-policy-sdk/0.8.7/kubewarden_policy_sdk">Rust SDK reference docs</a>
-  </TabItem>
-  <TabItem value="go" label="Go SDK">
-  See the functions exposing this functionality at the <a href="https://pkg.go.dev/github.com/kubewarden/policy-sdk-go">Go SDK reference docs</a>
-  </TabItem>
-</Tabs>
+### Rust
 
-If you want more information about the WaPC function used by the SDKs, check the [Kubernetes capabilities](/docs/writing-policies/spec/host-capabilities/06-kubernetes.md) reference documentation.
+See the functions exposing this functionality at the [Rust SDK reference docs](https://docs.rs/kubewarden-policy-sdk/0.8.7/kubewarden_policy_sdk).
+
+### Go
+
+See the functions exposing this functionality at the [Go SDK reference docs](https://pkg.go.dev/github.com/kubewarden/policy-sdk-go).
+
+## Rego policies
+
+### Gatekeeper
+
+The context aware information is exposed under the `data.inventory` key, like Gatekeeper does.
+
+The inventory is populated with the resources the policy has been granted access to via the `spec.contextAwareResources` field.
+
+### Open Policy Agent
+
+The context aware information is exposed under the `data.kubernetes` key, like
+[`kube-mgmt`](https://github.com/open-policy-agent/kube-mgmt) does by default.
+
+The inventory is populated with the resources the policy has been granted access to via the `spec.contextAwareResources` field.

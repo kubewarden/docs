@@ -7,11 +7,10 @@ title: ""
 
 :::note
 Rego support has been introduced starting from these releases:
-  
-  * kwctl: v0.2.0
-  * policy-server: v0.2.0
-:::
 
+- kwctl: v0.2.0
+- policy-server: v0.2.0
+  :::
 
 The Rego language is a tailor made language designed to embrace
 policies as
@@ -51,7 +50,6 @@ it is able to replicate the configured Kubernetes resources into Rego
 lets you define policies inside Kubernetes' ConfigMap objects. You can
 read more about it on [its project
 page](https://github.com/open-policy-agent/kube-mgmt).
-
 
 ### Gatekeeper
 
