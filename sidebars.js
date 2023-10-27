@@ -23,6 +23,7 @@ module.exports = {
                 "writing-policies/rust/mutation-policy",
                 "writing-policies/rust/logging",
                 "writing-policies/rust/build-and-distribute",
+                "writing-policies/rust/raw-policies",
               ],
             },
             {
@@ -38,6 +39,7 @@ module.exports = {
                 "writing-policies/go/automate",
                 "writing-policies/go/distribute",
                 "writing-policies/go/validation-with-queries",
+                "writing-policies/go/raw-policies",
               ],
             },
             {
@@ -54,6 +56,7 @@ module.exports = {
                     "writing-policies/rego/open-policy-agent/create-policy",
                     "writing-policies/rego/open-policy-agent/build-and-run",
                     "writing-policies/rego/open-policy-agent/distribute",
+                    "writing-policies/rego/open-policy-agent/raw-policies",
                   ],
                 },
                 {
@@ -89,8 +92,8 @@ module.exports = {
             {
               type: "category",
               label: "WASI",
-              link: { type: "doc", id: "writing-policies/wasi" },
-              items: [],
+              link: { type: "doc", id: "writing-policies/wasi/intro-wasi" },
+              items: ["writing-policies/wasi/raw-policies"],
             },
             "writing-policies/metadata",
           ],
@@ -155,6 +158,7 @@ module.exports = {
             },
           ],
         },
+        "howtos/raw-policies",
         "howtos/audit-scanner",
       ],
       collapsed: true,
