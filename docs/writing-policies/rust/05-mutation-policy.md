@@ -7,8 +7,6 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rust, mutation]
 ---
 
-# Creating a new mutation policy
-
 Mutating policies are similar to validating ones, but have also the ability to mutate, or change, an incoming object.
 
 They can:
@@ -53,7 +51,7 @@ spec:
 ## Write the mutation code
 
 The mutation code is in the `validate` function.
-You need to chnage the function to approve the request via the
+You need to change the function to approve the request via the
 [`mutate_request`](https://docs.rs/kubewarden-policy-sdk/0.1.0/kubewarden_policy_sdk/fn.mutate_request.html)
 instead of the
 [`accept_request`](https://docs.rs/kubewarden-policy-sdk/0.1.0/kubewarden_policy_sdk/fn.accept_request.html).
@@ -103,7 +101,7 @@ fn validate(payload: &[u8]) -> CallResult {
 Compared with the earlier code, there are three changes:
 
 1. Define the `pod` object as mutable, see the `mut` keyword.
-This is needed because we will extend its `metadata.annotations` attribute.
+It's needed to  extend its `metadata.annotations` attribute.
 1. This is the code that takes the existing `annotations`, adds the new one, and finally puts the updated `annotations` object back into the original `pod` instance.
 1. Serialize the `pod` object into a generic `serde_json::Value` and then return a mutation response.
 
@@ -181,9 +179,9 @@ fn accept_pod_with_valid_name() -> Result<(), ()> {
 
 Compared to the initial test, there are two changes:
 
-1. Change the `assert!` statement to ensure the request is still accepted, but it includes a mutated object.
+1. Change the `assert!` statement to make sure the request is still accepted, but it includes a mutated object.
 1. Created a `Pod` instance starting from the mutated object that's part of the response.
-Assert the mutated Pod object contains the right `metadata.annotations`.
+Assert the mutated Pod object has the right `metadata.annotations`.
 
 You can run the tests again, this time all should pass:
 
