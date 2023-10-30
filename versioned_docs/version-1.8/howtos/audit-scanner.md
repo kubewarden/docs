@@ -61,6 +61,8 @@ By default, the Audit Scanner is implemented as a
 that will be triggered every 60 minutes. You can adjust this and other audit
 scanner settings by changing the kubewarden-controller chart
 [values.yaml](https://github.com/kubewarden/helm-charts/blob/main/charts/kubewarden-controller/values.yaml).
+For example, to run the Audit Scanner CronJob every 5 minutes set the following kubewarden-controller chart
+values: `--set auditScanner.cronJob.schedule="*/5 * * * *"`.
 
 See [here](../explanations/audit-scanner) more information about the Audit
 Scanner.
