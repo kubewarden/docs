@@ -7,23 +7,6 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rust, policy-settings]
 ---
 
-<!--TODO:
-
-These steps are not working for me. I get a few errors on
-
-cargo test
-cargo test
-   Compiling demo v0.1.0 (/home/jhk/projects/suse/tmp/demo)
-error[E0063]: missing field `invalid_names` in initializer of `settings::Settings`
-  \-\-> src/lib.rs:80:23
-   |
-80 |             settings: Settings {},
-   |                       ^^^^^^^^ missing `invalid_names`
-
-Three of those errors. Any suggestions?
-
--->
-
 ## The policy settings structure
 
 Firstly, define the structure that holds the policy settings.
@@ -103,13 +86,13 @@ mod tests {
 
 You can now run the unit tests by doing:
 
-```shell
+```console
 cargo test
 ```
 
-This produces an output similar to the following one:
+This produces an output similar to the following:
 
-```shell
+```console
   Compiling demo v0.1.0 (/home/flavio/hacking/kubernetes/kubewarden/demo)
     Finished test [unoptimized + debuginfo] target(s) in 4.19s
      Running target/debug/deps/demo-24670dd6a538fd72
