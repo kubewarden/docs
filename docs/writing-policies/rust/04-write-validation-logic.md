@@ -4,7 +4,7 @@ title: "Writing validation logic"
 description: This tutorial covers writing validation logic for a Kubewarden policy being developed in Rust.
 keywords: [kubewarden, kubernetes, policy development, rust, validation logic]
 doc-type: [tutorial]
-doc-topic: [writing-policies, rust, validation-logic]
+doc-topic: [writing-policies, rust, validation logic]
 ---
 
 You define validation code in the `src/lib.rs` file.
@@ -45,9 +45,9 @@ This code performs the following operations:
 1. Parses the incoming `payload` into a `ValidationRequest<Setting>` object.
 This populates the `Settings` instance inside of `ValidationRequest` with the parameters from the user.
 1. Converts the Kubernetes raw JSON object, embedded into the request, into an instance of the
-[Pod struct](https://arnavion.github.io/k8s-openapi/v0.11.x/k8s_openapi/api/core/v1/struct.Pod.html)
-1. If the request has a Pod object, the code approves only the requests that don't have `metadata.name` equal to the hard-coded value `invalid-pod-name`
-1. If the request doesn't contain a Pod object, the policy accepts the request
+[Pod struct](https://arnavion.github.io/k8s-openapi/v0.11.x/k8s_openapi/api/core/v1/struct.Pod.html).
+1. If the request has a Pod object, the code approves only the requests that don't have `metadata.name` equal to the hard-coded value `invalid-pod-name`.
+1. If the request doesn't contain a Pod object, the policy accepts the request.
 
 As you can see the code is already doing a validation that resembles the one required.
 You need to remove the hard-coded value instead using the values, provided by the caller, in the policy settings.
@@ -92,10 +92,13 @@ The `lib.rs` file already tests defined at the bottom of the file and, as
 you can see, Kubewarden's Rust SDK provides test helpers too.
 
 Moreover, the scaffolding ships with default [test fixtures](https://en.wikipedia.org/wiki/Test_fixture#Software) in the `test_data` directory.
-<!--TODO: Is that the right word, 'recorded'?-->
-You can use the recorded admission requests to write your unit tests.
+You can use the admission requests to write your unit tests.
 
-Change the contents of the test section inside of `src/lib.rs` to look like that:
+Change the contents of the test section inside of `src/lib.rs` to add the three tests:
+
+<details>
+
+<summary>Code for the three tests.</summary>
 
 ```rust
 #[cfg(test)]
@@ -178,6 +181,8 @@ mod tests {
     }
 }
 ```
+
+</details>
 
 You now have three unit tests defined inside of this file:
 
