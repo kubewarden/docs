@@ -43,7 +43,7 @@ fn validate(payload: &[u8]) -> CallResult {
 This code performs the following operations:
 
 1. Parses the incoming `payload` into a `ValidationRequest<Setting>` object.
-This populates the `Settings` instance inside of `ValidationRequest` with the parameters from by the user.
+This populates the `Settings` instance inside of `ValidationRequest` with the parameters from the user.
 1. Converts the Kubernetes raw JSON object, embedded into the request, into an instance of the
 [Pod struct](https://arnavion.github.io/k8s-openapi/v0.11.x/k8s_openapi/api/core/v1/struct.Pod.html)
 1. If the request has a Pod object, the code approves only the requests that don't have `metadata.name` equal to the hard-coded value `invalid-pod-name`
