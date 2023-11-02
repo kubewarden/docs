@@ -1,5 +1,5 @@
 ---
-sidebar_label: "WASI"
+sidebar_label: "Introduction to WASI"
 title: ""
 ---
 
@@ -29,7 +29,7 @@ produce WebAssembly modules that targets the WASI interfaces.
 However, Kubewarden policies leverage the [waPC](https://github.com/wapc)
 project to implement a bi-directional communication between the
 policy and the policy runtime (`kwctl` or `policy-server`); this communication
-protocol is described [here](./spec/01-intro-spec.md).
+protocol is described [here](../spec/01-intro-spec.md).
 
 There are however some special cases when the waPC project cannot be
 used yet. In these limited circumstances it's possible to write a policy
@@ -41,9 +41,9 @@ WASI policies should not be used under regular circumstances because
 they suffer from the following limitations:
 
 - No bi-directional communication, hence
-  [host capabilities](./spec/host-capabilities/01-intro-host-capabilities.md)
+  [host capabilities](../spec/host-capabilities/01-intro-host-capabilities.md)
   are not available
-- No [context-aware](../explanations/context-aware-policies.md) capabilities
+- No [context-aware](../../explanations/context-aware-policies.md) capabilities
 - Inferior performance at evaluation time compared to waPC/Rego based policies
 
 ## Use cases
@@ -61,7 +61,7 @@ export functions to the WebAssembly runtime. This limitation, tracked by
 the adoption of the waPC protocol.
 
 Generally speaking, we advice to write Kubewarden Go policies using the TinyGo
-compiler, as described [here](./go/01-intro-go.md).
+compiler, as described [here](../go/01-intro-go.md).
 
 However, some complex Go code bases cannot be compiled using the TinyGo compiler.
 This includes, for example, code bases like [CEL-go](https://github.com/google/cel-go)
@@ -94,7 +94,7 @@ The policy must to write to the STDOUT a JSON document that contains a
 `ValidationResponse` object.
 
 Both the `ValidationRequest` and `ValidationResponse` objects are described
-[here](./spec/03-validating-policies.md).
+[here](../spec/03-validating-policies.md).
 
 ### Mutation
 
@@ -106,11 +106,11 @@ The policy must to write to the STDOUT a JSON document that contains a
 `ValidationResponse` object.
 
 Both the `ValidationRequest` and `ValidationResponse` objects are described
-[here](./spec/03-validating-policies.md).
+[here](../spec/03-validating-policies.md).
 
 When a mutation has to be done, the `ValidationResponse` object must have a
 key `mutated_object` that contains the object that has to be created.
-This is described [here](./spec/04-mutating-policies.md).
+This is described [here](../spec/04-mutating-policies.md).
 
 ### Settings validation
 
@@ -123,7 +123,7 @@ It will then validate them and write a `SettingsValidationResponse` object
 to the STDOUT.
 
 The format of the `SettingsValidationResponse` and the settings validation
-process is described [here](./spec/02-settings.md).
+process is described [here](../spec/02-settings.md).
 
 ## Policy metadata
 
