@@ -11,7 +11,7 @@ used within Kubewarden. This documentation provides an overview of the
 purpose and usage of the metadata file.
 
 The policy `metadata.yaml` file contains defaults for the policy, in addition
-to metadata such as author and description, set by the policy author.  The file
+to metadata such as author and description, set by the policy author. The file
 is used by the `kwctl annonate` command to, as the name suggests, annotates the
 `.wasm` file containing the policy. Therefore, all the relevant information required to run
 the policy will be available. More information about how to annotate the policy
@@ -27,16 +27,16 @@ scaffolding of your policy.
 
 See the following example of a `metadata.yaml`:
 
-
 ```yaml
 rules:
-- apiGroups: [""]
-  apiVersions: ["v1"]
-  resources: ["pods"]
-  operations: ["CREATE"]
+  - apiGroups: [""]
+    apiVersions: ["v1"]
+    resources: ["pods"]
+    operations: ["CREATE"]
 mutating: false
 contextAwareResources: []
 executionMode: kubewarden-wapc
+policyType: kubernetes
 backgroundAudit: true
 annotations:
   # artifacthub specific:
@@ -58,10 +58,9 @@ annotations:
   io.kubewarden.policy.category: Resource validation
 ```
 
-
 **1. Enabling Background Audit Checks:**
 
-The metadata file includes a flag, `backgroundAudit`,  that enables the
+The metadata file includes a flag, `backgroundAudit`, that enables the
 background audit checks for a specific policy. By default, this flag is set to
 `true`.
 
@@ -85,16 +84,26 @@ contextAwareResources:
 [...]
 ```
 
-**3. Specifying Policy Type: Mutating or Non-Mutating:**
+**3. Specifying Policy as Mutating or Non-Mutating:**
 
-The metadata file contains a flag, `mutating`,  that allows users to designate
+The metadata file contains a flag, `mutating`, that allows users to designate
 a policy as either mutating or non-mutating. A mutating
 policy modifies the incoming requests or the resources being managed. A
 non-mutating one observes and enforces restrictions without making any
 changes. This distinction is crucial in determining how policies interact with
 the Kubernetes resources and their impact on the cluster.
 
-**4. Defining Resource Type Targets:**
+**4. Specify Policy Type: Kubernetes or Raw**
+
+The metadata file contains a flag, `policyType`, that allows users to mark
+a policy as either `kubernetes` or `raw`. A Kubernetes policy is a policy that
+validates Kubernetes resources. A Raw policy is a policy that validates
+arbitrary JSON documents.
+By default, if not specified by the user, this field is set to `kubernetes`
+when annotating a policy.
+Refer to the [Raw Policies](../howtos/raw-policies.md) section for more information.
+
+**5. Defining Resource Type Targets:**
 
 The metadata file provides users with the ability to define the rules within
 the `rules` field, which determine the resource types to which the policy
@@ -105,4 +114,3 @@ are targeted accurately, aligning with their specific requirements and avoiding
 any unintended application to unrelated resource types.
 
 ---
-

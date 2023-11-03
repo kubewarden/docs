@@ -4,12 +4,20 @@ title: ""
 ---
 # Validating policies
 
-The Kubewarden policy server receives
-[`AdmissionReview`](https://godoc.org/k8s.io/api/admission/v1#AdmissionReview)
+The Kubewarden policy server receives:
+
+
+- Kubernetes [`AdmissionReview`](https://godoc.org/k8s.io/api/admission/v1#AdmissionReview)
 objects from the Kubernetes API server. It then forwards the value of
 its `request` attribute (of type
-[`AdmissionRequest`](https://godoc.org/k8s.io/api/admission/v1#AdmissionRequest)
-key to the policy to be evaluated.
+[`AdmissionRequest`](https://godoc.org/k8s.io/api/admission/v1#AdmissionRequest))
+to the policy to be evaluated.
+
+or:
+
+- a JSON with a `request` attribute containing the free-form request document, 
+in case of a raw policy. Check the [Raw policies](../../howtos/raw-policies.md) section for more details.
+
 
 The policy has to evaluate the `request` and state whether it should be
 accepted or not. When the request is rejected, the policy might provide the
@@ -29,7 +37,7 @@ The `ValidationRequest` is a simple JSON object that is received by the
 
 ```yaml
 {
-  "request": <AdmissionReview.request data>,
+  "request": <AdmissionReview.request data> | <RawReviewRequest.request data>,
   "settings": {
     # your policy configuration
   }
@@ -222,8 +230,3 @@ client that issued the rejected request.
 
 The `mutated_object` is an optional field used only by mutating policies.
 This is going to be covered inside of the next chapter.
-
-# Recap
-
-These are the functions a validating policy must implement:
-
