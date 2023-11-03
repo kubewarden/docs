@@ -105,7 +105,7 @@ spec:
     spec:
       containers:
         - name: policy-server
-          image: ghcr.io/kubewarden/policy-server:1.9.0
+          image: ghcr.io/kubewarden/policy-server:v1.9.0
           ports:
             - containerPort: 3000
           volumeMounts:
@@ -179,6 +179,8 @@ In the previous example, no Service Account is defined inside of the Deployment 
 ### Validation
 
 The raw validation endpoint is exposed at `/validate_raw` and accepts `POST` requests.
+Since we have deployed a service, we can set a port-forward to access it with
+`kubectl port-forward service/policy-server-service 3000:3000 -n default`.
 
 Let's try to validate a JSON document against the `raw-validation` policy:
 
