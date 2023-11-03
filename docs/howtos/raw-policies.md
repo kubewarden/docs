@@ -80,7 +80,10 @@ Raw policies can access context-aware[ capabilities](../explanations/context-awa
 
 ## Running a Policy Server inside Kubernetes without the Kubewarden controller
 
-Alternatively, the Policy Server can be deployed in Kubernetes without the Kubewarden controller.
+It's not possible to use a Policy Server instance managed by the Kubewarden controller to host raw policies.
+The controller will not allow the user to change the Policy Server ConfigMap to add a raw policy,
+since it will try to reconcile it reverting the changes.
+Because of that, a dedicated Policy Server has to be started.
 
 Create a `policy-server.yaml` file with the following content:
 
@@ -163,12 +166,14 @@ Apply the configuration:
 ```bash
 kubectl apply -f policy-server.yaml
 ```
+
 :::info
 The Policy Server instance deployed will have access to Kubernetes resources that could be leveraged by context aware policies.
-The access level to the Kubernetes resources is determined by the Service Account used to run the Policy Server workload. 
+The access level to the Kubernetes resources is determined by the Service Account used to run the Policy Server workload.
 
 In the previous example, no Service Account is defined inside of the Deployment specification; hence the `default` Service Account is going to be used.
 :::
+
 ## Using the validate_raw endpoint
 
 ### Validation
