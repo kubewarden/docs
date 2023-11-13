@@ -2,11 +2,25 @@
 sidebar_label: "Mutating policies"
 title: "Mutating policies"
 description: Explains mutating policies in the context of Kubewarden
-keywords: [kubewarden policy mutating kubernetes clusteradmissionpolicy admissionpolicy]
+keywords:
+  [kubewarden policy mutating kubernetes clusteradmissionpolicy admissionpolicy]
 ---
 
-A mutating policy will rebuild the requests with
-defined values that comply with the policy definition.
+Mutating policies receive an object request and rebuild this incoming object
+(mutate it) into a new request, according to the defined values in the settings
+of the policy. The request will proceed through the Kubernetes API, potentially being
+evaluated by other policies.
+
+:::danger
+To prevent system abuse, Kubewarden administrators should review mutating
+policies: mutating policies could for example modify a workload, such that it
+allows for privileged container creation.
+
+If in doubt, split policies into mutating, and validating policies, instead of
+writing or deploying policies that both validate and mutate. This is particularly
+important when using a DSL (such as Rego) to build complex policies.
+:::
+
 If you want to allow the behavior of mutating requests,
 set the `ClusterAdmissionPolicy.mutating` field to `true`.
 
@@ -42,7 +56,7 @@ spec:
     run_as_group:
       rule: "RunAsAny"
     supplemental_groups:
-      rule: "RunAsAny" 
+      rule: "RunAsAny"
 EOF
 
 # Output
@@ -70,6 +84,7 @@ EOF
 # Output
 pod/pause-user-group created
 ```
+
 Once the request is applied, you can see the results of the container's `securityContext`:
 
 ```bash
@@ -110,7 +125,7 @@ spec:
     run_as_group:
       rule: "RunAsAny"
     supplemental_groups:
-      rule: "RunAsAny" 
+      rule: "RunAsAny"
 EOF
 
 # Output
