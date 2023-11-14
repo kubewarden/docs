@@ -51,7 +51,10 @@ module.exports = {
                 {
                   type: "category",
                   label: "Open Policy Agent",
-                  link: { type: "doc", id: "writing-policies/rego/open-policy-agent/intro" },
+                  link: {
+                    type: "doc",
+                    id: "writing-policies/rego/open-policy-agent/intro",
+                  },
                   items: [
                     "writing-policies/rego/open-policy-agent/create-policy",
                     "writing-policies/rego/open-policy-agent/build-and-run",
@@ -62,7 +65,10 @@ module.exports = {
                 {
                   type: "category",
                   label: "Gatekeeper",
-                  link: { type: "doc", id: "writing-policies/rego/gatekeeper/intro" },
+                  link: {
+                    type: "doc",
+                    id: "writing-policies/rego/gatekeeper/intro",
+                  },
                   items: [
                     "writing-policies/rego/gatekeeper/create-policy",
                     "writing-policies/rego/gatekeeper/build-and-run",
@@ -102,7 +108,10 @@ module.exports = {
           type: "category",
           label: "Testing policies",
           link: { type: "doc", id: "testing-policies/intro" },
-          items: ["testing-policies/policy-authors", "testing-policies/cluster-operators"],
+          items: [
+            "testing-policies/policy-authors",
+            "testing-policies/cluster-operators",
+          ],
         },
         "distributing-policies/publish-policy-to-artifact-hub",
         "security/verifying-kubewarden",
@@ -154,7 +163,10 @@ module.exports = {
                 "operator-manual/telemetry/metrics/quickstart",
                 "operator-manual/telemetry/tracing/quickstart",
               ],
-              "Air gap": ["operator-manual/airgap/requirements", "operator-manual/airgap/install"],
+              "Air gap": [
+                "operator-manual/airgap/requirements",
+                "operator-manual/airgap/install",
+              ],
             },
           ],
         },
@@ -196,6 +208,7 @@ module.exports = {
         },
         "distributing-policies/oci-registries-support",
         "security/threat-model",
+        "operator-manual/upgrade-path",
         {
           type: "category",
           label: "Operator Manual",
@@ -217,7 +230,10 @@ module.exports = {
         {
           type: "category",
           label: "Air gap",
-          items: ["operator-manual/airgap/requirements", "operator-manual/airgap/install"],
+          items: [
+            "operator-manual/airgap/requirements",
+            "operator-manual/airgap/install",
+          ],
         },
         { type: "doc", id: "operator-manual/monitor-mode" },
         { type: "doc", id: "operator-manual/Rancher-Fleet" },
