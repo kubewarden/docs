@@ -17,7 +17,7 @@ The Kubewarden components that follow the rules for the "stack" version are:
 - `kubewarden-controller` chart, in their appVersion field.
 - `kubewarden-defaults` chart, in their appVersion field.
 - `policy-server` image tag for manually deployed ones. The resource for the
-  default one is already included in `kubewarden-defaults` chart.
+  default one is already managed by the `kubewarden-defaults` chart.
 - `kwctl` binary.
 
 ## Stack version compatibility among components
