@@ -10,6 +10,10 @@ module.exports = {
   organizationName: "kubewarden", // Usually your GitHub org/user name.
   projectName: "docs", // Usually your repo name.
   trailingSlash: false,
+  markdown: {
+    mermaid: true,
+  },
+  themes: ["@docusaurus/theme-mermaid"],
   themeConfig: {
     docs: {
       sidebar: {
@@ -63,8 +67,8 @@ module.exports = {
           dropdownActiveClassDisabled: true,
         },
         {
-          type: 'search',
-          position: 'left',
+          type: "search",
+          position: "left",
         },
         {
           href: "https://github.com/kubewarden/",
@@ -72,16 +76,16 @@ module.exports = {
           position: "right",
         },
         {
-          type: 'dropdown',
-          label: 'Community',
-          position: 'right',
+          type: "dropdown",
+          label: "Community",
+          position: "right",
           items: [
             {
-              label: 'Slack',
+              label: "Slack",
               href: "https://kubernetes.slack.com/archives/kubewarden",
             },
             {
-              label: 'X/Twitter',
+              label: "X/Twitter",
               href: "https://twitter.com/kubewarden",
             },
           ],
