@@ -39,3 +39,8 @@ Needed for specific features.
 | CRD dependency                      |  Version   |                 Helm chart `version`                 |    Feature    |
 | ----------------------------------- | :--------: | :--------------------------------------------------: | :-----------: |
 | `policyreports.wgpolicyk8s.io` CRDs | `v1alpha1` | In `kubewarden-defaults` chart or manually installed | Audit Scanner |
+
+# Rancher
+
+For downstream consumers such as Rancher, Kubewarden is tested against the
+monitoring and tracing Helm charts provided in the Rancher charts repository.
