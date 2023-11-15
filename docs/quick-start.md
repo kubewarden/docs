@@ -18,7 +18,7 @@ The Kubewarden stack comprises:
 
 :::tip
 
-The Kubernetes Custom Resource Definitions (CRD) defined by Kubewarden are described [here](operator-manual/CRDs.md).
+The Kubernetes Custom Resource Definitions (CRD) defined by Kubewarden are described [here](./operator-manual/CRDs.md).
 
 :::
 
