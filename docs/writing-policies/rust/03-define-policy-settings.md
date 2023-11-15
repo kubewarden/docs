@@ -93,13 +93,16 @@ cargo test
 This produces an output similar to the following:
 
 ```console
-  Compiling demo v0.1.0 (/home/flavio/hacking/kubernetes/kubewarden/demo)
+  Compiling demo v0.1.0 (/home/<username>/hacking/kubernetes/kubewarden/demo)
     Finished test [unoptimized + debuginfo] target(s) in 4.19s
      Running target/debug/deps/demo-24670dd6a538fd72
 
-running 2 tests
-test settings::tests::accept_settings_with_a_list_of_invalid_names ... ok
+running 5 tests
 test settings::tests::reject_settings_without_a_list_of_invalid_names ... ok
+test settings::tests::accept_settings_with_a_list_of_invalid_names ... ok
+test tests::accept_request_with_non_pod_resource ... ok
+test tests::reject_pod_with_invalid_name ... ok
+test tests::accept_pod_with_valid_name ... ok
 
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```

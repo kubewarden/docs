@@ -24,6 +24,8 @@ fn validate(payload: &[u8]) -> CallResult {
                 kubewarden::reject_request(
                     Some(format!("pod name {:?} is not accepted", pod.metadata.name)),
                     None,
+                    None,
+                    None,
                 )
             } else {
                 kubewarden::accept_request()
@@ -70,6 +72,8 @@ fn validate(payload: &[u8]) -> CallResult {
             {
                 kubewarden::reject_request(
                     Some(format!("pod name {:?} is not accepted", pod_name)),
+                    None,
+                    None,
                     None,
                 )
             } else {
