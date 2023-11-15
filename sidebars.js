@@ -209,6 +209,7 @@ module.exports = {
         "distributing-policies/oci-registries-support",
         "security/threat-model",
         "operator-manual/upgrade-path",
+        "operator-manual/dependency-matrix",
         {
           type: "category",
           label: "Operator Manual",
