@@ -3,8 +3,9 @@ sidebar_label: "Writing Policies"
 title: "Writing Kubewarden policies"
 description: An introduction to writing Kubewarden policies.
 keywords: [kubewarden, kubernetes, writing policies]
-doc-type: explanation
-doc-topic: writing-policies
+doc-type: [explanation]
+doc-topic: [writing-policies]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 This section introduces Kubewarden policies using traditional computing analogies.
