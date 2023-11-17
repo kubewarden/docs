@@ -12,35 +12,50 @@ You will need a cluster with at least 4 cores to install the Monitoring tool.
 
 ## Prerequisites
 
-Cert-Manager and OpenTelemetry are required.
-Follow [these instructions](../telemetry/opentelemetry/01-quickstart.md#install-opentelemetry) to install Cert Manager and the OpenTelemetry Operator.
+The Prometheus Operator is required.
+Follow [these instructions](../telemetry/metrics/01-quickstart.md#install-prometheus) to install it.
 
 ## Install
 
-### 1. Within the cluster explorer click on `Cluster Tools` in the side navigation
+### 1. Create the ServiceMonitors
 
-- `Install` the Monitoring tool
-- Edit the YAML to include a Service Monitor for Kubewarden
-- You need to specify the correct namespace where you installed Kubewarden
+- Import the manifest to create the ServiceMonitors
+- You need to specify the correct namespace where Kubewarden is installed 
 
 > Adapted from [here](../telemetry/metrics/01-quickstart.md)
 
-```yml
-prometheus:
-  additionalPodMonitors: []
-  additionalRulesForClusterRole: []
-  additionalServiceMonitors:
-    - name: kubewarden
-      selector:
-        matchLabels:
-          app: kubewarden-policy-server-default
-      namespaceSelector:
-        matchNames:
-          - cattle-kubewarden-system
-      endpoints:
-        - port: metrics
-          interval: 10s
-  annotations: {}
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kubewarden-controller
+  namespace: kubewarden
+spec:
+  endpoints:
+    - interval: 10s 
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - kubewarden
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kubewarden-controller
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kubewarden-policy-server
+  namespace: kubewarden
+spec:
+  endpoints:
+    - interval: 10s
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - kubewarden
+  selector:
+    matchLabels:
+      app: kubewarden-policy-server-default
 ```
 
 ### 2. Enable telemetry for your `rancher-kubewarden-controller` resource
@@ -60,7 +75,7 @@ telemetry:
 You may need to redeploy your Monitoring resources for the new ConfigMap to be loaded. You can easily do this from Workloads -> Deployments. Select all the resources in the `cattle-monitoring-system` namespace and click on the `Redeploy` action.
 :::
 
-### 3. Add the ConfigMap for Policies and Policy Server
+### 3. Create the Grafana Dashboard ConfigMap for Policies and Policy Server
 
 :::note
 This method is suited for air gapped installations
