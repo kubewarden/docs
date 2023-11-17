@@ -25,33 +25,21 @@ for more information.
 Using Rancher Fleet, you can code the chart dependencies using
 `dependsOn` in the [`fleet.yaml`](https://fleet.rancher.io/ref-fleet-yaml) file.
 
-You may see transient errors until the charts are ready, such as:
-
-```console
-ErrApplied(1) [Cluster fleet-local/local: dependent bundle(s) are not ready:
-[kubewarden-example-helm-kubewarden-controller]]
-```
-
-These errors don't signify a problem,
-and once the charts have finished deployment,
-they no longer appear.
-
 ## Removing
 
 :::caution
 
 When removing the GitRepo, all 3 Kubewarden charts get removed at once.
-This means the `kubewarden-crds` chart gets removed.
+This means the `kubewarden-crds` chart gets incorrectly removed before the others.
 
 Kubewarden uses a pre-delete helm hook job in `kubewarden-controller` chart that deletes the default policy-server.
 This pre-delete hook is necessary to vacate the webhooks of the policies before deleting the PolicyServer.
-This is true any Policy Engine.
-If not, the cluster may have webhooks for policies that don't exist anymore
-so rejecting everything and being in a failed state.
+This is true for any Policy Engine: if not, the cluster may have webhooks for policies that don't exist anymore
+hence rejecting everything and leaving the cluster in a failed state.
 
-Removing the GitRepo, and hence the `kubewarden-crds` chart,
+Removing the GitRepo, and therefore the `kubewarden-crds` chart
 at the same time as the `kubewarden-controller` chart makes the pre-delete hook job fail.
-It means the removal is incomplete, leaving 'debris' in the cluster.
+This means the removal is incomplete, potentially leaving the cluster in a failed state.
 
 :::
 

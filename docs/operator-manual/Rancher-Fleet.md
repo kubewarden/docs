@@ -19,7 +19,7 @@ and depend transitively on each other
 
 `kubewarden-crds` ← `kubewarden-controller` ← `kubewarden-defaults`
 
-See the [Quickstart docs](https://docs.kubewarden.io/quick-start))
+See the [Quickstart docs](https://docs.kubewarden.io/quick-start)
 for more information.
 
 Using Rancher Fleet, you can code the chart dependencies using
