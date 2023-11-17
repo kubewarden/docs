@@ -19,72 +19,69 @@ Server.
 ## Install Prometheus
 
 We will use the [Prometheus Operator](https://github.com/prometheus-operator/prometheus-operator),
-that allows us to intuitively define Prometheus' Targets.
+that allows us to define Prometheus' Targets intuitively.
 
 There are many ways to install and set up Prometheus. For ease of deployment, we will use the
 Prometheus community Helm chart.
 
-Let's add the helm repository from the Prometheus Community:
-
-```console
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-```
-
-Now, let's install the
-[`kube-prometheus-stack`](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
-chart. This chart contains a collection of Kubernetes manifests, Grafana dashboards, and Prometheus
-rules.
-
-Let's create a `kube-prometheus-stack-values.yaml` file to configure the `kube-prometheus-stack`
-Helm chart values with the following contents:
-
-```yaml
-prometheus:
-  additionalServiceMonitors:
-    - name: kubewarden
-      selector:
-        matchLabels:
-          app: kubewarden-policy-server-default
-      namespaceSelector:
-        matchNames:
-          - kubewarden
-      endpoints:
-        - port: metrics
-          interval: 10s
-    - name: kubewarden-controller
-      selector:
-        matchLabels:
-          app.kubernetes.io/name: kubewarden-controller
-      namespaceSelector:
-        matchNames:
-          - kubewarden
-      endpoints:
-        - port: metrics
-          interval: 10s
-```
-
-The `prometheus-operator` deployed as part of this Helm chart defines the concept of [Service
-Monitors](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/design.md#servicemonitor),
-used to declaratively define which services should be monitored by Prometheus.
-
-In our case, we are adding a Service monitor targeting the `kubewarden` namespace, for services that
-match labels `app=kubewarden-policy-server-default` and `app.kubernetes.io/name: kubewarden-controller`.
-This way, the Prometheus Operator is able to inspect which Kubernetes Endpoints are tied to services matching this conditions.
-The operator will then take care of generating a valid configuration file for Prometheus, and reloading it
-automatically after updating its configuration file.
-
-Install the Prometheus stack Helm Chart :
+Let's install the Prometheus stack Helm Chart:
 
 :::note
 At time of writing the latest chart version is `51.5.3`
 :::
 
 ```console
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
 helm install --wait --create-namespace \
   --namespace prometheus \
   --version 51.5.3 \
   --values kube-prometheus-stack-values.yaml \
   prometheus prometheus-community/kube-prometheus-stack
+```
+
+The `prometheus-operator` deployed as part of this Helm chart defines the concept of [Service
+Monitors](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/design.md#servicemonitor),
+ to define which services should be monitored by Prometheus declaratively.
+
+In our case, we are adding a Service monitor targeting the `kubewarden` namespace for services that
+match labels `app=kubewarden-policy-server-default` and `app.kubernetes.io/name: kubewarden-controller`.
+This way, the Prometheus Operator can inspect which Kubernetes Endpoints are tied to services matching these conditions.
+
+Let's create the two ServiceMonitors named `kubewarden-controller` and `kubewarden-policy-server` using the following manifests:
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kubewarden-controller
+  namespace: kubewarden
+spec:
+  endpoints:
+    - interval: 10s 
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - kubewarden
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kubewarden-controller
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kubewarden-policy-server
+  namespace: kubewarden
+spec:
+  endpoints:
+    - interval: 10s
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - kubewarden
+  selector:
+    matchLabels:
+      app: kubewarden-policy-server-default
 ```
 
 ## Install Kubewarden
