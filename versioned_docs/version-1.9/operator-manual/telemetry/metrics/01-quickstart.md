@@ -22,7 +22,7 @@ We will use the [Prometheus Operator](https://github.com/prometheus-operator/pro
 that allows us to define Prometheus' Targets intuitively.
 
 There are many ways to install and set up Prometheus. For ease of deployment, we will use the
-Prometheus community Helm chart, but you can also use the Rancher Monitoring Chart.
+Prometheus community Helm chart.
 
 Let's install the Prometheus stack Helm Chart:
 
