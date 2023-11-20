@@ -159,7 +159,7 @@ You can change the earlier example to mutate the request instead of rejecting it
 
 In this case, the settings should contain the `defaultUser`, `defaultAction` and `defaultRequest` to use to mutate the request if the user, the action, or the resource isn't valid.
 
-We need to update the `Settings` type with the new fields:
+You need to update the `Settings` type with the new fields:
 
 ```go
 // Settings represents the settings of the policy.
@@ -207,7 +207,7 @@ func validateCliSettings(settings *Settings) SettingsValidationResponse {
 }
 ```
 
-You also need to update the `ValidationResponse` struct and the `MutateRequest` function in `kw_sdk.go` to remove the Kubernetes-specific types and use our custom types instead:
+You also need to update the `ValidationResponse` struct and the `MutateRequest` function in `kw_sdk.go` to remove the Kubernetes-specific types and use Kubewarden types instead:
 
 ```go
 // ValidationResponse defines the response given when validating a request
