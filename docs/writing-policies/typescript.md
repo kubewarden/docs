@@ -33,7 +33,7 @@ However, there are limitations affecting AssemblyScript:
 
 ## Example
 
-[This GitHub repository](https://github.com/kubewarden/pod-privileged-policy)
+[This GitHub repository branch ](https://github.com/kubewarden/pod-privileged-policy/tree/assemblyscript-implementation)
 has a Kubewarden Policy written in AssemblyScript.
 
 This repository has a series of GitHub Actions that automate the following tasks:

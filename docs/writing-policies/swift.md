@@ -46,5 +46,5 @@ The GitHub Action provided by the template repository already takes care of that
 
 ## More examples
 
-[This GitHub repository](https://github.com/kubewarden/pod-runtime-class-policy)
+[This GitHub repository branch](https://github.com/kubewarden/pod-runtime-class-policy/tree/swift-implementation)
 has a Kubewarden Policy written in Swift.
