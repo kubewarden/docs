@@ -55,7 +55,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: kubewarden-controller
-  namespace: kubewarden
+  namespace: cattle-kubewarden-system
 spec:
   endpoints:
     - interval: 10s 
@@ -71,7 +71,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: kubewarden-policy-server
-  namespace: kubewarden
+  namespace: cattle-kubewarden-system
 spec:
   endpoints:
     - interval: 10s
