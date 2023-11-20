@@ -26,7 +26,7 @@ This command reads the policy metadata embedded in the shipped Wasm module,
 performs checks, and returns a YAML manifest that the author can use as-is or modify.
 
 As a policy author, you can adapt the `metadata.yaml` file provided during the
-construction of your policy.
+scaffolding of your policy.
 
 See the following example of a `metadata.yaml`:
 
