@@ -37,8 +37,14 @@ Kubewarden supports WASI policies from the Kubewarden 1.7.0 release forward.
 You shouldn't use WASI policies under regular circumstances because they suffer from the following limitations:
 
 - No bi-directional communication, hence [host capabilities](../spec/host-capabilities/01-intro-host-capabilities.md) aren't available
-- No [context-aware](../../explanations/context-aware-policies.md) capabilities
+- No [context-aware](../../explanations/context-aware-policies.md) capabilities (though see the following note)
 - Inferior performance at evaluation time compared to waPC/Rego based policies
+
+:::note
+
+Recent project work indicates it may be possible to provide context aware capabilities for WASI policies. If this is of interest to you then please get in touch. We can then prioritize the effort.
+
+:::
 
 ## Use cases
 
@@ -50,7 +56,7 @@ Starting from the 1.21 release, the official Go compiler is able to produce WebA
 However, these modules can't yet export functions to the WebAssembly runtime.
 This limitation, tracked by [this dedicated issue](https://github.com/golang/go/issues/42372), prevents the adoption of the waPC protocol.
 
-The Kubewarden project team advise writing Kubewarden Go policies using the TinyGo compiler, as described [here](../go/01-intro-go.md).
+The Kubewarden project team advise that you write Kubewarden Go policies using the TinyGo compiler, as described [here](../go/01-intro-go.md).
 
 However, certain complex Go code bases can't be compiled using the TinyGo compiler.
 This includes, for example, code bases like [CEL-go](https://github.com/google/cel-go) or [kyverno](https://github.com/kyverno/kyverno/).
