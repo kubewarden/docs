@@ -1,25 +1,28 @@
 ---
-sidebar_label: "Writing Validation Logic"
-title: ""
+sidebar_label: Writing validation logic
+title: Writing validation logic
+description: Writing validation logic in Rust for a Kubewarden policy
+keywords: [ikubewarden, kubernetes, policy, writing, rust, validation logic]
+doc-type: [tutorial]
+doc-topic: [kubewarden, writing-policies, rust, validation-logic]
+doc-persona: [kubewarden-developer, kubewarden-developer-rust]
 ---
 
-# Writing the validation logic
+It's time to write the actual validation code.
+It's defined in the `src/lib.rs` file.
+In this file you can find a function called `validate`.
 
-It's time to write the actual validation code. This is defined inside of the
-`src/lib.rs` file. Inside of this file you will find a function called `validate`.
+This is the scaffolding provided function:
 
-
-The scaffolded function is already doing something:
-
-```rust
+```rust showLineNumbers
 fn validate(payload: &[u8]) -> CallResult {
-    // NOTE 1
+    // Note 1
     let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
 
-    // NOTE 2
+    // Note 2
     match serde_json::from_value::<apicore::Pod>(validation_request.request.object) {
         Ok(pod) => {
-            // NOTE 3
+            // Note 3
             if pod.metadata.name == Some("invalid-pod-name".to_string()) {
                 kubewarden::reject_request(
                     Some(format!("pod name {:?} is not accepted", pod.metadata.name)),
@@ -32,7 +35,7 @@ fn validate(payload: &[u8]) -> CallResult {
             }
         }
         Err(_) => {
-            // NOTE 4
+            // Note 4
             // We were forwarded a request we cannot unmarshal or
             // understand, just accept it
             kubewarden::accept_request()
@@ -41,22 +44,19 @@ fn validate(payload: &[u8]) -> CallResult {
 }
 ```
 
-This is a walk-through the code described above:
+Walking through the code listing:
 
-  1. Parse the incoming `payload` into a `ValidationRequest<Setting>` object. This
-    automatically populates the `Settings` instance inside of `ValidationRequest` with
-    the params provided by the user.
-  2. Convert the Kubernetes raw JSON object embedded into the request
-    into an instance of the [Pod struct](https://arnavion.github.io/k8s-openapi/v0.11.x/k8s_openapi/api/core/v1/struct.Pod.html)
-  3. The request contains a Pod object, the code approves only the requests
-    that do not have `metadata.name` equal to the hard-coded value `invalid-pod-name`
-  4. The request doesn't contain a Pod object, hence the policy accepts the request
+1. Parse the incoming `payload` into a `ValidationRequest<Setting>` object.
+This automatically populates the `Settings` instance inside the `ValidationRequest` with the parameters provided by the user.
+1. Convert the Kubernetes raw JSON object embedded into the request into an instance of the
+[Pod struct](https://arnavion.github.io/k8s-openapi/v0.11.x/k8s_openapi/api/core/v1/struct.Pod.html)
+1. The request contains a Pod object, the code approves only the requests that don't have `metadata.name` equal to the hard-coded value `invalid-pod-name`
+1. The request doesn't contain a Pod object, hence the policy accepts the request
 
-As you can see the code is already doing a validation that resembles the one we
-want to implement. We just have to get rid of the hard-coded value and use the
-values provided by the user via the policy settings.
+As you can see, the code is already doing a validation that resembles the one we want to implement.
+We just have to remove the hard-coded value and use the values provided by the user via the policy settings.
 
-This can be done with the following code:
+You can do by replacing the scaffolding `validate` function, in `src/lib.rs`, with this one:
 
 ```rust
 fn validate(payload: &[u8]) -> CallResult {
@@ -91,18 +91,18 @@ fn validate(payload: &[u8]) -> CallResult {
 
 ## Unit tests
 
-Finally, we will create some unit tests to ensure the validation code works as
+Finally, you can create unit tests to check the validation code works as
 expected.
 
-The `lib.rs` file has already some tests defined at the bottom of the file, as
-you can see Kubewarden's Rust SDK provides some test helpers too.
+The `lib.rs` file has already tests defined at the bottom of the file, and as
+you can see, Kubewarden's Rust SDK provides test helpers too.
 
 Moreover, the scaffolded project already ships with some default
 [test fixtures](https://en.wikipedia.org/wiki/Test_fixture#Software) inside of
 the `test_data` directory. We are going to take advantage of these recorded
 admission requests to write our unit tests.
 
-Change the contents of the test section inside of `src/lib.rs` to look like that:
+Change the contents of the test section at the end of `src/lib.rs` to look like this:
 
 ```rust
 #[cfg(test)]
@@ -186,16 +186,13 @@ mod tests {
 }
 ```
 
-We now have three unit tests defined inside of this file:
+You now have three unit tests defined in `lib.rs`:
 
-  * `accept_pod_with_valid_name`: ensures a Pod with a valid
-    name is accepted
-  * `reject_pod_with_invalid_name`: ensures a Pod with an invalid
-    name is rejected
-  * `accept_request_with_non_pod_resource`: ensure the policy accepts
-    request that do not have a `Pod` as object
+- `accept_pod_with_valid_name`: accepts a Pod with a valid name
+- `reject_pod_with_invalid_name`: rejects a Pod with an invalid name
+- `accept_request_with_non_pod_resource`: accept requests that don't have a `Pod` as an object
 
-We can run the unit tests again:
+You can run the unit tests again:
 
 ```shell
 $ cargo test
@@ -213,6 +210,4 @@ test tests::reject_pod_with_invalid_name ... ok
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
 
-That's all if you want to write a simple validating policy.
-
-
+That's all that's required if you need to write a simple validating policy.

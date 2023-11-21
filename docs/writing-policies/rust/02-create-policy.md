@@ -5,9 +5,10 @@ description: Creating a Kubewarden policy using Rust.
 keywords: [kubewarden, kubernetes, policy creation]
 doc-type: [tutorial]
 doc-topic: [writing-policies, rust, creating-policies]
+doc-persona: [kubewarden-developer, kubewarden-developer-rust]
 ---
 
-As an example, we create a simple validation policy that processes Pod creation requests.
+As an example, you create a simple validation policy that processes Pod creation requests.
 
 The policy looks at the `metadata.name` attribute of the Pod and rejects pods having an invalid name.
 The list of invalid names should be configurable by end users of the policy.
@@ -82,3 +83,23 @@ If you plan to make use of the GitHub container registry functionality in the de
 [enable improved container support](https://docs.github.com/en/packages/working-with-a-github-packages-registry/enabling-improved-container-support-with-the-container-registry#enabling-the-container-registry-for-your-personal-account).
 
 :::
+
+### Testing
+
+You can try:
+
+```console
+cargo test
+```
+
+This tests the generated scaffolding. If everything is correctly in place you'll see a series of compilation messages ending with output like:
+
+```console
+running 4 tests
+test settings::tests::validate_settings ... ok
+test tests::accept_request_with_non_pod_resource ... ok
+test tests::accept_pod_with_valid_name ... ok
+test tests::reject_pod_with_invalid_name ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```

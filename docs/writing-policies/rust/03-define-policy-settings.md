@@ -5,6 +5,7 @@ description: Defining policy settings for a Kubewarden policy developed using Ru
 keywords: [kubewarden, kubernetes, writing policies, policy settings, rust]
 doc-type: [tutorial]
 doc-topic: [writing-policies, rust, policy-settings]
+doc-persona: [kubewarden-developer, kubewarden-developer-rust]
 ---
 
 ## The policy settings structure
@@ -15,10 +16,6 @@ Open the `demo/src/settings.rs` file and change the definition of the `Settings`
 `struct` to look like:
 
 ```rust
-use std::collections::HashSet;
-
-#[derive(Deserialize, Default, Debug, Serialize)]
-#[serde(default)]
 pub(crate) struct Settings {
     pub invalid_names: HashSet<String>,
 }
@@ -52,7 +49,7 @@ Now you can write a unit test to make sure the settings validation is working.
 You can do this in the [usual Rust way](https://doc.rust-lang.org/stable/book/ch11-00-testing.html).
 
 There are already a few default tests at the bottom of the `src/settings.rs`
-file. Replace the automatically generated code to look like that:
+file. Replace the automatically generated code to look like this:
 
 ```rust
 #[cfg(test)]
@@ -84,6 +81,8 @@ mod tests {
 }
 ```
 
+It's not essential but you can remove the unused imports for `crate::LOG_DRAIN` and `slog::info`, which removes the warning messages.
+
 You can now run the unit tests by doing:
 
 ```console
@@ -93,15 +92,15 @@ cargo test
 This produces an output similar to the following:
 
 ```console
-  Compiling demo v0.1.0 (/home/<username>/hacking/kubernetes/kubewarden/demo)
-    Finished test [unoptimized + debuginfo] target(s) in 4.19s
-     Running target/debug/deps/demo-24670dd6a538fd72
+   Compiling demo v0.1.0 (/home/jhk/projects/suse/tmp/demo)
+    Finished test [unoptimized + debuginfo] target(s) in 0.59s
+     Running unittests src/lib.rs (target/debug/deps/demo-bea8e11b21717093)
 
 running 5 tests
-test settings::tests::reject_settings_without_a_list_of_invalid_names ... ok
 test settings::tests::accept_settings_with_a_list_of_invalid_names ... ok
-test tests::accept_request_with_non_pod_resource ... ok
+test settings::tests::reject_settings_without_a_list_of_invalid_names ... ok
 test tests::reject_pod_with_invalid_name ... ok
+test tests::accept_request_with_non_pod_resource ... ok
 test tests::accept_pod_with_valid_name ... ok
 
 test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
