@@ -36,7 +36,7 @@ spec:
       port: metrics
   namespaceSelector:
     matchNames:
-      - kubewarden
+      - cattle-kubewarden-system
   selector:
     matchLabels:
       app.kubernetes.io/name: kubewarden-controller
@@ -52,7 +52,7 @@ spec:
       port: metrics
   namespaceSelector:
     matchNames:
-      - kubewarden
+      - cattle-kubewarden-system
   selector:
     matchLabels:
       app: kubewarden-policy-server-default
