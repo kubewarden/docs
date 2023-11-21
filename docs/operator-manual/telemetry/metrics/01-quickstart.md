@@ -44,7 +44,7 @@ The `prometheus-operator` deployed as part of this Helm chart defines the concep
 Monitors](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/design.md#servicemonitor),
  to define which services should be monitored by Prometheus declaratively.
 
-In our case, we are adding a Service monitor targeting the `kubewarden` namespace for services that
+In our case, we are adding a ServiceMonitor targeting the `kubewarden` namespace for services that
 match labels `app=kubewarden-policy-server-default` and `app.kubernetes.io/name: kubewarden-controller`.
 This way, the Prometheus Operator can inspect which Kubernetes Endpoints are tied to services matching these conditions.
 
