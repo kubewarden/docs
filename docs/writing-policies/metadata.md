@@ -1,26 +1,29 @@
 ---
-sidebar_label: "Policy metadata"
-title: "Policy metadata"
+sidebar_label: Policy metadata
+title: Policy metadata
+description: Using policy metadata when developing a Kubewarden policy.
+keywords: [kubewraden, kubernetes policy development, policy metadata]
+doc-type: [how-to, tutorial]
+doc-topic: [kubewarden, writing-polices, policy-metadata]
+doc-persona: [kubewarden-developer]
 ---
 
-# Policy metadata
+The Kubewarden metadata file, `metadata.yaml`,
+is a configuration file containing important information and settings
+related to the policies used within Kubewarden.
+This documentation is overview of the purpose and usage of the metadata file.
 
-The Kubewarden metadata file, `metadata.yaml`, serves as a vital configuration
-file that contains important information and settings related to the policies
-used within Kubewarden. This documentation provides an overview of the
-purpose and usage of the metadata file.
+The policy `metadata.yaml` file has defaults for the policy,
+as well as metadata such as author and description,
+set by the policy author.
+The `kwctl annotate` command uses the file to annotate the `.wasm` file containing the policy.
+Therefore, all the relevant information required to run the policy is available.
+More information about how to annotate the policy is in the
+[Distributing Policies](../distributing-policies.md) guide.
 
-The policy `metadata.yaml` file contains defaults for the policy, in addition
-to metadata such as author and description, set by the policy author. The file
-is used by the `kwctl annonate` command to, as the name suggests, annotates the
-`.wasm` file containing the policy. Therefore, all the relevant information required to run
-the policy will be available. More information about how to annotate the policy
-can be found in the [Distributing Policies](../distributing-policies.md) guide.
-
-When policy users want to use a policy, they generate a YAML manifest using
-`kwctl scaffold`. This command reads the policy metadata embedded in the
-shipped Wasm module, performs sanity checks, and returns a YAML manifest that
-the author can use as-is or adapt to their needs.
+When policy users want to use a policy, they generate a YAML manifest using `kwctl scaffold`.
+This command reads the policy metadata embedded in the shipped Wasm module,
+performs checks, and returns a YAML manifest that the author can use as-is or modify.
 
 As a policy author, you can adapt the `metadata.yaml` file provided during the
 scaffolding of your policy.
@@ -58,24 +61,25 @@ annotations:
   io.kubewarden.policy.category: Resource validation
 ```
 
-**1. Enabling Background Audit Checks:**
+## Enabling background audit checks
 
-The metadata file includes a flag, `backgroundAudit`, that enables the
-background audit checks for a specific policy. By default, this flag is set to
-`true`.
+The metadata file includes a flag, `backgroundAudit`,
+that enables the background audit checks for a specific policy.
+By default, this flag is set to `true`.
 
-There are some policies that, due to the way they work or to the type
-of events they are interested about, should have this field set to `false`.
-More information can be found inside of the
+There are policies that, due to the way they work or to the type of events they're concerned with,
+should have this field set to `false`.
+You can find more information in the
 [audit scanner documentation](../explanations/audit-scanner#limitations),
-respectively under the limitations section.
+under the limitations section.
 
-**2. Defining Kubernetes Resources policies can access:**
+## Defining Kubernetes resources that policies can access
 
-Within the metadata file, using the `contextAwareResources` field, users can
-define which Kubernetes resources the policy is allowed to access. For example,
-if the policy need access to `Namespace` resource. The policy author can define
-the `contextAwareResources` as:
+Within the metadata file,
+using the `contextAwareResources` field,
+users can define which Kubernetes resources the policy can access.
+For example, if the policy needs access to the `Namespace` resource.
+The policy author can define the `contextAwareResources` as:
 
 ```yaml
 [...]
@@ -84,33 +88,27 @@ contextAwareResources:
 [...]
 ```
 
-**3. Specifying Policy as Mutating or Non-Mutating:**
+## Specifying policies as mutating or non-mutating
 
-The metadata file contains a flag, `mutating`, that allows users to designate
-a policy as either mutating or non-mutating. A mutating
-policy modifies the incoming requests or the resources being managed. A
-non-mutating one observes and enforces restrictions without making any
-changes. This distinction is crucial in determining how policies interact with
-the Kubernetes resources and their impact on the cluster.
+The metadata file has a flag, `mutating`,
+that lets users configure a policy as either mutating or non-mutating.
+A mutating policy modifies the incoming requests or the resources being managed.
+A non-mutating policy observes and enforces restrictions without making any changes.
+This distinction is crucial in determining how policies interact with the Kubernetes resources and their impact on the cluster.
 
-**4. Specify Policy Type: Kubernetes or Raw**
+## Specify policy type as Kubernetes or Raw
 
-The metadata file contains a flag, `policyType`, that allows users to mark
-a policy as either `kubernetes` or `raw`. A Kubernetes policy is a policy that
-validates Kubernetes resources. A Raw policy is a policy that validates
-arbitrary JSON documents.
-By default, if not specified by the user, this field is set to `kubernetes`
-when annotating a policy.
+The metadata file has a flag, `policyType`, that lets users to mark a policy as either `kubernetes` or `raw`.
+A Kubernetes policy is a policy that validates Kubernetes resources.
+A Raw policy is a policy that validates arbitrary JSON documents.
+By default, if not specified by the user, this field is set to `kubernetes` when annotating a policy.
 Refer to the [Raw Policies](../howtos/raw-policies.md) section for more information.
 
-**5. Defining Resource Type Targets:**
+## Defining resource type targets
 
-The metadata file provides users with the ability to define the rules within
-the `rules` field, which determine the resource types to which the policy
-applies. This feature empowers users to exercise precise control over policy
-enforcement, guaranteeing that policies are exclusively applied to the intended
-resource types. With this fine-grained control, users can ensure that policies
-are targeted accurately, aligning with their specific requirements and avoiding
-any unintended application to unrelated resource types.
-
----
+The metadata file provides users with the ability to define the rules within the `rules` field,
+which determines the resource types to which the policy applies.
+This feature empowers users to exercise precise control over policy enforcement,
+guaranteeing that policies are only applied to the intended resource types.
+With this fine-grained control, users can guarantee that policies are targeted accurately,
+aligning with their specific requirements and avoiding any unintended application of policies to unrelated resource types.

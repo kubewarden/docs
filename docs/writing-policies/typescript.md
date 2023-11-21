@@ -1,9 +1,12 @@
 ---
-sidebar_label: "TypeScript"
-title: ""
+sidebar_label: Typescript
+title: Typescript
+description: Writing Kubewarden policies with Typescript
+keywords: [at least one]
+doc-type: [one of how-to, explanation, tutorial, reference]
+doc-topic: [root-branch]
+doc-persona: [default]
 ---
-
-# TypeScript
 
 As stated on the [official website](https://www.typescriptlang.org/):
 
@@ -12,30 +15,28 @@ As stated on the [official website](https://www.typescriptlang.org/):
 > By understanding JavaScript, TypeScript saves you time catching errors and
 > providing fixes before you run code.
 
-TypeScript **cannot** be converted to WebAssembly, however
-[AssemblyScript](https://www.assemblyscript.org/) is a **subset** of TypeScript
-designed explicitly for WebAssembly.
+TypeScript can't target WebAssembly, however
+[AssemblyScript](https://www.assemblyscript.org/)
+is a **subset** of TypeScript designed for WebAssembly.
 
-## Current State
+## Current state
 
-Currently there's no Kubewarden SDK for AssemblyScript. We haven't created it
-because of lack of time. We will do that in the near future.
+Currently, there's no Kubewarden SDK for AssemblyScript.
+Resources permitting, we hope to have on in the near future.
 
-In the meantime, there seem to be some limitatations affecting AssemblyScript:
+However, there are limitations affecting AssemblyScript:
 
 * There's no built-in way to serialize and deserialize Classes to
-  and from JSON. See [this issue](https://github.com/AssemblyScript/assemblyscript/issues/292)
+  and from JSON.
+  See [this issue](https://github.com/AssemblyScript/assemblyscript/issues/292)
 * It *seems* there's no JSON path library for AssemblyScript
 
 ## Example
 
-[This GitHub repository](https://github.com/kubewarden/pod-privileged-policy)
-contains a Kubewarden Policy written in AssemblyScript.
+[This GitHub repository branch ](https://github.com/kubewarden/pod-privileged-policy/tree/assemblyscript-implementation)
+has a Kubewarden Policy written in AssemblyScript.
 
-**Worth noting:** this repository has a series of GitHub Actions that automate
-the following tasks:
+This repository has a series of GitHub Actions that automate the following tasks:
 
-  * Run unit tests and code linting on pull requests and after code is merged
-    into the main branch
-  * Build the policy in `release` mode and push it to an OCI registry as an
-    artifact
+* Run unit tests and code linting on pull requests and after code is merged into the main branch
+* Build the policy in `release` mode and push it to an OCI registry as an artifact
