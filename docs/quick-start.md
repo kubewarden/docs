@@ -61,7 +61,7 @@ helm repo add kubewarden https://charts.kubewarden.io
 helm repo update kubewarden
 ```
 
-Install the following Helm charts inside the `kubewarden` namespace in your Kubernetes cluster:
+Install the following Helm charts inside the `cattle-kubewarden-system` namespace in your Kubernetes cluster:
 
 * `kubewarden-crds`, which will register the `ClusterAdmissionPolicy`,
   `AdmissionPolicy` and `PolicyServer` Custom Resource Definitions.  As well as
