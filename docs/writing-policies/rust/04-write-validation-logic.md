@@ -2,7 +2,7 @@
 sidebar_label: Writing validation logic
 title: Writing validation logic
 description: Writing validation logic in Rust for a Kubewarden policy
-keywords: [ikubewarden, kubernetes, policy, writing, rust, validation logic]
+keywords: [kubewarden, kubernetes, policy, writing, rust, validation logic]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, rust, validation-logic]
 doc-persona: [kubewarden-developer, kubewarden-developer-rust]
@@ -16,42 +16,57 @@ This is the scaffolding provided function:
 
 ```rust showLineNumbers
 fn validate(payload: &[u8]) -> CallResult {
-    // Note 1
+    // highlight-next-line
     let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
 
-    // Note 2
+    info!(LOG_DRAIN, "starting validation");
+    if validation_request.request.kind.kind != apicore::Pod::KIND {
+        warn!(LOG_DRAIN, "Policy validates Pods only. Accepting resource"; "kind" => &validation_request.request.kind.kind);
+        return kubewarden::accept_request();
+    }
+    // TODO: you can unmarshal any Kubernetes API type you are interested in
+    // highlight-next-line
     match serde_json::from_value::<apicore::Pod>(validation_request.request.object) {
         Ok(pod) => {
-            // Note 3
+            // TODO: your logic goes here
+            // highlight-next-line
             if pod.metadata.name == Some("invalid-pod-name".to_string()) {
+                let pod_name = pod.metadata.name.unwrap();
+                info!(
+                    LOG_DRAIN,
+                    "rejecting pod";
+                    "pod_name" => &pod_name
+                );
                 kubewarden::reject_request(
-                    Some(format!("pod name {:?} is not accepted", pod.metadata.name)),
+                    Some(format!("pod name {} is not accepted", &pod_name)),
                     None,
                     None,
                     None,
                 )
             } else {
+                info!(LOG_DRAIN, "accepting resource");
                 kubewarden::accept_request()
             }
         }
         Err(_) => {
-            // Note 4
+            // TODO: handle as you wish
             // We were forwarded a request we cannot unmarshal or
             // understand, just accept it
+            warn!(LOG_DRAIN, "cannot unmarshal resource: this policy does not know how to evaluate this resource; accept it");
+            // highlight-next-line
             kubewarden::accept_request()
         }
     }
 }
 ```
-
 Walking through the code listing:
 
-1. Parse the incoming `payload` into a `ValidationRequest<Setting>` object.
+- In line 2. Parse the incoming `payload` into a `ValidationRequest<Setting>` object.
 This automatically populates the `Settings` instance inside the `ValidationRequest` with the parameters provided by the user.
-1. Convert the Kubernetes raw JSON object embedded into the request into an instance of the
+- In line 10. Convert the Kubernetes raw JSON object embedded into the request into an instance of the
 [Pod struct](https://arnavion.github.io/k8s-openapi/v0.11.x/k8s_openapi/api/core/v1/struct.Pod.html)
-1. The request contains a Pod object, the code approves only the requests that don't have `metadata.name` equal to the hard-coded value `invalid-pod-name`
-1. The request doesn't contain a Pod object, hence the policy accepts the request
+- In line 13. The request contains a Pod object, the code approves only the requests that don't have `metadata.name` equal to the hard-coded value `invalid-pod-name`
+- In line 36. The request doesn't contain a Pod object, hence the policy accepts the request.
 
 As you can see, the code is already doing a validation that resembles the one we want to implement.
 We just have to remove the hard-coded value and use the values provided by the user via the policy settings.
@@ -61,6 +76,12 @@ You can do by replacing the scaffolding `validate` function, in `src/lib.rs`, wi
 ```rust
 fn validate(payload: &[u8]) -> CallResult {
     let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
+
+    info!(LOG_DRAIN, "starting validation");
+    if validation_request.request.kind.kind != apicore::Pod::KIND {
+        warn!(LOG_DRAIN, "Policy validates Pods only. Accepting resource"; "kind" => &validation_request.request.kind.kind);
+        return kubewarden::accept_request();
+    }
 
     match serde_json::from_value::<apicore::Pod>(validation_request.request.object) {
         Ok(pod) => {

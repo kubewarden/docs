@@ -4,7 +4,7 @@ title: "Creating a policy"
 description: Creating a Kubewarden policy using Rust.
 keywords: [kubewarden, kubernetes, policy creation]
 doc-type: [tutorial]
-doc-topic: [writing-policies, rust, creating-policies]
+doc-topic: [kubewarden, writing-policies, rust, creating-policies]
 doc-persona: [kubewarden-developer, kubewarden-developer-rust]
 ---
 

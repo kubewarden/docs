@@ -4,7 +4,7 @@ title: "Defining policy settings"
 description: Defining policy settings for a Kubewarden policy developed using Rust
 keywords: [kubewarden, kubernetes, writing policies, policy settings, rust]
 doc-type: [tutorial]
-doc-topic: [writing-policies, rust, policy-settings]
+doc-topic: [kubewarden, writing-policies, rust, policy-settings]
 doc-persona: [kubewarden-developer, kubewarden-developer-rust]
 ---
 
@@ -81,7 +81,6 @@ mod tests {
 }
 ```
 
-It's not essential but you can remove the unused imports for `crate::LOG_DRAIN` and `slog::info`, which removes the warning messages.
 
 You can now run the unit tests by doing:
 

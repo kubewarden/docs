@@ -1,19 +1,24 @@
 ---
-sidebar_label: "Logging"
-title: ""
+sidebar_label: Logging
+title: Logging
+description: How to use logging functionality when writing a Kubewarden policy in Rust.
+keywords: [Kubewarden, kubernetes, logging]
+doc-type: [tutorial]
+doc-topic: [kubewarden, writing-policies, rust, logging]
+doc-persona: [kubewarden-developer, kubewarden-developer-rust]
 ---
 
-# Logging
+You can have your policy perform logging.
+The `policy-server` or `kwctl` forwards those log entries with the appropriate information.
 
-You can perform logging in your policy, so the `policy-server` or `kwctl` will forward those log
-entries with the appropriate information.
-
-The logging library chosen for the Rust SDK is [`slog`](https://github.com/slog-rs/slog), as it is a
-well known crate and integrates in a very straightforward way with Kubewarden.
+The logging library chosen for the Rust SDK is
+[`slog`](https://github.com/slog-rs/slog).
+It's a popular, well known crate and integrates cleanly with Kubewarden.
 
 ## Initialize logger
 
-We recommend that you create a global sink where you can log from where you need within your policy. For this, we will use the `lazy_static` crate:
+The project recommends you create a global sink you can log to, from where needed in your policy.
+For this, use the `lazy_static` crate:
 
 ```rust
 use slog::{o, Logger};
@@ -28,7 +33,8 @@ lazy_static! {
 
 ## Consuming the logger
 
-Now, from within our `validate`, or `validate_settings` functions, we are able to log using the macros exported by `slog` that match each supported logging level:
+Now, from within the `validate`, or `validate_settings` functions,
+you can log using the macros exported by `slog` that match each supported logging level:
 
 ```rust
 use slog::{info, o, warn, Logger};
@@ -45,10 +51,14 @@ fn validate(payload: &[u8]) -> CallResult {
 }
 ```
 
-The `slog` library will send all logs to the drain we initialized in the global variable, that will
-get sinked to the policy evaluator executing the policy, `kwctl` or the `policy-server`. Then the
-policy evaluator will log this information, adding more contextual information it knows about, such
-as the Kubernetes request `uid`.
+The `slog` library sends all logs to the drain initialized in the global variable.
+This synchronizes to the policy evaluator executing the policy.
+This is either `kwctl` or the `policy-server`.
+Then the policy evaluator logs this information,
+adding further known contextual information,
+such as the Kubernetes request `uid`.
 
-More information about the [logging macros](https://docs.rs/slog/2.7.0/slog/macro.log.html) offered
-by slog can be found inside of [its documentation](https://docs.rs/slog/2.7.0/slog/index.html).
+More information about the
+[logging macros](https://docs.rs/slog/2.7.0/slog/macro.log.html)
+offered by slog are in its
+[documentation](https://docs.rs/slog/2.7.0/slog/index.html).

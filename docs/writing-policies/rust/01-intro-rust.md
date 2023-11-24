@@ -3,7 +3,8 @@ title: "Rust"
 description: An introduction to writing Kubewarden policies with Rust.
 keywords: [kubewarden, kubernetes, writing policies, introduction]
 doc-type: [tutorial]
-doc-topic: [writing-policies, rust, introduction]
+doc-topic: [kubewarden, writing-policies, rust, introduction]
+doc-persona: [kubewarden-developer, kubewarden-developer-rust]
 ---
 
 [Rust](https://www.rust-lang.org/) is a mature programming language that can generate WebAssembly modules.
