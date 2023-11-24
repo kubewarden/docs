@@ -59,17 +59,18 @@ fn validate(payload: &[u8]) -> CallResult {
     }
 }
 ```
+
 Walking through the code listing:
 
 - In line 2. Parse the incoming `payload` into a `ValidationRequest<Setting>` object.
 This automatically populates the `Settings` instance inside the `ValidationRequest` with the parameters provided by the user.
 - In line 10. Convert the Kubernetes raw JSON object embedded into the request into an instance of the
 [Pod struct](https://arnavion.github.io/k8s-openapi/v0.11.x/k8s_openapi/api/core/v1/struct.Pod.html)
-- In line 13. The request contains a Pod object, the code approves only the requests that don't have `metadata.name` equal to the hard-coded value `invalid-pod-name`
+- In line 13. The request has a Pod object, the code approves only the requests that don't have `metadata.name` equal to the hard-coded value `invalid-pod-name`
 - In line 36. The request doesn't contain a Pod object, hence the policy accepts the request.
 
-As you can see, the code is already doing a validation that resembles the one we want to implement.
-We just have to remove the hard-coded value and use the values provided by the user via the policy settings.
+As you can see, the code is already doing a validation that resembles the one you want to implement.
+You just have to remove the hard-coded value and use the values provided by the user via the policy settings.
 
 You can do by replacing the scaffolding `validate` function, in `src/lib.rs`, with this one:
 
@@ -115,13 +116,13 @@ fn validate(payload: &[u8]) -> CallResult {
 Finally, you can create unit tests to check the validation code works as
 expected.
 
-The `lib.rs` file has already tests defined at the bottom of the file, and as
+The `lib.rs` file already has tests defined at the bottom of the file, and as
 you can see, Kubewarden's Rust SDK provides test helpers too.
 
-Moreover, the scaffolded project already ships with some default
-[test fixtures](https://en.wikipedia.org/wiki/Test_fixture#Software) inside of
-the `test_data` directory. We are going to take advantage of these recorded
-admission requests to write our unit tests.
+Moreover, the scaffold project already ships with default
+[test fixtures](https://en.wikipedia.org/wiki/Test_fixture#Software) in
+the `test_data` directory. You are going to use of these recorded
+admission requests to write your unit tests.
 
 Change the contents of the test section at the end of `src/lib.rs` to look like this:
 

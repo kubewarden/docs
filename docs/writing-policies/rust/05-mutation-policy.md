@@ -56,7 +56,7 @@ spec:
 ## Write the mutation code
 
 The mutation code is in the `validate` function.
-You should change this function should to approve the request using
+You should change this function to approve the request using
 [`mutate_request`](https://docs.rs/kubewarden-policy-sdk/0.1.0/kubewarden_policy_sdk/fn.mutate_request.html)
 instead of
 [`accept_request`](https://docs.rs/kubewarden-policy-sdk/0.1.0/kubewarden_policy_sdk/fn.accept_request.html).

@@ -10,7 +10,7 @@ doc-persona: [kubewarden-developer, kubewarden-developer-rust, kubewarden-operat
 
 ## Building the policy
 
-Thus far, you've built the policy with a compilation target of the same operating system and architecture of our development machine.
+Thus far, you've built the policy with a compilation target of the same operating system and architecture of your development machine.
 
 It's now time to build the policy as a WebAssembly binary, a `.wasm` file.
 

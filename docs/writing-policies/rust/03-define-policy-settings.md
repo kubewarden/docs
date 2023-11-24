@@ -81,7 +81,6 @@ mod tests {
 }
 ```
 
-
 You can now run the unit tests by doing:
 
 ```console

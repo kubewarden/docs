@@ -7,7 +7,7 @@ doc-topic: [kubewarden, writing-policies, rust, introduction]
 doc-persona: [kubewarden-developer, kubewarden-developer-rust]
 ---
 
-[Rust](https://www.rust-lang.org/) is a mature programming language that can generate WebAssembly modules.
+[Rust](https://www.rust-lang.org/) is the most mature programming language that can generate WebAssembly modules.
 WebAssembly is a first-class citizen in the Rust world so many of the tools and crates from the Rust ecosystem work out of the box.
 
 Kubewarden provides a [Rust SDK](https://crates.io/crates/kubewarden-policy-sdk) that simplifies the process of writing policies.
@@ -17,7 +17,7 @@ This documentation shows how to use these projects to write Kubewarden policies 
 It doesn't cover the details of Kubewarden's Rust SDK.
 The details are in the [crate documentation](https://docs.rs/kubewarden-policy-sdk/0.1.0).
 
-## Getting Rust dependencies
+## Getting the Rust dependencies
 
 Install the Rust compiler and its tools using
 [rustup](https://github.com/rust-lang/rustup).
