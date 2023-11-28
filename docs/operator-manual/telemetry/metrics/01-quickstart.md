@@ -176,14 +176,15 @@ You can now login with the default username `admin` and password `prom-operator`
 
 The Kubewarden developers made available a Grafana dashboard with some basic metrics
 that give an overview about how Kubewarden behaves inside of cluster. This dashboard
-is available in the Kubewarden repository in a [JSON file](https://raw.githubusercontent.com/kubewarden/policy-server/main/kubewarden-dashboard.json)
+is available in the GitHub releases of the Kubewarden policy-server repository as a
+[JSON file](https://github.com/kubewarden/policy-server/releases/latest/download/kubewarden-dashboard.json)
 or in the [Grafana website](https://grafana.com/grafana/dashboards/15314).
 
 To import the dashboard into your environment, you can download the JSON file
 from the Grafana website or from the repository:
 
 ```console
-curl https://raw.githubusercontent.com/kubewarden/policy-server/main/kubewarden-dashboard.json
+curl https://github.com/kubewarden/policy-server/releases/latest/download/kubewarden-dashboard.json
 ```
 
 Once you have the file in your machine you should access the Grafana dashboard and
@@ -203,12 +204,12 @@ Another option is import it directly from the Grafana.com website. For this:
 4. After importing the dashboard, define the Prometheus data source to use and finish
    the import process.
 
-You should be able to see the dashboard similar to this:
-
-![Dashboard](/img/grafana_dashboard.png)
-
 The Grafana dashboard has panes showing the state of all
 the policies managed by Kubewarden. Plus it has policy-specific panels.
 
 Policy detailed metrics can be obtained by changing the value of the `policy_name`
 variable to match the name of the desired policy.
+
+You should be able to see the dashboard similar to this:
+
+![Dashboard](/img/grafana_dashboard.png)
