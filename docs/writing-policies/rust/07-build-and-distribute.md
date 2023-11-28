@@ -1,48 +1,47 @@
 ---
-sidebar_label: "Building & Distributing Policies"
-title: ""
+sidebar_label: Building and distributing policies
+title: Building and distributing policies
+description: Building and distributing Kubewarden policies developed with Rust.
+keywords: [kubewarden, kubernetes, writing policies, rust, build and distribute]
+doc-type: [tutorial]
+doc-topic: [kubewarden, writing-policies, rust, build-and-distribute]
+doc-persona: [kubewarden-developer, kubewarden-developer-rust, kubewarden-operator]
 ---
 
 ## Building the policy
 
-So far we have built the policy using as a compilation target the same operating
-system and architecture of our development machine.
+Thus far, you've built the policy with a compilation target of the same operating system and architecture of your development machine.
 
-It's now time to build the policy as a WebAssembly binary, also known as `.wasm`
-file.
+It's now time to build the policy as a WebAssembly binary, a `.wasm` file.
 
-This can be done with a simple command:
+You use the command:
 
-```shell
+```console
 make policy.wasm
 ```
 
-This command will build the code in release mode, with WebAssembly as
-compilation target.
+This command builds the code in release mode, with a WebAssembly compilation target.
 
-The build will produce the following file:
+The build produces a `policy.wasm` file:
 
-```shell
-$ file target/wasm32-wasi/release/demo.wasm
-target/wasm32-wasi/release/demo.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
+```console
+$ file policy.wasm
+policy.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
 ```
 
 ## Distributing the policy
 
-This topic is covered inside of the [distributing
-policies](/distributing-policies.md) section of Kubewarden's
-documentation.
+Kubewarden documents policy distribution in the
+[distributing policies](/distributing-policies.md)
+section.
 
 ## More examples
 
-You can find more Kubewarden policies written in Rust inside of Kubewarden's
-GitHub space. [This query](https://github.com/search?l=Rust&q=topic%3Apolicy-as-code+org%3Akubewarden&type=Repositories)
+You can find more Rust Kubewarden policies in Kubewarden's GitHub space.
+[This query](https://github.com/search?l=Rust&q=topic%3Apolicy-as-code+org%3Akubewarden&type=Repositories)
 can help you find them.
 
-**Worth of note:** these repositories have a series of GitHub Actions that automate
-the following tasks:
+The Kubewarden policy repositories, shown by that query, have GitHub Actions that automate the following tasks:
 
-  * Run unit tests and code linting on pull requests and after code is merged
-    into the main branch
-  * Build the policy in `release` mode and push it to a OCI registry as an
-    artifact
+* Run unit tests and code linting on pull requests and after code merges into the main branch.
+* Build the policy in `release` mode and push it to an OCI registry as an artifact.

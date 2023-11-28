@@ -1,18 +1,19 @@
 ---
-sidebar_label: "Creating a new validation policy"
-title: ""
+sidebar_label: "Creating a policy"
+title: "Creating a policy"
+description: Creating a Kubewarden policy using Rust.
+keywords: [kubewarden, kubernetes, policy creation]
+doc-type: [tutorial]
+doc-topic: [kubewarden, writing-policies, rust, creating-policies]
+doc-persona: [kubewarden-developer, kubewarden-developer-rust]
 ---
 
-# Creating a new validation policy
+As an example, you create a simple validation policy that processes Pod creation requests.
 
-We are going to create a simple validation policy that processes
-Pod creation requests.
+The policy looks at the `metadata.name` attribute of the Pod and rejects pods having an invalid name.
+It's list of invalid names should be configurable by end users of the policy.
 
-The policy will look at the `metadata.name` attribute of the Pod and reject
-the pods that have an invalid name. We want the list of invalid names to be
-configurable by the end users of the policy.
-
-To summarize, the policy settings will look like that:
+The policy settings look something like:
 
 ```yaml
 invalid_names:
@@ -20,12 +21,13 @@ invalid_names:
 - bad_name2
 ```
 
-The policy will accept the creation of a Pod like the following one:
+The policy should accept the creation of a Pod like the following one:
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
+// highlight-next-line
   name: nginx
 spec:
   containers:
@@ -33,12 +35,13 @@ spec:
       image: nginx:latest
 ```
 
-While it will reject the creation of a Pod like the following one:
+It should reject the creation of a Pod like:
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
+// highlight-next-line
   name: bad_name1
 spec:
   containers:
@@ -46,13 +49,12 @@ spec:
       image: nginx:latest
 ```
 
-## Scaffolding new policy project
+## Scaffolding the new policy project
 
-The creation of a new policy project can be done by feeding this
-[template project](https://github.com/kubewarden/rust-policy-template)
-into `cargo generate`.
+You can create a new policy project by using `cargo generate` with the
+[template project](https://github.com/kubewarden/rust-policy-template).
 
-First, install `cargo-generate`. Note, this requires [openssl-devel](https://pkgs.org/download/openssl-devel).
+First, install `cargo-generate`. This requires [openssl-devel](https://pkgs.org/download/openssl-devel).
 
 ```shell
 cargo install cargo-generate
@@ -66,15 +68,38 @@ cargo generate --git https://github.com/kubewarden/rust-policy-template \
                --name demo
 ```
 
-The command will produce the following output:
+The command produces output like:
 
-```
+```console
 🔧   Creating project called `demo`...
-✨   Done! New project created /home/flavio/hacking/kubernetes/kubewarden/demo
+✨   Done! New project created /<some-path-name>/demo
 ```
 
-The new policy project can now be found inside of the `demo` directory.
+This creates the new policy project in the `demo` sub-directory.
 
-Note: if you plan to make use of the GitHub container registry
-functionality in the demo, you will need to
+:::note
+
+If you plan to make use of the GitHub container registry functionality in the demo, you need to
 [enable improved container support](https://docs.github.com/en/packages/working-with-a-github-packages-registry/enabling-improved-container-support-with-the-container-registry#enabling-the-container-registry-for-your-personal-account).
+
+:::
+
+### Testing
+
+You can try:
+
+```console
+cargo test
+```
+
+This tests the generated scaffolding. If everything is correctly in place you'll see a series of compilation messages ending with output like:
+
+```console
+running 4 tests
+test settings::tests::validate_settings ... ok
+test tests::accept_request_with_non_pod_resource ... ok
+test tests::accept_pod_with_valid_name ... ok
+test tests::reject_pod_with_invalid_name ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```

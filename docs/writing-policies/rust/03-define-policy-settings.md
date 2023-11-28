@@ -1,35 +1,35 @@
 ---
-sidebar_label: "Defining Policy Settings"
-title: ""
+sidebar_label: "Defining policy settings"
+title: "Defining policy settings"
+description: Defining policy settings for a Kubewarden policy developed using Rust
+keywords: [kubewarden, kubernetes, writing policies, policy settings, rust]
+doc-type: [tutorial]
+doc-topic: [kubewarden, writing-policies, rust, policy-settings]
+doc-persona: [kubewarden-developer, kubewarden-developer-rust]
 ---
 
-# Defining policy settings
+## The policy settings structure
 
-As a first step we will define the structure that holds the policy settings.
+Firstly, define the structure that holds the policy settings.
 
-Open the `src/settings.rs` file and change the definition of the `Settings`
-struct to look like that:
+Open the `demo/src/settings.rs` file and change the definition of the `Settings`
+`struct` to look like:
 
 ```rust
-use std::collections::HashSet;
-
-#[derive(Deserialize, Default, Debug, Serialize)]
-#[serde(default)]
 pub(crate) struct Settings {
     pub invalid_names: HashSet<String>,
 }
 ```
 
-This will automatically put the list of invalid names inside of
-a Set collection.
+This automatically puts the list of invalid names in a Set collection.
 
-Next we will write a settings validation function: we want to ensure
-the policy is always run with at least one invalid name.
+## The settings validation function
 
-This can be done by changing the implementation of the `Validatable` trait.
+Next, write a settings validation function to make sure the policy is always run with at least one invalid name.
 
-Change the scaffolded implementation defined inside of `src/settings.rs`
-to look like that:
+You do this by changing the implementation of the `Validatable` trait.
+
+Change the scaffolding implementation defined in `src/settings.rs` to look like:
 
 ```rust
 impl kubewarden::settings::Validatable for Settings {
@@ -45,11 +45,11 @@ impl kubewarden::settings::Validatable for Settings {
 
 ## Add unit tests
 
-Now we can write a unit test to ensure the settings validation is actually working.
-This can be done in the [usual Rust way](https://doc.rust-lang.org/stable/book/ch11-00-testing.html).
+Now you can write a unit test to make sure the settings validation is working.
+You can do this in the [usual Rust way](https://doc.rust-lang.org/stable/book/ch11-00-testing.html).
 
-There are already some default tests at the bottom of the `src/settings.rs`
-file. Replace the automatically generated code to look like that:
+There are already a few default tests at the bottom of the `src/settings.rs`
+file. Replace the automatically generated code to look like this:
 
 ```rust
 #[cfg(test)]
@@ -81,22 +81,25 @@ mod tests {
 }
 ```
 
-We can now run the unit tests by doing:
+You can now run the unit tests by doing:
 
-```shell
+```console
 cargo test
 ```
 
-This will produce an output similar to the following one:
+This produces an output similar to the following:
 
-```shell
-  Compiling demo v0.1.0 (/home/flavio/hacking/kubernetes/kubewarden/demo)
-    Finished test [unoptimized + debuginfo] target(s) in 4.19s
-     Running target/debug/deps/demo-24670dd6a538fd72
+```console
+   Compiling demo v0.1.0 (/home/jhk/projects/suse/tmp/demo)
+    Finished test [unoptimized + debuginfo] target(s) in 0.59s
+     Running unittests src/lib.rs (target/debug/deps/demo-bea8e11b21717093)
 
-running 2 tests
+running 5 tests
 test settings::tests::accept_settings_with_a_list_of_invalid_names ... ok
 test settings::tests::reject_settings_without_a_list_of_invalid_names ... ok
+test tests::reject_pod_with_invalid_name ... ok
+test tests::accept_request_with_non_pod_resource ... ok
+test tests::accept_pod_with_valid_name ... ok
 
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
