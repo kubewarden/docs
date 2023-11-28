@@ -42,7 +42,7 @@ helm install --wait --create-namespace \
 
 The `prometheus-operator` deployed as part of this Helm chart defines the concept of [Service
 Monitors](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/design.md#servicemonitor),
- to define which services should be monitored by Prometheus declaratively.
+to define which services should be monitored by Prometheus declaratively.
 
 In our case, we are adding a ServiceMonitor targeting the `kubewarden` namespace for services that
 match labels `app=kubewarden-policy-server-default` and `app.kubernetes.io/name: kubewarden-controller`.
@@ -58,7 +58,7 @@ metadata:
   namespace: kubewarden
 spec:
   endpoints:
-    - interval: 10s 
+    - interval: 10s
       port: metrics
   namespaceSelector:
     matchNames:
@@ -205,10 +205,7 @@ Another option is import it directly from the Grafana.com website. For this:
 
 You should be able to see the dashboard similar to this:
 
-![Dashboard 1](/img/grafana_dashboard_1.png)
-![Dashboard 2](/img/grafana_dashboard_2.png)
-![Dashboard 3](/img/grafana_dashboard_3.png)
-![Dashboard 4](/img/grafana_dashboard_4.png)
+![Dashboard](/img/grafana_dashboard.png)
 
 The Grafana dashboard has panes showing the state of all
 the policies managed by Kubewarden. Plus it has policy-specific panels.
