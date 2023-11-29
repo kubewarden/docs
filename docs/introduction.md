@@ -20,7 +20,7 @@ You can run policies outside of the cluster and as part of your CI/CD processes.
 Kubewarden also provides an audit scanner to
 actively and continuously check policy enforcement over time.
 
-Kubewarden is a [CNCF](https://cncf.io) Sandbox project, first developed by [SUSE Rancher](https://www.rancher.com/).
+Kubewarden is a [CNCF](https://cncf.io) Sandbox project, originally created by [SUSE Rancher](https://www.rancher.com/).
 
 ## What is WebAssembly?
 

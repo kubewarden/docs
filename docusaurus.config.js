@@ -95,7 +95,7 @@ module.exports = {
     footer: {
       style: "dark",
       copyright: `Kubewarden is a <a target="_blank" href="https://cncf.io">CNCF</a> project,
-      first developed by <a target="_blank" href="https://rancher.com">SUSE Rancher</a>.</br>Copyright © ${new Date().getFullYear()} Kubewarden project authors. All rights reserved.`,
+      originally created by <a target="_blank" href="https://rancher.com">SUSE Rancher</a>.</br>Copyright © ${new Date().getFullYear()} Kubewarden project authors. All rights reserved.`,
     },
   },
   presets: [
