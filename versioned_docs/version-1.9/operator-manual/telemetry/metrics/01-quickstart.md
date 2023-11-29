@@ -179,7 +179,7 @@ You can now login with the default username `admin` and password `prom-operator`
 
 The Kubewarden developers made available a Grafana dashboard with some basic metrics
 that give an overview about how Kubewarden behaves inside of cluster. This dashboard
-is available in the Kubewarden repository in a [JSON file](https://raw.githubusercontent.com/kubewarden/policy-server/main/kubewarden-dashboard.json)
+is available in the Kubewarden repository in a [JSON file](https://raw.githubusercontent.com/kubewarden/policy-server/v1.9.0/kubewarden-dashboard.json)
 or in the [Grafana website](https://grafana.com/grafana/dashboards/15314).
 
 To import the dashboard into your environment, you can download the JSON file
