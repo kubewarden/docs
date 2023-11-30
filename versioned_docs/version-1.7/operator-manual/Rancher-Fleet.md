@@ -13,8 +13,8 @@ Fleet Bundles.
 ### Installing
 
 The Kubewarden charts are normal charts, they have dependencies (such as
-`cert-manager`), and depend transitively on each other (`kubewarden-crds` <-
-`kubewarden-controller` <- `kubewarden-defaults`, see the [Quickstart
+`cert-manager`), and depend transitively on each other (`kubewarden-crds` ←
+`kubewarden-controller` ← `kubewarden-defaults`, see the [Quickstart
 docs](https://docs.kubewarden.io/quick-start)).
 
 On Rancher Fleet, one can codify the chart dependencies using
