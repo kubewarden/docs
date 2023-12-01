@@ -15,7 +15,7 @@ keywords:
 ## Skipping namespaces for a specific policy
 
 By default, policies apply to all Namespaces that the `PolicyServer` is configured for.
-If you want for a policy to target only specific namespaces, you can deploy several `AdmissionPolicies` in each Namespace.
+If you want a policy to target only specific namespaces, you can deploy several `AdmissionPolicies` in each Namespace.
 
 Another option is to configure `ClusterAdmissionPolicies` by setting their
 `spec.namespaceSelector` (see [CRD docs](./CRDs#clusteradmissionpolicy)). The
