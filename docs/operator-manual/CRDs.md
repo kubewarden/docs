@@ -12,7 +12,7 @@ From a file generated in the kubewarden/kubewarden-controller repo
 in docs/crds. Make sure to delete the old stuff below this line first!
 
 The generated markdown has the potential to break Docusaurus V3 build.
-Be careful.
+Be careful Does yarn build work locally?
 -->
 # API Reference
 
