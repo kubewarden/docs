@@ -144,6 +144,9 @@ module.exports = {
                 "operator-manual/policy-servers/custom-cas",
                 "operator-manual/policy-servers/private-registry",
               ],
+            },
+            "operator-manual/policies",
+            {
               "Quickstart Guides": [
                 "operator-manual/telemetry/opentelemetry/quickstart",
                 "operator-manual/telemetry/metrics/quickstart",
