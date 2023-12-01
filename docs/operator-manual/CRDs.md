@@ -6,9 +6,14 @@ title: "Custom Resource Definitions (CRD)"
 You can find the definitions for the Kubewarden Custom Resources both on this page and
 [here at docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
 
-<!-- API REFERENCE GOES BELOW.
+<!--
+API REFERENCE GOES BELOW.
 From a file generated in the kubewarden/kubewarden-controller repo
-in docs/crds. Make sure to delete the old stuff below this line first!-->
+in docs/crds. Make sure to delete the old stuff below this line first!
+
+The generated markdown has the potential to break Docusaurus V3 build.
+Be careful.
+-->
 # API Reference
 
 ## Packages

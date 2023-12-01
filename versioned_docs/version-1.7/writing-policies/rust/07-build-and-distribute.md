@@ -30,7 +30,7 @@ target/wasm32-wasi/release/demo.wasm: WebAssembly (wasm) binary module version 0
 ## Distributing the policy
 
 This topic is covered inside of the [distributing
-policies](/distributing-policies.md) section of Kubewarden's
+policies](/distributing-policies) section of Kubewarden's
 documentation.
 
 ## More examples
