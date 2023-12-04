@@ -34,4 +34,4 @@ the official `opa` CLI tool.
 
 In terms of policy execution, you can read more about the [Open Policy
 Agent built-in support that is implemented in
-Kubewarden](../02-builtin-support.md).
+Kubewarden](../builtin-support).

@@ -6,7 +6,7 @@ title: ""
 # Create a new policy
 
 Let's implement the same policy that [we wrote with Open Policy
-Agent](../open-policy-agent/02-create-policy.md): a policy that
+Agent](../open-policy-agent/create-policy): a policy that
 rejects a resource if it's targeting the `default` namespace.
 
 :::note

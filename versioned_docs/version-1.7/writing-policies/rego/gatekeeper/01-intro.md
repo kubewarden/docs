@@ -30,4 +30,4 @@ Policies have to be compiled with the `opa` CLI to the `wasm` target.
 
 In terms of policy execution, you can read more about the [Open Policy
 Agent built-in support that is implemented in
-Kubewarden](../02-builtin-support.md).
+Kubewarden](../builtin-support).
