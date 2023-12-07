@@ -13,33 +13,31 @@ Go's support for WebAssembly is fast evolving.
 This page was last revised in December 2023.
 :::
 
-Currently,
-the official Go compiler can't produce WebAssembly binaries that can run **outside** the browser.
-This [upstream issue](https://github.com/golang/go/issues/31105)
-is tracking the topic.
-<!--TODO: this issue, just above, is closed, what's the current situation?-->
-Due to this,
-it's impossible to use the standard Go compiler to write Kubewarden policies.
+The official Go compiler can produce WebAssembly binaries, for execution outside a browser, since v1.21.
 
 There's another Go compiler that can build WebAssembly binaries usable by Kubewarden.
 This compiler project is [TinyGo](https://tinygo.org/):
 
-> TinyGo brings the Go programming language to embedded systems
-> and to the modern web by creating a new compiler based on LLVM.
+> TinyGo brings the Go programming language to embedded systems and to the modern web by creating a new compiler based on LLVM.
 >
-> You can compile and run TinyGo programs on many different microcontroller
-> boards such as the BBC micro:bit and the Arduino Uno.
+> You can compile and run TinyGo programs on over 94 different microcontroller boards such as the BBC micro:bit and the Arduino Uno.
 >
-> TinyGo can also be used to produce WebAssembly (Wasm) code which is very
-> compact in size.
+> TinyGo can also produce WebAssembly (Wasm) code which is very compact in size.
+> You can compile programs for web browsers,
+> as well as for server and edge computing environments that support the WebAssembly System Interface (WASI) family of interfaces.
 
-## Limitations
+The Kubewarden project currently suggests using TinyGo for two reasons:
 
-TinyGo doesn't yet support all the Go features
-(see [here](https://tinygo.org/lang-support/)
-to see the current project status).
+- binaries are smaller
+- support for [waPC](https://wapc.io) by the ability to export functions to the runtime
+
+## TinyGo limitations
+
+TinyGo doesn't yet support all the Go features,
+see the TinyGo language support [page](https://tinygo.org/lang-support/)
+to see the current project status.
 Currently, its largest limitation is the lack of a fully supported `reflect` package.
-That leads to the inability to compile official Kubernetes Go API types (e.g.: `k8s.io/api/core/v1`).
+This means that official Kubernetes Go API types (e.g.: `k8s.io/api/core/v1`) can't be compiled.
 
 Kubewarden policies need to process JSON data such as policy settings and the request received by Kubernetes.
 
@@ -48,10 +46,10 @@ Despite TinyGo's current limitations, it's still easy to write Kubewarden valida
 ## Tooling
 
 Writing Kubewarden policies requires a version of TinyGo greater than `v0.28.1`.
-<!--TODO: Is 0.28.1 still correct? -->
+However, use the latest version, for the best results.
 
 :::warning
-Using older versions of TinyGo results in runtime errors due to limited support for Go reflection.
+Using older versions of TinyGo results in runtime errors due to the limited support for Go reflection.
 :::
 
 These Go libraries are useful when writing a Kubewarden policy:
@@ -80,7 +78,7 @@ you can use to create Kubewarden Go policies.
 ## Getting TinyGo dependencies
 
 The easiest way to get TinyGo is by using the upstream container images.
-Official releases can be found
+Official releases are
 [here](https://hub.docker.com/r/tinygo/tinygo),
 while builds from the development branch are automatically pushed
 [here](https://hub.docker.com/r/tinygo/tinygo-dev).

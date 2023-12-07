@@ -1,60 +1,59 @@
 ---
-sidebar_label: "GitHub Action Integration"
-title: ""
+sidebar_label: GitHub Actions
+title: Integrating with GitHub Actions
+description: Integrating with GitHub actions when developing policies for Kubewarden in Go.
+keywords: [kubewarden, kubernetes, github, integration]
+doc-type: [tutorial]
+doc-topic: [kubewarden, writing-policies, golang, github-action-integration]
+doc-persona: [kubewarden-developer]
 ---
 
-# Automations
+## Automation
 
-This section describes how we can use GitHub Actions to automate as many tasks
-as possible.
+This section describes how you can use GitHub Actions to automate tasks.
 
-The scaffolded project already includes all the GitHub actions you need.
-These Actions can be found in the `.github/workflows/ci.yml.template` file;
-rename it to `github/workflows.ci/yml` to enable them.
+The project scaffolding already includes all the GitHub actions you need.
+You can find the Actions in the `.github/workflows/ci.yml.template` file;
+rename it to `.github/workflows.ci/yml` to enable them.
 
-The same principles can be adapted to use a different CI system.
+You can adapt these principles to use a different CI system.
 
 ## Testing
 
-Automation of the unit tests and of the end-to-end tests is working out of the
-box thanks to the `unit-tests` and `e2e-tests` jobs defined in
-`.github/workflows/ci.yml.template`.
+Automation of the unit tests and of the end-to-end tests works out of the box.
+It uses the `unit-tests` and `e2e-tests` jobs defined in `.github/workflows/ci.yml.template`.
 
 ## Release
 
-The scaffolded project contains a `release` job in
-`.github/workflows/ci.yml.template`.
+The project scaffolding contains a `release` job in `.github/workflows/ci.yml.template`.
 
 This job performs the following steps:
 
-  * Checkout code
-  * Build the WebAssembly policy
-  * Push the policy to an OCI registry
-  * Eventually create a new GitHub Release
+- Checkout code
+- Build the WebAssembly policy
+- Push the policy to an OCI registry
+- Create a new GitHub Release
 
-To enable the job you need to rename it to `ci.yml` and change the value of the
-`OCI_TARGET` to match your preferences.
+To enable the job, rename it to `ci.yml` and change the value of the `OCI_TARGET` to match your preferences.
 
-The job will act differently based on the commit that triggered its execution.
+The job acts differently based on the commit that triggered its execution.
 
-Regular commits will lead to the creation of an OCI artifact called `<policy-name>:latest`.
-No GitHub Release will be created for these commits.
+Regular commits lead to the creation of an OCI artifact called `<policy-name>:latest`.
+A GitHub release isn't created for these commits.
 
-On the other hand, creating a tag that matches the `v*` pattern, will lead
-to:
+Creating a tag that matches the `v*` pattern leads to:
 
-1. Creation of an OCI artifact called `<policy-name>:<tag>`.
-1. Creation of a GitHub Release named `Release <full tag name>`. The release
-  will include the following assets: the source code of the policy and the WebAssembly
-  binary.
+- Creation of an OCI artifact called `<policy-name>:<tag>`.
+- Creation of a GitHub release named `Release <full tag name>`.
+The release will include the assets; the source code of the policy and the WebAssembly binary.
 
-### A concrete example
+### An example
 
-Let's assume we have a policy named `safe-labels` and we want to publish
-it as `ghcr.io/kubewarden/policies/safe-labels`.
+Assume a policy named `safe-labels` and that it needs
+publishing as `ghcr.io/kubewarden/policies/safe-labels`.
 
 The contents of the `jobs.push-to-oci-registry.env` section of `ci.yml` should
-look like this:
+look like:
 
 ```yaml
 jobs:
@@ -65,11 +64,11 @@ jobs:
       OCI_TARGET: ghcr.io/kubewarden/policies/safe-labels
 ```
 
-Pushing a tag named `v0.1.0` will lead to the creation and publishing of the
+Pushing a tag named `v0.1.0` leads to the creation and publishing of the
 OCI artifact called `ghcr.io/kubewarden/policies/safe-labels:v0.1.0`.
 
-A GitHub Release named `Release v0.1.0` will be created. The release will
-include the following assets:
+A GitHub release named `Release v0.1.0` is created.
+The release includes the following assets:
 
-* Source code compressed as `zip` and `tar.gz`
-* A file named `policy.wasm` that is the actual WebAssembly policy
+- Source code compressed as `zip` and `tar.gz`
+- A file named `policy.wasm`; this is the actual WebAssembly policy

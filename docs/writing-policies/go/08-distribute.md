@@ -1,23 +1,23 @@
 ---
-sidebar_label: "Distributing Policy"
-title: ""
+sidebar_label: Distributing policy
+title: Distributing policy
+description: Distributing Kubewarden policies developed with Go.
+keywords: [at least one]
+doc-type: [one of how-to, explanation, tutorial, reference]
+doc-topic: [root-branch]
+doc-persona: [default]
 ---
 
-# Distribute policy
+It's been a lengthy, an hopefully enjoyable, journey through the Go tutorial,
+congratulations for having made this far 🎉🎉🎉.
 
-Congratulations for having made this far 🎉🎉🎉
+We've created the
+[safe-labels-policy](https://github.com/kubewarden/safe-labels-policy).
 
-We hope you enjoyed the journey!
+There's nothing special to do when it comes to distributing the policy.
+If you followed this guide you have already published your policy using the
+GitHub `release.yml` Action defined in the previous chapter.
 
-In case you haven't realized, we actually created the
-[safe-labels-policy](https://github.com/kubewarden/safe-labels-policy)
-together.
-
-There's nothing special to be done when it comes to distributing the
-policy. If you followed this guide you have already published
-your policy using the GitHub `release.yml` Action defined in the previous
-chapter.
-
-The topic of distributing policies is covered in depth inside of the
+The topic of distributing policies is covered in greater depth in the
 ["distributing policies"](/distributing-policies.md)
 section of Kubewarden's documentation.

@@ -10,10 +10,10 @@ doc-persona: [kubewarden-developer]
 
 This tutorial covers creating a policy that validates the labels of Pod objects.
 
-The policy is to reject all Pods that use one or more labels on the deny list.
+The policy is to reject all Pods that use one or more labels on the deny-list.
 The policy also validates certain labels using a regular expression provided by the user.
 
-To summarize, the policy settings will look like that:
+To summarize, the policy settings should look like this:
 
 ```yaml
 # List of labels that cannot be used
@@ -42,7 +42,7 @@ spec:
       image: nginx:latest
 ```
 
-The policy also rejects the creation of this Pod:
+It also rejects the creation of this Pod:
 
 ```yaml
 apiVersion: v1
@@ -57,7 +57,7 @@ spec:
       image: nginx:latest
 ```
 
-The policy's settings can also be used to force a label to be specified, regardless of content:
+You can use the policy's settings to force using a label specification, regardless of content:
 
 ```yaml
 constrained_labels:
