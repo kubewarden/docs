@@ -66,7 +66,7 @@ See the policy authors [documentation](../../writing-policies/index.md) for more
 
 ## Permissions and ServiceAccounts
 
-The audit scanner in Kubernetes requires specific Role Based Access Control (RBAC) configurations to be able to scan Kubernetes resources and save the results.
+The audit scanner in Kubewarden requires specific Role Based Access Control (RBAC) configurations to be able to scan Kubernetes resources and save the results.
 A correct default Service Account with those permissions is created during the installation.
 The user can create and configure their own ServiceAccount to fine tune access to resources.
 
