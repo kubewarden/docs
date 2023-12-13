@@ -83,9 +83,13 @@ This tutorial uses<br/>`/home/jhk/projects/suse/tmp/go-kw-demo`
 
 Provided the necessary tools are in place a `make test` command uses Docker to pull a TinyGo compiler image using it to build and test the policy template.
 
+The default `make` command builds the `policy.wasm` target. Then `make test` runs the defined Go tests.
+The command `make e2e-tests` runs tests using [bats](https://github.com/bats-core/bats-core) within a Kubewarden cluster.
+After cloning the `go-policy-template`, running these commands checks you have the tools in place for the tutorial.
+
 <details>
 
-<summary>Output from the `make test` command</summary>
+<summary>Output from the `make` commands</summary>
 
 ```console
 make test
@@ -131,6 +135,19 @@ NATIVE: |{"level":"info","message":"rejecting pod object","name":"test-pod","den
 --- PASS: TestRejectionBecauseNameIsDenied (0.00s)
 PASS
 ok      github.com/kubewarden/go-policy-template        0.004s
+```
+
+and
+
+```console
+make e2e-tests
+bats e2e.bats
+e2e.bats
+ ✓ reject because name is on deny list
+ ✓ accept because name is not on the deny list
+ ✓ accept because the deny list is empty
+
+3 tests, 0 failures
 ```
 
 </details>
