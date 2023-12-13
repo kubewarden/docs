@@ -16,7 +16,7 @@ project, almost out of the box.
 The project has chosen this library as:
 
 - It works with WebAssembly binaries.
-Other popular logging solutions can't be built to target WebAssembly.
+Other popular logging solutions can't compile to target WebAssembly.
 - It provides [good performance](https://github.com/francoispqt/onelog#benchmarks).
 - It supports structured logging.
 
@@ -24,10 +24,10 @@ Other popular logging solutions can't be built to target WebAssembly.
 
 You need to initialize a logger structure.
 By performing this initialization in a global variable,
-you can easily log from the two main policy entry points: `validate` and
+you can log from the two main policy entry points: `validate` and
 `validate_settings`.
 
-In the main package, `main.go` there is initalization for the logger:
+In the main package, `main.go` there is initialization for the logger:
 
 ```go
 var (

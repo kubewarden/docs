@@ -93,11 +93,11 @@ func (s *Settings) UnmarshalJSON(data []byte) error {
 
 A Kubewarden policy exposes two different functions that receive the policy settings as input:
 
-- `validate`: This function is called every time a Kubernetes object has to be validated by the policy.
+- `validate`: Use this function when Kubernetes object requires validation by the policy.
 The settings are part of a
 [`ValidationRequest`](https://pkg.go.dev/github.com/kubewarden/policy-sdk-go@v0.2.1/protocol#ValidationRequest)
 object.
-- `validate_settings`: This function is called when the policy is first loaded by Kubewarden.
+- `validate_settings`: Call this function when the policy is first loaded by Kubewarden.
 The function receives the policy settings as input and checks validity.
 
 You need to create a helper function that creates a `Settings` object starting from the JSON payload:
@@ -117,7 +117,7 @@ func NewSettingsFromValidationReq(validationReq *kubewarden_protocol.ValidationR
 :::note
 All the `mapset.Set` objects are created using the
 [thread-unsafe variant](https://pkg.go.dev/github.com/deckarep/golang-set?utm_source=godoc#NewThreadUnsafeSet).
-The WebAssembly code is executed in a single thread, hence there are no concurrency issues.
+The WebAssembly code executes in a single thread, hence there are no concurrency issues.
 
 The WebAssembly standard doesn't cover threads yet.
 See [the official proposal](https://github.com/WebAssembly/threads) for more details.
@@ -149,10 +149,10 @@ func (s *Settings) Valid() (bool, error) {
 ```
 
 The `Valid` method ensures no "denied" label is also part of the "constrained" map.
-The check is simplified by the usage of the `Intersect` method provided by `mapset.Set`.
+Usage of the `Intersect` method provided by `mapset.Set` simplifies the check.
 
 :::note
-The `Valid` method invocation is against an already instantiated `Setting` object.
+The `Valid` method invocation is on an already instantiated `Setting` object.
 This means the validation of the regular expression provided by the user already took place in of the `Settings` unmarshaller.
 :::
 

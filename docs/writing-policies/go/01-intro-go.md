@@ -37,7 +37,7 @@ TinyGo doesn't yet support all the Go features,
 see the TinyGo language support [page](https://tinygo.org/lang-support/)
 to see the current project status.
 Currently, its largest limitation is the lack of a fully supported `reflect` package.
-This means that official Kubernetes Go API types (e.g.: `k8s.io/api/core/v1`) can't be compiled.
+This means that official Kubernetes Go API types (e.g.: `k8s.io/api/core/v1`) don't compile.
 
 Kubewarden policies need to process JSON data such as policy settings and the request received by Kubernetes.
 
@@ -63,7 +63,7 @@ can't be used with TinyGo.
 This module provides all the Kubernetes Types in a TinyGo-friendly way.
 - [gjson](https://github.com/tidwall/gjson):
 This provides a query language for quick navigation of JSON documents and data retrieval.
-This library doesn't use the `encoding/json` package provided by Go's stdlib, hence it's usable with TinyGo.
+This library doesn't use the `encoding/json` package provided by Go's `stdlib`, hence it's usable with TinyGo.
 - [mapset](https://github.com/deckarep/golang-set):
 Provides a Go implementation of the
 [Set](<https://en.wikipedia.org/wiki/Set_(abstract_data_type)>)
@@ -92,7 +92,7 @@ page for more information.
 During this tutorial you need these tools on your development machine:
 
 - docker or another container engine: used to build the WebAssembly policy.
-You will use on the compiler shipped within the official TinyGo container image.
+You'll be using the compiler shipped in the official TinyGo container image.
 - [bats](https://github.com/bats-core/bats-core):
 used to write the tests and automate their execution.
 - [kwctl](https://github.com/kubewarden/kwctl/releases):

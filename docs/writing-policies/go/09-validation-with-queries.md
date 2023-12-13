@@ -12,13 +12,13 @@ An earlier section shows how to write a
 [validation](validation)
 policy by using Go types describing Kubernetes objects.
 
-There is another way to write validation logic;
+There is another way to write validation logic,
 by extracting the relevant data from the JSON document using ad-hoc queries.
 
 This _"jq-like"_ approach can be useful when the policy has to look deep inside a Kubernetes object.
 It's especially helpful when dealing with optional inner objects.
 
-This document reimplements the earlier code using JSON queries instead of unmarshaling the JSON payload into native Go types.
+This document re-implements the earlier code using JSON queries instead of unmarshaling the JSON payload into Go types.
 
 ## The `validate` function
 
@@ -124,7 +124,7 @@ If the query has no results, the loop never takes place.
 1. You use the `validateLabel` function to validate the label and its value, as before.
 You're also adding the labels found in the Pod to a previously defined `mapset.Set`.
 1. If the validation produced an error, you immediately return with a validation rejection reply.
-1. As before, you iterate over the `constrainedLabels` to check all have are specified insthe Pod.
+1. As before, you iterate over the `constrainedLabels` to check all are specified in the Pod.
 The code has been slightly changed to make use of the previously populated `mapset.Set`.
 
 ## Testing the validation code

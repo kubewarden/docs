@@ -15,8 +15,8 @@ During this tutorial you've recreated the
 [safe-labels-policy](https://github.com/kubewarden/safe-labels-policy).
 
 There's nothing special to do when it comes to distributing a policy.
-If you followed this guide you have already published your policy using the
-GitHub `release.yml` Action defined in the previous chapter.
+If you followed this guide, you have already published your policy using the
+GitHub `release.yml` Action defined in the last chapter.
 
 The topic of distributing policies is covered in greater depth in the
 ["distributing policies"](/distributing-policies.md)

@@ -425,7 +425,7 @@ Here you iterate over each label to check that it's not denied
 and that it doesn't violate one of the constraints specified by the user.
 However, you're not making sure that the Pod has all the labels specified in `Settings.ConstrainedLabels`.
 
-Add some new code, right after the `for` loop:
+Add the new code, right after the `for` loop:
 
 ```go
 for requiredLabel := range settings.ConstrainedLabels {

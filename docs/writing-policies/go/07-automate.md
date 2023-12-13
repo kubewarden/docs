@@ -25,13 +25,13 @@ It uses the `unit-tests` and `e2e-tests` jobs defined in `.github/workflows/ci.y
 
 ## Release
 
-The project scaffolding contains a `release` job in `.github/workflows/ci.yml.template`.
+The project scaffolding has a `release` job in `.github/workflows/ci.yml.template`.
 
 This job performs the following steps:
 
 - Checkout code
 - Build the WebAssembly policy
-- Push the policy to an OCI registry
+- Push the policy to an Open Container Initiative (OCI) registry
 - Create a new GitHub Release
 
 To enable the job, rename it to `ci.yml` and change the value of the `OCI_TARGET` to match your preferences.
@@ -67,7 +67,7 @@ jobs:
 Pushing a tag named `v0.1.0` leads to the creation and publishing of the
 OCI artifact called `ghcr.io/kubewarden/policies/safe-labels:v0.1.0`.
 
-A GitHub release named `Release v0.1.0` is created.
+It creates a GitHub release named `Release v0.1.0`.
 The release includes the following assets:
 
 - Source code compressed as `zip` and `tar.gz`
