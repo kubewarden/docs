@@ -13,8 +13,8 @@ doc-persona: [kubewarden-developer]
 This section describes how you can use GitHub Actions to automate tasks.
 
 The project scaffolding already includes all the GitHub actions you need.
-You can find the Actions in the `.github/workflows/ci.yml.template` file;
-rename it to `.github/workflows.ci/yml` to enable them.
+You can find the Actions in the `.github/workflows/ci.yml.template` file.
+Rename it to `.github/workflows.ci/yml` to enable them.
 
 You can adapt these principles to use a different CI system.
 
@@ -45,7 +45,7 @@ Creating a tag that matches the `v*` pattern leads to:
 
 - Creation of an OCI artifact called `<policy-name>:<tag>`.
 - Creation of a GitHub release named `Release <full tag name>`.
-The release will include the assets; the source code of the policy and the WebAssembly binary.
+The release includes the assets, the source code of the policy, and the WebAssembly binary.
 
 ### An example
 

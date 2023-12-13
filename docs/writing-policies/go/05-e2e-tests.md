@@ -13,7 +13,7 @@ This section shows how you can write end-to-end tests running against the actual
 
 ## Prerequisites
 
-You need these tools on your development machine:
+Recall, you need these tools on your development machine:
 
 - docker or another container engine: used to build the WebAssembly policy.
 You will use on the compiler shipped within the official TinyGo container image.
@@ -33,9 +33,10 @@ Each test has the following steps:
 1. Run the policy using `kwctl`.
 1. Perform assertions against the output produced by the `kwctl`.
 
-All the end-to-end tests are in a file called `e2e.bats`.
-The project scaffolding project already includes such a file.
+All the end-to-end tests go in a file called `e2e.bats`.
+The project scaffolding project already includes an example `e2e.bats`.
 You need to change its contents to reflect how your policy behaves.
+You can remove the contents from the scaffolding file and replace them with the contents below as you work through this tutorial.
 
 For the end-to-end tests, you use the same test fixtures files you used in the Go unit tests.
 
@@ -187,7 +188,7 @@ You can do this with the following tests:
 
 ## Conclusion
 
-You now have a good level of coverage, you can run all the end-to-end tests:
+The eight end-to-end tests now give a good level of coverage, you can run them all:
 
 ```shell
 $ make e2e-tests

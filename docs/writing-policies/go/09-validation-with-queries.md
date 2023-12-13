@@ -129,13 +129,11 @@ The code has been slightly changed to make use of the previously populated `maps
 
 ## Testing the validation code
 
-The unit tests don't need any change, you can run them as before:
+The unit tests and the end-to-end tests don't need any change, you can run them as before:
 
 ```console
 make test
 ```
-
-All are working as expected:
 
 ```console
 go test -v
@@ -155,16 +153,9 @@ PASS
 ok      github.com/kubewarden/go-policy-template    0.002s
 ```
 
-## End-to-end tests
-
-End-to-end test need no changes.
-Run them to check they're still correct:
-
 ```console
 make e2e-tests
 ```
-
-This is the output:
 
 ```console
 bats e2e.bats

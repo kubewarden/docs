@@ -8,13 +8,13 @@ doc-topic: [root-branch]
 doc-persona: [default]
 ---
 
-It's been a lengthy, an hopefully enjoyable, journey through the Go tutorial,
-congratulations for having made this far 🎉🎉🎉.
+It's been a lengthy, and hopefully enjoyable, wander through the Go tutorial,
+congratulations for having made it this far 🎉.
 
-We've created the
+During this tutorial you've recreated the
 [safe-labels-policy](https://github.com/kubewarden/safe-labels-policy).
 
-There's nothing special to do when it comes to distributing the policy.
+There's nothing special to do when it comes to distributing a policy.
 If you followed this guide you have already published your policy using the
 GitHub `release.yml` Action defined in the previous chapter.
 

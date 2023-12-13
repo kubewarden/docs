@@ -42,7 +42,8 @@ and validates that:
 - `action` is in the list of valid actions
 - `resource` is in the list of valid resources
 
-Start by scaffolding the policy by using the [go policy template](https://github.com/kubewarden/go-policy-template).
+Start by scaffolding the policy by using the
+[go policy template](https://github.com/kubewarden/go-policy-template).
 
 Firstly, define the types that represent the payload of the request.
 
@@ -115,7 +116,7 @@ func validateSettings(payload []byte) ([]byte, error) {
 }
 ```
 
-Finally, we define the `validate` function:
+Finally, you define the `validate` function:
 
 ```go
 func validate(payload []byte) ([]byte, error) {
@@ -147,7 +148,7 @@ func validate(payload []byte) ([]byte, error) {
 
 ### Mutation
 
-You need to modify the earlier example to mutate the request instead of rejecting it.
+You need to change the earlier example to mutate the request instead of rejecting it.
 The settings should contain the `defaultUser`, `defaultAction` and `defaultRequest`
 to use to mutate the request if the user, the action or the resource isn't valid.
 

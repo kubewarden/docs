@@ -9,22 +9,22 @@ doc-topic: [kubewarden, writing-policies, golang, validation-logic]
 doc-persona: [kubewarden-developer]
 ---
 
-The validation logic will be in the `validate.go` file.
+The validation logic goes be in the `validate.go` file.
 
 Your validation logic needs to:
 
-- extract the relevant information from the incoming `payload` object
-- return a response based on the input and the policy settings.
+- Extract the relevant information from the incoming `payload` object.
+- Return a response based on the input and the policy settings.
 
 The incoming payload is a JSON object, described
 [in this document](../spec/validating-policies),
 and you can get the data from it in two ways:
 
-1. Unmarshal the JSON data into Go types
-1. Perform JSON queries (something similar to [`jq`](https://stedolan.github.io/jq/))
+1. Unmarshal the JSON data into Go types.
+1. Perform JSON queries (something similar to [`jq`](https://stedolan.github.io/jq/)).
 
-This section of the documentation focuses on the first approach, Go types.
-The second approach is described in [a later section](validation-with-queries).
+This section of the documentation focuses on the first approach, using Go types.
+A description of the second approach is in a later [validation with queries](validation-with-queries) section.
 
 :::note
 
@@ -38,16 +38,16 @@ Apart from size,
 the policy using Kubernetes objects take much more time during first execution.
 Following invocations are fast because Kubewarden uses Wasmtime's cache feature.
 The first execution can take about 20 seconds with `kwctl`, later executions, 1 to 2 seconds.
-So, Kubewarden Policy Server has a slower start-up time but then policy evaluation times aren't generally affected by the usage of Kubernetes objects.
+So, Kubewarden Policy Server has a slower start-up time but then policy evaluation times aren't usually effected by the usage of Kubernetes objects.
 
 :::
 
 ## The `validate` function
 
-The policy provided by the scaffold template policy already has a `validate` function.
-You need to make few changes to it.
+The policy provided by the scaffold template, in `validate.go`, already has a `validate` function.
+You need to make few changes to it for this tutorial.
 
-This is how the function should be:
+This is how the function should be when complete:
 
 ```go
 func validate(payload []byte) ([]byte, error) {
@@ -117,7 +117,7 @@ The code has `NOTE` sections:
 1. Iterate over the labels of the Pod.
 You use a new function called `validateLabel` to identify labels violating the policy.
 
-You define the `validateLabel` function at the bottom of the `validate.go` file:
+You also need to define the `validateLabel` function in the `validate.go` file:
 
 ```go
 func validateLabel(label, value string, settings *Settings) error {
@@ -343,7 +343,12 @@ This produces the following output:
 <summary>Output from `make test`</summary>
 
 ```shell
+make test
 go test -v
+=== RUN   TestParsingSettingsWithNoValueProvided
+--- PASS: TestParsingSettingsWithNoValueProvided (0.00s)
+=== RUN   TestIsNameDenied
+--- PASS: TestIsNameDenied (0.00s)
 === RUN   TestParseValidSettings
 --- PASS: TestParseValidSettings (0.00s)
 === RUN   TestParseSettingsWithInvalidRegexp
@@ -355,13 +360,19 @@ go test -v
 === RUN   TestDetectNotValidSettingsDueToConflictingLabels
 --- PASS: TestDetectNotValidSettingsDueToConflictingLabels (0.00s)
 === RUN   TestValidateLabel
-NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}|
-NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}|
-NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}|
-NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}|
-NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}|
-NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}|
-    validate_test.go:134: Unexpected acceptance with pod labels: map[owner:team-kubewarden], denied labels: Set{hello}, constrained labels: map[cc-center:team-\d+]
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+    validate_test.go:126: Unexpected acceptance with pod labels: map[owner:team-kubewarden], denied labels: Set{hello}, constrained labels: map[cc-center:team-\d+]
 --- FAIL: TestValidateLabel (0.00s)
 FAIL
 exit status 1
@@ -375,7 +386,7 @@ As you can see all the `Settings` tests are passing, but there's one test case o
 `TestValidateLabel` that isn't:
 
 ```console
-validate_test.go:134: Unexpected acceptance with pod labels: map[owner:team-kubewarden], denied labels: Set{hello}, constrained labels: map[cc-center:team-\d+]
+validate_test.go:126: Unexpected acceptance with pod labels: map[owner:team-kubewarden], denied labels: Set{hello}, constrained labels: map[cc-center:team-\d+]
 ```
 
 In this scenario, your policy settings says that Pods must have a label,
@@ -396,7 +407,7 @@ in that context the `logger` statements emit OpenTelemetry events instead.
 
 ### Fix the broken unit test
 
-To fix the broken test you discovered you have to make a change in your validation function.
+To fix the broken test you discovered you have to make a change in your validation function, `validate` in `validate.go`.
 
 Currently, the core of your validation logic is the following lines:
 
@@ -442,7 +453,12 @@ This outputs:
 <summary>Output from final `make test`</summary>
 
 ```console
+make test
 go test -v
+=== RUN   TestParsingSettingsWithNoValueProvided
+--- PASS: TestParsingSettingsWithNoValueProvided (0.00s)
+=== RUN   TestIsNameDenied
+--- PASS: TestIsNameDenied (0.00s)
 === RUN   TestParseValidSettings
 --- PASS: TestParseValidSettings (0.00s)
 === RUN   TestParseSettingsWithInvalidRegexp
@@ -454,12 +470,18 @@ go test -v
 === RUN   TestDetectNotValidSettingsDueToConflictingLabels
 --- PASS: TestDetectNotValidSettingsDueToConflictingLabels (0.00s)
 === RUN   TestValidateLabel
-NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}|
-NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}|
-NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}|
-NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}|
-NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}|
-NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}|
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
 --- PASS: TestValidateLabel (0.00s)
 PASS
 ok      github.com/kubewarden/go-policy-template        0.003s
@@ -468,4 +490,4 @@ ok      github.com/kubewarden/go-policy-template        0.003s
 </details>
 
 As you can see, this time all the tests pass.
-You can now move to the next step, write end-to-end tests.
+You can now move to the next step, writing the end-to-end tests.

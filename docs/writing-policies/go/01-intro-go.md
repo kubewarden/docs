@@ -83,6 +83,18 @@ Official releases are
 while builds from the development branch are automatically pushed
 [here](https://hub.docker.com/r/tinygo/tinygo-dev).
 
-If needed, checkout TinyGo's
+If needed, try TinyGo's
 [getting started](https://tinygo.org/getting-started/)
 page for more information.
+
+## Tutorial prerequisites
+
+During this tutorial you need these tools on your development machine:
+
+- docker or another container engine: used to build the WebAssembly policy.
+You will use on the compiler shipped within the official TinyGo container image.
+- [bats](https://github.com/bats-core/bats-core):
+used to write the tests and automate their execution.
+- [kwctl](https://github.com/kubewarden/kwctl/releases):
+CLI tool provided by Kubewarden to run its policies outside of Kubernetes, among other actions.
+It's covered in [this section](/testing-policies/01-intro.md) of the documentation.

@@ -26,7 +26,8 @@ You need to initialize a logger structure.
 By performing this initialization in a global variable,
 you can easily log from the two main policy entry points: `validate` and
 `validate_settings`.
-Initialize this structure in your main package:
+
+In the main package, `main.go` there is initalization for the logger:
 
 ```go
 var (
@@ -50,7 +51,7 @@ func validate(payload []byte) ([]byte, error) {
 }
 ```
 
-Add some structured logging:
+You can add structured logging:
 
 ```go
 func validate(payload []byte) ([]byte, error) {
@@ -67,8 +68,8 @@ You can refer to the
 [`onelog` documentation](https://pkg.go.dev/github.com/francoispqt/onelog?utm_source=godoc)
 for more information.
 
-Policy logging is sent to the policy evaluator
+Policy logging goes to the policy evaluator
 (for example, `kwctl` or `policy-server`),
 and they log on behalf of the policy.
-They'll use mechanisms that are interoperable with other components that enable distributed tracing such as
+They use mechanisms that are interoperable with other components that enable distributed tracing such as
 [Jaeger](https://www.jaegertracing.io/).

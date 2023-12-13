@@ -1,6 +1,6 @@
 ---
 sidebar_label: Defining policy settings
-title: defining policy settings
+title: Defining policy settings
 description: Defining policy setting for a Kubewarden policy written in Go.
 keywords: [kubewarden, kubernetes, defining policy settings, Go]
 doc-type: [tutorial]
@@ -10,7 +10,12 @@ doc-persona: [kubewarden-developer]
 
 Firstly, you need to define the structure that holds the policy settings.
 
-You do that by adding this code in the `settings.go` file:
+You do this by modifying the code in the `settings.go` file (from your local version of the Go policy template).
+You need to add two extra lines to the `import` section,
+change the `Settings` structure,
+and add the `RegularExpression` structure.
+
+It should match the following code:
 
 ```go
 import (
@@ -22,9 +27,9 @@ import (
     kubewarden "github.com/kubewarden/policy-sdk-go"
     kubewarden_protocol "github.com/kubewarden/policy-sdk-go/protocol"
 )
-
 type Settings struct {
-    DeniedLabels      mapset.Set[string]        `json:"denied_labels"`
+    DeniedNames       []string                      `json:"denied_names"`
+    DeniedLabels      mapset.Set[string]            `json:"denied_labels"`
     ConstrainedLabels map[string]*RegularExpression `json:"constrained_labels"`
 }
 
@@ -347,7 +352,7 @@ func TestDetectNotValidSettingsDueToConflictingLabels(t *testing.T) {
 }
 ```
 
-Now you can run the test by using the following command:
+Now you can run the tests that you have defined so far by using the following command:
 
 ```shell
 go test -v settings.go settings_test.go
@@ -370,4 +375,4 @@ PASS
 ok      command-line-arguments    0.002s
 ```
 
-You can now move to implement the actual validation code.
+You can now implement the actual validation code in the next section.

@@ -76,3 +76,61 @@ Clone the repository locally and set the `module` directive in the `go.mod` file
 ```go
 module <path to your repository>
 ```
+
+This tutorial uses<br/>`/home/jhk/projects/suse/tmp/go-kw-demo`
+
+## Testing
+
+Provided the necessary tools are in place a `make test` command uses Docker to pull a TinyGo compiler image using it to build and test the policy template.
+
+<details>
+
+<summary>Output from the `make test` command</summary>
+
+```console
+make test
+docker run \
+        --rm \
+        -e GOFLAGS="-buildvcs=false" \
+        -v /home/jhk/projects/suse/tmp/go-kw-demo:/src \
+        -w /src tinygo/tinygo:0.30.0 \
+        tinygo build -o policy.wasm -target=wasi -no-debug .
+Unable to find image 'tinygo/tinygo:0.30.0' locally
+0.30.0: Pulling from tinygo/tinygo
+9aaefb8797c4: Pull complete
+24ab7ca26e01: Pull complete
+ca4ea8be6361: Pull complete
+50380d0859d2: Pull complete
+4f4fb700ef54: Pull complete
+ea0ddd497f04: Pull complete
+01ba28116afb: Pull complete
+Digest: sha256:5cbf5e50aec3a00fcff8bb4ae070a07eea8198187a97b21dff6d873d2274ce7a
+Status: Downloaded newer image for tinygo/tinygo:0.30.0
+go test -v
+=== RUN   TestParsingSettingsWithNoValueProvided
+--- PASS: TestParsingSettingsWithNoValueProvided (0.00s)
+=== RUN   TestIsNameDenied
+--- PASS: TestIsNameDenied (0.00s)
+=== RUN   TestEmptySettingsLeadsToApproval
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+--- PASS: TestEmptySettingsLeadsToApproval (0.00s)
+=== RUN   TestApproval
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+--- PASS: TestApproval (0.00s)
+=== RUN   TestApproveFixture
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+--- PASS: TestApproveFixture (0.00s)
+=== RUN   TestRejectionBecauseNameIsDenied
+NATIVE: |{"level":"debug","message":"validating pod object","name":"test-pod","namespace":"default"}
+|
+NATIVE: |{"level":"info","message":"rejecting pod object","name":"test-pod","denied_names":"foo,test-pod"}
+|
+--- PASS: TestRejectionBecauseNameIsDenied (0.00s)
+PASS
+ok      github.com/kubewarden/go-policy-template        0.004s
+```
+
+</details>
