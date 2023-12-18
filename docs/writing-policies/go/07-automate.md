@@ -13,19 +13,18 @@ doc-persona: [kubewarden-developer]
 This section describes how you can use GitHub Actions to automate tasks.
 
 The project scaffolding already includes all the GitHub actions you need.
-You can find the Actions in the `.github/workflows/ci.yml.template` file.
-Rename it to `.github/workflows.ci/yml` to enable them.
+You can find the Actions in the `.github/workflows/test.yml` and `.github/workflows/release.yml` files.
 
 You can adapt these principles to use a different CI system.
 
 ## Testing
 
 Automation of the unit tests and of the end-to-end tests works out of the box.
-It uses the `unit-tests` and `e2e-tests` jobs defined in `.github/workflows/ci.yml.template`.
+It uses the jobs defined in `.github/workflows/test.yml`.
 
 ## Release
 
-The project scaffolding has a `release` job in `.github/workflows/ci.yml.template`.
+The project scaffolding has a `release` job in `.github/workflows/release.yml`.
 
 This job performs the following steps:
 
@@ -34,7 +33,7 @@ This job performs the following steps:
 - Push the policy to an Open Container Initiative (OCI) registry
 - Create a new GitHub Release
 
-To enable the job, rename it to `ci.yml` and change the value of the `OCI_TARGET` to match your preferences.
+To enable the job, adjust the `oci-target` action in `release.yml`.
 
 The job acts differently based on the commit that triggered its execution.
 

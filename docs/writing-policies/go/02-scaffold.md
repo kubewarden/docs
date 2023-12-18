@@ -77,7 +77,9 @@ Clone the repository locally and set the `module` directive in the `go.mod` file
 module <path to your repository>
 ```
 
-This tutorial uses<br/>`/home/jhk/projects/suse/tmp/go-kw-demo`
+:::note
+A real policy would use a repository path, like `github.com/kubewarden/go-policy-template`.
+:::
 
 ## Testing
 

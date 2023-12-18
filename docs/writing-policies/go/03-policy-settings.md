@@ -27,6 +27,7 @@ import (
     kubewarden "github.com/kubewarden/policy-sdk-go"
     kubewarden_protocol "github.com/kubewarden/policy-sdk-go/protocol"
 )
+
 type Settings struct {
     DeniedNames       []string                      `json:"denied_names"`
     DeniedLabels      mapset.Set[string]            `json:"denied_labels"`
