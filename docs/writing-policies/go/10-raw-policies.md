@@ -87,7 +87,7 @@ Make sure everything is in place with a `make`, `make test` and `make e2e-tests`
 
 Firstly, define the types representing the payload of the request.
 
-You need to declare a custom `RawValidationRequest` type,
+You need to declare a custom `RawValidationRequest` type (`in settings.go`),
 containing the `Request` and the `Settings`,
 instead of using the `ValidationRequest` type provided by the SDK:
 
@@ -107,14 +107,14 @@ type Request struct {
 }
 ```
 
-Then you need to define the `Settings` type and the `validateSettings` function:
+Then you need to define the `Settings` type and the `validateSettings` function (in `settings.go`):
 
 ```go
 // Settings represents the settings of the policy.
 type Settings struct {
-    ValidUsers     []string `json:"validUsers"`
-    ValidActions   []string `json:"validActions"`
-    ValidResources []string `json:"validResources"`
+	ValidUsers     []string `json:"validUsers"`
+	ValidActions   []string `json:"validActions"`
+	ValidResources []string `json:"validResources"`
 }
 
 // Valid returns true if the settings are valid.
@@ -157,7 +157,7 @@ func validateSettings(payload []byte) ([]byte, error) {
 }
 ```
 
-Finally, you define the `validate` function:
+Finally, you replace the `validate` function (in `validate.go`):
 
 ```go
 func validate(payload []byte) ([]byte, error) {
