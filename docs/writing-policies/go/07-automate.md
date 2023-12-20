@@ -33,7 +33,7 @@ This job performs the following steps:
 - Push the policy to an Open Container Initiative (OCI) registry
 - Create a new GitHub Release
 
-To enable the job, adjust the `oci-target` action in `release.yml`.
+To enable the job, adjust the `oci-target` action input for the reusable workflow (`reusable-release-policy-go.yml`) called in the `release.yml` file.
 
 The job acts differently based on the commit that triggered its execution.
 

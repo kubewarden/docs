@@ -87,8 +87,8 @@ Make sure everything is in place with a `make`, `make test` and `make e2e-tests`
 
 Firstly, define the types representing the payload of the request.
 
-You need to declare a custom `RawValidationRequest` type (`in settings.go`),
-containing the `Request` and the `Settings`,
+You need to declare a custom `RawValidationRequest` type (create a file `request.go`),
+containing the `RawValidationRequest` and the `Settings` structures,
 instead of using the `ValidationRequest` type provided by the SDK:
 
 ```go
@@ -107,7 +107,11 @@ type Request struct {
 }
 ```
 
-Then you need to define the `Settings` type and the `validateSettings` function (in `settings.go`):
+Then you need to define the `Settings` type and the `Valid` and `validateSettings` functions in `settings.go`:
+
+<details>
+
+<summary>The `Settings` structure and the `Valid` and `validateSettings` functions in `settings.go`.</summary>
 
 ```go
 // Settings represents the settings of the policy.
@@ -157,7 +161,13 @@ func validateSettings(payload []byte) ([]byte, error) {
 }
 ```
 
+</details>
+
 Finally, you replace the `validate` function (in `validate.go`):
+
+<details>
+
+<summary>The `validate` function in `validate.go`.</summary>
 
 ```go
 func validate(payload []byte) ([]byte, error) {
@@ -186,6 +196,70 @@ func validate(payload []byte) ([]byte, error) {
         kubewarden.Code(400))
 }
 ```
+
+</details>
+
+You can set up a test in `e2e.bats`:
+
+<details>
+
+<summary>`e2e.bats`</summary>
+
+```bash
+#!/usr/bin/env bats
+
+@test "accept" {
+  run kwctl run annotated-policy.wasm -r test_data/request.json -s test_data/settings.json
+
+  # this prints the output when one the checks below fails
+  echo "output = ${output}"
+
+  # request allowed
+  [ "$status" -eq 0 ]
+  [ $(expr "$output" : '.*allowed.*true') -ne 0 ]
+}
+```
+
+</details>
+
+Then the outputs of `make`, `make test` and `make e2e` are:
+
+<details>
+
+<summary>Outputs</summary>
+
+```console
+make && make test && make e2e-tests
+docker run \
+	--rm \
+	-e GOFLAGS="-buildvcs=false" \
+	-v /home/jhk/projects/suse/tmp/fab-goraw:/src \
+	-w /src tinygo/tinygo:0.30.0 \
+	tinygo build -o policy.wasm -target=wasi -no-debug .
+go test -v
+=== RUN   TestAcceptValidSettings
+--- PASS: TestAcceptValidSettings (0.00s)
+=== RUN   TestRejectSettingsWithEmptyValidUsers
+--- PASS: TestRejectSettingsWithEmptyValidUsers (0.00s)
+=== RUN   TestRejectSettingsWithEmptyValidActions
+--- PASS: TestRejectSettingsWithEmptyValidActions (0.00s)
+=== RUN   TestRejectSettingsWithEmptyValidResources
+--- PASS: TestRejectSettingsWithEmptyValidResources (0.00s)
+=== RUN   TestValidateRequestAccept
+--- PASS: TestValidateRequestAccept (0.00s)
+=== RUN   TestValidateRequestReject
+--- PASS: TestValidateRequestReject (0.00s)
+PASS
+ok  	github.com/kubewarden/go-policy-template	0.002s
+kwctl annotate -m metadata.yml -u README.md -o annotated-policy.wasm policy.wasm
+bats e2e.bats
+e2e.bats
+ ✓ accept
+
+1 test, 0 failures
+```
+
+</details>
 
 ### Mutation
 
