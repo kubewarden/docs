@@ -58,7 +58,7 @@ Starting from the 1.21 release, the official Go compiler is able to produce WebA
 However, these modules can't yet export functions to the WebAssembly runtime.
 This limitation, tracked by [this dedicated issue](https://github.com/golang/go/issues/42372), prevents the adoption of the waPC protocol.
 
-The Kubewarden project team advise that you write Kubewarden Go policies using the TinyGo compiler, as described [here](../go/01-intro-go.md).
+The Kubewarden project team advise that you write Kubewarden Go policies using the TinyGo compiler, as described [here](../go/intro-go.md).
 
 However, certain complex Go code bases can't be compiled using the TinyGo compiler.
 This includes, for example, code bases like [CEL-go](https://github.com/google/cel-go) or [kyverno](https://github.com/kyverno/kyverno/).

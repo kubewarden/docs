@@ -279,7 +279,7 @@ The request will be mutated and the response will contain a JSONPatch:
 Similarly to policies that validate Kubernetes resources, raw policies are written in WebAssembly using Kubewarden SDKs.
 If you are interested in writing raw policies, please refer to language-specific documentation for more information:
 
-- [Go](../writing-policies/go/10-raw-policies.md)
+- [Go](../writing-policies/go/raw-policies.md)
 - [Rust](../writing-policies/rust/08-raw-policies.md)
 - [OPA](../writing-policies/rego/open-policy-agent/05-raw-policies.md)
 - [WASI](../writing-policies/wasi/02-raw-policies.md)
