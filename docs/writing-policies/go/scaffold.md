@@ -1,5 +1,6 @@
 ---
 sidebar_label: New validation policy
+sidebar_position: 020
 title: Creating a new validation policy
 description: Creating a new validation policy for Kubewarden using Go.
 keywords: [kubewarden, kubernetes, writing policies in Go, new validation policy]

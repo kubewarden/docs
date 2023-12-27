@@ -1,5 +1,6 @@
 ---
 sidebar_label: Defining policy settings
+sidebar_position: 030
 title: Defining policy settings
 description: Defining policy setting for a Kubewarden policy written in Go.
 keywords: [kubewarden, kubernetes, defining policy settings, Go]

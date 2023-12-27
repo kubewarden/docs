@@ -1,5 +1,6 @@
 ---
 sidebar_label: GitHub Actions
+sidebar_position: 070
 title: Integrating with GitHub Actions
 description: Integrating with GitHub actions when developing policies for Kubewarden in Go.
 keywords: [kubewarden, kubernetes, github, integration]

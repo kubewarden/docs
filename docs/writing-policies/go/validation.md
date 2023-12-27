@@ -1,6 +1,6 @@
 ---
 sidebar_label: Validation logic
-sidebar_position: 00001
+sidebar_position: 040
 title: Writing the validation logic
 description: A tutorial on writing validation logic for a Kubewarden policy using Go.
 keywords: [kubewarden, kubernetes, writing policies, golang, go]

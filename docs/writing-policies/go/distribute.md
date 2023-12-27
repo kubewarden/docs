@@ -1,5 +1,6 @@
 ---
 sidebar_label: Distributing policy
+sidebar_position: 080
 title: Distributing policy
 description: Distributing Kubewarden policies developed with Go.
 keywords: [at least one]

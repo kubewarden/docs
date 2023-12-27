@@ -1,5 +1,6 @@
 ---
 sidebar_label: Writing policies in Go
+sidebar_position: 010
 title: Writing policies in Go
 description: A tutorial introduction to writing policies in Go.
 keywords: [kubewarden, kubernetes, writing policies in Go]

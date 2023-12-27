@@ -1,5 +1,6 @@
 ---
 sidebar_label: Logging
+sidebar_position: 060
 title: Logging
 description: A tutorial introduction to logging when using Go to write a Kubewarden policy.
 keywords: [kubewarden, kubernetes, writing policies, golang, go, logging]

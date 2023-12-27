@@ -1,5 +1,6 @@
 ---
 sidebar_label: Raw policies
+sidebar_position: 100
 title: Writing raw policies
 description: Writing raw Kubewarden policies using Go.
 keywords: [kubewarden, kubernetes, writing policies, raw, go]
@@ -13,7 +14,7 @@ For more information about raw policies, please refer to the [raw policies](../.
 
 ## Examples
 
-The following examples should look familiar if you completed the [validation](04-validation.md) section of this tutorial.
+The following examples should look familiar if you completed the [validation](validation.md) section of this tutorial.
 
 :::note
 

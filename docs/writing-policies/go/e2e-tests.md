@@ -1,5 +1,6 @@
 ---
 sidebar_label: End-to-end testing
+sidebar_position: 050
 title: End-to-end testing
 description: A tutorial introduction to end-to-end testing for writing Kubewarden policies in the Go language.
 keywords: [kubewarden, kubernetes, writing policies, end-to-end testing, golang, go]

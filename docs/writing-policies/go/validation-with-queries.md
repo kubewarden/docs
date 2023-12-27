@@ -1,5 +1,6 @@
 ---
 sidebar_label: Validation using JSON queries
+sidebar_position: 090
 title: Validation using JSON queries
 description: Validation using JSON queries with Kubewarden policies in Go.
 keywords: [kubewarden, kubernetes, validation using JSON queries]
