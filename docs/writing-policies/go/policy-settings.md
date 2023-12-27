@@ -30,7 +30,6 @@ import (
 )
 
 type Settings struct {
-    DeniedNames       []string                      `json:"denied_names"`
     DeniedLabels      mapset.Set[string]            `json:"denied_labels"`
     ConstrainedLabels map[string]*RegularExpression `json:"constrained_labels"`
 }
@@ -39,6 +38,13 @@ type RegularExpression struct {
     *regexp.Regexp
 }
 ```
+
+:::note
+`DeniedNames` is no longer required in the `Settings` structure defined in `settings.go`.
+
+As `DeniedNames` is no longer defined, you should also delete the function `IsNameDefined` in `settings.go`.
+You should also remove the function that references it in `settings_test.go`, `TestIsNameDenied`.
+:::
 
 You're using the `regexp` package to handle regular expression objects and the
 [`mapset.Set`](https://github.com/deckarep/golang-set) type to store
