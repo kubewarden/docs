@@ -3,10 +3,10 @@ sidebar_label: Distributing policy
 sidebar_position: 080
 title: Distributing policy
 description: Distributing Kubewarden policies developed with Go.
-keywords: [at least one]
-doc-type: [one of how-to, explanation, tutorial, reference]
-doc-topic: [root-branch]
-doc-persona: [default]
+keywords: [kubewarden, kubernetes, distributing kubewarden policies]
+doc-type: [tutorial]
+doc-topic: [kubewarden, writing-policies, go, distributing-policies]
+doc-persona: [kubewarden-developer, kubewarden-operator]
 ---
 
 It's been a lengthy, and hopefully enjoyable, wander through the Go tutorial,
