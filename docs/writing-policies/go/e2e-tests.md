@@ -1,44 +1,47 @@
 ---
-sidebar_label: "End-to-end testing"
-title: ""
+sidebar_label: End-to-end testing
+sidebar_position: 050
+title: End-to-end testing
+description: A tutorial introduction to end-to-end testing for writing Kubewarden policies in the Go language.
+keywords: [kubewarden, kubernetes, writing policies, end-to-end testing, golang, go]
+doc-type: [tutorial]
+doc-topic: [kubewarden, writing-policies, golang, end-to-end-testing]
+doc-persona: [kubewarden-developer]
 ---
 
-# End-to-end testing
-
-So far we have tested the policy using a set of Go unit tests. This section shows
-how we can write end-to-end tests that run against the actual WebAssembly
-binary produced by TinyGo.
+So far, you have tested the policy using a set of Go unit tests.
+This section shows how you can write end-to-end tests running against the actual WebAssembly binary produced by TinyGo.
 
 ## Prerequisites
 
-These tools need to be installed on your development machine:
+Recall, you need these tools on your development machine:
 
-- docker or another container engine: used to build the WebAssembly
-  policy. We will rely on the compiler shipped within the official
-  TinyGo container image.
-- [bats](https://github.com/bats-core/bats-core): used to write the
-  tests and automate their execution.
-- [kwctl](https://github.com/kubewarden/kwctl/releases): CLI tool
-  provided by Kubewarden to run its policies outside of Kubernetes,
-  among other actions. This is covered in depth inside of [this section](/testing-policies/01-intro.md)](/testing-policies/01-intro.md) of the documentation.
+- Docker, or another container engine: Used to build the WebAssembly policy.
+You'll use the compiler shipped within the official TinyGo container image.
+- [bats](https://github.com/bats-core/bats-core):
+Used to write the tests and automate their execution.
+- [kwctl](https://github.com/kubewarden/kwctl/releases):
+CLI tool provided by Kubewarden to run its policies outside of Kubernetes, among other actions.
+It's covered in [this section](/testing-policies/01-intro.md) of the documentation.
 
 ## Writing tests
 
-We are going to use [bats](https://github.com/bats-core/bats-core) to write and
-automate our tests. Each test will be composed by the following steps:
+You'll be using
+[bats](https://github.com/bats-core/bats-core)
+to write and automate your tests.
+Each test has the following steps:
 
 1. Run the policy using `kwctl`.
-1. Perform some assertions against the output produced by the
-   `kwctl`.
+1. Perform assertions against the output produced by the `kwctl`.
 
-All the end-to-end tests are located inside a file called `e2e.bats`. The
-scaffolded project already includes such a file. We will just change its
-contents to reflect how our policy behaves.
+All the end-to-end tests go in a file called `e2e.bats`.
+The project scaffolding project already includes an example `e2e.bats`.
+You need to change its contents to reflect how your policy behaves.
+You can remove the contents from the scaffolding file and replace them with the contents below as you work through this tutorial.
 
-As a final note, for the end-to-end tests, we will use the same test fixtures files
-we previously used inside of the Go unit tests.
+For the end-to-end tests, you use the same test fixtures files you used in the Go unit tests.
 
-The first test ensures a request is approved when no settings are provided:
+The first test ensures request approval when there are no settings provided:
 
 ```bash
 @test "accept when no settings are provided" {
@@ -52,23 +55,22 @@ The first test ensures a request is approved when no settings are provided:
 }
 ```
 
-We can execute the end-to-end tests by using this command:
+You execute the end-to-end tests by using this command:
 
-```shell
+```console
 make e2e-tests
 ```
 
-This will produce the following output:
+This produces the following output:
 
-```shell
+```console
 bats e2e.bats
  ✓ accept when no settings are provided
 
 1 test, 0 failures
 ```
 
-Let's write a test to ensure a request is approved when a user-defined constraint
-is respected:
+You should write a test ensuring request approval when respecting a user-defined constraint:
 
 ```bash
 @test "accept because label is satisfying a constraint" {
@@ -84,8 +86,7 @@ is respected:
 }
 ```
 
-Next, we can write a test to ensure a request is accepted when none of the
-labels is on the deny list:
+Next, you can write a test checking request acceptance when none of the labels is on the deny list:
 
 ```bash
 @test "accept labels are not on deny list" {
@@ -101,8 +102,7 @@ labels is on the deny list:
 }
 ```
 
-Let's improve the test coverage by adding a test that rejects a request
-because one of the labels is on the deny list:
+You can improve the test coverage by adding a test that rejects a request because one of the labels is on the deny list:
 
 ```bash
 @test "reject because label is on deny list" {
@@ -119,7 +119,7 @@ because one of the labels is on the deny list:
 }
 ```
 
-The following test ensures a request is rejected when one of its labels doesn't
+The following test ensures a request rejection when one of its labels doesn't
 satisfy the constraint provided by the user.
 
 ```bash
@@ -137,7 +137,7 @@ satisfy the constraint provided by the user.
 }
 ```
 
-Now let's make sure the validation fails if one of the constrained labels is
+Now you can make sure the validation fails if one of the constrained labels is
 not found:
 
 ```bash
@@ -155,8 +155,8 @@ not found:
 }
 ```
 
-We want to ensure settings' validation is working properly. This can be done
-with the following tests:
+You want to check settings validation is working correctly.
+You can do this with the following tests:
 
 ```bash
 @test "fail settings validation because of conflicting labels" {
@@ -189,8 +189,7 @@ with the following tests:
 
 ## Conclusion
 
-We have reached a pretty good level of coverage, let's run all the end-to-end
-tests:
+The eight end-to-end tests now give a good level of coverage, you can run them all:
 
 ```shell
 $ make e2e-tests
