@@ -14,7 +14,7 @@ For more information about raw policies, please refer to the [raw policies](../.
 
 ## Examples
 
-The following examples should look familiar if you completed the [validation](validation.md) section of this tutorial.
+The following examples should look familiar if you completed the [validation](04-validation.md) section of this tutorial.
 
 :::note
 

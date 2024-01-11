@@ -10,7 +10,7 @@ As with any kind of program, good test coverage is important.
 
 Policy authors can use their favorite development environments. You can use familiar tools, and testing frameworks to verify development.
 
-These two Kubewarden policies provide an example written in [Rust](/writing-policies/rust/01-intro-rust.md) and [Go](/writing-policies/go/intro-go.md):
+These two Kubewarden policies provide an example written in [Rust](/writing-policies/rust/01-intro-rust.md) and [Go](/writing-policies/go/01-intro-go.md):
 
 - [psp-apparmor](https://github.com/kubewarden/psp-apparmor)
 - [ingress-policy](https://github.com/kubewarden/ingress-policy)
@@ -84,4 +84,4 @@ $ bats e2e.bats
 1 tests, 0 failures
 ```
 
-[This](/writing-policies/go/e2e-tests.md) section of the documentation has more about writing end-to-end tests of your policies.
+[This](/writing-policies/go/05-e2e-tests.md) section of the documentation has more about writing end-to-end tests of your policies.

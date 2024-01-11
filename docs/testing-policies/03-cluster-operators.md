@@ -294,4 +294,4 @@ $ bats e2e.bats
 2 tests, 0 failures
 ```
 
-[This](/writing-policies/go/e2e-tests.md) section has more about writing end-to-end tests for your policies.
+[This](/writing-policies/go/05-e2e-tests.md) section has more about writing end-to-end tests for your policies.
