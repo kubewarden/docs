@@ -17,7 +17,7 @@ This feature is enabled by default from Kubewarden v1.5.0.
 ## Purpose
 
 Kubewarden policies can be written using both traditional programming languages
-(like [Go](../writing-policies/go/intro-go.md),
+(like [Go](../writing-policies/go/01-intro-go.md),
 [Rust](../writing-policies/rust/01-intro-rust.md) and
 [others](../writing-policies/index.md)
 ) or using the special query language [Rego](../writing-policies/rego/01-intro-rego.md).
