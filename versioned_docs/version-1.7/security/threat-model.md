@@ -3,6 +3,10 @@ sidebar_label: "Threat Model"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/security/threat-model"/>
+</head>
+
 # Threat Model
 
 The [Kubernetes SIG Security team](https://github.com/kubernetes/community/tree/master/sig-security) has

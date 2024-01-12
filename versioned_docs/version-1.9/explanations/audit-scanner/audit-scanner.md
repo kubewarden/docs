@@ -5,6 +5,10 @@ description: An overview of the Kubewarden Audit Scanner.
 keywords: [kubewarden, audit scanner, kubernetes]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/explanations/audit-scanner/audit-scanner"/>
+</head>
+
 :::note
 
 The Audit Scanner feature is available starting from Kubewarden 1.7.0 release

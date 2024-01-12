@@ -3,6 +3,10 @@ sidebar_label: "Introduction to Rust"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rust/intro-rust"/>
+</head>
+
 # Rust
 
 [Rust](https://www.rust-lang.org/) is the most mature programming language that

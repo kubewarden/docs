@@ -3,6 +3,10 @@ sidebar_label: "Introduction to WASI"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/wasi/intro-wasi"/>
+</head>
+
 # WASI
 
 :::caution

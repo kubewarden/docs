@@ -3,6 +3,10 @@ sidebar_label: "Logging"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rust/logging"/>
+</head>
+
 # Logging
 
 You can perform logging in your policy, so the `policy-server` or `kwctl` will forward those log

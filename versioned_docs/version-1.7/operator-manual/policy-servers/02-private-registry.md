@@ -3,6 +3,10 @@ sidebar_label: "Using private registries"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/policy-servers/private-registry"/>
+</head>
+
 # Configuring PolicyServers to use private registries
 
 It is possible to configure PolicyServers to use credentials of private OCI

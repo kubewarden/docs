@@ -3,6 +3,10 @@ sidebar_label: "Introduction to Go"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/intro-go"/>
+</head>
+
 :::note
 Go's support for WebAssembly is fast evolving. The contents
 of this page were written during June 2023, hence they could be outdated.

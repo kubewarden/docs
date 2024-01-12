@@ -3,6 +3,10 @@ sidebar_label: "Kubernetes Capabilities"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/spec/host-capabilities/kubernetes"/>
+</head>
+
 # Kubernetes Capabilities
 
 Kubewarden context aware policies requires access to resources from the Kubernetes

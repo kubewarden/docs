@@ -3,6 +3,10 @@ sidebar_label: "Swift"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/swift"/>
+</head>
+
 # Swift
 
 As stated on the [official website](https://swift.org/):

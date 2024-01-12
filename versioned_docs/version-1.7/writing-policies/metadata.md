@@ -3,6 +3,10 @@ sidebar_label: "Policy metadata"
 title: "Policy metadata"
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/metadata"/>
+</head>
+
 # Policy metadata
 
 The Kubewarden metadata file, `metadata.yaml`, serves as a vital configuration

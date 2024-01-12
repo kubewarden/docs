@@ -3,6 +3,10 @@ sidebar_label: "Introduction"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rego/gatekeeper/intro"/>
+</head>
+
 # Gatekeeper
 
 :::note

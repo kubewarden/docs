@@ -3,6 +3,10 @@ sidebar_label: "Network Capabilities"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/spec/host-capabilities/net"/>
+</head>
+
 # Network capabilities
 
 Kubewarden policies cannot make network request from within the WebAssembly

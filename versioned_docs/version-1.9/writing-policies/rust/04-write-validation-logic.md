@@ -3,6 +3,10 @@ sidebar_label: "Writing Validation Logic"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rust/write-validation-logic"/>
+</head>
+
 # Writing the validation logic
 
 It's time to write the actual validation code. This is defined inside of the

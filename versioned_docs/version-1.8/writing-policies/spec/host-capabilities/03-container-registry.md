@@ -3,6 +3,10 @@ sidebar_label: "Container Registry Capabilities"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/spec/host-capabilities/container-registry"/>
+</head>
+
 # Container registry capabilities
 
 Container registries can be used to distribute many types of OCI objects, going

@@ -3,6 +3,10 @@ sidebar_label: "Tracing Quickstart"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/telemetry/tracing/quickstart"/>
+</head>
+
 # Tracing
 
 This section illustrates how to enable tracing support of

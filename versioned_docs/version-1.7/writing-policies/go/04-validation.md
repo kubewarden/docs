@@ -3,6 +3,10 @@ sidebar_label: "Write the Validation Logic"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/validation"/>
+</head>
+
 # Writing the validation logic
 
 It's now time to write the actual validation logic. This is done

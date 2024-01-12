@@ -5,6 +5,10 @@ description: Getting started with Kubewarden, installing the Kubewarden stack an
 keywords: [Kubewarden, installation, quick start, policyserver, clusteradmissionpolicy, admissionpolicy]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/quick-start"/>
+</head>
+
 
 The Kubewarden stack comprises:
 

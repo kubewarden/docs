@@ -3,6 +3,10 @@ sidebar_label: "Introduction to Rego"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rego/intro-rego"/>
+</head>
+
 # Rego
 
 :::note

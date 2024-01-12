@@ -3,6 +3,10 @@ sidebar_label: "Create a New Policy"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rego/gatekeeper/create-policy"/>
+</head>
+
 # Create a new policy
 
 Let's implement the same policy that [we wrote with Open Policy

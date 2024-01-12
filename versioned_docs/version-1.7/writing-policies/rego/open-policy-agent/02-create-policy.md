@@ -3,6 +3,10 @@ sidebar_label: "Create a New Policy"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rego/open-policy-agent/create-policy"/>
+</head>
+
 # Create a new policy
 
 Let's create a sample policy that will help us go through some

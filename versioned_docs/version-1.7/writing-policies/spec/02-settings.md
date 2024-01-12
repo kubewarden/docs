@@ -2,6 +2,10 @@
 sidebar_label: "Policy Settings"
 title: ""
 ---
+
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/spec/settings"/>
+</head>
 # Policy settings
 
 Policy behaviour is not set in stone, it can be configured by providing configuration

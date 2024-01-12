@@ -4,6 +4,10 @@ title: "Testing for cluster operators"
 description: An introduction to testing Kubewarden policies for cluster operators.
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/testing-policies/cluster-operators"/>
+</head>
+
 As a Kubernetes cluster operator, you will want to perform testing against Kubewarden policies you want to use.
 
 You will have questions like:

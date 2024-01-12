@@ -3,6 +3,10 @@ sidebar_label: "Create a New Policy"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/scaffold"/>
+</head>
+
 # Creating a new validation policy
 
 We are going to create a policy that validates the labels of Pod

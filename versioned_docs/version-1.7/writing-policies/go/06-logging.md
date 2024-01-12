@@ -3,6 +3,10 @@ sidebar_label: "Logging"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/logging"/>
+</head>
+
 # Logging
 
 The Go SDK integrates with the [`onelog`](https://github.com/francoispqt/onelog) project almost out

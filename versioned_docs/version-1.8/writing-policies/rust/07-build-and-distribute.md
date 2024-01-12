@@ -3,6 +3,10 @@ sidebar_label: "Building & Distributing Policies"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rust/build-and-distribute"/>
+</head>
+
 ## Building the policy
 
 So far we have built the policy using as a compilation target the same operating

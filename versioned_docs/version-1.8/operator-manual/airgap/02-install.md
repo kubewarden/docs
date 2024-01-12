@@ -3,6 +3,10 @@ sidebar_label: "Installation"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/airgap/install"/>
+</head>
+
 # Air gap installation
 
 This guide will show you how to install Kubewarden in air-gapped environments. In an air-gapped installation of Kubewarden,

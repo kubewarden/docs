@@ -3,6 +3,10 @@ sidebar_label: "Open Telemetry Quickstart"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/telemetry/opentelemetry/quickstart"/>
+</head>
+
 # OpenTelemetry
 
 [OpenTelemetry](https://opentelemetry.io/) is a Cloud Native Computing Foundation framework for

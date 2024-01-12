@@ -3,6 +3,10 @@ sidebar_label: "Verification Config"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/verification-config"/>
+</head>
+
 # Verification Config
 
 ## Example

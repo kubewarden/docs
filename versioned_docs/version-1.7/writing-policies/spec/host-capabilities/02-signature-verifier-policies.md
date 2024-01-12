@@ -3,6 +3,10 @@ sidebar_label: "Signature Verifier Policies"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/spec/host-capabilities/signature-verifier-policies"/>
+</head>
+
 # Signature verifier policies
 
 Kubewarden implements support for the [Sigstore](https://www.sigstore.dev/)

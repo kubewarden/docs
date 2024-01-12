@@ -3,6 +3,10 @@ sidebar_label: "Build and Run"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rego/gatekeeper/build-and-run"/>
+</head>
+
 # Build and run
 
 Building and running the policy is done exactly the same way as a Rego

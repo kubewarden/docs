@@ -3,6 +3,10 @@ sidebar_label: "Security Disclosure"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/security/disclosure"/>
+</head>
+
 # Disclosure
 
 The Kubewarden team greatly appreciates investigative work into security

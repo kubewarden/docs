@@ -3,6 +3,10 @@ sidebar_label: "Host Capabilities Specification"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/spec/host-capabilities/intro-host-capabilities"/>
+</head>
+
 # Host capabilities specification
 
 While being evaluated, Kubewarden policies can access extra capabilities offered

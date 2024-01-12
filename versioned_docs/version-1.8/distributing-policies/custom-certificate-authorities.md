@@ -3,6 +3,10 @@ sidebar_label: "Custom Certificate Authorities"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/distributing-policies/custom-certificate-authorities"/>
+</head>
+
 # Custom Certificate Authorities
 
 With both of `kwctl` and `policy-server`

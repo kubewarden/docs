@@ -3,6 +3,10 @@ sidebar_label: "Policy evaluation timeout"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/policy-evaluation-timeout"/>
+</head>
+
 # Policy evaluation timeout protection
 
 :::info

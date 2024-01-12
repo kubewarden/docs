@@ -3,6 +3,10 @@ sidebar_label: "Build and Run"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rego/open-policy-agent/build-and-run"/>
+</head>
+
 # Build and run
 
 In the previous section we have written our Rego policy. The structure

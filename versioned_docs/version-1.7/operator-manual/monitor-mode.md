@@ -3,6 +3,10 @@ sidebar_label: "Monitor Mode"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/monitor-mode"/>
+</head>
+
 # Monitor mode
 
 When a policy is deployed on the cluster, it will start accepting,

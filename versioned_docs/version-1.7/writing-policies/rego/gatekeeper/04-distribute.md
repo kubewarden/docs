@@ -3,6 +3,10 @@ sidebar_label: "Distribute"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rego/gatekeeper/distribute"/>
+</head>
+
 # Distribute
 
 Policies have to be annotated for them to be pushed, and eventually

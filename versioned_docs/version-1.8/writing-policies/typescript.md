@@ -3,6 +3,10 @@ sidebar_label: "TypeScript"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/typescript"/>
+</head>
+
 # TypeScript
 
 As stated on the [official website](https://www.typescriptlang.org/):

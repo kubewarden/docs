@@ -3,6 +3,10 @@ sidebar_label: "Define Policy Settings"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/policy-settings"/>
+</head>
+
 # Defining policy settings
 
 As a first step we will define the structure that holds the policy settings.

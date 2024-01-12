@@ -3,6 +3,10 @@ sidebar_label: "Publish to Artifact Hub"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/distributing-policies/publish-policy-to-artifact-hub"/>
+</head>
+
 # Publish Policies to Artifact Hub
 
 [Artifact Hub](https://artifacthub.io/) is a website where users can find,

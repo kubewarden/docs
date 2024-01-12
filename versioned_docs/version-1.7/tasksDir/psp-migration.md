@@ -5,6 +5,10 @@ description: Discusses PSP migration to Kubewarden policies after Kubernetes v1.
 keywords: [kubewarden, kubernetes, appvia, psp, podsecuritypolicy]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tasksDir/psp-migration"/>
+</head>
+
 For Kubernetes ≥ v1.25.
 [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/)
 (PSP) is removed. Now you can use Kubewarden for admission control on your

@@ -3,6 +3,10 @@ sidebar_label: "Distributing Policy"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/distribute"/>
+</head>
+
 # Distribute policy
 
 Congratulations for having made this far 🎉🎉🎉

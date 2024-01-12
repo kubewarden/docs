@@ -3,6 +3,10 @@ sidebar_label: "GitHub Action Integration"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/automate"/>
+</head>
+
 # Automations
 
 This section describes how we can use GitHub Actions to automate as many tasks

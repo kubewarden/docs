@@ -3,6 +3,10 @@ sidebar_label: "End-to-end testing"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/e2e-tests"/>
+</head>
+
 # End-to-end testing
 
 So far we have tested the policy using a set of Go unit tests. This section shows

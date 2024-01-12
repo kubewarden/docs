@@ -3,6 +3,10 @@ sidebar_label: "Creating a new validation policy"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rust/create-policy"/>
+</head>
+
 # Creating a new validation policy
 
 We are going to create a simple validation policy that processes

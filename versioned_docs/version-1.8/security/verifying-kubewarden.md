@@ -3,6 +3,10 @@ sidebar_label: "Verifying Kubewarden"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/security/verifying-kubewarden"/>
+</head>
+
 # Verifying Kubewarden
 
 Kubewarden artifacts are signed using [Sigstore](https://docs.sigstore.dev),

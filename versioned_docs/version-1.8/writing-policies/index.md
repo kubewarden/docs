@@ -3,6 +3,10 @@ sidebar_label: "Writing Policies"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/index"/>
+</head>
+
 # What is a Kubewarden policy
 
 In this section we will explain what Kubewarden policies are by using some traditional computing

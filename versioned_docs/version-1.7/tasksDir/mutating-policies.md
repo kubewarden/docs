@@ -5,6 +5,10 @@ description: Explains mutating policies in the context of Kubewarden
 keywords: [kubewarden policy mutating kubernetes clusteradmissionpolicy admissionpolicy]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tasksDir/mutating-policies"/>
+</head>
+
 A mutating policy will rebuild the requests with
 defined values that comply with the policy definition.
 If you want to allow the behavior of mutating requests,

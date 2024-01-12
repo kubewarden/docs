@@ -3,6 +3,10 @@ sidebar_label: "Distribute"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rego/open-policy-agent/distribute"/>
+</head>
+
 # Distribute
 
 We have written, built and run our Rego policy. Now it's time to

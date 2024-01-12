@@ -5,6 +5,10 @@ description: The Kubewarden monitor mode and how to activate it.
 keywords: [kubernetes, kubewarden, monitor mode]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/monitor-mode"/>
+</head>
+
 When defining a policy,
 you can choose between two modes,
 specified in its [`spec.mode`](CRDs#admissionpolicyspec).

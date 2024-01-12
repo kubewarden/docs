@@ -3,6 +3,10 @@ sidebar_label: "Rancher Fleet"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/Rancher-Fleet"/>
+</head>
+
 # Managing Kubewarden with Rancher Fleet
 
 The Kubewarden Helm charts, like other Helm charts, can be managed via [Rancher

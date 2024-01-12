@@ -5,6 +5,10 @@ description: The Kubewarden architecture
 keywords: [kubewarden, kubernetes, architecture]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/architecture"/>
+</head>
+
 
 Kubewarden is a Kubernetes policy engine.
 It uses policies written in a programming language of your choosing.

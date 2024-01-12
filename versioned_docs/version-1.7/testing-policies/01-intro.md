@@ -5,6 +5,10 @@ description: The two personas using Kubewarden policies are policy authors and c
 keywords: [kubewarden, persons, policy author, cluster operator]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/testing-policies/intro"/>
+</head>
+
 ## Policy testing personas
 
 This section covers the topic of testing Kubewarden Policies.

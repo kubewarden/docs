@@ -3,6 +3,10 @@ sidebar_label: "Builtin Support"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rego/builtin-support"/>
+</head>
+
 # Builtin support
 
 Building a policy for the `wasm` target is only half of the problem,

@@ -3,6 +3,10 @@ sidebar_label: "Metrics Quickstart"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/telemetry/metrics/quickstart"/>
+</head>
+
 # Metrics
 
 This section describes how to enable metrics reporting on the Policy Server.

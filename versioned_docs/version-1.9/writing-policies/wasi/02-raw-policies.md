@@ -3,6 +3,10 @@ sidebar_label: "Raw policies"
 title: "Raw policies"
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/wasi/raw-policies"/>
+</head>
+
 # Writing raw policies
 
 Raw policies are policies that can evaluate arbitrary JSON documents.

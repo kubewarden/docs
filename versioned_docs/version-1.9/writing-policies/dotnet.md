@@ -3,6 +3,10 @@ sidebar_label: "C#"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/dotnet"/>
+</head>
+
 # C#
 
 Currently .NET Core has experimental support for the WebAssembly WASI

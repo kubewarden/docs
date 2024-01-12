@@ -3,6 +3,10 @@ sidebar_label: "Creating a new mutation policy"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rust/mutation-policy"/>
+</head>
+
 # Creating a new mutation policy
 
 Mutating policies are similar to validating ones, but have also the ability to mutate an

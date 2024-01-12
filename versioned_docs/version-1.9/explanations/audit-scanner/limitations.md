@@ -5,6 +5,10 @@ description: The limitation of the audit scanner
 keywords: [kubewarden, kubernetes, audit scanner]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/explanations/audit-scanner/limitations"/>
+</head>
+
 ## Supported event types
 
 Policies can inspect `CREATE`, `UPDATE`, and `DELETE` events.

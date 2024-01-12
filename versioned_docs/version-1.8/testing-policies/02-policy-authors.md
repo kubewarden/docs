@@ -5,6 +5,10 @@ description: An introduction to testing Kubewarden policies for policy authors.
 keywords: [kubewarden, policy testing, policy author, rust, go, assemblyscript, development environment]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/testing-policies/policy-authors"/>
+</head>
+
 Kubewarden policies are regular programs compiled as WebAssembly (Wasm).
 As with any kind of program, good test coverage is important.
 

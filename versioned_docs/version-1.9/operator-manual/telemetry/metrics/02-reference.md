@@ -3,6 +3,10 @@ sidebar_label: "Metrics Reference Documentation"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/telemetry/metrics/reference"/>
+</head>
+
 # Metrics Reference
 
 Kubewarden exposes some relevant metrics that enhance visibility of the platform, and allows cluster

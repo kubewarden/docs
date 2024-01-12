@@ -3,6 +3,10 @@ sidebar_label: "Validate doing JSON queries"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/validation-with-queries"/>
+</head>
+
 # Validate by doing JSON queries
 
 In the previous section, we have shown how to write a [validation policy](validation)
