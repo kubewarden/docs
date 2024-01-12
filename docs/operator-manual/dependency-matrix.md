@@ -5,6 +5,10 @@ description: Dependency matrix of Kubewarden.
 keywords: [dependency, dependencies, CRD, charts, matrix]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/dependency-matrix"/>
+</head>
+
 This page lists the dependencies of Kubewarden, with their relevant
 version constraints. Versions outside of the provided ranges may work but are
 not tested.

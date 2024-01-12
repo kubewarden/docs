@@ -5,6 +5,10 @@ description: Upgrade path for the Kubewarden stack.
 keywords: [upgrade path, support]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/upgrade-path"/>
+</head>
+
 # Kubewarden stack versioning
 
 The Kubewarden project uses [Semantic versioning](https://semver.org/)

@@ -9,6 +9,10 @@ doc-topic: [kubewarden, writing-policies, golang, logging]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/logging"/>
+</head>
+
 The Go SDK integrates with the
 [`onelog`](https://github.com/francoispqt/onelog)
 project, almost out of the box.

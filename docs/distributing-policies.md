@@ -5,6 +5,10 @@ description: A description of how Kubewarden policies are distributed from OCI-c
 keywords: [oci, kubewarden, policy, wasm, webassembly]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/distributing-policies"/>
+</head>
+
 Kubewarden policies are WebAssembly (Wasm) binaries that are evaluated by the Kubewarden Policy Server.
 
 The Kubewarden policy server can load policies from these sources:

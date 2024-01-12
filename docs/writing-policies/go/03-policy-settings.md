@@ -9,6 +9,10 @@ doc-topic: [kubewarden, writing-policies, go, defining-policy-settings]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/policy-settings"/>
+</head>
+
 Firstly, you need to define the structure that holds the policy settings.
 
 You do this by modifying the code in the `settings.go` file (from your local version of the Go policy template).

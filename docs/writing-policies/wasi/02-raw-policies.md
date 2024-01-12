@@ -8,6 +8,10 @@ doc-topic: [kubewarden, writing-policies, raw-policies]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/wasi/raw-policies"/>
+</head>
+
 Raw policies are policies that can evaluate arbitrary JSON documents.
 For more information about raw policies, please refer to the [raw policies](../../howtos/raw-policies.md) page.
 

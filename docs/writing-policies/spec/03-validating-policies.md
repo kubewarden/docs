@@ -2,6 +2,10 @@
 sidebar_label: "Validating Policies"
 title: ""
 ---
+
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/spec/validating-policies"/>
+</head>
 # Validating policies
 
 The Kubewarden policy server receives:

@@ -6,6 +6,10 @@ keywords:
   [kubewarden policy mutating kubernetes clusteradmissionpolicy admissionpolicy]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tasksDir/mutating-policies"/>
+</head>
+
 Mutating policies receive an object request and rebuild this incoming object
 (mutate it) into a new request, according to the defined values in the settings
 of the policy. The request will proceed through the Kubernetes API, potentially being

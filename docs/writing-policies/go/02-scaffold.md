@@ -9,6 +9,10 @@ doc-topic: [kubewarden, writing-policies, go, creating a new validation policy]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/scaffold"/>
+</head>
+
 This tutorial covers creating a policy that validates the labels of Pod objects.
 
 The policy is to reject all Pods that use one or more labels on the deny-list.

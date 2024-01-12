@@ -3,6 +3,10 @@ sidebar_label: "Cryptographic Capabilities"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/spec/host-capabilities/crypto"/>
+</head>
+
 # Cryptographic capabilities
 
 Because of Wasm constraints at the time of writing, some cryptographic libraries

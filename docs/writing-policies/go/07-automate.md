@@ -9,6 +9,10 @@ doc-topic: [kubewarden, writing-policies, golang, github-action-integration]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/automate"/>
+</head>
+
 ## Automation
 
 This section describes how you can use GitHub Actions to automate tasks.

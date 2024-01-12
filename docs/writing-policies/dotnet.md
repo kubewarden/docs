@@ -8,6 +8,10 @@ doc-topic: [kubewarden, writing-policies, c#]
 doc-persona: [kubewarden-policy-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/dotnet"/>
+</head>
+
 Currently, .NET Core has experimental support for the WebAssembly WASI platform.
 This is from the [`dotnet-wasi-sdk`](https://github.com/SteveSandersonMS/dotnet-wasi-sdk) project.
 

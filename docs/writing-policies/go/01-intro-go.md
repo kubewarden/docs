@@ -9,6 +9,10 @@ doc-topic: [kubewarden, writing-policies, go, introduction]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/intro-go"/>
+</head>
+
 :::note
 Go's support for WebAssembly is fast evolving.
 This page was last revised in December 2023.

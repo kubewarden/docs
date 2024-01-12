@@ -8,6 +8,10 @@ doc-topic: [kubewarden, writing-policies, swift]
 doc-persona: [kubewarden-policy-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/swift"/>
+</head>
+
 As stated on the [official website](https://swift.org/):
 
 > Swift is a general-purpose programming language that’s approachable for newcomers and powerful for experts.

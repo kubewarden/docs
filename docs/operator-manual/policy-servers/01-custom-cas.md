@@ -3,6 +3,10 @@ sidebar_label: "Using Custom CAs"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/policy-servers/custom-cas"/>
+</head>
+
 # Configuring PolicyServers
 
 ## Custom Certificate Authorities for Policy registries

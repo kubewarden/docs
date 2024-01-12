@@ -3,6 +3,10 @@ sidebar_label: "Policy Communication Specification"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/spec/intro-spec"/>
+</head>
+
 # Policy communication specification
 
 The policy evaluator interacts with Kubewarden policies using a well

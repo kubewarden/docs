@@ -4,6 +4,10 @@ title: "OCI registry support"
 description: OCI registry support
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/distributing-policies/oci-registries-support"/>
+</head>
+
 Kubewarden policies are distributed as
 [OCI Artifacts](https://github.com/opencontainers/artifacts)
 using regular Open Container Initiative (OCI) registries.

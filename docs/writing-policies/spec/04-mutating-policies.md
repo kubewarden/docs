@@ -3,6 +3,10 @@ sidebar_label: "Mutating Policies"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/spec/mutating-policies"/>
+</head>
+
 # Mutating policies
 
 Mutating policies are structured in the very same way as validating ones:

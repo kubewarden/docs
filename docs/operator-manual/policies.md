@@ -12,6 +12,10 @@ keywords:
   ]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/policies"/>
+</head>
+
 ## Skipping namespaces for a specific policy
 
 By default, policies apply to all Namespaces that the `PolicyServer` is configured for.

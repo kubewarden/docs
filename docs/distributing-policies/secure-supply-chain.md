@@ -5,6 +5,10 @@ description: A secure supply chain infrastructure using Kubewarden.
 keywords: [kubewarden, kubernetes, secure supply chain, infrastructure]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/distributing-policies/secure-supply-chain"/>
+</head>
+
 A secure supply chain infrastructure can verify the validity of its parts, or links.
 It lets users and developers show the chain of custody of its software components, or artifacts.
 It's an active approach to mitigate security issues.

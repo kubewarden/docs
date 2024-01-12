@@ -3,6 +3,10 @@ sidebar_label: "Quickstart"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/ui-extension/install"/>
+</head>
+
 # Rancher UI Extension
 
 This section describes how to install the Kubewarden UI as an extension of [Rancher Manager](https://github.com/rancher/rancher).

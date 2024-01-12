@@ -5,6 +5,10 @@ description: Managing Kubewarden with Rancher Fleet.
 keywords: [kubernetes, kubewarden, rancher fleet]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/Rancher-Fleet"/>
+</head>
+
 You can manage Kubewarden Helm charts,
 like other Helm charts, with [Rancher Fleet](https://fleet.rancher.io/).
 Rancher Fleet uses Kubernetes CRDs

@@ -9,6 +9,10 @@ doc-topic: [kubewarden, writing-policies, golang, validation-logic]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/validation"/>
+</head>
+
 The validation logic goes be in the `validate.go` file.
 
 Your validation logic needs to:

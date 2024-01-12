@@ -3,6 +3,10 @@ sidebar_label: "Custom Resources Definitions (CRDs)"
 title: "Custom Resource Definitions (CRD)"
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/CRDs"/>
+</head>
+
 You can find the definitions for the Kubewarden Custom Resources both on this page and
 [here at docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
 

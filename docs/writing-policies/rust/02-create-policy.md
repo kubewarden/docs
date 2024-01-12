@@ -8,6 +8,10 @@ doc-topic: [kubewarden, writing-policies, rust, creating-policies]
 doc-persona: [kubewarden-developer, kubewarden-developer-rust]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rust/create-policy"/>
+</head>
+
 As an example, you create a simple validation policy that processes Pod creation requests.
 
 The policy looks at the `metadata.name` attribute of the Pod and rejects pods having an invalid name.

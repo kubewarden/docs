@@ -5,6 +5,10 @@ description: Using Pod Security Admission with Kubewarden, since the Kubernetes 
 keywords: [kubewarden, pod security admission, pod security policy, kubernetes]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tasksDir/pod-security-admission-with-kubewarden"/>
+</head>
+
 Pod Security Policies (PSP) are removed since the Kubernetes 1.25 release.
 They're replaced by the [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/) (PSA).
 

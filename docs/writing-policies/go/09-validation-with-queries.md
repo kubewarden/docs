@@ -9,6 +9,10 @@ doc-topic: [kubewarden, writing-policies, golang, validation-using-json]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/validation-with-queries"/>
+</head>
+
 An earlier section shows how to write a
 [validation](validation)
 policy by using Go types describing Kubernetes objects.

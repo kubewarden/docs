@@ -8,6 +8,10 @@ doc-topic: [operator-manual, metrics-and-monitoring]
 doc-persona: [kubewarden-operator, kubewarden-manager]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/ui-extension/metrics"/>
+</head>
+
 Rancher has a Cluster Tool for monitoring that leverages Grafana and Prometheus.
 You can use this tool and integrate it with Kubewarden to view overall metrics for a Policy Server or metrics for a given policy.
 

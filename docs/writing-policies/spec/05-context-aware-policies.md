@@ -3,6 +3,10 @@ sidebar_label: "Context Aware Policies"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/spec/context-aware-policies"/>
+</head>
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 

@@ -8,6 +8,10 @@ doc-topic: [kubewarden, writing-polices, policy-metadata]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/metadata"/>
+</head>
+
 The Kubewarden metadata file, `metadata.yaml`,
 is a configuration file containing important information and settings
 related to the policies used within Kubewarden.

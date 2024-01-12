@@ -9,6 +9,10 @@ doc-topic: [kubewarden, writing-policies, go, distributing-policies]
 doc-persona: [kubewarden-developer, kubewarden-operator]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/go/distribute"/>
+</head>
+
 It's been a lengthy, and hopefully enjoyable, wander through the Go tutorial,
 congratulations for having made it this far 🎉.
 

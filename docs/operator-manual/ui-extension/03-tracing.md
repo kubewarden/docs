@@ -8,6 +8,10 @@ doc-topic: [operator-manual, ui-extension, tracing]
 doc-persona: [default]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/operator-manual/ui-extension/tracing"/>
+</head>
+
 Tracing allows collection of fine grained details about policy evaluations.
 It's a useful tool for debugging issues in your Kubewarden deployment and policies.
 

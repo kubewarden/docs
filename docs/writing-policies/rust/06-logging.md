@@ -8,6 +8,10 @@ doc-topic: [kubewarden, writing-policies, rust, logging]
 doc-persona: [kubewarden-developer, kubewarden-developer-rust]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/writing-policies/rust/logging"/>
+</head>
+
 You can have your policy perform logging.
 The `policy-server` or `kwctl` forwards those log entries with the appropriate information.
 

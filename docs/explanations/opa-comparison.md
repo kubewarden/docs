@@ -3,6 +3,10 @@ sidebar_label: "Kubewarden vs OPA Gatekeeper"
 title: "Kubewarden vs OPA Gatekeeper"
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/explanations/opa-comparison"/>
+</head>
+
 :::info
 This page has been written during August 2023. Both projects might have evolved
 since then.

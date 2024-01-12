@@ -9,6 +9,10 @@ doc-topic: [contribution-guide, docs-contribution]
 doc-persona: [kubewarden-developer, kubewarden-operator, kubewarden-manager]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/contribution-guide/contributing"/>
+</head>
+
 _Kubewarden welcomes suggestions for improvement from all contributors, whether new or experienced._
 
 You can contribute to Kubewarden documentation by:
