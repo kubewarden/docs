@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Tracing Quickstart"
-title: ""
+sidebar_label: Tracing quickstart
+title: Tracing quickstart
+description: A tracing quickstart for Kubewarden.
+keywords: [kubewarden, kubernetes, tracing, quickstart]
 ---
-
-# Tracing
 
 This section illustrates how to enable tracing support of
 Policy Server.

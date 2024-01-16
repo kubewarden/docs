@@ -1,9 +1,10 @@
 ---
 sidebar_label: "Operator Manual"
-title: ""
+title: Operator manual
+description: The operator manual for Kubewarden.
+keywords: [kubewarden, kubernetes, kubewarden operator manual]
 ---
 
-# Operator Manual
 
 This section covers topics related with the deployment and the operational
 aspects of Kubewarden.

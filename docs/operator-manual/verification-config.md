@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Verification Config"
-title: ""
+sidebar_label: "Verification configuration"
+title: Verification configuration
+description: Verification configuration for Kubewarden.
+keywords: [kubewarden, kubernetes, verification configuration]
 ---
-
-# Verification Config
 
 ## Example
 
