@@ -1,9 +1,9 @@
 ---
 sidebar_label: "Publish to Artifact Hub"
-title: ""
+title: Publish policies to Artifact Hub
+description: A brief introduction to publishing Kubewarden policies on Artifact Hub.
+keywords: [kubewarden, kubernetes, publishing policies, artifact hub]
 ---
-
-# Publish Policies to Artifact Hub
 
 [Artifact Hub](https://artifacthub.io/) is a website where users can find,
 install, and publish packages and configurations for [CNCF](https://cncf.io) projects.
