@@ -1,7 +1,8 @@
 ---
 sidebar_label: "OCI registry support"
-title: "OCI registry support"
-description: OCI registry support
+title: "OCI registry support for Kubewarden"
+description: OCI registry support for Kubewarden.
+keywords: [kubewarden, kubernetes, oci registry support]
 ---
 
 Kubewarden policies are distributed as

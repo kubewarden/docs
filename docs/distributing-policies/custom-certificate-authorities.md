@@ -1,9 +1,9 @@
 ---
 sidebar_label: "Custom Certificate Authorities"
-title: ""
+title: Custom certificate authorities
+description: Using custom certificate authorities with Kubewarden.
+keywords: [kubewarden, kubernetes, custom certificate authorities]
 ---
-
-# Custom Certificate Authorities
 
 With both of `kwctl` and `policy-server`
 you can pull policies from Open Container Initiative (OCI) registries and HTTP servers.
