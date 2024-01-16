@@ -1,9 +1,10 @@
 ---
 sidebar_label: "Installation"
-title: ""
+title: Air gap installation
+description: Air gap installation for Kubewarden.
+keywords: [kubewarden, kubernetes, air gap installation]
 ---
 
-# Air gap installation
 
 This guide will show you how to install Kubewarden in air-gapped environments. In an air-gapped installation of Kubewarden,
 you will need a private OCI registry accessible by your Kubernetes cluster. Kubewarden Policies

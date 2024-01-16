@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Open Telemetry Quickstart"
-title: ""
+sidebar_label: "Open Telemetry quickstart"
+title: "Open Telemetry quickstart"
+description: An Open Telemetry quickstart for Kubewarden.
+keywords: [kubewarden, kubernetes, opentelemetry, open telemetry, quickstart]
 ---
-
-# OpenTelemetry
 
 [OpenTelemetry](https://opentelemetry.io/) is a Cloud Native Computing Foundation framework for
 observability. It enables your microservices to provide metrics, logs and traces.

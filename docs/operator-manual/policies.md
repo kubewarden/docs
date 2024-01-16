@@ -2,14 +2,7 @@
 sidebar_label: "Configuring policies"
 title: "Configuring policies"
 description: Dependency matrix of Kubewarden.
-keywords:
-  [
-    policies,
-    ClusterAdmissionPolicies,
-    AdmissionPolicies,
-    configuration,
-    namespaces,
-  ]
+keywords: [policies, ClusterAdmissionPolicies, AdmissionPolicies, configuration, namespaces]
 ---
 
 ## Skipping namespaces for a specific policy

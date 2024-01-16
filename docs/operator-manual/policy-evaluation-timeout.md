@@ -1,9 +1,10 @@
 ---
 sidebar_label: "Policy evaluation timeout"
-title: ""
+title: Policy evaluation timeout protection
+description: Policy evaluation timeout protection for Kubewarden
+keywords: [kubewarden, kubernetes, policy timeout protection]
 ---
 
-# Policy evaluation timeout protection
 
 :::info
 This feature is available starting from Kubewarden v1.5.0.

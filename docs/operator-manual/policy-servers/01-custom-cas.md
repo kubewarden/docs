@@ -1,9 +1,9 @@
 ---
 sidebar_label: "Using Custom CAs"
-title: ""
+title: Using custom certificate authorities
+description: Using custom certificate authorities with Kubewarden policy servers.
+keywords: [kubewarden, kubernetes, custom certificate authorities]
 ---
-
-# Configuring PolicyServers
 
 ## Custom Certificate Authorities for Policy registries
 
