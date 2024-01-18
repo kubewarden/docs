@@ -1,7 +1,7 @@
 ---
-sidebar_label: "Threat Model"
-title: "Threat Model"
-descriptions: The Kubernetes Admission Control Threat Model and Kubewarden.
+sidebar_label: Threat Model
+title: Threat Model
+description: The Kubernetes Admission Control Threat Model and Kubewarden.
 keywords: [kubernetes, admission control threat model, kubewarden]
 ---
 

@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Security Disclosure"
-title: ""
+sidebar_label: Security disclosure
+title: Security disclosure
+description: Security disclosure.
+keywords: [kubewarden, kubernetes, security, disclosure]
 ---
-
-# Disclosure
 
 The Kubewarden team greatly appreciates investigative work into security
 vulnerabilities carried out by well-intentioned, ethical security researchers.

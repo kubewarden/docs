@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Verifying Kubewarden"
-title: ""
+sidebar_label: Verifying Kubewarden
+title: Verifying Kubewarden
+description: Verifying Kubewarden.
+keywords: [kubewarden, kubernetes, security, verification]
 ---
-
-# Verifying Kubewarden
 
 Kubewarden artifacts are signed using [Sigstore](https://docs.sigstore.dev),
 with the keyless workflow. This means that the signing certificate contains the
