@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Network Capabilities"
-title: ""
+sidebar_label: Network capabilities
+title: Network capabilities
+description: Network capabilities.
+keywords: [kubewarden, kubernetes, policy specification, network capabilities]
 ---
-
-# Network capabilities
 
 Kubewarden policies cannot make network request from within the WebAssembly
 execution context.

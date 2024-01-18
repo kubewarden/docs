@@ -1,10 +1,11 @@
 ---
-sidebar_label: "Policy Settings"
-title: ""
+sidebar_label: Policy settings
+title: Policy settings
+description: Policy settings.
+keywords: [kubewarden, kubernetes, policy specification, policy settings]
 ---
-# Policy settings
 
-Policy behaviour is not set in stone, it can be configured by providing configuration
+Policy behavior is not set in stone, it can be configured by providing configuration
 details to the policy at runtime. The policy author has full freedom to define
 the structure of the policy settings.
 

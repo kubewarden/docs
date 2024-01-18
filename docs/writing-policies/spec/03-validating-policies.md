@@ -1,8 +1,9 @@
 ---
-sidebar_label: "Validating Policies"
-title: ""
+sidebar_label: Validating policies
+title: Validating policies
+description: Validating policies
+keywords: [kubewarden, kubernetes, policy specification, policy validation]
 ---
-# Validating policies
 
 The Kubewarden policy server receives:
 

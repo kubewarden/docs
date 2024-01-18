@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Host Capabilities Specification"
-title: ""
+sidebar_label: Host capabilities specification
+title: Host capabilities specification
+description: Host capabilities specification.
+keywords: [kubewarden, kubernetes, policy specification, host capabilities]
 ---
-
-# Host capabilities specification
 
 While being evaluated, Kubewarden policies can access extra capabilities offered
 by the host environment.

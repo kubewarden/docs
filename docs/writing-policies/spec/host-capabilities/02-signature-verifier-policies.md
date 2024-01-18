@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Signature Verifier Policies"
-title: ""
+sidebar_label: Signature verifier policies
+title: Signature verifier policies
+description: Signature verifier policies.
+keywords: [kubewarden, kubernetes, policy specification, signature verifier]
 ---
-
-# Signature verifier policies
 
 Kubewarden implements support for the [Sigstore](https://www.sigstore.dev/)
 project. This allows to implement a Secure Supply Chain for your cluster.

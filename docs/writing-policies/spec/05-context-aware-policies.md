@@ -1,12 +1,9 @@
 ---
-sidebar_label: "Context Aware Policies"
-title: ""
+sidebar_label: Context aware policies
+title: Context aware policies
+description: Context aware policies.
+keywords: [kubewarden, kubernetes, policy specification, context aware policies]
 ---
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-# Context aware policies
 
 The `policy-server` has capabilities to expose cluster information to
 policies, so that they can take decisions based on other existing

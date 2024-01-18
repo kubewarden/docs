@@ -1,16 +1,16 @@
 ---
-sidebar_label: "Cryptographic Capabilities"
-title: ""
+sidebar_label: Cryptographic capabilities
+title: Cryptographic capabilities
+description: Cryptographic capabilities.
+keywords: [kubewarden, kubernetes, policy specification, cryptographic capabilities]
 ---
-
-# Cryptographic capabilities
 
 Because of Wasm constraints at the time of writing, some cryptographic libraries
 cannot be compiled to Wasm. In the meantime, Kubewarden policies needing those
 can instead perform these callbacks to evaluate the cryptographic functions
 host-side, receive the result, and continue with their logic.
 
-# WaPC protocol contract
+## WaPC protocol contract
 
 In case you are implementing your own language SDK, these are the functions
 performing cryptographic checks exposed by the host:

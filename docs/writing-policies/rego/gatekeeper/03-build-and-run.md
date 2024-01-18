@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Build and Run"
-title: ""
+sidebar_label: Build and run
+title: Build and run a Gatekeeper policy
+description: Building and running a Gatekeeper policy written in Rego.
+keywords: [kubewarden, kubernetes, gatekeeper policy, rego]
 ---
-
-# Build and run
 
 Building and running the policy is done exactly the same way as a Rego
 policy targeting Open Policy Agent. The structure of our project is
