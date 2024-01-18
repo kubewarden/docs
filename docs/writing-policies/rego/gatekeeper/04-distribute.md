@@ -1,9 +1,9 @@
 ---
 sidebar_label: "Distribute"
-title: ""
+title: Distributing a Gatekeeper policy with Kubewarden
+description: Distributing a Gatekeeper policy with Kubewarden.
+keywords: [kubewarden, kubernetes, gatekeeper, rego]
 ---
-
-# Distribute
 
 Policies have to be annotated for them to be pushed, and eventually
 executed by the Kubewarden `policy-server` in a Kubernetes cluster.

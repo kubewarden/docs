@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Kubernetes Capabilities"
-title: ""
+sidebar_label: Kubernetes capabilities
+title: Kubernetes capabilities
+description: Kubernetes capabilities.
+keywords: [kubewarden, kubernetes, policy specification, kubernetes capabilities]
 ---
-
-# Kubernetes Capabilities
 
 Kubewarden context aware policies requires access to resources from the Kubernetes
 cluster where they are running on. For that, the Kubewarden SDKs expose functions

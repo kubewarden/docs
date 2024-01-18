@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Cryptographic Capabilities"
-title: ""
+sidebar_label: Cryptographic capabilities
+title: Cryptographic capabilities
+description: Cryptographic capabilities.
+keywords: [kubewarden, kubernetes, policy specification, cryptographic capabilities]
 ---
-
-# Cryptographic capabilities
 
 Because of Wasm constraints at the time of writing, some cryptographic libraries
 cannot be compiled to Wasm. In the meantime, Kubewarden policies needing those

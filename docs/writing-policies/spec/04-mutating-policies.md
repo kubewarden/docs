@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Mutating Policies"
-title: ""
+sidebar_label: Mutating policies
+title: Mutating policies
+description: Mutating policies.
+keywords: [kubewarden, kubernetes, policy specification, mutating policies]
 ---
-
-# Mutating policies
 
 Mutating policies are structured in the very same way as validating ones:
  * They have to register `validate` and `validate_settings` waPC functions

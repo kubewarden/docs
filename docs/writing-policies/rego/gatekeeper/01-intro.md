@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Introduction"
-title: ""
+sidebar_label: Gatekeeper support
+title: Gatekeeper support
+description: Introducing Gatekeeper support in Kubewarden.
+keywords: [kubewarden, kubernetes, rego, gatekeeper]
 ---
-
-# Gatekeeper
 
 :::note
 Gatekeeper support has been introduced starting from these releases:

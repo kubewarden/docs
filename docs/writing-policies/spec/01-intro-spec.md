@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Policy Communication Specification"
-title: ""
+sidebar_label: Policy communication specification
+title: Policy communication specification
+description: Policy communication specification.
+keywords: [kubewarden, kubernetes, policy specification, policy communication]
 ---
-
-# Policy communication specification
 
 The policy evaluator interacts with Kubewarden policies using a well
 defined API.  The purpose of this section is to document the API used

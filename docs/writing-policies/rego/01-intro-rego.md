@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Introduction to Rego"
-title: ""
+sidebar_label: Rego
+title: Rego
+description: Writing Kubewarden policies using Rego.
+keywords: [kubewarden, kubernetes, writing policies, rego]
 ---
-
-# Rego
 
 :::note
 Rego support has been introduced starting from these releases:

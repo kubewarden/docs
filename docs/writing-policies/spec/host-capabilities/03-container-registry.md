@@ -1,6 +1,8 @@
 ---
-sidebar_label: "Container Registry Capabilities"
-title: ""
+sidebar_label: Container registry capabilities
+title: Container registry capabilities
+description: Container registry capabilities.
+keywords: [kubewarden, kubernetes, policy specification, registry capabilities]
 ---
 
 # Container registry capabilities

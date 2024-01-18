@@ -1,9 +1,9 @@
 ---
-sidebar_label: "Build and Run"
-title: ""
+sidebar_label: Build and run
+title: Build and run a OPA policy for Kubewarden
+description: Build and run a OPA policy for Kubewarden.
+keywords: [kubewarden, kubernetes, build and run, open policy agent, opa, rego]
 ---
-
-# Build and run
 
 In the previous section we have written our Rego policy. The structure
 looks as the following:

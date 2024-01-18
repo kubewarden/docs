@@ -1,6 +1,8 @@
 ---
 sidebar_label: "Introduction"
-title: ""
+title: Introduction to Open Policy Agent
+description: Introduction to Open Policy Agent and Kubewarden.
+keywords: [kubewarden, kubernetes, open policy agent, opa, rego]
 ---
 
 # Open Policy Agent
