@@ -1,8 +1,8 @@
 ---
-sidebar_label: "Security"
-title: ""
+sidebar_label: Security
+title: Kubewarden security
+description: Kubewarden security.
+keywords: [kubewarden, kubernetes, security]
 ---
-
-# Security
 
 This section covers security topics related to the Kubewarden project.
