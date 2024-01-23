@@ -1,6 +1,11 @@
 ---
-sidebar_label: "Raw policies"
-title: "Raw policies"
+sidebar_label: Raw policies
+title: Raw policies
+description: Kubewarden support for raw policies using Rust.
+keywords: [kubewarden, kubernetes, raw policies, rust]
+doc-persona: [kubewarden-developer, kubewarden-integrator]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rust, raw-policies]
 ---
 
 # Writing raw policies

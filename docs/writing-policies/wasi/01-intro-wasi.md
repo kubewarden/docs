@@ -1,4 +1,5 @@
 ---
+sidebar_label: WASI
 title: WASI
 description: Using WASI to develop Kubewarden policies.
 keywords: [kubewarden, kubernetes, wasi]
