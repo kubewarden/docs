@@ -5,7 +5,7 @@ description: An introduction to testing Kubewarden policies for cluster operator
 keywords: [kubewarden, kubernetes, cluster operators, testing]
 doc-persona: [kubewarden-developer]
 doc-type: [tutorial]
-doc-topics: [testing-policies, cluster-operators]
+doc-topic: [testing-policies, cluster-operators]
 ---
 
 As a Kubernetes cluster operator, you will want to perform testing against Kubewarden policies you want to use.
