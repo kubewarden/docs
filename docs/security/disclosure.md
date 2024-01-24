@@ -3,6 +3,9 @@ sidebar_label: Security disclosure
 title: Security disclosure
 description: Security disclosure.
 keywords: [kubewarden, kubernetes, security, disclosure]
+doc-persona: [kubewarden-operator, kubewarden-policy-developer, kubewarden-integrator]
+doc-type: [explanation, reference]
+doc-topic: [security, disclosure]
 ---
 
 The Kubewarden team greatly appreciates investigative work into security

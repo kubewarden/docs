@@ -3,6 +3,9 @@ sidebar_label: "Policy Reports"
 title: "Audit Scanner - Policy Reports"
 description: The policy reports that the Audit Scanner produces.
 keywords: [kubewarden, kubernetes, audit scanner]
+doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
+doc-type: [explanation]
+doc-topic: [explanations, audit-scanner, policy-reports]
 ---
 
 When using the Kubewarden Audit Scanner, the results of the policy scans are stored using the

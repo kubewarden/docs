@@ -2,8 +2,10 @@
 sidebar_label: "Mutating policies"
 title: "Mutating policies"
 description: Explains mutating policies in the context of Kubewarden
-keywords:
-  [kubewarden policy mutating kubernetes clusteradmissionpolicy admissionpolicy]
+keywords: [kubewarden, policy mutating, kubernetes, clusteradmissionpolicy, admissionpolicy]
+doc-persona: [kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
+doc-type: [explanation, reference]
+doc-topic: [mutating-policies]
 ---
 
 Mutating policies receive an object request and rebuild this incoming object
