@@ -3,6 +3,9 @@ sidebar_label: "Dependency matrix"
 title: "Dependency matrix"
 description: Dependency matrix of Kubewarden.
 keywords: [dependency, dependencies, CRD, charts, matrix]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-type: [reference]
+doc-topic: [operator-manual, dependencies]
 ---
 
 This page lists the dependencies of Kubewarden, with their relevant

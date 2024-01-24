@@ -3,6 +3,9 @@ sidebar_label: "Upgrade path"
 title: "Upgrade path"
 description: Upgrade path for the Kubewarden stack.
 keywords: [upgrade path, support]
+doc-persona: [kubewarden-operator]
+doc-type: [reference]
+doc-topic: [operator-manual, upgrade-path]
 ---
 
 # Kubewarden stack versioning

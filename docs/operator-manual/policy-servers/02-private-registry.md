@@ -3,6 +3,9 @@ sidebar_label: "Using private registries"
 title: Configuring PolicyServers to use private registries
 description: Configuring PolicyServers to use private registries in Kubewarden.
 keywords: [kubewarden, kubernetes, policyservers, private registries]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-type: [explanation, howto]
+doc-topic: [operator-manual, policy-servers, private-registry]
 ---
 
 It is possible to configure PolicyServers to use credentials of private OCI

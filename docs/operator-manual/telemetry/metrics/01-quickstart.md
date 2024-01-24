@@ -3,6 +3,9 @@ sidebar_label: "Metrics quickstart"
 title: Metrics quickstart
 description: Metrics quickstart in Kubewarden.
 keywords: [kubewarden, kubernetes, metrics quickstart]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-type: [howto]
+doc-topic: [operator-manual, telemetry, metrics, quick-start]
 ---
 
 This section describes how to enable metrics reporting on the Policy Server.

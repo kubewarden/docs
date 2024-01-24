@@ -3,6 +3,9 @@ sidebar_label: Rancher UI extension quickstart
 title: Rancher UI extension quickstart
 description: UI extension quickstart for Kubewarden.
 keywords: [kubewarden, kubernetes, rancher ui extension]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-type: [tutorial, howto, reference]
+doc-topic: [operator-manual, ui-extension, installation]
 ---
 
 This section describes how to install the Kubewarden UI as an extension of [Rancher Manager](https://github.com/rancher/rancher).

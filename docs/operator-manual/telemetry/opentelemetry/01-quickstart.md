@@ -3,6 +3,9 @@ sidebar_label: "Open Telemetry quickstart"
 title: "Open Telemetry quickstart"
 description: An Open Telemetry quickstart for Kubewarden.
 keywords: [kubewarden, kubernetes, opentelemetry, open telemetry, quickstart]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-type: [tutorial, howto]
+doc-topic: [operator-manual, telemetry, opentelemetry, quick-start]
 ---
 
 [OpenTelemetry](https://opentelemetry.io/) is a Cloud Native Computing Foundation framework for

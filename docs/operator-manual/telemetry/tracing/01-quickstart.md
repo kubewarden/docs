@@ -3,6 +3,9 @@ sidebar_label: Tracing quickstart
 title: Tracing quickstart
 description: A tracing quickstart for Kubewarden.
 keywords: [kubewarden, kubernetes, tracing, quickstart]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-type: [howto]
+doc-topic: [operator-manual, telemetry, tracing, quick-start]
 ---
 
 This section illustrates how to enable tracing support of

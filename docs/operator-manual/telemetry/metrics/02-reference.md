@@ -3,6 +3,9 @@ sidebar_label: Metrics reference
 title:  Metrics reference
 description: Metrics reference documentation for Kubewarden.
 keywords: [kubewarden, kubernetes, metrics, reference]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-type: [reference]
+doc-topic: [operator-manual, telemetry, metrics, reference]
 ---
 
 Kubewarden exposes some relevant metrics that enhance visibility of the platform, and allows cluster
