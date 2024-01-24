@@ -3,6 +3,9 @@ sidebar_label: Cryptographic capabilities
 title: Cryptographic capabilities
 description: Cryptographic capabilities.
 keywords: [kubewarden, kubernetes, policy specification, cryptographic capabilities]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, specification, host-capabilities, cryptographic-capabilities]
 ---
 
 Because of Wasm constraints at the time of writing, some cryptographic libraries
@@ -61,7 +64,7 @@ performing cryptographic checks exposed by the host:
 ```
 
 </td>
-<td> 
+<td>
 
 ```hcl
 {

@@ -3,6 +3,9 @@ sidebar_label: Policy settings
 title: Policy settings
 description: Policy settings.
 keywords: [kubewarden, kubernetes, policy specification, policy settings]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, specification, settings]
 ---
 
 Policy behavior is not set in stone, it can be configured by providing configuration

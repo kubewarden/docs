@@ -3,6 +3,9 @@ sidebar_label: "Builtin Support"
 title: Builtin support
 description: The Kubewarden provided support for executing wasm binaries.
 keywords: [kubewarden, kubernetes, builtin wasm support]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rego, built-in-support]
 ---
 
 # Builtin support

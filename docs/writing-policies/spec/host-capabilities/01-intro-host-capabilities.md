@@ -3,6 +3,9 @@ sidebar_label: Host capabilities specification
 title: Host capabilities specification
 description: Host capabilities specification.
 keywords: [kubewarden, kubernetes, policy specification, host capabilities]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, specification, host-capabilities, introduction]
 ---
 
 While being evaluated, Kubewarden policies can access extra capabilities offered

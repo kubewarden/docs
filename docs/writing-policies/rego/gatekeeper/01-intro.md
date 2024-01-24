@@ -3,6 +3,9 @@ sidebar_label: Gatekeeper support
 title: Gatekeeper support
 description: Introducing Gatekeeper support in Kubewarden.
 keywords: [kubewarden, kubernetes, rego, gatekeeper]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rego, gatekeeper, introduction]
 ---
 
 :::note

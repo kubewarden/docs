@@ -3,6 +3,9 @@ sidebar_label: Kubernetes capabilities
 title: Kubernetes capabilities
 description: Kubernetes capabilities.
 keywords: [kubewarden, kubernetes, policy specification, kubernetes capabilities]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, specification, host-capabilities, kubernetes-capabilities]
 ---
 
 Kubewarden context aware policies requires access to resources from the Kubernetes

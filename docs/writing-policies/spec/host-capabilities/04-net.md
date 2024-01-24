@@ -3,6 +3,9 @@ sidebar_label: Network capabilities
 title: Network capabilities
 description: Network capabilities.
 keywords: [kubewarden, kubernetes, policy specification, network capabilities]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, specification, host-capabilities, network-capabilities]
 ---
 
 Kubewarden policies cannot make network request from within the WebAssembly

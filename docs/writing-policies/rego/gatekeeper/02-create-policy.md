@@ -3,6 +3,9 @@ sidebar_label: "Create a New Policy"
 title: Creating a new Gatekeeper Rego policy
 description: Creating a new Gatekeeper rego policy.
 keywords: [kubewarden, kubernetes, gatekeeper rego policy]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rego, gatekeeper, create-policy]
 ---
 
 Let's implement the same policy that [we wrote with Open Policy

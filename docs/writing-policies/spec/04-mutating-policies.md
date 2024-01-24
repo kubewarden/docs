@@ -3,6 +3,9 @@ sidebar_label: Mutating policies
 title: Mutating policies
 description: Mutating policies.
 keywords: [kubewarden, kubernetes, policy specification, mutating policies]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, specification, mutating-policies]
 ---
 
 Mutating policies are structured in the very same way as validating ones:

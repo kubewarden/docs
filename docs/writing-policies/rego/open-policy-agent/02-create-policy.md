@@ -3,6 +3,9 @@ sidebar_label: Creating a new policy
 title: Creating a new policy
 description: Creating a new OPA policy for Kubewarden.
 keywords: [kubewarden, kubernetes, creating a policy, open policy agent, opa, rego]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rego, open-policy-agent, create-policy]
 ---
 
 Let's create a sample policy that will help us go through some
