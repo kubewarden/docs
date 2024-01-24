@@ -11,22 +11,51 @@ Mutating policies receive an object request and rebuild this incoming object
 of the policy. The request will proceed through the Kubernetes API, potentially being
 evaluated by other policies.
 
-:::danger
-To prevent system abuse, Kubewarden administrators should review mutating
-policies: mutating policies could for example modify a workload, such that it
-allows for privileged container creation.
-
-If in doubt, split policies into mutating, and validating policies, instead of
-writing or deploying policies that both validate and mutate. This is particularly
-important when using a DSL (such as Rego) to build complex policies.
-:::
-
 If you want to allow the behavior of mutating requests,
 set the `ClusterAdmissionPolicy.mutating` field to `true`.
 
 However, if you set the `ClusterAdmissionPolicy.mutating` field to `false`,
 the mutated requests will be rejected.
-For example, create the following `ClusterAdmissionPolicy` with the `mutating` field set to `true`:
+
+# Why mutating policies can be dangerous
+
+### Unreviewed mutating policies can introduce vulnerabilities
+
+:::danger
+To prevent system abuse, Kubewarden administrators should review mutating
+policies: mutating policies could for example modify a workload, such that it
+allows for privileged container creation.
+:::
+
+#### Solution
+
+If in doubt, split policies into mutating and validating policies, instead of
+writing or deploying policies that both validate and mutate. This is particularly
+important when using a DSL (such as Rego) to build complex policies.
+
+### Misconfigured mutating policies together with 3rd party Kubernetes Controllers can get stuck in an infinite loop
+
+:::danger
+Mutating policies return requests that proceed through the Kubernetes API. If
+there are other Kubernetes Controllers that listen for those same resources,
+they may mutate them back in a follow-up request. This could lead to an
+infinite feedback loop of mutations.
+:::
+
+#### Solution
+
+Perform the mutation against:
+
+1. The lower type of resource (e.g: Pod).
+2. The highest type of resource (e.g: Deployment). Note: this could still lead
+   to loops if a controller is managing those resources. For example
+   controllers of GitOps solutions (like fleet, flux, argo, ...) or other 3rd
+   party controllers that translate their own CRDs into Deployment objects.
+
+# Examples
+
+Let's see a mutating policy at work. Create the following
+`ClusterAdmissionPolicy` with the `mutating` field set to `true`:
 
 ```bash
 # Command
