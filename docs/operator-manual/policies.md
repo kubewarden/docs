@@ -1,6 +1,6 @@
 ---
-sidebar_label: "Configuring policies"
-title: "Configuring policies"
+sidebar_label: Configuring policies
+title: Configuring policies
 description: Dependency matrix of Kubewarden.
 keywords: [policies, ClusterAdmissionPolicies, AdmissionPolicies, configuration, namespaces]
 doc-persona: [kubewarden-operator, kubewarden-integrator]

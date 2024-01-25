@@ -1,6 +1,6 @@
 ---
-sidebar_label: "Writing Policies"
-title: "Writing Kubewarden policies"
+sidebar_label: Writing Policies
+title: Writing Kubewarden policies
 description: An introduction to writing Kubewarden policies.
 keywords: [kubewarden, kubernetes, writing policies]
 doc-type: [explanation]

@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Using private registries"
+sidebar_label: Using private registries
 title: Configuring PolicyServers to use private registries
 description: Configuring PolicyServers to use private registries in Kubewarden.
 keywords: [kubewarden, kubernetes, policyservers, private registries]

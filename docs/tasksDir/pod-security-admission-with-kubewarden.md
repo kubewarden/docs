@@ -1,6 +1,6 @@
 ---
-sidebar_label: "Pod Security Admission with KW"
-title: " Using Pod Security Admission with Kubewarden"
+sidebar_label: Pod Security Admission with KW
+title: Using Pod Security Admission with Kubewarden
 description: Using Pod Security Admission with Kubewarden, since the Kubernetes 1.25 release.
 keywords: [kubewarden, pod security admission, pod security policy, kubernetes]
 doc-persona: [kubewarden-operator, kubewarden-distributor, kubewarden-integrator]

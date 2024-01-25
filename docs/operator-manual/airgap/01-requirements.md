@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Requirements"
+sidebar_label: Requirements
 title: Requirements for a Kubewarden air gap installation
 description: Requirements for a Kubewarden air gap installation.
 keywords: [kubewarden, kubernetes, air gap installation]

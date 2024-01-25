@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Create a New Policy"
+sidebar_label: Create a New Policy
 title: Creating a new Gatekeeper Rego policy
 description: Creating a new Gatekeeper rego policy.
 keywords: [kubewarden, kubernetes, gatekeeper rego policy]

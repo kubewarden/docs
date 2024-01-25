@@ -1,6 +1,6 @@
 ---
-sidebar_label: "Creating a policy"
-title: "Creating a policy"
+sidebar_label: Creating a policy
+title: Creating a policy
 description: Creating a Kubewarden policy using Rust.
 keywords: [kubewarden, kubernetes, policy creation]
 doc-type: [tutorial]

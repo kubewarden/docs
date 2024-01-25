@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Publish to Artifact Hub"
+sidebar_label: Publish to Artifact Hub
 title: Publish policies to Artifact Hub
 description: A brief introduction to publishing Kubewarden policies on Artifact Hub.
 keywords: [kubewarden, kubernetes, publishing policies, artifact hub]

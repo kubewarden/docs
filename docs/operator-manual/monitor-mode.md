@@ -1,6 +1,6 @@
 ---
-sidebar_label: "Monitor mode"
-title: "Monitor mode"
+sidebar_label: Monitor mode
+title: Monitor mode
 description: The Kubewarden monitor mode and how to activate it.
 keywords: [kubernetes, kubewarden, monitor mode]
 doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-integrator]

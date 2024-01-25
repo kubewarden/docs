@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Operator Manual"
+sidebar_label: Operator Manual
 title: Operator manual
 description: The operator manual for Kubewarden.
 keywords: [kubewarden, kubernetes, kubewarden operator manual]

@@ -1,6 +1,6 @@
 ---
-sidebar_label: "Mutating policies"
-title: "Mutating policies"
+sidebar_label: Mutating policies
+title: Mutating policies
 description: Explains mutating policies in the context of Kubewarden
 keywords: [kubewarden, policy mutating, kubernetes, clusteradmissionpolicy, admissionpolicy]
 doc-persona: [kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]

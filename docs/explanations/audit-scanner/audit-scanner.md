@@ -1,6 +1,6 @@
 ---
-sidebar_label: "What is the Audit Scanner?"
-title: "What is the Audit Scanner?"
+sidebar_label: What is the Audit Scanner?
+title: What is the Audit Scanner?
 description: An overview of the Kubewarden Audit Scanner.
 keywords: [kubewarden, audit scanner, kubernetes]
 doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]

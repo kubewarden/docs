@@ -1,6 +1,6 @@
 ---
-sidebar_label: "PSP migration"
-title: "PodSecurityPolicy migration"
+sidebar_label: PSP migration
+title: PodSecurityPolicy migration
 description: Discusses PSP migration to Kubewarden policies after Kubernetes v1.25.
 keywords: [kubewarden, kubernetes, appvia, psp, pod security policy]
 doc-persona: [kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
@@ -526,9 +526,9 @@ to use. It processes the PSPs defined in the `kubectl` default context. Then it
 prints the Kuberwarden policies definitions on the standard output. Users can
 redirect the content to a file or to `kubectl` directly.
 
-:::note 
+:::note
 
-This script only works in Linux x86_64 machines. 
+This script only works in Linux x86_64 machines.
 
 :::
 

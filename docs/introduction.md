@@ -1,7 +1,7 @@
 ---
 slug: /
-sidebar_label: "Introduction"
-title: "Introduction"
+sidebar_label: Introduction
+title: Introduction
 description: Introducing Kubewarden, a CNCF Sandbox project.
 keywords: [kubewarden, cncf, cncf sandbox, kubernetes]
 doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator, kubewarden-core-developer]
