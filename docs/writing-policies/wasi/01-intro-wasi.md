@@ -42,7 +42,7 @@ You shouldn't use WASI policies under regular circumstances because they suffer 
 
 :::note
 
-Recent project work indicates it may be possible to provide context-aware capabilities for WASI policies for other languages.
+Host capabilities can be used also by WASI policies. Currently only the Kubewarden Go SDK exposes them to WASI policies.
 If this is of interest to you, please get in touch.
 We can then prioritize the effort.
 
