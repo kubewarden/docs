@@ -3,6 +3,9 @@ sidebar_label: Build and run
 title: Build and run a Gatekeeper policy
 description: Building and running a Gatekeeper policy written in Rego.
 keywords: [kubewarden, kubernetes, gatekeeper policy, rego]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rego, gatekeeper, build-and-run]
 ---
 
 Building and running the policy is done exactly the same way as a Rego

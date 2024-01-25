@@ -3,6 +3,9 @@ sidebar_label: Rego
 title: Rego
 description: Writing Kubewarden policies using Rego.
 keywords: [kubewarden, kubernetes, writing policies, rego]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rego, introduction]
 ---
 
 :::note

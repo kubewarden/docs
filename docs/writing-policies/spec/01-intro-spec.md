@@ -3,6 +3,9 @@ sidebar_label: Policy communication specification
 title: Policy communication specification
 description: Policy communication specification.
 keywords: [kubewarden, kubernetes, policy specification, policy communication]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, specification, introduction]
 ---
 
 The policy evaluator interacts with Kubewarden policies using a well

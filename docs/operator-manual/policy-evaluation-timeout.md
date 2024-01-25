@@ -1,8 +1,11 @@
 ---
-sidebar_label: "Policy evaluation timeout"
+sidebar_label: Policy evaluation timeout
 title: Policy evaluation timeout protection
 description: Policy evaluation timeout protection for Kubewarden
 keywords: [kubewarden, kubernetes, policy timeout protection]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-type: [explanation, howto, reference]
+doc-topic: [operator-manual, policy-evaluation-timeout]
 ---
 
 

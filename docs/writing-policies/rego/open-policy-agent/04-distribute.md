@@ -3,6 +3,9 @@ sidebar_label: Distribute
 title: Distributing an OPA policy with Kubewarden
 description: Distributing an OPA policy with Kubewarden.
 keywords: [kubewarden, kubernetes, distributing, open policy agent, opa, rego]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rego, open-policy-agent, distribute]
 ---
 
 We have written, built and run our Rego policy. Now it's time to

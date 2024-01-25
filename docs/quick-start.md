@@ -3,6 +3,9 @@ sidebar_label: "Quick start"
 title: "Quick start"
 description: Getting started with Kubewarden, installing the Kubewarden stack and taking care of prerequisites and authentication
 keywords: [Kubewarden, installation, quick start, policyserver, clusteradmissionpolicy, admissionpolicy]
+doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor]
+doc-type: [tutorial]
+doc-topic: [quick-start]
 ---
 
 

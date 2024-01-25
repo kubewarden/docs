@@ -3,6 +3,9 @@ sidebar_label: Raw policies
 title: Writing raw policies
 description: Writing raw OPA policies for Kubewarden.
 keywords: [kubewarden, kubernetes, raw policies, open policy agent, opa, rego]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rego, open-policy-agent, raw-policies]
 ---
 
 Raw policies are policies that can evaluate arbitrary JSON documents.

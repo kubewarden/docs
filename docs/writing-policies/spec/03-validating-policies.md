@@ -3,6 +3,9 @@ sidebar_label: Validating policies
 title: Validating policies
 description: Validating policies
 keywords: [kubewarden, kubernetes, policy specification, policy validation]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, specification, validating-policies]
 ---
 
 The Kubewarden policy server receives:
@@ -16,7 +19,7 @@ to the policy to be evaluated.
 
 or:
 
-- a JSON with a `request` attribute containing the free-form request document, 
+- a JSON with a `request` attribute containing the free-form request document,
 in case of a raw policy. Check the [Raw policies](../../howtos/raw-policies.md) section for more details.
 
 

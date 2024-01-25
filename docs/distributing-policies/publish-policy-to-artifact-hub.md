@@ -3,6 +3,9 @@ sidebar_label: "Publish to Artifact Hub"
 title: Publish policies to Artifact Hub
 description: A brief introduction to publishing Kubewarden policies on Artifact Hub.
 keywords: [kubewarden, kubernetes, publishing policies, artifact hub]
+doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
+doc-type: [explanation]
+doc-topic: [distributing-policies, publish-policy-to-artifacthub]
 ---
 
 [Artifact Hub](https://artifacthub.io/) is a website where users can find,

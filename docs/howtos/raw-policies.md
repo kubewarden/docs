@@ -1,6 +1,11 @@
 ---
-sidebar_label: "Raw policies"
-title: "Raw policies"
+sidebar_label: Raw policies
+title: Raw policies
+description: Kubewarden support for 'raw' policies.
+keywords: [kubewarden, kubernetes, support, raw policies]
+doc-persona: [kubewarden-integrator, kubewarden-operator, kubewarden-developer]
+doc-type: [howto]
+doc-topic: [kubewarden, kubernetes, raw-policies]
 ---
 
 # Raw policies

@@ -4,6 +4,9 @@ sidebar_label: "Introduction"
 title: "Introduction"
 description: Introducing Kubewarden, a CNCF Sandbox project.
 keywords: [kubewarden, cncf, cncf sandbox, kubernetes]
+doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator, kubewarden-core-developer]
+doc-type: [tutorial]
+doc-topic: [introduction]
 ---
 
 # Introduction
@@ -11,11 +14,11 @@ keywords: [kubewarden, cncf, cncf sandbox, kubernetes]
 Kubewarden is a Kubernetes Policy Engine.
 It aims to be the Universal Policy Engine for Kubernetes.
 
-You can reuse policies from other policy engines without having to rewrite them.
-You can write your own policies in any programming language
+- You can reuse policies from other policy engines without having to rewrite them.
+- You can write your own policies in any programming language
 that generates WebAssembly binaries,
 reusing your language tooling and libraries.
-You can run policies outside of the cluster and as part of your CI/CD processes.
+- You can run policies both outside the cluster and as part of your CI/CD processes.
 
 Kubewarden also provides an audit scanner to
 actively and continuously check policy enforcement over time.

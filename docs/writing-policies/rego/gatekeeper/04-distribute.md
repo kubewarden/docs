@@ -3,6 +3,9 @@ sidebar_label: "Distribute"
 title: Distributing a Gatekeeper policy with Kubewarden
 description: Distributing a Gatekeeper policy with Kubewarden.
 keywords: [kubewarden, kubernetes, gatekeeper, rego]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rego, gatekeeper, distribute]
 ---
 
 Policies have to be annotated for them to be pushed, and eventually

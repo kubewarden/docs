@@ -3,6 +3,9 @@ sidebar_label: Context aware policies
 title: Context aware policies
 description: Context aware policies.
 keywords: [kubewarden, kubernetes, policy specification, context aware policies]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, specification, context-aware-policies]
 ---
 
 The `policy-server` has capabilities to expose cluster information to

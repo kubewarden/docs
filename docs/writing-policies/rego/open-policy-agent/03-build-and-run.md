@@ -3,6 +3,9 @@ sidebar_label: Build and run
 title: Build and run a OPA policy for Kubewarden
 description: Build and run a OPA policy for Kubewarden.
 keywords: [kubewarden, kubernetes, build and run, open policy agent, opa, rego]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, rego, open-policy-agent, build-and-run]
 ---
 
 In the previous section we have written our Rego policy. The structure

@@ -1,8 +1,11 @@
 ---
-sidebar_label: "Installation"
+sidebar_label: Installation
 title: Air gap installation
 description: Air gap installation for Kubewarden.
 keywords: [kubewarden, kubernetes, air gap installation]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-type: [howto]
+doc-topic: [operator-manual, airgap, installation]
 ---
 
 

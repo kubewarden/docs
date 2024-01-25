@@ -3,6 +3,9 @@ sidebar_label: Container registry capabilities
 title: Container registry capabilities
 description: Container registry capabilities.
 keywords: [kubewarden, kubernetes, policy specification, registry capabilities]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, specification, host-capabilities, container-registry]
 ---
 
 # Container registry capabilities

@@ -1,6 +1,11 @@
 ---
-sidebar_label: "Custom Resources Definitions (CRDs)"
-title: "Custom Resource Definitions (CRD)"
+sidebar_label: Custom Resources Definitions (CRD)
+title: Custom Resource Definitions (CRD)
+description: Kubewarden's Custom Resource Definitions (CRD)
+keywords: [kubewarden, kubernetes, custom resource definitions, crd]
+doc-persona: [kubewarden-developer]
+doc-type: [reference]
+doc-topic: [operator-manual, crd]
 ---
 
 You can find the definitions for the Kubewarden Custom Resources both on this page and

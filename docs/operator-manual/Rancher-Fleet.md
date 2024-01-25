@@ -3,6 +3,9 @@ sidebar_label: "Rancher Fleet"
 title: "Managing Kubewarden with Rancher Fleet"
 description: Managing Kubewarden with Rancher Fleet.
 keywords: [kubernetes, kubewarden, rancher fleet]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-type: [tutorial, explanation, howto, reference]
+doc-topic: [operator-manual, rancher-fleet]
 ---
 
 You can manage Kubewarden Helm charts,

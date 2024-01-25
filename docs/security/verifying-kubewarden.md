@@ -3,6 +3,9 @@ sidebar_label: Verifying Kubewarden
 title: Verifying Kubewarden
 description: Verifying Kubewarden.
 keywords: [kubewarden, kubernetes, security, verification]
+doc-persona: [kubewarden-operator, kubewarden-policy-developer, kubewarden-integrator]
+doc-type: [explanation, reference]
+doc-topic: [security, verifying-kubewarden]
 ---
 
 Kubewarden artifacts are signed using [Sigstore](https://docs.sigstore.dev),

@@ -1,6 +1,11 @@
 ---
-sidebar_label: "Audit Scanner Installation"
-title: "Audit Scanner Installation"
+sidebar_label: Audit Scanner Installation
+title: Audit Scanner Installation
+description: How-to do an Audit Scanner installation.
+keywords: [kubewarden, kubernetes, audit scanner]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-type: [howto]
+doc-topic: [howto, audit-scanner-installation]
 ---
 
 # Audit Scanner installation

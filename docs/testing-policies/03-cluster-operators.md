@@ -1,7 +1,11 @@
 ---
-sidebar_label: "Cluster operators"
-title: "Testing for cluster operators"
+sidebar_label: Cluster operators
+title: Testing for cluster operators
 description: An introduction to testing Kubewarden policies for cluster operators.
+keywords: [kubewarden, kubernetes, cluster operators, testing]
+doc-persona: [kubewarden-developer]
+doc-type: [tutorial]
+doc-topic: [testing-policies, cluster-operators]
 ---
 
 As a Kubernetes cluster operator, you will want to perform testing against Kubewarden policies you want to use.

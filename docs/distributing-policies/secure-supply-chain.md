@@ -3,6 +3,9 @@ sidebar_label: "Secure supply chain"
 title: Secure supply chain
 description: A secure supply chain infrastructure using Kubewarden.
 keywords: [kubewarden, kubernetes, secure supply chain, infrastructure]
+doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
+doc-type: [explanation]
+doc-topic: [distributing-policies, secure-supply-chain]
 ---
 
 A secure supply chain infrastructure can verify the validity of its parts, or links.

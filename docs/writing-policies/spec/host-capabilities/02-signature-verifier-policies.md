@@ -3,6 +3,9 @@ sidebar_label: Signature verifier policies
 title: Signature verifier policies
 description: Signature verifier policies.
 keywords: [kubewarden, kubernetes, policy specification, signature verifier]
+doc-persona: [kubewarden-policy-developer]
+doc-type: [tutorial]
+doc-topic: [writing-policies, specification, host-capabilities, signature-verifier-policies]
 ---
 
 Kubewarden implements support for the [Sigstore](https://www.sigstore.dev/)
@@ -113,7 +116,7 @@ policy that verifies signatures can use:
 ```
 
 </td>
-<td> 
+<td>
 
 ```hcl
 {
@@ -161,7 +164,7 @@ policy that verifies signatures can use:
 ```
 
 </td>
-<td> 
+<td>
 
 ```hcl
 {
@@ -209,7 +212,7 @@ policy that verifies signatures can use:
 ```
 
 </td>
-<td> 
+<td>
 
 ```hcl
 {
@@ -240,7 +243,7 @@ policy that verifies signatures can use:
   # GitHub owner
   "owner": string,
   # optional:
-  # GitHub repository 
+  # GitHub repository
   "repo": string
   "annotations": [
     # signature annotations
@@ -253,7 +256,7 @@ policy that verifies signatures can use:
 ```
 
 </td>
-<td> 
+<td>
 
 ```hcl
 {
@@ -298,7 +301,7 @@ policy that verifies signatures can use:
     [byte(int), ..., byte(int)],
     ...
     [byte(int), ..., byte(int)]
-  ], 
+  ],
   # Require the signature layer to have
   # a Rekor bundle.
   # Having a Rekor bundle allows further
@@ -319,7 +322,7 @@ policy that verifies signatures can use:
 ```
 
 </td>
-<td> 
+<td>
 
 ```hcl
 {
@@ -372,7 +375,7 @@ Marked for deprecation:
 ```
 
 </td>
-<td> 
+<td>
 
 ```hcl
 {
@@ -420,7 +423,7 @@ Marked for deprecation:
 ```
 
 </td>
-<td> 
+<td>
 
 ```hcl
 {

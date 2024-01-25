@@ -3,6 +3,9 @@ sidebar_label: "Custom Certificate Authorities"
 title: Custom certificate authorities
 description: Using custom certificate authorities with Kubewarden.
 keywords: [kubewarden, kubernetes, custom certificate authorities]
+doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
+doc-type: [explanation]
+doc-topic: [distributing-policies, custom-certificate-authorities]
 ---
 
 With both of `kwctl` and `policy-server`

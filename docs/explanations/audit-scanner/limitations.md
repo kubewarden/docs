@@ -3,6 +3,9 @@ sidebar_label: "Limitations"
 title: "Audit Scanner - Limitations"
 description: The limitation of the audit scanner
 keywords: [kubewarden, kubernetes, audit scanner]
+doc-persona: [kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
+doc-type: [explanation, reference]
+doc-topic: [explanations, audit-scanner, limitations]
 ---
 
 ## Supported event types
