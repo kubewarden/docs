@@ -8,8 +8,6 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rego, open-policy-agent, introduction]
 ---
 
-# Open Policy Agent
-
 :::note
 Open Policy Agent support has been introduced starting from these releases:
   * kwctl: v0.2.0

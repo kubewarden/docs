@@ -15,11 +15,11 @@ You can find the definitions for the Kubewarden Custom Resources both on this pa
 API REFERENCE GOES BELOW.
 From a file generated in the kubewarden/kubewarden-controller repo
 in docs/crds. Make sure to delete the old stuff below this line first!
+And then delete the L1 heading line.
 
 The generated markdown has the potential to break Docusaurus V3 build.
 Be careful Does yarn build work locally?
 -->
-# API Reference
 
 ## Packages
 - [policies.kubewarden.io/v1](#policieskubewardeniov1)

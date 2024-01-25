@@ -82,7 +82,7 @@ document:
 }
 ```
 
-# Recap
+## Recap
 
 Each policy must register a waPC function called `validate_settings` that has
 the following API:
