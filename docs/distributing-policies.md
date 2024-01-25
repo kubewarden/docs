@@ -25,7 +25,7 @@ We think distributing Kubewarden policies via a regular OCI-compliant registry i
 Container registries are a mandatory requirement for any Kubernetes cluster.
 Having a single place to store, and secure, all the artifacts required by a cluster is beneficial.
 
-# Pushing policies to an OCI-compliant registry
+## Pushing policies to an OCI-compliant registry
 
 The [OCI image format](https://github.com/opencontainers/image-spec)
 specification allows you to store any binary blob inside a regular OCI-compliant container registry.
