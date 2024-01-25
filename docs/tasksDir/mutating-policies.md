@@ -19,7 +19,7 @@ set the `ClusterAdmissionPolicy.mutating` field to `true`.
 However, if you set the `ClusterAdmissionPolicy.mutating` field to `false`,
 the mutated requests will be rejected.
 
-# Why mutating policies can be dangerous
+## Why mutating policies can be dangerous
 
 ### Unreviewed mutating policies can introduce vulnerabilities
 
@@ -54,7 +54,7 @@ Perform the mutation against:
    controllers of GitOps solutions (like fleet, flux, argo, ...) or other 3rd
    party controllers that translate their own CRDs into Deployment objects.
 
-# Examples
+## Examples
 
 Let's see a mutating policy at work. Create the following
 `ClusterAdmissionPolicy` with the `mutating` field set to `true`:

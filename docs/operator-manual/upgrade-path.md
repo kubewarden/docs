@@ -8,7 +8,7 @@ doc-type: [reference]
 doc-topic: [operator-manual, upgrade-path]
 ---
 
-# Kubewarden stack versioning
+## Kubewarden stack versioning
 
 The Kubewarden project uses [Semantic versioning](https://semver.org/)
 to define the "stack" version of all its components: the version follows the
@@ -82,12 +82,12 @@ chart, then the `kubewarden-controller` chart. After that, upgrade the
 `policy-server` (via `kubewarden-defaults` chart or bumping the images of
 custom ones) and `kwctl`.
 
-# Downgrades
+## Downgrades
 
 Downgrades are **not** supported, and haven't been tested. Nevertheless,
 there's a reasonable expectation that they should work.
 
-# SDKs, policies
+## SDKs, policies
 
 Policy SDKs for the different languages, and policies maintained by the
 Kubewarden team follow their own semantic versioning and are supported on their

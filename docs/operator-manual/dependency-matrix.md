@@ -12,7 +12,7 @@ This page lists the dependencies of Kubewarden, with their relevant
 version constraints. Versions outside of the provided ranges may work but are
 not tested.
 
-### Opentelemetry, metrics and tracing dependencies
+## Opentelemetry, metrics and tracing dependencies
 
 At the time of writing, the [Opentelemetry](https://opentelemetry.io) stack
 keeps improving. Still, is not yet stable, and unannounced
@@ -20,7 +20,7 @@ backwards-incompatible changes still happen. Kubewarden devs do their best to
 track Opentelemetry stack changes and adjust to them. Kubewarden is tested against a known working
 range of Opentelemetry, metrics and tracing stack.
 
-# Hard dependencies
+## Hard dependencies
 
 Needed for Kubewarden deployments.
 
@@ -28,7 +28,7 @@ Needed for Kubewarden deployments.
 | ----------------------------- | :---------------------: | :------------------: | :--------------------: |
 | `jetstack/cert-manager` chart |      `>= 1.13 < 2`      |  Example: `v1.13.2`  | Plans to make optional |
 
-# Optional dependencies
+## Optional dependencies
 
 Needed for specific features.
 
@@ -43,7 +43,7 @@ Needed for specific features.
 | ----------------------------------- | :--------: | :--------------------------------------------------: | :-----------: |
 | `policyreports.wgpolicyk8s.io` CRDs | `v1alpha1` | In `kubewarden-defaults` chart or manually installed | Audit Scanner |
 
-# Rancher
+## Rancher
 
 For downstream consumers such as Rancher, Kubewarden is tested against the
 monitoring and tracing Helm charts provided in the Rancher charts repository.

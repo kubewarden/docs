@@ -8,8 +8,6 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rego, built-in-support]
 ---
 
-# Builtin support
-
 Building a policy for the `wasm` target is only half of the problem,
 it needs to be executed.
 

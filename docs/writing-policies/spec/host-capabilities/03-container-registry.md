@@ -8,8 +8,6 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, specification, host-capabilities, container-registry]
 ---
 
-# Container registry capabilities
-
 Container registries can be used to distribute many types of OCI objects, going
 from well-known container images to generic OCI Artifacts. OCI Artifacts are used
 to store objects such as Kubewarden Policies, Helm charts, and more.

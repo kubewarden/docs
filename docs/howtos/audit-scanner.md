@@ -1,14 +1,12 @@
 ---
-sidebar_label: Audit Scanner Installation
-title: Audit Scanner Installation
+sidebar_label: Audit Scanner installation
+title: Audit Scanner installation
 description: How-to do an Audit Scanner installation.
 keywords: [kubewarden, kubernetes, audit scanner]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
 doc-type: [howto]
 doc-topic: [howto, audit-scanner-installation]
 ---
-
-# Audit Scanner installation
 
 Beginning with version `v1.7.0`, Kubewarden has a new feature called "Audit Scanner".
 A new component, called "audit-scanner", constantly checks the resources declared in the

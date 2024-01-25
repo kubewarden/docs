@@ -9,8 +9,6 @@ doc-type: [tutorial]
 doc-topic: [introduction]
 ---
 
-# Introduction
-
 Kubewarden is a Kubernetes Policy Engine.
 It aims to be the Universal Policy Engine for Kubernetes.
 
