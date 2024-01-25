@@ -38,12 +38,12 @@ Kubewarden supports WASI policies from the Kubewarden 1.7.0 release forward.
 You shouldn't use WASI policies under regular circumstances because they suffer from the following limitations:
 
 - No bi-directional communication, hence [host capabilities](../spec/host-capabilities/01-intro-host-capabilities.md) aren't available
-- No [context-aware](../../explanations/context-aware-policies.md) capabilities (though see the following note)
+- [Context-aware](../../explanations/context-aware-policies.md) capabilities only through the Go SDK (though see the following note)
 - Inferior performance at evaluation time compared to waPC/Rego based policies
 
 :::note
 
-Recent project work indicates it may be possible to provide context-aware capabilities for WASI policies.
+Host capabilities can be used also by WASI policies. Currently only the Kubewarden Go SDK exposes them to WASI policies.
 If this is of interest to you, please get in touch.
 We can then prioritize the effort.
 
@@ -62,7 +62,7 @@ This limitation, tracked by [this dedicated issue](https://github.com/golang/go/
 The Kubewarden project team advise that you write Kubewarden Go policies using the TinyGo compiler, as described [here](../go/01-intro-go.md).
 
 However, certain complex Go code bases can't be compiled using the TinyGo compiler.
-This includes, for example, code bases like [CEL-go](https://github.com/google/cel-go) or [kyverno](https://github.com/kyverno/kyverno/).
+This includes, for example, code bases like [CEL-go](https://github.com/google/cel-go) or [Kyverno](https://github.com/kyverno/kyverno/).
 In these circumstances, usage of the official Go compiler can help.
 
 ## Communication protocol
@@ -100,6 +100,14 @@ Both the `ValidationRequest` and `ValidationResponse` objects are described [her
 
 When a mutation is needed, the `ValidationResponse` object must have a key, `mutated_object`, containing the object to be created.
 This process is described [here](../spec/04-mutating-policies.md).
+
+## Context-aware
+
+Only supported via the Go SDK for now. The Go SDK exposes the context-aware
+capabilities as usual, for more information see [here](../spec/context-aware-policies).
+
+As an example of a WASI Go context-aware policy, see the
+[go-wasi-context-aware-test-policy](https://github.com/kubewarden/go-wasi-context-aware-test-policy).
 
 ### Settings validation
 

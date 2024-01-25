@@ -28,11 +28,11 @@ That means some information might be stale or missing.
 
 ## Support Matrix
 
-| Policy type                       | Support | Notes                                  |
-| --------------------------------- | :-----: | -------------------------------------- |
-| Traditional programming languages |   ✅    | -                                      |
-| Rego                              |   ✅    | Available since Kubewarden 1.9 release |
-| WASI                              |   ❌    | -                                      |
+| Policy type                       | Support | Notes                                            |
+| --------------------------------- | :-----: | ------------------------------------------------ |
+| Traditional programming languages |   ✅    | -                                                |
+| Rego                              |   ✅    | Since Kubewarden 1.9 release                     |
+| WASI                              |   ✅    | Since Kubewarden 1.10.0 release, only for Go SDK |
 
 ## ClusterAdmissionPolicies
 
