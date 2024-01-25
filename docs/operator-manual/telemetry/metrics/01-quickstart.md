@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Metrics quickstart"
+sidebar_label: Metrics quickstart
 title: Metrics quickstart
 description: Metrics quickstart in Kubewarden.
 keywords: [kubewarden, kubernetes, metrics quickstart]

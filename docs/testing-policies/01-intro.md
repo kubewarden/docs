@@ -1,6 +1,6 @@
 ---
-sidebar_label: "Policy testing"
-title: "Policy testing"
+sidebar_label: Policy testing
+title: Policy testing
 description: The two personas using Kubewarden policies are policy authors and cluster operators.
 keywords: [kubewarden, persons, policy author, cluster operator]
 doc-persona: [kubewarden-operator, kubewarden-policy-developer]

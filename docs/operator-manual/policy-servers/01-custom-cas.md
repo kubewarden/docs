@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Using Custom CAs"
+sidebar_label: Using Custom CAs
 title: Using custom certificate authorities
 description: Using custom certificate authorities with Kubewarden policy servers.
 keywords: [kubewarden, kubernetes, custom certificate authorities]

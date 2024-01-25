@@ -1,6 +1,6 @@
 ---
-sidebar_label: "Architecture"
-title: "Architecture"
+sidebar_label: Architecture
+title: Architecture
 description: The Kubewarden architecture
 keywords: [kubewarden, kubernetes, architecture]
 doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]

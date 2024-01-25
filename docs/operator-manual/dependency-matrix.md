@@ -1,6 +1,6 @@
 ---
-sidebar_label: "Dependency matrix"
-title: "Dependency matrix"
+sidebar_label: Dependency matrix
+title: Dependency matrix
 description: Dependency matrix of Kubewarden.
 keywords: [dependency, dependencies, CRD, charts, matrix]
 doc-persona: [kubewarden-operator, kubewarden-integrator]

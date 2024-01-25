@@ -1,6 +1,6 @@
 ---
-sidebar_label: "Defining policy settings"
-title: "Defining policy settings"
+sidebar_label: Defining policy settings
+title: Defining policy settings
 description: Defining policy settings for a Kubewarden policy developed using Rust
 keywords: [kubewarden, kubernetes, writing policies, policy settings, rust]
 doc-type: [tutorial]

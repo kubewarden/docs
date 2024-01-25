@@ -1,6 +1,6 @@
 ---
-sidebar_label: "Rancher Fleet"
-title: "Managing Kubewarden with Rancher Fleet"
+sidebar_label: Rancher Fleet
+title: Managing Kubewarden with Rancher Fleet
 description: Managing Kubewarden with Rancher Fleet.
 keywords: [kubernetes, kubewarden, rancher fleet]
 doc-persona: [kubewarden-operator, kubewarden-integrator]

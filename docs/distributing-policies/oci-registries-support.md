@@ -1,6 +1,6 @@
 ---
-sidebar_label: "OCI registry support"
-title: "OCI registry support for Kubewarden"
+sidebar_label: OCI registry support
+title: OCI registry support for Kubewarden
 description: OCI registry support for Kubewarden.
 keywords: [kubewarden, kubernetes, oci registry support]
 doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]

@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Custom Certificate Authorities"
+sidebar_label: Custom Certificate Authorities
 title: Custom certificate authorities
 description: Using custom certificate authorities with Kubewarden.
 keywords: [kubewarden, kubernetes, custom certificate authorities]

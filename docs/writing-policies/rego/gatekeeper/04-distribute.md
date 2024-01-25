@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Distribute"
+sidebar_label: Distribute
 title: Distributing a Gatekeeper policy with Kubewarden
 description: Distributing a Gatekeeper policy with Kubewarden.
 keywords: [kubewarden, kubernetes, gatekeeper, rego]

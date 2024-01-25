@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Distributing policies"
+sidebar_label: Distributing policies
 title: Distributing policies
 description: A description of how Kubewarden policies are distributed from OCI-compliant repositories.
 keywords: [oci, kubewarden, policy, wasm, webassembly]

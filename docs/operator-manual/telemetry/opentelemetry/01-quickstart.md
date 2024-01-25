@@ -1,6 +1,6 @@
 ---
-sidebar_label: "Open Telemetry quickstart"
-title: "Open Telemetry quickstart"
+sidebar_label: Open Telemetry quickstart
+title: Open Telemetry quickstart
 description: An Open Telemetry quickstart for Kubewarden.
 keywords: [kubewarden, kubernetes, opentelemetry, open telemetry, quickstart]
 doc-persona: [kubewarden-operator, kubewarden-integrator]

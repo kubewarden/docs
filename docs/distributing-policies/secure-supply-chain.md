@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Secure supply chain"
+sidebar_label: Secure supply chain
 title: Secure supply chain
 description: A secure supply chain infrastructure using Kubewarden.
 keywords: [kubewarden, kubernetes, secure supply chain, infrastructure]
