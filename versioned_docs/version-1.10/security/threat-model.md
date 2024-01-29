@@ -70,6 +70,9 @@ the webhook object in the cluster.
 
 #### Mitigation
 
+Since Kubewarden 1.10.0, the controller reconciles the webhook objects, recreating or
+updating them if they have been tampered with.
+
 RBAC rights should be strictly controlled.
 
 #### To-do
@@ -79,7 +82,7 @@ However, the following will be provided in due course for helping Kubewarden
 users:
 
 - Directions around minimum RBAC to be implemented.
-- Provision & documentation of a policy that detects and could block RBAC changes.
+- Provision & documentation of policies that detect and could block RBAC changes.
 
 ### Threat 5 - Attacker gets access to valid credentials for the webhook
 
