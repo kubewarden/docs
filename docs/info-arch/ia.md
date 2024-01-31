@@ -52,7 +52,7 @@ We have adopted the [Diátaxis](https://diataxis.fr) approach to document types.
 
 Index? Word cloud with links?
 
-## Documentation organization
+## Document organization
 
 <details>
 <summary>What is Kubewarden?</summary>
@@ -107,3 +107,7 @@ Index? Word cloud with links?
 <details>
 <summary>How-to guides</summary>
 </details>
+
+## Glossary
+
+Should we have one of these. Maybe it's too like the keyword index?
