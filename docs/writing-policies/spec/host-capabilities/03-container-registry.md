@@ -79,9 +79,9 @@ the payload would be the following ones:
 * Input payload: `"busybox:latest"`
 * Output payload: `{ "digest": "sha256:69e70a79f2d41ab5d637de98c1e0b055206ba40a8145e7bddb55ccc04e13cf8f"}`
 
-## OCI Image manifest
+## OCI manifest
 
-This function fetches OCI images manifest. When available, this information can
+This function fetches OCI objects manifest. When available, this information can
 be used to identify specific images manifests, for one or more platforms. Or a
 single image manifest for the image.
 
@@ -111,7 +111,7 @@ This is the description of the waPC protocol used to expose this capability:
 <tr>
 <td>
 
-`v1/image_manifest`
+`v1/oci_manifest`
 
 </td>
 <td>
