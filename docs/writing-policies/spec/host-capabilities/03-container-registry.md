@@ -81,7 +81,7 @@ the payload would be the following ones:
 
 ## OCI manifest
 
-This function fetches OCI objects manifest. When available, this information can
+This function fetches the OCI objects manifest. When available, this information can
 be used to identify specific images manifests, for one or more platforms. Or a
 single image manifest for the image.
 
