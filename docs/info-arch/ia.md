@@ -9,7 +9,7 @@ The first place to start is the introduction, '[What is Kubewarden?](introductio
 ## Who is this documentation for?
 
 This documentation is for the Kubewarden community.
-We have a few defined personas or user of Kubewarden.
+We have a few defined personas or users of Kubewarden.
 
 - [Policy user](personas/kubewarden-user).
 Someone who takes a policy and uses it in a cluster.
@@ -35,8 +35,6 @@ This could be a custom UI, a helper tool for generating policies, or something e
 - [Developer](personas/kubewarden-developer).
 People who develop Kubewarden. The project maintainers.
 
-## What topics does the documentation cover?
-
 ## What documentation types are there?
 
 We have adopted the [Diátaxis](https://diataxis.fr) approach to document types.
@@ -48,65 +46,11 @@ We have adopted the [Diátaxis](https://diataxis.fr) approach to document types.
 |[Explanation](doc-types/explanation)|Understanding and context.|
 |[Reference](doc-types/reference)|Technical description and information.|
 
+## What topics does the documentation cover?
+
 ## Keywords used in the documentation
 
 Index? Word cloud with links?
-
-## Document organization
-
-<details>
-<summary>What is Kubewarden?</summary>
-
-[A brief introduction to what Kubewarden is all about.](introduction.md)
-
-<details>
-<summary>Metadata</summary>
-
-|metadata-tag|metadata-value|
-|---|---|
-|Title|What is Kubewarden?|
-|Description|A brief introduction to what Kubewarden is all about.|
-|Keywords|[kubewarden](keywords/kubewarden), kubernetes, introduction, about|
-|Persona|[Operator](personas/kubewarden-operator), [Manager](personas/kubewarden-manager), [Policy Developer](personas/kubewarden-policy-developer), [Developer](personas/kubewarden-developer)|
-|Document Type|[Tutorial](doc-types/tutorial)|
-|Document Topic|Introduction|
-
-</details>
-
-</details>
-
-<details>
-<summary>Getting started.</summary>
-
-<details>
-<summary>Overview</summary>
-
-<details>
-<summary>Installation and upgrading</summary>
-</details>
-
-<details>
-<summary>Deploy policies</summary>
-</details>
-
-<details>
-    <summary>Supported upgrade path</summary>
-
-|fm-tag|fm-tag-value|
-|---|---|
-|sidebar_label| Supported upgrade path|
-|title|Supported upgrade path|
-|description|Supported upgrade path|
-
-</details>
-
-</details>
-
-</details>
-
-<details>
-<summary>How-to guides</summary>
-</details>
 
 ## Glossary
 
