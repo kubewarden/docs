@@ -62,4 +62,4 @@ Kubewarden policies can be stored inside an OCI compliant registry as
 
 ## Documentation
 
-A description of what is documented can be found at the [documentation architecture](./info-arch/ia.md) page.
+A description of what is documented, and who it is for, can be found at the [documentation architecture](./info-arch/ia.md) page.
