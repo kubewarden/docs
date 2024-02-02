@@ -6,10 +6,10 @@ description: Documentation architecture
 
 The first place to start is the introduction, '[What is Kubewarden?](introduction.md)'.
 
-## Who is this documentation for?
+## Who is this documentation for? {#who-for}
 
 This documentation is for the Kubewarden community.
-We have a few defined personas or users of Kubewarden.
+For the community we have defined personas or users of Kubewarden.
 
 - [Policy user](personas/kubewarden-user).
 Someone who takes a policy and uses it in a cluster.
@@ -42,11 +42,17 @@ We have adopted the [Diátaxis](https://diataxis.fr) approach to document types.
 |Type||
 |---|---|
 |[Tutorial](doc-types/tutorial)|Practical learning activities.|
-|[How-to](doc-types/howto)|Getting something *done*.|
 |[Explanation](doc-types/explanation)|Understanding and context.|
+|[How-tos](doc-types/howto)|Getting something *done*.|
 |[Reference](doc-types/reference)|Technical description and information.|
 
+These correspond to the top-level categories in the sidebar to the left.
+
 ## What topics does the documentation cover?
+
+A different way of slicing/dicing or approaching the material.
+For example, if one was interested in policy distribution,
+a heading here could list all policy distribution material from each of the documentation types.
 
 ## Keywords used in the documentation
 
@@ -54,4 +60,26 @@ Index? Word cloud with links?
 
 ## Glossary
 
-Should we have one of these. Maybe it's too like the keyword index?
+Should we have one of these? A set of key terms and their definitions.
+
+Add `definition:` to the front-matter in documents to define them where they (first) occur.
+
+```markdown
+---
+title: Something to do with Kubewarden and OCI
+definition: Kubewarden :: A policy engine for Kubernetes.
+definition: OCI :: Open Container initiative. https://opencontainers.org
+---
+```
+
+A glossary generator can check and report duplicate errors.
+There can be only one.
+
+## Automation
+
+This entire page hierarchy can be programmatically generated from the document source given a structured and sufficiently rich set of metadata tags in the front-matter for each document markdown page.
+
+It's not necessary though.
+It could be a simple rationale for the layout of the documentation and a few pointers.
+
+The most important section is that about [who](#who-for) the documentation is for and to provide a path through the docs for each persona.
