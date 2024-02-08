@@ -5,7 +5,7 @@ description: Description of some common tasks undertaken after installing Kubewa
 keywords: [kubewarden, kubernetes, kwctl, policy, policyserver, clusteradmissionpolicy, admissionpolicy]
 ---
 
-This describes tasks that can be performed after you [install Kubewarden](/quick-start.md#install) in your Kubernetes cluster.
+This describes tasks that can be performed after you [install Kubewarden](/quick-start.md#installation) in your Kubernetes cluster.
 
 Each task can be done separately; they are shown here in a logical ordering.
 

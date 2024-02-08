@@ -68,7 +68,7 @@ background audit checks for a specific policy. By default, this flag is set to
 There are some policies that, due to the way they work or to the type
 of events they are interested about, should have this field set to `false`.
 More information can be found inside of the
-[audit scanner documentation](../explanations/audit-scanner#limitations),
+[audit scanner documentation](../explanations/audit-scanner/limitations),
 respectively under the limitations section.
 
 **2. Defining Kubernetes Resources policies can access:**

@@ -70,7 +70,7 @@ By default, this flag is set to `true`.
 There are policies that, due to the way they work or to the type of events they're concerned with,
 should have this field set to `false`.
 You can find more information in the
-[audit scanner documentation](../explanations/audit-scanner#limitations),
+[audit scanner documentation](../explanations/audit-scanner/limitations),
 under the limitations section.
 
 ## Defining Kubernetes resources that policies can access
