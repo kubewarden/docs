@@ -232,5 +232,6 @@ module.exports = {
       collapsed: true,
     },
     `security/disclosure`,
+    `info-arch/ia`,
   ],
 };
