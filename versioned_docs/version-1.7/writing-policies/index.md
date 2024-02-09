@@ -1,9 +1,9 @@
 ---
 sidebar_label: "Writing Policies"
-title: ""
+title: Writing Policies
 ---
 
-# What is a Kubewarden policy
+## What is a Kubewarden policy
 
 In this section we will explain what Kubewarden policies are by using some traditional computing
 analogies.
@@ -36,7 +36,7 @@ To recap:
 Writing Kubewarden policies consists of writing the validation business logic
 and then exposing it through a well-defined API.
 
-# Programming language requirements
+## Programming language requirements
 
 Kubewarden policies are delivered as [WebAssembly](https://webassembly.org/)
 binaries.

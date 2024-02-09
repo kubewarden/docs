@@ -45,7 +45,7 @@ The following checks were performed on each of these signatures:
 You can then verify that the cert in the returned json contains the correct
 issuer, subject, and `github_workflow_repository` extensions.
 
-### Container images & policies referenced in the charts
+### Container images & policies referenced in the charts {#container-images}
 
 #### Obtaining the lists
 

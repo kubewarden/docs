@@ -133,8 +133,7 @@ See [the official proposal](https://github.com/WebAssembly/threads) for more det
 
 ## Implementing `Settings` validation
 
-All Kubewarden policies have to implement
-[settings validation](/writing-policies/index.md#the-validate_settings-entry-point).
+All Kubewarden policies have to implement settings validation.
 
 You do this by adding a `Valid` method to the `Settings` instances:
 
@@ -209,9 +208,8 @@ import (
 )
 ```
 
-You can start by writing a unit test that ensures you can assign a `Settings` instance from a
-[`ValidationRequest`](/writing-policies/index.md#the-validationrequest-object)
-object:
+You can start by writing a unit test that ensures you can assign a `Settings`
+instance from a `ValidationRequest` object:
 
 ```go
 func TestParseValidSettings(t *testing.T) {
@@ -269,8 +267,7 @@ func TestParseSettingsWithInvalidRegexp(t *testing.T) {
 ```
 
 Now, you can define a test that checks the behavior of the
-[`validate_settings`](/writing-policies/index.md#the-validate_settings-entry-point)
-entry point.
+`validate_settings` entry point.
 
 You look at the `SettingsValidationResponse` object returned by your `validateSettings` function:
 

@@ -123,7 +123,7 @@ for more details.
 ## Implementing `Settings` validation
 
 All Kubewarden policies have to implement
-[settings validation](/writing-policies/index.md#the-validate_settings-entry-point).
+[settings validation](/writing-policies/index.md).
 
 This can be easily done by adding a `Valid` method to the `Settings` instances:
 
@@ -201,8 +201,7 @@ import (
 ```
 
 We will start by writing a unit test that ensures we can allocate a `Settings`
-instance from a [`ValidationRequest`](/writing-policies/index.md#the-validationrequest-object)
-object:
+instance from a `ValidationRequest` object:
 
 ```go
 func TestParseValidSettings(t *testing.T) {
@@ -262,8 +261,7 @@ func TestParseSettingsWithInvalidRegexp(t *testing.T) {
 ```
 
 Next we will define a test that checks the behaviour
-of the [`validate_settings`](/writing-policies/index.md#the-validate_settings-entry-point)
-entry-point.
+of the `validate_settings` entry-point.
 
 In this case, we actually look at the `SettingsValidationResponse` object
 returned by our `validateSettings` function:
