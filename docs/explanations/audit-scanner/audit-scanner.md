@@ -1,5 +1,6 @@
 ---
-sidebar_label: What is the Audit Scanner?
+sidebar_label: Audit Scanner
+sidebar_position: 50
 title: What is the Audit Scanner?
 description: An overview of the Kubewarden Audit Scanner.
 keywords: [kubewarden, audit scanner, kubernetes]

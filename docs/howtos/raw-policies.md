@@ -1,5 +1,6 @@
 ---
 sidebar_label: Raw policies
+sidebar_position: 60
 title: Raw policies
 description: Kubewarden support for 'raw' policies.
 keywords: [kubewarden, kubernetes, support, raw policies]

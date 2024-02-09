@@ -1,5 +1,6 @@
 ---
 sidebar_label: Audit Scanner installation
+sidebar_position: 70
 title: Audit Scanner installation
 description: How-to do an Audit Scanner installation.
 keywords: [kubewarden, kubernetes, audit scanner]

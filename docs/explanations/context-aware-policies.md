@@ -1,5 +1,6 @@
 ---
 sidebar_label: Context aware policies
+sidebar_position: 20
 title: Context aware policies
 description: A description of Kubewarden context aware policies, what they are and how they are useful.
 keywords: [ kubewarden, context-aware policy, clusteradmissionpolicy, admissionpolicy, admissionrequest, cluster administrator]
