@@ -3,8 +3,8 @@ sidebar_label: Typescript
 sidebar_position: 60
 title: Typescript
 description: Writing Kubewarden policies with Typescript
-keywords: [at least one]
-doc-type: [one of how-to, explanation, tutorial, reference]
+keywords: [kubewarden, kubernetes, typescript]
+doc-type: [tutorial]
 doc-topic: [root-branch]
 doc-persona: [kubewarden-developer]
 ---

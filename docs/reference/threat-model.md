@@ -4,8 +4,8 @@ sidebar_position: 80
 title: Threat Model
 description: The Kubernetes Admission Control Threat Model and Kubewarden.
 keywords: [kubernetes, admission control threat model, kubewarden]
-doc-persona: [kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
-doc-type: [explanation, reference]
+doc-persona: [kubewarden-all]
+doc-type: [reference]
 doc-topic: [security, threat-model]
 ---
 

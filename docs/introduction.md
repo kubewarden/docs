@@ -5,7 +5,7 @@ sidebar_position: 1
 title: What is Kubewarden?
 description: Introducing Kubewarden, a CNCF Sandbox project.
 keywords: [kubewarden, cncf, cncf sandbox, kubernetes]
-doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-distributor, kubewarden-policy-developer, kubewarden-integrator, kubewarden-developer]
+doc-persona: [kubewarden-all]
 doc-type: [explanation]
 doc-topic: [introduction]
 ---

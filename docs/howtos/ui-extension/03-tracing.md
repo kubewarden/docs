@@ -3,9 +3,9 @@ sidebar_label: Tracing
 title: Tracing
 description: Tracing for Kubewarden.
 keywords: [kubewarden, kubernetes, tracing]
-doc-type: [explanation, tutorial]
-doc-topic: [operator-manual, ui-extension, tracing]
+doc-type: [hosto]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-topic: [operator-manual, ui-extension, tracing]
 ---
 
 Tracing allows collection of fine grained details about policy evaluations.

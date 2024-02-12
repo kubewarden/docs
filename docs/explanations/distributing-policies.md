@@ -4,8 +4,8 @@ sidebar_position: 30
 title: Distributing policies
 description: A description of how Kubewarden policies are distributed from OCI-compliant repositories.
 keywords: [oci, kubewarden, policy, wasm, webassembly]
-doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
-doc-type: [tutorial]
+doc-persona: [kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
+doc-type: [explanation]
 doc-topic: [distributing-policies]
 ---
 

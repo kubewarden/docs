@@ -3,7 +3,7 @@ sidebar_label: Raw policies
 title: Writing raw policies
 description: Using Kubewarden for writing raw policies.
 keywords: [kubewarden, kubernetes, raw policies]
-doc-type: [explanation, tutorial]
+doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, raw-policies]
 doc-persona: [kubewarden-developer]
 ---

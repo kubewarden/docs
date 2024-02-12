@@ -3,9 +3,9 @@ sidebar_label: Monitoring
 title: Monitoring
 description: Monitoring and metrics for Kubewarden.
 keywords: [kubewarden, kubernetes, user interface extension, metrics, monitoring]
-doc-type: [tutorial, reference]
+doc-type: [howto]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
 doc-topic: [operator-manual, metrics-and-monitoring]
-doc-persona: [kubewarden-operator, kubewarden-manager]
 ---
 
 Rancher has a Cluster Tool for monitoring that leverages Grafana and Prometheus.

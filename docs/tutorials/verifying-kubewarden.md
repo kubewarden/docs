@@ -5,7 +5,7 @@ title: Verifying Kubewarden
 description: Verifying Kubewarden.
 keywords: [kubewarden, kubernetes, security, verification]
 doc-persona: [kubewarden-operator, kubewarden-policy-developer, kubewarden-integrator]
-doc-type: [explanation, reference]
+doc-type: [tutorial]
 doc-topic: [security, verifying-kubewarden]
 ---
 
@@ -115,7 +115,7 @@ following command:
 ```
 cosign verify-blob \
   --signature kwctl-linux-x86_64.sig \
-  --cert kwctl-linux-x86_64.pem kwctl-linux-x86_64 
+  --cert kwctl-linux-x86_64.pem kwctl-linux-x86_64
   --certificate-identity-regexp 'https://github.com/kubewarden/*' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 

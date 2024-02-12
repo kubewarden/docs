@@ -4,7 +4,7 @@ sidebar_position: 50
 title: Swift
 description: Kubewarden policies with Swift
 keywords: [kubewarden, kubernetes, writing policies, swift]
-doc-type: [how-to]
+doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, swift]
 doc-persona: [kubewarden-policy-developer]
 ---

@@ -3,7 +3,7 @@ sidebar_label: Kubewarden vs OPA Gatekeeper
 title: Kubewarden vs OPA Gatekeeper
 description: A brief comparison of the difference between Kubewarden and OPA Gatekeeper.
 keywords: [kubewarden, kubernetes, opa gatekeeper, comparison]
-doc-persona: [kubewarden-integrator, kubewarden-operator]
+doc-persona: [kubewarden-all]
 doc-type: [explanation]
 doc-topic: [explanations, kubewarden-vs-opa_gatekeeper]
 ---

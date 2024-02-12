@@ -3,8 +3,8 @@ sidebar_label: Quickstart
 title: Rancher UI extension quickstart
 description: UI extension quickstart for Kubewarden.
 keywords: [kubewarden, kubernetes, rancher ui extension]
+doc-type: [howto]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
-doc-type: [tutorial, howto, reference]
 doc-topic: [operator-manual, ui-extension, installation]
 ---
 

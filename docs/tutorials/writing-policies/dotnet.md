@@ -4,7 +4,7 @@ sidebar_position: 40
 title: C#
 description: Kubewarden policies using C# and .NET
 keywords: [kubewarden, kubernetes, writing policies, c#, .net]
-doc-type: [how-to, explanation, tutorial, reference]
+doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, c#]
 doc-persona: [kubewarden-policy-developer]
 ---

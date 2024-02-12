@@ -5,7 +5,7 @@ description: How to use logging functionality when writing a Kubewarden policy i
 keywords: [Kubewarden, kubernetes, logging]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, rust, logging]
-doc-persona: [kubewarden-developer, kubewarden-developer-rust]
+doc-persona: [kubewarden-developer]
 ---
 
 You can have your policy perform logging.

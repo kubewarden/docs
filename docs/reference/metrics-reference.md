@@ -4,7 +4,7 @@ sidebar_position: 30
 title:  Metrics reference
 description: Metrics reference documentation for Kubewarden.
 keywords: [kubewarden, kubernetes, metrics, reference]
-doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-integrator]
 doc-type: [reference]
 doc-topic: [operator-manual, telemetry, metrics, reference]
 ---

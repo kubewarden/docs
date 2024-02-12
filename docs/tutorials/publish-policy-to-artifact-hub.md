@@ -5,7 +5,7 @@ title: Publish policies to Artifact Hub
 description: A brief introduction to publishing Kubewarden policies on Artifact Hub.
 keywords: [kubewarden, kubernetes, publishing policies, artifact hub]
 doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
-doc-type: [explanation]
+doc-type: [tutorial]
 doc-topic: [distributing-policies, publish-policy-to-artifacthub]
 ---
 
@@ -45,7 +45,7 @@ Artifact Hub is pretty flexible and allows you to organize your code in these wa
   is that it focuses just on one policy: the one defined inside of the Git repository.
   This approach allows to keep multiple versions of the policy published on Artifact Hub.
 * Add the `artifacthub-pkg.yml` and the `artifacthub-repo.yml` files to the root
-  of the Git repository that holds the policy source code. This approach is the 
+  of the Git repository that holds the policy source code. This approach is the
   simplest one. The only limitation is that only the latest version of the policy
   will be visible on Artifact Hub.
 

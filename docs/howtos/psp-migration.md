@@ -4,8 +4,8 @@ sidebar_position: 20
 title: PodSecurityPolicy migration
 description: Discusses PSP migration to Kubewarden policies after Kubernetes v1.25.
 keywords: [kubewarden, kubernetes, appvia, psp, pod security policy]
-doc-persona: [kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
-doc-type: [explanation, reference]
+doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-distributor, kubewarden-integrator]
+doc-type: [howto]
 doc-topic: [pod-security-policy-migration]
 ---
 

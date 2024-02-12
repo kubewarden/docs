@@ -4,8 +4,8 @@ sidebar_position: 10
 title: Common tasks
 description: Description of some common tasks undertaken after installing Kubewarden. Provides examples of these tasks using kwctl
 keywords: [kubewarden, kubernetes, kwctl, policy, policyserver, clusteradmissionpolicy, admissionpolicy]
-doc-persona: [kubewarden-user, kubewarden-integrator]
-doc-type: [tutorial]
+doc-persona: [kubewarden-all]
+doc-type: [howto]
 doc-topic: [common-tasks]
 ---
 

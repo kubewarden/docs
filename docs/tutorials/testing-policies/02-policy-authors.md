@@ -4,7 +4,7 @@ title: Testing for policy authors
 description: An introduction to testing Kubewarden policies for policy authors.
 keywords: [kubewarden, policy testing, policy author, rust, go, assemblyscript, development environment]
 doc-persona: [kubewarden-policy-developer]
-doc-type: [tutorial, explanation]
+doc-type: [tutorial]
 doc-topic: [testing-policies, policy-authors]
 ---
 

@@ -4,7 +4,7 @@ sidebar_position: 60
 title: Raw policies
 description: Kubewarden support for 'raw' policies.
 keywords: [kubewarden, kubernetes, support, raw policies]
-doc-persona: [kubewarden-integrator, kubewarden-operator, kubewarden-developer]
+doc-persona: [kubewarden-distributor, kubewarden-integrator, kubewarden-operator, kubewarden-policy-developer]
 doc-type: [howto]
 doc-topic: [kubewarden, kubernetes, raw-policies]
 ---

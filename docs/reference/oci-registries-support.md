@@ -4,8 +4,8 @@ sidebar_position: 70
 title: OCI registry support for Kubewarden
 description: OCI registry support for Kubewarden.
 keywords: [kubewarden, kubernetes, oci registry support]
-doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
-doc-type: [explanation]
+doc-persona: [kubewarden-all]
+doc-type: [reference]
 doc-topic: [distributing-policies, oci-registries-support]
 ---
 

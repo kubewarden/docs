@@ -4,8 +4,8 @@ sidebar_position: 80
 title: Security disclosure
 description: Security disclosure.
 keywords: [kubewarden, kubernetes, security, disclosure]
-doc-persona: [kubewarden-operator, kubewarden-policy-developer, kubewarden-integrator]
-doc-type: [explanation, reference]
+doc-persona: [kubewarden-all]
+doc-type: [explanation]
 doc-topic: [security, disclosure]
 ---
 

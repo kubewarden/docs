@@ -4,7 +4,7 @@ sidebar_position: 70
 title: Other languages
 description: Writing Kubewarden policies in other languages
 keywords: [kubewarden, kubernetes, writing policies, other languages]
-doc-type: [how-to, tutorial]
+doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, other-languages]
 doc-persona: [kubewarden-policy-developer]
 ---

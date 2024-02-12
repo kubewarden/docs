@@ -5,7 +5,7 @@ title: Monitor mode
 description: The Kubewarden monitor mode and how to activate it.
 keywords: [kubernetes, kubewarden, monitor mode]
 doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-integrator]
-doc-type: [explanation, reference]
+doc-type: [reference]
 doc-topic: [operator-manual, monitor-mode]
 ---
 

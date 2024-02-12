@@ -3,8 +3,8 @@ sidebar_label: Policy metadata
 sidebar_position: 90
 title: Policy metadata
 description: Using policy metadata when developing a Kubewarden policy.
-keywords: [kubewraden, kubernetes policy development, policy metadata]
-doc-type: [how-to, tutorial]
+keywords: [kubewarden, kubernetes policy development, policy metadata]
+doc-type: [tutorial]
 doc-topic: [kubewarden, writing-polices, policy-metadata]
 doc-persona: [kubewarden-developer]
 ---

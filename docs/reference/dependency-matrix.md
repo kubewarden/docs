@@ -4,7 +4,7 @@ sidebar_position: 10
 title: Dependency matrix
 description: Dependency matrix of Kubewarden.
 keywords: [dependency, dependencies, CRD, charts, matrix]
-doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-persona: [kubewarden-all]
 doc-type: [reference]
 doc-topic: [operator-manual, dependencies]
 ---

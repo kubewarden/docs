@@ -4,8 +4,8 @@ sidebar_position: 50
 title: What is the Audit Scanner?
 description: An overview of the Kubewarden Audit Scanner.
 keywords: [kubewarden, audit scanner, kubernetes]
-doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
-doc-type: [tutorial, explanation]
+doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-integrator]
+doc-type: [explanation]
 doc-topic: [explanations, audit-scanner]
 ---
 

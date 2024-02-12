@@ -4,7 +4,7 @@ sidebar_position: 60
 title: Kubewarden architecture
 description: The Kubewarden architecture
 keywords: [kubewarden, kubernetes, architecture]
-doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
+doc-persona: [kubewarden-all]
 doc-type: [explanation]
 doc-topic: [architecture]
 ---

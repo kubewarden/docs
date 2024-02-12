@@ -5,7 +5,7 @@ title: Verification configuration
 description: Verification configuration for Kubewarden.
 keywords: [kubewarden, kubernetes, verification configuration]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
-doc-type: [tutorial, howto, reference]
+doc-type: [howto]
 doc-topic: [operator-manual, verification-config]
 ---
 

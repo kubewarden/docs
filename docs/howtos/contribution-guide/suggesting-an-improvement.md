@@ -4,7 +4,7 @@ sidebar_position: 00010
 title: Suggesting an improvement
 description: Suggesting an improvement.
 keywords: [kubewarden, documentation, suggesting an improvement]
-doc-type: [explanation, tutorial]
+doc-type: [howto]
 doc-topic: [contribution-guide, docs-contribution, improvement]
 doc-persona: [kubewarden-developer, kubewarden-operator, kubewarden-manager]
 ---

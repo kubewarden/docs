@@ -3,7 +3,7 @@ sidebar_label: WASI
 title: WASI
 description: Using WASI to develop Kubewarden policies.
 keywords: [kubewarden, kubernetes, wasi]
-doc-type: [how-to, explanation]
+doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, wasi]
 doc-persona: [kubewarden-developer]
 ---

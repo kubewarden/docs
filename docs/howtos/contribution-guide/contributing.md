@@ -4,7 +4,7 @@ sidebar_position: 00001
 title: Contributing to Kubewarden documentation
 description: Contributing to kubewarden documentation.
 keywords: [kubewarden, documentation, contributing]
-doc-type: [explanation]
+doc-type: [howto]
 doc-topic: [contribution-guide, docs-contribution]
 doc-persona: [kubewarden-developer, kubewarden-operator, kubewarden-manager]
 ---

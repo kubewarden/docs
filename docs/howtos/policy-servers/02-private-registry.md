@@ -4,7 +4,7 @@ title: Configuring PolicyServers to use private registries
 description: Configuring PolicyServers to use private registries in Kubewarden.
 keywords: [kubewarden, kubernetes, policyservers, private registries]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
-doc-type: [explanation, howto]
+doc-type: [howto]
 doc-topic: [operator-manual, policy-servers, private-registry]
 ---
 

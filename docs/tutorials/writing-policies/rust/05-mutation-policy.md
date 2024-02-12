@@ -5,7 +5,7 @@ description: Creating a new mutation policy using Rust
 keywords: [kubewarden, kubernetes, creating a new mutation policy, mutation policy, rust]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, rust, new-mutation-policy]
-doc-persona: [kubewarden-developer, kubewarden-developer-rust]
+doc-persona: [kubewarden-developer]
 ---
 
 Mutating policies are similar to validating ones,
