@@ -1,6 +1,6 @@
 ---
 sidebar_label: Verification configuration
-sidebar_position: 140
+sidebar_position: 45
 title: Verification configuration
 description: Verification configuration for Kubewarden.
 keywords: [kubewarden, kubernetes, verification configuration]
