@@ -33,7 +33,7 @@ Kubewarden can be used to **integrate** a PSA profile to avoid these limitations
 
 :::note
 
-You could use Kubewarden to replace the old PSP configuration as shown in [PSP migration](../tasksDir/psp-migration.md).
+You could use Kubewarden to replace the old PSP configuration as shown in [PSP migration](psp-migration.md).
 However, the goal of this article is to show how Kubewarden can complement the new PSA.
 
 :::

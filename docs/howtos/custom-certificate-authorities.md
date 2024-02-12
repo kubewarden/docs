@@ -23,7 +23,7 @@ On the client side, `kwctl` uses your operating system CA store.
 If you are using the
 [Kubewarden Controller](https://github.com/kubewarden/kubewarden-controller),
 you can configure the PolicyServer via its
-[`spec` fields](/operator-manual/policy-servers/01-custom-cas.md).
+[`spec` fields](/howtos/policy-servers/01-custom-cas.md).
 
 :::note
 

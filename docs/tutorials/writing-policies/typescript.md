@@ -6,7 +6,7 @@ description: Writing Kubewarden policies with Typescript
 keywords: [at least one]
 doc-type: [one of how-to, explanation, tutorial, reference]
 doc-topic: [root-branch]
-doc-persona: [default]
+doc-persona: [kubewarden-developer]
 ---
 
 As stated on the [official website](https://www.typescriptlang.org/):

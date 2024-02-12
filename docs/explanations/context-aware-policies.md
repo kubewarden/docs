@@ -100,5 +100,5 @@ All other Kubernetes resources need the full definition: `<api>/<version>`.
 
 ## Further readings
 
-More detailed information about context aware policies can be found in [this section](../writing-policies/spec/05-context-aware-policies.md)
+More detailed information about context aware policies can be found in [this section](../reference/spec/05-context-aware-policies.md)
 of our reference documentation.

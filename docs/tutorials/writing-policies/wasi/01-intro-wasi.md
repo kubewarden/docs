@@ -22,7 +22,7 @@ Using WASI, you can have a WebAssembly module that interacts with system primiti
 
 Many of the compilers used to compile Kubewarden policies produce WebAssembly modules that target WASI interfaces.
 However, Kubewarden policies use the [waPC](https://github.com/wapc) project to implement bi-directional communication between the policy and the policy runtime (`kwctl` or `policy-server`).
-Kubewarden use of the communication protocol is described [here](../spec/01-intro-spec.md).
+Kubewarden use of the communication protocol is described [here](../../../reference/spec/01-intro-spec.md).
 
 There are special cases when the waPC project can't be used yet.
 In these circumstances you can write a policy using the interfaces provided by WASI.
@@ -37,8 +37,8 @@ Kubewarden supports WASI policies from the Kubewarden 1.7.0 release forward.
 
 You shouldn't use WASI policies under regular circumstances because they suffer from the following limitations:
 
-- No bi-directional communication, hence [host capabilities](../spec/host-capabilities/01-intro-host-capabilities.md) aren't available
-- [Context-aware](../../explanations/context-aware-policies.md) capabilities only through the Go SDK (though see the following note)
+- No bi-directional communication, hence [host capabilities](../../../reference/spec/host-capabilities/01-intro-host-capabilities.md) aren't available
+- [Context-aware](../../../explanations/context-aware-policies.md) capabilities only through the Go SDK (though see the following note)
 - Inferior performance at evaluation time compared to waPC/Rego based policies
 
 :::note
@@ -86,7 +86,7 @@ The validation of a request happens when invoking the policy CLI program using t
 STDIN must contain a JSON document describing a `ValidationRequest` object.
 The policy must write to STDOUT a JSON document that containing a `ValidationResponse` object.
 
-Both the `ValidationRequest` and `ValidationResponse` objects are described [here](../spec/03-validating-policies.md).
+Both the `ValidationRequest` and `ValidationResponse` objects are described [here](../../../reference/spec/03-validating-policies.md).
 
 ### Mutation
 
@@ -96,15 +96,15 @@ The policy CLI program is invoked using the `validate` sub-command.
 STDIN must contain a JSON document describing a `ValidationRequest` object.
 The policy must write to STDOUT a JSON document containing a `ValidationResponse` object.
 
-Both the `ValidationRequest` and `ValidationResponse` objects are described [here](../spec/03-validating-policies.md).
+Both the `ValidationRequest` and `ValidationResponse` objects are described [here](../../../reference/spec/03-validating-policies.md).
 
 When a mutation is needed, the `ValidationResponse` object must have a key, `mutated_object`, containing the object to be created.
-This process is described [here](../spec/04-mutating-policies.md).
+This process is described [here](../../../reference/spec/04-mutating-policies.md).
 
 ## Context-aware
 
 Only supported via the Go SDK for now. The Go SDK exposes the context-aware
-capabilities as usual, for more information see [here](../spec/context-aware-policies).
+capabilities as usual, for more information see [here](../../../explanations/context-aware-policies).
 
 As an example of a WASI Go context-aware policy, see the
 [go-wasi-context-aware-test-policy](https://github.com/kubewarden/go-wasi-context-aware-test-policy).
@@ -117,7 +117,7 @@ This command is used to validate the settings provided by the user.
 The program must receive on STDIN, a JSON object that holds the settings provided by the user.
 It then validates them and writes a `SettingsValidationResponse` object to STDOUT.
 
-The format of the `SettingsValidationResponse` and the settings validation process is described [here](../spec/02-settings.md).
+The format of the `SettingsValidationResponse` and the settings validation process is described [here](../../../reference/spec/02-settings.md).
 
 ## Policy metadata
 

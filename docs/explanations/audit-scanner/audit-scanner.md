@@ -66,7 +66,7 @@ Also, policies in Kubewarden now support two optional annotations:
 - The `io.kubewarden.policy.severity` annotation lets you specify the severity level of the policy violation, such as `critical`, `high`, `medium`, `low` or `info`.
 - The `io.kubewarden.policy.category` annotation lets you categorize the policy based on a specific domain or purpose, such as `PSP`, `compliance`, or `performance`.
 
-See the policy authors [documentation](../../writing-policies/index.md) for more information.
+See the policy authors [documentation](../../tutorials/writing-policies/index.md) for more information.
 
 ## Permissions and ServiceAccounts
 

@@ -10,7 +10,7 @@ doc-persona: [kubewarden-developer]
 ---
 
 An earlier section shows how to write a
-[validation](validation)
+[validation](04-validation.md)
 policy by using Go types describing Kubernetes objects.
 
 There is another way to write validation logic,

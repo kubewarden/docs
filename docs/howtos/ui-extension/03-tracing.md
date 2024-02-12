@@ -5,7 +5,7 @@ description: Tracing for Kubewarden.
 keywords: [kubewarden, kubernetes, tracing]
 doc-type: [explanation, tutorial]
 doc-topic: [operator-manual, ui-extension, tracing]
-doc-persona: [default]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
 ---
 
 Tracing allows collection of fine grained details about policy evaluations.

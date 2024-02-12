@@ -20,5 +20,5 @@ If you followed this guide, you have already published your policy using the
 GitHub `release.yml` Action defined in the last chapter.
 
 The topic of distributing policies is covered in greater depth in the
-["distributing policies"](/distributing-policies.md)
+["distributing policies"](../../../explanations/distributing-policies.md)
 section of Kubewarden's documentation.

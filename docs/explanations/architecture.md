@@ -28,7 +28,7 @@ It also translates Kubewarden configuration into Kubernetes directives.
 - Kubewarden policies:
 These are WebAssembly modules holding the validation or mutation logic.
 WebAssembly modules have detailed documentation in the
-[writing policies](/writing-policies/index.md) sections.
+[writing policies](../tutorials/writing-policies/index.md) sections.
 
 - [`policy-server`](https://github.com/kubewarden/policy-server):
 The `policy-server` receives requests for validation.
@@ -126,8 +126,8 @@ checks the policy settings provided by the user are valid.
 The `policy-server` validates policy settings by invoking
 the `validate_setting` function exposed by each policy.
 There is further documentation in the
-[writing policies section](/writing-policies/spec/01-intro-spec.md)
-of the documentation.
+[specification reference](../reference/spec/01-intro-spec.md)
+section of the documentation.
 
 The `policy-server` exits with an error
 if one or more policies received wrong configuration parameters
@@ -189,7 +189,7 @@ Each policy is evaluated inside its own dedicated WebAssembly sandbox.
 The communication between `policy-server` (the "host")
 and the WebAssembly policy (the "guest")
 uses the waPC communication protocol.
-The protocol description is part of the [writing policies](/writing-policies/index.md) documentation.
+The protocol description is part of the [writing policies](../tutorials/writing-policies/index.md) documentation.
 
 ## How Kubewarden handles many policy servers and policies
 

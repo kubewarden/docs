@@ -9,7 +9,7 @@ doc-persona: [kubewarden-developer]
 ---
 
 Raw policies are policies that can evaluate arbitrary JSON documents.
-For more information about raw policies, please refer to the [raw policies](../../howtos/raw-policies.md) page.
+For more information about raw policies, please refer to the [raw policies](../../../howtos/raw-policies.md) page.
 
 ## Examples
 

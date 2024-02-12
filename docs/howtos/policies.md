@@ -15,7 +15,7 @@ By default, policies apply to all Namespaces that the `PolicyServer` is configur
 If you want a policy to target only specific namespaces, you can deploy several `AdmissionPolicies` in each Namespace.
 
 Another option is to configure `ClusterAdmissionPolicies` by setting their
-`spec.namespaceSelector` (see [CRD docs](./CRDs#clusteradmissionpolicy)). The
+`spec.namespaceSelector` (see [CRD docs](../reference/CRDs#clusteradmissionpolicy)). The
 `spec.namespaceSelector` decides whether to run the policy on an object, based
 on whether the namespace for that object matches the selector.
 

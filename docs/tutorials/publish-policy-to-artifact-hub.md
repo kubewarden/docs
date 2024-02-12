@@ -21,7 +21,7 @@ artifacts that are published on it.
 
 Artifact Hub requires you to physically host container image repositories on a container
 registry or a web server.
-Refer to the *"[distributing policies](../distributing-policies)"* section for more information on how to
+Refer to the [distributing policies](../explanations/distributing-policies) section for more information on how to
 host your policies.
 :::
 

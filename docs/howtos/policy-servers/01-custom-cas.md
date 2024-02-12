@@ -34,7 +34,7 @@ spec:
     - host.k3d.internal:5000
 ```
 
-See [here](../../distributing-policies/custom-certificate-authorities.md) for more
+See [here](../custom-certificate-authorities.md) for more
 information on how the `policy-server` executable treats them.
 
 
@@ -65,5 +65,5 @@ spec:
         -----END CERTIFICATE-----
 ```
 
-See [here](/distributing-policies/custom-certificate-authorities.md) for more
+See [here](../custom-certificate-authorities.md) for more
 information on how the `policy-server` executable treats them.

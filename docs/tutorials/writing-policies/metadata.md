@@ -20,7 +20,7 @@ set by the policy author.
 The `kwctl annotate` command uses the file to annotate the `.wasm` file containing the policy.
 Therefore, all the relevant information required to run the policy is available.
 More information about how to annotate the policy is in the
-[Distributing Policies](../distributing-policies.md) guide.
+[Distributing Policies](../../explanations/distributing-policies.md) guide.
 
 When policy users want to use a policy, they generate a YAML manifest using `kwctl scaffold`.
 This command reads the policy metadata embedded in the shipped Wasm module,
@@ -71,7 +71,7 @@ By default, this flag is set to `true`.
 There are policies that, due to the way they work or to the type of events they're concerned with,
 should have this field set to `false`.
 You can find more information in the
-[audit scanner documentation](../explanations/audit-scanner/limitations),
+[audit scanner documentation](../../../explanations/audit-scanner/limitations),
 under the limitations section.
 
 ## Defining Kubernetes resources that policies can access
@@ -103,7 +103,7 @@ The metadata file has a flag, `policyType`, that lets users to mark a policy as 
 A Kubernetes policy is a policy that validates Kubernetes resources.
 A Raw policy is a policy that validates arbitrary JSON documents.
 By default, if not specified by the user, this field is set to `kubernetes` when annotating a policy.
-Refer to the [Raw Policies](../howtos/raw-policies.md) section for more information.
+Refer to the [Raw Policies](../../howtos/raw-policies.md) section for more information.
 
 ## Defining resource type targets
 

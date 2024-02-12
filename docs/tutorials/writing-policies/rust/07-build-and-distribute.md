@@ -32,7 +32,7 @@ policy.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
 ## Distributing the policy
 
 Kubewarden documents policy distribution in the
-[distributing policies](/distributing-policies.md)
+[distributing policies](../../../explanations/distributing-policies.md)
 section.
 
 ## More examples

@@ -17,7 +17,7 @@ Your validation logic needs to:
 - Return a response based on the input and the policy settings.
 
 The incoming payload is a JSON object, described
-[in this document](../spec/validating-policies),
+[in this document](../../../reference/spec/validating-policies),
 and you can get the data from it in two ways:
 
 1. Unmarshal the JSON data into Go types.

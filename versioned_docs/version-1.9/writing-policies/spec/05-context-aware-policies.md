@@ -88,7 +88,7 @@ functions that allow policies to retrieve the current state of the
 cluster.
 
 :::tip
-If you want more information about the waPC function used by the SDKs, check the [Kubernetes capabilities](/docs/writing-policies/spec/host-capabilities/06-kubernetes.md) reference documentation.
+If you want more information about the waPC function used by the SDKs, check the [Kubernetes capabilities](./host-capabilities/06-kubernetes.md) reference documentation.
 :::
 
 ### Rust

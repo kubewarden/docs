@@ -22,7 +22,7 @@ You'll use the compiler shipped within the official TinyGo container image.
 Used to write the tests and automate their execution.
 - [kwctl](https://github.com/kubewarden/kwctl/releases):
 CLI tool provided by Kubewarden to run its policies outside of Kubernetes, among other actions.
-It's covered in [this section](/testing-policies/01-intro.md) of the documentation.
+It's covered in [this section](../../testing-policies/index.md) of the documentation.
 
 ## Writing tests
 

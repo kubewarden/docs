@@ -18,7 +18,7 @@ You need to add Kubewarden's images and policies to this OCI registry. Let's see
 
 1. Download `kubewarden-images.txt` from the Kubewarden [release page](https://github.com/kubewarden/helm-charts/releases/). Alternatively, the `imagelist.txt` and `policylist.txt` files are shipped inside the helm charts containing the used container images and policy wasm modules, respectively.
 :::note
-Optionally, you can verify the signatures of the [helm charts](../../security/verifying-kubewarden#helm-charts) and [container images](../../security/verifying-kubewarden#container-images)
+Optionally, you can verify the signatures of the [helm charts](../../tutorials/verifying-kubewarden.md#helm-charts) and [container images](../../tutorials/verifying-kubewarden.md#container-images)
 :::
 2. Add `cert-manager` if it is not available in your private registry.
 ```
@@ -92,7 +92,7 @@ The `sources.yaml` file is needed by kwctl to connect to registries that fall in
 * Self signed certificate is being used
 * No TLS termination is done
 
-Please refer to [the section on custom certificate authorities](../../distributing-policies/custom-certificate-authorities.md) in our documentation to learn more about configuring the `sources.yaml` file
+Please refer to [the section on custom certificate authorities](../custom-certificate-authorities.md) in our documentation to learn more about configuring the `sources.yaml` file
 :::
 
 ## Install Kubewarden
