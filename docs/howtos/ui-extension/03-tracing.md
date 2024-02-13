@@ -19,11 +19,11 @@ It's a useful tool for debugging issues in your Kubewarden deployment and polici
 ## Prerequisites
 
 Cert-Manager and OpenTelemetry are required.
-Follow [these instructions](../telemetry/opentelemetry/01-quickstart.md#install-opentelemetry) to install Cert Manager and the OpenTelemetry Operator.
+Follow [these instructions](../telemetry/10-opentelemetry-qs.md#install-opentelemetry) to install Cert Manager and the OpenTelemetry Operator.
 
 ## Install Jaeger
 
-Apply the installation steps from the [tracing quickstart](../telemetry/tracing/01-quickstart.md#install-jaeger).
+Apply the installation steps from the [tracing quickstart](../telemetry/20-tracing-qs.md#install-jaeger).
 
 Once all the resources are created by the Jaeger operator, there is a
 Service under `my-open-telemetry-collector.jaeger.svc.cluster.local`.

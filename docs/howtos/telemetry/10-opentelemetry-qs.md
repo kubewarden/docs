@@ -1,6 +1,6 @@
 ---
-sidebar_label: Quickstart
-title: Open Telemetry quickstart
+sidebar_label: Open Telemetry
+title: Open Telemetry quick start
 description: An Open Telemetry quickstart for Kubewarden.
 keywords: [kubewarden, kubernetes, opentelemetry, open telemetry, quickstart]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
@@ -84,7 +84,7 @@ $ minikube addons enable ingress
 🌟  The 'ingress' addon is enabled
 ```
 
-## Install OpenTelemetry
+## Install OpenTelemetry {#install-opentelemetry}
 
 We are going to use the [OpenTelemetry Operator](https://github.com/open-telemetry/opentelemetry-operator)
 to manage the automatic injection of the OpenTelemetry Collector sidecar

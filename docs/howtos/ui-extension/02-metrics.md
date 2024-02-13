@@ -22,7 +22,7 @@ You can use this tool and integrate it with Kubewarden to view overall metrics f
 ## Prerequisites
 
 The Prometheus Operator is required.
-Follow [these instructions](../telemetry/metrics/01-quickstart.md#install-prometheus) to install it.
+Follow [these instructions](../telemetry/30-metrics-qs.md#install-prometheus) to install it.
 
 ## Install
 
@@ -31,7 +31,7 @@ Follow [these instructions](../telemetry/metrics/01-quickstart.md#install-promet
 - Import the manifest to create the ServiceMonitors
 - You need to specify the namespace where Kubewarden is installed
 
-Adapted from [here](../telemetry/metrics/01-quickstart.md):
+Adapted from [here](../telemetry/30-metrics-qs.md):
 
 ```yaml
 apiVersion: monitoring.coreos.com/v1

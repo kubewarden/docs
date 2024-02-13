@@ -1,5 +1,5 @@
 ---
-sidebar_label: Quickstart
+sidebar_label: Metrics
 title: Metrics quickstart
 description: Metrics quickstart in Kubewarden.
 keywords: [kubewarden, kubernetes, metrics quickstart]
@@ -12,7 +12,7 @@ This section describes how to enable metrics reporting on the Policy Server.
 
 :::note
 Before continuing, make sure you completed the previous
-[OpenTelemetry](../opentelemetry/01-quickstart.md#install-opentelemetry) section of this book. It
+[OpenTelemetry](10-opentelemetry-qs.md#install-opentelemetry) section of this book. It
 is required for this section to work correctly.
 :::
 
