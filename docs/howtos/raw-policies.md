@@ -1,9 +1,10 @@
 ---
 sidebar_label: Raw policies
+sidebar_position: 60
 title: Raw policies
 description: Kubewarden support for 'raw' policies.
 keywords: [kubewarden, kubernetes, support, raw policies]
-doc-persona: [kubewarden-integrator, kubewarden-operator, kubewarden-developer]
+doc-persona: [kubewarden-distributor, kubewarden-integrator, kubewarden-operator, kubewarden-policy-developer]
 doc-type: [howto]
 doc-topic: [kubewarden, kubernetes, raw-policies]
 ---
@@ -282,7 +283,7 @@ The request will be mutated and the response will contain a JSONPatch:
 Similarly to policies that validate Kubernetes resources, raw policies are written in WebAssembly using Kubewarden SDKs.
 If you are interested in writing raw policies, please refer to language-specific documentation for more information:
 
-- [Go](../writing-policies/go/10-raw-policies.md)
-- [Rust](../writing-policies/rust/08-raw-policies.md)
-- [OPA](../writing-policies/rego/open-policy-agent/05-raw-policies.md)
-- [WASI](../writing-policies/wasi/02-raw-policies.md)
+- [Go](../tutorials/writing-policies/go/10-raw-policies.md)
+- [Rust](../tutorials/writing-policies/rust/08-raw-policies.md)
+- [OPA](../tutorials/writing-policies/rego/open-policy-agent/05-raw-policies.md)
+- [WASI](../tutorials/writing-policies/wasi/02-raw-policies.md)
