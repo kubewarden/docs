@@ -1,10 +1,11 @@
 ---
-sidebar_label: What is the Audit Scanner?
+sidebar_label: Audit Scanner
+sidebar_position: 50
 title: What is the Audit Scanner?
 description: An overview of the Kubewarden Audit Scanner.
 keywords: [kubewarden, audit scanner, kubernetes]
-doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
-doc-type: [tutorial, explanation]
+doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-integrator]
+doc-type: [explanation]
 doc-topic: [explanations, audit-scanner]
 ---
 
@@ -65,7 +66,7 @@ Also, policies in Kubewarden now support two optional annotations:
 - The `io.kubewarden.policy.severity` annotation lets you specify the severity level of the policy violation, such as `critical`, `high`, `medium`, `low` or `info`.
 - The `io.kubewarden.policy.category` annotation lets you categorize the policy based on a specific domain or purpose, such as `PSP`, `compliance`, or `performance`.
 
-See the policy authors [documentation](../../writing-policies/index.md) for more information.
+See the policy authors [documentation](../../tutorials/writing-policies/index.md) for more information.
 
 ## Permissions and ServiceAccounts
 

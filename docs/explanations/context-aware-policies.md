@@ -1,10 +1,11 @@
 ---
 sidebar_label: Context aware policies
+sidebar_position: 20
 title: Context aware policies
 description: A description of Kubewarden context aware policies, what they are and how they are useful.
 keywords: [ kubewarden, context-aware policy, clusteradmissionpolicy, admissionpolicy, admissionrequest, cluster administrator]
-doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
-doc-type: [explanation, reference]
+doc-persona: [kubewarden-policy-developer, kubewarden-integrator]
+doc-type: [explanation]
 doc-topic: [explanations, context-aware-polices]
 ---
 
@@ -99,5 +100,5 @@ All other Kubernetes resources need the full definition: `<api>/<version>`.
 
 ## Further readings
 
-More detailed information about context aware policies can be found in [this section](../writing-policies/spec/05-context-aware-policies.md)
+More detailed information about context aware policies can be found in [this section](../reference/spec/05-context-aware-policies.md)
 of our reference documentation.
