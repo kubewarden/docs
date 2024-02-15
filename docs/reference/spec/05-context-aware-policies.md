@@ -75,7 +75,7 @@ By default this query fetches the object and stores it inside of an in-memory ca
 During this time window, the cached data is served to policies.
 
 The policy author can also decide to make a direct query, one that skips the cache entirely. In this way, fresh data is always
-server. This however can cause more load on the Kubernetes API server (depending on how frequently the policy is triggered)
+served. This however can cause more load on the Kubernetes API server (depending on how frequently the policy is triggered)
 and introduces more latency when evaluating an admission request.
 
 The direct/cached query behavior can be configured on a per-query level by the policy author using the Kubewarden SDKs.
