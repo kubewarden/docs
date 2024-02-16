@@ -4,7 +4,7 @@ title: Policy settings
 description: Policy settings.
 keywords: [kubewarden, kubernetes, policy specification, policy settings]
 doc-persona: [kubewarden-policy-developer]
-doc-type: [tutorial]
+doc-type: [reference]
 doc-topic: [writing-policies, specification, settings]
 ---
 
