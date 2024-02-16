@@ -4,7 +4,7 @@ title: Mutating policies
 description: Mutating policies.
 keywords: [kubewarden, kubernetes, policy specification, mutating policies]
 doc-persona: [kubewarden-policy-developer]
-doc-type: [tutorial]
+doc-type: [treference]
 doc-topic: [writing-policies, specification, mutating-policies]
 ---
 

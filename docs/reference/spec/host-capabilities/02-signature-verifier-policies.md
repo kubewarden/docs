@@ -4,7 +4,7 @@ title: Signature verifier policies
 description: Signature verifier policies.
 keywords: [kubewarden, kubernetes, policy specification, signature verifier]
 doc-persona: [kubewarden-policy-developer]
-doc-type: [tutorial]
+doc-type: [reference]
 doc-topic: [writing-policies, specification, host-capabilities, signature-verifier-policies]
 ---
 

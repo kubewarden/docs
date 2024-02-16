@@ -4,7 +4,7 @@ title: Host capabilities specification
 description: Host capabilities specification.
 keywords: [kubewarden, kubernetes, policy specification, host capabilities]
 doc-persona: [kubewarden-policy-developer]
-doc-type: [tutorial]
+doc-type: [reference]
 doc-topic: [writing-policies, specification, host-capabilities, introduction]
 ---
 

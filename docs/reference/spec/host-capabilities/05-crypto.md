@@ -4,7 +4,7 @@ title: Cryptographic capabilities
 description: Cryptographic capabilities.
 keywords: [kubewarden, kubernetes, policy specification, cryptographic capabilities]
 doc-persona: [kubewarden-policy-developer]
-doc-type: [tutorial]
+doc-type: [reference]
 doc-topic: [writing-policies, specification, host-capabilities, cryptographic-capabilities]
 ---
 

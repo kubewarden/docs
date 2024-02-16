@@ -4,7 +4,7 @@ title: Validating policies
 description: Validating policies
 keywords: [kubewarden, kubernetes, policy specification, policy validation]
 doc-persona: [kubewarden-policy-developer]
-doc-type: [tutorial]
+doc-type: [reference]
 doc-topic: [writing-policies, specification, validating-policies]
 ---
 
