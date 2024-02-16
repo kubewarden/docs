@@ -9,6 +9,10 @@ doc-type: [reference]
 doc-topic: [operator-manual, policy-evaluation-timeout]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/policy-evaluation-timeout"/>
+</head>
+
 
 :::info
 This feature is available starting from Kubewarden v1.5.0.

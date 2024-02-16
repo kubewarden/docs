@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rego, gatekeeper, introduction]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/gatekeeper/intro"/>
+</head>
+
 :::note
 Gatekeeper support has been introduced starting from these releases:
 

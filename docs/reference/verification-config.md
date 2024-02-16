@@ -9,6 +9,10 @@ doc-type: [reference]
 doc-topic: [operator-manual, verification-config]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/verification-config"/>
+</head>
+
 ## Introduction
 
 The verification-config format is used by:

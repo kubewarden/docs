@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [testing-policies, introduction]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/testing-policies/index"/>
+</head>
+
 ## Policy testing personas
 
 This section covers the topic of testing Kubewarden Policies.

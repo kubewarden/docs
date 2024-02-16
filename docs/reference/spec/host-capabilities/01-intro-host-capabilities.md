@@ -8,6 +8,10 @@ doc-type: [reference]
 doc-topic: [writing-policies, specification, host-capabilities, introduction]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/host-capabilities/intro-host-capabilities"/>
+</head>
+
 While being evaluated, Kubewarden policies can access extra capabilities offered
 by the host environment.
 This mechanism uses an approach similar to traditional [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call).

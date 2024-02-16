@@ -8,6 +8,10 @@ doc-type: [howto]
 doc-topic: [kubewarden, kubernetes, raw-policies]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/raw-policies"/>
+</head>
+
 # Raw policies
 
 From `v1.9.0` onwards, Kubewarden supports the ability to write and execute policies

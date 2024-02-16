@@ -9,6 +9,10 @@ doc-type: [reference]
 doc-topic: [operator-manual, upgrade-path]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/upgrade-path"/>
+</head>
+
 ## Kubewarden stack versioning
 
 The Kubewarden project uses [Semantic versioning](https://semver.org/)

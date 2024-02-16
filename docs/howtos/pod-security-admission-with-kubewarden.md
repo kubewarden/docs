@@ -9,6 +9,10 @@ doc-type: [howto]
 doc-topic: [pod-security-admission-with-kubewarden]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/pod-security-admission-with-kubewarden"/>
+</head>
+
 Pod Security Policies (PSP) are removed since the Kubernetes 1.25 release.
 They're replaced by the [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/) (PSA).
 

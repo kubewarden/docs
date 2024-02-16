@@ -9,6 +9,10 @@ doc-type: [howto]
 doc-topic: [howto, audit-scanner-installation]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/audit-scanner"/>
+</head>
+
 Beginning with version `v1.7.0`, Kubewarden has a new feature called "Audit Scanner".
 A new component, called "audit-scanner", constantly checks the resources declared in the
 cluster, flagging the ones that do not adhere with the deployed Kubewarden policies.

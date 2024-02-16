@@ -8,6 +8,10 @@ doc-topic: [kubewarden, writing-policies, wasi]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/wasi/intro-wasi"/>
+</head>
+
 The [WebAssembly System Interface (WASI)](https://wasi.dev/) is a WebAssembly standard providing a set of interfaces allowing execution of WebAssembly outside of browser.
 
 :::caution

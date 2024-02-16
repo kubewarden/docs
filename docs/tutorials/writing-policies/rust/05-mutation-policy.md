@@ -8,6 +8,10 @@ doc-topic: [kubewarden, writing-policies, rust, new-mutation-policy]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rust/mutation-policy"/>
+</head>
+
 Mutating policies are similar to validating ones,
 but also have the ability to mutate an incoming object.
 

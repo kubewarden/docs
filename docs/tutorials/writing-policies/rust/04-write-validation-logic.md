@@ -8,6 +8,10 @@ doc-topic: [kubewarden, writing-policies, rust, validation-logic]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rust/write-validation-logic"/>
+</head>
+
 It's time to write the actual validation code.
 It's defined in the `src/lib.rs` file.
 In this file you can find a function called `validate`.

@@ -9,6 +9,10 @@ doc-type: [reference]
 doc-topic: [operator-manual, crd]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/CRDs"/>
+</head>
+
 You can find the definitions for the Kubewarden Custom Resources both on this page and
 [here at docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
 

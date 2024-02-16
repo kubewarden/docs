@@ -8,6 +8,10 @@ doc-type: [reference]
 doc-topic: [writing-policies, specification, settings]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/settings"/>
+</head>
+
 Policy behavior is not set in stone, it can be configured by providing configuration
 details to the policy at runtime. The policy author has full freedom to define
 the structure of the policy settings.

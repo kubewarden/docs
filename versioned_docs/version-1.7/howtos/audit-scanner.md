@@ -3,6 +3,10 @@ sidebar_label: "Audit Scanner Installation"
 title: "Audit Scanner Installation"
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/audit-scanner"/>
+</head>
+
 # Audit Scanner installation
 
 Beginning with version `v1.7.0`, Kubewarden has a new feature called "Audit Scanner".

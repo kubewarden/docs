@@ -9,6 +9,10 @@ doc-type: [reference]
 doc-topic: [operator-manual, monitor-mode]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/monitor-mode"/>
+</head>
+
 When defining a policy,
 you can choose between two modes,
 specified in its [`spec.mode`](CRDs#admissionpolicyspec).

@@ -8,6 +8,10 @@ doc-type: [tutorial, explanation]
 doc-topic: [explanations, audit-scanner]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/explanations/audit-scanner"/>
+</head>
+
 :::note
 
 The Audit Scanner feature is available starting from Kubewarden 1.7.0 release

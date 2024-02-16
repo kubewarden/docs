@@ -8,6 +8,10 @@ doc-type: [reference]
 doc-topic: [writing-policies, specification, context-aware-policies]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/context-aware-policies"/>
+</head>
+
 The `policy-server` has capabilities to expose cluster information to
 policies, so that they can take decisions based on other existing
 resources, and not only based on the details provided by the admission request.

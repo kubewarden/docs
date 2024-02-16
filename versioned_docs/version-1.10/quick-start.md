@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [quick-start]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/quick-start"/>
+</head>
+
 
 The Kubewarden stack comprises:
 

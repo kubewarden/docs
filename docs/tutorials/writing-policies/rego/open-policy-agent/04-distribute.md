@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rego, open-policy-agent, distribute]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/open-policy-agent/distribute"/>
+</head>
+
 We have written, built and run our Rego policy. Now it's time to
 distribute the policy.
 

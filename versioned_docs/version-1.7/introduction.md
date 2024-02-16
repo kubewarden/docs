@@ -4,6 +4,10 @@ sidebar_label: "Introduction"
 title: ""
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io"/>
+</head>
+
 # Introduction
 
 Kubewarden is a [Kubernetes Dynamic Admission

@@ -9,6 +9,10 @@ doc-topic: [kubewarden, writing-policies, other-languages]
 doc-persona: [kubewarden-policy-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/other-languages"/>
+</head>
+
 Kubewarden Policies can be written with any programming language that can produce
 WebAssembly modules targeting the WASI interface.
 

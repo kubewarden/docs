@@ -8,6 +8,10 @@ doc-type: [explanation]
 doc-topic: [explanations, audit-scanner, limitations]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/explanations/audit-scanner/limitations"/>
+</head>
+
 ## Supported event types
 
 Policies can inspect `CREATE`, `UPDATE`, and `DELETE` events.

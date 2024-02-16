@@ -8,6 +8,10 @@ doc-topic: [writing-policies]
 doc-persona: [kubewarden-policy-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/index"/>
+</head>
+
 This section introduces Kubewarden policies using traditional computing analogies.
 
 A Kubewarden policy is like a program that does one job.

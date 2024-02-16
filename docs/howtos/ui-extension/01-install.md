@@ -8,6 +8,10 @@ doc-persona: [kubewarden-operator, kubewarden-integrator]
 doc-topic: [operator-manual, ui-extension, installation]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/ui-extension/install"/>
+</head>
+
 This section describes how to install the Kubewarden UI as an extension of [Rancher Manager](https://github.com/rancher/rancher).
 
 :::caution

@@ -8,6 +8,10 @@ doc-topic: [kubewarden, writing-policies, rust, introduction]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rust/intro-rust"/>
+</head>
+
 [Rust](https://www.rust-lang.org/) is the most mature programming language that can generate WebAssembly modules.
 WebAssembly is a first-class citizen in the Rust world so many of the tools and crates from the Rust ecosystem work out of the box.
 

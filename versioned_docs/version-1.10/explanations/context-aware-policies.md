@@ -8,6 +8,10 @@ doc-type: [explanation, reference]
 doc-topic: [explanations, context-aware-polices]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/explanations/context-aware-policies"/>
+</head>
+
 Developers can create policies that fetch information from a Kubernetes cluster at run time.
 These are context aware policies.
 Context aware policies can determine whether an `AdmissionRequest` is acceptable using information from resources deployed in the cluster.

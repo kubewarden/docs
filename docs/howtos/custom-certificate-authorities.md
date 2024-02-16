@@ -9,6 +9,10 @@ doc-type: [howto]
 doc-topic: [distributing-policies, custom-certificate-authorities]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/custom-certificate-authorities"/>
+</head>
+
 With both of `kwctl` and `policy-server`
 you can pull policies from Open Container Initiative (OCI) registries and HTTP servers.
 You can only push policies to OCI registries.

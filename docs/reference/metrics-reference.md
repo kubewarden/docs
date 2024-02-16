@@ -9,6 +9,10 @@ doc-type: [reference]
 doc-topic: [operator-manual, telemetry, metrics, reference]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/metrics-reference"/>
+</head>
+
 Kubewarden exposes some relevant metrics that enhance visibility of the platform, and allows cluster
 administrators and policy developers to identify patterns and potential issues.
 

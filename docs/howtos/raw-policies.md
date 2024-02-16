@@ -9,6 +9,10 @@ doc-type: [howto]
 doc-topic: [kubewarden, kubernetes, raw-policies]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/raw-policies"/>
+</head>
+
 From `v1.9.0` onwards, Kubewarden supports the ability to write and execute policies
 outside a Kubernetes cluster, as a generic policy evaluation engine.
 The Policy Server exposes the `/validate_raw` endpoint that can be used to validate
