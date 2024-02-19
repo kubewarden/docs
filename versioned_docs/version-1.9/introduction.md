@@ -6,6 +6,10 @@ description: Introducing Kubewarden, a CNCF Sandbox project.
 keywords: [kubewarden, cncf, cncf sandbox, kubernetes]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io"/>
+</head>
+
 # Introduction
 
 Kubewarden is a Kubernetes Policy Engine.

@@ -9,6 +9,10 @@ doc-topic: [root-branch]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/typescript"/>
+</head>
+
 As stated on the [official website](https://www.typescriptlang.org/):
 
 > TypeScript extends JavaScript by adding types.

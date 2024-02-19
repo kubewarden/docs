@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [testing-policies, policy-authors]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/testing-policies/policy-authors"/>
+</head>
+
 Kubewarden policies are regular programs compiled as WebAssembly (Wasm).
 As with any kind of program, good test coverage is important.
 

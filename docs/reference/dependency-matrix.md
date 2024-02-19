@@ -9,6 +9,10 @@ doc-type: [reference]
 doc-topic: [operator-manual, dependencies]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/dependency-matrix"/>
+</head>
+
 This page lists the dependencies of Kubewarden, with their relevant
 version constraints. Versions outside of the provided ranges may work but are
 not tested.

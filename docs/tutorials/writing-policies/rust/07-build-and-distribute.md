@@ -8,6 +8,10 @@ doc-topic: [kubewarden, writing-policies, rust, build-and-distribute]
 doc-persona: [kubewarden-developer, kubewarden-operator]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rust/build-and-distribute"/>
+</head>
+
 ## Building the policy
 
 Thus far, you've built the policy with a compilation target of the same operating system and architecture of your development machine.

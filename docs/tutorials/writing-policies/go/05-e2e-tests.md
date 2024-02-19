@@ -9,6 +9,10 @@ doc-topic: [kubewarden, writing-policies, golang, end-to-end-testing]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/go/e2e-tests"/>
+</head>
+
 So far, you have tested the policy using a set of Go unit tests.
 This section shows how you can write end-to-end tests running against the actual WebAssembly binary produced by TinyGo.
 

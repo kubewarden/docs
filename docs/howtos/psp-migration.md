@@ -9,6 +9,10 @@ doc-type: [howto]
 doc-topic: [pod-security-policy-migration]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/psp-migration"/>
+</head>
+
 For Kubernetes ≥ v1.25.
 [PodSecurityPolicy](https://kubernetes.io/docs/concepts/security/pod-security-policy/)
 (PSP) is removed. Now you can use Kubewarden for admission control on your

@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rego, gatekeeper, create-policy]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/gatekeeper/create-policy"/>
+</head>
+
 Let's implement the same policy that [we wrote with Open Policy
 Agent](../open-policy-agent/create-policy): a policy that
 rejects a resource if it's targeting the `default` namespace.

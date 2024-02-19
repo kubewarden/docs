@@ -9,6 +9,10 @@ doc-type: [tutorial]
 doc-topic: [introduction]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io"/>
+</head>
+
 # Introduction
 
 Kubewarden is a Kubernetes Policy Engine.

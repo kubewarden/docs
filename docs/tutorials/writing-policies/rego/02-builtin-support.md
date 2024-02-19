@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rego, built-in-support]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/builtin-support"/>
+</head>
+
 Building a policy for the `wasm` target is only half of the problem,
 it needs to be executed.
 

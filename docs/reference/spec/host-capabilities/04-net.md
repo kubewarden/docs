@@ -8,6 +8,10 @@ doc-type: [reference]
 doc-topic: [writing-policies, specification, host-capabilities, network-capabilities]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/host-capabilities/net"/>
+</head>
+
 Kubewarden policies cannot make network request from within the WebAssembly
 execution context.
 

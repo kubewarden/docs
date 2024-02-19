@@ -8,6 +8,10 @@ doc-type: [howto]
 doc-topic: [operator-manual, airgap, installation]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/airgap/install"/>
+</head>
+
 
 This guide will show you how to install Kubewarden in air-gapped environments. In an air-gapped installation of Kubewarden,
 you will need a private OCI registry accessible by your Kubernetes cluster. Kubewarden Policies

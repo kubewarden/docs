@@ -8,6 +8,10 @@ doc-type: [reference]
 doc-topic: [writing-policies, specification, host-capabilities, signature-verifier-policies]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/host-capabilities/signature-verifier-policies"/>
+</head>
+
 Kubewarden implements support for the [Sigstore](https://www.sigstore.dev/)
 project. This allows to implement a Secure Supply Chain for your cluster.
 

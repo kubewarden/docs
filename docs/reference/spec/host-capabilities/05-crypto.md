@@ -8,6 +8,10 @@ doc-type: [reference]
 doc-topic: [writing-policies, specification, host-capabilities, cryptographic-capabilities]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/host-capabilities/crypto"/>
+</head>
+
 Because of Wasm constraints at the time of writing, some cryptographic libraries
 cannot be compiled to Wasm. In the meantime, Kubewarden policies needing those
 can instead perform these callbacks to evaluate the cryptographic functions

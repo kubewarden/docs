@@ -10,6 +10,10 @@ doc-type: [explanation]
 doc-topic: [introduction]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io"/>
+</head>
+
 Kubewarden is a Kubernetes Policy Engine.
 It aims to be the Universal Policy Engine for Kubernetes.
 

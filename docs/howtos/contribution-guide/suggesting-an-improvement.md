@@ -9,6 +9,10 @@ doc-topic: [contribution-guide, docs-contribution, improvement]
 doc-persona: [kubewarden-developer, kubewarden-operator, kubewarden-manager]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/contribution-guide/suggesting-an-improvement"/>
+</head>
+
 If you notice an issue with Kubewarden documentation or want to suggest new content, then open an issue.
 You only require access to a [GitHub account](https://github.com/join) and a browser.
 

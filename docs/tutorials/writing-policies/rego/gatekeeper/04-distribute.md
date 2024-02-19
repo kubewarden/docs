@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rego, gatekeeper, distribute]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/gatekeeper/distribute"/>
+</head>
+
 Policies have to be annotated for them to be pushed, and eventually
 executed by the Kubewarden `policy-server` in a Kubernetes cluster.
 

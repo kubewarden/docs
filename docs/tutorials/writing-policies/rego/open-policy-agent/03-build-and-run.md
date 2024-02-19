@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rego, open-policy-agent, build-and-run]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/open-policy-agent/build-and-run"/>
+</head>
+
 In the previous section we have written our Rego policy. The structure
 looks as the following:
 

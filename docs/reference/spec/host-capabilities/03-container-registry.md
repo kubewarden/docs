@@ -8,6 +8,10 @@ doc-type: [reference]
 doc-topic: [writing-policies, specification, host-capabilities, container-registry]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/host-capabilities/container-registry"/>
+</head>
+
 Container registries can be used to distribute many types of OCI objects, going
 from well-known container images to generic OCI Artifacts. OCI Artifacts are used
 to store objects such as Kubewarden Policies, Helm charts, and more.

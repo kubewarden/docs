@@ -8,6 +8,10 @@ doc-type: [howto]
 doc-topic: [operator-manual, telemetry, metrics, quick-start]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/telemetry/metrics-qs"/>
+</head>
+
 This section describes how to enable metrics reporting on the Policy Server.
 
 :::note

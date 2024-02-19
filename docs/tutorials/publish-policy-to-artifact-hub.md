@@ -9,6 +9,10 @@ doc-type: [tutorial]
 doc-topic: [distributing-policies, publish-policy-to-artifacthub]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/publish-policy-to-artifact-hub"/>
+</head>
+
 [Artifact Hub](https://artifacthub.io/) is a website where users can find,
 install, and publish packages and configurations for [CNCF](https://cncf.io) projects.
 

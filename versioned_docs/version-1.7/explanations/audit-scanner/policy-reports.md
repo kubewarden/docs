@@ -5,6 +5,10 @@ description: The policy reports that the Audit Scanner produces.
 keywords: [kubewarden, kubernetes, audit scanner]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/explanations/audit-scanner/policy-reports"/>
+</head>
+
 When using the Kubewarden Audit Scanner, the results of the policy scans are stored using the
 [PolicyReport](https://htmlpreview.github.io/?https://github.com/kubernetes-sigs/wg-policy-prototypes/blob/045372e558b896695b2daae92e8c7a04d4d40282/policy-report/docs/index.html)
 Custom Resource.

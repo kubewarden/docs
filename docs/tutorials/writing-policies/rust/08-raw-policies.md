@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rust, raw-policies]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rust/raw-policies"/>
+</head>
+
 Raw policies are policies that can evaluate arbitrary JSON documents.
 For more information about raw policies, please refer to the [raw policies](../../../howtos/raw-policies.md) page.
 

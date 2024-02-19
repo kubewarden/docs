@@ -8,6 +8,10 @@ doc-type: [howto]
 doc-topic: [operator-manual, telemetry, tracing, quick-start]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/telemetry/tracing-qs"/>
+</head>
+
 This section illustrates how to enable tracing support of
 Policy Server.
 

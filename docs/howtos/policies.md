@@ -9,6 +9,10 @@ doc-type: [howto]
 doc-topic: [operator-manual, policies]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/policies"/>
+</head>
+
 ## Skipping namespaces for a specific policy
 
 By default, policies apply to all Namespaces that the `PolicyServer` is configured for.

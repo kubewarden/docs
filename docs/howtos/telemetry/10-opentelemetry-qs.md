@@ -8,6 +8,10 @@ doc-type: [howto]
 doc-topic: [operator-manual, telemetry, opentelemetry, quick-start]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/telemetry/opentelemetry-qs"/>
+</head>
+
 [OpenTelemetry](https://opentelemetry.io/) is a Cloud Native Computing Foundation framework for
 observability. It enables your microservices to provide metrics, logs and traces.
 

@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rego, open-policy-agent, introduction]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/open-policy-agent/intro"/>
+</head>
+
 :::note
 Open Policy Agent support has been introduced starting from these releases:
   * kwctl: v0.2.0

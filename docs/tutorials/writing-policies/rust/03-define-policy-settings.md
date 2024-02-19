@@ -8,6 +8,10 @@ doc-topic: [kubewarden, writing-policies, rust, policy-settings]
 doc-persona: [kubewarden-developer]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rust/define-policy-settings"/>
+</head>
+
 ## The policy settings structure
 
 Firstly, define the structure that holds the policy settings.

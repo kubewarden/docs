@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rego, introduction]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/intro-rego"/>
+</head>
+
 :::note
 Rego support has been introduced starting from these releases:
 

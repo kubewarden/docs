@@ -8,6 +8,10 @@ doc-type: [treference]
 doc-topic: [writing-policies, specification, mutating-policies]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/mutating-policies"/>
+</head>
+
 Mutating policies are structured in the very same way as validating ones:
  * They have to register `validate` and `validate_settings` waPC functions
  * The communication API used between the host and the policy is the very same

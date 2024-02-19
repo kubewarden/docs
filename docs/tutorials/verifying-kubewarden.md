@@ -9,6 +9,10 @@ doc-type: [tutorial]
 doc-topic: [security, verifying-kubewarden]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/verifying-kubewarden"/>
+</head>
+
 Kubewarden artifacts are signed using [Sigstore](https://docs.sigstore.dev),
 with the keyless workflow. This means that the signing certificate contains the
 following info, where `*` matches any following characters:

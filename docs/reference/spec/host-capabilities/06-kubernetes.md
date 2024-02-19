@@ -8,6 +8,10 @@ doc-type: [reference]
 doc-topic: [writing-policies, specification, host-capabilities, kubernetes-capabilities]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/host-capabilities/kubernetes"/>
+</head>
+
 Kubewarden context aware policies requires access to resources from the Kubernetes
 cluster where they are running on. For that, the Kubewarden SDKs expose functions
 that use the waPC communication protocol to talk with the host system asking for

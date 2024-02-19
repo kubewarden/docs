@@ -8,6 +8,10 @@ doc-type: [explanation, reference]
 doc-topic: [security, disclosure]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/disclosure"/>
+</head>
+
 The Kubewarden team greatly appreciates investigative work into security
 vulnerabilities carried out by well-intentioned, ethical security researchers.
 We follow the practice of [responsible

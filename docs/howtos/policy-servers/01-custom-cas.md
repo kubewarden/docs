@@ -8,6 +8,10 @@ doc-type: [howto]
 doc-topic: [operator-manual, policy-servers, custom-certificate-authorities]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/policy-servers/custom-cas"/>
+</head>
+
 ## Custom Certificate Authorities for Policy registries
 
 It is possible to specify and configure the Certificate Authorities that a

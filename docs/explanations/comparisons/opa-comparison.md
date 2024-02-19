@@ -8,6 +8,10 @@ doc-type: [explanation]
 doc-topic: [explanations, kubewarden-vs-opa_gatekeeper]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/explanations/comparisons/opa-comparison"/>
+</head>
+
 :::info
 This page has been written during August 2023. Both projects might have evolved
 since then.

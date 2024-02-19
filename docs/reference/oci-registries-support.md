@@ -9,6 +9,10 @@ doc-type: [reference]
 doc-topic: [distributing-policies, oci-registries-support]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/oci-registries-support"/>
+</head>
+
 Kubewarden policies are distributed as
 [OCI Artifacts](https://github.com/opencontainers/artifacts)
 using regular Open Container Initiative (OCI) registries.

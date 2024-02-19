@@ -8,6 +8,10 @@ doc-type: [reference]
 doc-topic: [writing-policies, specification, validating-policies]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/validating-policies"/>
+</head>
+
 The Kubewarden policy server receives:
 
 

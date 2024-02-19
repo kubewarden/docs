@@ -9,6 +9,10 @@ doc-type: [explanation]
 doc-topic: [distributing-policies]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/explanations/distributing-policies"/>
+</head>
+
 Kubewarden policies are WebAssembly (Wasm) binaries that are evaluated by the Kubewarden Policy Server.
 
 The Kubewarden policy server can load policies from these sources:

@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rego, open-policy-agent, create-policy]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/open-policy-agent/create-policy"/>
+</head>
+
 Let's create a sample policy that will help us go through some
 important concepts. Let's start!
 

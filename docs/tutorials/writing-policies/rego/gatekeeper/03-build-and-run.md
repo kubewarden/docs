@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [writing-policies, rego, gatekeeper, build-and-run]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/gatekeeper/build-and-run"/>
+</head>
+
 Building and running the policy is done exactly the same way as a Rego
 policy targeting Open Policy Agent. The structure of our project is
 like:

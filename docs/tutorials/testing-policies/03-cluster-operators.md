@@ -8,6 +8,10 @@ doc-type: [tutorial]
 doc-topic: [testing-policies, cluster-operators]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/tutorials/testing-policies/cluster-operators"/>
+</head>
+
 As a Kubernetes cluster operator, you will want to perform testing against Kubewarden policies you want to use.
 
 You will have questions like:

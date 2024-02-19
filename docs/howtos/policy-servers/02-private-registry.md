@@ -8,6 +8,10 @@ doc-type: [howto]
 doc-topic: [operator-manual, policy-servers, private-registry]
 ---
 
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/policy-servers/private-registry"/>
+</head>
+
 It is possible to configure PolicyServers to use credentials of private OCI
 registries. This will allow those PolicyServers to download policies from
 public and private registries.
