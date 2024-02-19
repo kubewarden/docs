@@ -14,34 +14,36 @@ doc-topic: [writing-policies, specification, validating-policies]
 
 The Kubewarden policy server receives:
 
-
-- Kubernetes [`AdmissionReview`](https://godoc.org/k8s.io/api/admission/v1#AdmissionReview)
-objects from the Kubernetes API server. It then forwards the value of
-its `request` attribute (of type
-[`AdmissionRequest`](https://godoc.org/k8s.io/api/admission/v1#AdmissionRequest))
+- Kubernetes
+[`AdmissionReview`](https://godoc.org/k8s.io/api/admission/v1#AdmissionReview)
+objects from the Kubernetes API server.
+It then forwards the value of its `request` attribute, of type
+[`AdmissionRequest`](https://godoc.org/k8s.io/api/admission/v1#AdmissionRequest),
 to the policy to be evaluated.
 
 or:
 
-- a JSON with a `request` attribute containing the free-form request document,
-in case of a raw policy. Check the [Raw policies](../../howtos/raw-policies.md) section for more details.
+- A JSON `request` attribute containing the free-form request document,
+in case of a raw policy.
+Check the
+[Raw policies](../../howtos/raw-policies.md)
+section for more details.
 
+The policy evaluates the `request` and states whether it should be accepted or not.
+When the request is rejected,
+the policy might provide the explanation message and an error code to be shown to the end user.
 
-The policy has to evaluate the `request` and state whether it should be
-accepted or not. When the request is rejected, the policy might provide the
-explanation message and a specific error code that is going to be shown to the end user.
+By convention, of the `policy-server` project,
+the guest has to expose a function named `validate`,
+through the waPC guest SDK,
+so that the `policy-server` (waPC host) can invoke it.
 
-By convention of the `policy-server` project, the guest has to expose
-a function named `validate`, exposed through the waPC guest SDK, so
-that the `policy-server` (waPC host) can invoke it.
-
-The `validate` function receives a `ValidationRequest` object serialized as JSON and
-returns a `ValidationResponse` object serialized as JSON.
+The `validate` function receives a `ValidationRequest` JSON object and returns a `ValidationResponse` JSON object.
 
 ## The `ValidationRequest` object
 
-The `ValidationRequest` is a simple JSON object that is received by the
-`validate` function. It looks like this:
+The `ValidationRequest` is a JSON object that is received by the `validate` function.
+It looks like:
 
 ```yaml
 {
@@ -52,12 +54,16 @@ The `ValidationRequest` is a simple JSON object that is received by the
 }
 ```
 
-The `settings` key points to a free-form JSON document that can hold the policy
-specific settings. The previous chapter focused on policies and settings.
+The `settings` key points to a free-form JSON document holds the policy
+specific settings.
+The previous chapter focused on policies and settings.
 
-### A concrete example
+## An example
 
 Given the following Kubernetes `AdmissionReview`:
+
+<details>
+<summary>Expand to see `AdmissionReview`</summary>
 
 ```yaml
 {
@@ -128,7 +134,12 @@ Given the following Kubernetes `AdmissionReview`:
 }
 ```
 
-The `ValidationRequest` object would look like that:
+</details>
+
+The `ValidationRequest` object would look like:
+
+<details>
+<summary>Expand to see the `ValidationRequest`</summary>
 
 ```yaml
 {
@@ -200,10 +211,11 @@ The `ValidationRequest` object would look like that:
 }
 ```
 
+</details>
+
 ## The `ValidationResponse` object
 
-The `validate` function returns the outcome of its validation using a `ValidationResponse`
-object.
+The `validate` function returns the outcome of its validation using a `ValidationResponse` object.
 
 The `ValidationResponse` is structured in the following way:
 
@@ -223,18 +235,15 @@ The `ValidationResponse` is structured in the following way:
 }
 ```
 
-The `message` and `code` attributes can be specified when the request
-is not accepted. `message` is a free form textual error. `code`
-represents an HTTP error code.
+These `message` and `code` attributes can be specified when the request is not accepted.
+The `message` is a free-form textual error and `code` represents an HTTP error code.
 
-If the request is accepted, `message` and `code`
-values will be ignored by the Kubernetes API server if they are
-present.
+If the request is accepted,
+the `message` and `code` values are ignored by the Kubernetes API server if present.
 
-If `message` or `code` are provided, and the request is not
-accepted, the Kubernetes API server will forward this information as
-part of the body of the error returned to the Kubernetes API server
-client that issued the rejected request.
+If `message` or `code` are provided,
+and the request is not accepted,
+then the Kubernetes API server returns this information, as part of the body of the error, to the Kubernetes API client that issued the rejected request.
 
 The `mutated_object` is an optional field used only by mutating policies.
-This is going to be covered inside of the next chapter.
+This is the topic of the next chapter.

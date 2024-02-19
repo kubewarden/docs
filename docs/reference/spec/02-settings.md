@@ -12,26 +12,22 @@ doc-topic: [writing-policies, specification, settings]
   <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/settings"/>
 </head>
 
-Policy behavior is not set in stone, it can be configured by providing configuration
-details to the policy at runtime. The policy author has full freedom to define
-the structure of the policy settings.
+Policy behavior is not rigid,
+it can be configured by providing configuration details to the policy at runtime.
+The policy author has the freedom to define the structure of policy settings.
 
-Kubewarden takes care of serializing the policy settings into JSON and provide
-them to the policy every time it is invoked.
+Kubewarden takes care of serializing the policy settings into JSON and provides them to the policy each time it is invoked.
 
 ## Settings validation
 
-Some policies might want to validate the settings a user provides to ensure
-they are correct.
+Policies should validate the settings a user provides to ensure correctness.
 
-Each policy must register a waPC function called `validate_settings` that
-takes care of validating the policy settings.
+Each policy registers a waPC function called `validate_settings` that validates the policy settings.
 
-The `validate_settings` function receives as input a JSON representation of
-the settings provided by the user. The function validates them and returns
-as a response a `SettingsValidationResponse` object.
+The `validate_settings` function receives as input a JSON representation of the settings provided by the user.
+This function validates them and returns as a response a `SettingsValidationResponse` object.
 
-The structure of the `SettingsValidationResponse` object is the following one:
+The structure of the `SettingsValidationResponse` object is:
 
 ```yaml
 {
@@ -44,18 +40,19 @@ The structure of the `SettingsValidationResponse` object is the following one:
 ```
 
 If the user provided settings are `valid`, the contents of `message` are ignored.
-Otherwise the contents of `message` are shown to the user.
+Otherwise, the contents of `message` are shown to the user.
 
 :::note
-Kubewarden's [policy-server](https://github.com/chimera-kube/policy-server)
+Kubewarden's
+[policy-server](https://github.com/chimera-kube/policy-server)
 validates all the policy settings provided by users at start time.
-The policy-server exits immediately with an error if at least one of its
-policies received wrong configuration parameters.
+The policy-server exits immediately with an error if at least one of its policies received wrong configuration parameters.
 :::
 
 ## Example
 
-Let's take as an example the [psp-capabilities](https://github.com/kubewarden/psp-capabilities)
+Let's take as an example the
+[psp-capabilities](https://github.com/kubewarden/psp-capabilities)
 policy which has the following configuration format:
 
 ```yaml
@@ -69,7 +66,7 @@ default_add_capabilities:
 - KILL
 ```
 
-The `validate_settings` function will receive as input the following JSON
+The `validate_settings` function receives as input the following JSON
 document:
 
 ```json
@@ -88,6 +85,4 @@ document:
 
 ## Recap
 
-Each policy must register a waPC function called `validate_settings` that has
-the following API:
-
+Each policy must register a waPC function, `validate_settings`.
