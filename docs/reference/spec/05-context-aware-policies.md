@@ -12,9 +12,10 @@ doc-topic: [writing-policies, specification, context-aware-policies]
   <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/context-aware-policies"/>
 </head>
 
-The `policy-server` has capabilities to expose cluster information to
-policies, so that they can take decisions based on other existing
-resources, and not only based on the details provided by the admission request.
+The `policy-server` has the capability to expose cluster information to
+policies,
+so that they can take decisions based on other existing resources,
+and not only based on the details provided by the admission request.
 
 The retrieval of Kubernetes resources is performed by the Policy Server hosting the policy.
 Access to Kubernetes is regulated by RBAC rules applied to the Service Account used by the Policy Server.
@@ -30,23 +31,28 @@ The policy server performs caching of the results obtained from the Kubernetes A
 That means some information might be stale or missing.
 :::
 
-## Support Matrix
+## Support matrix
 
-| Policy type                       | Support | Notes                                            |
-| --------------------------------- | :-----: | ------------------------------------------------ |
-| Traditional programming languages |   ✅    | -                                                |
-| Rego                              |   ✅    | Since Kubewarden 1.9 release                     |
-| WASI                              |   ✅    | Since Kubewarden 1.10.0 release, only for Go SDK |
+| Policy type | Support | Notes |
+|-|:-:|-|
+| Traditional programming languages | ✅ | - |
+| Rego | ✅ | Since Kubewarden 1.9 release |
+| WASI | ✅ | Since Kubewarden 1.10.0 release, only for Go SDK |
 
 ## ClusterAdmissionPolicies
 
-ClusterAdmissionPolicies have the field [spec.contextAwareResources](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller/policies.kubewarden.io/ClusterAdmissionPolicy/v1#spec-contextAwareResources). This field provides a list a `GroupVersionKind` resources that the policy needs to access. This allows policy writers to ship the "permissions" that the policy needs together with the policy. Moreover, this allows policy operators to review the "permissions" needed by the policy at deployment time.
+ClusterAdmissionPolicies have the field
+[spec.contextAwareResources](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller/policies.kubewarden.io/ClusterAdmissionPolicy/v1#spec-contextAwareResources).
+This field provides a list a `GroupVersionKind` resources that the policy needs to access.
+This allows policy writers to ship the "permissions" that the policy needs together with the policy.
+Moreover, this allows policy operators to review the "permissions" needed by the policy at deployment time.
 
 ### Testing context aware policies locally
 
-Apart from running policies in cluster for end-to-end tests, one can use our `kwctl` CLI utility to run policies and mock requests against the cluster.
+As well as running policies in a cluster for end-to-end tests,
+you can use the `kwctl` CLI utility to run policies and mock requests against the cluster.
 
-For that, `kwctl run` can first record all the interactions with the cluster into a file:
+For this, `kwctl run` can first record all the interactions with the cluster into a file:
 
 ```console
 kwctl run \
@@ -74,8 +80,9 @@ which creates the following `replay-session.yml` file:
     payload: '{"apiVersion":"","kind":"Pod", <snipped> }'
 ```
 
-With the replay session, one can now mock the cluster interactions without the need
-of a cluster, perfect for CI and end-to-end tests:
+With the replay session,
+you can now simulate the cluster interactions without the need of a cluster,
+which is ideal for CI and end-to-end tests:
 
 ```console
 kwctl run \
@@ -87,9 +94,7 @@ kwctl run \
 
 ## Language SDKs
 
-Language SDK's that support cluster context at this time will expose
-functions that allow policies to retrieve the current state of the
-cluster.
+Language SDK's that support cluster context at the moment expose functions that allow policies to retrieve the current state of the cluster.
 
 :::tip
 If you want more information about the waPC function used by the SDKs, check the [Kubernetes capabilities](host-capabilities/06-kubernetes.md) reference documentation.
@@ -113,7 +118,9 @@ The inventory is populated with the resources the policy has been granted access
 
 ### Open Policy Agent
 
-The context aware information is exposed under the `data.kubernetes` key, like
-[`kube-mgmt`](https://github.com/open-policy-agent/kube-mgmt) does by default.
+The context aware information is exposed under the `data.kubernetes` key,
+like
+[`kube-mgmt`](https://github.com/open-policy-agent/kube-mgmt)
+does by default.
 
 The inventory is populated with the resources the policy has been granted access to via the `spec.contextAwareResources` field.
