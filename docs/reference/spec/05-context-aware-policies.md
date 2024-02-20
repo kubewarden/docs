@@ -39,6 +39,53 @@ That means some information might be stale or missing.
 | Rego | ✅ | Since Kubewarden 1.9 release |
 | WASI | ✅ | Since Kubewarden 1.10.0 release, only for Go SDK |
 
+## Constraints
+
+Kubewarden's priority is to reduce the number of queries done against the Kubernetes API server. Because of that two constraints have to be
+considered:
+
+- Memory usage: data fetched from Kubernetes is cached in memory by the Policy Server process. The more data is fetched, the more memory is going
+  to be consumed by the Policy Server Pods.
+- Consistency: the cache kept by Policy Server could contain stale data. New resources might be missing, deleted resources might still be
+  available and changed ones could have old data. This could affect policy evaluation.
+
+### Listing multiple resources
+
+Kubewarden policies can fetch multiple resources at the same time. For example, they can make a query like
+"get all the Pods defined inside of the `default` namespace that have the label `color` set to `green`".
+
+When such a query is done, the Policy Server fetches all the resources matching the user criteria. Resources are fetched in batches to reduce the
+load on the Kubernetes API server.
+Before storing the resources in memory, the `managedFields` attribute of each resource is dropped to reduce the amount of memory consumed.
+This attribute is not useful for policies and takes a significant amount of memory.
+
+The Policy Server then creates a [Kubernetes watch](https://kubernetes.io/docs/reference/using-api/api-concepts/#efficient-detection-of-changes) to keep
+the cached list of objects updated.
+The Policy Server doesn't control the speed at which the Kubernetes API Server sends notifications about resource changes. This depends on different external
+factors, like the number of watches created against the Kubernetes API server and its load.
+
+Finally, the current code suffers from the following limitation. Given these two queries:
+
+- `kubectl get pods -n default`
+- `kubectl get pods -n default -l color=green`
+
+Policy Server will create two watches and will duplicate all the Pods of the second query.
+We will work to remove this limitation in future releases of Kubewarden.
+
+### Fetching a specific resource
+
+Kubewarden policies can get a specific resource defined inside of the cluster. For example, they can make a query like
+"get the Pod named `psql-0` defined inside of the `db` namespace".
+
+By default this query fetches the object and stores it inside of an in-memory cache. The cache entry is wiped after 5 seconds.
+During this time window, the cached data is served to policies.
+
+The policy author can also decide to make a direct query, one that skips the cache entirely. In this way, fresh data is always
+served. This however can cause more load on the Kubernetes API server (depending on how frequently the policy is triggered)
+and introduces more latency when evaluating an admission request.
+
+The direct/cached query behavior can be configured on a per-query level by the policy author using the Kubewarden SDKs.
+
 ## ClusterAdmissionPolicies
 
 ClusterAdmissionPolicies have the field
