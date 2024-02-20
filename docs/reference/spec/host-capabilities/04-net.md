@@ -12,11 +12,9 @@ doc-topic: [writing-policies, specification, host-capabilities, network-capabili
   <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/host-capabilities/net"/>
 </head>
 
-Kubewarden policies cannot make network request from within the WebAssembly
-execution context.
+Kubewarden policies cannot make network request from within the WebAssembly execution context.
 
-Network operations can be done by leveraging a series of capabilities exposed
-by the host.
+Network operations can be done by leveraging a series of capabilities exposed by the host.
 
 ## DNS host lookup
 
@@ -29,6 +27,10 @@ Lookup results are cached for 1 minute.
 ### Communication protocol
 
 This is the description of the waPC protocol used to expose this capability:
+
+<!--TODO:
+Remove HTML tables.
+-->
 
 <table>
 <tr>
@@ -64,13 +66,13 @@ string
 </tr>
 </table>
 
-All the IPs associated with the given FQDN, are going to be returned as strings
-inside of the response. Both IPv4 and IPv6 entries are going to be returned as
-part of the same response.
+All the IP addresses associated with the given FQDN,
+are going to be returned as strings in the response.
+Both IPv4 and IPv6 entries are returned as part of the same response.
 
-For example, when requesting the manifest digest of the `busybox:latest` image,
-the payload would be the following ones:
+For example, when requesting the manifest digest of the
+`busybox:latest` image,
+the payloads would be:
 
 * Input payload: `"google.com"`
 * Output payload: `{ "ips": ["127.0.0.1"]}`
-
