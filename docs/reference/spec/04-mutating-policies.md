@@ -4,7 +4,7 @@ title: Mutating policies
 description: Mutating policies.
 keywords: [kubewarden, kubernetes, policy specification, mutating policies]
 doc-persona: [kubewarden-policy-developer]
-doc-type: [treference]
+doc-type: [reference]
 doc-topic: [writing-policies, specification, mutating-policies]
 ---
 
@@ -12,12 +12,12 @@ doc-topic: [writing-policies, specification, mutating-policies]
   <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/mutating-policies"/>
 </head>
 
-Mutating policies are structured in the very same way as validating ones:
- * They have to register `validate` and `validate_settings` waPC functions
- * The communication API used between the host and the policy is the very same
-  as the one used by validating policies.
+Mutating policies are structured in the same way as validating ones:
 
-Mutating policies can accept a request and propose a mutation of the incoming
+- They have to register `validate` and `validate_settings` waPC functions.
+- The communication API used between the host and the policy is the same as that used by validating policies.
+
+Mutating policies accept a request and can propose a mutation of the incoming
 object by returning a `ValidationResponse` object that looks like this:
 
 ```json
@@ -27,8 +27,8 @@ object by returning a `ValidationResponse` object that looks like this:
 }
 ```
 
-The `mutated_object` field contains the object the policy wants to be created
-inside of the Kubernetes cluster serialized to JSON.
+The `mutated_object` field contains the object the policy wants to be created in the Kubernetes cluster,
+serialized to JSON.
 
 ## A concrete example
 
@@ -64,7 +64,7 @@ Let's assume the policy received this `ValidationRequest`:
 ```
 
 :::note
-We left some irrelevant fields out of the `request` object.
+For learning purposes we left some unimportant fields out of the `request` object.
 :::
 
 This request is generated because someone tried to create a Pod that would
@@ -141,16 +141,15 @@ spec:
         - BPF
 ```
 
-As you can see, the policy altered the `securityContext.capabilities.drop`
-section of the only container declared inside of the Pod.
+As you can see, the policy altered the `securityContext.capabilities.drop` section of the only container declared in the Pod.
 
-The container is now dropping the `BPF` capability thanks to our policy.
+The container is now dropping the `BPF` capability due to our policy.
 
 ## Recap
 
 These are the functions a mutating policy must implement:
 
-| **waPC function name** | **Input payload**                                                                                                                     | **Output payload**                                                                                                                                                                                                                                                                                                                                     |
-|------------------------|---------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `validate`               | <code>\{<br/>  "request": \{<br/>    // AdmissionReview.request data<br/>  \},<br/>  "settings": \{<br/>    // your policy configuration<br/>  \}<br/>\}</code> | <code>\{<br/>  **// mandatory**<br/>  "accepted": boolean,<br/><br/>  // optional, ignored if accepted<br/>  // recommended for rejections<br/>  "message": string,<br/><br/>  // optional, ignored if accepted<br/>  "code": integer, <br/><br/>  // JSON Object to be created<br/>  // Can be used only when the<br/>  // request is accepted<br/>  "mutated_object": object<br/>\}</code> |
-| `validate_settings`      | <code>\{<br/><br/>  // your policy configuration<br/><br/>\}</code>                                                                                      | <code>\{<br/>  **// mandatory**<br/>  "validate": boolean,<br/><br/>  // optional, ignored if accepted<br/>  // recommended for rejections<br/>  "message": string,<br/>\}</code>                                                                                                                                                                                            |
+| **waPC function name** | **Input payload** | **Output payload** |
+|-|-|-|
+| `validate` | <code>\{<br/>  "request": \{<br/>    // AdmissionReview.request data<br/>  \},<br/>  "settings": \{<br/>    // your policy configuration<br/>  \}<br/>\}</code> | <code>\{<br/>  **// mandatory**<br/>  "accepted": boolean,<br/><br/>  // optional, ignored if accepted<br/>  // recommended for rejections<br/>  "message": string,<br/><br/>  // optional, ignored if accepted<br/>  "code": integer, <br/><br/>  // JSON Object to be created<br/>  // Can be used only when the<br/>  // request is accepted<br/>  "mutated_object": object<br/>\}</code> |
+| `validate_settings` | <code>\{<br/><br/>  // your policy configuration<br/><br/>\}</code> | <code>\{<br/>  **// mandatory**<br/>  "validate": boolean,<br/><br/>  // optional, ignored if accepted<br/>  // recommended for rejections<br/>  "message": string,<br/>\}</code> |
