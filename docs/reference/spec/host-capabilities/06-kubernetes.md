@@ -19,7 +19,7 @@ For that, the Kubewarden SDKs expose functions that use the waPC communication p
 
 Internally, the SDKs rely on these functions exposed by the policy host environment:
 
-- `list_resources_by_namespace` : Given a resource type and a namespace, list all the resources of that type that are defined inside of it.
+- `list_resources_by_namespace` : Given a resource type and a namespace, list all the resources of that type that are defined in it.
 This cannot be used to list cluster-wide resources, like `Namespace`.
 - `list_resources_all`: Given a resource type, list all the resources of that type that are defined inside the whole cluster.
 This can be used to list cluster-wide resources, like `Namespace`.
