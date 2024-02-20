@@ -27,7 +27,7 @@ next to the OCI object being signed.
 They can be a container image or a more generic OCI artifact,
 like a Kubewarden policy.
 When an object is signed,
-its signatures are stored as layers of a OCI object created by Sigstore.
+its signatures are stored as layers of an OCI object created by Sigstore.
 Policies needing to check signatures of containers need to check those layers,
 and need to pull the signature layers to see the signatures themselves.
 
@@ -352,7 +352,6 @@ It's too bulky, forces horizontal scrolling.
 </tr>
 
 </table>
-
 
 Marked for deprecation:
 

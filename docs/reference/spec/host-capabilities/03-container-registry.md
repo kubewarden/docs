@@ -235,6 +235,6 @@ the payload would be:
 * Input payload: `"ghcr.io/kubewarden/policy-server:v1.10.0"`
 * Output payload: the body of the successful response obtained from the
   registry.
-  It can be a [OCI index image](https://github.com/opencontainers/image-spec/blob/main/image-index.md)
-  or a [OCI image manifest](https://github.com/opencontainers/image-spec/blob/main/manifest.md).
+  It can be an [OCI index image](https://github.com/opencontainers/image-spec/blob/main/image-index.md)
+  or an [OCI image manifest](https://github.com/opencontainers/image-spec/blob/main/manifest.md).
   The details may change depending on the registry and image.

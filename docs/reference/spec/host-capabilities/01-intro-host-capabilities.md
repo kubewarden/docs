@@ -35,9 +35,9 @@ The host capabilities feature is implemented using
 Each capability uses these details:
 
 - waPC function name: The name of the capability exposed by the host.
-- input payload: The body of the request made by the policy.
+- Input payload: The body of the request made by the policy.
 This is always encoded in JSON format.
-- output payload: The body of the response coming from the host. This is always encoded in JSON format.
+- Output payload: The body of the response coming from the host. This is always encoded in JSON format.
 
 When something goes wrong, the host replies with an error.
 This is done using the error type of the programming language used by the policy.
