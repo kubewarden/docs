@@ -12,29 +12,29 @@ doc-topic: [writing-policies, specification, host-capabilities, container-regist
   <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/host-capabilities/container-registry"/>
 </head>
 
-Container registries can be used to distribute many types of OCI objects, going
-from well-known container images to generic OCI Artifacts. OCI Artifacts are used
-to store objects such as Kubewarden Policies, Helm charts, and more.
+Container registries can be used to distribute many types of OCI objects.
+From well-known container images to generic OCI Artifacts.
+OCI Artifacts are used to store objects such as Kubewarden policies,
+Helm charts, and more.
 
-Below documented are the capabilities exposed by the Kubewarden host to interact with
-container registries.
+These are the capabilities exposed by the Kubewarden host,
+to interact with container registries.
 
 ## Get OCI manifest digest
 
-This function computes the digest of an OCI manifest. This information can
-be used to identify an object stored inside of an OCI registry in an immutable
-way, as opposed to `tags` which are mutable.
+This function computes the digest of an OCI manifest.
+The digest can be used to identify an object stored in an OCI registry.
+This is an immutable way, as opposed to `tags` which are mutable.
 
 ### Caching
 
-Computing the digest involves a series of network requests between the Kubewarden
-policy host and the remote registry. These operation can be time expensive,
-because of that the results are going to be cached for 1 minute.
+Computing the digest involves a series of network requests between the Kubewarden policy host and the remote registry.
+These operations can be time expensive,
+so the results are cached for 1 minute.
 
 ### Authentication
 
-Interactions with private registries require the Kubewarden policy host to
-authenticate against the remote registry.
+Interactions with private registries require the Kubewarden policy host to authenticate against the remote registry.
 
 The policy host will use the same set of credentials used to fetch policies
 from the remote registry.
@@ -42,6 +42,10 @@ from the remote registry.
 ### Communication protocol
 
 This is the description of the waPC protocol used to expose this capability:
+
+<!--TODO:
+Try to remove the HTML tables.
+-->
 
 <table>
 <tr>
@@ -78,22 +82,23 @@ string
 </table>
 
 For example, when requesting the manifest digest of the `busybox:latest` image,
-the payload would be the following ones:
+the payload would be:
 
 * Input payload: `"busybox:latest"`
 * Output payload: `{ "digest": "sha256:69e70a79f2d41ab5d637de98c1e0b055206ba40a8145e7bddb55ccc04e13cf8f"}`
 
 ## OCI manifest
 
-This function fetches the OCI objects manifest. When available, this information can
-be used to identify specific images manifests, for one or more platforms. Or a
-single image manifest for the image.
+This function fetches the OCI objects manifest.
+When available, this information can be used to identify specific images manifests,
+for one or more platforms.
+Or a single image manifest for the image.
 
 ### Caching
 
 Computing the digest involves a series of network requests between the
-Kubewarden policy host and the remote registry. These operations can be time
-expensive so the results are cached for 1 minute.
+Kubewarden policy host and the remote registry.
+These operations can be time expensive so the results are cached for 1 minute.
 
 ### Authentication
 
@@ -223,14 +228,13 @@ OR
 
 </table>
 
-For example, when requesting the manifest digest of the `ghcr.io/kubewarden/policy-server:v1.10.0` image,
-the payload would be the following ones:
+For example, when requesting the manifest digest of the
+`ghcr.io/kubewarden/policy-server:v1.10.0` image,
+the payload would be:
 
 * Input payload: `"ghcr.io/kubewarden/policy-server:v1.10.0"`
 * Output payload: the body of the successful response obtained from the
-  registry. It can be a [OCI index
-  image](https://github.com/opencontainers/image-spec/blob/main/image-index.md)
-  or a [OCI image
-  manifest](https://github.com/opencontainers/image-spec/blob/main/manifest.md).
-  That can change depending of the registry and image
-
+  registry.
+  It can be a [OCI index image](https://github.com/opencontainers/image-spec/blob/main/image-index.md)
+  or a [OCI image manifest](https://github.com/opencontainers/image-spec/blob/main/manifest.md).
+  The details may change depending on the registry and image.

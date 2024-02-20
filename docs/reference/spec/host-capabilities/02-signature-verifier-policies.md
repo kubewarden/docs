@@ -12,38 +12,42 @@ doc-topic: [writing-policies, specification, host-capabilities, signature-verifi
   <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/host-capabilities/signature-verifier-policies"/>
 </head>
 
-Kubewarden implements support for the [Sigstore](https://www.sigstore.dev/)
-project. This allows to implement a Secure Supply Chain for your cluster.
+Kubewarden implements support for the
+[Sigstore](https://www.sigstore.dev/)
+project.
+This allows implementing a "Secure Supply Chain" for your cluster.
 
-Part of that is to ensure that all container images running in the cluster are
-signed and verified, proving that they come from their stated authors, and
-haven't been tampered with. For further reading, do check out the docs on
-[how we implement a Secure Supply Chain for the policies themselves](../../../howtos/secure-supply-chain.md)).
+Part of the function of the secure supply chain is to ensure that all container images running in the cluster are signed and verified.
+This proves that they come from their stated authors, with no tampering.
+For further reading, check the docs on
+[how we implement a Secure Supply Chain for the policies themselves](../../../howtos/secure-supply-chain.md).
 
-Sigstore signatures are stored inside of container registries, next to the OCI
-object being signed; be it a container image or a more generic OCI artifact,
-like a Kubewarden policy. Given an object to be signed, all its signatures are
-going to be stored as layers of a special OCI object created by sigstore.
-Policies that want to check Sigstore signatures of containers need then to check
-those layers, and would need to pull the signature layers to see the
-signatures themselves.
+Sigstore signatures are stored inside of container registries,
+next to the OCI object being signed.
+They can be a container image or a more generic OCI artifact,
+like a Kubewarden policy.
+When an object is signed,
+its signatures are stored as layers of a OCI object created by Sigstore.
+Policies needing to check signatures of containers need to check those layers,
+and need to pull the signature layers to see the signatures themselves.
 
-Obtaining and operating with those OCI layers needs to happen outside of the
-WebAssembly guest (the policy). Hence this is done by the WebAssembly runtime:
+Obtaining and operating with those OCI layers needs to happen outside the WebAssembly guest (the policy).
+Hence, this is done by the WebAssembly runtime,
 Kubewarden's `policy-server` or `kwctl`.
 
-The different language SDKs for Kubewarden policies take care of all that, and
-provide functions for verification of container image, Kubewarden policies, Helm
-charts and generally speaking any kind of OCI artifact. This ensures a safe and
-tested codepath for verification. In addition, pulling data from a registry and
-cryptographically verifying signatures can be time and computationally
-expensive, so the WebAssembly runtime (PolicyServer, `kwctl`) ensures both
-signature pulls and verification computations are cached. The cached entries
-are automatically expired after 60 seconds to prevent stale data from being
-served.
+The different language SDKs for Kubewarden policies take care of this.
+They provide functions for verification of container image,
+Kubewarden policies, Helm charts and other kinds of OCI artifact.
+This ensures a safe and tested code path for verification.
+
+Pulling data from a registry and cryptographically verifying signatures can be time and computationally expensive,
+so the WebAssembly runtime (PolicyServer, `kwctl`) ensures both
+signature pulls and verification computations are cached.
+The cached entries are automatically expired after 60 seconds to help prevent stale data from being served.
 
 The SDKs provide functions similar to the following:
-- ```
+
+- ```rust
   verify_pub_keys_image(
       image_url: string,
       vector_of_pub_keys: vector<string>,
@@ -51,7 +55,8 @@ The SDKs provide functions similar to the following:
       )
       returns (is_trusted: bool, digest_of_verified_image: string)
   ```
-- ```
+
+- ```rust
   verify_keyless_exact_match(
       image_url: string,
       vector_of_tuples_issuer_and_subject: vector<(issuer, subject: string)>,
@@ -60,31 +65,37 @@ The SDKs provide functions similar to the following:
       returns (is_trusted: bool, digest_of_verified_image: string)
   ```
 
-Both functions verify that the image is signed and satisfy the passed
-constraints.
+Both functions verify that the image is signed and satisfy the constraints.
 
-Note well: on success, the functions return the digest of the verified image. It
-is now on the policy to ensure that containers are instantiated from that
-digest, and not from tag that may or may not match that checksum digest (and
-therefore be compromised).
+:::note
+On success, the functions return the digest of the verified image.
+It is now policy responsibility to ensure that containers are instantiated from that digest,
+and not from a tag that may not match that checksum digest (and therefore be compromised).
+:::
 
+## An example
 
-## A concrete example
-
-The Kubewarden team [provides a verifier policy](https://github.com/kubewarden/verify-image-signatures)
-that enforces Sigstore signatures for all containers, built on Rust and with the
-Rust SDK. The policy ensures that the containers are signed, and optionally,
-mutates the requests appending the exact verified checksum to the tag of the
-image. Check its docs for specifics.
+The Kubewarden team
+[provides a verifier policy](https://github.com/kubewarden/verify-image-signatures)
+that enforces Sigstore signatures for all containers.
+It's built using Rust and with the Rust SDK.
+The policy ensures that the containers are signed,
+and optionally,
+mutates the requests. The mutation appends the verified checksum to the tag of the image.
+Check the documentation for specifics.
 
 This policy may cover all your needs, but in case you would prefer a different
 UX, of course you can build on top of it or any of the other SDKs.
 
-
 # WaPC protocol contract
 
-In case you are implementing your own language SDK, these are the functions a
-policy that verifies signatures can use:
+In case you are implementing your own language SDK,
+these are the functions a policy, that verifies signatures, can use:
+
+<!--TODO:
+This all needs taking out of a table.
+It's too bulky, forces horizontal scrolling.
+-->
 
 <table>
 <tr>

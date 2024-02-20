@@ -12,15 +12,20 @@ doc-topic: [writing-policies, specification, host-capabilities, cryptographic-ca
   <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/host-capabilities/crypto"/>
 </head>
 
-Because of Wasm constraints at the time of writing, some cryptographic libraries
-cannot be compiled to Wasm. In the meantime, Kubewarden policies needing those
-can instead perform these callbacks to evaluate the cryptographic functions
-host-side, receive the result, and continue with their logic.
+Because of Wasm constraints at the time of writing,
+some cryptographic libraries cannot be compiled to Wasm.
+In the meantime,
+Kubewarden policies needing those libraries can perform callbacks to evaluate the cryptographic functions on the host side.
+They receive the result, and continue with their tasks.
 
 ## WaPC protocol contract
 
-In case you are implementing your own language SDK, these are the functions
-performing cryptographic checks exposed by the host:
+If you are implementing your own language SDK,
+these are the functions performing cryptographic checks exposed by the host:
+
+<!--TODO:
+Try to remove HTML tables.
+-->
 
 <table>
 <tr>
