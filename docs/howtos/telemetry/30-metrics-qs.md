@@ -133,6 +133,7 @@ Now, let's install the helm charts:
 ```console
 helm install --wait \
   --namespace kubewarden \
+  --create-namespace \
   --values kubewarden-values.yaml \
   kubewarden-controller kubewarden/kubewarden-controller
 
