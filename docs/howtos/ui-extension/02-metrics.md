@@ -13,7 +13,9 @@ doc-topic: [operator-manual, metrics-and-monitoring]
 </head>
 
 Rancher has a Cluster Tool for monitoring that leverages Grafana and Prometheus.
-You can use this tool and integrate it with Kubewarden to view overall metrics for a Policy Server or metrics for a given policy.
+You can use this tool,
+integrating it with Kubewarden,
+to view overall metrics for a Policy Server or metrics for a given policy.
 
 :::caution
 
@@ -26,7 +28,9 @@ You can use this tool and integrate it with Kubewarden to view overall metrics f
 ## Prerequisites
 
 The Prometheus Operator is required.
-Follow [these instructions](../telemetry/30-metrics-qs.md#install-prometheus) to install it.
+Follow
+[these instructions](../telemetry/30-metrics-qs.md#install-prometheus)
+to install it.
 
 ## Install
 
@@ -35,7 +39,7 @@ Follow [these instructions](../telemetry/30-metrics-qs.md#install-prometheus) to
 - Import the manifest to create the ServiceMonitors
 - You need to specify the namespace where Kubewarden is installed
 
-Adapted from [here](../telemetry/30-metrics-qs.md):
+This is adapted from [here](../telemetry/30-metrics-qs.md):
 
 ```yaml
 apiVersion: monitoring.coreos.com/v1
@@ -73,9 +77,9 @@ spec:
 
 ### Enable telemetry for your `rancher-kubewarden-controller` resource
 
-- Navigate to Apps & Marketplace → Installed Apps
-- Select the `Edit/Upgrade` action for your `rancher-kubewarden-controller` resource
-- Edit the YAML for `telemetry` to be `enabled: "true"` and ensure the metrics port is correct
+- Navigate to Apps & Marketplace → Installed Apps.
+- Select the `Edit/Upgrade` action for your `rancher-kubewarden-controller` resource.
+- Edit the YAML for `telemetry` to be `enabled: "true"` and ensure the metrics port is correct.
 
 ```yml
 telemetry:
@@ -101,9 +105,12 @@ so need separate creation.
 
 Within the detail view for a Policy Server or a specific Policy:
 
-- Navigate to the "Metrics" tab
-- Follow the prompt to create the ConfigMap
-- Reload the page to update the Grafana view (Grafana may be slow to acknowledge the new dashboard)
+- Navigate to the "Metrics" tab.
+- Follow the prompt to create the ConfigMap.
+- Reload the page to update the Grafana view
+(Grafana may be slow to acknowledge the new dashboard).
 
-You should be able to view the metrics for a Policy Server or any given Policy on the detail page for each respective resource.
-You can also view the Kubewarden dashboards within the Grafana UI or the events from the Prometheus UI.
+You should be able to view the metrics for a Policy Server,
+or any given Policy on the detail page for each respective resource.
+You can also view the Kubewarden dashboards within the Grafana UI,
+or the events from the Prometheus UI.
