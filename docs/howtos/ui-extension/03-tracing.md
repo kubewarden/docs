@@ -12,10 +12,10 @@ doc-topic: [operator-manual, ui-extension, tracing]
   <link rel="canonical" href="https://docs.kubewarden.io/howtos/ui-extension/tracing"/>
 </head>
 
-Tracing allows collection of fine grained details about policy evaluations.
+Tracing allows collection of fine-grained details about policy evaluations.
 It's a useful tool for debugging issues in your Kubewarden deployment and policies.
 
-[Jaeger](https://www.jaegertracing.io/) is used to receive, store and visualize trace events.
+[Jaeger](https://www.jaegertracing.io/) is used to receive, store, and visualize trace events.
 
 **_Policy tracing logs_**
 ![UI Policy Tracing Logs](/img/ui_policy_tracing.png)
@@ -23,14 +23,18 @@ It's a useful tool for debugging issues in your Kubewarden deployment and polici
 ## Prerequisites
 
 Cert-Manager and OpenTelemetry are required.
-Follow [these instructions](../telemetry/10-opentelemetry-qs.md#install-opentelemetry) to install Cert Manager and the OpenTelemetry Operator.
+Follow
+[these instructions](../telemetry/10-opentelemetry-qs.md#install-opentelemetry)
+to install Cert Manager and the OpenTelemetry Operator.
 
 ## Install Jaeger
 
-Apply the installation steps from the [tracing quickstart](../telemetry/20-tracing-qs.md#install-jaeger).
+Apply the installation steps from the
+[tracing quickstart](../telemetry/20-tracing-qs.md#install-jaeger).
 
-Once all the resources are created by the Jaeger operator, there is a
-Service under `my-open-telemetry-collector.jaeger.svc.cluster.local`.
+Once all the resources are created by the Jaeger operator,
+there is a Service under
+`my-open-telemetry-collector.jaeger.svc.cluster.local`.
 
 The Jaeger Query UI is reachable at the following address:
 
@@ -60,13 +64,14 @@ telemetry:
 `my-open-telemetry-collector` is the service we installed under the `jaeger` namespace.
 
 :::caution
-For simplicity, we're not going to encrypt the communication between the
-OpenTelemetry collector and the Jaeger endpoint.
+For simplicity,
+we're not encrypting the communication between the OpenTelemetry collector and the Jaeger endpoint.
 
-This is **not meant to be a production deployment**.
-We recommend
-you read Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
+This is __not suitable for production deployment__.
+We recommend you read Jaeger's
+[documentation](https://www.jaegertracing.io/docs/latest/operator/).
 :::
 
-You should now be able to view any failed requests for policies tied to a specific Policy Server or the detail view for any given policy.
+You should now be able to view any failed requests for policies tied to a specific Policy Server,
+or the detail view for any given policy.
 You can get a more in-depth view of the traces by using the Jaeger UI.
