@@ -1,7 +1,7 @@
 ---
 sidebar_label: Policy testing
 title: Policy testing
-description: The two personas using Kubewarden policies are policy authors and cluster operators.
+description: A tutorial about testing policies in Kubewarden.
 keywords: [kubewarden, persons, policy author, cluster operator]
 doc-persona: [kubewarden-operator, kubewarden-policy-developer]
 doc-type: [tutorial]
@@ -15,11 +15,11 @@ doc-topic: [testing-policies, introduction]
 ## Policy testing personas
 
 This section covers the topic of testing Kubewarden Policies.
-We define two personas interested in testing policies:
+There are two personas interested in testing policies:
 
-- **policy author**: you're writing a Kubewarden Policy and you want to ensure your code behaves the way you expect.
+- **Policy developer**: you're writing a Kubewarden Policy and you want to make sure your code behaves the way you expect.
 
-- **cluster operator**: you found a Kubewarden Policy and you want to test and tune the policy settings before deploying it.
-Maybe you want to keep testing these settings inside of your CI/CD pipelines,...
+- **Cluster operator**: you found a Kubewarden Policy and you want to test and tune the policy settings before deploying it.
+You want to keep testing these settings in your CI/CD pipelines, and other administrative tasks.
 
-The next sections of the documentation shows how Kubewarden policies might be tested by these personas.
+The next sections of the documentation shows how these personas can test Kubewarden policies.
