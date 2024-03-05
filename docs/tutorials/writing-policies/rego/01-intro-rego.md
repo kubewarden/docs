@@ -24,11 +24,7 @@ Rego policies support context aware data from the Kubewarden 1.9 release.
 
 The Rego language is a domain specific language to enable policies as code.
 [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/)
-is a language inspired by Datalog.
-<!-- TODO:
-Is this the Datalog to which we refer? It would be nice to have a reference.
-https://en.wikipedia.org/wiki/Datalog
--->
+is a language inspired by [Datalog](https://en.wikipedia.org/wiki/Datalog).
 
 There are two ways of writing Rego policies to implement policies as code in Kubernetes,
 Open Policy Agent and Gatekeeper.
