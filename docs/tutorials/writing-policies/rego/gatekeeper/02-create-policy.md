@@ -12,32 +12,31 @@ doc-topic: [writing-policies, rego, gatekeeper, create-policy]
   <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/gatekeeper/create-policy"/>
 </head>
 
-Let's implement the same policy that [we wrote with Open Policy
-Agent](../open-policy-agent/create-policy): a policy that
-rejects a resource if it's targeting the `default` namespace.
+For this tutorial you'll implement the same policy that you wrote with
+[Open Policy Agent](../open-policy-agent/create-policy).
+Namely, a policy that rejects a resource if it's targeting the `default` namespace.
 
 :::note
-We also provide a GitHub repository template
-that you can use to quickly port an existing policy.
-
-Check it out: [kubewarden/gatekeeper-policy-template](https://github.com/kubewarden/gatekeeper-policy-template)
+There is a
+[repository template](https://github.com/kubewarden/gatekeeper-policy-template)
+that you can use as a base to port an existing policy.
 :::
 
 ## Requirements
 
-As in the previous section, we will require the following tools:
+You need the following tools:
 
 - `opa`
 - `kwctl`
 
 ## The policy
 
-Gatekeeper policies must return none or more violation objects. If no
-violations are reported, the request will be accepted. If one, or more
-violations are reported, the request will be rejected.
+Gatekeeper policies must return none or more violation objects.
+If no violations are reported, the request is accepted.
+If one, or more violations are reported, the request is rejected.
 
-We create a new folder, named `rego-policy`. Inside of it, we create a
-`policy.rego` file with contents:
+Create a new folder, named `rego-policy`.
+In it, create a `policy.rego` file with the contents:
 
 ```rego
 package policy
@@ -48,27 +47,23 @@ violation[{"msg": msg}] {
 }
 ```
 
-In this case, our entrypoint is `policy/violation`, and because of how
-Rego works, the policy can have the following outcomes:
+In this case, the entrypoint is `policy/violation`,
+and due to how Rego works, the policy can have the following outcomes:
 
-- return 1 violation: the object being reviewed is targeting the
-  default namespace.
+- Return 1 violation: the object reviewed is targeting the default namespace.
 
-- return 0 violations: the object being reviewed is compliant with the
-  policy.
+- Return 0 violations: the object reviewed is compliant with the policy.
 
-Take a moment to compare this policy with the one we wrote in the Open
-Policy Agent section. That one had to build the whole
-`AdmissionReview` response, and the inputs were slightly
-different. In the Gatekeeper mode, the `AdmissionRequest` object is
-provided at the `input.review` attribute. All attributes of the
-`AdmissionRequest` are readable along with `object`.
+Take a moment to compare this policy with the one written in the Open Policy Agent section.
+That one had to build the whole `AdmissionReview` response,
+and the inputs were slightly different.
+In the Gatekeeper mode,
+the `AdmissionRequest` object is provided with the `input.review` attribute.
+All attributes of the `AdmissionRequest` are readable along with `object`.
 
-Now, let's create the requests that we are going to evaluate in the
-next section.
+Now, you can create the requests to evaluate in the next section.
 
-Let us first create a `default-ns.json` file with the following
-contents inside the `data` directory:
+You first create a `default-ns.json` file with the following contents inside the `data` directory:
 
 ```json
 {
@@ -90,9 +85,10 @@ contents inside the `data` directory:
 }
 ```
 
-Now, let's create another `AdmissionReview` object that this time is
-targeting a namespace different than the `default` one. Let us name
-this file `other-ns.json`. It has the following contents:
+Now, create another `AdmissionReview` object that, this time,
+is targeting a namespace different to the `default` one.
+Name this file `other-ns.json`.
+It has the following contents:
 
 ```json
 {
@@ -114,5 +110,5 @@ this file `other-ns.json`. It has the following contents:
 }
 ```
 
-As you can see, this simulates another pod creation request, this time
-under a namespace called `other`.
+You can see, this simulates another pod creation request,
+this time under a namespace called `other`.

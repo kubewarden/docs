@@ -12,22 +12,20 @@ doc-topic: [writing-policies, rego, open-policy-agent, distribute]
   <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/open-policy-agent/distribute"/>
 </head>
 
-We have written, built and run our Rego policy. Now it's time to
-distribute the policy.
+You have written, built and run your Rego policy.
+Now it's time to distribute the policy.
 
-Policies have to be annotated in order for them to be executed in the
-`policy-server`, the component that executes the policies when running
-in a Kubernetes cluster.
+Policies have to be annotated, so they can run in the `policy-server`.
+The `policy-server` is the part that executes the policies,
+when running in a Kubernetes cluster.
 
 ## Annotating the policy
 
-Annotating a policy is a process that enriches the policy metadata
-with relevant information like authorship, license, source code
-location and other important metadata such as rules, that describes
-what kind of resources this policy can understand and evaluate.
+Annotating a policy is a process that enriches the policy metadata with relevant information.
+Information like authorship, license, source code location, rules,
+that describe what kind of resources this policy understands and evaluates.
 
-In order to annotate our policy let's write a simple `metadata.yaml`
-file:
+To annotate your policy you need to write a `metadata.yaml` file:
 
 ```yaml
 rules:
@@ -51,49 +49,51 @@ annotations:
       You can write interesting descriptions about the policy here.
 ```
 
-In this case, you can see several details:
+You can see several details:
 
-- Rules: what resources this policy is targeting
-- Mutating: whether this policy is mutating. In this case, is just
-validating.
-- Context aware: whether this policy requires context from the
-cluster in order to evaluate the request.
-- Execution mode: since this is a Rego policy it is mandatory to
-specify what execution mode it expects: `opa` or `gatekeeper`. This
-policy is written in the `opa` style: returning a whole
-`AdmissionReview` object.
-- Annotations: metadata stored into the policy itself.
+- Rules:
+What resources this policy is targeting.
+- Mutating:
+Whether this policy is mutating.
+In this case, it is just validating.
+- Context aware:
+Whether this policy requires context from the cluster to evaluate the request.
+- Execution mode:
+Since this is a Rego policy it's mandatory to specify what execution mode it expects,
+`opa` or `gatekeeper`.
+This policy is written in the `opa` style, returning a whole `AdmissionReview` object.
+- Annotations: Metadata stored in the policy itself.
 
-Let's go ahead and annotate our policy:
+Go ahead and annotate your policy:
 
 ```console
 $ kwctl annotate policy.wasm --metadata-path metadata.yaml --output-path annotated-policy.wasm
 ```
 
-Now you can `inspect` the policy if you will by running `kwctl inspect annotated-policy.wasm`.
+Now you can inspect the policy by running `kwctl inspect annotated-policy.wasm`.
 
 ## Pushing the policy
 
-Now that the policy is annotated we can push it to an OCI
-registry. Let's do that:
+Now that the policy is annotated you can push it to an OCI registry.
 
 ```console
 $ kwctl push annotated-policy.wasm registry.my-company.com/kubewarden/no-default-namespace:v0.0.1
 Policy successfully pushed
 ```
 
-Now our Rego policy targeting the OPA framework has everything it
-needs to be deployed in production by creating a
-`ClusterAdmissionPolicy`. Let's prepare that too. First, we have to
-pull the policy into the `kwctl` local store:
+Your Rego policy, targeting the OPA framework,
+has everything it needs, to be deployed in production,
+by creating a `ClusterAdmissionPolicy`.
+You can prepare that as well.
+First you need to pull the policy into the `kwctl` local store:
 
 ```console
 $ kwctl pull registry://registry.my-company.com/kubewarden/no-default-namespace:v0.0.1
 pulling policy...
 ```
 
-Let's create a `ClusterAdmissionPolicy` out of it. This operation will
-take into account the metadata it has about the policy:
+Create a `ClusterAdmissionPolicy` from it.
+This operation takes into account the metadata it has about the policy:
 
 ```console
 $ kwctl manifest registry://registry.my-company.com/kubewarden/no-default-namespace:v0.0.1 --type ClusterAdmissionPolicy
@@ -117,5 +117,5 @@ spec:
   mutating: false
 ```
 
-You can now use this `ClusterAdmissionPolicy` as a base to target the
-resources that you want, or deploy to Kubernetes as is.
+You can now use this `ClusterAdmissionPolicy` as a base to target the resources that you want,
+or deploy to Kubernetes as is.
