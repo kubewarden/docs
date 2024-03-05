@@ -12,9 +12,8 @@ doc-topic: [writing-policies, rego, gatekeeper, build-and-run]
   <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/gatekeeper/build-and-run"/>
 </head>
 
-Building and running the policy is done exactly the same way as a Rego
-policy targeting Open Policy Agent. The structure of our project is
-like:
+You can build and run the policy in exactly the same way as a Rego policy targeting Open Policy Agent.
+The structure of your project is:
 
 ```
 .
@@ -28,21 +27,21 @@ like:
 
 ## Build
 
-Let's build our policy by running the following `opa` command:
+Build the policy by running the `opa` command:
 
 ```shell
 $ opa build -t wasm -e policy/violation policy.rego
 ```
 
-What this does is build the rego policy, with:
+This builds the rego policy, with:
 
-- `target`: `wasm`. We want  to build the policy for the `wasm` target.
+- `target`: `wasm`. We want to build the policy for the `wasm` target.
 - `entrypoint`: `policy/violation`. The entry point is the `violation`
 rule inside the `policy` package.
 - `policy.rego`: build and include the `policy.rego` file.
 
-The previous command generates a `bundle.tar.gz` file. You can extract
-the wasm module from it:
+The earlier command generates a `bundle.tar.gz` file.
+You can extract the Wasm module from it:
 
 ```shell
 $ tar -xf bundle.tar.gz /policy.wasm
@@ -62,11 +61,11 @@ The project tree looks like the following:
 1 directory, 5 files
 ```
 
-We can now execute our policy!
+You can now execute your policy.
 
 ## Run
 
-Let's use `kwctl` to run our policy as follows:
+Use `kwctl` to run your policy as follows:
 
 ```
 $ kwctl run -e gatekeeper --request-path data/other-ns.json policy.wasm | jq
@@ -76,12 +75,11 @@ $ kwctl run -e gatekeeper --request-path data/other-ns.json policy.wasm | jq
 }
 ```
 
-Given that this is our resource created in the namespace called
-`other`, this resource is accepted, as expected.
+This is your resource created in the namespace called `other`, it's accepted, as expected.
 
-Now let's execute a request that will be rejected by the policy:
+Now you can run a request that is rejected by the policy:
 
-```
+```console
 $ kwctl run -e gatekeeper --request-path data/default-ns.json policy.wasm | jq
 {
   "uid": "1299d386-525b-4032-98ae-1949f69f9cfc",
@@ -92,4 +90,4 @@ $ kwctl run -e gatekeeper --request-path data/default-ns.json policy.wasm | jq
 }
 ```
 
-As you can see, our Gatekeeper policy rejected this resource as expected.
+You can see your Gatekeeper policy rejected this resource.
