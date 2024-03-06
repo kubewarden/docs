@@ -12,16 +12,14 @@ doc-topic: [writing-policies, rego, gatekeeper, distribute]
   <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/gatekeeper/distribute"/>
 </head>
 
-Policies have to be annotated for them to be pushed, and eventually
-executed by the Kubewarden `policy-server` in a Kubernetes cluster.
+Policies have to be annotated for them to be pushed,
+and eventually executed by the Kubewarden `policy-server` in a Kubernetes cluster.
 
-Annotating and distributing our Gatekeeper policy is very similar to
-distributing an Open Policy Agent one. Let's go through it.
+Annotating and distributing a Gatekeeper policy is similar to distributing an Open Policy Agent one.
 
 ## Annotating the policy
 
-We are going to write a `metadata.yaml` file in our policy directory
-with contents:
+You're going to write a `metadata.yaml` file in your policy directory with contents:
 
 ```yaml
 rules:
@@ -45,10 +43,10 @@ annotations:
       You can write interesting descriptions about the policy here.
 ```
 
-As you can see, everything is the same as the Open Policy Agent
-version metadata, except for the `executionMode: gatekeeper` bit.
+you can see everything is the same as the Open Policy Agent version metadata,
+except for the `executionMode: gatekeeper` bit.
 
-Let's go ahead and annotate the policy:
+Go ahead and annotate the policy:
 
 ```console
 $ kwctl annotate policy.wasm --metadata-path metadata.yaml --output-path annotated-policy.wasm
@@ -56,7 +54,7 @@ $ kwctl annotate policy.wasm --metadata-path metadata.yaml --output-path annotat
 
 ## Pushing the policy
 
-Let's push our policy to an OCI registry:
+Push your policy to an OCI registry:
 
 ```console
 $ kwctl push annotated-policy.wasm registry.my-company.com/kubewarden/no-default-namespace-gatekeeper:v0.0.1
@@ -65,14 +63,14 @@ Policy successfully pushed
 
 ## Deploying on Kubernetes
 
-We have to pull our policy to our `kwctl` local store first:
+You have to pull your policy to your `kwctl` local store first:
 
 ```console
 $ kwctl pull registry://registry.my-company.com/kubewarden/no-default-namespace-gatekeeper:v0.0.1
 pulling policy...
 ```
 
-We can now create a scaffold `ClusterAdmissionPolicy` resource:
+You can now create a scaffold `ClusterAdmissionPolicy` resource:
 
 ```console
 $ kwctl scaffold manifest registry://registry.my-company.com/kubewarden/no-default-namespace-gatekeeper:v0.0.1 --type ClusterAdmissionPolicy
@@ -96,5 +94,4 @@ spec:
   mutating: false
 ```
 
-We could now use this `ClusterAdmissionPolicy` resource to deploy our
-policy to a Kubernetes cluster.
+Now use this `ClusterAdmissionPolicy` resource to deploy your policy to a Kubernetes cluster.

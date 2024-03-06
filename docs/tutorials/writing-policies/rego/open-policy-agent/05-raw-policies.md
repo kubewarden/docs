@@ -13,20 +13,25 @@ doc-topic: [writing-policies, rego, open-policy-agent, raw-policies]
 </head>
 
 Raw policies are policies that can evaluate arbitrary JSON documents.
-For more information about raw policies, please refer to the [raw policies](../../../../howtos/raw-policies.md) page.
+For more information about raw policies, please refer to the
+[raw policies](../../../../howtos/raw-policies.md) page.
 
 ## Example
 
-The following examples should look familiar if you completed the [validation](02-create-policy.md) page of this tutorial.
+The following examples should look familiar if you completed the
+[validation](02-create-policy.md) page of this tutorial.
 
 :::note
-Remember to mark the policy as `raw` by using the `policyType` field in the `metadata.yml` configuration.
-Please refer to the [metadata](../../metadata.md) specification for more information.
+Remember to mark the policy as `raw`,
+by using the `policyType` field in the `metadata.yml` configuration.
+Please refer to the
+[metadata](../../metadata.md)
+specification for more information.
 :::
 
 ### Validation
 
-We are going to write a policy that accepts a request in the following format:
+You're going to write a policy that accepts a request in the following format:
 
 ```json
 {
@@ -38,11 +43,12 @@ We are going to write a policy that accepts a request in the following format:
 }
 ```
 
-and validates that only the `admin` user can delete resources.
+It validates that only the `admin` user can delete resources.
 
-Let's start by scaffolding a policy by using the [OPA policy template](https://github.com/kubewarden/opa-policy-template).
+Start by scaffolding a policy by using the
+[OPA policy template](https://github.com/kubewarden/opa-policy-template).
 
-First, we need to modify the `policy.rego` file to look like this:
+First you need to change the `policy.rego` file to look like this:
 
 ```rego
 package validation
@@ -54,7 +60,7 @@ deny[msg] {
 }
 ```
 
-The `utility/policy.rego` module must be modified to remove Kubernetes-specific code:
+The `utility/policy.rego` module must needs modification to remove Kubernetes-specific code:
 
 ```rego
 package policy

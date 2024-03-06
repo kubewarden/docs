@@ -12,10 +12,10 @@ doc-topic: [writing-policies, rego, open-policy-agent, build-and-run]
   <link rel="canonical" href="https://docs.kubewarden.io/tutorials/writing-policies/rego/open-policy-agent/build-and-run"/>
 </head>
 
-In the previous section we have written our Rego policy. The structure
-looks as the following:
+In the previous section you wrote your Rego policy.
+The structure looks like:
 
-```
+```console
 .
 ├── data
 │   ├── default-ns.json
@@ -28,30 +28,33 @@ looks as the following:
 
 ## Build
 
-We have our policy, now let's go ahead and build it. We do:
+To build:
 
-```shell
+```console
 $ opa build -t wasm -e policy/main policy.rego request.rego
 ```
 
-What this does is build the rego policy, with:
+This builds the rego policy, with:
 
-- `target`: `wasm`. We want  to build the policy for the `wasm` target.
-- `entrypoint`: `policy/main`. The entry point is the `main` rule
-inside the `policy` package.
-- `policy.rego`: build and include the `policy.rego` file.
-- `request.rego`: build and include the `request.rego` file.
+- `target`: `wasm`.
+You want to build the policy for the `wasm` target.
+- `entrypoint`: `policy/main`.
+The entry point is the `main` rule inside the `policy` package.
+- `policy.rego`:
+Build and include the `policy.rego` file.
+- `request.rego`:
+Build and include the `request.rego` file.
 
-After the build is complete, `opa build` will have generated a
-`bundle.tar.gz` file. You can extract it:
+After the build completes, `opa build` has generated a `bundle.tar.gz` file.
+You can extract it:
 
-```shell
+```console
 $ tar -xf bundle.tar.gz /policy.wasm
 ```
 
 Now the tree looks like the following:
 
-```shell
+```console
 .
 ├── bundle.tar.gz
 ├── data
@@ -64,20 +67,20 @@ Now the tree looks like the following:
 1 directory, 6 file
 ```
 
-We have our precious `policy.wasm` file:
+You have your `policy.wasm` file:
 
-```shell
+```console
 $ file policy.wasm
 policy.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
 ```
 
-Now it's time to execute it! Let's go on.
+Now you run it.
 
 ## Run
 
-We are going to use `kwctl` in order to run the policy:
+Use `kwctl` to run the policy:
 
-```
+```console
 $ kwctl run -e opa --request-path data/other-ns.json policy.wasm | jq
 {
   "uid": "1299d386-525b-4032-98ae-1949f69f9cfc",
@@ -85,21 +88,18 @@ $ kwctl run -e opa --request-path data/other-ns.json policy.wasm | jq
 }
 ```
 
-This request is accepted by the policy, since this is the request
-pointing to the `other` namespace.
+This request is accepted by the policy,
+since this is the request pointing to the `other` namespace.
 
-- `execution-mode`: `opa`. Rego policies can be targeting Open Policy
-  Agent or Gatekeeper: we must tell `kwctl` what kind of policy we are
-  running.
+- `execution-mode`: `opa`.
+Rego policies can be targeting Open Policy Agent or Gatekeeper.
+You must tell `kwctl` what kind of policy you're running.
+- `request-path`:
+The location of the recorded request that `kwctl` sends the policy to for evaluation.
 
+Now try to evaluate the request that creates the pod inside the `default` namespace:
 
-- `request-path`: the location of the recorded request `kwctl` will
-  send to the policy to evaluate.
-
-Now let's try to evaluate the request that creates the pod inside the
-`default` namespace:
-
-```
+```console
 $ kwctl run -e opa --request-path data/default-ns.json policy.wasm | jq
 {
   "uid": "1299d386-525b-4032-98ae-1949f69f9cfc",
@@ -110,5 +110,5 @@ $ kwctl run -e opa --request-path data/default-ns.json policy.wasm | jq
 }
 ```
 
-In this case, the policy is rejecting the request, and giving a reason
-back to the API server that will be returned to the user or API consumer.
+The policy is rejecting the request,
+giving a reason back to the API server that's returned to the user or API consumer.
