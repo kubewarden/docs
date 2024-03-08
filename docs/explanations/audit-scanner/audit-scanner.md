@@ -4,7 +4,8 @@ sidebar_position: 50
 title: What is the Audit Scanner?
 description: An overview of the Kubewarden Audit Scanner.
 keywords: [kubewarden, audit scanner, kubernetes]
-doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-integrator]
+doc-persona:
+  [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-integrator]
 doc-type: [explanation]
 doc-topic: [explanations, audit-scanner]
 ---
@@ -20,7 +21,7 @@ The Audit Scanner feature is available starting from Kubewarden 1.7.0 release
 :::
 
 The `audit-scanner` component constantly checks resources in the cluster.
-It flags the ones that don't adhere with the Kubewarden policies deployed in the cluster.
+It flags the ones that don't adhere to the Kubewarden policies deployed in the cluster.
 
 Policies evolve over time.
 New ones are deployed, existing ones are updated.
@@ -32,8 +33,7 @@ To explain the use of the audit scanner in Kubewarden, consider the following sc
 
 Assume Bob is deploying a WordPress Pod in the cluster.
 Bob is new to Kubernetes, makes a mistake and deploys the Pod running as a privileged container.
-At this point there's no policy preventing that so the Pod is
-successfully created in the cluster.
+At this point, there's no policy preventing that so the Pod is successfully created in the cluster.
 
 Some days later, Alice, the Kubernetes administrator, enforces a Kubewarden policy that prohibits the creation of privileged containers.
 The Pod deployed by Bob keeps running in the cluster as it already exists.
@@ -44,14 +44,12 @@ This includes the WordPress Pod created by Bob.
 The audit scanner operates by:
 
 - identifying all the resources to audit
-- for each it builds a synthetic admission request with the resource's data
+- for each resource, it builds a synthetic admission request with the resource's data
 - it sends each admission request to a policy server endpoint which is only for audit requests
 
-For the policy evaluating the request,
-there are no differences between real or audit requests.
-The data received is the same.
-This auditing policy server endpoint has instrumentation to collect data of the evaluation.
-So, users can use their monitoring tools analyze audit scanner data.
+For the policy evaluating the request, there are no differences between real or audit requests.
+This auditing policy server endpoint has instrumentation to collect data about the evaluation.
+So, users can use their monitoring tools to analyze audit scanner data.
 
 ## Enable audit scanner
 
@@ -76,7 +74,7 @@ See the policy authors [documentation](../../tutorials/writing-policies/index.md
 
 The audit scanner in Kubewarden requires specific Role Based Access Control (RBAC) configurations to be able to scan Kubernetes resources and save the results.
 A correct default Service Account with those permissions is created during the installation.
-The user can create and configure their own ServiceAccount to fine tune access to resources.
+The user can create their own ServiceAccount to configure access to resources.
 
 The default audit scanner `ServiceAccount` is bound to the `view` `ClusterRole` provided by Kubernetes.
 This `ClusterRole` allows read-only access to a wide range of Kubernetes resources within a namespace.
