@@ -32,16 +32,15 @@ The Kubernetes Custom Resource Definitions (CRD) defined by Kubewarden are descr
 ## Installation
 
 :::info Prerequisites
-The Helm chart depends on `cert-manager`. Ensure you install [`cert-manager`](https://cert-manager.io/docs/installation/) *before* the `kubewarden-controller` chart.
+The Helm chart depends on `cert-manager`. Ensure you install [`cert-manager`](https://cert-manager.io/docs/installation/) _before_ the `kubewarden-controller` chart.
 
-You install the latest version of `cert-manager` by running the following commands:
-
-```console
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
-```
+You can install the latest version of `cert-manager` through Helm by running the following commands:
 
 ```console
-kubectl wait --for=condition=Available deployment --timeout=2m -n cert-manager --all
+helm repo add jetstack https://charts.jetstack.io
+
+helm install --wait --namespace cert-manager --create-namespace \
+	--set installCRDs=true cert-manager jetstack/cert-manager
 ```
 
 :::
