@@ -13,7 +13,6 @@ doc-topic: [architecture]
   <link rel="canonical" href="https://docs.kubewarden.io/explanations/architecture"/>
 </head>
 
-
 Kubewarden is a Kubernetes policy engine.
 It uses policies written in a programming language of your choosing.
 This language must generate a WebAssembly binary for Kubewarden to use.
@@ -21,25 +20,25 @@ This language must generate a WebAssembly binary for Kubewarden to use.
 The Kubewarden stack consists of these components:
 
 - Kubewarden Custom Resources:
-These are [Kubernetes Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
-that simplify the process of managing policies.
+  These are [Kubernetes Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
+  that simplify the process of managing policies.
 
 - [`kubewarden-controller`](https://github.com/kubewarden/kubewarden-controller):
-This is a Kubernetes controller that reconciles Kubewarden's Custom Resources.
-This controller creates parts of the Kubewarden stack.
-It also translates Kubewarden configuration into Kubernetes directives.
+  This is a Kubernetes controller that reconciles Kubewarden's Custom Resources.
+  This controller creates parts of the Kubewarden stack.
+  It also translates Kubewarden configuration into Kubernetes directives.
 
 - Kubewarden policies:
-These are WebAssembly modules holding the validation or mutation logic.
-WebAssembly modules have detailed documentation in the
-[writing policies](../tutorials/writing-policies/index.md) sections.
+  These are WebAssembly modules holding the validation or mutation logic.
+  WebAssembly modules have detailed documentation in the
+  [writing policies](../tutorials/writing-policies/index.md) sections.
 
 - [`policy-server`](https://github.com/kubewarden/policy-server):
-The `policy-server` receives requests for validation.
-It validates the requests by executing Kubewarden policies.
+  The `policy-server` receives requests for validation.
+  It validates the requests by executing Kubewarden policies.
 
 - [`audit-scanner`](https://github.com/kubewarden/audit-scanner):
-The audit scanner inspects the resources already in the cluster. It identifies those violating Kubewarden policies.
+  The audit scanner inspects the resources already in the cluster. It identifies those violating Kubewarden policies.
 
 Kubewarden integrates with Kubernetes using
 [Dynamic Admission Control](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
@@ -55,13 +54,18 @@ objects with the Kubernetes API server.
 constantly checks the resources declared in the cluster,
 flagging the ones that no longer adhere with the deployed Kubewarden policies.
 
-The diagram shows the architecture of a cluster running the Kubewarden stack:
+<details>
+<summary>Complete architecture diagram:</summary>
+
+This diagram shows the complete architecture of a cluster running the Kubewarden stack:
 
 ![Full architecture](/img/architecture.png)
 
+</details>
+
 ## The journey of a Kubewarden policy
 
-The architecture diagram appears complex at first.
+The complete architecture diagram appears complex at first.
 This section covers it step by step.
 
 ### Default policy server
@@ -71,6 +75,49 @@ On a new cluster, the Kubewarden components defined are:
 - the Custom Resource Definitions (CRD)
 - the `kubewarden-controller` Deployment
 - a `PolicyServer` Custom Resource named `default`.
+
+<!--TODO: Need to work through this a bit, before progressing to the next
+diagram. Is this OK, how does the text above match with the diagram below. The
+two diagrams are quite different, is anything being lost? Gained? In the
+original, the lines around the planes is dashed. What does that signify? In the
+original there is separation between The control palnes and the K8s API server.
+What are they there for? What are they imparting? There is no further mention
+of them in the text. They are never shown connecting to anything else. If they
+can be removed it may simplify layout as everything becomes more complicated. -->
+
+<figure>
+
+```mermaid
+%%{
+  init: {
+    "flowchart": {
+      "htmlLabels": true,
+    }
+  }
+}%%
+graph LR
+    subgraph k8s[Kubernetes]
+      subgraph planes[K8S Planes]
+        k8s_control_plane[Control]
+        k8s_data_plane[Data]
+      end
+      subgraph kubernetes_api_server["K8s API Server"]
+          policy_server_in[PolicyServer]
+      end
+    end
+    subgraph kubewarden[Kubewarden]
+      kubewarden_controller["<code>kubwarden-controller</code>\ndeployment"]
+      kubewarden_policy_server_1["PolicyServer\n<code>default</code>"]
+    end
+    policy_server_out["PolicyServer"]
+    policy_server_in["PolicyServer"]
+    policy_server_out --> policy_server_in
+    policy_server_in --> kubewarden_controller
+    kubewarden_controller --> kubewarden_policy_server_1
+```
+
+<figcaption> Kubewarden architecture: part 1</figcaption>
+</figure>
 
 ![Defining the first ClusterAdmissionPolicy resource](/img/architecture_sequence_01.png)
 
@@ -163,8 +210,7 @@ This diagram shows the cluster when initialization of `policy-server` is complet
 The `policy-server` Pods have a
 [`Readiness Probe`](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/),
 that `kubewarden-controller` uses to check when
-the `policy-server` Deployment is ready to evaluate [`AdmissionReview`](
-https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#webhook-request-and-response)s.
+the `policy-server` Deployment is ready to evaluate [`AdmissionReview`](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#webhook-request-and-response)s.
 
 Once the `policy-server` Deployment is marked as `Ready`,
 the `kubewarden-controller` makes the Kubernetes API server
@@ -201,11 +247,11 @@ A cluster can have many policy servers and Kubewarden policies defined.
 There are benefits of having many policy servers:
 
 - You can isolate noisy namespaces or tenants,
-those generating many policy evaluations,
-from the rest of the cluster so as not to adversely affect other cluster operations.
+  those generating many policy evaluations,
+  from the rest of the cluster so as not to adversely affect other cluster operations.
 
 - You can run mission-critical policies in a dedicated Policy Server pool,
-making your infrastructure more resilient.
+  making your infrastructure more resilient.
 
 A `PolicyServer` resource defines each `policy-server`
 and a `ClusterAdmissionPolicy` or `AdmissionPolicy` resource defines each policy.
