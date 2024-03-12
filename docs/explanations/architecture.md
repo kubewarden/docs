@@ -20,7 +20,8 @@ This language must generate a WebAssembly binary for Kubewarden to use.
 The Kubewarden stack consists of these components:
 
 - Kubewarden Custom Resources:
-  These are [Kubernetes Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
+  These are
+  [Kubernetes Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
   that simplify the process of managing policies.
 
 - [`kubewarden-controller`](https://github.com/kubewarden/kubewarden-controller):
@@ -110,7 +111,6 @@ graph LR
       kubewarden_policy_server_1["PolicyServer\n<code>default</code>"]
     end
     policy_server_out["PolicyServer"]
-    policy_server_in["PolicyServer"]
     policy_server_out --> policy_server_in
     policy_server_in --> kubewarden_controller
     kubewarden_controller --> kubewarden_policy_server_1
@@ -142,6 +142,43 @@ to expose it inside the cluster network.
 
 This diagram shows what happens when defining the first policy
 bound to the default `policy-server` in the cluster:
+
+<figure>
+
+```mermaid
+%%{
+  init: {
+    "flowchart": {
+      "htmlLabels": true,
+    }
+  }
+}%%
+graph
+    subgraph k8s[Kubernetes]
+      subgraph planes[K8S Planes]
+        k8s_control_plane[Control]
+        k8s_data_plane[Data]
+      end
+      subgraph kubernetes_api_server["K8s API Server"]
+          policy_server_in[PolicyServer]
+          cluster_admission_policy_in["ClusterAdmissionPolicy"]
+      end
+    end
+    subgraph kubewarden[Kubewarden]
+      kubewarden_controller["<code>kubwarden-controller</code>\ndeployment"]
+      kubewarden_policy_server_1["PolicyServer\n<code>default</code>"]
+    end
+    policy_server_out["PolicyServer"]
+    cluster_admission_policy_out["ClusterAdmissionPolicy"]
+    policy_server_out --> policy_server_in
+    cluster_admission_policy_out --> cluster_admission_policy_in
+    policy_server_in --> kubewarden_controller
+    cluster_admission_policy_in --> kubewarden_controller
+    kubewarden_controller --> kubewarden_policy_server_1
+```
+
+<figcaption> Kubewarden architecture: part 1</figcaption>
+</figure>
 
 ![Defining the first ClusterAdmissionPolicy resource](/img/architecture_sequence_02.png)
 
