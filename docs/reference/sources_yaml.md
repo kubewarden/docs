@@ -89,7 +89,7 @@ Clearly, it's not for production use.
 
 :::
 
-### Source authorities
+### Source authorities section
 
 The `source_authorities` section contains URIs and CA certificates.
 It forms a certificate chain for that URI.
