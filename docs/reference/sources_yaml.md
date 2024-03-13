@@ -64,7 +64,7 @@ As is:
 }
 ```
 
-### Insecure sources
+### Insecure sources section
 
 Hosts in the `insecure_sources` section behave differently to those not listed.
 
