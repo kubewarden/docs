@@ -5,7 +5,13 @@ description: Signature verifier policies.
 keywords: [kubewarden, kubernetes, policy specification, signature verifier]
 doc-persona: [kubewarden-policy-developer]
 doc-type: [reference]
-doc-topic: [writing-policies, specification, host-capabilities, signature-verifier-policies]
+doc-topic:
+  [
+    writing-policies,
+    specification,
+    host-capabilities,
+    signature-verifier-policies,
+  ]
 ---
 
 <head>
@@ -87,27 +93,17 @@ Check the documentation for specifics.
 This policy may cover all your needs, but in case you would prefer a different
 UX, of course you can build on top of it or any of the other SDKs.
 
-# WaPC protocol contract
+## WaPC protocol contract
 
 In case you are implementing your own language SDK,
 these are the functions a policy, that verifies signatures, can use:
 
-<!--TODO:
-This all needs taking out of a table.
-It's too bulky, forces horizontal scrolling.
--->
+### waPC function - `v2/verify`
 
-<table>
-<tr>
-<th> waPC function name </th> <th> Input payload </th> <th> Output payload </th>
-</tr>
-<tr>
-<td>
+#### type - `SigstorePubKeyVerify`
 
-`v2/verify`
-
-</td>
-<td>
+<details>
+<summary>Input payload `SigstorePubKeyVerify`</summary>
 
 ```hcl
 {
@@ -130,8 +126,10 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-<td>
+</details>
+
+<details>
+<summary>Output - `SigstorePubKeyVerify`</summary>
 
 ```hcl
 {
@@ -142,15 +140,12 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-</tr>
-<tr>
-<td>
+</details>
 
-`v2/verify`
+#### type - `SigstoreKeylessVerify`
 
-</td>
-<td>
+<details>
+<summary>Input payload `SigstoreKeylessVerify`</summary>
 
 ```hcl
 {
@@ -178,8 +173,10 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-<td>
+</details>
+
+<details>
+<summary>Output - `SigstoreKeylessVerify`</summary>
 
 ```hcl
 {
@@ -190,15 +187,12 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-</tr>
-<tr>
-<td>
+</details>
 
-`v2/verify`
+#### type - `SigstoreKeylessPrefixVerify`
 
-</td>
-<td>
+<details>
+<summary>Input payload `SigstoreKeylessPrefixVerify`</summary>
 
 ```hcl
 {
@@ -226,8 +220,10 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-<td>
+</details>
+
+<details>
+<summary>Output - `SigstoreKeylessPrefixVerify`</summary>
 
 ```hcl
 {
@@ -238,16 +234,12 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-</tr>
+</details>
 
-<tr>
-<td>
+#### type - `SigstoreGithubActionsVerify`
 
-`v2/verify`
-
-</td>
-<td>
+<details>
+<summary>Input payload `SigstoreGithubActionsVerify`</summary>
 
 ```hcl
 {
@@ -270,8 +262,10 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-<td>
+</details>
+
+<details>
+<summary>Output - `SigstoreGithubActionsVerify`</summary>
 
 ```hcl
 {
@@ -282,16 +276,12 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-</tr>
+</details>
 
-<tr>
-<td>
+#### type - `SigstoreCertificateVerify`
 
-`v2/verify`
-
-</td>
-<td>
+<details>
+<summary>Input payload `SigstoreCertificateVerify`</summary>
 
 ```hcl
 {
@@ -336,8 +326,10 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-<td>
+</details>
+
+<details>
+<summary>Output - `SigstoreCertificateVerify`</summary>
 
 ```hcl
 {
@@ -348,24 +340,14 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-</tr>
+</details>
 
-</table>
+### waPC function - `v1/verify`
 
-Marked for deprecation:
+#### type - `SigstorePubKeyVerify`
 
-<table>
-<tr>
-<td> WaPC function name </td> <td> Input payload </td> <td> Output payload </td>
-</tr>
-<tr>
-<td>
-
-`v1/verify`
-
-</td>
-<td>
+<details>
+<summary>Input payload `SigstorePubKeyVerify`</summary>
 
 ```hcl
 {
@@ -388,8 +370,10 @@ Marked for deprecation:
 }
 ```
 
-</td>
-<td>
+</details>
+
+<details>
+<summary>Output - `SigstorePubKeyVerify`</summary>
 
 ```hcl
 {
@@ -400,15 +384,12 @@ Marked for deprecation:
 }
 ```
 
-</td>
-</tr>
-<tr>
-<td>
+</details>
 
-`v1/verify`
+#### type - `SigstoreKeylessVerify`
 
-</td>
-<td>
+<details>
+<summary>Input payload `SigstoreKeylessVerify`</summary>
 
 ```hcl
 {
@@ -436,8 +417,10 @@ Marked for deprecation:
 }
 ```
 
-</td>
-<td>
+</details>
+
+<details>
+<summary>Output - `SigstoreKeylessVerify`</summary>
 
 ```hcl
 {
@@ -448,7 +431,4 @@ Marked for deprecation:
 }
 ```
 
-</td>
-</tr>
-
-</table>
+</details>
