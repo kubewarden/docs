@@ -117,6 +117,8 @@ results:
     properties:
       policy-resource-version: "2684810"
       policy-uid: 826dd4ef-9db5-408e-9482-455f278bf9bf
+      policy-name: "safe-labels"
+      policy-namespace: "default"
       validating: "true"
     resourceSelector: {}
     result: fail
@@ -169,6 +171,7 @@ results:
     properties:
       policy-resource-version: "2396437"
       policy-uid: 46780d6e-e51a-4d65-8572-a6af01380aa7
+      policy-name: "safe-annotations"
       validating: "true"
     resourceSelector: {}
     result: fail
