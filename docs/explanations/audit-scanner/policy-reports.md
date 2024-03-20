@@ -101,6 +101,7 @@ metadata:
   generation: 6
   labels:
     app.kubernetes.io/managed-by: kubewarden
+    kubewarden.io/policyreport-version: v2
   name: 009805e4-6e16-4b70-80c9-cb33b6734c82
   namespace: default
   ownerReferences:
@@ -156,6 +157,7 @@ metadata:
   generation: 3
   labels:
     app.kubernetes.io/managed-by: kubewarden
+    kubewarden.io/policyreport-version: v2
   name: 261c9492-deec-4a09-8aa9-cd464bb4b8d1
   ownerReferences:
     - apiVersion: v1
