@@ -100,10 +100,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ### waPC function - `v2/verify`
 
-#### type - `SigstorePubKeyVerify`
-
-<details>
-<summary>Input payload `SigstorePubKeyVerify`</summary>
+#### `SigstorePubKeyVerify` input
 
 ```hcl
 {
@@ -126,10 +123,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
-<details>
-<summary>Output - `SigstorePubKeyVerify`</summary>
+#### `SigstorePubKeyVerify` output
 
 ```hcl
 {
@@ -140,12 +134,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
-#### type - `SigstoreKeylessVerify`
-
-<details>
-<summary>Input payload `SigstoreKeylessVerify`</summary>
+#### `SigstoreKeylessVerify` input
 
 ```hcl
 {
@@ -173,10 +162,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
-<details>
-<summary>Output - `SigstoreKeylessVerify`</summary>
+#### `SigstoreKeylessVerify` output
 
 ```hcl
 {
@@ -187,12 +173,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
-#### type - `SigstoreKeylessPrefixVerify`
-
-<details>
-<summary>Input payload `SigstoreKeylessPrefixVerify`</summary>
+#### `SigstoreKeylessPrefixVerify` input
 
 ```hcl
 {
@@ -220,10 +201,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
-<details>
-<summary>Output - `SigstoreKeylessPrefixVerify`</summary>
+#### `SigstoreKeylessPrefixVerify` output
 
 ```hcl
 {
@@ -234,12 +212,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
-#### type - `SigstoreGithubActionsVerify`
-
-<details>
-<summary>Input payload `SigstoreGithubActionsVerify`</summary>
+#### `SigstoreGithubActionsVerify` input
 
 ```hcl
 {
@@ -262,10 +235,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
-<details>
-<summary>Output - `SigstoreGithubActionsVerify`</summary>
+#### `SigstoreGithubActionsVerify` output
 
 ```hcl
 {
@@ -276,12 +246,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
-#### type - `SigstoreCertificateVerify`
-
-<details>
-<summary>Input payload `SigstoreCertificateVerify`</summary>
+#### `SigstoreCertificateVerify` input
 
 ```hcl
 {
@@ -326,10 +291,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
-<details>
-<summary>Output - `SigstoreCertificateVerify`</summary>
+#### `SigstoreCertificateVerify` output
 
 ```hcl
 {
@@ -340,14 +302,9 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
 ### waPC function - `v1/verify`
 
-#### type - `SigstorePubKeyVerify`
-
-<details>
-<summary>Input payload `SigstorePubKeyVerify`</summary>
+#### `SigstorePubKeyVerify` input
 
 ```hcl
 {
@@ -370,10 +327,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
-<details>
-<summary>Output - `SigstorePubKeyVerify`</summary>
+#### `SigstorePubKeyVerify` output
 
 ```hcl
 {
@@ -384,12 +338,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
-#### type - `SigstoreKeylessVerify`
-
-<details>
-<summary>Input payload `SigstoreKeylessVerify`</summary>
+#### `SigstoreKeylessVerify` input
 
 ```hcl
 {
@@ -417,10 +366,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-</details>
-
-<details>
-<summary>Output - `SigstoreKeylessVerify`</summary>
+#### `SigstoreKeylessVerify` output
 
 ```hcl
 {
@@ -430,5 +376,3 @@ these are the functions a policy, that verifies signatures, can use:
    "digest": string
 }
 ```
-
-</details>

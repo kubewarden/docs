@@ -5,7 +5,8 @@ description: Container registry capabilities.
 keywords: [kubewarden, kubernetes, policy specification, registry capabilities]
 doc-persona: [kubewarden-policy-developer]
 doc-type: [reference]
-doc-topic: [writing-policies, specification, host-capabilities, container-registry]
+doc-topic:
+  [writing-policies, specification, host-capabilities, container-registry]
 ---
 
 <head>
@@ -43,31 +44,14 @@ from the remote registry.
 
 This is the description of the waPC protocol used to expose this capability:
 
-<!--TODO:
-Try to remove the HTML tables.
--->
-
-<table>
-<tr>
-<th> waPC function name </th> <th> Input payload </th> <th> Output payload </th>
-</tr>
-
-<tr>
-<td>
-
-`v1/manifest_digest`
-
-</td>
-<td>
+#### waPC function name `v1/manifest_digest` input
 
 ```hcl
 # OCI URI - JSON encoded string
 string
 ```
 
-</td>
-
-<td>
+#### waPC finction name `v1/manifest_digest` output
 
 ```hcl
 {
@@ -76,16 +60,11 @@ string
 }
 ```
 
-</td>
-</tr>
-
-</table>
-
 For example, when requesting the manifest digest of the `busybox:latest` image,
 the payload would be:
 
-* Input payload: `"busybox:latest"`
-* Output payload: `{ "digest": "sha256:69e70a79f2d41ab5d637de98c1e0b055206ba40a8145e7bddb55ccc04e13cf8f"}`
+- Input payload: `"busybox:latest"`
+- Output payload: `{ "digest": "sha256:69e70a79f2d41ab5d637de98c1e0b055206ba40a8145e7bddb55ccc04e13cf8f"}`
 
 ## OCI manifest
 
@@ -112,27 +91,14 @@ from the remote registry.
 
 This is the description of the waPC protocol used to expose this capability:
 
-<table>
-<tr>
-<th> waPC function name </th> <th> Input payload </th> <th> Output payload </th>
-</tr>
-
-<tr>
-<td>
-
-`v1/oci_manifest`
-
-</td>
-<td>
+#### waPC function name `v1/oci_manifest` input
 
 ```hcl
 # OCI URI - JSON encoded string
 string
 ```
 
-</td>
-
-<td>
+#### waPC function name `v1/oci_manifest` output
 
 ```hcl
 {
@@ -219,21 +185,14 @@ OR
         }
 }
 
-
-
 ```
-
-</td>
-</tr>
-
-</table>
 
 For example, when requesting the manifest digest of the
 `ghcr.io/kubewarden/policy-server:v1.10.0` image,
 the payload would be:
 
-* Input payload: `"ghcr.io/kubewarden/policy-server:v1.10.0"`
-* Output payload: the body of the successful response obtained from the
+- Input payload: `"ghcr.io/kubewarden/policy-server:v1.10.0"`
+- Output payload: the body of the successful response obtained from the
   registry.
   It can be an [OCI index image](https://github.com/opencontainers/image-spec/blob/main/image-index.md)
   or an [OCI image manifest](https://github.com/opencontainers/image-spec/blob/main/manifest.md).

@@ -5,7 +5,8 @@ description: Network capabilities.
 keywords: [kubewarden, kubernetes, policy specification, network capabilities]
 doc-persona: [kubewarden-policy-developer]
 doc-type: [reference]
-doc-topic: [writing-policies, specification, host-capabilities, network-capabilities]
+doc-topic:
+  [writing-policies, specification, host-capabilities, network-capabilities]
 ---
 
 <head>
@@ -28,31 +29,14 @@ Lookup results are cached for 1 minute.
 
 This is the description of the waPC protocol used to expose this capability:
 
-<!--TODO:
-Remove HTML tables.
--->
-
-<table>
-<tr>
-<th> waPC function name </th> <th> Input payload </th> <th> Output payload </th>
-</tr>
-
-<tr>
-<td>
-
-`v1/dns_lookup_host`
-
-</td>
-<td>
+#### waPC function name `v1/dns_lookup_host` input
 
 ```hcl
 # hostname - JSON encoded string
 string
 ```
 
-</td>
-
-<td>
+#### waPC function name `v1/dns_lookup_host` output
 
 ```hcl
 
@@ -62,10 +46,6 @@ string
 }
 ```
 
-</td>
-</tr>
-</table>
-
 All the IP addresses associated with the given FQDN,
 are going to be returned as strings in the response.
 Both IPv4 and IPv6 entries are returned as part of the same response.
@@ -74,5 +54,5 @@ For example, when requesting the manifest digest of the
 `busybox:latest` image,
 the payloads would be:
 
-* Input payload: `"google.com"`
-* Output payload: `{ "ips": ["127.0.0.1"]}`
+- Input payload: `"google.com"`
+- Output payload: `{ "ips": ["127.0.0.1"]}`
