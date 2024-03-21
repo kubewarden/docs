@@ -24,9 +24,8 @@ other than that needed for regular container images.
 :::note
 
 You can add a registry that works with Kubewarden or
-correct any registry inaccuracies with a pull request against
-[this document](https://github.com/kubewarden/docs/edit/main/docs/distributing-policies/oci-registries-support.md)
-to fix it.
+correct any registry inaccuracies by using the
+"Edit this page" button at the bottom of the page
 
 :::
 

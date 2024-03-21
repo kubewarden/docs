@@ -24,9 +24,8 @@ other than that needed for regular container images.
 :::note
 
 You can add a registry that works with Kubewarden or
-correct any registry inaccuracies with a pull request against
-[this document](https://github.com/kubewarden/docs/edit/main/docs/distributing-policies/oci-registries-support.md)
-to fix it.
+correct any registry inaccuracies by using the
+"Edit this page" button at the bottom of the page
 
 :::
 
@@ -51,6 +50,7 @@ to fix it.
 ## Tools that work with OCI registries
 
 We recommend:
+
 - [Kwctl](https://github.com/kubewarden/kwctl) (our cli tool).
 - [Skopeo](https://github.com/containers/skopeo) ([>= 1.9.0](https://github.com/containers/skopeo/pull/1705)).
 - [Crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md).
