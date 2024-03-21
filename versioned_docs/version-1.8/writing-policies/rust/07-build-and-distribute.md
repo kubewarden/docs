@@ -30,7 +30,7 @@ target/wasm32-wasi/release/demo.wasm: WebAssembly (wasm) binary module version 0
 ## Distributing the policy
 
 This topic is covered inside of the [distributing
-policies](/distributing-policies) section of Kubewarden's
+policies](../../distributing-policies/) section of Kubewarden's
 documentation.
 
 ## More examples
@@ -42,7 +42,7 @@ can help you find them.
 **Worth of note:** these repositories have a series of GitHub Actions that automate
 the following tasks:
 
-  * Run unit tests and code linting on pull requests and after code is merged
-    into the main branch
-  * Build the policy in `release` mode and push it to a OCI registry as an
-    artifact
+- Run unit tests and code linting on pull requests and after code is merged
+  into the main branch
+- Build the policy in `release` mode and push it to a OCI registry as an
+  artifact
