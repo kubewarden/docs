@@ -71,7 +71,7 @@ which is a collection of Kubernetes objects of the same type.
 Use this API function to fetch cluster-wide resources (e.g. namespaces)
 :::
 
-### Operation `list_resources_by_namespace`
+### Operation - `list_resources_by_namespace`
 
 #### Input
 

@@ -30,7 +30,7 @@ They receive the result, and continue with their tasks.
 If you are implementing your own language SDK,
 these are the functions performing cryptographic checks exposed by the host:
 
-#### waPC function name `v1/is_certificate_trusted` input
+#### waPC function - `v1/is_certificate_trusted` input
 
 ```hcl
 # Certificate:
@@ -65,7 +65,7 @@ these are the functions performing cryptographic checks exposed by the host:
 }
 ```
 
-#### waPC function name `v1/is_certificate_trusted` output
+#### waPC function - `v1/is_certificate_trusted` output
 
 ```hcl
 {

@@ -44,14 +44,14 @@ from the remote registry.
 
 This is the description of the waPC protocol used to expose this capability:
 
-#### waPC function name `v1/manifest_digest` input
+#### waPC function - `v1/manifest_digest` input
 
 ```hcl
 # OCI URI - JSON encoded string
 string
 ```
 
-#### waPC finction name `v1/manifest_digest` output
+#### waPC finction - `v1/manifest_digest` output
 
 ```hcl
 {
@@ -91,14 +91,14 @@ from the remote registry.
 
 This is the description of the waPC protocol used to expose this capability:
 
-#### waPC function name `v1/oci_manifest` input
+#### waPC function - `v1/oci_manifest` input
 
 ```hcl
 # OCI URI - JSON encoded string
 string
 ```
 
-#### waPC function name `v1/oci_manifest` output
+#### waPC function - `v1/oci_manifest` output
 
 ```hcl
 {

@@ -29,14 +29,14 @@ Lookup results are cached for 1 minute.
 
 This is the description of the waPC protocol used to expose this capability:
 
-#### waPC function name `v1/dns_lookup_host` input
+#### waPC function - `v1/dns_lookup_host` input
 
 ```hcl
 # hostname - JSON encoded string
 string
 ```
 
-#### waPC function name `v1/dns_lookup_host` output
+#### waPC function - `v1/dns_lookup_host` output
 
 ```hcl
 
