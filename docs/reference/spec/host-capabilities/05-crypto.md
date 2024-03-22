@@ -2,10 +2,17 @@
 sidebar_label: Cryptographic capabilities
 title: Cryptographic capabilities
 description: Cryptographic capabilities.
-keywords: [kubewarden, kubernetes, policy specification, cryptographic capabilities]
+keywords:
+  [kubewarden, kubernetes, policy specification, cryptographic capabilities]
 doc-persona: [kubewarden-policy-developer]
 doc-type: [reference]
-doc-topic: [writing-policies, specification, host-capabilities, cryptographic-capabilities]
+doc-topic:
+  [
+    writing-policies,
+    specification,
+    host-capabilities,
+    cryptographic-capabilities,
+  ]
 ---
 
 <head>
@@ -23,21 +30,7 @@ They receive the result, and continue with their tasks.
 If you are implementing your own language SDK,
 these are the functions performing cryptographic checks exposed by the host:
 
-<!--TODO:
-Try to remove HTML tables.
--->
-
-<table>
-<tr>
-<th> waPC function name </th> <th> Input payload </th> <th> Output payload </th>
-</tr>
-<tr>
-<td>
-
-`v1/is_certificate_trusted`
-
-</td>
-<td>
+#### waPC function - `v1/is_certificate_trusted` input
 
 ```hcl
 # Certificate:
@@ -72,8 +65,7 @@ Try to remove HTML tables.
 }
 ```
 
-</td>
-<td>
+#### waPC function - `v1/is_certificate_trusted` output
 
 ```hcl
 {
@@ -83,7 +75,3 @@ Try to remove HTML tables.
    "reason": string
 }
 ```
-
-</td>
-</tr>
-</table>

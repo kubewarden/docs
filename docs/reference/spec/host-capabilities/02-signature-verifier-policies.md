@@ -5,7 +5,13 @@ description: Signature verifier policies.
 keywords: [kubewarden, kubernetes, policy specification, signature verifier]
 doc-persona: [kubewarden-policy-developer]
 doc-type: [reference]
-doc-topic: [writing-policies, specification, host-capabilities, signature-verifier-policies]
+doc-topic:
+  [
+    writing-policies,
+    specification,
+    host-capabilities,
+    signature-verifier-policies,
+  ]
 ---
 
 <head>
@@ -87,27 +93,14 @@ Check the documentation for specifics.
 This policy may cover all your needs, but in case you would prefer a different
 UX, of course you can build on top of it or any of the other SDKs.
 
-# WaPC protocol contract
+## WaPC protocol contract
 
 In case you are implementing your own language SDK,
 these are the functions a policy, that verifies signatures, can use:
 
-<!--TODO:
-This all needs taking out of a table.
-It's too bulky, forces horizontal scrolling.
--->
+### waPC function - `v2/verify`
 
-<table>
-<tr>
-<th> waPC function name </th> <th> Input payload </th> <th> Output payload </th>
-</tr>
-<tr>
-<td>
-
-`v2/verify`
-
-</td>
-<td>
+#### `SigstorePubKeyVerify` input
 
 ```hcl
 {
@@ -130,8 +123,7 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-<td>
+#### `SigstorePubKeyVerify` output
 
 ```hcl
 {
@@ -142,15 +134,7 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-</tr>
-<tr>
-<td>
-
-`v2/verify`
-
-</td>
-<td>
+#### `SigstoreKeylessVerify` input
 
 ```hcl
 {
@@ -178,8 +162,7 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-<td>
+#### `SigstoreKeylessVerify` output
 
 ```hcl
 {
@@ -190,15 +173,7 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-</tr>
-<tr>
-<td>
-
-`v2/verify`
-
-</td>
-<td>
+#### `SigstoreKeylessPrefixVerify` input
 
 ```hcl
 {
@@ -226,8 +201,7 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-<td>
+#### `SigstoreKeylessPrefixVerify` output
 
 ```hcl
 {
@@ -238,16 +212,7 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-</tr>
-
-<tr>
-<td>
-
-`v2/verify`
-
-</td>
-<td>
+#### `SigstoreGithubActionsVerify` input
 
 ```hcl
 {
@@ -270,8 +235,7 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-<td>
+#### `SigstoreGithubActionsVerify` output
 
 ```hcl
 {
@@ -282,16 +246,7 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-</tr>
-
-<tr>
-<td>
-
-`v2/verify`
-
-</td>
-<td>
+#### `SigstoreCertificateVerify` input
 
 ```hcl
 {
@@ -336,8 +291,7 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-<td>
+#### `SigstoreCertificateVerify` output
 
 ```hcl
 {
@@ -348,24 +302,9 @@ It's too bulky, forces horizontal scrolling.
 }
 ```
 
-</td>
-</tr>
+### waPC function - `v1/verify`
 
-</table>
-
-Marked for deprecation:
-
-<table>
-<tr>
-<td> WaPC function name </td> <td> Input payload </td> <td> Output payload </td>
-</tr>
-<tr>
-<td>
-
-`v1/verify`
-
-</td>
-<td>
+#### `SigstorePubKeyVerify` input
 
 ```hcl
 {
@@ -388,8 +327,7 @@ Marked for deprecation:
 }
 ```
 
-</td>
-<td>
+#### `SigstorePubKeyVerify` output
 
 ```hcl
 {
@@ -400,15 +338,7 @@ Marked for deprecation:
 }
 ```
 
-</td>
-</tr>
-<tr>
-<td>
-
-`v1/verify`
-
-</td>
-<td>
+#### `SigstoreKeylessVerify` input
 
 ```hcl
 {
@@ -436,8 +366,7 @@ Marked for deprecation:
 }
 ```
 
-</td>
-<td>
+#### `SigstoreKeylessVerify` output
 
 ```hcl
 {
@@ -447,8 +376,3 @@ Marked for deprecation:
    "digest": string
 }
 ```
-
-</td>
-</tr>
-
-</table>
