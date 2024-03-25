@@ -1,7 +1,7 @@
 ---
-sidebar_label: Contributing guide
+sidebar_label: Contribution guide
 sidebar_position: 00001
-title: Contributing guide
+title: Contribution guide
 description: Contributing to kubewarden
 keywords: [kubewarden, contributing]
 doc-type: [howto]
