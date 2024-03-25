@@ -1,6 +1,6 @@
 ---
 sidebar_label: Contributing to documentation
-sidebar_position: 00001
+sidebar_position: 00002
 title: Contributing to Kubewarden documentation
 description: Contributing to kubewarden documentation.
 keywords: [kubewarden, documentation, contributing]
@@ -30,6 +30,6 @@ or report a bug/typo with the help of a GitHub issue to the
 To get involved with the documentation:
 
 - Familiarize yourself with the [documentation repository](https://github.com/kubewarden/docs)
-and the [static site generator](https://docusaurus.io/).
+  and the [static site generator](https://docusaurus.io/).
 - Docusaurus makes use of the Markdown syntax and uses [MDX](https://mdxjs.com/) as the parser.
 - Understand how to [suggest an improvement](./suggesting-an-improvement) and open a pull request.
