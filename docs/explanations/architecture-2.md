@@ -1,6 +1,6 @@
 ---
-sidebar_label: Architecture
-sidebar_position: 60
+sidebar_label: Architecture - 2
+sidebar_position: 61
 title: Kubewarden architecture
 description: The Kubewarden architecture
 keywords: [kubewarden, kubernetes, architecture]
@@ -9,13 +9,40 @@ doc-type: [explanation]
 doc-topic: [architecture]
 ---
 
+<!--
 <head>
   <link rel="canonical" href="https://docs.kubewarden.io/explanations/architecture"/>
 </head>
+-->
 
 Kubewarden is a Kubernetes policy engine.
 It uses policies written in a programming language of your choosing.
 This language must generate a WebAssembly binary for Kubewarden to use.
+
+Some possible things for inclusion below.
+All top-level information for a Kubewarden developer, a policy developer, a manager?
+
+## Design principles
+
+- First design principle
+
+  Explanation
+
+- nth design principle
+
+  Explanation
+
+## What is a policy
+
+A policy is ???????. Sample as YAML?
+
+## Data flow, control flow?
+
+Does it make sense to talk about policy data flow in the system, policy process control flow in the system?
+
+## Source code repositories and layout
+
+The important repositories. Any explanations about layout?
 
 The Kubewarden stack consists of these components:
 
@@ -24,10 +51,20 @@ The Kubewarden stack consists of these components:
   [Kubernetes Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
   that simplify the process of managing policies.
 
+  Kubewarden integrates with Kubernetes using
+  [Dynamic Admission Control](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
+  In particular, Kubewarden operates as a Kubernetes Admission Webhook.
+  The `policy-server` is the Webhook endpoint called by the Kubernetes API server to validate requests.
+
 - [`kubewarden-controller`](https://github.com/kubewarden/kubewarden-controller):
   This is a Kubernetes controller that reconciles Kubewarden's Custom Resources.
   This controller creates parts of the Kubewarden stack.
   It also translates Kubewarden configuration into Kubernetes directives.
+
+  The `kubewarden-controller` registers the needed
+  `MutatingWebhookConfiguration` or
+  `ValidatingWebhookConfiguration`
+  objects with the Kubernetes API server.
 
 - Kubewarden policies:
   These are WebAssembly modules holding the validation or mutation logic.
@@ -41,33 +78,11 @@ The Kubewarden stack consists of these components:
 - [`audit-scanner`](https://github.com/kubewarden/audit-scanner):
   The audit scanner inspects the resources already in the cluster. It identifies those violating Kubewarden policies.
 
-Kubewarden integrates with Kubernetes using
-[Dynamic Admission Control](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
-In particular, Kubewarden operates as a Kubernetes Admission Webhook.
-The `policy-server` is the Webhook endpoint called by the Kubernetes API server to validate requests.
-
-The `kubewarden-controller` registers the needed
-`MutatingWebhookConfiguration` or
-`ValidatingWebhookConfiguration`
-objects with the Kubernetes API server.
-
-[Audit scanner](/explanations/audit-scanner/audit-scanner.md)
-constantly checks the resources declared in the cluster,
-flagging the ones that no longer adhere with the deployed Kubewarden policies.
-
-<details>
-<summary>Complete architecture diagram:</summary>
-
-This diagram shows the complete architecture of a cluster running the Kubewarden stack:
-
-![Full architecture](/img/architecture.png)
-
-</details>
+  [Audit scanner](/explanations/audit-scanner/audit-scanner.md)
+  constantly checks the resources declared in the cluster,
+  flagging the ones that no longer adhere with the deployed Kubewarden policies.
 
 ## The journey of a Kubewarden policy
-
-The complete architecture diagram appears complex at first.
-This section covers it step by step.
 
 ### Default policy server
 
@@ -76,50 +91,6 @@ On a new cluster, the Kubewarden components defined are:
 - the Custom Resource Definitions (CRD)
 - the `kubewarden-controller` Deployment
 - a `PolicyServer` Custom Resource named `default`.
-
-<!--TODO: Need to work through this a bit, before progressing to the next
-diagram. Is this OK, how does the text above match with the diagram below. The
-two diagrams are quite different, is anything being lost? Gained? In the
-original, the lines around the planes is dashed. What does that signify? In the
-original there is separation between The control palnes and the K8s API server.
-What are they there for? What are they imparting? There is no further mention
-of them in the text. They are never shown connecting to anything else. If they
-can be removed it may simplify layout as everything becomes more complicated. -->
-
-<figure>
-
-```mermaid
-%%{
-  init: {
-    "flowchart": {
-      "htmlLabels": true,
-    }
-  }
-}%%
-graph LR
-    subgraph k8s[Kubernetes]
-      subgraph planes[K8S Planes]
-        k8s_control_plane[Control]
-        k8s_data_plane[Data]
-      end
-      subgraph kubernetes_api_server["K8s API Server"]
-          policy_server_in[PolicyServer]
-      end
-    end
-    subgraph kubewarden[Kubewarden]
-      kubewarden_controller["<code>kubwarden-controller</code>\ndeployment"]
-      kubewarden_policy_server_1["PolicyServer\n<code>default</code>"]
-    end
-    policy_server_out["PolicyServer"]
-    policy_server_out --> policy_server_in
-    policy_server_in --> kubewarden_controller
-    kubewarden_controller --> kubewarden_policy_server_1
-```
-
-<figcaption> Kubewarden architecture: part 1</figcaption>
-</figure>
-
-![Defining the first ClusterAdmissionPolicy resource](/img/architecture_sequence_01.png)
 
 When the `kubewarden-controller` notices the default `PolicyServer` resource,
 it creates a Deployment of the `policy-server` component.
@@ -142,45 +113,6 @@ to expose it inside the cluster network.
 
 This diagram shows what happens when defining the first policy
 bound to the default `policy-server` in the cluster:
-
-<figure>
-
-```mermaid
-%%{
-  init: {
-    "flowchart": {
-      "htmlLabels": true,
-    }
-  }
-}%%
-graph
-    subgraph k8s[Kubernetes]
-      subgraph planes[K8S Planes]
-        k8s_control_plane[Control]
-        k8s_data_plane[Data]
-      end
-      subgraph kubernetes_api_server["K8s API Server"]
-          policy_server_in[PolicyServer]
-          cluster_admission_policy_in["ClusterAdmissionPolicy"]
-      end
-    end
-    subgraph kubewarden[Kubewarden]
-      kubewarden_controller["<code>kubwarden-controller</code>\ndeployment"]
-      kubewarden_policy_server_1["PolicyServer\n<code>default</code>"]
-    end
-    policy_server_out["PolicyServer"]
-    cluster_admission_policy_out["ClusterAdmissionPolicy"]
-    policy_server_out --> policy_server_in
-    cluster_admission_policy_out --> cluster_admission_policy_in
-    policy_server_in --> kubewarden_controller
-    cluster_admission_policy_in --> kubewarden_controller
-    kubewarden_controller --> kubewarden_policy_server_1
-```
-
-<figcaption> Kubewarden architecture: part 1</figcaption>
-</figure>
-
-![Defining the first ClusterAdmissionPolicy resource](/img/architecture_sequence_02.png)
 
 :::note
 
@@ -240,8 +172,6 @@ following the naming convention: `/validate/<policy ID>`.
 
 This diagram shows the cluster when initialization of `policy-server` is complete:
 
-![policy-server initialized](/img/architecture_sequence_03.png)
-
 ### Making Kubernetes aware of the policy
 
 The `policy-server` Pods have a
@@ -259,14 +189,10 @@ Each policy has a dedicated
 which points to the Webhook endpoint served by `policy-server`.
 The endpoint is reachable by the `/validate/<policy ID>` URL.
 
-![Kubernetes Webhook endpoint configuration](/img/architecture_sequence_04.png)
-
 ### Policy in action
 
 Now that all the necessary plumbing is complete,
 Kubernetes starts sending Admission Review requests to the right `policy-server` endpoints.
-
-![Policy in action](/img/architecture_sequence_05.png)
 
 A `policy-server` receives the Admission Request object and,
 based on the endpoint that received the request,
@@ -292,10 +218,6 @@ There are benefits of having many policy servers:
 
 A `PolicyServer` resource defines each `policy-server`
 and a `ClusterAdmissionPolicy` or `AdmissionPolicy` resource defines each policy.
-
-This leads back to the initial diagram:
-
-![Full architecture](/img/architecture.png)
 
 A `ClusterAdmissionPolicy` is bound to a `PolicyServer`.
 Any `ClusterAdmissionPolicies` not specifying a `PolicyServer`
