@@ -19,22 +19,21 @@ Kubewarden is a Kubernetes policy engine.
 It uses policies written in a programming language of your choosing.
 This language must generate a WebAssembly binary for Kubewarden to use.
 
-## Something to clear up?
-
-What's the difference between
-
-- PolicyServer and policy-server.
-
-An up-front explanation of this type of usage would be useful. I think it
-occurs elsewhere in the docs, with other terms as well. Does it need
-clarification?
-
 ## What _is_ a policy?
 
 A policy is an [Open Container Initiative](https://opencontainers.org/) (OCI)
 artifact containing a WebAssembly module
-(the policy code) and the metadata required by the PolicyServer
+(the policy code) and the metadata required by the policy server
 performing admission request validations and mutations.
+
+:::note
+
+Kubewarden uses the terms
+'policy server' when discussing the Kubewarden policy server
+and
+`policy-server` when discussing an instance of a Kubewarden policy server.
+
+:::
 
 ## Design principles
 
@@ -126,13 +125,13 @@ The Kubewarden consists of these components:
   `ValidatingWebhookConfiguration`
   objects with the Kubernetes API server.
 
-- **Kubewarden policies**:
+- [Kubewarden policies](../tutorials/writing-policies/index.md):
   These are WebAssembly modules holding the validation or mutation logic.
   WebAssembly modules have detailed documentation in the
   [writing policies](../tutorials/writing-policies/index.md) sections.
 
-- [`policy-server`](https://github.com/kubewarden/policy-server):
-  The `policy-server` receives requests for validation.
+- [Policy server](https://github.com/kubewarden/policy-server):
+  The policy server receives requests for validation.
   It validates the requests by executing Kubewarden policies.
 
 - [`audit-scanner`](https://github.com/kubewarden/audit-scanner):
@@ -143,30 +142,43 @@ The Kubewarden consists of these components:
   constantly checks the resources declared in the cluster,
   flagging the ones that no longer adhere with the deployed Kubewarden policies.
 
-At this point an architecture diagram of the relationship between these things will be useful. So, what type of things are these and what shapes should be used (as opposed to the rectangle). What flows, and of what types, are there between the objects.
 
-<figure>
-
-```mermaid
-%%{
-  init: {
-    "flowchart": {
-      "htmlLabels": false,
-      "defaultRenderer": "elk"
+  ```mermaid
+  %%{
+    init: {
+      "flowchart": {
+        "htmlLabels": false,
+      }
     }
-  }
-}%%
-graph LR
-    k8s[K8s]
-    kw_custom_resources[KW custom resources]
-    kw_controller[KW controller]
-    kw_policies[KW policies]
-    kw_policy_server[KW policy-server]
-    kw_audit_scanner[KW audit scanner]
-```
-
-<figcaption>Kubewarden architecture</figcaption>
-</figure>
+  }%%
+  graph LR
+      subgraph " "
+        direction LR
+        subgraph " "
+          direction LR
+            k8s(("Kubernetes"))
+            registry[("OCI registry")]
+          end
+          subgraph kw["`**Kubewarden**`"]
+            controller("`**KW controller**`")
+            subgraph policy-server["`**policy-server**`"]
+              direction LR
+              kw-policy-1{{"Policy 1"}}
+              kw-policy-2{{"Policy 2"}}
+              kw-policy-3{{"Policy 3"}}
+          end
+          webhooks(["ValidationWebhooks and\nMutatingWebhooks"])
+          audit-scanner["KW audit scanner"]
+        end
+      end
+      policy-server -->|"downloads\npolicies from"| registry
+      controller -->|"watches for\nevents"| k8s
+      controller -->|"creates"| webhooks
+      controller -->|"creates\npolicy-server\ninstances"| policy-server
+      k8s -. "sends admission\nrequests using" .-> webhooks
+      webhooks -. "sent admission\nrequests from K8s" .-> policy-server
+      audit-scanner -->|"sends audit\nadmission requests"| policy-server
+  ```
 
 ## The journey of a Kubewarden policy
 
@@ -174,12 +186,12 @@ graph LR
 
 On a new cluster, the Kubewarden components defined are:
 
-- the Custom Resource Definitions (CRD)
+- Custom Resource Definitions (CRD)
 - the `kubewarden-controller` Deployment
-- a `PolicyServer` Custom Resource named `default`.
+- a policy server Custom Resource named `default`.
 
-When the `kubewarden-controller` notices the default `PolicyServer` resource,
-it creates a `Deployment` of the `policy-server` component.
+When the `kubewarden-controller` notices the default policy server resource,
+it creates a `policy-server` deployment of the policy server component.
 
 Kubewarden works as a Kubernetes Admission Webhook.
 Kubernetes specifies using
@@ -199,28 +211,25 @@ to expose it inside the cluster network.
 
 ### Defining the first policy
 
-This diagram shows what happens when defining the first policy
-bound to the default `policy-server` in the cluster:
-
 :::note
 
-A policy must define which Policy Server it must run on.
-It **binds** to a Policy Server.
+A policy must define which `policy-server` it must run on.
+It **binds** to a `policy-server` instance.
 You can have different policies with the same Wasm module and settings
-running in many Policy Servers.
+running in many policy servers.
 However, you can't have a single policy definition that runs in many policy servers.
 
 :::
 
 The `kubewarden-controller` notices the new `ClusterAdmissionPolicy` resource and
-so finds the bound `PolicyServer` and reconciles it.
+so finds the bound `policy server` and reconciles it.
 
-### Reconciliation of `policy-server`
+### Reconciliation of a `policy-server`
 
 When creating, modifying or deleting a `ClusterAdmissionPolicy` or `AdmissionPolicy`,
 a reconciliation loop activates in `kubewarden-controller`,
-for the `PolicyServer` owning the policy.
-This reconciliation loop creates a `ConfigMap` with all the polices bound to the `PolicyServer`.
+for the `policy server` owning the policy.
+This reconciliation loop creates a `ConfigMap` with all the polices bound to the `policy server`.
 Then the Deployment rollout of the `policy-server` starts.
 It results in starting the new `policy-server` instance with the updated configuration.
 
@@ -243,38 +252,37 @@ from the policy specification provided by the user,
 then any admission requests evaluated by that policy return an error.
 
 When Kubewarden has configured all policies,
-`policy-server`
+the `policy-server`
 spawns a pool of worker threads to evaluate incoming requests
 using the Kubewarden policies specified by the user.
 
 Finally, the `policy-server` starts a HTTPS server,
-the Kubewarden Policy Server,
 listening to incoming validation requests.
 Kubewarden uses the TLS key and certificate
-created by `kubewarden-controller`
+created by the Kubewarden controller
 to secure the web server.
 
 The web server exposes each policy by a dedicated path
 following the naming convention: `/validate/<policy ID>`.
 
-This diagram shows the cluster when initialization of `policy-server` is complete:
-
 ### Making Kubernetes aware of the policy
 
-The `policy-server` Pods have a
+All `policy-server` instances have a
 [`Readiness Probe`](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/),
 that `kubewarden-controller` uses to check when
 the `policy-server` Deployment is ready to evaluate an
 [`AdmissionReview`](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#webhook-request-and-response).
 
-Once Kubewarden marks the `policy-server` Deployment as `Ready`,
-the `kubewarden-controller` makes the Kubernetes API server
-aware of the new policy by creating either a
-`MutatingWebhookConfiguration` or a `ValidatingWebhookConfiguration` object.
+Once Kubewarden marks the `policy-server` deployment as 'uniquely reachable' or `Ready`,
+the `kubewarden-controller` makes the Kubernetes API server aware of the new policy.
+This is by creating either a `MutatingWebhookConfiguration` or a `ValidatingWebhookConfiguration` object.
+In this context, 'uniquely reachable', means that all the policy server instances in the cluster have the latest policy configuration installed.
+The distinction, is a fine point, but is necessary, due to how roll-out of policy servers works.
+It's possible to have the same policy, on different policy servers with different configurations.
 
 Each policy has a dedicated
 `MutatingWebhookConfiguration` or `ValidatingWebhookConfiguration`
-which points to the Webhook endpoint served by `policy-server`.
+pointing to the Webhook endpoint served by `policy-server`.
 The endpoint is reachable by the `/validate/<policy ID>` URL.
 
 ### Policy in action
@@ -287,7 +295,7 @@ based on the endpoint that received the request,
 uses the correct policy to evaluate it.
 
 Kubewarden evaluates each policy inside its own dedicated WebAssembly sand-box.
-The communication between `policy-server` (the "host")
+The communication between a `policy-server` instance (the "host")
 and the WebAssembly policy (the "guest")
 uses the waPC communication protocol.
 The protocol description is part of the
@@ -305,16 +313,16 @@ There are benefits of having many policy servers:
   those generating many policy evaluations,
   from the rest of the cluster so as not to adversely affect other cluster operations.
 
-- You can run mission-critical policies in a dedicated Policy Server pool,
+- You can run mission-critical policies in a dedicated policy server pool,
   making your infrastructure more resilient.
 
-A `PolicyServer` resource defines each `policy-server`
+A policy server resource defines each `policy-server`
 and a `ClusterAdmissionPolicy` or `AdmissionPolicy` resource defines each policy.
 
-A `ClusterAdmissionPolicy` and an `AdmissionPolicy` bind to a `PolicyServer`.
-Any `ClusterAdmissionPolicy` not specifying a `PolicyServer`
-binds to the `default` `PolicyServer`.
-If a `ClusterAdmissionPolicy` references a `PolicyServer`
+A `ClusterAdmissionPolicy` and an `AdmissionPolicy` bind to a `policy server`.
+Any `ClusterAdmissionPolicy` not specifying a `policy server`
+binds to the default policy server.
+If a `ClusterAdmissionPolicy` references a `policy server`
 that doesn't exist, its state is `unschedulable`.
 
 Each `policy-server` defines many validation endpoints,
