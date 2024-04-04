@@ -69,7 +69,7 @@ ensuring that security and compliance policy enforcement is consistent across th
 
 When setup by the Kubewarden controller,
 the policy server receives admission requests directly from the Kubernetes control plane,
-using `ValidationWebhooks`.
+using `ValidationWebhooks` and `MutatingWebhooks`.
 This direct interaction streamlines the admission control process,
 reducing latency and increasing efficiency in policy enforcement.
 
