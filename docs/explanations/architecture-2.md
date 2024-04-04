@@ -23,15 +23,17 @@ This language must generate a WebAssembly binary for Kubewarden to use.
 
 A policy is an [Open Container Initiative](https://opencontainers.org/) (OCI)
 artifact containing a WebAssembly module
-(the policy code) and the metadata required by the policy server
+(the policy code) and the metadata required by the PolicyServer
 performing admission request validations and mutations.
 
 :::note
 
+In the same manner as
+[Kubernetes](https://kubernetes.io/docs/contribute/style/style-guide/),
 Kubewarden uses the terms
-'policy server' when discussing the Kubewarden policy server
+'PolicyServer' when discussing the Kubewarden policy server
 and
-`policy-server` when discussing an instance of a Kubewarden policy server.
+`policy-server` when discussing Pod or Deployment of a Kubewarden PolicyServer.
 
 :::
 
@@ -67,7 +69,7 @@ ensuring that security and compliance policy enforcement is consistent across th
 ### Direct admission control
 
 When setup by the Kubewarden controller,
-the policy server receives admission requests directly from the Kubernetes control plane,
+the PolicyServer server receives admission requests directly from the Kubernetes control plane,
 using `ValidationWebhooks` and `MutatingWebhooks`.
 This direct interaction streamlines the admission control process,
 reducing latency and increasing efficiency in policy enforcement.
@@ -89,7 +91,7 @@ and can be easily distributed and executed in diverse Kubernetes clusters
 Policies in Kubewarden are OCI (Open Container Initiative) artifacts.
 This standardization makes the distribution and versioning of policies easier,
 Policies contain both the WebAssembly modules for enforcement logic,
-and metadata necessary for the policy server's operation.
+and metadata necessary for the PolicyServer's operation.
 Leveraging OCI artifacts promotes interoperability and ease of management
 within cloud ecosystems.
 
@@ -130,8 +132,8 @@ The Kubewarden consists of these components:
   WebAssembly modules have detailed documentation in the
   [writing policies](../tutorials/writing-policies/index.md) sections.
 
-- [Policy server](https://github.com/kubewarden/policy-server):
-  The policy server receives requests for validation.
+- [PolicyServer](https://github.com/kubewarden/policy-server):
+  The PolicyServer receives requests for validation.
   It validates the requests by executing Kubewarden policies.
 
 - [`audit-scanner`](https://github.com/kubewarden/audit-scanner):
@@ -182,16 +184,16 @@ The Kubewarden consists of these components:
 
 ## The journey of a Kubewarden policy
 
-### Default policy server
+### Default PolicyServer
 
 On a new cluster, the Kubewarden components defined are:
 
 - Custom Resource Definitions (CRD)
 - the `kubewarden-controller` Deployment
-- a policy server Custom Resource named `default`.
+- a PolicyServer Custom Resource named `default`.
 
-When the `kubewarden-controller` notices the default policy server resource,
-it creates a `policy-server` deployment of the policy server component.
+When the `kubewarden-controller` notices the default PolicyServer resource,
+it creates a `policy-server` deployment of the PolicyServer component.
 
 Kubewarden works as a Kubernetes Admission Webhook.
 Kubernetes specifies using
@@ -216,20 +218,20 @@ to expose it inside the cluster network.
 A policy must define which `policy-server` it must run on.
 It **binds** to a `policy-server` instance.
 You can have different policies with the same Wasm module and settings
-running in many policy servers.
-However, you can't have a single policy definition that runs in many policy servers.
+running in many PolicyServers.
+However, you can't have a single policy definition that runs in many PolicyServers.
 
 :::
 
 The `kubewarden-controller` notices the new `ClusterAdmissionPolicy` resource and
-so finds the bound `policy server` and reconciles it.
+so finds the bound `policy-server` and reconciles it.
 
 ### Reconciliation of a `policy-server`
 
 When creating, modifying or deleting a `ClusterAdmissionPolicy` or `AdmissionPolicy`,
 a reconciliation loop activates in `kubewarden-controller`,
-for the `policy server` owning the policy.
-This reconciliation loop creates a `ConfigMap` with all the polices bound to the `policy server`.
+for the `policy-server` owning the policy.
+This reconciliation loop creates a `ConfigMap` with all the polices bound to the `policy-server`.
 Then the Deployment rollout of the `policy-server` starts.
 It results in starting the new `policy-server` instance with the updated configuration.
 
@@ -276,9 +278,12 @@ the `policy-server` Deployment is ready to evaluate an
 Once Kubewarden marks the `policy-server` deployment as 'uniquely reachable' or `Ready`,
 the `kubewarden-controller` makes the Kubernetes API server aware of the new policy.
 This is by creating either a `MutatingWebhookConfiguration` or a `ValidatingWebhookConfiguration` object.
-In this context, 'uniquely reachable', means that all the policy server instances in the cluster have the latest policy configuration installed.
-The distinction, is a fine point, but is necessary, due to how roll-out of policy servers works.
-It's possible to have the same policy, on different policy servers with different configurations.
+In this context, 'uniquely reachable',
+means that all the PolicyServer instances in the cluster have the latest policy configuration installed.
+The distinction, is a fine point, but is necessary,
+due to how roll-out of PolicyServers works.
+It's possible to have the same policy,
+on different PolicyServers with different configurations.
 
 Each policy has a dedicated
 `MutatingWebhookConfiguration` or `ValidatingWebhookConfiguration`
@@ -304,25 +309,25 @@ Policies can also use the interfaces provided by the
 [Web Assembly System Interface](../tutorials/writing-policies/wasi/01-intro-wasi.md)
 (WASI).
 
-## How Kubewarden handles many policy servers and policies
+## How Kubewarden handles many PolicyServer and policies
 
-A cluster can have many policy servers and Kubewarden policies defined.
-There are benefits of having many policy servers:
+A cluster can have many PolicyServers and Kubewarden policies defined.
+There are benefits of having many PolicyServers:
 
 - You can isolate noisy namespaces or tenants,
   those generating many policy evaluations,
   from the rest of the cluster so as not to adversely affect other cluster operations.
 
-- You can run mission-critical policies in a dedicated policy server pool,
+- You can run mission-critical policies in a dedicated PolicyServer pool,
   making your infrastructure more resilient.
 
-A policy server resource defines each `policy-server`
+A PolicyServer resource defines each `policy-server`
 and a `ClusterAdmissionPolicy` or `AdmissionPolicy` resource defines each policy.
 
-A `ClusterAdmissionPolicy` and an `AdmissionPolicy` bind to a `policy server`.
-Any `ClusterAdmissionPolicy` not specifying a `policy server`
-binds to the default policy server.
-If a `ClusterAdmissionPolicy` references a `policy server`
+A `ClusterAdmissionPolicy` and an `AdmissionPolicy` bind to a `policy-server`.
+Any `ClusterAdmissionPolicy` not specifying a `policy-server`
+binds to the default PolicyServer.
+If a `ClusterAdmissionPolicy` references a `policy-server`
 that doesn't exist, its state is `unschedulable`.
 
 Each `policy-server` defines many validation endpoints,
