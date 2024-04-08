@@ -69,7 +69,7 @@ ensuring that security and compliance policy enforcement is consistent across th
 ### Direct admission control
 
 When setup by the Kubewarden controller,
-the PolicyServer server receives admission requests directly from the Kubernetes control plane,
+the policy-server Service receives admission requests directly from the Kubernetes control plane,
 using `ValidationWebhooks` and `MutatingWebhooks`.
 This direct interaction streamlines the admission control process,
 reducing latency and increasing efficiency in policy enforcement.
