@@ -1,7 +1,7 @@
 ---
 sidebar_label: Defining PodDisruptionBudget
 title: Configuring PodDisruptionBudget for PolicyServers
-description: Configuring PodDisruptionBudget for Kubewarden PolicyServers.j
+description: Configuring PodDisruptionBudget for Kubewarden PolicyServers.
 keywords: [kubewarden, kubernetes, policyservers, poddisruptionbudget]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
 doc-type: [howto]
