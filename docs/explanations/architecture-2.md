@@ -22,8 +22,8 @@ This language must generate a WebAssembly binary for Kubewarden to use.
 ## What _is_ a policy?
 
 A policy is an [Open Container Initiative](https://opencontainers.org/) (OCI)
-artifact containing a WebAssembly module
-(the policy code) and the metadata required by the PolicyServer
+artifact containing a WebAssembly module,
+the policy code, and the metadata required by PolicyServer
 performing admission request validations and mutations.
 
 :::note
@@ -74,8 +74,6 @@ using `ValidationWebhooks` and `MutatingWebhooks`.
 This direct interaction streamlines the admission control process,
 reducing latency and increasing efficiency in policy enforcement.
 
-### Adoption of WebAssembly for policy execution
-
 WebAssembly offers a sand-boxed execution environment,
 ensuring policies run in isolation,
 thus enhancing the security and stability of the policy enforcement mechanism.
@@ -84,7 +82,7 @@ mitigating the risk of malicious code execution.
 WebAssembly is portable and efficient,
 enabling policies to run across different environments without modification.
 This cross-platform compatibility ensures that Kubewarden policies are versatile,
-and can be easily distributed and executed in diverse Kubernetes clusters
+and can be distributed and executed in diverse Kubernetes clusters
 
 ### OCI based policy artifacts
 
@@ -107,8 +105,7 @@ enhancing the security and compliance posture of the Kubernetes cluster.
 
 The Kubewarden consists of these components:
 
-- **Kubewarden Custom Resources**:
-  These are
+- Kubewarden Custom Resources are
   [Kubernetes Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
   that simplify the process of managing policies.
 
@@ -117,8 +114,8 @@ The Kubewarden consists of these components:
   In particular, Kubewarden operates as a Kubernetes Admission Webhook.
   The `policy-server` is the Webhook endpoint called by the Kubernetes API server to validate requests.
 
-- [`kubewarden-controller`](https://github.com/kubewarden/kubewarden-controller):
-  This is a Kubernetes controller that reconciles Kubewarden's Custom Resources.
+- The [Kubewarden controller](https://github.com/kubewarden/kubewarden-controller)
+  is a Kubernetes controller that reconciles Kubewarden's Custom Resources.
   This controller creates parts of the Kubewarden stack.
   It also translates Kubewarden configuration into Kubernetes directives.
 
@@ -127,23 +124,22 @@ The Kubewarden consists of these components:
   `ValidatingWebhookConfiguration`
   objects with the Kubernetes API server.
 
-- [Kubewarden policies](../tutorials/writing-policies/index.md):
-  These are WebAssembly modules holding the validation or mutation logic.
+- [Kubewarden policies](../tutorials/writing-policies/index.md)
+  are WebAssembly modules holding the validation or mutation logic.
   WebAssembly modules have detailed documentation in the
   [writing policies](../tutorials/writing-policies/index.md) sections.
 
-- [PolicyServer](https://github.com/kubewarden/policy-server):
-  The PolicyServer receives requests for validation.
+- The [PolicyServer](https://github.com/kubewarden/policy-server)
+  receives requests for validation.
   It validates the requests by executing Kubewarden policies.
 
-- [`audit-scanner`](https://github.com/kubewarden/audit-scanner):
-  The audit scanner inspects the resources already in the cluster.
+- The [audit scanner](https://github.com/kubewarden/audit-scanner)
+  inspects the resources already in the cluster.
   It identifies those violating Kubewarden policies.
 
   [Audit scanner](/explanations/audit-scanner/audit-scanner.md)
   constantly checks the resources declared in the cluster,
   flagging the ones that no longer adhere with the deployed Kubewarden policies.
-
 
   ```mermaid
   %%{
@@ -189,8 +185,8 @@ The Kubewarden consists of these components:
 On a new cluster, the Kubewarden components defined are:
 
 - Custom Resource Definitions (CRD)
-- the `kubewarden-controller` Deployment
-- a PolicyServer Custom Resource named `default`.
+- The `kubewarden-controller` Deployment
+- A PolicyServer Custom Resource named `default`.
 
 When the `kubewarden-controller` notices the default PolicyServer resource,
 it creates a `policy-server` deployment of the PolicyServer component.
@@ -288,7 +284,7 @@ on different PolicyServers with different configurations.
 Each policy has a dedicated
 `MutatingWebhookConfiguration` or `ValidatingWebhookConfiguration`
 pointing to the Webhook endpoint served by `policy-server`.
-The endpoint is reachable by the `/validate/<policy ID>` URL.
+The endpoint is reachable at the `/validate/<policy ID>` URL.
 
 ### Policy in action
 
