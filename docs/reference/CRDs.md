@@ -281,6 +281,8 @@ _Appears in:_
 | `verificationConfig` _string_ | Name of VerificationConfig configmap in the same namespace, containing Sigstore verification configuration. The configuration must be under a key named verification-config in the Configmap. |
 | `securityContexts` _[PolicyServerSecurity](#policyserversecurity)_ | Security configuration to be used in the Policy Server workload. The field allows different configurations for the pod and containers. If set for the containers, this configuration will not be used in containers added by other controllers (e.g. telemetry sidecars) |
 | `affinity` _[Affinity](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#affinity-v1-core)_ | Affinity rules for the associated Policy Server pods. |
+| `limits` _object (keys:[ResourceName](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#resourcename-v1-core), values:Quantity)_ | Limits describes the maximum amount of compute resources allowed. |
+| `requests` _object (keys:[ResourceName](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#resourcename-v1-core), values:Quantity)_ | Requests describes the minimum amount of compute resources required. If Request is omitted for, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value |
 
 
 
@@ -572,6 +574,5 @@ _Underlying type:_ `string`
 
 _Appears in:_
 - [PolicyStatus](#policystatus)
-
 
 
