@@ -123,6 +123,10 @@ module.exports = {
           trackingID: "UA-56382716-13",
           anonymizeIP: true,
         },
+        gtag: {
+          trackingID: "395802740",
+          anonymizeIP: true,
+        },
       },
     ],
   ],
