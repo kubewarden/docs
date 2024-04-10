@@ -1,5 +1,5 @@
 ---
-sidebar_label: Architecture - 2
+sidebar_label: Architecture
 sidebar_position: 61
 title: Kubewarden architecture
 description: The Kubewarden architecture
@@ -9,11 +9,9 @@ doc-type: [explanation]
 doc-topic: [architecture]
 ---
 
-<!--
 <head>
   <link rel="canonical" href="https://docs.kubewarden.io/explanations/architecture"/>
 </head>
--->
 
 Kubewarden is a Kubernetes policy engine.
 It uses policies written in a programming language of your choosing.
