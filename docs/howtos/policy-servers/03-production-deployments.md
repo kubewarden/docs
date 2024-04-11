@@ -1,72 +1,210 @@
 ---
-sidebar_label: Defining PodDisruptionBudget
-title: Configuring PodDisruptionBudget for PolicyServers
-description: Configuring PodDisruptionBudget for Kubewarden PolicyServers.
-keywords: [kubewarden, kubernetes, policyservers, poddisruptionbudget]
+sidebar_label: Production deployments
+title: Configuring PolicyServers for production
+description: Configuring PolicyServers for production
+keywords:
+  [
+    kubewarden,
+    kubernetes,
+    policyservers,
+    production,
+    poddisruptionbudget,
+    affinity,
+    limits,
+  ]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
 doc-type: [howto]
-doc-topic: [operator-manual, policy-servers, poddisruptionbudget]
+doc-topic:
+  [
+    operator-manual,
+    policy-servers,
+    production,
+    poddisruptionbudget,
+    affinity,
+    limits,
+  ]
 ---
 
-To enhance the resilience of Kubewarden policy server deployments, two fields
-can be used: `minAvailable` and `maxUnavailable`. These fields are used by the
-Kubewarden controller to create a
+PolicyServers are critical to the cluster. Reliability of them is paramount as
+they process Admission Requests destined to the Kube API via the Validating and
+Mutating Webhooks.
+
+As in other Dynamic Admission Controllers, this process happens prior to the
+requests reaching the Kube API server. Hence, latency or service hiccups from
+the Dynamic Admission Controller may introduce to the cluster inconsistency,
+Denial Of Service, or deadlock.
+
+Kubewarden provides several ways to increase the realibility of PolicyServers.
+Production deployments can vary a great deal, it is up to the operator to adapt
+and configure the deployment for their needs.
+
+# PodDistruptionBudgets
+
+The Kubewarden controller can create a
 [PodDisruptionBudget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/)
-(PDB) for the policy server pods, thus ensuring high availability and
-controlled eviction in case of node maintenance or scaling operations.
+(PDB) for the policy-server Pods. This controls the range of policy-server
+Pod replicas associated with the PolicyServer, thus ensuring high availability
+and controlled eviction in case of node maintenance, scaling operations or
+cluster upgrades.
 
-## Understanding minAvailable and maxUnavailable 
+This is achieved by setting `spec.minAvailable`, or `spec.maxUnavailable` of the
+PolicyServer resource (only one of them):
 
-The `minAvailable` field specifies the minimum number of policy server pods
-that must be available at all times. This is crucial for maintaining the
-operational integrity of the Kubewarden policy server, ensuring that policies
-are continuously enforced without interruption. It can be defined as an integer or a
-percentage.
+- `minAvailable`: specifies the minimum number of policy-server Pods
+  that must be available at all times. Can be an integer or a percentage.
 
-When set, the Kubewarden controller creates a `PodDisruptionBudget` object that prevents
-voluntary disruptions from causing the number of available replicas to fall
-below this threshold. This is particularly important during operations such as
-cluster upgrades or maintenance.
+  Useful for maintaining the operational integrity of the PolicyServer,
+  ensuring that policies are continously enforced without interruption.
 
-The `maxUnavailable` field dictates the maximum number of policy server pods
-that can be unavailable at any given time. This setting allows for a controlled
-degree of unavailability, which can be useful for performing rolling updates or
-partial maintenance without fully halting the policy enforcement mechanism. It 
-can also be defined as integer or percentage.
+- `maxUnavailable`: specifies the maximum number of policy-server Pods that can
+  be unavailable at any given time. Can be an integer or a percentage.
 
-When configured, it informs the creation of a `PodDisruptionBudget` object that limits
-the number of pods that can be voluntarily disrupted. This ensures that even
-during disruptions, a certain level of service is maintained.
+  Useful for performing rolling updates or partial maintenance without fully
+  halting the policy enforcement mechanism.
 
-## Configuring minAvailable and maxUnavailable
+:::note
+You can specify only one of `maxUnavailable` and `minAvailable`.
+:::
 
-When deploying or updating the Kubewarden policy server, you can specify these
-fields in your configuration to ensure the desired level of availability. It's
-important to note that you can specify only one of `maxUnavailable` and
-`minAvailable`.
+## Configuring minAvailable or maxUnavailable
 
-``` yaml
+Examples:
+
+```yaml
 apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
 metadata:
   name: your-policy-server
 spec:
   # Other configuration fields
-  minAvailable: 2
+  minAvailable: 2 # ensure at least two policy-server Pods are available at all times
 ```
 
-This configuration ensures that either at least two policy server pods are
-available at all times.
-
-In the same way, you can specify the `maxUnavailable` field to ensure that no
-more than 30% of the policy server pods are unavailable at any given time.
-
-``` yaml
+```yaml
 apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
 metadata:
   name: your-policy-server
 spec:
   # Other configuration fields
-  maxUnavailable: "30%"
+  maxUnavailable: "30%" # ensure no more than 30% of policy-server Pods are unavailable at all times
+```
+
+# Affinity / Anti-affinity
+
+The Kubewarden controller can set the affinity of policy-server Pods. This
+allows to constraint Pods to specific nodes, or Pods against other Pods. For
+more information on Affinity, see the [Kubernetes
+docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity).
+
+Kubernetes affinity configuration allows constraining Pods to nodes (via
+`spec.affinity.nodeAffinity`) or constraining Pods with regards to other Pods
+(via `spec.affinity.podAffinity`). Affinity can be set as a soft constraint
+(with `preferredDuringSchedulingIgnoredDuringExecution`) or a hard one (wit
+`requiredDuringSchedulingIgnoredDuringExecution`). Via labels.
+
+Affinity / anti-affinity matches against specific labels, be it nodes' labels
+(e.g: `topology.kubernetes.io/zone` set to `antartica-east1`) or Pods labels.
+Pods created from PolicyServer definitions have a label
+`kubewarden/policy-server` set to the name of the PolicyServer. (e.g:
+`kubewarden/policy-server: default`).
+
+:::note
+Inter-pod affinity/anti-affinity require substantial amounts of processing and
+are not recommended in clusters larger than several hundred nodes.
+:::
+
+To configure affinity for a PolicyServer, set its `spec.affinity` field. This
+field accepts a YAML object matching the contents of a Pod's `spec.affinity`.
+
+## Configuring Affinity / Anti-affinity
+
+Example: Prefer to spread the PolicyServer Pods across zones and hostnames
+
+```yaml
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: your-policy-server
+spec:
+  # Other configuration fields
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: kubewarden/policy-server
+                operator: In
+                values:
+                  - your-policy-server
+          topologyKey: topology.kubernetes.io/zone
+        - labelSelector:
+            matchExpressions:
+              - key: kubewarden/policy-server
+                operator: In
+                values:
+                  - your-policy-server
+          topologyKey: kubernetes.io/hostname
+```
+
+Example: Only schedule PolicyServer pods in control-plane nodes
+
+```yaml
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: your-policy-server
+spec:
+  # Other configuration fields
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: kubewarden/policy-server
+                operator: In
+                values:
+                  - your-policy-server
+          topologyKey: node-role.kubernetes.io/control-plane
+```
+
+# Limits and Requests
+
+The Kubewarden controller can set the resource limits and requests of
+policy-server Pods. This specifies how much of each resource eac of the
+containers associated with the policy-server Pods needs. For PolicyServers,
+only `cpu` and `memory` resources are relevant. See the [Kubernetes
+docs](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes)
+on resource units for more info.
+
+This is achieved by setting the following PolicyServer resource fields:
+
+- `spec.limits`: Limits on resources, enforced by the container runtime.
+  Different runtimes can have different ways to implement the restrictions.
+- `spec.requests`: Amount of resources to reserve for each container. It is
+  possible and allowed for a container to use more resource than it's `request`.
+
+  If omitted, it defaults to `spec.limits` if that is set (unless
+  `spec.requests` of containers is set to some defaults via an admission
+  mechanism).
+
+:::note
+Undercommitting resources of PolicyServers may cause realibility issues in the
+cluster.
+:::
+
+## Configuring Limits and Requests
+
+Example: Set hard limits for each policy-server container
+
+```yaml
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: your-policy-server
+spec:
+  # Other configuration fields
+  limits:
+    cpu: 500m
+    memory: 1Gi
 ```
