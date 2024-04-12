@@ -25,30 +25,29 @@ doc-topic:
   ]
 ---
 
-PolicyServers are critical to the cluster. Reliability of them is paramount as
-they process Admission Requests destined to the Kube API via the Validating and
+PolicyServers are critical to the cluster. Reliability of them is important as
+they process Admission Requests destined for the Kube API via the Validating and
 Mutating Webhooks.
 
-As in other Dynamic Admission Controllers, this process happens prior to the
-requests reaching the Kube API server. Hence, latency or service hiccups from
-the Dynamic Admission Controller may introduce to the cluster inconsistency,
-Denial Of Service, or deadlock.
+As with other Dynamic Admission Controllers, this process happens before
+requests reach the Kube API server. Latency or service delays by
+the Dynamic Admission Controller may introduce cluster inconsistency,
+Denial of Service, or deadlock.
 
-Kubewarden provides several ways to increase the realibility of PolicyServers.
-Production deployments can vary a great deal, it is up to the operator to adapt
-and configure the deployment for their needs.
+Kubewarden provides several ways to increase the reliability of PolicyServers.
+Production deployments can vary a great deal, it is up to the operator to configure the deployment for their needs.
 
 # PodDistruptionBudgets
 
 The Kubewarden controller can create a
 [PodDisruptionBudget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/)
 (PDB) for the policy-server Pods. This controls the range of policy-server
-Pod replicas associated with the PolicyServer, thus ensuring high availability
+Pod replicas associated with the PolicyServer, ensuring high availability
 and controlled eviction in case of node maintenance, scaling operations or
 cluster upgrades.
 
 This is achieved by setting `spec.minAvailable`, or `spec.maxUnavailable` of the
-PolicyServer resource (only one of them):
+PolicyServer resource:
 
 - `minAvailable`: specifies the minimum number of policy-server Pods
   that must be available at all times. Can be an integer or a percentage.
@@ -93,7 +92,7 @@ spec:
 # Affinity / Anti-affinity
 
 The Kubewarden controller can set the affinity of policy-server Pods. This
-allows to constraint Pods to specific nodes, or Pods against other Pods. For
+allows constraint of Pods to specific nodes, or Pods against other Pods. For
 more information on Affinity, see the [Kubernetes
 docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity).
 
@@ -171,11 +170,11 @@ spec:
 # Limits and Requests
 
 The Kubewarden controller can set the resource limits and requests of
-policy-server Pods. This specifies how much of each resource eac of the
+policy-server Pods. This specifies how much of each resource each of the
 containers associated with the policy-server Pods needs. For PolicyServers,
 only `cpu` and `memory` resources are relevant. See the [Kubernetes
 docs](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes)
-on resource units for more info.
+on resource units for more information.
 
 This is achieved by setting the following PolicyServer resource fields:
 
