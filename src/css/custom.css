@@ -32,9 +32,12 @@ html[data-theme='dark'] {
 
 html[data-theme='dark'] footer {
   --ifm-footer-background-color: #104139;
+	--ifm-link-hover-color: #90ebcd;
 }
 
 html[data-theme='light'] footer {
   --ifm-footer-background-color: #104139;
+	--ifm-link-color: #fe7c3f;
+	--ifm-link-hover-color: #90ebcd;
 }
 
