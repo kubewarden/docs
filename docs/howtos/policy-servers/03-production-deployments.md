@@ -100,7 +100,7 @@ Kubernetes affinity configuration allows constraining Pods to nodes (via
 `spec.affinity.nodeAffinity`) or constraining Pods with regards to other Pods
 (via `spec.affinity.podAffinity`). Affinity can be set as a soft constraint
 (with `preferredDuringSchedulingIgnoredDuringExecution`) or a hard one (with
-`requiredDuringSchedulingIgnoredDuringExecution`). Via labels.
+`requiredDuringSchedulingIgnoredDuringExecution`).
 
 Affinity / anti-affinity matches against specific labels, be it nodes' labels
 (e.g: `topology.kubernetes.io/zone` set to `antarctica-east1`) or Pods labels.
