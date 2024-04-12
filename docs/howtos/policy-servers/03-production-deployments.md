@@ -26,11 +26,11 @@ doc-topic:
 ---
 
 PolicyServers are critical to the cluster. Reliability of them is important as
-they process Admission Requests destined for the Kube API via the Validating and
+they process Admission Requests destined for the Kubernetes API via the Validating and
 Mutating Webhooks.
 
 As with other Dynamic Admission Controllers, this process happens before
-requests reach the Kube API server. Latency or service delays by
+requests reach the Kubernetes API server. Latency or service delays by
 the Dynamic Admission Controller may introduce cluster inconsistency,
 Denial of Service, or deadlock.
 
