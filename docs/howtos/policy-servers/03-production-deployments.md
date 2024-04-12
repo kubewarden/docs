@@ -99,11 +99,11 @@ docs](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#a
 Kubernetes affinity configuration allows constraining Pods to nodes (via
 `spec.affinity.nodeAffinity`) or constraining Pods with regards to other Pods
 (via `spec.affinity.podAffinity`). Affinity can be set as a soft constraint
-(with `preferredDuringSchedulingIgnoredDuringExecution`) or a hard one (wit
+(with `preferredDuringSchedulingIgnoredDuringExecution`) or a hard one (with
 `requiredDuringSchedulingIgnoredDuringExecution`). Via labels.
 
 Affinity / anti-affinity matches against specific labels, be it nodes' labels
-(e.g: `topology.kubernetes.io/zone` set to `antartica-east1`) or Pods labels.
+(e.g: `topology.kubernetes.io/zone` set to `antarctica-east1`) or Pods labels.
 Pods created from PolicyServer definitions have a label
 `kubewarden/policy-server` set to the name of the PolicyServer. (e.g:
 `kubewarden/policy-server: default`).
