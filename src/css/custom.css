@@ -4,176 +4,40 @@
  * bundles Infima by default. Infima is a CSS framework designed to
  * work well for content-centric websites.
  */
-/* Import fonts. */
 
-/* poppins */
-@font-face {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: normal;
-  src: local(''),
-       url('../fonts/Poppins/Poppins-Bold.woff') format('woff2'), /* Super Modern Browsers */
-       url('../fonts/Poppins/Poppins-Bold.woff2') format('woff'), /* Modern Browsers */
-}
-
-/* Roboto-Light */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: normal;
-  src: local(''),
-       url('../fonts/Roboto/Roboto-Light.woff') format('woff2'), /* Super Modern Browsers */
-       url('../fonts/Roboto/Roboto-Light.woff2') format('woff'), /* Modern Browsers */
-}
-
-/* Space_Mono - latin */
-@font-face {
-  font-family: 'Space Mono';
-  font-style: normal;
-  font-weight: normal;
-  src: local(''),
-       url('../fonts/Space_Mono/SpaceMono-Regular.woff') format('woff2'), /* Super Modern Browsers */
-       url('../fonts/Space_Mono/SpaceMono-Regular.woff2') format('woff'), /* Modern Browsers */
-}
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary-lightest: #f41c5b;
-  --ifm-color-primary-lighter: #e50b4b;
-  --ifm-color-primary-light: #db0b47;
-  --ifm-color-primary: #c70a41;
-  --ifm-color-primary-dark: #b3093a;
-  --ifm-color-primary-darker: #a90837;
-  --ifm-color-primary-darkest: #8b072d;
+  --ifm-color-primary: #d34301;
+  --ifm-color-primary-dark: #be3c01;
+  --ifm-color-primary-darker: #b33901;
+  --ifm-color-primary-darkest: #9e3201;
+  --ifm-color-primary-light: #e84a01;
+  --ifm-color-primary-lighter: #f34d01;
+  --ifm-color-primary-lightest: #fe5f16;
+  --ifm-background-color: #fefefe;
   --ifm-code-font-size: 95%;
 }
-@media (max-width: 768px) {
-  #theme-main h1 {
-    font-size: 50px !important;
-    line-height: 3rem !important;
-    font-weight: 700
-  }
-  #theme-main .header-docs {
-    margin-bottom: 20px;
-  }
+
+html[data-theme='dark'] {
+  --ifm-color-primary: #fe7c3f;
+  --ifm-color-primary-dark: #fe661f;
+  --ifm-color-primary-darker: #fe5c10;
+  --ifm-color-primary-darkest: #ed4c01;
+  --ifm-color-primary-light: #fe925f;
+  --ifm-color-primary-lighter: #fe9c6e;
+  --ifm-color-primary-lightest: #febd9e;
+  --ifm-background-color: #092521;
+  --ifm-code-font-size: 95%;
 }
 
-/*
- * Fix spacing between the GitHub button and the theme selector
- * See https://github.com/kubewarden/docs/pull/122#pullrequestreview-1001303794
- */
-@media (min-width: 996px) {
-  .icon-github.navbar__github {
-    margin-right: 20px;
-  }
-}
-/* Reverting to default fonts, maybe the below was an experiment?
- * Anyway, the code font is the problem, it drops below the font baseline
- * set by the proportional font. I don't think they work well together.
- */
-/*
-body {
-  font-family: 'Roboto', sans-serif;
+html[data-theme='dark'] footer {
+  --ifm-footer-background-color: #104139;
+	--ifm-link-hover-color: #90ebcd;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Poppins', sans-serif;
+html[data-theme='light'] footer {
+  --ifm-footer-background-color: #104139;
+	--ifm-link-color: #fe7c3f;
+	--ifm-link-hover-color: #90ebcd;
 }
 
-code {
-  font-family: 'Space Mono', monospace;
-}
-*/
-
-hr {
-  background-image: -webkit-linear-gradient(left,#f3f3f3,#adadb1,#f3f3f3);
-  margin: 0 auto;
-}
-
-.navbar__brand {
-  height: 40px;
-}
-
-.btn.navbar__github {
-  display: inline-block;
-  font-weight: 400;
-  color: #212529;
-  text-align: center;
-  vertical-align: middle;
-  user-select: none;
-  background-color: initial;
-  border: 2px solid transparent;
-  padding: .375rem .75rem;
-  font-size: 1rem;
-  line-height: 1.66;
-  border-radius: 3px;
-  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-}
-
-a.btn.navbar__github {
-  border: 2px solid transparent;
-  padding: 8px 20px 7px 47px;
-  font-size: 1rem;
-  line-height: 1.66;
-  font-weight: 400;
-  position: relative;
-}
-
-a.btn.navbar__github {
-  font-family: poppins,sans-serif;
-  text-decoration: none;
-  align-items: center;
-  border-radius: 3px;
-}
-
-.btn-secondary.navbar__github:hover {
-  color: #fff;
-  background-color: #273230;
-  border-color: #222a29;
-}
-
-a.btn.navbar__github::before {
-  content: "";
-  background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20.5 20%22%3E%3Cdefs/%3E%3Cpath fill=%22%23fff%22 d=%22M10.3.0C4.6.0.0 4.6.0 10.3c0 4.4 2.8 8.3 7 9.7.5.1.7-.2.7-.5v-1.9c-2.6.5-3.2-.6-3.4-1.2-.2-.6-.6-1.1-1-1.5-.4-.2-.9-.7.0-.7.7.1 1.3.5 1.6 1 .6 1.1 1.9 1.4 3 .8.0-.5.3-1 .7-1.4-2.3-.3-4.7-1.1-4.7-5.1.0-1 .4-2 1.1-2.8-.5-.6-.5-1.6-.1-2.5.0.0.9-.3 2.8 1.1 1.7-.5 3.4-.5 5.1.0 2-1.3 2.8-1.1 2.8-1.1.4.9.5 1.9.2 2.8.7.7 1.1 1.7 1.1 2.8.0 3.9-2.4 4.8-4.7 5.1.5.5.7 1.2.7 1.9v2.8c0 .3.2.6.7.5 5.4-1.8 8.3-7.6 6.5-13C18.6 2.8 14.7.0 10.3.0z%22/%3E%3C/svg%3E");
-  height: 20px;
-  width: 20px;
-  position: absolute;
-  left: 15px;
-  top: 10px;
-}
-
-
-.icon-github.navbar__github {
-  margin-left: 20px;
-}
-
-.btn-secondary.navbar__github {
-  color: #fff!important;
-  border-color: #384745;
-  background-color: #384745;
-  box-shadow: inset 0 1px rgb(255 255 255 / 15%), 0 1px 1px rgb(0 0 0 / 8%);
-}
-
-.docusaurus-highlight-code-line {
-  background-color: rgb(72, 77, 91);
-  display: block;
-  margin: 0 calc(-1 * var(--ifm-pre-padding));
-  padding: 0 var(--ifm-pre-padding);
-}
-
-.header-slack-link:hover {
-  opacity: 0.6;
-}
-
-.header-slack-link::before {
-  content: '';
-  width: 24px;
-  height: 24px;
-  display: flex;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.362 10.11c0 .926-.756 1.681-1.681 1.681S0 11.036 0 10.111C0 9.186.756 8.43 1.68 8.43h1.682v1.68zm.846 0c0-.924.756-1.68 1.681-1.68s1.681.756 1.681 1.68v4.21c0 .924-.756 1.68-1.68 1.68a1.685 1.685 0 0 1-1.682-1.68v-4.21zM5.89 3.362c-.926 0-1.682-.756-1.682-1.681S4.964 0 5.89 0s1.68.756 1.68 1.68v1.682H5.89zm0 .846c.924 0 1.68.756 1.68 1.681S6.814 7.57 5.89 7.57H1.68C.757 7.57 0 6.814 0 5.89c0-.926.756-1.682 1.68-1.682h4.21zm6.749 1.682c0-.926.755-1.682 1.68-1.682.925 0 1.681.756 1.681 1.681s-.756 1.681-1.68 1.681h-1.681V5.89zm-.848 0c0 .924-.755 1.68-1.68 1.68A1.685 1.685 0 0 1 8.43 5.89V1.68C8.43.757 9.186 0 10.11 0c.926 0 1.681.756 1.681 1.68v4.21zm-1.681 6.748c.926 0 1.682.756 1.682 1.681S11.036 16 10.11 16s-1.681-.756-1.681-1.68v-1.682h1.68zm0-.847c-.924 0-1.68-.755-1.68-1.68 0-.925.756-1.681 1.68-1.681h4.21c.924 0 1.68.756 1.68 1.68 0 .926-.756 1.681-1.68 1.681h-4.21z'/%3E%3C/svg%3E")
-  no-repeat;
-}
-
-[data-theme='dark'] .header-slack-link::before {
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='white' d='M3.362 10.11c0 .926-.756 1.681-1.681 1.681S0 11.036 0 10.111C0 9.186.756 8.43 1.68 8.43h1.682v1.68zm.846 0c0-.924.756-1.68 1.681-1.68s1.681.756 1.681 1.68v4.21c0 .924-.756 1.68-1.68 1.68a1.685 1.685 0 0 1-1.682-1.68v-4.21zM5.89 3.362c-.926 0-1.682-.756-1.682-1.681S4.964 0 5.89 0s1.68.756 1.68 1.68v1.682H5.89zm0 .846c.924 0 1.68.756 1.68 1.681S6.814 7.57 5.89 7.57H1.68C.757 7.57 0 6.814 0 5.89c0-.926.756-1.682 1.68-1.682h4.21zm6.749 1.682c0-.926.755-1.682 1.68-1.682.925 0 1.681.756 1.681 1.681s-.756 1.681-1.68 1.681h-1.681V5.89zm-.848 0c0 .924-.755 1.68-1.68 1.68A1.685 1.685 0 0 1 8.43 5.89V1.68C8.43.757 9.186 0 10.11 0c.926 0 1.681.756 1.681 1.68v4.21zm-1.681 6.748c.926 0 1.682.756 1.682 1.681S11.036 16 10.11 16s-1.681-.756-1.681-1.68v-1.682h1.68zm0-.847c-.924 0-1.68-.755-1.68-1.68 0-.925.756-1.681 1.68-1.681h4.21c.924 0 1.68.756 1.68 1.68 0 .926-.756 1.681-1.68 1.681h-4.21z'/%3E%3C/svg%3E")
-  no-repeat;
-}
