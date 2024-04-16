@@ -118,7 +118,7 @@ field accepts a YAML object matching the contents of a Pod's `spec.affinity`.
 
 ## Configuring Affinity / Anti-affinity
 
-Example: Prefer to spread the PolicyServer Pods across zones and hostnames
+Example: Spread the PolicyServer Pods across zones and hostnames
 
 ```yaml
 apiVersion: policies.kubewarden.io/v1
@@ -129,7 +129,7 @@ spec:
   # Other configuration fields
   affinity:
     podAntiAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
+      requiredDuringSchedulingIgnoredDuringExecution:
         - labelSelector:
             matchExpressions:
               - key: kubewarden/policy-server
