@@ -1,6 +1,7 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 
 import dsVariableProcessor from "./js-lib/docusaurus-variables.js";
+import substituteCurrentVersion from "./js-lib/current-version.js";
 
 module.exports = {
   title: "Kubewarden",
@@ -18,6 +19,7 @@ module.exports = {
     preprocessor: ({ filePath, fileContent }) => {
       // Process variables
       fileContent = dsVariableProcessor(fileContent);
+      fileContent = substituteCurrentVersion(fileContent, filePath);
       return fileContent;
     },
   },
