@@ -41,3 +41,52 @@ html[data-theme='light'] footer {
 	--ifm-link-hover-color: #90ebcd;
 }
 
+html[data-theme='light'] .tooltip {
+  position: relative;
+  display: inline-block;
+	background-color: lightyellow;
+  border: 1px dashed black;
+  border-radius: 6px;
+}
+
+html[data-theme='light'] .tooltip .tooltiptext {
+  visibility: hidden;
+  width: 180px;
+  background-color: #666666;
+  color: #ffffff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  border: 4px solid violet;
+  position: absolute;
+  z-index: 1;
+}
+
+html[data-theme='dark'] .tooltip {
+  position: relative;
+  display: inline-block;
+	background-color: #666666;
+  border: 1px dashed magenta;
+  border-radius: 6px;
+}
+
+html[data-theme='dark'] .tooltip .tooltiptext {
+  visibility: hidden;
+  width: 180px;
+  background-color: #666666;
+  color: #ffffff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  border: 4px solid orange;
+  position: absolute;
+  z-index: 1;
+}
+
+html[data-theme='light'] .tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+html[data-theme='dark'] .tooltip:hover .tooltiptext {
+  visibility: visible;
+}

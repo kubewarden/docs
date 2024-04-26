@@ -1,4 +1,5 @@
 {
   "variable_name": "variable_value",
-  "policy-server-component": "PolicyServer"
+  "c-policy-server-component": "PolicyServer",
+  "policy-server-component": "<div class=\"tooltip\">PolicyServer<span class=\"tooltiptext\">A 'PolicyServer' is something. It's really cool! [Glossary](https://glossary.link)</span></div>"
 }
