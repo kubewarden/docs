@@ -129,7 +129,8 @@ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm
 helm install --wait \
   --namespace open-telemetry \
   --create-namespace \
-  --version 0.39.2 \
+  --version 0.56.0 \
+  --set "manager.collectorImage.repository=otel/opentelemetry-collector-contrib" \
   my-opentelemetry-operator open-telemetry/opentelemetry-operator
 ```
 
