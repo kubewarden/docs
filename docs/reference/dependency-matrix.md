@@ -39,7 +39,7 @@ Needed for specific features.
 
 | Chart dependency                                   | Helm chart `appVersion` |             Helm chart `version`             |      Feature      |
 | -------------------------------------------------- | :---------------------: | :------------------------------------------: | :---------------: |
-| `open-telemetry/opentelemetry-operator` chart      |        `>= 0.85`        |              Example: `0.39.2`               |       OTLM        |
+| `open-telemetry/opentelemetry-operator` chart      |        `>= 0.98`        |              Example: `0.56.0`               |       OTLM        |
 | `prometheus-community/kube-prometheus-stack` chart |       `>= v0.69`        |              Example: `51.5.3`               |      Metrics      |
 | `jaegertracing/jaeger-operator` chart              |      `>= 1.49 < 2`      |              Example: `2.49.0`               |      Tracing      |
 | `kyverno/policy-reporter` chart                    |       `>= 2 < 3`        | In `kubewarden-controller` chart as subchart | Policy Reports UI |
