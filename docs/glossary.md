@@ -13,10 +13,92 @@ doc-topic: [glossary]
   <link rel="canonical" href="https://docs.kubewarden.io/glossary"/>
 </head>
 
-## PolicyServer {#policy-server-component}
+## A
 
-A 'PolicyServer' is something, something.
+### AdmissionPolicy
 
-## ClusterAdmissionPolicy {#cluster-admission-policy-component}
+A namespace-wide resource. The policy processes only requests targeting the
+namespace where the AdmissionPolicy is defined.
 
-Is something else.
+### Annotation
+
+### Artifact
+
+### Artifacthub
+
+## C
+
+### ClusterAdmissionPolicy
+
+A ClusterAdmissionPolicy defines how policies evaluate requests.
+
+### ClusterPolicyReport
+
+### Context aware
+
+### ContextAwareResource
+
+## I
+
+### Ingress
+
+## K
+
+### Kubewarden
+
+### kwctl
+
+## M
+
+### Mutating
+
+### MutatingWebhook
+
+### MutatingWebhookConfiguration
+
+## O
+
+### OpenPolicyAgent
+
+## P
+
+### Policy
+
+### PolicyReport
+
+### PolicyServer {#policy-server}
+
+A PolicyServer validates incoming requests by executing Kubewarden policies against requests.
+
+### PublicResource
+
+## S
+
+### SecurityContext
+
+### SourceAuthorities
+
+## V
+
+### ValidatingWebhook
+
+### ValidatingWebhookConfiguration
+
+### ValidationRequest
+
+### ValidationResponse
+
+### ValidationWebhook
+
+## W
+
+### waPC
+
+### WASI
+
+### WASM or Wasm?
+
+### Wasmtime
+
+### WebAssembly
+

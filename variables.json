@@ -1,5 +1,9 @@
 {
   "variable_name": "variable_value",
-  "c-policy-server-component": "PolicyServer",
-  "policy-server-component": "<div class=\"tooltip\">PolicyServer<span class=\"tooltiptext\">A 'PolicyServer' is something. It's really cool! [Glossary](glossary#policy-server-component)</span></div>"
+
+  "admission-policy": "<div class=\"tooltip\">AdmissionServer<span class=\"tooltiptext\">A namespace-wide resource. The policy processes only requests targeting the namespace where the AdmissionPolicy is defined. [Glossary](glossary#admission-policy)</span></div>",
+
+  "policy-server": "<div class=\"tooltip\">PolicyServer<span class=\"tooltiptext\">A PolicyServer validates incoming requests by executing Kubewarden policies against requests. [Glossary](glossary#policy-server)</span></div>",
+
+  "cluster-admission-policy": "<div class=\"tooltip\">ClusterAdmissionPolicy<span class=\"tooltiptext\">A ClusterAdmissionPolicy defines how policies evaluate requests. [Glossary](glossary#cluster-admission-policy)</span></div>"
 }

@@ -45,19 +45,19 @@ html[data-theme='light'] .tooltip {
   position: relative;
   display: inline-block;
 	background-color: lightyellow;
-  border: 1px dashed black;
+  border: 0px dashed black;
   border-radius: 6px;
 }
 
 html[data-theme='light'] .tooltip .tooltiptext {
   visibility: hidden;
-  width: 180px;
-  background-color: #666666;
-  color: #ffffff;
+  width: 240px;
+  background-color: #dddddd;
+  color: #000000;
   text-align: center;
   padding: 5px 0;
   border-radius: 6px;
-  border: 4px solid violet;
+  border: 4px solid magenta;
   position: absolute;
   z-index: 1;
 }
@@ -66,13 +66,13 @@ html[data-theme='dark'] .tooltip {
   position: relative;
   display: inline-block;
 	background-color: #666666;
-  border: 1px dashed magenta;
+  border: 0px dashed magenta;
   border-radius: 6px;
 }
 
 html[data-theme='dark'] .tooltip .tooltiptext {
   visibility: hidden;
-  width: 180px;
+  width: 240px;
   background-color: #666666;
   color: #ffffff;
   text-align: center;
