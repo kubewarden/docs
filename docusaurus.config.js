@@ -124,7 +124,6 @@ module.exports = {
           anonymizeIP: true,
         },
         gtag: {
-          // trackingID: "395802740", // Google Analytics tracking ID for SUSE Rancher
           trackingID: "G-PSW07XK7TM", // Google Analytics tracking ID for CNCF
           anonymizeIP: true,
         },
