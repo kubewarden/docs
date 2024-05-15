@@ -124,7 +124,7 @@ module.exports = {
           anonymizeIP: true,
         },
         gtag: {
-          trackingID: "395802740",
+          trackingID: "G-PSW07XK7TM", // Google Analytics tracking ID for CNCF
           anonymizeIP: true,
         },
       },
