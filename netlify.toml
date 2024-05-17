@@ -1,0 +1,7 @@
+# Configuration file to customize the build process of the website when
+# previewing it on Netlify.
+[build]
+publish = "build"
+command = "yarn build -- --dev" # Build in development mode to disable Google Analytics
+
+
