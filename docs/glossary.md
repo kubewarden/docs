@@ -17,14 +17,8 @@ doc-topic: [glossary]
 
 ### AdmissionPolicy
 
-A namespace-wide resource. The policy processes only requests targeting the
-namespace where the AdmissionPolicy is defined.
-
-### Annotation
-
-### Artifact
-
-### Artifacthub
+A namespace-wide resource. The policy processes only those requests targeting
+the namespace in which the AdmissionPolicy is defined.
 
 ## C
 
@@ -34,71 +28,50 @@ A ClusterAdmissionPolicy defines how policies evaluate requests.
 
 ### ClusterPolicyReport
 
-### Context aware
-
-### ContextAwareResource
-
-## I
-
-### Ingress
+A [PolicyReport](#policyreport) and a ClusterPolicyReport store results of
+policy scans. Which one is used depends on the scope of the resource.
 
 ## K
 
-### Kubewarden
-
 ### kwctl
+
+A CLI tool allowing administrators to test policies before applying them to a
+cluster.
 
 ## M
 
-### Mutating
-
-### MutatingWebhook
-
 ### MutatingWebhookConfiguration
-
-## O
-
-### OpenPolicyAgent
 
 ## P
 
-### Policy
-
 ### PolicyReport
+
+A PolicyReport and a [ClusterPolicyReport](#clusterpolicyreport) store results of
+policy scans. Which one is used depends on the scope of the resource.
 
 ### PolicyServer {#policy-server}
 
 A PolicyServer validates incoming requests by executing Kubewarden policies against requests.
 
-### PublicResource
-
-## S
-
-### SecurityContext
-
-### SourceAuthorities
-
 ## V
 
-### ValidatingWebhook
-
 ### ValidatingWebhookConfiguration
-
-### ValidationRequest
-
-### ValidationResponse
-
-### ValidationWebhook
 
 ## W
 
 ### waPC
 
+WebAssembly Procedure Calls. https://wapc.io.
+
 ### WASI
 
-### WASM or Wasm?
+WebAssembly System Interface. https://wasi.dev.
+
+### Wasm
+
+A binary instruction format for a stack-based virtual machine. Designed for web
+deployment. https://webassemly.org.
 
 ### Wasmtime
 
-### WebAssembly
-
+A runtime for WebAssembly. https://wasmtime.dev.
