@@ -37,7 +37,7 @@ The Kubewarden stack comprises:
 
 :::tip
 
-The Kubernetes Custom Resource Definitions (CRD) defined by Kubewarden are described [here](reference/CRDs.md).
+The Kubernetes Custom Resource Definitions (CRDs) defined by Kubewarden are described [here](reference/CRDs.md).
 
 :::
 
@@ -60,7 +60,7 @@ helm install --wait --namespace cert-manager --create-namespace \
 :::info Authentication
 Kubewarden policies can be retrieved from the GitHub container registry at https://ghcr.io.
 You need authentication to use the repository with the Kubewarden CLI, a [GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) (PAT).
-Their documentation guides you through creating one if you have not already done so.
+Their documentation guides you through creating one if you haven't already done so.
 Then you authenticate with a command like:
 
 ```console
@@ -112,8 +112,8 @@ Since [`v0.4.0`](https://github.com/kubewarden/kubewarden-controller/releases/ta
 Now a Helm chart called `kubewarden-defaults`, installs
 the default policy server.
 
-This means that if you are not using the latest version of the `kubewarden-controller` and are trying to upgrade or delete,
-your default policy server will not be upgraded or deleted.
+This means that if you aren't using the latest version of the `kubewarden-controller` and are trying to upgrade or delete,
+your default policy server won't be upgraded or deleted.
 So, you might run into issues if you try to install the `kubewarden-defaults` with some conflicting information, for example, the same policy server name.
 To be able to take advantage of future upgrades in the `kubewarden-defaults` Helm chart remove the
 existing `PolicyServer` resource created by the `kubewarden-controller` before installing the new chart.
@@ -128,12 +128,13 @@ The default configuration values are sufficient for most deployments. All option
 Kubewarden has three main components which you will interact with:
 
 - The [[< policy-server >]]
-- The ClusterAdmissionPolicy
-- The AdmissionPolicy
+- The [[< cluster-admission-policy >]]
+- The [[< admission-policy >]]
 
 ### `PolicyServer`
 
-A Kubewarden `PolicyServer` is managed by the `kubewarden-controller` and multiple [[< policy-server >]]s can be deployed in the same Kubernetes cluster.
+A Kubewarden `PolicyServer` is managed by the `kubewarden-controller`.
+Multiple [[< policy-server >]]s can be deployed in the same Kubernetes cluster.
 
 A `PolicyServer` validates incoming requests by executing Kubewarden policies against them.
 
@@ -172,7 +173,7 @@ Changing any of these attributes causes a `PolicyServer` deployment with the new
 
 ### ClusterAdmissionPolicy
 
-The `ClusterAdmissionPolicy` resource is the core of the Kubewarden stack. It defines how policies evaluate requests.
+The [[< cluster-admission-policy >]]`ClusterAdmissionPolicy` resource is the core of the Kubewarden stack. It defines how policies evaluate requests.
 
 Enforcing policies is the most common operation which a Kubernetes administrator performs.
 You can declare as many policies as you want, each will target one or more Kubernetes resources (i.e., `pods`, `Custom Resource`).
@@ -232,7 +233,7 @@ The policy will process only the requests that are targeting the Namespace where
 Other than that, there are no functional differences between the `AdmissionPolicy` and `ClusterAdmissionPolicy` resources.
 
 :::info
-`AdmissionPolicy` requires Kubernetes 1.21.0 or above. This is because we are using the `kubernetes.io/metadata.name` label, which was introduced in Kubernetes 1.21.0
+`AdmissionPolicy` requires Kubernetes 1.21.0 or above. This is because we're using the `kubernetes.io/metadata.name` label, which was introduced in Kubernetes 1.21.0
 :::
 
 The complete documentation of these Custom Resources can be found [here](https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc) or on [docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
@@ -316,7 +317,7 @@ spec:
 EOF
 ```
 
-This will produce the following output:
+This produces the following output:
 
 ```console
 pod/unprivileged-pod created
@@ -376,8 +377,8 @@ kubectl delete namespace kubewarden
 ```
 
 :::caution
-Kubewarden contains a helm pre-delete hook that will remove all `PolicyServers` and `kubewarden-controller`.
-Then the `kubewarden-controller` will delete all resources, so it is important that `kubewarden-controller` is running when helm uninstall is executed.
+Kubewarden contains a helm pre-delete hook that removes all `PolicyServer`s and `kubewarden-controller`s.
+Then the `kubewarden-controller` will delete all resources, so it's important that `kubewarden-controller` is running when helm uninstall is executed.
 :::
 
 `ValidatingWebhookConfigurations` and `MutatingWebhookConfigurations` created by kubewarden should be deleted, this can be checked with:

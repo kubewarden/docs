@@ -24,23 +24,28 @@ the namespace in which the AdmissionPolicy is defined.
 
 ### ClusterAdmissionPolicy
 
-A ClusterAdmissionPolicy defines how policies evaluate requests.
+An [AdmissionPolicy](#admissionpolicy) which targets cluster-wide resources.
 
 ### ClusterPolicyReport
 
 A [PolicyReport](#policyreport) and a ClusterPolicyReport store results of
-policy scans. Which one is used depends on the scope of the resource.
+policy scans. Which one is used, depends on the scope of the resource.
 
 ## K
 
 ### kwctl
 
-A CLI tool allowing administrators to test policies before applying them to a
-cluster.
+A CLI tool to generate and test Kubernetes YAML files for policy deployment.
 
 ## M
 
 ### MutatingWebhookConfiguration
+
+A
+[Kubernetes resource](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#what-are-admission-webhooks)
+created by the Kubewarden controller to let Kubernetes know where to send an `AdmissionReview`.
+In other words,
+this is how a Kubewarden controller informs Kubernetes where to find a resource mutating policy.
 
 ## P
 
@@ -56,6 +61,11 @@ A PolicyServer validates incoming requests by executing Kubewarden policies agai
 ## V
 
 ### ValidatingWebhookConfiguration
+
+A
+[Kubernetes resource](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#what-are-admission-webhooks)
+created by the Kubewarden controller to let Kubernetes know where to send a `AdmissionReview`.
+In other words, this is how Kubewarden informs Kubernetes where to find a resource validating policy.
 
 ## W
 
