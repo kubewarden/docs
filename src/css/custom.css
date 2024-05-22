@@ -44,7 +44,6 @@ html[data-theme='light'] footer {
 html[data-theme='light'] .tooltip {
   position: relative;
   display: inline-block;
-	/* background-color: lightyellow; */
 	background-color: #ffeee6;
   border: 0px;
   border-radius: 6px;
