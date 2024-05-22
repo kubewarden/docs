@@ -44,29 +44,33 @@ html[data-theme='light'] footer {
 html[data-theme='light'] .tooltip {
   position: relative;
   display: inline-block;
-	background-color: lightyellow;
-  border: 0px dashed black;
+	/* background-color: lightyellow; */
+	background-color: #ffeee6;
+  border: 0px;
   border-radius: 6px;
 }
 
 html[data-theme='light'] .tooltip .tooltiptext {
   visibility: hidden;
   width: 240px;
-  background-color: #dddddd;
+  background-color: #eeeeee;
   color: #000000;
   text-align: center;
   padding: 5px 0;
   border-radius: 6px;
-  border: 4px solid magenta;
+  border: 4px solid #fe7c3f;
   position: absolute;
   z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -120px;
 }
 
 html[data-theme='dark'] .tooltip {
   position: relative;
   display: inline-block;
 	background-color: #666666;
-  border: 0px dashed magenta;
+  border: 0px;
   border-radius: 6px;
 }
 
@@ -78,9 +82,12 @@ html[data-theme='dark'] .tooltip .tooltiptext {
   text-align: center;
   padding: 5px 0;
   border-radius: 6px;
-  border: 4px solid orange;
+  border: 4px solid #fe7c3f;
   position: absolute;
   z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -120px;
 }
 
 html[data-theme='light'] .tooltip:hover .tooltiptext {
