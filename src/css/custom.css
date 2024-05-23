@@ -44,9 +44,11 @@ html[data-theme='light'] footer {
 html[data-theme='light'] .tooltip {
   position: relative;
   display: inline-block;
-	background-color: #ffeee6;
-  border: 0px;
-  border-radius: 6px;
+	/* background-color: #ffeee6; */
+  /* border: 0px; */
+  /* border-radius: 6px; */
+  border-bottom: 1px dotted;
+  border-color: #cb6332;
 }
 
 html[data-theme='light'] .tooltip .tooltiptext {
@@ -68,9 +70,11 @@ html[data-theme='light'] .tooltip .tooltiptext {
 html[data-theme='dark'] .tooltip {
   position: relative;
   display: inline-block;
-	background-color: #666666;
-  border: 0px;
-  border-radius: 6px;
+	/* background-color: #666666; */
+  /* border: 0px; */
+  /* border-radius: 6px; */
+  border-bottom: 1px dotted;
+  border-color: #fe7c3f;
 }
 
 html[data-theme='dark'] .tooltip .tooltiptext {
