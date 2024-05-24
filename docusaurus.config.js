@@ -1,4 +1,8 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
+
+import dsVariableProcessor from "./js-lib/docusaurus-variables.js";
+import substituteCurrentVersion from "./js-lib/current-version.js";
+
 module.exports = {
   title: "Kubewarden",
   tagline: "Kubernetes Dynamic Admission at your fingertips",
@@ -12,6 +16,12 @@ module.exports = {
   trailingSlash: false,
   markdown: {
     mermaid: true,
+    preprocessor: ({ filePath, fileContent }) => {
+      // Process variables
+      fileContent = dsVariableProcessor(fileContent);
+      fileContent = substituteCurrentVersion(fileContent, filePath);
+      return fileContent;
+    },
   },
   themes: ["@docusaurus/theme-mermaid"],
   themeConfig: {

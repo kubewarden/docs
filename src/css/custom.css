@@ -41,3 +41,62 @@ html[data-theme='light'] footer {
 	--ifm-link-hover-color: #90ebcd;
 }
 
+html[data-theme='light'] .tooltip {
+  position: relative;
+  display: inline-block;
+	/* background-color: #ffeee6; */
+  /* border: 0px; */
+  /* border-radius: 6px; */
+  border-bottom: 1px dotted;
+  border-color: #cb6332;
+}
+
+html[data-theme='light'] .tooltip .tooltiptext {
+  visibility: hidden;
+  width: 240px;
+  background-color: #eeeeee;
+  color: #000000;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  border: 4px solid #fe7c3f;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -120px;
+}
+
+html[data-theme='dark'] .tooltip {
+  position: relative;
+  display: inline-block;
+	/* background-color: #666666; */
+  /* border: 0px; */
+  /* border-radius: 6px; */
+  border-bottom: 1px dotted;
+  border-color: #fe7c3f;
+}
+
+html[data-theme='dark'] .tooltip .tooltiptext {
+  visibility: hidden;
+  width: 240px;
+  background-color: #666666;
+  color: #ffffff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  border: 4px solid #fe7c3f;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -120px;
+}
+
+html[data-theme='light'] .tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+html[data-theme='dark'] .tooltip:hover .tooltiptext {
+  visibility: visible;
+}

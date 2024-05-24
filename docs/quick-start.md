@@ -3,7 +3,15 @@ sidebar_label: Quick start
 sidebar_position: 20
 title: Quick start
 description: Getting started with Kubewarden, installing the Kubewarden stack and taking care of prerequisites and authentication
-keywords: [Kubewarden, installation, quick start, policyserver, clusteradmissionpolicy, admissionpolicy]
+keywords:
+  [
+    Kubewarden,
+    installation,
+    quick start,
+    policyserver,
+    clusteradmissionpolicy,
+    admissionpolicy,
+  ]
 doc-persona: [kubewarden-all]
 doc-type: [tutorial]
 doc-topic: [quick-start]
@@ -13,20 +21,23 @@ doc-topic: [quick-start]
   <link rel="canonical" href="https://docs.kubewarden.io/quick-start"/>
 </head>
 
-
 The Kubewarden stack comprises:
 
-* Some `ClusterAdmissionPolicy` resources: this is how policies are defined for Kubernetes clusters
+- Some [[< cluster-admission-policy >]] resources: this is how policies are defined for Kubernetes clusters
 
-* Some `PolicyServer` resources: representing a deployment of a Kubewarden `PolicyServer`. Your administrator's policies are loaded and evaluated by the Kubewarden `PolicyServer`
+- Some [[< policy-server >]] resources: representing a deployment of a Kubewarden
+`PolicyServer`. Your administrator's policies are loaded and evaluated by the Kubewarden
+`PolicyServer`
 
-* Some `AdmissionPolicy` resources: policies for a defined namespace
+- Some [[< admission-policy >]] resources: policies for a defined namespace
 
-* A deployment of a `kubewarden-controller`: this controller monitors the `ClusterAdmissionPolicy` resources and interacts with the Kubewarden `PolicyServer` components.
+- A deployment of a `kubewarden-controller`: this controller monitors the
+[[< cluster-admission-policy >]] resources and interacts with the Kubewarden
+[[< policy-server >]] components.
 
 :::tip
 
-The Kubernetes Custom Resource Definitions (CRD) defined by Kubewarden are described [here](reference/CRDs.md).
+The Kubernetes Custom Resource Definitions (CRDs) defined by Kubewarden are described [here](reference/CRDs.md).
 
 :::
 
@@ -49,7 +60,7 @@ helm install --wait --namespace cert-manager --create-namespace \
 :::info Authentication
 Kubewarden policies can be retrieved from the GitHub container registry at https://ghcr.io.
 You need authentication to use the repository with the Kubewarden CLI, a [GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) (PAT).
-Their documentation guides you through creating one if you have not already done so.
+Their documentation guides you through creating one if you haven't already done so.
 Then you authenticate with a command like:
 
 ```console
@@ -70,19 +81,19 @@ helm repo update kubewarden
 
 Install the following Helm charts inside the `kubewarden` namespace in your Kubernetes cluster:
 
-* `kubewarden-crds`, which will register the `ClusterAdmissionPolicy`,
-  `AdmissionPolicy` and `PolicyServer` Custom Resource Definitions.  As well as
-  the `PolicyReport` Custom Resource Definitions used by the audit scanner
+- `kubewarden-crds`, which registers the [[< cluster-admission-policy >]],
+  [[< admission-policy >]] and [[< policy-server >]] Custom Resource Definitions. Also,
+  the [[< policy-report >]] Custom Resource Definitions used by the audit scanner.
 
-* `kubewarden-controller`, which will install the Kubewarden controller and the
+- `kubewarden-controller`, which installs the Kubewarden controller and the
   audit scanner
-:::note
-If you want to disable the audit scanner component. Please check out the audit
-scanner installation [docs page](../howtos/audit-scanner).
-:::
+  :::note
+  If you need to disable the audit scanner component check the audit
+  scanner installation [documentation page](../howtos/audit-scanner).
+  :::
 
-* `kubewarden-defaults`, which will create a `PolicyServer` resource named `default`. It can also install a set of
-recommended policies to secure your cluster by enforcing some well known best practices.
+- `kubewarden-defaults`, which will create a `PolicyServer` resource named `default`. It can also install a set of
+  recommended policies to secure your cluster by enforcing some well known best practices.
 
 ```console
 helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
@@ -101,8 +112,8 @@ Since [`v0.4.0`](https://github.com/kubewarden/kubewarden-controller/releases/ta
 Now a Helm chart called `kubewarden-defaults`, installs
 the default policy server.
 
-This means that if you are not using the latest version of the `kubewarden-controller` and are trying to upgrade or delete,
-your default policy server will not be upgraded or deleted.
+This means that if you aren't using the latest version of the `kubewarden-controller` and are trying to upgrade or delete,
+your default policy server won't be upgraded or deleted.
 So, you might run into issues if you try to install the `kubewarden-defaults` with some conflicting information, for example, the same policy server name.
 To be able to take advantage of future upgrades in the `kubewarden-defaults` Helm chart remove the
 existing `PolicyServer` resource created by the `kubewarden-controller` before installing the new chart.
@@ -116,13 +127,14 @@ The default configuration values are sufficient for most deployments. All option
 
 Kubewarden has three main components which you will interact with:
 
-* The PolicyServer
-* The ClusterAdmissionPolicy
-* The AdmissionPolicy
+- The [[< policy-server >]]
+- The [[< cluster-admission-policy >]]
+- The [[< admission-policy >]]
 
-### PolicyServer
+### `PolicyServer`
 
-A Kubewarden `PolicyServer` is managed by the `kubewarden-controller` and multiple `PolicyServers` can be deployed in the same Kubernetes cluster.
+A Kubewarden `PolicyServer` is managed by the `kubewarden-controller`.
+Multiple [[< policy-server >]]s can be deployed in the same Kubernetes cluster.
 
 A `PolicyServer` validates incoming requests by executing Kubewarden policies against them.
 
@@ -138,8 +150,8 @@ spec:
   replicas: 2
   serviceAccountName: ~
   env:
-  - name: KUBEWARDEN_LOG_LEVEL
-    value: debug
+    - name: KUBEWARDEN_LOG_LEVEL
+      value: debug
 ```
 
 :::note
@@ -148,6 +160,7 @@ Check the [latest released `PolicyServer` version](https://github.com/kubewarden
 
 Overview of the attributes of the `PolicyServer` resource:
 
+<!-- prettier-ignore -->
 | Required | Placeholder         | Description    |
 |:--------:| ------------------- | ----------------------------- |
 | Y | `image`  | The name of the container image |
@@ -160,14 +173,14 @@ Changing any of these attributes causes a `PolicyServer` deployment with the new
 
 ### ClusterAdmissionPolicy
 
-The `ClusterAdmissionPolicy` resource is the core of the Kubewarden stack. It defines how policies evaluate requests.
+The [[< cluster-admission-policy >]] resource is the core of the Kubewarden stack. It defines how policies evaluate requests.
 
 Enforcing policies is the most common operation which a Kubernetes administrator performs.
-You can declare as many policies as you want, each will target one or more Kubernetes resources (i.e., `pods`, `Custom Resource`).
-You will also specify the type of operations to be applied to targeted resources.
+You can declare as many policies as you want, each targets one or more Kubernetes resources (that is, `pods`, `Custom Resource` and others).
+You also specify the type of operations applied to targeted resources.
 The operations available are `CREATE`, `UPDATE`, `DELETE` and `CONNECT`.
 
-Default `ClusterAdmissionPolicy` configuration:
+Default [[< cluster-admission-policy >]] configuration:
 
 ```yaml
 apiVersion: policies.kubewarden.io/v1
@@ -178,49 +191,49 @@ spec:
   policyServer: reserved-instance-for-tenant-a
   module: registry://ghcr.io/kubewarden/policies/psp-capabilities:v0.1.9
   rules:
-  - apiGroups: [""]
-    apiVersions: ["v1"]
-    resources: ["pods"]
-    operations:
-    - CREATE
-    - UPDATE
+    - apiGroups: [""]
+      apiVersions: ["v1"]
+      resources: ["pods"]
+      operations:
+        - CREATE
+        - UPDATE
   mutating: true
   settings:
     allowed_capabilities:
-    - CHOWN
+      - CHOWN
     required_drop_capabilities:
-    - NET_ADMIN
+      - NET_ADMIN
 ```
 
-Overview of the attributes of the `ClusterAdmissionPolicy` resource:
+Overview of the attributes of the [[< cluster-admission-policy >]] resource:
 
-| Required | Placeholder         | Description    |
-|:--------:| ------------------- | ----------------------------- |
-| N | `policy-server`  | Identifies an existing `PolicyServer` object. The policy will be served only by this `PolicyServer` instance. A `ClusterAdmissionPolicy` that doesn't have an explicit `PolicyServer`, will be served by the one named `default` |
-| Y | `module`  | The location of the Kubewarden policy. The following schemes are allowed: |
-| N | | - `registry`: The policy is downloaded from an [OCI artifacts](https://github.com/opencontainers/artifacts) compliant container registry. Example: `registry://<OCI registry/policy URL>` |
-| N | | - `http`, `https`: The policy is downloaded from a regular HTTP(s) server. Example: `https://<website/policy URL>` |
-| N | | - `file`: The policy is loaded from a file in the computer file system. Example: `file:///<policy WASM binary full path>` |
-| Y | `resources` | The Kubernetes resources evaluated by the policy |
-| Y | `operations` | What operations for the previously given types should be forwarded to this admission policy by the API server for evaluation. |
-| Y | `mutating` | A boolean value that must be set to `true` for policies that can mutate incoming requests |
-| N | `settings` | A free-form object that contains the policy configuration values |
-| N | `failurePolicy` | The action to take if the request evaluated by a policy results in an error. The following options are allowed: |
-| N | | - `Ignore`: an error calling the webhook is ignored and the API request is allowed to continue |
-| N | | - `Fail`: an error calling the webhook causes the admission to fail and the API request to be rejected |
+| Required | Placeholder     | Description                                                                                                                                                                                                                                                                                     |
+| :------: | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    N     | `policy-server` | Identifies an existing `PolicyServer` object. The policy will be served only by this `PolicyServer` instance. A [[< cluster-admission-policy >]] that doesn't have an explicit `PolicyServer`, will be served by the one named `default` |
+|    Y     | `module`        | The location of the Kubewarden policy. The following schemes are allowed:                                                                                                                                                                                                                       |
+|    N     |                 | - `registry`: The policy is downloaded from an [OCI artifacts](https://github.com/opencontainers/artifacts) compliant container registry. Example: `registry://<OCI registry/policy URL>`                                                                                                       |
+|    N     |                 | - `http`, `https`: The policy is downloaded from a regular HTTP(s) server. Example: `https://<website/policy URL>`                                                                                                                                                                              |
+|    N     |                 | - `file`: The policy is loaded from a file in the computer file system. Example: `file:///<policy WASM binary full path>`                                                                                                                                                                       |
+|    Y     | `resources`     | The Kubernetes resources evaluated by the policy                                                                                                                                                                                                                                                |
+|    Y     | `operations`    | What operations for the previously given types should be forwarded to this admission policy by the API server for evaluation.                                                                                                                                                                   |
+|    Y     | `mutating`      | A boolean value that must be set to `true` for policies that can mutate incoming requests                                                                                                                                                                                                       |
+|    N     | `settings`      | A free-form object that contains the policy configuration values                                                                                                                                                                                                                                |
+|    N     | `failurePolicy` | The action to take if the request evaluated by a policy results in an error. The following options are allowed:                                                                                                                                                                                 |
+|    N     |                 | - `Ignore`: an error calling the webhook is ignored and the API request is allowed to continue                                                                                                                                                                                                  |
+|    N     |                 | - `Fail`: an error calling the webhook causes the admission to fail and the API request to be rejected                                                                                                                                                                                          |
 
 :::note
-The  `ClusterAdmissionPolicy` resources are registered with a `*` webhook `scope`, which means that registered webhooks will forward all requests matching the given `resources` and `operations` -- either namespaced or cluster-wide resources.
+The [[< cluster-admission-policy >]] resources are registered with a `*` webhook `scope`, which means that registered webhooks forward all requests matching the given `resources` and `operations` — either namespaced or cluster-wide resources.
 :::
 
 ### AdmissionPolicy
 
-`AdmissionPolicy` is a namespace-wide resource.
-The policy will process only the requests that are targeting the Namespace where the `AdmissionPolicy` is defined.
-Other than that, there are no functional differences between the `AdmissionPolicy` and `ClusterAdmissionPolicy` resources.
+[[< admission-policy >]] is a namespace-wide resource.
+The policy processes only the requests that are targeting the Namespace where the [[< admission-policy >]] is defined.
+Other than that, there are no functional differences between the [[< admission-policy >]] and [[< cluster-admission-policy >]] resources.
 
 :::info
-`AdmissionPolicy` requires Kubernetes 1.21.0 or above. This is because we are using the `kubernetes.io/metadata.name` label, which was introduced in Kubernetes 1.21.0
+[[< admission-policy >]] requires Kubernetes 1.21.0 or greater. This is because we're using the `kubernetes.io/metadata.name` label, which was introduced in Kubernetes 1.21.0
 :::
 
 The complete documentation of these Custom Resources can be found [here](https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc) or on [docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
@@ -230,7 +243,7 @@ The complete documentation of these Custom Resources can be found [here](https:/
 We will use the [`pod-privileged`](https://github.com/kubewarden/pod-privileged-policy) policy.
 We want to prevent the creation of privileged containers inside our Kubernetes cluster by enforcing this policy.
 
-Let's define a `ClusterAdmissionPolicy` to do that:
+Let's define a [[< cluster-admission-policy >]] to do that:
 
 ```console
 kubectl apply -f - <<EOF
@@ -257,7 +270,7 @@ This produces the following output:
 clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
 ```
 
-When a `ClusterAdmissionPolicy` is defined, the status is set to `pending`, and it will force a rollout of the targeted `PolicyServer`.
+When a [[< cluster-admission-policy >]] is defined, the status is set to `pending`, and it will force a rollout of the targeted `PolicyServer`.
 In our example, it's the `PolicyServer` named `default`. You can monitor the rollout by running the following command:
 
 ```console
@@ -273,8 +286,8 @@ privileged-pods   default         false      pending
 
 Once the new policy is ready to be served, the `kubewarden-controller` will register a [ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io) object.
 
-The `ClusterAdmissionPolicy` status will be set to `active` once the Deployment is done for every `PolicyServer` instance.
-Show `ValidatingWebhookConfiguration` with the following command:
+The [[< cluster-admission-policy >]] status will be set to `active` once the Deployment is done for every `PolicyServer` instance.
+Show [[< validating-webhook-configuration >]]s with the following command:
 
 ```console
 kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kubewarden
@@ -287,9 +300,10 @@ NAME                          WEBHOOKS   AGE
 clusterwide-privileged-pods   1          9s
 ```
 
-Once the `ClusterAdmissionPolicy` is active and the `ValidatingWebhookConfiguration` is registered, you can test the policy.
+Once the [[< cluster-admission-policy >]] is active and the
+[[< validating-webhook-configuration >]] is registered, you can test the policy.
 
-First, let's create a Pod with a Container *not* in `privileged` mode:
+First, let's create a Pod with a Container _not_ in `privileged` mode:
 
 ```console
 kubectl apply -f - <<EOF
@@ -304,7 +318,7 @@ spec:
 EOF
 ```
 
-This will produce the following output:
+This produces the following output:
 
 ```console
 pod/unprivileged-pod created
@@ -334,6 +348,7 @@ The creation of the Pod has been denied by the policy and you should see the fol
 ```console
 Error from server: error when creating "STDIN": admission webhook "clusterwide-privileged-pods.kubewarden.admission" denied the request: Privileged container is not allowed
 ```
+
 :::note
 Both examples didn't define a `namespace`, which means the `default` namespace was the target.
 However, as you could see in the second example, the policy is still applied.
@@ -347,9 +362,11 @@ You can remove the resources created by uninstalling the `helm` charts as follow
 ```console
 helm uninstall --namespace kubewarden kubewarden-defaults
 ```
+
 ```console
 helm uninstall --namespace kubewarden kubewarden-controller
 ```
+
 ```console
 helm uninstall --namespace kubewarden kubewarden-crds
 ```
@@ -361,15 +378,16 @@ kubectl delete namespace kubewarden
 ```
 
 :::caution
-Kubewarden contains a helm pre-delete hook that will remove all `PolicyServers` and `kubewarden-controller`.
-Then the `kubewarden-controller` will delete all resources, so it is important that `kubewarden-controller` is running when helm uninstall is executed.
+Kubewarden contains a helm pre-delete hook that removes all `PolicyServer`s and `kubewarden-controller`s.
+Then the `kubewarden-controller` will delete all resources, so it's important that `kubewarden-controller` is running when helm uninstall is executed.
 :::
 
-`ValidatingWebhookConfigurations` and `MutatingWebhookConfigurations` created by kubewarden should be deleted, this can be checked with:
+[[< validating-webhook-configuration >]]s and [[< mutating-webhook-configuration >]]s created by kubewarden should be deleted, this can be checked with:
 
 ```console
 kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
 ```
+
 ```console
 kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
 ```
@@ -386,7 +404,7 @@ kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistrati
 
 ## Wrapping up
 
-`ClusterAdmissionPolicy` is the core resource that a cluster operator has to manage. The `kubewarden-controller` module automatically takes care of the configuration for the rest of the resources needed to run the policies.
+[[< cluster-admission-policy >]] is the core resource that a cluster operator has to manage. The `kubewarden-controller` module automatically takes care of the configuration for the rest of the resources needed to run the policies.
 
 ## What's next?
 
