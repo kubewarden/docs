@@ -1,3 +1,5 @@
+[![Stable](https://img.shields.io/badge/status-stable-brightgreen?style=for-the-badge)](https://github.com/kubewarden/community/blob/main/REPOSITORIES.md#stable)
+
 # kubewarden.io
 
 This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
