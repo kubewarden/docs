@@ -100,13 +100,15 @@ See this example of an Ingress configuration via the subchart:
 auditScanner:
   policyReporter: true
 policy-reporter: # subchart values settings
-  ingress:
+  ui:
     enabled: true
-    hosts:
-      - host: "*.local"
-        paths:
-          - path: /ui
-            pathType: Exact
+    ingress:
+      enabled: true
+      hosts:
+        - host: "*.local" # change this to your appropriate domain
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
 ```
 
 #### Port-forwarding
