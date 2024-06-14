@@ -1,8 +1,8 @@
 ---
-sidebar_label: Audit Scanner installation
+sidebar_label: Audit Scanner
 sidebar_position: 70
-title: Audit Scanner installation
-description: How-to do an Audit Scanner installation.
+title: Audit Scanner
+description: How-to install and use Audit Scanner.
 keywords: [kubewarden, kubernetes, audit scanner]
 doc-persona: [kubewarden-operator, kubewarden-distributor, kubewarden-integrator]
 doc-type: [howto]
@@ -73,7 +73,7 @@ scanner settings by changing the kubewarden-controller chart
 See [here](../explanations/audit-scanner) more information about the Audit
 Scanner.
 
-## Optional: Installation of Policy Reporter UI
+### Policy Reporter UI (optional)
 
 The `kubewarden-controller` chart comes with a subchart of the [Policy Reporter](https://kyverno.github.io/policy-reporter).
 It is disabled by default, and can be enabled by setting `auditScanner.policyReporter=true`.
@@ -115,8 +115,25 @@ policy-reporter: # subchart values settings
 
 For a quick look or debugging, one can setup a port-forwarding to the service with:
 
-```
+```console
 kubectl port-forward service/kubewarden-controller-ui 8082:8080 -n kubewarden
 ```
 
 Which will make the Policy Reporter UI available at http://localhost:8082.
+
+## Trigger manual run
+
+The audit scanner is implemented as a Cronjob that runs every 60 minutes by default. It's possible to trigger a manual run by running the following command:
+
+```bash
+kubectl create job \
+    --namespace kubewarden \
+    --from cronjob/audit-scanner \
+    audit-scanner-manual-$(date +%Y-%m-%d-%H-%M-%S)
+```
+
+The status of the job can be checked with:
+
+```console
+kubectl get -n kubewarden jobs
+```
