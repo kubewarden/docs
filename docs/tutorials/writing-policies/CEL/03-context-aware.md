@@ -39,7 +39,15 @@ Ingress is unique, so hosts have at most one Ingress rule.
 
 For that, we declare that the policy is context-aware. We also declare the fine-grained
 permissions we need to read other Ingress resources. This is achieved with
-`spec.contextAwareResources` (1):
+`spec.contextAwareResources` (1). We can get a starting point as usual by using kwctl:
+
+```console
+$ kwctl scaffold manifest -t ClusterAdmissionPolicy \
+  registry://ghcr.io/kubewarden/policies/cel-policy:v1.0.0` \
+  --allow-context-aware
+```
+
+Which then we can edit to be relevant to our Ingress resources:
 
 ```yaml title="./cel-policy-ingress.yaml" {16}
 apiVersion: policies.kubewarden.io/v1
