@@ -39,7 +39,7 @@ Ingress is unique, so hosts have at most one Ingress rule.
 
 For that, we declare that the policy is context-aware. We also declare the fine-grained
 permissions we need to read other Ingress resources. This is achieved with
-`spec.contextAwareResources` (1). We can get a starting point as usual by using kwctl:
+`spec.contextAwareResources` (1). We can get a starting point as usual by using `kwctl`:
 
 ```console
 $ kwctl scaffold manifest -t ClusterAdmissionPolicy \
@@ -107,6 +107,22 @@ variables:
       variables.knownIngresses.map(i, i.spec.rules.map(r, r.host))
 ```
 
+Yet, this doesn't take care of UPDATE operations correctly; for that, we need
+to remove the current object and extract the hosts from the remaining Ingresses.
+We can do that with a `filter()` on the current object at `object`.
+With this, UPDATE operations are correctly checked. This also means that the
+policy will correctly report results to the Audit Scanner, too. It will look
+like this:
+
+```yaml
+variables:
+  - name: knownHosts
+    expression: |
+      variables.knownIngresses
+      .filter(i, (i.metadata.name != object.metadata.name) && (i.metadata.namespace != object.metadata.namespace))
+      .map(i, i.spec.rules.map(r, r.host))
+```
+
 We also need a list of hosts in the current Ingress request to compare against:
 
 ```yaml
@@ -116,9 +132,8 @@ variables:
       object.spec.rules.map(r, r.host)
 ```
 
-With those variables, we can do a set intersection between the known hosts and
-the desired hosts, and if there's any, we reject. Note that since we evaluate
-the boolean result of `exists_one()`, we don't know exactly which are the same:
+With those 2 variables, we can do a set intersection between the known hosts and
+the desired hosts, and if there's any, we reject:
 
 ```yaml
 validations:
@@ -155,7 +170,9 @@ spec:
           kw.k8s.apiVersion("networking.k8s.io/v1").kind("Ingress").list().items
       - name: knownHosts
         expression: |
-          variables.knownIngresses.map(i, i.spec.rules.map(r, r.host))
+          variables.knownIngresses
+          .filter(i, (i.metadata.name != object.metadata.name) && (i.metadata.namespace != object.metadata.namespace))
+          .map(i, i.spec.rules.map(r, r.host))
       - name: desiredHosts
         expression: |
           object.spec.rules.map(r, r.host)

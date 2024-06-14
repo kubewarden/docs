@@ -22,8 +22,8 @@ playground](https://playcel.undistro.io).
 ## CEL in Kubernetes
 
 CEL was chosen as the language for Kubernetes validation rules as CEL
-expressions can be easily inlined into CRD schemas, and compiled and typed
-checked "ahead-of-time" (when CRDs are created and updated). For these reasons
+expressions can be easily inlined into CRD schemas, and compiled and type-checked
+"ahead-of-time" (when CRDs are created and updated). For these reasons
 and its general characteristics, it's a perfect candidate for extending the
 Kubernetes API.
 
