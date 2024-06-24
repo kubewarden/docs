@@ -2,8 +2,7 @@
 sidebar_label: Reusing VAPs
 title: Reusing ValidatingAdmissionPolicies
 description: "Example: Reusing ValidatingAdmissionPolicies"
-keywords:
-  [kubewarden, kubernetes, writing policies, ValidatingAdmissionPolicies]
+keywords: [kubewarden, kubernetes, writing policies, ValidatingAdmissionPolicies]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, cel, ValidatingAdmissionPolicies]
 doc-persona: [kubewarden-developer, kubwarden-operator]
@@ -113,6 +112,12 @@ Notice the commented numbers on both the YAML manifests. Let's expand on them:
 | 6   | `matchResources`    | `namespaceSelector`, `objectSelector` | Define ways to constraint using Selectors. Kubewarden's policies have them as `namespaceSelector` and `objectSelector`.                                                                                                  |
 | 7   | `auditAnnotations`  | `backgroundAudit`, annotations        | These Kubewarden fields set the policy usage in [Audit Scanner](../../../explanations/audit-scanner), and its category and severity for PolicyReports.                                                                   |
 |     | `---`               | Kubewarden-only features              | For other features, see the rest of tutorial CEL examples.                                                                                                                                                               |
+
+:::tip
+The `kwctl` tool can be used to migrate a VAP policy to Kubewarden.
+
+This is described inside of [this howto](../../../howtos/vap-migration).
+:::
 
 ### Yet to be implemented equivalences
 
