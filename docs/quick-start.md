@@ -19,6 +19,7 @@ doc-topic: [quick-start]
 
 <head>
   <link rel="canonical" href="https://docs.kubewarden.io/quick-start"/>
+  <script async src="https://artifacthub.io/artifacthub-widget.js"></script>
 </head>
 
 The Kubewarden stack comprises:
@@ -408,4 +409,12 @@ kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistrati
 
 ## What's next?
 
-Now, you are ready to deploy Kubewarden! Have a look at the policies on [artifacthub.io](https://artifacthub.io/packages/search?kind=13), on [GitHub](https://github.com/topics/kubewarden-policy), or reuse existing Rego policies as shown in the [following chapters](tutorials/writing-policies/rego/01-intro-rego.md).
+Now, you are ready to deploy Kubewarden! Have a look at the policies on
+[artifacthub.io](https://artifacthub.io/packages/search?kind=13), on
+[GitHub](https://github.com/topics/kubewarden-policy), or reuse existing Rego
+policies as shown in the [following
+chapters](tutorials/writing-policies/rego/01-intro-rego.md). Here is the list of
+available policies on ArtifactHub:
+
+<div class="artifacthub-widget-group" data-url="https://artifacthub.io/packages/search?kind=13&sort=relevance&page=1" data-theme="light" data-header="false" data-stars="false" data-color="#fe7c3f" data-responsive="true"  data-loading="true"></div>
+
