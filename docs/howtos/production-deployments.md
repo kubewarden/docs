@@ -27,12 +27,14 @@ doc-topic:
   ]
 ---
 
-# Configuring Tolerations and Affinity/Anti-Affinity for the Kubewarden Stack
+# Configuring Tolerations and Affinity/Anti-Affinity for the Kubewarden stack
 
-Kubewarden provides robust mechanisms to ensure the reliability and proper
-scheduling of its components within a Kubernetes cluster. Starting from version
+Kubewarden provides features for reliability and correct
+scheduling of its components in a Kubernetes cluster. 
+
+Starting from version
 1.15 of the Kubewarden Helm charts, two new fields, `tolerations` and
-`affinity`, have been introduced under the `global` value. These fields allow
+`affinity`, are introduced under the `global` value. These fields allow
 users to define Kubernetes tolerations and affinity/anti-affinity settings for
 the Kubewarden stack, including the controller deployment, audit scanner
 cronjob, and the PolicyServer custom resource.
@@ -58,7 +60,7 @@ global:
       effect: "NoExecute"
 ```
 
-In this example, the tolerations defined will be applied to the controller
+In this example, the tolerations defined are applied to the controller
 deployment, audit scanner cronjob, and the PolicyServer custom resource.
 
 ## Affinity/Anti-Affinity
@@ -67,8 +69,8 @@ The `affinity` field allows users to define Kubernetes affinity and
 anti-affinity rules for the Kubewarden components. Affinity rules constrain
 pods to specific nodes, while anti-affinity rules prevent pods from being
 scheduled on certain nodes or in close proximity to other pods. These settings
-are crucial for ensuring high availability, fault tolerance, and optimized
-resource usage within the cluster.
+are useful for ensuring high availability, fault tolerance, and optimized
+resource usage in a cluster.
 
 ```yaml
 global:
@@ -124,7 +126,7 @@ deployment, audit scanner cronjob, and the PolicyServer custom resource.
 The previous affinity configuration available in the `kubewarden-default` Helm
 chart, which was used to define the affinity configuration for the PolicyServer
 only, has been removed in favor of the global `affinity` field. This change
-simplifies the configuration process by providing a single, unified approach to
+simplifies the configuration process by providing a single approach to
 defining affinity and anti-affinity rules for all Kubewarden components.
 
 :::warning The old `affinity` configuration in the `kubewarden-default` Helm
@@ -133,7 +135,7 @@ chart has been deprecated and removed. Users should now use the
 the entire Kubewarden stack. 
 :::
 
-By leveraging the `tolerations` and `affinity` fields, operators can fine-tune
+By using the `tolerations` and `affinity` fields, operators can fine-tune
 the scheduling and reliability of the Kubewarden stack to meet their specific
 deployment needs and constraints. For more details on the exact fields and
 their configurations, refer to the [Kubernetes documentation on Taints and
