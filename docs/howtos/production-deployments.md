@@ -130,7 +130,7 @@ simplifies the configuration process by providing a single approach to
 defining affinity and anti-affinity rules for all Kubewarden components.
 
 :::warning The old `affinity` configuration in the `kubewarden-default` Helm
-chart has been deprecated and removed. Users should now use the
+chart has been removed. Users should now use the
 `global.affinity` field to configure affinity and anti-affinity settings for
 the entire Kubewarden stack. 
 :::
