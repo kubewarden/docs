@@ -10,38 +10,38 @@ doc-topic: [learning-paths]
 
 |Page title|
 |-|
-|[What is the Audit Scanner?](../explanations/audit-scanner/audit-scanner)|
-|[Audit Scanner - Limitations](../explanations/audit-scanner/limitations)|
-|[Audit Scanner - Policy Reports](../explanations/audit-scanner/policy-reports)|
-|[Context aware policies](../explanations/context-aware-policies)|
-|[Distributing policies](../explanations/distributing-policies)|
-|[Mutating policies](../explanations/mutating-policies)|
-|[Managing Kubewarden with Rancher Fleet](../howtos/Rancher-Fleet)|
-|[Requirements for a Kubewarden air gap installation](../howtos/airgap/01-requirements)|
-|[Air gap installation](../howtos/airgap/02-install)|
-|[Using Pod Security Admission with Kubewarden](../howtos/pod-security-admission-with-kubewarden)|
-|[Configuring policies](../howtos/policies)|
-|[Using custom certificate authorities](../howtos/policy-servers/01-custom-cas)|
-|[Configuring PolicyServers to use private registries](../howtos/policy-servers/02-private-registry)|
-|[Configuring PolicyServers for production](../howtos/policy-servers/03-production-deployments)|
-|[PodSecurityPolicy migration](../howtos/psp-migration)|
-|[Raw policies](../howtos/raw-policies)|
-|[Secure supply chain](../howtos/secure-supply-chain)|
-|[Tracing quickstart](../howtos/telemetry/20-tracing-qs)|
-|[Metrics quickstart](../howtos/telemetry/30-metrics-qs)|
-|[Open Telemetry quick start](../howtos/telemetry/10-opentelemetry-qs)|
-|[Rancher UI extension quickstart](../howtos/ui-extension/01-install)|
-|[Monitoring](../howtos/ui-extension/02-metrics)|
-|[Tracing](../howtos/ui-extension/03-tracing)|
-|[Custom certificate authorities](../howtos/custom-certificate-authorities)|
-|[Audit Scanner](../howtos/audit-scanner)|
-|[ValidatingAdmissionPolicy migration](../howtos/vap-migration)|
-|[Policy Server certificate rotation issue](../howtos/workarounds/policy-server-certificate-expiry)|
-|[Metrics reference](../reference/metrics-reference)|
-|[Monitor mode](../reference/monitor-mode)|
-|[Policy evaluation timeout protection](../reference/policy-evaluation-timeout)|
-|[Verification configuration format](../reference/verification-config)|
-|[Reference for sources.yaml](../reference/sources_yaml)|
-|[Publish policies to Artifact Hub](../tutorials/publish-policy-to-artifact-hub)|
-|[Verifying Kubewarden](../tutorials/verifying-kubewarden)|
-|[Raw policies](../tutorials/writing-policies/rust/08-raw-policies)|
+|[What is the Audit Scanner?](../explanations/audit-scanner/audit-scanner.md)|
+|[Audit Scanner - Limitations](../explanations/audit-scanner/limitations.md)|
+|[Audit Scanner - Policy Reports](../explanations/audit-scanner/policy-reports.md)|
+|[Context aware policies](../explanations/context-aware-policies.md)|
+|[Distributing policies](../explanations/distributing-policies.md)|
+|[Mutating policies](../explanations/mutating-policies.md)|
+|[Managing Kubewarden with Rancher Fleet](../howtos/Rancher-Fleet.md)|
+|[Requirements for a Kubewarden air gap installation](../howtos/airgap/01-requirements.md)|
+|[Air gap installation](../howtos/airgap/02-install.md)|
+|[Using Pod Security Admission with Kubewarden](../howtos/pod-security-admission-with-kubewarden.md)|
+|[Configuring policies](../howtos/policies.md)|
+|[Using custom certificate authorities](../howtos/policy-servers/01-custom-cas.md)|
+|[Configuring PolicyServers to use private registries](../howtos/policy-servers/02-private-registry.md)|
+|[Configuring PolicyServers for production](../howtos/policy-servers/03-production-deployments.md)|
+|[PodSecurityPolicy migration](../howtos/psp-migration.md)|
+|[Raw policies](../howtos/raw-policies.md)|
+|[Secure supply chain](../howtos/secure-supply-chain.md)|
+|[Tracing quickstart](../howtos/telemetry/20-tracing-qs.md)|
+|[Metrics quickstart](../howtos/telemetry/30-metrics-qs.md)|
+|[Open Telemetry quick start](../howtos/telemetry/10-opentelemetry-qs.md)|
+|[Rancher UI extension quickstart](../howtos/ui-extension/01-install.md)|
+|[Monitoring](../howtos/ui-extension/02-metrics.md)|
+|[Tracing](../howtos/ui-extension/03-tracing.md)|
+|[Custom certificate authorities](../howtos/custom-certificate-authorities.md)|
+|[Audit Scanner](../howtos/audit-scanner.md)|
+|[ValidatingAdmissionPolicy migration](../howtos/vap-migration.md)|
+|[Policy Server certificate rotation issue](../howtos/workarounds/policy-server-certificate-expiry.md)|
+|[Metrics reference](../reference/metrics-reference.md)|
+|[Monitor mode](../reference/monitor-mode.md)|
+|[Policy evaluation timeout protection](../reference/policy-evaluation-timeout.md)|
+|[Verification configuration format](../reference/verification-config.md)|
+|[Reference for sources.yaml](../reference/sources_yaml.md)|
+|[Publish policies to Artifact Hub](../tutorials/publish-policy-to-artifact-hub.md)|
+|[Verifying Kubewarden](../tutorials/verifying-kubewarden.md)|
+|[Raw policies](../tutorials/writing-policies/rust/08-raw-policies.md)|

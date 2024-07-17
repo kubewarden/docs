@@ -10,14 +10,14 @@ doc-topic: [learning-paths]
 
 |Page title|
 |-|
-|[What is the Audit Scanner?](../explanations/audit-scanner/audit-scanner)|
-|[Audit Scanner - Limitations](../explanations/audit-scanner/limitations)|
-|[Audit Scanner - Policy Reports](../explanations/audit-scanner/policy-reports)|
-|[Using Pod Security Admission with Kubewarden](../howtos/pod-security-admission-with-kubewarden)|
-|[PodSecurityPolicy migration](../howtos/psp-migration)|
-|[Secure supply chain](../howtos/secure-supply-chain)|
-|[Custom certificate authorities](../howtos/custom-certificate-authorities)|
-|[ValidatingAdmissionPolicy migration](../howtos/vap-migration)|
-|[Metrics reference](../reference/metrics-reference)|
-|[Monitor mode](../reference/monitor-mode)|
-|[Publish policies to Artifact Hub](../tutorials/publish-policy-to-artifact-hub)|
+|[What is the Audit Scanner?](../explanations/audit-scanner/audit-scanner.md)|
+|[Audit Scanner - Limitations](../explanations/audit-scanner/limitations.md)|
+|[Audit Scanner - Policy Reports](../explanations/audit-scanner/policy-reports.md)|
+|[Using Pod Security Admission with Kubewarden](../howtos/pod-security-admission-with-kubewarden.md)|
+|[PodSecurityPolicy migration](../howtos/psp-migration.md)|
+|[Secure supply chain](../howtos/secure-supply-chain.md)|
+|[Custom certificate authorities](../howtos/custom-certificate-authorities.md)|
+|[ValidatingAdmissionPolicy migration](../howtos/vap-migration.md)|
+|[Metrics reference](../reference/metrics-reference.md)|
+|[Monitor mode](../reference/monitor-mode.md)|
+|[Publish policies to Artifact Hub](../tutorials/publish-policy-to-artifact-hub.md)|
