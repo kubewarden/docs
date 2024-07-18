@@ -8,42 +8,42 @@ doc-type: [explanation]
 doc-topic: [learning-paths]
 ---
 
-|Page title|
-|-|
-|[What is the Audit Scanner?](../explanations/audit-scanner/audit-scanner.md)|
-|[Audit Scanner - Limitations](../explanations/audit-scanner/limitations.md)|
-|[Audit Scanner - Policy Reports](../explanations/audit-scanner/policy-reports.md)|
-|[Context aware policies](../explanations/context-aware-policies.md)|
-|[Distributing policies](../explanations/distributing-policies.md)|
-|[Mutating policies](../explanations/mutating-policies.md)|
-|[Raw policies](../howtos/raw-policies.md)|
-|[Policy communication specification](../reference/spec/01-intro-spec.md)|
-|[Policy settings](../reference/spec/02-settings.md)|
-|[Validating policies](../reference/spec/03-validating-policies.md)|
-|[Mutating policies](../reference/spec/04-mutating-policies.md)|
-|[Context aware policies](../reference/spec/05-context-aware-policies.md)|
-|[Host capabilities specification](../reference/spec/host-capabilities/01-intro-host-capabilities.md)|
-|[Signature verifier policies](../reference/spec/host-capabilities/02-signature-verifier-policies.md)|
-|[Network capabilities](../reference/spec/host-capabilities/04-net.md)|
-|[Cryptographic capabilities](../reference/spec/host-capabilities/05-crypto.md)|
-|[Kubernetes capabilities](../reference/spec/host-capabilities/06-kubernetes.md)|
-|[Container registry capabilities](../reference/spec/host-capabilities/03-container-registry.md)|
-|[Publish policies to Artifact Hub](../tutorials/publish-policy-to-artifact-hub.md)|
-|[Testing for policy authors](../tutorials/testing-policies/02-policy-authors.md)|
-|[Policy testing](../tutorials/testing-policies/index.md)|
-|[Verifying Kubewarden](../tutorials/verifying-kubewarden.md)|
-|[C#](../tutorials/writing-policies/dotnet.md)|
-|[Writing Kubewarden policies](../tutorials/writing-policies/index.md)|
-|[Other languages](../tutorials/writing-policies/other-languages.md)|
-|[Rego](../tutorials/writing-policies/rego/01-intro-rego.md)|
-|[Builtin support](../tutorials/writing-policies/rego/02-builtin-support.md)|
-|[Gatekeeper support](../tutorials/writing-policies/rego/gatekeeper/01-intro.md)|
-|[Creating a new Gatekeeper Rego policy](../tutorials/writing-policies/rego/gatekeeper/02-create-policy.md)|
-|[Build and run a Gatekeeper policy](../tutorials/writing-policies/rego/gatekeeper/03-build-and-run.md)|
-|[Distributing a Gatekeeper policy with Kubewarden](../tutorials/writing-policies/rego/gatekeeper/04-distribute.md)|
-|[Introduction to Open Policy Agent](../tutorials/writing-policies/rego/open-policy-agent/01-intro.md)|
-|[Creating a new policy](../tutorials/writing-policies/rego/open-policy-agent/02-create-policy.md)|
-|[Build and run a OPA policy for Kubewarden](../tutorials/writing-policies/rego/open-policy-agent/03-build-and-run.md)|
-|[Distributing an OPA policy with Kubewarden](../tutorials/writing-policies/rego/open-policy-agent/04-distribute.md)|
-|[Writing raw policies](../tutorials/writing-policies/rego/open-policy-agent/05-raw-policies.md)|
-|[Swift](../tutorials/writing-policies/swift.md)|
+|Location|Topics|Keywords|Description & Title|
+|-|-|-|-|
+|<br/>explanations<br/>audit-scanner|explanations,<br/>audit-scanner|kubewarden,<br/>audit scanner,<br/>kubernetes|An overview of the Kubewarden Audit Scanner.<br/>[What is the Audit Scanner?](../explanations/audit-scanner/audit-scanner.md)|
+|<br/>explanations<br/>audit-scanner|explanations,<br/>audit-scanner,<br/>limitations|kubewarden,<br/>kubernetes,<br/>audit scanner|The limitation of the audit scanner<br/>[Audit Scanner - Limitations](../explanations/audit-scanner/limitations.md)|
+|<br/>explanations<br/>audit-scanner|explanations,<br/>audit-scanner,<br/>policy-reports|kubewarden,<br/>kubernetes,<br/>audit scanner|The policy reports that the Audit Scanner produces.<br/>[Audit Scanner - Policy Reports](../explanations/audit-scanner/policy-reports.md)|
+|<br/>explanations|explanations,<br/>context-aware-polices|kubewarden,<br/>context-aware policy,<br/>clusteradmissionpolicy,<br/>admissionpolicy,<br/>admissionrequest,<br/>cluster administrator|A description of Kubewarden context aware policies, what they are and how they are useful.<br/>[Context aware policies](../explanations/context-aware-policies.md)|
+|<br/>explanations|distributing-policies|oci,<br/>kubewarden,<br/>policy,<br/>wasm,<br/>webassembly|A description of how Kubewarden policies are distributed from OCI-compliant repositories.<br/>[Distributing policies](../explanations/distributing-policies.md)|
+|<br/>explanations|mutating-policies|kubewarden,<br/>policy mutating,<br/>kubernetes,<br/>clusteradmissionpolicy,<br/>admissionpolicy|Explains mutating policies in the context of Kubewarden<br/>[Mutating policies](../explanations/mutating-policies.md)|
+|<br/>howtos|kubewarden,<br/>kubernetes,<br/>raw-policies|kubewarden,<br/>kubernetes,<br/>support,<br/>raw policies|Kubewarden support for 'raw' policies.<br/>[Raw policies](../howtos/raw-policies.md)|
+|<br/>reference<br/>spec|writing-policies,<br/>specification,<br/>introduction|kubewarden,<br/>kubernetes,<br/>policy specification,<br/>policy communication|Policy communication specification.<br/>[Policy communication specification](../reference/spec/01-intro-spec.md)|
+|<br/>reference<br/>spec|writing-policies,<br/>specification,<br/>settings|kubewarden,<br/>kubernetes,<br/>policy specification,<br/>policy settings|Policy settings.<br/>[Policy settings](../reference/spec/02-settings.md)|
+|<br/>reference<br/>spec|writing-policies,<br/>specification,<br/>validating-policies|kubewarden,<br/>kubernetes,<br/>policy specification,<br/>policy validation|Validating policies<br/>[Validating policies](../reference/spec/03-validating-policies.md)|
+|<br/>reference<br/>spec|writing-policies,<br/>specification,<br/>mutating-policies|kubewarden,<br/>kubernetes,<br/>policy specification,<br/>mutating policies|Mutating policies.<br/>[Mutating policies](../reference/spec/04-mutating-policies.md)|
+|<br/>reference<br/>spec|writing-policies,<br/>specification,<br/>context-aware-policies|kubewarden,<br/>kubernetes,<br/>policy specification,<br/>context aware policies|Context aware policies.<br/>[Context aware policies](../reference/spec/05-context-aware-policies.md)|
+|<br/>reference<br/>spec<br/>host-capabilities|writing-policies,<br/>specification,<br/>host-capabilities,<br/>introduction|kubewarden,<br/>kubernetes,<br/>policy specification,<br/>host capabilities|Host capabilities specification.<br/>[Host capabilities specification](../reference/spec/host-capabilities/01-intro-host-capabilities.md)|
+|<br/>reference<br/>spec<br/>host-capabilities|writing-policies,<br/>specification,<br/>host-capabilities,<br/>signature-verifier-policies|kubewarden,<br/>kubernetes,<br/>policy specification,<br/>signature verifier|Signature verifier policies.<br/>[Signature verifier policies](../reference/spec/host-capabilities/02-signature-verifier-policies.md)|
+|<br/>reference<br/>spec<br/>host-capabilities|writing-policies,<br/>specification,<br/>host-capabilities,<br/>network-capabilities|kubewarden,<br/>kubernetes,<br/>policy specification,<br/>network capabilities|Network capabilities.<br/>[Network capabilities](../reference/spec/host-capabilities/04-net.md)|
+|<br/>reference<br/>spec<br/>host-capabilities|writing-policies,<br/>specification,<br/>host-capabilities,<br/>cryptographic-capabilities|kubewarden,<br/>kubernetes,<br/>policy specification,<br/>cryptographic capabilities|Cryptographic capabilities.<br/>[Cryptographic capabilities](../reference/spec/host-capabilities/05-crypto.md)|
+|<br/>reference<br/>spec<br/>host-capabilities|writing-policies,<br/>specification,<br/>host-capabilities,<br/>kubernetes-capabilities|kubewarden,<br/>kubernetes,<br/>policy specification,<br/>kubernetes capabilities|Kubernetes capabilities.<br/>[Kubernetes capabilities](../reference/spec/host-capabilities/06-kubernetes.md)|
+|<br/>reference<br/>spec<br/>host-capabilities|writing-policies,<br/>specification,<br/>host-capabilities,<br/>container-registry|kubewarden,<br/>kubernetes,<br/>policy specification,<br/>registry capabilities|Container registry capabilities.<br/>[Container registry capabilities](../reference/spec/host-capabilities/03-container-registry.md)|
+|<br/>tutorials|distributing-policies,<br/>publish-policy-to-artifacthub|kubewarden,<br/>kubernetes,<br/>publishing policies,<br/>artifact hub|A brief introduction to publishing Kubewarden policies on Artifact Hub.<br/>[Publish policies to Artifact Hub](../tutorials/publish-policy-to-artifact-hub.md)|
+|<br/>tutorials<br/>testing-policies|testing-policies,<br/>policy-authors|kubewarden,<br/>policy testing,<br/>policy author,<br/>rust,<br/>go,<br/>assemblyscript,<br/>development environment|An introduction to testing Kubewarden policies for policy authors.<br/>[Testing for policy authors](../tutorials/testing-policies/02-policy-authors.md)|
+|<br/>tutorials<br/>testing-policies|testing-policies,<br/>introduction|kubewarden,<br/>persons,<br/>policy author,<br/>cluster operator|A tutorial about testing policies in Kubewarden.<br/>[Policy testing](../tutorials/testing-policies/index.md)|
+|<br/>tutorials|security,<br/>verifying-kubewarden|kubewarden,<br/>kubernetes,<br/>security,<br/>verification|Verifying Kubewarden.<br/>[Verifying Kubewarden](../tutorials/verifying-kubewarden.md)|
+|<br/>tutorials<br/>writing-policies|kubewarden,<br/>writing-policies,<br/>c#|kubewarden,<br/>kubernetes,<br/>writing policies,<br/>c#,<br/>.net|Kubewarden policies using C# and .NET<br/>[C#](../tutorials/writing-policies/dotnet.md)|
+|<br/>tutorials<br/>writing-policies|writing-policies|kubewarden,<br/>kubernetes,<br/>writing policies|An introduction to writing Kubewarden policies.<br/>[Writing Kubewarden policies](../tutorials/writing-policies/index.md)|
+|<br/>tutorials<br/>writing-policies|kubewarden,<br/>writing-policies,<br/>other-languages|kubewarden,<br/>kubernetes,<br/>writing policies,<br/>other languages|Writing Kubewarden policies in other languages<br/>[Other languages](../tutorials/writing-policies/other-languages.md)|
+|<br/>tutorials<br/>writing-policies<br/>rego|writing-policies,<br/>rego,<br/>introduction|kubewarden,<br/>kubernetes,<br/>writing policies,<br/>rego|Writing Kubewarden policies using Rego.<br/>[Rego](../tutorials/writing-policies/rego/01-intro-rego.md)|
+|<br/>tutorials<br/>writing-policies<br/>rego|writing-policies,<br/>rego,<br/>built-in-support|kubewarden,<br/>kubernetes,<br/>builtin wasm support|The Kubewarden provided support for executing wasm binaries.<br/>[Builtin support](../tutorials/writing-policies/rego/02-builtin-support.md)|
+|<br/>tutorials<br/>writing-policies<br/>rego<br/>gatekeeper|writing-policies,<br/>rego,<br/>gatekeeper,<br/>introduction|kubewarden,<br/>kubernetes,<br/>rego,<br/>gatekeeper|Introducing Gatekeeper support in Kubewarden.<br/>[Gatekeeper support](../tutorials/writing-policies/rego/gatekeeper/01-intro.md)|
+|<br/>tutorials<br/>writing-policies<br/>rego<br/>gatekeeper|writing-policies,<br/>rego,<br/>gatekeeper,<br/>create-policy|kubewarden,<br/>kubernetes,<br/>gatekeeper rego policy|Creating a new Gatekeeper rego policy.<br/>[Creating a new Gatekeeper Rego policy](../tutorials/writing-policies/rego/gatekeeper/02-create-policy.md)|
+|<br/>tutorials<br/>writing-policies<br/>rego<br/>gatekeeper|writing-policies,<br/>rego,<br/>gatekeeper,<br/>build-and-run|kubewarden,<br/>kubernetes,<br/>gatekeeper policy,<br/>rego|Building and running a Gatekeeper policy written in Rego.<br/>[Build and run a Gatekeeper policy](../tutorials/writing-policies/rego/gatekeeper/03-build-and-run.md)|
+|<br/>tutorials<br/>writing-policies<br/>rego<br/>gatekeeper|writing-policies,<br/>rego,<br/>gatekeeper,<br/>distribute|kubewarden,<br/>kubernetes,<br/>gatekeeper,<br/>rego|Distributing a Gatekeeper policy with Kubewarden.<br/>[Distributing a Gatekeeper policy with Kubewarden](../tutorials/writing-policies/rego/gatekeeper/04-distribute.md)|
+|<br/>tutorials<br/>writing-policies<br/>rego<br/>open-policy-agent|writing-policies,<br/>rego,<br/>open-policy-agent,<br/>introduction|kubewarden,<br/>kubernetes,<br/>open policy agent,<br/>opa,<br/>rego|Introduction to Open Policy Agent and Kubewarden.<br/>[Introduction to Open Policy Agent](../tutorials/writing-policies/rego/open-policy-agent/01-intro.md)|
+|<br/>tutorials<br/>writing-policies<br/>rego<br/>open-policy-agent|writing-policies,<br/>rego,<br/>open-policy-agent,<br/>create-policy|kubewarden,<br/>kubernetes,<br/>creating a policy,<br/>open policy agent,<br/>opa,<br/>rego|Creating a new OPA policy for Kubewarden.<br/>[Creating a new policy](../tutorials/writing-policies/rego/open-policy-agent/02-create-policy.md)|
+|<br/>tutorials<br/>writing-policies<br/>rego<br/>open-policy-agent|writing-policies,<br/>rego,<br/>open-policy-agent,<br/>build-and-run|kubewarden,<br/>kubernetes,<br/>build and run,<br/>open policy agent,<br/>opa,<br/>rego|Build and run a OPA policy for Kubewarden.<br/>[Build and run a OPA policy for Kubewarden](../tutorials/writing-policies/rego/open-policy-agent/03-build-and-run.md)|
+|<br/>tutorials<br/>writing-policies<br/>rego<br/>open-policy-agent|writing-policies,<br/>rego,<br/>open-policy-agent,<br/>distribute|kubewarden,<br/>kubernetes,<br/>distributing,<br/>open policy agent,<br/>opa,<br/>rego|Distributing an OPA policy with Kubewarden.<br/>[Distributing an OPA policy with Kubewarden](../tutorials/writing-policies/rego/open-policy-agent/04-distribute.md)|
+|<br/>tutorials<br/>writing-policies<br/>rego<br/>open-policy-agent|writing-policies,<br/>rego,<br/>open-policy-agent,<br/>raw-policies|kubewarden,<br/>kubernetes,<br/>raw policies,<br/>open policy agent,<br/>opa,<br/>rego|Writing raw OPA policies for Kubewarden.<br/>[Writing raw policies](../tutorials/writing-policies/rego/open-policy-agent/05-raw-policies.md)|
+|<br/>tutorials<br/>writing-policies|kubewarden,<br/>writing-policies,<br/>swift|kubewarden,<br/>kubernetes,<br/>writing policies,<br/>swift|Kubewarden policies with Swift<br/>[Swift](../tutorials/writing-policies/swift.md)|
