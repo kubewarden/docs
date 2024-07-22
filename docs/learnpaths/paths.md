@@ -23,4 +23,4 @@ If you are new to Kubewarden, these sections contain a set of learning paths for
 |[Policy developer](kubewarden-policy-developer.md)| A person designing policies for Kubewarden and specifying their configuration.|
 |[Integrator](kubewarden-integrator.md)|Builds with, using, or on top of KW. Perhaps a custom UI or a helper tool for generating policies.|
 |[Developer](kubewarden-developer.md)|A person working on the Kubewarden product set. Building Kubewarden itself.|
-|[all](kubewarden-all.md)|Documentation sections of common interest.|
+|[All](kubewarden-all.md)|Documentation sections of common interest.|
