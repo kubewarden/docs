@@ -1,7 +1,7 @@
 ---
 sidebar_label: Developer
-title: Developer
-description: Learning paths for different personas.
+title: Kubewarden Developer
+description: Learning paths for Kubewarden developers.
 keywords: [learning paths]
 doc-persona: [kubewarden-developer]
 doc-type: [explanation]

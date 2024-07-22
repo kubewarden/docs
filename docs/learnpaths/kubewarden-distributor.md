@@ -1,7 +1,7 @@
 ---
 sidebar_label: Distributor
 title: Distributor
-description: Learning paths for different personas.
+description: Learning paths for Kubewarden distributors.
 keywords: [learning paths]
 doc-persona: [kubewarden-distributor]
 doc-type: [explanation]

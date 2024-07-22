@@ -1,7 +1,7 @@
 ---
 sidebar_label: Operator
 title: Operator
-description: Learning paths for different personas.
+description: Learning paths for Kubewarden operators.
 keywords: [learning paths]
 doc-persona: [kubewarden-operator]
 doc-type: [explanation]

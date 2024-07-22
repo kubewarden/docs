@@ -1,7 +1,7 @@
 ---
-sidebar_label: User
-title: User
-description: Learning paths for different personas.
+sidebar_label: Policy user
+title: Kubewarden Policy user
+description: Learning path for Kubewarden policy users.
 keywords: [learning paths]
 doc-persona: [kubewarden-user]
 doc-type: [explanation]

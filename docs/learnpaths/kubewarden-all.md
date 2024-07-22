@@ -1,7 +1,7 @@
 ---
 sidebar_label: All
 title: All
-description: Learning paths for different personas.
+description: Kubewraden topics of interest to all Kubewarden personas.
 keywords: [learning paths]
 doc-persona: [kubewarden-all]
 doc-type: [explanation]

@@ -1,7 +1,7 @@
 ---
 sidebar_label: Policy Developer
 title: Policy Developer
-description: Learning paths for different personas.
+description: Learning paths for Kubewarden policy developers.
 keywords: [learning paths]
 doc-persona: [kubewarden-policy-developer]
 doc-type: [explanation]

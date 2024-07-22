@@ -1,7 +1,7 @@
 ---
 sidebar_label: Integrator
 title: Integrator
-description: Learning paths for different personas.
+description: Learning paths for Kubewarden integrators.
 keywords: [learning paths]
 doc-persona: [kubewarden-integrator]
 doc-type: [explanation]
