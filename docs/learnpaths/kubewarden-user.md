@@ -1,11 +1,12 @@
 ---
-sidebar_label: User
-title: User
-description: Learning paths for different personas.
-keywords: [learning paths]
+sidebar_label: Policy user
+sidebar_position: 10
+title: Policy user
+description: Learning path for Policy user.
+keywords: [learning path]
 doc-persona: [kubewarden-user]
 doc-type: [explanation]
-doc-topic: [learning-paths]
+doc-topic: [learning-path]
 ---
 
 |Type & Location|Keywords|Description & Title|

@@ -1,6 +1,6 @@
 ---
 sidebar_label: Introduction
-sidebar_position: 10
+sidebar_position: 5
 title: Introduction
 description: Learning paths for different personas.
 keywords: [learning paths]

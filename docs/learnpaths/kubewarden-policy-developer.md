@@ -1,11 +1,12 @@
 ---
-sidebar_label: Policy Developer
-title: Policy Developer
-description: Learning paths for different personas.
-keywords: [learning paths]
+sidebar_label: Policy developer
+sidebar_position: 40
+title: Policy developer
+description: Learning path for Policy developer.
+keywords: [learning path]
 doc-persona: [kubewarden-policy-developer]
 doc-type: [explanation]
-doc-topic: [learning-paths]
+doc-topic: [learning-path]
 ---
 
 |Type & Location|Keywords|Description & Title|

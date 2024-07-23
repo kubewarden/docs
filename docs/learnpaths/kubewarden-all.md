@@ -1,11 +1,12 @@
 ---
 sidebar_label: All
+sidebar_position: 70
 title: All
-description: Learning paths for different personas.
-keywords: [learning paths]
+description: Learning path for All.
+keywords: [learning path]
 doc-persona: [kubewarden-all]
 doc-type: [explanation]
-doc-topic: [learning-paths]
+doc-topic: [learning-path]
 ---
 
 |Type & Location|Keywords|Description & Title|

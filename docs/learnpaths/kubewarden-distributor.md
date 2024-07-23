@@ -1,11 +1,12 @@
 ---
 sidebar_label: Distributor
+sidebar_position: 40
 title: Distributor
-description: Learning paths for different personas.
-keywords: [learning paths]
+description: Learning path for Distributor.
+keywords: [learning path]
 doc-persona: [kubewarden-distributor]
 doc-type: [explanation]
-doc-topic: [learning-paths]
+doc-topic: [learning-path]
 ---
 
 |Type & Location|Keywords|Description & Title|
