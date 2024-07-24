@@ -5,7 +5,7 @@ description: Writing validation logic in Rust for a Kubewarden policy
 keywords: [kubewarden, kubernetes, policy, writing, rust, validation logic]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, rust, validation-logic]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>

@@ -6,7 +6,7 @@ description: A tutorial introduction to logging when using Go to write a Kubewar
 keywords: [kubewarden, kubernetes, writing policies, golang, go, logging]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, golang, logging]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>

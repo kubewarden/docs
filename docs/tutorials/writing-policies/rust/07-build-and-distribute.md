@@ -5,7 +5,7 @@ description: Building and distributing Kubewarden policies developed with Rust.
 keywords: [kubewarden, kubernetes, writing policies, rust, build and distribute]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, rust, build-and-distribute]
-doc-persona: [kubewarden-developer, kubewarden-operator]
+doc-persona: [kubewarden-policy-developer, kubewarden-operator]
 ---
 
 <head>

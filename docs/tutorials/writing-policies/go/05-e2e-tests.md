@@ -6,7 +6,7 @@ description: A tutorial introduction to end-to-end testing for writing Kubewarde
 keywords: [kubewarden, kubernetes, writing policies, end-to-end testing, golang, go]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, golang, end-to-end-testing]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>

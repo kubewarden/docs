@@ -6,7 +6,7 @@ description: Writing raw Kubewarden policies using Go.
 keywords: [kubewarden, kubernetes, writing policies, raw, go]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, golang, raw-policies]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>

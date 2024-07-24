@@ -6,7 +6,7 @@ description: Validation using JSON queries with Kubewarden policies in Go.
 keywords: [kubewarden, kubernetes, validation using JSON queries]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, golang, validation-using-json]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>

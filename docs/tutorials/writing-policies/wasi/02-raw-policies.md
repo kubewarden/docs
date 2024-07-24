@@ -5,7 +5,7 @@ description: Using Kubewarden for writing raw policies.
 keywords: [kubewarden, kubernetes, raw policies]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, raw-policies]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>
