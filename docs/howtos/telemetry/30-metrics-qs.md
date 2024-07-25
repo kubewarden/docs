@@ -31,7 +31,36 @@ that allows us to define Prometheus' Targets intuitively.
 There are many ways to install and set up Prometheus. For ease of deployment, we will use the
 Prometheus community Helm chart.
 
-Let's install the Prometheus stack Helm Chart:
+Let's create a `kube-prometheus-stack-values.yaml` file with the
+following contents:
+
+````yaml
+---
+prometheus:
+  additionalServiceMonitors:
+    - name: kubewarden
+      selector:
+        matchLabels:
+          app: kubewarden-policy-server-default
+      namespaceSelector:
+        matchNames:
+          - kubewarden
+      endpoints:
+        - port: metrics
+          interval: 10s
+    - name: kubewarden-controller
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: kubewarden-controller
+      namespaceSelector:
+        matchNames:
+          - kubewarden
+      endpoints:
+        - port: metrics
+          interval: 10s
+```
+
+Now, let's install the Prometheus stack Helm Chart:
 
 :::note
 At time of writing the latest chart version is `51.5.3`
@@ -58,6 +87,7 @@ This way, the Prometheus Operator can inspect which Kubernetes Endpoints are tie
 Let's create the two ServiceMonitors named `kubewarden-controller` and `kubewarden-policy-server` using the following manifests:
 
 ```yaml
+kubectl apply -f - <<EOF
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -89,6 +119,7 @@ spec:
   selector:
     matchLabels:
       app: kubewarden-policy-server-default
+EOF
 ```
 
 ## Install Kubewarden
@@ -221,3 +252,5 @@ variable to match the name of the desired policy.
 You should be able to see the dashboard similar to this:
 
 ![Dashboard](/img/grafana_dashboard.png)
+````
+
