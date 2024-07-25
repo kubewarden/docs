@@ -144,7 +144,7 @@ Install `cert-manager`, if not already installed, in the air gap cluster:
 ```shell
 helm install --create-namespace cert-manager ./cert-manager-<Version>.tgz \
     -n kubewarden \
-    --set installCRDs=true \
+    --set crds.enabled=true \
     --set image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/jetstack/cert-manager-controller \
     --set webhook.image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/jetstack/cert-manager-webhook \
     --set cainjector.image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/jetstack/cert-manager-cainjector \

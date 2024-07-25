@@ -15,7 +15,7 @@ keywords:
 doc-type: [tutorial]
 doc-topic:
   [kubewarden, writing-policies, cel, context-aware, context, awaree, ingress]
-doc-persona: [kubewarden-developer, kubwarden-operator]
+doc-persona: [kubewarden-policy-developer, kubewarden-operator]
 ---
 
 <head>

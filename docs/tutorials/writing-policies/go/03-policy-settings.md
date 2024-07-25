@@ -6,7 +6,7 @@ description: Defining policy setting for a Kubewarden policy written in Go.
 keywords: [kubewarden, kubernetes, defining policy settings, Go]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, go, defining-policy-settings]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>

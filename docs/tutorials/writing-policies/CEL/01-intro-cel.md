@@ -5,7 +5,7 @@ description: An introduction to writing Kubewarden policies with CEL.
 keywords: [kubewarden, kubernetes, writing policies, introduction]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, cel, introduction]
-doc-persona: [kubewarden-developer, kubwarden-operator]
+doc-persona: [kubewarden-policy-developer, kubewarden-operator]
 ---
 
 <head>

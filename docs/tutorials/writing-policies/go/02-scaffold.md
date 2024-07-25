@@ -6,7 +6,7 @@ description: Creating a new validation policy for Kubewarden using Go.
 keywords: [kubewarden, kubernetes, writing policies in Go, new validation policy]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, go, creating a new validation policy]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>

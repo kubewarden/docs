@@ -6,7 +6,7 @@ description: A tutorial on writing validation logic for a Kubewarden policy usin
 keywords: [kubewarden, kubernetes, writing policies, golang, go]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, golang, validation-logic]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>
