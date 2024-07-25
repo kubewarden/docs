@@ -6,7 +6,7 @@ description: A tutorial introduction to writing policies in Go.
 keywords: [kubewarden, kubernetes, writing policies in Go]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, go, introduction]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>

@@ -6,7 +6,7 @@ description: Using policy metadata when developing a Kubewarden policy.
 keywords: [kubewarden, kubernetes policy development, policy metadata]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-polices, policy-metadata]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>

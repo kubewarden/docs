@@ -5,7 +5,7 @@ description: "Example: Reusing ValidatingAdmissionPolicies"
 keywords: [kubewarden, kubernetes, writing policies, ValidatingAdmissionPolicies]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, cel, ValidatingAdmissionPolicies]
-doc-persona: [kubewarden-developer, kubwarden-operator]
+doc-persona: [kubewarden-policy-developer, kubewarden-operator]
 ---
 
 <head>

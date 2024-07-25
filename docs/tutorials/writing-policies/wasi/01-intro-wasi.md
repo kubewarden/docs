@@ -5,7 +5,7 @@ description: Using WASI to develop Kubewarden policies.
 keywords: [kubewarden, kubernetes, wasi]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, wasi]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>

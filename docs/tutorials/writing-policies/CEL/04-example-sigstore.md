@@ -7,7 +7,7 @@ keywords:
 doc-type: [tutorial]
 doc-topic:
   [kubewarden, writing-policies, cel, sigstore, signature, verification]
-doc-persona: [kubewarden-developer, kubwarden-operator]
+doc-persona: [kubewarden-policy-developer, kubewarden-operator]
 ---
 
 <head>

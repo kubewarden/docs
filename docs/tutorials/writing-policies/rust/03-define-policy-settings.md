@@ -5,7 +5,7 @@ description: Defining policy settings for a Kubewarden policy developed using Ru
 keywords: [kubewarden, kubernetes, writing policies, policy settings, rust]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, rust, policy-settings]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>

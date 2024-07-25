@@ -6,7 +6,7 @@ description: Integrating with GitHub actions when developing policies for Kubewa
 keywords: [kubewarden, kubernetes, github, integration]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, golang, github-action-integration]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 ---
 
 <head>

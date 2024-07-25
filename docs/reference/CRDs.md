@@ -4,7 +4,7 @@ sidebar_position: 5
 title: Custom Resource Definitions (CRD)
 description: Kubewarden's Custom Resource Definitions (CRD)
 keywords: [kubewarden, kubernetes, custom resource definitions, crd]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 doc-type: [reference]
 doc-topic: [operator-manual, crd]
 ---

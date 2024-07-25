@@ -3,7 +3,7 @@ sidebar_label: Cluster operators
 title: Testing for cluster operators
 description: An introduction to testing Kubewarden policies for cluster operators.
 keywords: [kubewarden, kubernetes, cluster operators, testing]
-doc-persona: [kubewarden-developer]
+doc-persona: [kubewarden-policy-developer]
 doc-type: [tutorial]
 doc-topic: [testing-policies, cluster-operators]
 ---

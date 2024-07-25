@@ -6,7 +6,7 @@ description: Distributing Kubewarden policies developed with Go.
 keywords: [kubewarden, kubernetes, distributing kubewarden policies]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, go, distributing-policies]
-doc-persona: [kubewarden-developer, kubewarden-operator]
+doc-persona: [kubewarden-policy-developer, kubewarden-operator]
 ---
 
 <head>
