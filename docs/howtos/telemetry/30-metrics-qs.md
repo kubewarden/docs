@@ -34,7 +34,7 @@ Prometheus community Helm chart.
 Let's create a `kube-prometheus-stack-values.yaml` file with the
 following contents:
 
-````yaml
+```yaml
 ---
 prometheus:
   additionalServiceMonitors:
@@ -252,5 +252,4 @@ variable to match the name of the desired policy.
 You should be able to see the dashboard similar to this:
 
 ![Dashboard](/img/grafana_dashboard.png)
-````
 
