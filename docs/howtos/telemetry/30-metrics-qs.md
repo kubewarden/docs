@@ -58,6 +58,7 @@ This way, the Prometheus Operator can inspect which Kubernetes Endpoints are tie
 Let's create the two ServiceMonitors named `kubewarden-controller` and `kubewarden-policy-server` using the following manifests:
 
 ```yaml
+kubectl apply -f - <<EOF
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -89,6 +90,7 @@ spec:
   selector:
     matchLabels:
       app: kubewarden-policy-server-default
+EOF
 ```
 
 ## Install Kubewarden
