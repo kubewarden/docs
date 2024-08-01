@@ -25,18 +25,18 @@ Both OPA Gatekeeper and Kubewarden are open source projects, and part of CNCF.
 
 This table provides a comparison between OPA Gatekeeper and Kubewarden. Topics requiring more information have links to further explanation.
 
-|                                                       | OPA Gatekeeper              | Kubewarden                       |
-| ----------------------------------------------------- | --------------------------- | -------------------------------- |
-| Validation                                            | ✅                          | ✅                               |
-| Mutation                                              | ✅                          | ✅                               |
-| Policy language [[1]](#writing-policies)              | Rego                        | Rego, Go, Rust,...               |
-| Context aware [[2]](#context-aware)                   | ✅                          | ✅                               |
-| Kubernetes integration [[3]](#kubernetes-integration) | cluster wide CRD            | cluster wide and namespaced CRDs |
-| Policy distribution [[4]](#policy-distribution)       | embedded into Kubernetes CR | Container registry               |
-| CI/CD integration [[5]](#cicd-integration)            | ✅                          | ✅                               |
-| Policy enforcement modes                              | deny, warn                  | deny, warn                       |
-| Deployment mode [[6]](#deployment-mode)               | single evaluation server    | multiple evaluation servers      |
-| Background checks [[7]](#background-checks)           | ✅                          | ✅                               |
+|                                                       | OPA Gatekeeper              | Kubewarden                                              |
+| ----------------------------------------------------- | --------------------------- | ------------------------------------------------------- |
+| Validation                                            | ✅                          | ✅                                                      |
+| Mutation                                              | ✅                          | ✅                                                      |
+| Policy language [[1]](#writing-policies)              | Rego                        | Rego, CEL, Go, Rust,...                                 |
+| Context aware [[2]](#context-aware)                   | ✅                          | ✅                                                      |
+| Kubernetes integration [[3]](#kubernetes-integration) | cluster wide CRD            | cluster wide and namespaced CRDs                        |
+| Policy distribution [[4]](#policy-distribution)       | embedded into Kubernetes CR | Container registry, or embeded into Kubernetes CR (CEL) |
+| CI/CD integration [[5]](#cicd-integration)            | ✅                          | ✅                                                      |
+| Policy enforcement modes                              | deny, warn                  | deny, warn                                              |
+| Deployment mode [[6]](#deployment-mode)               | single evaluation server    | multiple evaluation servers                             |
+| Background checks [[7]](#background-checks)           | ✅                          | ✅                                                      |
 
 ## Types of policies
 
@@ -55,7 +55,7 @@ use Rego, instead using ad-hoc rules defined in YAML (see [here](https://open-po
 :::
 
 Kubewarden allows policies to be written using different paradigms. Policy authors
-can use both traditional programming languages (like Go, Rust and others) or [Domain Specific Languages](https://en.wikipedia.org/wiki/Domain-specific_language) like Rego.
+can use both traditional programming languages (like Go, Rust and others) or [Domain Specific Languages](https://en.wikipedia.org/wiki/Domain-specific_language) like Rego and CEL.
 Kubewarden's validating and mutating policies are written in the same way.
 
 :::caution
@@ -112,11 +112,12 @@ This allows Kubernetes administrators to delegate some policy-related work.
 
 ## Policy distribution
 
-The source code of the policy (the Rego code) has to be written inside
-the Custom Resource that defines a policy inside Kubernetes.
+Both OPA Gatekeeper and Kubewarden policies have the source code of the policy (Rego code in the case of OPA Gatekeeper, and CEL code for
+Kubewarden) inside the Custom Resource that defines a policy in Kubernetes.
 
-Kubewarden policies are managed like container images. Once built, they are pushed
-into container registries as OCI artifacts.
+In addition, Kubewarden policies can have the source code
+of the policy managed like container images (for Rego, Go, Rust and so on). Once
+built, they are pushed into container registries as OCI artifacts.
 
 Kubewarden policies can be signed and verified using container image tools
 like `cosign`, from the [Sigstore project](https://sigstore.dev).
