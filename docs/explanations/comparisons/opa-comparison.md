@@ -112,13 +112,11 @@ This allows Kubernetes administrators to delegate some policy-related work.
 
 ## Policy distribution
 
-Both OPA Gatekeeper and Kubewarden policies have source code of the policy (the
-Rego code in the case of OPA Gatekeeper, and the CEL code in case of
-Kubewarden) written inside the Custom Resource that defines a policy inside
-Kubernetes.
+Both OPA Gatekeeper and Kubewarden policies have the source code of the policy (Rego code in the case of OPA Gatekeeper, and CEL code for
+Kubewarden) inside the Custom Resource that defines a policy in Kubernetes.
 
-In addition, Kubewarden policies Kubewarden policies can have the source code
-of the policy managed like container images (for Rego, Go, Rust...). Once
+In addition, Kubewarden policies can have the source code
+of the policy managed like container images (for Rego, Go, Rust and so on). Once
 built, they are pushed into container registries as OCI artifacts.
 
 Kubewarden policies can be signed and verified using container image tools
