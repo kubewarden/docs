@@ -13,13 +13,16 @@ doc-topic: [operator-manual, sources.yaml]
   <link rel="canonical" href="https://docs.kubewarden.io/reference/sources_yaml"/>
 </head>
 
+You can tune the push-pull behavior of `kwctl` and `policy-server` binaries
+using the `sources.yaml` file, configured via the `--sources-path` argument which specifies the file.
+
+To configure a PolicyServer CR, set its `spec.insecureSources` and `spec.sourceAuthorities` fields. The format
+of this fields corresponds with their sections below.
+
 ## The `sources.yaml` file
 
-You can tune the push-pull behavior of `kwctl` and `policy-server` using the `sources.yaml` file.
-
-The `--sources-path` argument to both tools specifies the file.
-
 The command `kwctl` tries to load the `sources.yaml` file from these folders if the `--sources-path` argument is omitted:
+
 - Linux: `$HOME/.config/kubewarden/sources.yaml`
 - Mac: `$HOME/Library/Application Support/io.kubewarden.kubewarden/sources.yaml`
 - Windows: `$HOME\AppData\Roaming\kubewarden\config\sources.yaml`
