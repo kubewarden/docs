@@ -49,3 +49,5 @@ On receipt the security team will:
 Please, refer to the [community
 repository](https://github.com/kubewarden/community) to find more about the
 project Governance and Security Policy.
+
+[slack-room]: https://kubernetes.slack.com/archives/C03L52JRAFM
