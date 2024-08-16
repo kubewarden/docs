@@ -136,4 +136,18 @@ module.exports = {
       },
     ],
   ],
+  plugins: [
+    [
+      "@docusaurus/plugin-client-redirects",
+      {
+        fromExtensions: ["html", "htm"],
+        redirects: [
+          {
+            from: ["/explanations/opa-comparison"],
+            to: "/explanations/comparisons/opa-comparison",
+          },
+        ],
+      },
+    ],
+  ],
 };
