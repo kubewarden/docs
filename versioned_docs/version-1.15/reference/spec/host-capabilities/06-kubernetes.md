@@ -100,7 +100,7 @@ This API function returns an error when used to fetch cluster-wide resources
 Use the `list_resources_all` when dealing with cluster-wide resources.
 :::
 
-### Operation - `get_resources`
+### Operation - `get_resource`
 
 #### Input
 
