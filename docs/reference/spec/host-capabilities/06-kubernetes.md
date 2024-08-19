@@ -34,7 +34,7 @@ waPC has the following function arguments when performing a call from the guest 
 
 - Binding - `kubewarden`
 - Namespace - `kubernetes`
-- Operation - `list_resources_all`, `list_resources_by_namespace`, or `get_resources`
+- Operation - `list_resources_all`, `list_resources_by_namespace`, or `get_resource`
 - Payload - input payload - see below
 
 and returns:
@@ -100,7 +100,7 @@ This API function returns an error when used to fetch cluster-wide resources
 Use the `list_resources_all` when dealing with cluster-wide resources.
 :::
 
-### Operation - `get_resources`
+### Operation - `get_resource`
 
 #### Input
 
