@@ -34,10 +34,11 @@ PolicyServers support the usual
 , either of type `kubernetes.io/dockercfg` or type `kubernetes.io/dockerconfigjson`.
 These secrets can be created with `kubectl create secret docker-registry`.
 
-For configuring your PolicyServer instance, store the credentials
-used to access the registry in a `docker-registry` Secret. The secret should be
-created in the same namespace where you run your PolicyServer. This can be done
-with the following command:
+The secret should be created **in the same namespace where you run your
+PolicyServer**. This follows the principle of least privilege, and allows
+different PolicyServers to validate OCI artifacts from different registries separately.
+
+Creating this Secret for the PolicyServer can be done with the following command:
 
 ```shell
 kubectl --namespace kubewarden create secret docker-registry secret-ghcr-docker \
