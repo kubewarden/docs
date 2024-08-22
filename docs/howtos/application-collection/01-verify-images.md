@@ -46,7 +46,7 @@ layers that contain the signatures.
 
 Following the [private registries how-to](../policy-servers/private-registry)
 for Policy Servers, create a Docker Config Secret **in the same namespace of
-the PolicyServer**. This can be achieved by instanting a Secret with exactly
+the PolicyServer**. Do this by instantiating a Secret with
 the same contents as the previous `application-collection`.
 
 For PolicyServer `default`, installed with the `kubewarden-defaults` Helm chart
@@ -61,7 +61,7 @@ $ kubectl create secret docker-registry application-collection-kw -n kubewarden 
 
 ## Configure PolicyServers to use the new Secret
 
-If using the PolicyServer `default` from the `kubewarde-defaults` Helm chart,
+If using the PolicyServer `default` from the `kubewarden-defaults` Helm chart,
 configure it with the imagePullSecret `application-collection-kw` in the same
 namespace by setting the following values for the chart:
 
@@ -73,7 +73,7 @@ $ helm upgrade -i --wait --namespace kubewarden \
 ```
 
 If you are using other PolicyServers, set their
-[`spec.imagePullSecret`](https://docs.kubewarden.io/reference/CRDs#policyserverspec).
+[`spec.imagePullSecret`](../../reference/CRDs#policyserverspec).
 Remember, the Secret must be in the same namespace as the PolicyServer.
 
 ## Apply the policy
