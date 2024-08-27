@@ -173,7 +173,6 @@ You can do this with the following tests:
   echo "output = ${output}"
 
   # settings validation failed
-  [ $(expr "$output" : '.*"valid":false.*') -ne 0 ]
   [ $(expr "$output" : ".*Provided settings are not valid: These labels cannot be constrained and denied at the same time: Set{cc-center}.*") -ne 0 ]
 }
 
@@ -186,7 +185,7 @@ You can do this with the following tests:
   # this prints the output when one the checks below fails
   echo "output = ${output}"
 
-  [ $(expr "$output" : '.*"valid":false.*') -ne 0 ]
+  # settings validation failed
   [ $(expr "$output" : ".*Provided settings are not valid: error parsing regexp.*") -ne 0 ]
 }
 ```
