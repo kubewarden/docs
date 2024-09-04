@@ -44,20 +44,6 @@ The Kubernetes Custom Resource Definitions (CRDs) defined by Kubewarden are desc
 
 ## Installation
 
-:::info Prerequisites
-The Helm chart depends on `cert-manager`. Ensure you install [`cert-manager`](https://cert-manager.io/docs/installation/) _before_ the `kubewarden-controller` chart.
-
-You can install the latest version of `cert-manager` through Helm by running the following commands:
-
-```console
-helm repo add jetstack https://charts.jetstack.io
-
-helm install --wait --namespace cert-manager --create-namespace \
-	--set crds.enabled=true cert-manager jetstack/cert-manager
-```
-
-:::
-
 :::info Authentication
 Kubewarden policies can be retrieved from the GitHub container registry at https://ghcr.io.
 You need authentication to use the repository with the Kubewarden CLI, a [GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) (PAT).

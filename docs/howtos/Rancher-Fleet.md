@@ -21,9 +21,8 @@ It does this by defining [Fleet Bundles](https://fleet.rancher.io/concepts).
 
 ## Installing
 
-The Kubewarden charts are standard charts,
-they have dependencies (such as `cert-manager`),
-and depend transitively on each other
+The Kubewarden charts are standard charts, they depend transitively on each
+other
 
 `kubewarden-crds` ← `kubewarden-controller` ← `kubewarden-defaults`
 

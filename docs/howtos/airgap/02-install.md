@@ -34,16 +34,6 @@ Alternatively, the `imagelist.txt` and `policylist.txt` files are shipped inside
 
     :::
 
-1. Add `cert-manager`, if not available, to your private registry.
-
-    ```console
-    helm repo add jetstack https://charts.jetstack.io
-    helm repo update
-    helm pull jetstack/cert-manager
-    helm template ./cert-manager-<Version>.tgz | \
-      awk '$1 ~ /image:/ {print $2}' | sed s/\"//g >> ./kubewarden-images.txt
-    ```
-
 1. Download `kubewarden-save-images.sh` and `kubewarden-load-images.sh` from the
 [utilities repository](https://github.com/kubewarden/utils).
 1. Save Kubewarden container images into a `.tar.gz` file:
@@ -82,12 +72,6 @@ You need to download the following helm charts to your workstation:
 helm pull kubewarden/kubewarden-crds
 helm pull kubewarden/kubewarden-controller
 helm pull kubewarden/kubewarden-defaults
-```
-
-Download `cert-manager`, if not installed, to the air gap cluster.
-
-```shell
-helm pull jetstack/cert-manager
 ```
 
 ## Populate private registry
@@ -136,22 +120,12 @@ in the documentation to learn about configuring the `sources.yaml` file
 
 ## Install Kubewarden
 
-Now that your private registry has everything required you can install Kubewarden.
-The only difference to a standard Kubewarden installation is that you need to change the registry in the container images and policies to be the private registry.
+Now that your private registry has everything required you can install
+Kubewarden. The only difference to a standard Kubewarden installation is that
+you need to change the registry in the container images and policies to be the
+private registry.
 
-Install `cert-manager`, if not already installed, in the air gap cluster:
-
-```shell
-helm install --create-namespace cert-manager ./cert-manager-<Version>.tgz \
-    -n kubewarden \
-    --set crds.enabled=true \
-    --set image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/jetstack/cert-manager-controller \
-    --set webhook.image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/jetstack/cert-manager-webhook \
-    --set cainjector.image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/jetstack/cert-manager-cainjector \
-    --set startupapicheck.image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/jetstack/cert-manager-ctl
-```
-
-Now install the Kubewarden stack:
+Install the Kubewarden stack:
 
 ```shell
 helm install --wait -n kubewarden \

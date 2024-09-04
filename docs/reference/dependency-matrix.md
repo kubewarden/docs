@@ -25,14 +25,6 @@ backwards-incompatible changes still happen. Kubewarden devs do their best to
 track Opentelemetry stack changes and adjust to them. Kubewarden is tested against a known working
 range of Opentelemetry, metrics and tracing stack.
 
-## Hard dependencies
-
-Needed for Kubewarden deployments.
-
-| Chart dependency              | Helm chart `appVersion` | Helm chart `version` |        Comments        |
-| ----------------------------- | :---------------------: | :------------------: | :--------------------: |
-| `jetstack/cert-manager` chart |      `>= 1.13 < 2`      |  Example: `v1.13.2`  | Plans to make optional |
-
 ## Optional dependencies
 
 Needed for specific features.

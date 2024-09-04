@@ -283,7 +283,7 @@ For example, by:
 - using unsigned and malicious images for:
   - Kubewarden-controller
   - policy-server
-  - any of the Kubewarden dependencies (cert-manager)
+  - any of the Kubewarden dependencies 
   - any optional dependencies (Grafana, Prometheus, and others)
 - by compromising the Helm charts payload
 
