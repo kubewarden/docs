@@ -98,8 +98,8 @@ EOF
 We can now install Kubewarden in the recommended way with Helm charts.
 
 :::note
-cert-manager is a requirement of Kubewarden, and OpenTelemetry is required for this
-feature, but we've already installed them in a previous section of this book.
+cert-manager is a requirement of OpenTelemetry, but we've already installed
+them in a previous section of this book.
 :::
 
 As a first step, we have to add the Helm repository that contains Kubewarden:
