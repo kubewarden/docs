@@ -2,7 +2,8 @@
 sidebar_label: Reusing VAPs
 title: Reusing ValidatingAdmissionPolicies
 description: "Example: Reusing ValidatingAdmissionPolicies"
-keywords: [kubewarden, kubernetes, writing policies, ValidatingAdmissionPolicies]
+keywords:
+  [kubewarden, kubernetes, writing policies, ValidatingAdmissionPolicies]
 doc-type: [tutorial]
 doc-topic: [kubewarden, writing-policies, cel, ValidatingAdmissionPolicies]
 doc-persona: [kubewarden-policy-developer, kubewarden-operator]
@@ -111,6 +112,7 @@ Notice the commented numbers on both the YAML manifests. Let's expand on them:
 | 5   | `validationActions` | `mode`                                | `mode` has as options `protect` and `monitor`. Auditing is more full featured in Kubewarden, see (7).                                                                                                                    |
 | 6   | `matchResources`    | `namespaceSelector`, `objectSelector` | Define ways to constraint using Selectors. Kubewarden's policies have them as `namespaceSelector` and `objectSelector`.                                                                                                  |
 | 7   | `auditAnnotations`  | `backgroundAudit`, annotations        | These Kubewarden fields set the policy usage in [Audit Scanner](../../../explanations/audit-scanner), and its category and severity for PolicyReports.                                                                   |
+|     | `matchConditions`   | `matchConditions`                     | Kubewarden's policies have `matchConditions`.                                                                                                                                                                            |
 |     | `---`               | Kubewarden-only features              | For other features, see the rest of tutorial CEL examples.                                                                                                                                                               |
 
 :::tip
@@ -124,8 +126,6 @@ This is described inside of [this howto](../../../howtos/vap-migration).
 There are some VAP features that aren't yet implemented. If look forward to them, please get in contact with us. These are:
 
 - VAP [authorizer library](https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz).
-- VAP [matchConditions](https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/#matching-requests-matchconditions)
-  (`spec.matchConditions`).
 - VAP [Parameters](https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/#parameter-resources)
   (ValidatingAdmissionPolicy `spec.paramKind` & ValidatingAdmissionPolicyBinding `spec.paramRef`).
 - VAP [Audit Annotations](https://kubernetes.io/docs/reference/labels-annotations-taints/audit-annotations/)
