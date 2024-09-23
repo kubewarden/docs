@@ -1,9 +1,9 @@
 ---
 sidebar_label: Certificate rotation
-sidebar_position: 21
-title: Certificate rotation 
+sidebar_position: 25
+title: Certificate rotation
 description: How Kubewarden controller manages its certificates
-keywords: [ kubewarden, certificate, controller, reconciliation ]
+keywords: [kubewarden, certificate, controller, reconciliation]
 doc-persona: [kubewarden-operator]
 doc-type: [explanation]
 doc-topic: [explanations, certificates]
@@ -12,7 +12,6 @@ doc-topic: [explanations, certificates]
 <head>
   <link rel="canonical" href="https://docs.kubewarden.io/explanations/certificates"/>
 </head>
-
 
 Since Kubewarden v1.17.0, the cert-manager dependency was removed. The
 controller is able to manage all the certificates used by all the components.
@@ -23,7 +22,7 @@ The first certificate generation is done by the Helm chart installation. It
 will generate the root CA with ten years until expiration. The Helm chart
 installation also generates the controller webhook webserver certificate,
 signed by the root CA. This is used by the API server to communicate with the
-Kubewarden controller to validate the CRDs. It has a one year expiration. 
+Kubewarden controller to validate the CRDs. It has a one year expiration.
 
 Once the controller starts, its reconciler renews the certificates
 automatically when they are about to expire. It also updates all the
@@ -53,4 +52,3 @@ When a policy server certificate or the controller webserver certificate is
 renewed, the controller updates the secret with the new certificate signed by
 the root CA. Due to this reload feature, the controller, and the policy server,
 use the new certificate with no need to restart processes, hence no downtime.
-
