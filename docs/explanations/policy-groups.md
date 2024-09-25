@@ -287,7 +287,7 @@ spec:
       operations:
         - CREATE
         - UPDATE
-  polices:
+  policies:
     unique_service_selector:
       module: registry://ghcr.io/kubewarden/policies/unique-service-selector-policy:v0.1.0
       contextAwareResources:
