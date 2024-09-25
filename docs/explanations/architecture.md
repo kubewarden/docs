@@ -225,7 +225,7 @@ so finds the bound `policy-server` and reconciles it.
 When creating, modifying or deleting a `ClusterAdmissionPolicy` or `AdmissionPolicy`,
 a reconciliation loop activates in `kubewarden-controller`,
 for the `policy-server` owning the policy.
-This reconciliation loop creates a `ConfigMap` with all the polices bound to the `policy-server`.
+This reconciliation loop creates a `ConfigMap` with all the policies bound to the `policy-server`.
 Then the Deployment rollout of the `policy-server` starts.
 It results in starting the new `policy-server` instance with the updated configuration.
 

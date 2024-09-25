@@ -6,7 +6,7 @@ description: A description of Kubewarden context aware policies, what they are a
 keywords: [ kubewarden, context-aware policy, clusteradmissionpolicy, admissionpolicy, admissionrequest, cluster administrator]
 doc-persona: [kubewarden-policy-developer, kubewarden-integrator]
 doc-type: [explanation]
-doc-topic: [explanations, context-aware-polices]
+doc-topic: [explanations, context-aware-policies]
 ---
 
 <head>

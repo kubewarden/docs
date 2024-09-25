@@ -187,4 +187,4 @@ EOF
 Error from server: error when creating ".\\pause-user-group.yaml": admission webhook "psp-user-group.kubewarden.admission" denied the request: Request rejected by policy psp-user-group. The policy attempted to mutate the request, but it is currently configured to not allow mutations.
 ```
 
-In conclusion, you can see Kubewarden replicates the same behavior as the deprecated Kubernetes Pod Security Polices (PSP).
+In conclusion, you can see Kubewarden replicates the same behavior as the deprecated Kubernetes Pod Security Policies (PSP).
