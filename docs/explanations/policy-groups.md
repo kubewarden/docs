@@ -167,23 +167,6 @@ The `message` field specifies the message returned when the evaluation of the
 `expression` results in a rejection. The message is included in the response,
 together with the results of the individual policies evaluation.
 
-Group Policies rely on the `warnings` attribute of the
-[`AdmissionReview` response](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#response)
-object to provide information about the evaluation results of the
-policies that are part of the group.
-These warnings are shown by multiple Kubernetes clients, including `kubectl`.
-
-For example, this is the output produced when attempting to create a Pod with an image that
-uses the `latest` tag and is signed only by Alice:
-
-```shell
-$ kubectl apply -f signed-pod.yml
-Warning: signed_by_alice: allowed
-Warning: signed_by_bob: rejected
-Warning: reject_latest: rejected
-Error from server: error when creating "signed-pod.yml": admission webhook "clusterwide-demo.kubewarden.admission" denied the request: the image is using the latest tag or is not signed by Alice and Bob
-```
-
 :::info
 The policies that belong to the group are evaluated only
 if necessary.
@@ -204,21 +187,6 @@ This avoids unnecessary evaluations of policies in the group and grants
 fast responses to the admission requests.
 :::
 
-:::warning
-The `warnings` attribute of the `AdmissionReview` response object are subject to
-limitations.
-
-Quoting the [official Kubernetes documentation](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#response):
-
-> Individual warning messages over 256 characters may be truncated by the API server
-> before being returned to clients.
-> If more than 4096 characters of warning messages are added (from all sources),
-> additional warning messages are ignored.
-
-Because of these limitations, the details about policy evaluation are not
-provided as part of the `warnings` attribute of the `AdmissionReview` response.
-:::
-
 When a group policy performs a rejection, all the evaluation details of the
 group policies are sent as part of the AdmissionResponse `.status.details.causes`.
 
@@ -227,10 +195,6 @@ level of `kubectl`:
 
 ```shell
 kubectl -v4 apply -f signed-pod.yml
-I0919 18:29:40.079805    4330 cert_rotation.go:137] Starting client certificate rotation controller
-Warning: signed_by_alice: allowed
-Warning: signed_by_bob: rejected
-Warning: reject_latest: rejected
 I0919 18:29:40.251332    4330 helpers.go:246] server response object: [{
   "kind": "Status",
   "apiVersion": "v1",

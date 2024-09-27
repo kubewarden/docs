@@ -88,10 +88,6 @@ group, increase the vebosity level of `kubectl`:
 
 ```shell
 kubectl -v4 apply -f signed-pod.yml
-I0919 18:29:40.079805    4330 cert_rotation.go:137] Starting client certificate rotation controller
-Warning: signed_by_alice: allowed
-Warning: signed_by_bob: rejected
-Warning: reject_latest: rejected
 I0919 18:29:40.251332    4330 helpers.go:246] server response object: [{
   "kind": "Status",
   "apiVersion": "v1",
