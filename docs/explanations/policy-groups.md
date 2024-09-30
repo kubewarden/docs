@@ -87,7 +87,7 @@ spec:
                 urm8ZrXi4S3an70k8bf1OlGnI/aHCcGleewHbBk1iByySMwr8BabchXGSg==
                 -----END PUBLIC KEY-----
     reject_latest:
-      module: registry://ghcr.io/kubewarden/policies/trusted-repos:v0.1.12
+      module: registry://ghcr.io/kubewarden/policies/trusted-repos:v0.2.0
       settings:
         tags:
           reject:
@@ -123,7 +123,7 @@ policies:
     module: ghcr.io/kubewarden/policies/verify-image-signatures:v0.2.8
     settings: {} # settings for the policy
   reject_latest_tag:
-    module: ghcr.io/kubewarden/policies/trusted-repos-policy:v0.1.12
+    module: ghcr.io/kubewarden/policies/trusted-repos-policy:v0.2.0
     settings: {} # settings for the policy
 ```
 
