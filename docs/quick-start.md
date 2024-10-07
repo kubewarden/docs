@@ -38,7 +38,20 @@ The Kubewarden stack comprises:
 
 :::tip
 
-The Kubernetes Custom Resource Definitions (CRDs) defined by Kubewarden are described [here](reference/CRDs.md).
+The Kubernetes Custom Resource Definitions (CRDs) defined by Kubewarden are
+described [here](reference/CRDs.md).
+
+Furthermore, Kubewarden CRDs mentioned in this tutorial and in the whole
+documentation have short names, which are easier to use. These are the short
+names for all the CRDs:
+
+| Resource                     | shortName |
+| ---------------------------- | --------- |
+| AdmissionPolicies            | **ap**    |
+| ClusterAdmissionPolicies     | **cap**   |
+| AdmissionPolicyGroups        | **apg**   |
+| ClusterAdmissionPolicyGroups | **capg**  |
+| PolicyServers                | **ps**    |
 
 :::
 
