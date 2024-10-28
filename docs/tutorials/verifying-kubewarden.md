@@ -118,7 +118,7 @@ You can find our Helm charts in our `https://` traditional Helm repository under
 https://charts.kubewarden.io.
 
 The same Helm charts are signed via Sigstore's keyless signing, and pushed to an
-OCI repository that can hold both the Helm chart, its signature, and its
+OCI repository that holds both the Helm chart, its signature, and its
 provenance attestation as OCI artifacts.
 
 Since Helm 3.8.0, Helm has support for OCI registries, but because of
@@ -203,7 +203,7 @@ issuer, subject, and `github_workflow_repository` extensions.
 The SBOMs are signed and published in the [GitHub
 Release](https://github.com/kubewarden/kwctl/releases) of the project.
 
-The provenance attestation for `kwctl` can be verified by using [`gh
+The provenance attestation for `kwctl` is verified by using [`gh
 attestation verify`](https://cli.github.com/manual/gh_attestation_verify). For
 example with ` gh attestation verify kwctl-linux-x86_64 --repo kubewarden/kwctl`.
 
