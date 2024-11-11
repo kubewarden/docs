@@ -120,7 +120,7 @@ helm install --wait \
 Once cert-manager is up and running, the OpenTelemetry operator Helm chart can be installed in this way:
 
 :::note
-At time of writing the latest OpenTelemetry operator chart version is `0.65.0`
+At the time of writing (2024-11-11) the latest OpenTelemetry operator chart version is `0.65.0`
 :::
 
 ```console
