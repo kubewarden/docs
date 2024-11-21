@@ -29,6 +29,8 @@ Policy authors can use the following resources:
 
 - [Kubewarden .NET Core SDK](https://github.com/kubewarden/policy-sdk-dotnet):
 this provides a set of objects and functions that simplify the process of writing policies.
+- [Kubewarden .NET template project](https://github.com/kubewarden/dotnet-policy-template): use this template to scaffold a .NET-based policy.
+The template comes with a working policy and a set of GitHub Actions to automate its lifecycle.
 - [Kubewarden policy example](https://github.com/kubewarden/policy-sdk-dotnet/tree/main/example):
 this is an example of a working policy.
 
@@ -38,10 +40,3 @@ The SDK enables writing both validating and mutating policies.
 It's possible to use the
 [`KubernetesClient.Models`](https://www.nuget.org/packages/KubernetesClient.Models)
 library to deal with the Kubernetes objects.
-
-## Project template
-
-Currently, we don't have a project template that can scaffold a C# policy.
-
-Please, [open an issue](https://github.com/kubewarden/policy-sdk-dotnet/issues)
-if interested.
