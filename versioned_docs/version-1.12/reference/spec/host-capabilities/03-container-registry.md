@@ -51,7 +51,7 @@ This is the description of the waPC protocol used to expose this capability:
 string
 ```
 
-#### waPC finction - `v1/manifest_digest` output
+#### waPC function - `v1/manifest_digest` output
 
 ```hcl
 {
