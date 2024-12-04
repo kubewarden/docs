@@ -20,7 +20,7 @@ This is the scaffolding provided function:
 
 ```rust showLineNumbers
 fn validate(payload: &[u8]) -> CallResult {
-    // highlight-next-line
+    // ➀
     let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
 
     info!(LOG_DRAIN, "starting validation");
@@ -29,11 +29,11 @@ fn validate(payload: &[u8]) -> CallResult {
         return kubewarden::accept_request();
     }
     // TODO: you can unmarshal any Kubernetes API type you are interested in
-    // highlight-next-line
+    // ➁
     match serde_json::from_value::<apicore::Pod>(validation_request.request.object) {
         Ok(pod) => {
             // TODO: your logic goes here
-            // highlight-next-line
+            // ➂
             if pod.metadata.name == Some("invalid-pod-name".to_string()) {
                 let pod_name = pod.metadata.name.unwrap();
                 info!(
@@ -57,7 +57,7 @@ fn validate(payload: &[u8]) -> CallResult {
             // We were forwarded a request we cannot unmarshal or
             // understand, just accept it
             warn!(LOG_DRAIN, "cannot unmarshal resource: this policy does not know how to evaluate this resource; accept it");
-            // highlight-next-line
+            // ➃
             kubewarden::accept_request()
         }
     }
@@ -66,12 +66,12 @@ fn validate(payload: &[u8]) -> CallResult {
 
 Walking through the code listing:
 
-- In line 2. Parse the incoming `payload` into a `ValidationRequest<Setting>` object.
+- In the line marked ➀. Parse the incoming `payload` into a `ValidationRequest<Setting>` object.
 This automatically populates the `Settings` instance inside the `ValidationRequest` with the parameters provided by the user.
-- In line 10. Convert the Kubernetes raw JSON object embedded into the request into an instance of the
+- In the line marked ➁. Convert the Kubernetes raw JSON object embedded into the request into an instance of the
 [Pod struct](https://arnavion.github.io/k8s-openapi/v0.11.x/k8s_openapi/api/core/v1/struct.Pod.html)
-- In line 13. The request has a Pod object, the code approves only the requests that don't have `metadata.name` equal to the hard-coded value `invalid-pod-name`
-- In line 36. The request doesn't contain a Pod object, hence the policy accepts the request.
+- In the line marked ➂. The request has a Pod object, the code approves only the requests that don't have `metadata.name` equal to the hard-coded value `invalid-pod-name`
+- In the line marked ➃. The request doesn't contain a Pod object, hence the policy accepts the request.
 
 As you can see, the code is already doing a validation that resembles the one you want to implement.
 You just have to remove the hard-coded value and use the values provided by the user via the policy settings.

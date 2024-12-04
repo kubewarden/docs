@@ -31,7 +31,6 @@ The policy should accept the creation of a Pod like the following one:
 apiVersion: v1
 kind: Pod
 metadata:
-// highlight-next-line
   name: nginx
 spec:
   containers:
@@ -45,7 +44,6 @@ It should reject the creation of a Pod like:
 apiVersion: v1
 kind: Pod
 metadata:
-// highlight-next-line
   name: bad_name1
 spec:
   containers:

@@ -60,7 +60,7 @@ deny[msg] {
 }
 ```
 
-The `utility/policy.rego` module must needs modification to remove Kubernetes-specific code:
+The `utility/policy.rego` module needs modification to remove Kubernetes-specific code:
 
 ```rego
 package policy
@@ -71,13 +71,11 @@ main = {
 	"response": response,
 }
 
-// highlight-start
 # OPA policy responses need the uid field to be set.
 # If the request doesn't contain a uid, set it to an empty string.
 default uid = ""
 
 uid = input.request.uid
-// highlight-end
 
 response = {
 	"uid": uid,

@@ -222,13 +222,11 @@ type ValidationResponse struct {
     // Optional - ignored if accepted
     Code *uint16 `json:"code,omitempty"`
     // Optional - used only by mutating policies
-    // highlight-next-line
     MutatedObject *Request `json:"mutated_object,omitempty"`
 }
 
 // MutateRequest accepts the request. The given `mutatedObject` is how
 // the evaluated object must look once accepted
-// highlight-next-line
 func MutateRequest(mutatedObject *Request) ValidationResponse {
     return ValidationResponse{
         Accepted:      true,
