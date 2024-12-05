@@ -36,7 +36,6 @@ rules:
 mutating: false
 contextAware: false
 executionMode: kubewarden-wapc
-// highlight-next-line
 policyType: raw
 # Consider the policy for the background audit scans. Default is true. Note the
 # intrinsic limitations of the background audit feature on docs.kubewarden.io;

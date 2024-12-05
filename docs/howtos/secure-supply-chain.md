@@ -419,7 +419,7 @@ metadata:
 </details>
 
 After creating the `ConfigMap` to store the signature requirements, you can configure a Policy Server.
-To start validating policy signatures by setting the `ConfigMap` name in the highlighted field `verificationConfig`.
+To start validating policy signatures by setting the `ConfigMap` name in the field `verificationConfig` (marked ➀).
 
 ```yaml
 apiVersion: policies.kubewarden.io/v1alpha2
@@ -432,8 +432,8 @@ spec:
   image: ghcr.io/kubewarden/policy-server:v0.2.7
   serviceAccountName: policy-server
   replicas: 1
-//highlight-next-line
-  verificationConfig: your_configmap   #name of the confimap with the signatures requirements
+  #name of the configmap with the signatures requirements
+  verificationConfig: your_configmap # ➀
   env:
     - name: KUBEWARDEN_ENABLE_METRICS
       value: "1"
@@ -442,6 +442,8 @@ spec:
     - name: "KUBEWARDEN_LOG_LEVEL"
       value: "info"
 ```
+➀ `verificationConfig`
+<hr/>
 
 If you deploy the default Policy Server using the `kubewarden-defaults`
 Helm chart then you configure this field by setting the `ConfigMap` name in the
@@ -463,15 +465,13 @@ A file of signature requirements
 ```yaml
 apiVersion: v1
 
-//highlight-next-line
-allOf:
+allOf: # ➀
   - kind: githubAction
     owner: kubewarden   # mandatory
     annotations:
       env: prod
 
-//highlight-next-line
-anyOf: # at least `anyOf.minimumMatches` are required to match
+anyOf: # ➁ : at least `anyOf.minimumMatches` are required to match
   minimumMatches: 2 # default is 1
   signatures:
   - kind: pubKey
@@ -506,16 +506,18 @@ anyOf: # at least `anyOf.minimumMatches` are required to match
     owner: alice # optional
     key: .... # mandatory
 ```
-
+➀ : `allOf`<br/>
+➁ : `anyOf`
 </details>
 
 ### Signature validation
 
-The configuration above contains the two highlighted sections, `allOf` and `anyOf`:
+The configuration above contains the two sections, `allOf` and `anyOf`:
 
 - `allOf`: The policy is trusted only if all signature requirements here are valid.
 
 - `anyOf`:  The policy is trusted if the `minimumMatches` criterion is met.
+
 Above, the `minimumMatches` field is 2.
 So, at least two of the signature requirements must be met.
 The default value for `minimumMatches` field is `1`.

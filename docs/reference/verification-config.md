@@ -109,14 +109,12 @@ A file of signature requirements
 ```yaml
 apiVersion: v1
 
-//highlight-next-line
 allOf:
   - kind: githubAction
     owner: kubewarden   # mandatory
     annotations:
       env: prod
 
-//highlight-next-line
 anyOf: # at least `anyOf.minimumMatches` are required to match
   minimumMatches: 2 # default is 1
   signatures:
@@ -157,11 +155,12 @@ anyOf: # at least `anyOf.minimumMatches` are required to match
 
 ### Signature validation
 
-The configuration above contains the two highlighted sections, `allOf` and `anyOf`:
+The configuration above contains the two sections, `allOf` and `anyOf`:
 
 - `allOf`: The policy is trusted only if all signature requirements here are valid.
 
 - `anyOf`:  The policy is trusted if the `minimumMatches` criterion is met.
+
 Above, the `minimumMatches` field is 2.
 So, at least two of the signature requirements must be met.
 The default value for `minimumMatches` field is `1`.

@@ -55,7 +55,6 @@ This is how the function should be when complete:
 
 ```go
 func validate(payload []byte) ([]byte, error) {
-    // highlight-next-line
     // NOTE 1
     // Create a ValidationRequest instance from the incoming payload
     validationRequest := kubewarden_protocol.ValidationRequest{}
@@ -66,7 +65,6 @@ func validate(payload []byte) ([]byte, error) {
             kubewarden.Code(400))
     }
 
-    // highlight-next-line
     // NOTE 2
     // Create a Settings instance from the ValidationRequest object
     settings, err := NewSettingsFromValidationReq(&validationRequest)
@@ -76,12 +74,10 @@ func validate(payload []byte) ([]byte, error) {
             kubewarden.Code(400))
     }
 
-    // highlight-next-line
     // NOTE 3
     // Access the **raw** JSON that describes the object
     podJSON := validationRequest.Request.Object
 
-    // highlight-next-line
     // NOTE 4
     // Try to create a Pod instance using the RAW JSON we got from the
     // ValidationRequest.
@@ -98,7 +94,6 @@ func validate(payload []byte) ([]byte, error) {
         e.String("namespace", pod.Metadata.Namespace)
     })
 
-    // highlight-next-line
     // NOTE 5
     for label, value := range pod.Metadata.Labels {
         if err := validateLabel(label, value, &settings); err != nil {
@@ -112,7 +107,7 @@ func validate(payload []byte) ([]byte, error) {
 }
 ```
 
-The code has `NOTE` sections:
+The code has five `NOTE` sections:
 
 1. Create a `kubewarden_protocol.ValidationRequest` by unmarshaling the JSON payload.
 1. Create a `Settings` object by using the function you earlier defined in the `settings.go` file.
@@ -169,7 +164,6 @@ import (
 )
 
 func TestValidateLabel(t *testing.T) {
-    // highlight-next-line
     // NOTE 1
     cases := []struct {
         podLabels         map[string]string
@@ -178,7 +172,7 @@ func TestValidateLabel(t *testing.T) {
         expectedIsValid   bool
     }{
         {
-            // highlight-next-line
+            // ➀
             // Pod has no labels -> should be accepted
             podLabels:         map[string]string{},
             deniedLabels:      mapset.NewThreadUnsafeSet[string]("owner"),
@@ -186,7 +180,7 @@ func TestValidateLabel(t *testing.T) {
             expectedIsValid:   true,
         },
         {
-            // highlight-next-line
+            // ➁
             // Pod has labels, none is denied -> should be accepted
             podLabels: map[string]string{
                 "hello": "world",
@@ -196,7 +190,7 @@ func TestValidateLabel(t *testing.T) {
             expectedIsValid:   true,
         },
         {
-            // highlight-next-line
+            // ➂
             // Pod has labels, one is denied -> should be rejected
             podLabels: map[string]string{
                 "hello": "world",
@@ -206,7 +200,7 @@ func TestValidateLabel(t *testing.T) {
             expectedIsValid:   false,
         },
         {
-            // highlight-next-line
+            // ➃
             // Pod has labels, one has constraint that is respected -> should be accepted
             podLabels: map[string]string{
                 "cc-center": "team-123",
@@ -220,7 +214,7 @@ func TestValidateLabel(t *testing.T) {
             expectedIsValid: true,
         },
         {
-            // highlight-next-line
+            // ➄
             // Pod has labels, one has constraint that are not respected -> should be rejected
             podLabels: map[string]string{
                 "cc-center": "team-kubewarden",
@@ -234,7 +228,7 @@ func TestValidateLabel(t *testing.T) {
             expectedIsValid: false,
         },
         {
-            // highlight-next-line
+            // ➅
             // Settings have a constraint, pod doesn't have this label -> should be rejected
             podLabels: map[string]string{
                 "owner": "team-kubewarden",
@@ -249,7 +243,6 @@ func TestValidateLabel(t *testing.T) {
         },
     }
 
-    // highlight-next-line
     // NOTE 2
     for _, testCase := range cases {
         settings := Settings{
@@ -308,7 +301,7 @@ struct {
 ```
 
 You then declare several test cases.
-They have the start lines highlighted in the code block above.
+They have the start lines marked ➀ to ➅ in the large code block above.
 
 For example,
 you should consider a Pod that has no labels to be valid.

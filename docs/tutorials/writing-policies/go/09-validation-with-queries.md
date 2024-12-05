@@ -74,7 +74,6 @@ func validate(payload []byte) ([]byte, error) {
     // Access the **raw** JSON that describes the object
     podJSON := validationRequest.Request.Object
 
-    // highlight-next-line
     // NOTE 1
     data := gjson.GetBytes(
         podJSON,
@@ -83,12 +82,10 @@ func validate(payload []byte) ([]byte, error) {
     var validationErr error
     labels := mapset.NewThreadUnsafeSet[string]()
     data.ForEach(func(key, value gjson.Result) bool {
-        // highlight-next-line
         // NOTE 2
         label := key.String()
         labels.Add(label)
 
-        // highlight-next-line
         // NOTE 3
         validationErr = validateLabel(label, value.String(), &settings)
 
@@ -96,7 +93,6 @@ func validate(payload []byte) ([]byte, error) {
         return validationErr == nil
     })
 
-    // highlight-next-line
     // NOTE 4
     if validationErr != nil {
         return kubewarden.RejectRequest(
@@ -104,7 +100,6 @@ func validate(payload []byte) ([]byte, error) {
             kubewarden.NoCode)
     }
 
-    // highlight-next-line
     // NOTE 5
     for requiredLabel := range settings.ConstrainedLabels {
         if !labels.Contains(requiredLabel) {
@@ -121,7 +116,7 @@ func validate(payload []byte) ([]byte, error) {
 </details>
 
 The first part of the `validate` function is similar as before.
-'NOTE' highlights the changes.
+The 'NOTE's mark the changes.
 
 1. You use a `gjson` selector to get the `label` map provided by the object embedded into the request
 1. You use a `gjson` helper to iterate over the results of the query.

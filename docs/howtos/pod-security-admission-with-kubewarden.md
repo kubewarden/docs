@@ -68,7 +68,7 @@ So, the following resource won't reach its desired state:
 
 <details>
 
-<summary><code>kubectl</code> command configuring a resource with the highlighted <code>runAsUser: 0</code></summary>
+<summary>`kubectl` command configuring a resource with `runAsUser: 0` marked as ➀</summary>
 
 ```shell
 kubectl apply -n my-namespace -f - <<EOF
@@ -93,8 +93,7 @@ spec:
         image: nginx:1.14.2
         securityContext:
           runAsNonRoot: true
-// highlight-next-line
-          runAsUser: 0
+          runAsUser: 0 # ➀
           allowPrivilegeEscalation: false
           capabilities:
             drop:
@@ -237,13 +236,11 @@ spec:
     run_as_user:
       rule: "MustRunAs"
       overwrite: false
-// highlight-start
       ranges:
         - min: 1000
           max: 2000
         - min: 4000
           max: 5000
-// highlight-end
     run_as_group:
       rule: "RunAsAny"
     supplemental_groups:
@@ -355,7 +352,6 @@ spec:
         image: nginx:1.14.2
         securityContext:
           runAsNonRoot: true
-// highlight-next-line
           runAsUser: 7000
           allowPrivilegeEscalation: false
           capabilities:
