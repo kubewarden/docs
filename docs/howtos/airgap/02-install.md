@@ -18,7 +18,7 @@ you need a private Open Container Initiative (OCI) registry accessible by your K
 Kubewarden Policies are WebAssembly modules,
 therefore you can store them in an OCI-compliant registry as OCI artifacts.
 You need to add Kubewarden's images and policies to this OCI registry. You can
-see a rough list of Kubewarden artifacts in the [Artifacts reference](../../reference/artifacts.md) page.
+see a list of Kubewarden artifacts in the [Artifacts reference](../../reference/artifacts.md) page.
 The following sections describe the process.
 
 ## Save container images in your workstation

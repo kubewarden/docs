@@ -27,9 +27,9 @@ https://github.com/orgs/kubewarden/packages. This includes:
 - [`kubewarden/packages/policies/*`](https://github.com/orgs/kubewarden/packages/policies)
   are policy WASM OCI artifacts.
 - [`kubewarden/packages/charts/*`](https://github.com/orgs/kubewarden/packages/charts)
-  are the our Helm charts as OCI artifacts. They follow SLSA standards.
+  are our Helm charts as OCI artifacts. They follow SLSA standards.
 - Our container images are published as OCI images: `kubewarden-controller, policy-server, audit-scanner, kubectl`.
-- There's also `packages/tests/*` containing artifacts used in e2e tests, purposedfully separated.
+- There's also `packages/tests/*` containing artifacts used in e2e tests.
 
 ### Helm charts via HTTPS
 
