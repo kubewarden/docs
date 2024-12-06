@@ -33,6 +33,6 @@ https://github.com/orgs/kubewarden/packages. This includes:
 
 ### Helm charts via HTTPS
 
-For typical Helm charts, they are published under our Helm chart HTTPS
-repository under https://charts.kubewarden.io (without SLSA nor signatures, yet
-this type of Helm repository allows for searchs).
+Our Helm charts are published in the Helm chart HTTPS
+repository at https://charts.kubewarden.io (they are without SLSA, or signatures, but
+this type of Helm repository provides searching).
