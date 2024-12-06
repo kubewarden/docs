@@ -25,7 +25,7 @@ For OCI artifacts, we publish everything in ghcr.io under
 https://github.com/orgs/kubewarden/packages. This includes:
 
 - [`kubewarden/packages/policies/*`](https://github.com/orgs/kubewarden/packages/policies)
-  are policy WASM OCI artifacts.
+  are our policy WASM OCI artifacts.
 - [`kubewarden/packages/charts/*`](https://github.com/orgs/kubewarden/packages/charts)
   are our Helm charts as OCI artifacts. They follow SLSA standards.
 - Our container images are published as OCI images: `kubewarden-controller, policy-server, audit-scanner, kubectl`.
