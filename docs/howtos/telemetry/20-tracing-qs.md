@@ -118,12 +118,14 @@ following contents:
 
 ```yaml
 telemetry:
-  tracing:
-    enabled: True
-    jaeger:
-      endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:4317"
-      tls:
-        insecure: true
+  mode: sidecar
+  tracing: True
+  sidecar:
+    tracing:
+      jaeger:
+        endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:4317"
+        tls:
+          insecure: true
 ```
 
 :::caution
@@ -183,7 +185,7 @@ Next, let's define a ClusterAdmissionPolicy:
 
 ```yaml
 kubectl apply -f - <<EOF
-apiVersion: policies.kubewarden.io/v1alpha2
+apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
   name: safe-labels
