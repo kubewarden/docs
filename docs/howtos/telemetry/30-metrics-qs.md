@@ -31,6 +31,44 @@ that allows us to define Prometheus' Targets intuitively.
 There are many ways to install and set up Prometheus. For ease of deployment, we will use the
 Prometheus community Helm chart.
 
+The `prometheus-operator` deployed as part of this Helm chart defines the concept of [Service
+Monitors](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/design.md#servicemonitor),
+to define which services should be monitored by Prometheus declaratively.
+
+In our case, we are adding a ServiceMonitor targeting the `kubewarden` namespace for services that
+match labels `app=kubewarden-policy-server-default` and `app.kubernetes.io/name: kubewarden-controller`.
+This way, the Prometheus Operator can inspect which Kubernetes Endpoints are tied to services matching these conditions.
+
+Let's create the two ServiceMonitors named `kubewarden-controller` and `kubewarden-policy-server` to be used by the 
+default prometheus instance installed by the Helm chart. For that, you can create the following values file:
+
+```console
+cat <<EOF > kube-prometheus-stack-values.yaml
+prometheus:
+  additionalServiceMonitors:
+    - name: kubewarden
+      selector:
+        matchLabels:
+          app: kubewarden-policy-server-default
+      namespaceSelector:
+        matchNames:
+          - kubewarden
+      endpoints:
+        - port: metrics
+          interval: 10s
+    - name: kubewarden-controller
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: kubewarden-controller
+      namespaceSelector:
+        matchNames:
+          - kubewarden
+      endpoints:
+        - port: metrics
+          interval: 10s
+EOF
+```
+
 Let's install the Prometheus stack Helm Chart:
 
 :::note
@@ -45,52 +83,6 @@ helm install --wait --create-namespace \
   --version 51.5.3 \
   --values kube-prometheus-stack-values.yaml \
   prometheus prometheus-community/kube-prometheus-stack
-```
-
-The `prometheus-operator` deployed as part of this Helm chart defines the concept of [Service
-Monitors](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/design.md#servicemonitor),
-to define which services should be monitored by Prometheus declaratively.
-
-In our case, we are adding a ServiceMonitor targeting the `kubewarden` namespace for services that
-match labels `app=kubewarden-policy-server-default` and `app.kubernetes.io/name: kubewarden-controller`.
-This way, the Prometheus Operator can inspect which Kubernetes Endpoints are tied to services matching these conditions.
-
-Let's create the two ServiceMonitors named `kubewarden-controller` and `kubewarden-policy-server` using the following manifests:
-
-```yaml
-kubectl apply -f - <<EOF
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: kubewarden-controller
-  namespace: kubewarden
-spec:
-  endpoints:
-    - interval: 10s
-      port: metrics
-  namespaceSelector:
-    matchNames:
-      - kubewarden
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: kubewarden-controller
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: kubewarden-policy-server
-  namespace: kubewarden
-spec:
-  endpoints:
-    - interval: 10s
-      port: metrics
-  namespaceSelector:
-    matchNames:
-      - kubewarden
-  selector:
-    matchLabels:
-      app: kubewarden-policy-server-default
-EOF
 ```
 
 ## Install Kubewarden
@@ -125,9 +117,11 @@ in Kubewarden. Write the `kubewarden-values.yaml` file with the following conten
 
 ```yaml
 telemetry:
-  metrics:
-    enabled: True
-    port: 8080
+  mode: sidecar
+  metrics: True
+  sidecar:
+    metrics:
+      port: 8080
 ```
 
 Now, let's install the helm charts:
