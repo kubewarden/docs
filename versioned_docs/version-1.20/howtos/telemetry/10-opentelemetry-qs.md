@@ -18,16 +18,21 @@ observability. It enables your microservices to provide metrics, logs and traces
 Kubewarden's components are instrumented with the OpenTelemetry SDK, reporting data to an
 OpenTelemetry collector -- called the agent.
 
-By following this documentation, we will integrate OpenTelemetry using the following architecture:
+This guide explains how to deploy the OpenTelemetry collector using the `sidecar` mode by leveraging
+the official Kubernetes Helm chart.
 
-- Each Pod of the Kubewarden stack will have a OpenTelemetry sidecar.
+This is the most trivial deployment pattern of OpenTelemetry, the final setup will look like this:
+
+
+- Each Pod of the Kubewarden stack (Policy Server, Controller) will have a OpenTelemetry sidecar.
 - The sidecar receives tracing and monitoring information from the Kubewarden component via the OpenTelemetry Protocol (OTLP)
 - The OpenTelemetry collector will:
   - Send the trace events to a central Jaeger instance
   - Expose Prometheus metrics on a specific port
 
-For more information about the other deployment modes, please refer to the [OpenTelemetry official
-documentation](https://opentelemetry.io/docs/).
+The Kubewarden Helm chart does not intend to cover all the possible deployment scenarios of the OpenTelemetry collector.
+Because of that, it's also possible to configure Kubewarden to send data to an OpenTelemetry collector that
+is deployed by the user. This is covered as part of [this guide](./40-custom-otel-collector.md).
 
 Let's first deploy OpenTelemetry in a Kubernetes cluster, so we can reuse it in the next sections
 that will address specifically tracing and metrics.
