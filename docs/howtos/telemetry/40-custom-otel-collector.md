@@ -12,29 +12,32 @@ doc-topic: [operator-manual, telemetry, metrics, quick-start]
   <link rel="canonical" href="https://docs.kubewarden.io/howtos/telemetry/custom-otel-collector"/>
 </head>
 
-This guide explains how Kubewarden can be configured to send telemetry data to an OpenTelemetry collector
-that has been previously deployed on the cluster.
+This guide explains how to configure Kubewarden to send telemetry data to an OpenTelemetry collector
+already deployed on the cluster.
 
-We will deploy only one instance of the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/)
-inside of the cluster.
+You should deploy only one instance of the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/)
+in the cluster.
 
 ## Install dependencies
 
-First, we begin by installing the dependencies of OpenTelemetry Collector.
+First, begin by installing the dependencies of OpenTelemetry Collector.
 
-We want the communication between the Kubewarden components and the collector to be encrypted.
-Hence we will leverage [cert-manager](https://cert-manager.io/) to manage all the certificates
-required to secure the communication.
+You need the communication between the Kubewarden components and the collector to be encrypted.
+You can use [cert-manager](https://cert-manager.io/) to manage all the certificates
+required for secure communications.
 
-The traces collected by the OpenTelemetry Collector will be sent to a [Jaeger](https://www.jaegertracing.io/)
+OpenTelemetry Collector traces get sent to a [Jaeger](https://www.jaegertracing.io/)
 instance.
 
-The Kubewarden stack will send metrics to the OpenTelemetry Collector. This one will expose the metrics
-as a Prometheus endpoint. The metrics will then be scraped by a Prometheus instance and stored in its
-database. The same Prometheus instance will also expose a UI to interact with the metrics.
+The Kubewarden stack sends metrics to the OpenTelemetry Collector.
+This one exposes the metrics
+as a Prometheus endpoint.
+The metrics are then collected by a Prometheus instance and stored in its
+database. The same Prometheus instance also exposes a UI to view and use the metrics.
 
-Some of the resources we will create are going to be defined inside of the `kubewarden`
-Namespace, or expect its existence. Because of that, we begin by creating the Namespace:
+Resources you create get defined in the `kubewarden`
+Namespace, or expect its existence.
+Due to that, you should begin by creating the Namespace:
 
 ```console
 kubectl create namespace kubewarden
@@ -42,7 +45,7 @@ kubectl create namespace kubewarden
 
 ### Install cert-manager and OpenTelemetry
 
-cert-manager and OpenTelemetry operator can be installed in this way:
+You install cert-manager and OpenTelemetry operator in this way:
 
 ```console
 helm repo add jetstack https://charts.jetstack.io
@@ -53,7 +56,6 @@ helm install --wait \
     --version 1.15.1 \
     cert-manager jetstack/cert-manager
 
-
 helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 helm install --wait \
   --namespace open-telemetry \
@@ -61,13 +63,12 @@ helm install --wait \
   --version 0.65.0 \
   --set "manager.collectorImage.repository=otel/opentelemetry-collector-contrib" \
   my-opentelemetry-operator open-telemetry/opentelemetry-operator
-``` 
+```
 
+You set up communication between Kubewarden components and the OpenTelemetry Collector
+using mTLS.
 
-The communication between the Kubewarden components and the OpenTelemetry Collector will be
-established using mTLS.
-
-To do that, we need to create the whole PKI infrastructure:
+To do that, you need to create the whole PKI infrastructure:
 
 ```yaml
 # pki.yaml file
@@ -116,7 +117,7 @@ kubectl apply -f pki.yaml
 
 ### Install Jaeger and Prometheus
 
-After that, we install [Jaeger](https://www.jaegertracing.io/) to store
+After that, you install [Jaeger](https://www.jaegertracing.io/) to store
 and visualize trace events.
 
 ```console
@@ -142,7 +143,7 @@ spec:
 EOF
 ```
 
-Now we install [Prometheus](https://prometheus.io/) to store and visualize metrics.
+Now you install [Prometheus](https://prometheus.io/) to store and visualize metrics.
 
 ```console
 cat <<EOF > kube-prometheus-stack-values.yaml
@@ -169,13 +170,13 @@ helm install --wait --create-namespace \
 ```
 
 :::note
-The Prometheus service monitor will obtain the Kubewarden metrics by scraping the
-OpenTelemetry collector running inside of the `kubewarden` Namespace.
+The Prometheus service monitor obtains the Kubewarden metrics by scraping the
+OpenTelemetry collector running in the `kubewarden` Namespace.
 :::
 
 ## Install OpenTelemetry Collector
 
-Now we will deploy a custom OpenTelemetry Collector inside of the `kubewarden` Namespace.
+Now you can  deploy a custom OpenTelemetry Collector in the `kubewarden` Namespace.
 
 ```yaml
 # otel-collector.yaml file
@@ -237,20 +238,21 @@ Apply the manifest:
 kubectl apply -f otel-collector.yaml
 ```
 
-The configuration above uses a trivial processing pipeline to receive trace events
-and to forward them to Jaeger. It also receives metrics and exposes them to
-be scraped by Prometheus.
+That configuration uses a trivial processing pipeline to receive trace events
+and forward them to Jaeger.
+It also receives metrics and exposes them for
+collection by Prometheus.
 
-The communication between the Kubewarden stack and the OpenTelemetry Collector
-is secured using mTLS. However the communication between the OpenTelemetry
-Collector and Jaeger has not been secured to reduce the complexity of the example.
+You secure communication between the Kubewarden stack and the OpenTelemetry Collector
+using mTLS. However the communication between the OpenTelemetry
+Collector and Jaeger isn't secured, to reduce the complexity of the example.
 
 ## Install Kubewarden stack
 
-When the OpenTelemetry Collector is up and running, we can deploy Kubewarden in
+When the OpenTelemetry Collector is running, you can deploy Kubewarden in
 the usual way.
 
-We need to configure the Kubewarden components so they send
+You need to configure the Kubewarden components so they send
 events and metrics to the OpenTelemetry Collector.
 
 ```yaml
@@ -267,14 +269,16 @@ telemetry:
 ```
 
 The Secret referenced by the `otelCollectorCertificateSecret` key must have an
-entry named `ca.crt` that holds the certificate of the CA that issued the
+entry named `ca.crt`.
+That holds the certificate of the CA that issued the
 certificate used by the OpenTelemetry Collector.
 
 The Secret referenced by the `otelCollectorClientCertificateSecret` key must have
-the following entries: `tls.crt` and `tls.key` keys. These are the client certificate and
-its key that are used by the Kubewarden stack to authenticate against the OpenTelemetry Collector.
+the following entries: `tls.crt` and `tls.key` keys.
+These are the client certificate and
+its key that used by the Kubewarden stack to authenticate against the OpenTelemetry Collector.
 
-These values can be left empty when no encryption is used or when no mTLS is required.
+Leave these values empty if you do not use encryption or mTLS.
 
 Install the Kubewarden stack:
 
@@ -301,26 +305,26 @@ Now everything is in place.
 
 ## Exploring the Jaeger UI
 
-We can see the trace events generated by Kubewarden by using the Jaeger web UI.
-All of them will be grouped under the `kubewarden-policy-server` service:
+You can see the trace events generated by Kubewarden by using the Jaeger web UI.
+They're grouped under the `kubewarden-policy-server` service:
 
-![Jaeger dashboard](/img/jaeger-custom-otel-collector.png "The dashboard of Jaeger")
+![The Jaeger dashboard](/img/jaeger-custom-otel-collector.png "The Jaeger dashboard")
 
-To access the Jaeger UI, we can create an Ingress or we can do a port
-forwarding to our local machine:
+To access the Jaeger UI, you can create an Ingress or you can do a port
+forwarding to your local machine:
 
 ```console
 kubectl -n jaeger port-forward service/my-open-telemetry-query 16686
-```` 
+```
 
-The web UI is going to be reachable at [localhost:16686](localhost:16686).
+The web UI is reachable at [localhost:16686](localhost:16686).
 
 ## Exploring the Prometheus UI
 
-The Prometheus UI can be accessed doing a port forwarding to our local machine:
+You can access the Prometheus UI by port forwarding to your local machine:
 
 ```console 
 kubectl port-forward -n prometheus --address 0.0.0.0 svc/prometheus-operated 9090 
 ```
 
-The web UI is going to be reachable at [localhost:9090](localhost:9090).
+The web UI is now reachable at [localhost:9090](localhost:9090).

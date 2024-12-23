@@ -12,35 +12,36 @@ doc-topic: [operator-manual, telemetry, tracing, quick-start]
   <link rel="canonical" href="https://docs.kubewarden.io/howtos/telemetry/tracing-qs"/>
 </head>
 
-This section illustrates how to enable tracing support of
+This section shows how to enable tracing support for
 Policy Server.
 
 :::note
 Before continuing, make sure you completed the previous
 [OpenTelemetry](10-opentelemetry-qs.md#install-opentelemetry) section
-of this book. It is required for this section to work correctly.
+of this documentation. Its required for this section to work correctly.
 :::
 
-Tracing allows to collect fine grained details about policy evaluations. It can
-be a useful tool for debugging issues inside of your Kubewarden deployment and policies.
+Tracing lets you collect fine grained details about policy evaluations. It can
+be a useful tool for debugging issues in your Kubewarden deployment and policies.
 
-We will use [Jaeger](https://www.jaegertracing.io/) -- used to receive, store and visualize trace
+You use [Jaeger](https://www.jaegertracing.io/) -- to receive, store and visualize trace
 events.
 
 ## Install Jaeger
 
-We are going to use the [Jaeger Operator](https://github.com/jaegertracing/jaeger-operator)
-to manage all the different Jaeger components. The operator can be installed in many ways. We are going to install via Helm charts.
-
-At the time of writing, only specific versions of Jaeger are compatible with
-Cert Manager, [see the compat chart](https://github.com/jaegertracing/helm-charts/blob/main/charts/jaeger-operator/COMPATIBILITY.md).
-
-To install the Helm chart:
+You use the [Jaeger Operator](https://github.com/jaegertracing/jaeger-operator)
+to manage the different Jaeger components. You can install the Jaeger Operator using Helm charts.
 
 :::note
+
+At the time of writing (2024-12-23), only specific versions of Jaeger are compatible with
+Cert Manager, [see the compatibility chart](https://github.com/jaegertracing/helm-charts/blob/main/charts/jaeger-operator/COMPATIBILITY.md).
+
 At time of writing the latest chart version is `2.49.0`
 
 :::
+
+To install the Helm chart:
 
 ```console
 helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
@@ -54,11 +55,11 @@ helm upgrade -i --wait \
 ```
 
 :::caution
-This is **not meant to be a production deployment**.
-We strongly recommend to read Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
+This is **not suitable for a production deployment**.
+You should consult Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
 :::
 
-Let's create a Jaeger resource:
+To create a Jaeger resource:
 
 ```console
 kubectl apply -f - <<EOF
@@ -75,9 +76,9 @@ spec:
 EOF
 ```
 
-Once all the resources have been created by the Jaeger operator, we will have a
+After creation of Jaeger Operator resources, you have a
 Service under `my-open-telemetry-collector.jaeger.svc.cluster.local`.
-The Jaeger Query UI will be reachable at the following address:
+The Jaeger Query UI is reachable at the following address:
 
 ```console
 echo http://`minikube ip`
@@ -85,20 +86,20 @@ echo http://`minikube ip`
 
 ## Install Kubewarden
 
-We can proceed to the deployment of Kubewarden in the usual way.
+Now you can proceed to the deployment of Kubewarden in the usual way.
 
 :::note
-cert-manager is a requirement of OpenTelemetry, but we've already installed
-them in a previous section of this book.
+cert-manager is a requirement of OpenTelemetry, but you have already installed
+it in a previous section of this documentation.
 :::
 
-As a first step, we have to add the Helm repository that contains Kubewarden:
+As a first step, you add the Helm repository that contains Kubewarden:
 
 ```console
 helm repo add kubewarden https://charts.kubewarden.io
 ```
 
-Then we have to install the Custom Resource Definitions (CRDs) defined by
+Then you install the Custom Resource Definitions (CRDs) defined by
 Kubewarden:
 
 ```console
@@ -108,12 +109,12 @@ helm install --wait \
   kubewarden-crds kubewarden/kubewarden-crds
 ```
 
-Now we can deploy the rest of the Kubewarden stack. The official
-`kubewarden-defaults` helm chart will create a PolicyServer named `default`. We
+Now you can deploy the rest of the Kubewarden stack. The official
+`kubewarden-defaults` helm chart creates a PolicyServer named `default`. You
 want this PolicyServer instance to have tracing enabled.
 
-In order to do that, we have to specify some extra values for the
-`kubewarden-controller` chart. Let's create a `values.yaml` file with the
+To do that, you need to specify extra values for the
+`kubewarden-controller` chart. You should create a `values.yaml` file with the
 following contents:
 
 ```yaml
@@ -129,15 +130,14 @@ telemetry:
 ```
 
 :::caution
-To keep things simple, we are not going to encrypt the communication between the
+For simplicity, there is no encryption of communication between the
 OpenTelemetry collector and the Jaeger endpoint.
 
-This is **not meant to be a production deployment**.
-We strongly recommend
-to read Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
+Again, this is **not suitable for a production deployment**.
+Consult Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
 :::
 
-Then we can proceed with the installation of the helm charts:
+Then you can proceed with the installation of the helm charts:
 
 ```console
 helm install --wait --namespace kubewarden --create-namespace \
@@ -148,7 +148,7 @@ helm install --wait --namespace kubewarden --create-namespace \
   kubewarden-defaults kubewarden/kubewarden-defaults
 ```
 
-This leads to the creation of the `default` instance of `PolicyServer`:
+This creates the `default` instance of `PolicyServer`:
 
 ```console
 kubectl get policyservers.policies.kubewarden.io
@@ -156,19 +156,19 @@ NAME      AGE
 default   3m7s
 ```
 
-Looking closer at the Pod running the PolicyServer instance, we will find it has
-two containers inside of it: the actual `policy-server` and the OpenTelemetry
+Looking closer at the Pod running the PolicyServer instance, you can see it has
+two containers in it. The `policy-server` and the OpenTelemetry
 Collector sidecar `otc-container`.
 
 ## Enforcing a policy
 
-We will start by deploying the [safe-labels](https://github.com/kubewarden/safe-labels-policy)
+You start by deploying the [safe-labels](https://github.com/kubewarden/safe-labels-policy)
 policy.
 
-We want the policy to be enforced only inside of Namespaces that have a
-label `environment` with value `production`.
+You want the policy enforced only in Namespaces that have a
+label `environment` with a value of `production`.
 
-Let's create a Namespace that has such a label:
+To create a Namespace that has such a label:
 
 ```console
 kubectl apply -f - <<EOF
@@ -213,13 +213,13 @@ spec:
 EOF
 ```
 
-We can wait for the policy to be active in this way:
+You need wait for the policy to become active:
 
 ```console
 kubectl wait --for=condition=PolicyActive clusteradmissionpolicy/safe-labels
 ```
 
-Once the policy is active, we can try it out in this way:
+Once the policy is active, you can try it:
 
 ```console
 kubectl apply -f - <<EOF
@@ -248,9 +248,9 @@ spec:
 EOF
 ```
 
-This Deployment object will be created because it doesn't violate the policy.
+The policy permits the creation of this Deployment object as it doesn't violate the policy.
 
-On the other hand, this Deployment will be blocked by the policy:
+The policy blocks this Deployment object:
 
 ```console
 kubectl apply -f - <<EOF
@@ -277,9 +277,9 @@ spec:
 EOF
 ```
 
-The policy is not enforced inside of another Namespace.
+The policy isn't enforced in another Namespace.
 
-The following command creates a new Namespace called `team-alpha-staging`:
+This command creates a new Namespace called `team-alpha-staging`:
 
 ```console
 kubectl apply -f - <<EOF
@@ -292,8 +292,8 @@ metadata:
 EOF
 ```
 
-As expected, the creation of a Deployment resource that doesn't have any label
-is allowed inside of the `team-alpha-staging` Namespace:
+As expected, the policy permits the creation of a Deployment resource,
+without any labels, in the `team-alpha-staging` Namespace:
 
 ```
 kubectl apply -f - <<EOF
@@ -324,12 +324,12 @@ As expected, this resource is successfully created.
 
 ## Exploring the Jaeger UI
 
-We can see the trace events have been sent by the PolicyServer instance to Jaeger,
+You can see the trace events have are sent by the PolicyServer instance to Jaeger,
 as there is a new service `kubewarden-policy-server` listed in the UI:
 
 ![Jaeger dashboard](/img/jaeger-ui-home.png "The dashboard of Jaeger")
 
-The Jaeger collector is properly receiving the traces generated by our PolicyServer.
+The Jaeger collector is receiving the traces generated by your PolicyServer.
 
 To access the Jaeger UI, you can create an ingress or use
 `kubectl -n jaeger port-forward service/my-open-telemetry-query 16686`
