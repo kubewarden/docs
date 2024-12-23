@@ -32,7 +32,7 @@ The `mode` is an attribute included in the `ClusterAdmissionPolicy` and `Admissi
 There are two values that the `mode` attribute can assume: `monitor` and `protect`.
 The `mode` defaults to `protect` if omitted.
 
-To create a policy in `monitor mode` you to need to include the statement `mode:
+To create a policy in `monitor mode` you need to include the statement `mode:
 monitor` in the specification of the resource. For example, in the
 `spec` section (marked ➀), of this `ClusterAdmissionPolicy`:
 
