@@ -72,7 +72,7 @@ EOF
 You should install the Prometheus stack Helm chart:
 
 :::note
-At time of writing (2024-12-23) the latest chart version is `51.5.3`
+At time of writing (2023-11-17) the latest chart version is `51.5.3`
 :::
 
 ```console

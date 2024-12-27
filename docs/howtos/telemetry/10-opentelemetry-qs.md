@@ -101,13 +101,13 @@ into the PolicyServer pod.
 The OpenTelemetry Operator requires installation of [cert-manager](https://cert-manager.io/docs/installation/)
 in the cluster.
 
-At the time of writing (2024-12-23), only specific versions of OpenTelemetry are compatible
+At the time of writing (2022-06-21), only specific versions of OpenTelemetry are compatible
 with Cert Manager, [see the compatibility chart](https://github.com/open-telemetry/opentelemetry-operator#opentelemetry-operator-vs-kubernetes-vs-cert-manager).
 
 You should install the latest cert-manager Helm chart:
 
 :::note
-At time of writing (2024-12-23) the latest cert-manager chart version is `v1.15.1`
+At time of writing (2024-07-17) the latest cert-manager chart version is `v1.15.1`
 :::
 
 ```console

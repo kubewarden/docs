@@ -34,7 +34,7 @@ to manage the different Jaeger components. You can install the Jaeger Operator u
 
 :::note
 
-At the time of writing (2024-12-23), only specific versions of Jaeger are compatible with
+At the time of writing (2022-06-21), only specific versions of Jaeger are compatible with
 Cert Manager, [see the compatibility chart](https://github.com/jaegertracing/helm-charts/blob/main/charts/jaeger-operator/COMPATIBILITY.md).
 
 At time of writing the latest chart version is `2.49.0`
