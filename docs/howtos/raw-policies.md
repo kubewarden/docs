@@ -4,7 +4,13 @@ sidebar_position: 60
 title: Raw policies
 description: Kubewarden support for 'raw' policies.
 keywords: [kubewarden, kubernetes, support, raw policies]
-doc-persona: [kubewarden-distributor, kubewarden-integrator, kubewarden-operator, kubewarden-policy-developer]
+doc-persona:
+  [
+    kubewarden-distributor,
+    kubewarden-integrator,
+    kubewarden-operator,
+    kubewarden-policy-developer,
+  ]
 doc-type: [howto]
 doc-topic: [kubewarden, kubernetes, raw-policies]
 ---
@@ -41,7 +47,7 @@ First, create a `policies.yml` file with the following content:
 
 ```yaml
 raw-validation:
-  url: ghcr.io/kubewarden/tests/raw-validation-policy:v0.1.0
+  module: ghcr.io/kubewarden/tests/raw-validation-policy:v0.1.0
   settings:
     validUsers:
       - alice
@@ -54,7 +60,7 @@ raw-validation:
       - products
 
 raw-mutation:
-  url: ghcr.io/kubewarden/tests/raw-mutation-policy:v0.1.0
+  module: ghcr.io/kubewarden/tests/raw-mutation-policy:v0.1.0
   allowedToMutate: true
   settings:
     forbiddenResources:
@@ -148,7 +154,7 @@ metadata:
 data:
   policies.yml: |
     raw-validation:
-      url: ghcr.io/kubewarden/tests/raw-validation-policy:v0.1.0
+      module: ghcr.io/kubewarden/tests/raw-validation-policy:v0.1.0
       settings: 
         validUsers:
           - alice
@@ -160,7 +166,7 @@ data:
           - orders
           - products
     raw-mutation:
-      url: ghcr.io/kubewarden/tests/raw-mutation-policy:v0.1.0
+      module: ghcr.io/kubewarden/tests/raw-mutation-policy:v0.1.0
       allowedToMutate: true
       settings:
         forbiddenResources:
