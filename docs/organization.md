@@ -10,7 +10,7 @@ doc-topic: [explanation]
 ---
 
 <head>
-  <link rel="canonical" href="https://docs.kubewarden.io/explanation"/>
+  <link rel="canonical" href="https://docs.kubewarden.io/organization"/>
 </head>
 
 Kubewarden organizes project documentation as follows:
