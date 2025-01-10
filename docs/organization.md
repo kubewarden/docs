@@ -22,8 +22,7 @@ Kubewarden organizes project documentation as follows:
 - _Howtos_ — getting Kubewarden tasks done.
 - _Reference_
 - Organization — this page
-- Personas — Who is Kubewarden for? -->
-- <!--[Personas](./personas.md) — Who is Kubewarden for? -->
+- Personas — who is Kubewarden for?
 - [Security](./disclosure.md)
 - [Glossary](./glossary.md)
 
