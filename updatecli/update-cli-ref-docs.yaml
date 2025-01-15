@@ -1,0 +1,6 @@
+policies:
+  - name: Update kwctl CLI reference documentation
+    policy: ghcr.io/jvanz/updatecli/policies/file:0.2.0
+    values:
+      - values.d/update-cli-ref-docs.yaml
+
