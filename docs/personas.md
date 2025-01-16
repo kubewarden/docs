@@ -22,4 +22,3 @@ doc-topic: [explanation]
 |**Policy developer**| A person designing policies for Kubewarden and specifying their configuration.|
 |**Integrator**|Builds with, using, or on top of KW. Perhaps a custom UI or a helper tool for generating policies.|
 |**Developer**|A person working on the Kubewarden product set. Building Kubewarden itself.|
-|All|Documentation sections of common interest.|
