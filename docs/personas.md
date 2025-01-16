@@ -1,0 +1,25 @@
+---
+sidebar_label: For who?
+sidebar_position: 73
+title: Who is this project for? The personas.
+description: how is the Kubewarden documentation organized?
+keywords: [Kubewarden, documentation, personas]
+doc-persona: [kubewarden-all]
+doc-type: [explanation]
+doc-topic: [explanation]
+---
+
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/personas"/>
+</head>
+
+<!-- prettier-ignore -->
+|Persona|Description|
+|-|-|
+|**Policy user**|Someone who takes a policy and uses it in a cluster. They deploy policies and observe results.|
+|**Operator**|Someone operating Kubewarden in a cluster. Installs and maintains Kubewarden.|
+|**Policy distributor**|Someone who has written a policy and wants to share it with others. They want the policy to be easily consumed by the “policy consumer” role. A distributor of Kubewarden policies, to places such as ArtifactHub.|
+|**Policy developer**| A person designing policies for Kubewarden and specifying their configuration.|
+|**Integrator**|Builds with, using, or on top of KW. Perhaps a custom UI or a helper tool for generating policies.|
+|**Developer**|A person working on the Kubewarden product set. Building Kubewarden itself.|
+|All|Documentation sections of common interest.|

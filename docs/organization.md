@@ -2,7 +2,7 @@
 sidebar_label: Organization
 sidebar_position: 75
 title: Documentation organization
-description: how is the Kubewarden documentation organized?
+description: How is the Kubewarden documentation organized?
 keywords: [Kubewarden, documentation, organization]
 doc-persona: [kubewarden-all]
 doc-type: [explanation]
@@ -22,7 +22,7 @@ Kubewarden organizes project documentation as follows:
 - _Howtos_ — getting Kubewarden tasks done.
 - _Reference_
 - Organization — this page
-- Personas — who is Kubewarden for?
+- [Personas](./personas.md) — who is Kubewarden for?
 - [Security](./disclosure.md)
 - [Glossary](./glossary.md)
 
