@@ -20,5 +20,5 @@ doc-topic: [explanation]
 |**Operator**|Someone operating Kubewarden in a cluster. Installs and maintains Kubewarden.|
 |**Policy distributor**|Someone who has written a policy and wants to share it with others. They want the policy consumed by the “policy user” role. A distributor of Kubewarden policies, to places such as ArtifactHub.|
 |**Policy developer**| A person designing and writing policies for Kubewarden for others to consume.|
-|**Integrator**|Builds with, using, or on top of KW. Perhaps a custom UI or a helper tool for generating policies.|
+|**Integrator**|Builds with, using, or on top of Kubewarden. Perhaps a custom UI or a helper tool for generating policies.|
 |**Developer**|A person working on the Kubewarden product set. Building Kubewarden itself.|
