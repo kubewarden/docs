@@ -1,0 +1,62 @@
+name: Add header to the CLI reference documentation
+#{{ if .pipelineid }}
+pipelineid: '{{ .pipelineid }}'
+#{{ end }}
+
+scms:
+  target:
+    kind: github
+    spec:
+      owner: {{ requiredEnv .scms.owner }}
+      repository: {{ .scms.repository }}
+      branch: {{ .scms.branch }}
+      user: {{ requiredEnv .scms.owner }}
+      username: {{ .scms.username }}
+      token: {{ requiredEnv .scms.token }}
+
+sources:
+# {{ range $index, $file := .files }}
+  file{{ $index }}:
+    kind: file
+    scmid: target
+    transformers:
+      - addprefix: |
+          ---
+          sidebar_label: {{ $file.sidebar_label }}
+          sidebar_position: {{ $file.sidebar_position }}
+          title: {{ $file.title }}
+          description: {{ $file.description }}
+          keywords: {{ $file.keywords }}
+          doc-persona: {{ $file.doc_persona }}
+          doc-type: {{ $file.doc_type }}
+          doc-topic: {{ $file.doc_topic }}
+          ---
+    spec:
+      file: {{ $file.path }}
+# {{ end }}
+
+targets:
+# {{ range $index, $file := .files }}
+  commit{{ $index }}:
+    name: "Add header to the {{ $file.path }} file"
+    kind: file
+    scmid: target
+    sourceid: file{{ $index }}
+    spec:
+      file: "{{ $file.path }}"
+      forcecreate: true
+# {{ end }}
+
+actions:
+  default:
+    kind: "github/pullrequest"
+    scmid: "target"
+    spec:
+      automerge: false
+# {{ if .pr.title }}
+      title: {{ .pr.title }}
+# {{ end }}
+# {{ if .pr.description }}
+      description: {{ .pr.description }}
+# {{ end }}
+

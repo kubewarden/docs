@@ -1,12 +1,10 @@
 ---
 # Values.yaml contains settings that be used from Updatecli manifest.
+pipelineid: cli-ref-docs
 sourceFiles: 
   - "cli-docs.md"
 targetFiles: 
   - "docs/reference/kwctl-cli.md"
-pr:
-  title: "Update CLI Reference Docs"
-  description: "Update all the CLI reference documentation"
 scm:
   source:
     author: "Updatecli bot"
