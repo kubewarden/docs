@@ -19,6 +19,6 @@ doc-topic: [explanation]
 |**Policy user**|Someone who takes a policy and uses it in a cluster. They deploy policies and observe results.|
 |**Operator**|Someone operating Kubewarden in a cluster. Installs and maintains Kubewarden.|
 |**Policy distributor**|Someone who has written a policy and wants to share it with others. They want the policy consumed by the “policy user” role. A distributor of Kubewarden policies, to places such as ArtifactHub.|
-|**Policy developer**| A person designing policies for Kubewarden and specifying their configuration.|
+|**Policy developer**| A person designing and writing policies for Kubewarden for others to consume.|
 |**Integrator**|Builds with, using, or on top of KW. Perhaps a custom UI or a helper tool for generating policies.|
 |**Developer**|A person working on the Kubewarden product set. Building Kubewarden itself.|
