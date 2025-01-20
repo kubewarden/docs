@@ -1,24 +1,14 @@
 ---
 # Values.yaml contains settings that be used from Updatecli manifest.
 pipelineid: cli-ref-docs
-sourceFiles: 
-  - "cli-docs.md"
-targetFiles: 
-  - "docs/reference/kwctl-cli.md"
+files:
+  - src: "cli-docs.md"
+    dst: "docs/reference/kwctl-cli.md"
+src:
+  branch: "main"
+  url: "https://github.com/kubewarden/kwctl.git"
 scm:
-  source:
-    author: "Updatecli bot"
-    branch: "main"
-    owner: "GITHUB_OWNER"
-    repository: "kwctl"
-    token: "GITHUB_TOKEN"
-    user: "GITHUB_OWNER"
-    username: "updatecli-bot"
-  target:
-    author: "Updatecli bot"
-    branch: "main"
-    owner: "GITHUB_OWNER"
-    repository: "docs"
-    token: "GITHUB_TOKEN"
-    user: "GITHUB_OWNER"
-    username: "updatecli-bot"
+  branch: "main"
+  commitmessage:
+    hidecredit: true
+    footers: "Signed-off-by: Kubewarden bot <cncf-kubewarden-maintainers@lists.cncf.io>"

@@ -2,22 +2,16 @@
 pipelineid: cli-ref-docs
 files:
   - path: "docs/reference/kwctl-cli.md"
-    sidebar_label: Kwctl CLI Reference
+    sidebar_label: kwctl CLI Reference
     sidebar_position: 120
-    title: Kwctl CLI
-    description: Kwctl CLI reference documentation
+    title: kwctl CLI
+    description: kwctl CLI reference documentation
     keywords: "[cli, reference, kwctl]"
     doc_persona: "[kubewarden-operator]"
     doc_type: "[reference]"
     doc_topic: "[operator-manual]"
-scms:
-  author: "Updatecli bot"
+scm:
   branch: "main"
-  owner: "GITHUB_OWNER"
-  repository: "docs"
-  token: "GITHUB_TOKEN"
-  user: "GITHUB_OWNER"
-  username: "updatecli-bot"
 pr:
   title: "Update CLI Reference Docs"
   description: "Update all the CLI reference documentation"
