@@ -1,6 +1,6 @@
 policies:
   - name: Update kwctl CLI reference documentation
-    policy: ghcr.io/jvanz/updatecli/policies/file:0.1.0
+    policy: ghcr.io/updatecli/policies/file:0.1.1@sha256:ce294b3553e12056235ac98d799366d3c43f8eb527fdf47f7585392e6dd684f0 
     values:
       - values.d/update-cli-ref-docs.yaml
   - name: Add header to the CLI reference documentation
@@ -8,4 +8,3 @@ policies:
       - updatecli.d/headers.yaml
     values:
       - values.d/headers.yaml
-

@@ -1,3 +1,9 @@
+# Helpers
+# {{ $GitHubUser := env ""}}
+# {{ $GitHubRepositoryList := env "GITHUB_REPOSITORY" | split "/"}}
+# {{ $GitHubPAT := env "GITHUB_TOKEN"}}
+# {{ $GitHubUsername := env "GITHUB_ACTOR"}}
+
 name: Add header to the CLI reference documentation
 #{{ if .pipelineid }}
 pipelineid: '{{ .pipelineid }}'
@@ -5,14 +11,19 @@ pipelineid: '{{ .pipelineid }}'
 
 scms:
   target:
-    kind: github
+    kind: "github"
     spec:
-      owner: {{ requiredEnv .scms.owner }}
-      repository: {{ .scms.repository }}
-      branch: {{ .scms.branch }}
-      user: {{ requiredEnv .scms.owner }}
-      username: {{ .scms.username }}
-      token: {{ requiredEnv .scms.token }}
+      # Priority set to the environment variable
+      user: '{{ default $GitHubUser .scm.user}}'
+      owner: '{{ default $GitHubRepositoryList._0 .scm.owner }}'
+      repository: '{{ default $GitHubRepositoryList._1 .scm.repository}}'
+      token: '{{ default $GitHubPAT .scm.token }}'
+      username: '{{ default $GitHubUsername .scm.username }}'
+      branch: '{{ .scm.branch }}'
+      commitusingapi: true
+      commitmessage:
+        hidecredit: true
+        footers: "Signed-off-by: Kubewarden bot <cncf-kubewarden-maintainers@lists.cncf.io>"
 
 sources:
 # {{ range $index, $file := .files }}
