@@ -12,3 +12,7 @@ scm:
   commitmessage:
     hidecredit: true
     footers: "Signed-off-by: Kubewarden bot <cncf-kubewarden-maintainers@lists.cncf.io>"
+pr:
+  labels:
+    - "kind/chore"
+    - "area/documentation"
