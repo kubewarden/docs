@@ -1,3 +1,13 @@
+---
+sidebar_label: kwctl CLI Reference
+sidebar_position: 120
+title: kwctl CLI
+description: kwctl CLI reference documentation
+keywords: [cli, reference, kwctl]
+doc-persona: [kubewarden-operator]
+doc-type: [reference]
+doc-topic: [operator-manual]
+---
 # Command-Line Help for `kwctl`
 
 This document contains the help content for the `kwctl` command-line program.
