@@ -1,5 +1,4 @@
 ---
-pipelineid: cli-ref-docs
 files:
   - path: "docs/reference/kwctl-cli.md"
     sidebar_label: kwctl CLI Reference
@@ -15,3 +14,6 @@ scm:
 pr:
   title: "Update CLI Reference Docs"
   description: "Update all the CLI reference documentation"
+  labels:
+    - "kind/chore"
+    - "area/documentation"
