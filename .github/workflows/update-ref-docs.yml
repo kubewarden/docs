@@ -4,8 +4,8 @@ name: "Update CLI Reference Docs"
 on:
   workflow_dispatch:
   schedule:
-    # * is a special character in YAML so you have to quote this string
-    - cron: '0 * * * *'
+    # Run this job every Monday and Wednesday at 00:00
+    - cron: '0 0 * * 1,3'
 
 permissions:
   contents: write
@@ -23,7 +23,7 @@ jobs:
       - name: Install Updatecli Binary
         uses: updatecli/updatecli-action@v2
 
-      - name: Run Updatecli in enforce mode
+      - name: Run Updatecli to update CLI Reference Docs
         run: "updatecli compose apply --file updatecli/update-cli-ref-docs.yaml"
         env:
           GITHUB_TOKEN:  ${{ secrets.GITHUB_TOKEN }}
