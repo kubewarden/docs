@@ -15,24 +15,33 @@ doc-topic: [operator-manual, artifacts, registry, images]
 
 ## Kubewarden artifacts
 
+### Verifying Kubewarden
+
+There is a tutorial on [verifying Kubewarden](../tutorials/verifying-kubewarden),
+demonstrating how to verify Kubewarden artifacts.
+
 ### Binaries
 
-Our `kwctl` CLI tool is published via [GitHub releases](https://github.com/kubewarden/kwctl/releases).
+Kubewarden publishes the `kwctl` CLI tool at
+[GitHub releases](https://github.com/kubewarden/kwctl/releases).
 
 ### OCI artifacts
 
-For OCI artifacts, we publish everything in ghcr.io under
-https://github.com/orgs/kubewarden/packages. This includes:
+For OCI artifacts, the project publishes everything in ghcr.io at
+[github.com/orgs/kubewarden/packages](https://github.com/orgs/kubewarden/packages).
+This includes:
 
 - [`kubewarden/packages/policies/*`](https://github.com/orgs/kubewarden/packages/policies)
-  are our policy WASM OCI artifacts.
+  are the policy Wasm OCI artifacts.
 - [`kubewarden/packages/charts/*`](https://github.com/orgs/kubewarden/packages/charts)
-  are our Helm charts as OCI artifacts. They follow SLSA standards.
-- Our container images are published as OCI images: `kubewarden-controller, policy-server, audit-scanner, kubectl`.
+  are the Helm charts as OCI artifacts.
+  They follow [SLSA](https://slsa.dev) standards.
+- Container images published as OCI images:
+  `kubewarden-controller, policy-server, audit-scanner, kubectl`.
 - There's also `packages/tests/*` containing artifacts used in e2e tests.
 
 ### Helm charts via HTTPS
 
-Our Helm charts are published in the Helm chart HTTPS
-repository at https://charts.kubewarden.io (they are without SLSA, or signatures, but
-this type of Helm repository provides searching).
+Kubewarden publishes Helm charts in the Helm chart HTTPS repository at
+[charts.kubewarden.io](https://charts.kubewarden.io)
+(they're without SLSA, or signatures, but this Helm repository provides searching).

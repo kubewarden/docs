@@ -43,7 +43,7 @@ bypass validation. For example: `github.com/kubewarden/policy-server1`.
 If you want a more secure check, you need to use a full URL:
 
 ```
-https://github.com/kubewarden/policy-server/.github/workflows/container-image.yml@refs/tags/v1.18.0
+https://github.com/kubewarden/policy-server/.github/workflows/container-image.yml@refs/tags/v1.19.0
 ```
 
 Note that the URL includes the full repository path, the workflow file path,
@@ -58,11 +58,11 @@ you can use the `cosign` CLI tool. For example, to verify the
 `kubewarden/policy-server` image, you can execute the following command:
 
 ```
-cosign verify ghcr.io/kubewarden/policy-server:v1.18.0 \
+cosign verify ghcr.io/kubewarden/policy-server:v1.19.0 \
   --certificate-identity-regexp 'https://github.com/kubewarden/*' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
-Verification for ghcr.io/kubewarden/policy-server:v1.18.0 --
+Verification for ghcr.io/kubewarden/policy-server:v1.19.0 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
@@ -73,6 +73,13 @@ The following checks were performed on each of these signatures:
 
 You can then verify that the certificate in the returned JSON contains the
 correct issuer, subject, and `github_workflow_repository` extensions.
+
+You can also verify with [`slsactl`](https://github.com/rancherlabs/slsactl).
+For example, for version 1.19.0:
+
+```console
+slsactl verify ghcr.io/kubewarden/policy-server:v1.19.0
+```
 
 The same applies to all other images produced by the Kubewarden team, such as
 `kubewarden/kubewarden-controller` and `kubewarden/audit-scanner`.
@@ -101,7 +108,7 @@ $ tar -xvf attestation-amd64.tar.gz
 
 $ cosign verify-blob --bundle audit-scanner-attestation-amd64-checksum-cosign.bundle \
     --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-    --certificate-identity="https://github.com/kubewarden/audit-scanner/.github/workflows/attestation.yml@refs/tags/v1.18.0" \
+    --certificate-identity="https://github.com/kubewarden/audit-scanner/.github/workflows/attestation.yml@refs/tags/v1.19.0" \
     audit-scanner-attestation-amd64-checksum.txt
 Verified OK
 
@@ -111,6 +118,13 @@ audit-scanner-attestation-amd64-sbom-451fac2e52226302ff449bfe053b3831fd93409b4da
 ```
 
 Now that the files integrity is verified, you can inspect the SBOM and Provenance files.
+You can get these from the container image, using [`slsactl`](https://github.com/rancherlabs/slsactl).
+For example, for version 1.19.0:
+
+```console
+slsactl download provenance ghcr.io/kubewarden/policy-server:v1.19.0
+slsactl download sbom ghcr.io/kubewarden/policy-server:v1.19.0
+```
 
 ## Helm charts
 
@@ -176,9 +190,9 @@ ghcr.io/kubewarden/kubectl:v1.21.4
 Now, for each image in that list you can verify their Sigstore signatures following the
 instructions from the [previous section](#container-images).
 
-## kwctl
+## `kwctl`
 
-kwctl binaries are signed using [Sigstore's blog signing](https://docs.sigstore.dev/signing/signing_with_blobs/).
+`kwctl` binaries are signed using [Sigstore's blob signing](https://docs.sigstore.dev/signing/signing_with_blobs/).
 
 When you download a [kwctl
 release](https://github.com/kubewarden/kwctl/releases/) each zip file contains
@@ -187,7 +201,7 @@ two files that can be used for verification: `kwctl.sig` and `kwctl.pem`.
 In order to verify kwctl you need cosign installed, and then execute the
 following command:
 
-```
+```console
 cosign verify-blob \
   --signature kwctl-linux-x86_64.sig \
   --cert kwctl-linux-x86_64.pem kwctl-linux-x86_64
@@ -205,7 +219,28 @@ Release](https://github.com/kubewarden/kwctl/releases) of the project.
 
 The provenance attestation for `kwctl` is verified by using [`gh
 attestation verify`](https://cli.github.com/manual/gh_attestation_verify). For
-example with ` gh attestation verify kwctl-linux-x86_64 --repo kubewarden/kwctl`.
+example:
+
+```console
+$ gh attestation verify kwctl-linux-x86_64 --repo kubewarden/kwctl
+Loaded digest sha256:a67f5b2fbe3b0ab158dd482670c1da382346dc09e45042ceb3d8eb8e268d2025 for file://kwctl-linux-x86_64
+Loaded 2 attestations from GitHub API
+
+The following policy criteria will be enforced:
+- OIDC Issuer must match:................... https://token.actions.githubusercontent.com
+- Source Repository Owner URI must match:... https://github.com/kubewarden
+- Source Repository URI must match:......... https://github.com/kubewarden/kwctl
+- Predicate type must match:................ https://slsa.dev/provenance/v1
+- Subject Alternative Name must match regex: (?i)^https://github.com/kubewarden/kwctl/
+
+✓ Verification succeeded!
+
+sha256:a67f5b2fbe3b0ab158dd482670c1da382346dc09e45042ceb3d8eb8e268d2025 was attested by:
+REPO              PREDICATE_TYPE                  WORKFLOW
+kubewarden/kwctl  https://slsa.dev/provenance/v1  .github/workflows/build.yml@refs/tags/v1.20.0
+kubewarden/kwctl  https://slsa.dev/provenance/v1  .github/workflows/build.yml@refs/heads/main
+$
+```
 
 ## Policies
 
