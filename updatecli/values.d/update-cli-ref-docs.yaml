@@ -5,4 +5,4 @@ files:
     dst: "docs/reference/kwctl-cli.md"
 src:
   branch: "main"
-  url: "https://github.com/jvanz/kwctl.git"
+  url: "https://github.com/kubewarden/kwctl.git"
