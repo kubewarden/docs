@@ -95,8 +95,12 @@ module.exports = {
               href: "https://kubernetes.slack.com/archives/kubewarden",
             },
             {
-              label: "X/Twitter",
-              href: "https://twitter.com/kubewarden",
+              label: "Bluesky",
+              href: "https://bsky.app/profile/kubewarden.bsky.social",
+            },
+            {
+              label: "Mastodon",
+              href: "https://hachyderm.io/@kubewarden",
             },
           ],
         },
