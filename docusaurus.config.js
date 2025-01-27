@@ -96,7 +96,7 @@ module.exports = {
             },
             {
               label: "Bluesky",
-              href: "https://bsky.app/profile/kubewarden.bsky.social",
+              href: "https://bsky.app/profile/kubewarden.io",
             },
             {
               label: "Mastodon",
