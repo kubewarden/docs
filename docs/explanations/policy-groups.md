@@ -228,6 +228,9 @@ Another distinction between policy groups and ordinary policies is the location
 where context-aware resource rules are defined. Each policy in a group
 accepts an optional `contextAwareResources` field to specify the resources that
 the policy is allowed to access during evaluation.
+Similarly to ordinary policies, context-aware capabilities can only be used by defining a `ClusterAdmissionPolicyGroup`.
+This is for security reasons, as `AdmissionPolicyGroup` resources can be deployed by unprivileged users.
+For more details, refer to the [context-aware policies](./context-aware-policies.md) documentation.
 
 <details>
 
@@ -237,7 +240,7 @@ An example of a policy group that makes use of a context-aware policy.
 
 ```yaml
 apiVersion: policies.kubewarden.io/v1
-kind: ClusterAdmissionPolicyGroup # or AdmissionPolicyGroup
+kind: ClusterAdmissionPolicyGroup
 metadata:
   name: demo-ctx-aware
 spec:
