@@ -9,6 +9,15 @@ files:
     doc_persona: "[kubewarden-operator]"
     doc_type: "[reference]"
     doc_topic: "[operator-manual]"
+  - path: "docs/reference/policy-server-cli.md"
+    sidebar_label: Policy Server CLI Reference
+    sidebar_position: 121
+    title: Policy Server CLI
+    description: Policy Server CLI reference documentation
+    keywords: "[cli, reference, policy-server]"
+    doc_persona: "[kubewarden-operator]"
+    doc_type: "[reference]"
+    doc_topic: "[operator-manual]"
 scm:
   branch: "main"
 pr:

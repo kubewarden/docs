@@ -1,0 +1,8 @@
+---
+# Values.yaml contains settings that be used from Updatecli manifest.
+files:
+  - src: "cli-docs.md"
+    dst: "docs/reference/policy-server-cli.md"
+src:
+  branch: "main"
+  url: "https://github.com/kubewarden/policy-server.git"
