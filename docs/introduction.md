@@ -17,16 +17,28 @@ doc-topic: [introduction]
 Kubewarden is a Kubernetes Policy Engine.
 It aims to be the Universal Policy Engine for Kubernetes.
 
-- You can reuse policies from other policy engines without having to rewrite them.
-- You can write your own policies in any programming language
-that generates WebAssembly binaries,
-reusing your language tooling and libraries.
-- You can run policies both outside the cluster and as part of your CI/CD processes.
+- You can reuse policies from other policy engines without having to rewrite
+them.
+- You can write your own policies in any programming language that generates
+WebAssembly binaries, reusing your language tooling and libraries.
+- You can run policies both outside the cluster and as part of your CI/CD
+processes.
 
-Kubewarden also provides an audit scanner to
-actively and continuously check policy enforcement over time.
+Kubewarden also provides an audit scanner to actively and continuously check
+policy enforcement over time.
 
-Kubewarden is a [CNCF](https://cncf.io) Sandbox project, originally created by [SUSE Rancher](https://www.rancher.com/).
+Kubewarden is a [CNCF](https://cncf.io) Sandbox project,
+originally created by [SUSE Rancher](https://www.rancher.com/).
+
+## New to Kubewarden?
+
+If new to the Kubewarden project start with the [Quick start guide](./quick-start.md)
+and the [architecture](./explanations/architecture.md) page.
+Then it depends where your interests take you.
+For policy developers there are language specific sections in the tutorials.
+For integrators and administrators there is a 'howtos' section.
+The explanations section contains useful background material.
+There is also a [glossary](./glossary.md).
 
 ## What is WebAssembly?
 
@@ -48,9 +60,10 @@ Users can write Kubernetes policies using their
 favorite programming language, provided its toolchain can generate
 Wasm binaries.
 
-Wasm modules are portable, once built they can run on any kind of
-processor architecture and operating system. For example, a policy developed and built on Apple
-Silicon can run on AMD64/Intel64 Linux without conversion.
+Wasm modules are portable, once built they can run on any kind of processor
+architecture and operating system.
+For example, a policy developed and built on Apple Silicon can run on
+AMD64/Intel64 Linux without conversion.
 
 Policy authors can reuse their skills, tools and best
 practices. Policies are "traditional" programs that can have reusable
