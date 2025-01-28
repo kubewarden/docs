@@ -20,18 +20,27 @@ It aims to be the Universal Policy Engine for Kubernetes.
 Kubewarden is a [CNCF](https://cncf.io) Sandbox project,
 originally created by [SUSE Rancher](https://www.rancher.com/).
 
-## What benefits does Kubewarden provide?
+## How does Kubewarden help?
 
-Kubewarden offers flexibility for policy admission and enforcement in a Kubernetes environment. The key benefits are:
+Kubewarden offers flexibility for policy admission and enforcement in a Kubernetes environment.
 
-- Use of any programming language that generates [WebAssembly](https://webassembly.org) binaries to write your policies.
-- Utilizing WebAssembly allows policy compatibility across processor and operating systems.
+### Benefits and value
+
+- Use any programming language that generates [WebAssembly](https://webassembly.org) binaries to write your policies.
+- Utilizing WebAssembly allows policy compatibility across processors and operating systems.
 - Reuse of policies from other from other policy engines without the need for rewriting them.
 - Distribute policies using standard and secure mechanisms such as [OCI](https://opencontainers.org) compliant registries.
-- Use policies both inside and outside the cluster, and in of CI/CD processes.
+- Policy enforcement at admission ensures only compliant workloads run.
 - The Kubewarden audit scanner actively and continuously checks policy enforcement over time.
 - Verify policies using [SLSA](https://slsa.dev) (Supply Chain Levels for Software Artifacts) tools and practices.
 - Kubewarden provides a comprehensive approach to admission policy management.
+- CNCF membership and a growing open source community, and ecosystem, supports Kubewarden helping with transparency, collaboration, and improvement.
+
+### Use cases
+
+- Security hardening. For example, enforce policies restricting container privileges, enforce network policies, or block insecure image registries.
+- Compliance auditing. Ensure workloads comply with organizational or regulatory standards and best practices.
+- Resource optimization. Enforce resource limits and quotas.
 
 ## New to Kubewarden?
 
