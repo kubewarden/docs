@@ -17,18 +17,21 @@ doc-topic: [introduction]
 Kubewarden is a Kubernetes Policy Engine.
 It aims to be the Universal Policy Engine for Kubernetes.
 
-- You can reuse policies from other policy engines without having to rewrite
-them.
-- You can write your own policies in any programming language that generates
-WebAssembly binaries, reusing your language tooling and libraries.
-- You can run policies both outside the cluster and as part of your CI/CD
-processes.
-
-Kubewarden also provides an audit scanner to actively and continuously check
-policy enforcement over time.
-
 Kubewarden is a [CNCF](https://cncf.io) Sandbox project,
 originally created by [SUSE Rancher](https://www.rancher.com/).
+
+## What benefits does Kubewarden provide?
+
+Kubewarden offers flexibility for policy admission and enforcement in a Kubernetes environment. The key benefits are:
+
+- Use of any programming language that generates [WebAssembly](https://webassembly.org) binaries to write your policies.
+- Utilizing WebAssembly allows policy compatibility across processor and operating systems.
+- Reuse of policies from other from other policy engines without the need for rewriting them.
+- Distribute policies using standard and secure mechanisms such as [OCI](https://opencontainers.org) compliant registries.
+- Use policies both inside and outside the cluster, and in of CI/CD processes.
+- The Kubewarden audit scanner actively and continuously checks policy enforcement over time.
+- Verify policies using [SLSA](https://slsa.dev) (Supply Chain Levels for Software Artifacts) tools and practices.
+- Kubewarden provides a comprehensive approach to admission policy management.
 
 ## New to Kubewarden?
 
