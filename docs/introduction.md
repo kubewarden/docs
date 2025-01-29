@@ -28,7 +28,7 @@ Kubewarden offers flexibility for policy admission and enforcement in a Kubernet
 
 - Use any programming language that generates [WebAssembly](https://webassembly.org) binaries to write your policies.
 - Utilizing WebAssembly allows policy compatibility across processors and operating systems.
-- Reuse of policies from other from other policy engines without the need for rewriting them.
+- Reuse of policies from other policy engines without the need for rewriting them.
 - Distribute policies using standard and secure mechanisms such as [OCI](https://opencontainers.org) compliant registries.
 - Policy enforcement at admission ensures only compliant workloads run.
 - The Kubewarden audit scanner actively and continuously checks policy enforcement over time.
