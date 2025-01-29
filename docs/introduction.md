@@ -34,7 +34,7 @@ Kubewarden offers flexibility for policy admission and enforcement in a Kubernet
 - The Kubewarden audit scanner actively and continuously checks policy enforcement over time.
 - Verify policies using [SLSA](https://slsa.dev) (Supply Chain Levels for Software Artifacts) tools and practices.
 - Kubewarden provides a comprehensive approach to admission policy management.
-- CNCF membership and a growing open source community, and ecosystem, supports Kubewarden helping with transparency, collaboration, and improvement.
+- CNCF membership and a growing open source community and ecosystem help Kubewarden with transparency, collaboration and improvement.
 
 ### Use cases
 
