@@ -17,18 +17,30 @@ doc-topic: [introduction]
 Kubewarden is a Kubernetes Policy Engine.
 It aims to be the Universal Policy Engine for Kubernetes.
 
-- You can reuse policies from other policy engines without having to rewrite
-them.
-- You can write your own policies in any programming language that generates
-WebAssembly binaries, reusing your language tooling and libraries.
-- You can run policies both outside the cluster and as part of your CI/CD
-processes.
-
-Kubewarden also provides an audit scanner to actively and continuously check
-policy enforcement over time.
-
 Kubewarden is a [CNCF](https://cncf.io) Sandbox project,
 originally created by [SUSE Rancher](https://www.rancher.com/).
+
+## How does Kubewarden help?
+
+Kubewarden offers flexibility for policy admission and enforcement in a Kubernetes environment.
+
+### Benefits and value
+
+- Use any programming language that generates [WebAssembly](https://webassembly.org) binaries to write your policies.
+- WebAssembly enables policy compatibility across processors and operating systems.
+- Reuse of policies from other policy engines without the need for rewriting them.
+- Distribute policies using standard and secure mechanisms such as [OCI](https://opencontainers.org) compliant registries.
+- Policy enforcement at admission ensures only compliant workloads run.
+- The Kubewarden audit scanner actively and continuously checks policy enforcement over time.
+- Verify policies using [SLSA](https://slsa.dev) (Supply Chain Levels for Software Artifacts) tools and practices.
+- Kubewarden provides a comprehensive approach to admission policy management.
+- CNCF membership and a growing open source community and ecosystem help Kubewarden with transparency, collaboration and improvement.
+
+### Use cases
+
+- Security hardening. For example, enforce policies restricting container privileges, enforce network policies, or block insecure image registries.
+- Compliance auditing. Ensure workloads comply with organizational or regulatory standards and best practices.
+- Resource optimization. Enforce resource limits and quotas.
 
 ## New to Kubewarden?
 
