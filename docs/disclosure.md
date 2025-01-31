@@ -13,7 +13,7 @@ doc-topic: [security, disclosure]
   <link rel="canonical" href="https://docs.kubewarden.io/disclosure"/>
 </head>
 
-The Kubewarden team appreciates investigative work into security
+The Kubewarden team appreciates investigative work on security
 vulnerabilities carried out by well-intentioned, ethical security researchers.
 Kubewarden follows the practice of [responsible
 disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure) to
