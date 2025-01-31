@@ -38,7 +38,7 @@ with us first.
 
 You can also come talk in our [slack-room] on the Kubernetes Slack server.
 
-On receipt the security team:
+On receipt, the security team:
 
 - Reviews the report, verifies the vulnerability and responds with confirmation
   and/or further information requests.
