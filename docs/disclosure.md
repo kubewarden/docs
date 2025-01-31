@@ -13,37 +13,36 @@ doc-topic: [security, disclosure]
   <link rel="canonical" href="https://docs.kubewarden.io/disclosure"/>
 </head>
 
-The Kubewarden team greatly appreciates investigative work into security
+The Kubewarden team appreciates investigative work into security
 vulnerabilities carried out by well-intentioned, ethical security researchers.
-We follow the practice of [responsible
-disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure) in order to
-best protect Kubewarden's user-base from the impact of security issues. On our
-side, this means:
+Kubewarden follows the practice of [responsible
+disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure) to
+best protect Kubewarden's user-base from the impact of security issues. On
+Kubewarden's side, this means:
 
-- We will respond to security incidents on priority.
-- We will release fixes for issues as soon as is practical, keeping in mind
-  that not all risks are created equal.
-- We will always transparently let the community know about any incident that
+- Kubewarden responds to security incidents on priority.
+- Kubewarden releases fixes for issues as soon as is practical, prioritizing by risk.
+- Kubewarden always transparently lets the community know about any incident that
   affects them.
 
 If you have found a security vulnerability in Kubewarden, the easiest way to
 report a vulnerability is through the [Security tab on
 GitHub](https://github.com/kubewarden/community/security/advisories). This
-mechanism allows maintainers to communicate privately with you, and you do not
+mechanism allows maintainers to communicate privately with you, and you don't
 need to encrypt your messages.
 
-Alternatively, you can can disclose it responsibly by emailing
+Alternatively, you can disclose it responsibly by emailing
 [cncf-kubewarden-maintainers@lists.cncf.io](mailto:cncf-kubewarden-maintainers@lists.cncf.io)
 in an **unencrypted** message. Please do not discuss potential vulnerabilities in public without validating
 with us first.
 
-You can also come talk to us at our [slack-room] in the Kubernetes Slack server.
+You can also come talk in our [slack-room] on the Kubernetes Slack server.
 
-On receipt the security team will:
+On receipt the security team:
 
-- Review the report, verify the vulnerability and respond with confirmation
+- Reviews the report, verifies the vulnerability and responds with confirmation
   and/or further information requests.
-- Once the reported security bug has been addressed we will notify the
+- After addressing the reported security bug Kubewarden notifies the
   Researcher, who is then welcome to optionally disclose publicly.
 
 Please, refer to the [community
