@@ -42,7 +42,7 @@ On receipt, the security team:
 
 - Reviews the report, verifies the vulnerability and responds with confirmation
   and/or further information requests.
-- After addressing the reported security bug Kubewarden notifies the
+- After addressing the reported security bug, Kubewarden notifies the
   Researcher, who is then welcome to optionally disclose publicly.
 
 Please, refer to the [community
