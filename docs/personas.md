@@ -13,7 +13,6 @@ doc-topic: [explanation]
   <link rel="canonical" href="https://docs.kubewarden.io/personas"/>
 </head>
 
-<!-- prettier-ignore -->
 |Persona|Description|
 |-|-|
 |**Policy user**|Someone who takes a policy and uses it in a cluster. They deploy policies and observe results. They configure the policy settings but don't write the policy internal code (if there is any).|

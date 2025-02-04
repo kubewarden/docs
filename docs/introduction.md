@@ -44,7 +44,8 @@ Kubewarden offers flexibility for policy admission and enforcement in a Kubernet
 
 ## New to Kubewarden?
 
-If new to the Kubewarden project start with the [Quick start guide](./quick-start.md)
+If new to the Kubewarden project start with the
+[Quick start guide](./quick-start.md)
 and the [architecture](./explanations/architecture.md) page.
 Then it depends where your interests take you.
 For policy developers there are language specific sections in the tutorials.
@@ -61,10 +62,9 @@ As stated on [WebAssembly's official website](https://webassembly.org/):
 > compilation target for programming languages, enabling deployment on
 > the web for client and server applications.
 
-Wasm was originally conceived as a browser "extension".
-However, efforts are being made by the WebAssembly
-community to allow the execution of Wasm code outside
-browsers.
+Wasm was originally conceived as a browser "extension". However, the
+WebAssembly community is engaged in efforts to allow the execution of Wasm code
+outside browsers.
 
 ## Why use WebAssembly?
 
@@ -77,15 +77,12 @@ architecture and operating system.
 For example, a policy developed and built on Apple Silicon can run on
 AMD64/Intel64 Linux without conversion.
 
-Policy authors can reuse their skills, tools and best
-practices. Policies are "traditional" programs that can have reusable
-blocks (regular libraries), can be linted and tested, and be
-plugged into current CI and CD workflows.
+Policy authors can reuse their skills, tools and best practices. Policies are
+"traditional" programs that can have reusable blocks (regular libraries). You
+can lint and test them and you can plug them into current CI and CD workflows.
 
 ## Policy distribution
 
-Kubewarden policies can be served by a regular web server or,
-better, be published from an OCI compliant registry.
-
-Kubewarden policies can be stored inside an OCI compliant registry as
+You can serve Kubewarden policies using a standard web server or, better, you
+can be publish them in an OCI compliant registry as
 [OCI artifacts](https://github.com/opencontainers/artifacts).
