@@ -13,16 +13,13 @@ doc-topic: [mutating-policies]
   <link rel="canonical" href="https://docs.kubewarden.io/explanations/mutating-policies"/>
 </head>
 
-Mutating policies receive an object request and rebuild this incoming object
-(mutate it) into a new request, according to the defined values in the settings
-of the policy. The request will proceed through the Kubernetes API, potentially being
+Mutating policies receive an object request and rebuild it
+(mutate it) into a new request, according to the defined values in the policy settings.
+The request proceeds through the Kubernetes API, potentially being
 evaluated by other policies.
 
-If you want to allow the behavior of mutating requests,
+To permit mutating request behavior in a policy
 set the `ClusterAdmissionPolicy.mutating` field to `true`.
-
-However, if you set the `ClusterAdmissionPolicy.mutating` field to `false`,
-the mutated requests will be rejected.
 
 ## Why mutating policies can be dangerous
 
@@ -30,17 +27,17 @@ the mutated requests will be rejected.
 
 :::danger
 To prevent system abuse, Kubewarden administrators should review mutating
-policies: mutating policies could for example modify a workload, such that it
-allows for privileged container creation.
+policies. Mutating policies could, for example, modify a workload, such that it
+permits privileged container creation.
 :::
 
 #### Solution
 
 If in doubt, split policies into mutating and validating policies, instead of
 writing or deploying policies that both validate and mutate. This is particularly
-important when using a DSL (such as Rego) to build complex policies.
+important when using a DSL, such as Rego, to build complex policies.
 
-### Misconfigured mutating policies together with 3rd party Kubernetes Controllers can get stuck in an infinite loop
+### Misconfigured mutating policies together with third party Kubernetes Controllers can get stuck in an infinite loop
 
 :::danger
 Mutating policies return requests that proceed through the Kubernetes API. If
@@ -53,15 +50,15 @@ infinite feedback loop of mutations.
 
 Perform the mutation against:
 
-1. The lower type of resource (e.g: Pod).
-2. The highest type of resource (e.g: Deployment). Note: this could still lead
-   to loops if a controller is managing those resources. For example
-   controllers of GitOps solutions (like fleet, flux, argo, ...) or other 3rd
+1. The lower type of resource (for example, Pod).
+2. The highest type of resource (for example, Deployment). Note: this could still lead
+   to loops if a controller is managing those resources. For example,
+   controllers of GitOps solutions (like fleet, flux, argo, ...) or other third
    party controllers that translate their own CRDs into Deployment objects.
 
 ## Examples
 
-Let's see a mutating policy at work. Create the following
+You can see a mutating policy at work. Create the following
 `ClusterAdmissionPolicy` with the `mutating` field set to `true`:
 
 ```bash
@@ -99,10 +96,12 @@ EOF
 clusteradmissionpolicy.policies.kubewarden.io/psp-user-group created
 ```
 
-The [`psp-user-group`](https://github.com/kubewarden/user-group-psp-policy) policy is used to control users and groups in containers and can mutate the requests.
-In the example above, the `runAsUser` field is set and it will be added to the container `securityContext` section.
+You use the
+[`psp-user-group`](https://github.com/kubewarden/user-group-psp-policy)
+policy to control users and groups in containers and mutate the requests.
+In the previous example, you set the `run_as_user` field and it's added to the container `securityContext` section.
 
-As the `mutating` field is set to `true`, the following request will be applied successfully:
+As the `mutating` field is `true`, the following request succeeds:
 
 ```bash
 # Command
@@ -121,7 +120,7 @@ EOF
 pod/pause-user-group created
 ```
 
-Once the request is applied, you can see the results of the container's `securityContext`:
+You can see the results of the container's `securityContext` after the request application:
 
 ```bash
 # Command
@@ -168,7 +167,7 @@ EOF
 clusteradmissionpolicy.policies.kubewarden.io/psp-user-group configured
 ```
 
-As the `mutating` field is set to `false`, the following request will fail:
+As the `mutating` field is `false`, the following request fails:
 
 ```bash
 # Command
