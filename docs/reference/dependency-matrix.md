@@ -17,13 +17,13 @@ This page lists the dependencies of Kubewarden, with their relevant
 version constraints. Versions outside of the provided ranges may work but are
 not tested.
 
-## Opentelemetry, metrics and tracing dependencies
+## OpenTelemetry, metrics and tracing dependencies
 
-At the time of writing, the [Opentelemetry](https://opentelemetry.io) stack
-keeps improving. Still, is not yet stable, and unannounced
-backwards-incompatible changes still happen. Kubewarden devs do their best to
-track Opentelemetry stack changes and adjust to them. Kubewarden is tested against a known working
-range of Opentelemetry, metrics and tracing stack.
+At the time of writing, the [OpenTelemetry](https://opentelemetry.io) stack
+keeps improving. However, it's not yet stable, and unannounced
+backwards-incompatible changes still happen. The Kubewarden developers endeavor
+to track OpenTelemetry stack changes and adjust to them. The project tests
+against a known working range of OpenTelemetry, metrics and tracing stack.
 
 ## Optional dependencies
 
@@ -42,5 +42,5 @@ Needed for specific features.
 
 ## Rancher
 
-For downstream consumers such as Rancher, Kubewarden is tested against the
-monitoring and tracing Helm charts provided in the Rancher charts repository.
+Kubewarden tests against the monitoring and tracing Helm charts provided in the
+Rancher charts repository.

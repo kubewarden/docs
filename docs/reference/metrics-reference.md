@@ -31,8 +31,8 @@ key-value attributes are added to the metric to provide additional information.
 :::
 
 Name | Type | |
---- | --- | ---
-`kubewarden_policy_evaluations_total` | Counter | [Baggage](#kubewarden_policy_evaluations_total)
+--- | --- | --- |
+`kubewarden_policy_evaluations_total` | Counter | [Baggage](#kubewarden_policy_evaluations_total) |
 
 #### `kubewarden_policy_evaluations_total`
 
@@ -45,6 +45,6 @@ Label | Description |
 `resource_kind` | Kind of the evaluated resource |
 `resource_namespace` | Namespace of the evaluated resource. Not present if the resource is cluster scoped. |
 `resource_request_operation` | Operation type: `CREATE`, `UPDATE`, `DELETE`, `PATCH`, `WATCH`... |
-`accepted` | Whether the request was accepted or not |
-`mutated` | Whether the request was mutated or not |
-`error_code` | Error code returned by the policy in case of rejection, if any. Not present if the policy didn't provide one. |
+`accepted` | Was the request accepted? |
+`mutated` | Was the request mutated? |
+`error_code` | Error code returned by the policy if rejected, if any. Not present if the policy didn't provide one. |
