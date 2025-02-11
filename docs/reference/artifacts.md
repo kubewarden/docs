@@ -27,7 +27,7 @@ Kubewarden publishes the `kwctl` CLI tool at
 
 ### OCI artifacts
 
-For OCI artifacts, the project publishes everything in ghcr.io at
+For Open Container Initiative (OCI) artifacts, the project publishes everything in ghcr.io at
 [github.com/orgs/kubewarden/packages](https://github.com/orgs/kubewarden/packages).
 This includes:
 
@@ -44,4 +44,4 @@ This includes:
 
 Kubewarden publishes Helm charts in the Helm chart HTTPS repository at
 [charts.kubewarden.io](https://charts.kubewarden.io)
-(they're without SLSA, or signatures, but this Helm repository provides searching).
+They're without SLSA, or signatures, but this Helm repository provides searching.
