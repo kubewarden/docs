@@ -13,9 +13,9 @@ doc-topic: [distributing-policies]
   <link rel="canonical" href="https://docs.kubewarden.io/explanations/distributing-policies"/>
 </head>
 
-Kubewarden policies are WebAssembly (Wasm) binaries that are evaluated by the Kubewarden Policy Server.
+Kubewarden policies are WebAssembly (Wasm) binaries evaluated by the Kubewarden Policy Server.
 
-The Kubewarden policy server can load policies from these sources:
+The Kubewarden policy server loads policies from these sources:
 
 - Local filesystem
 - HTTP(s) server
@@ -26,14 +26,14 @@ The Kubewarden policy server can load policies from these sources:
   - [Amazon ECR](https://aws.amazon.com/ecr/)
   - [Google container registry](https://cloud.google.com/artifact-registry/)
 
-We think distributing Kubewarden policies via a regular OCI-compliant registry is the best choice.
+Kubewarden recommends distributing Kubewarden policies via a regular OCI-compliant registry.
 Container registries are a mandatory requirement for any Kubernetes cluster.
 Having a single place to store, and secure, all the artifacts required by a cluster is beneficial.
 
 ## Pushing policies to an OCI-compliant registry
 
 The [OCI image format](https://github.com/opencontainers/image-spec)
-specification allows you to store any binary blob inside a regular OCI-compliant container registry.
+specification permits storing any binary blob inside a regular OCI-compliant container registry.
 
 The target OCI-compliant registry **must support artifacts** to successfully push a Kubewarden Policy to it.
 
@@ -43,7 +43,7 @@ You can use the [`kwctl`](https://github.com/kubewarden/kwctl) CLI to push a Kub
 
 You also annotate a policy with `kwctl`.
 The process of annotating a Kubewarden policy is done by adding Wasm custom sections to the policy binary.
-This means that the policy metadata is packaged with the policy itself.
+This means that the policy packages it's own metadata.
 
 The `kwctl annotate` command requires two inputs:
 
@@ -52,7 +52,7 @@ The `kwctl annotate` command requires two inputs:
 - the annotations file, a file containing a YAML description of the policy metadata.
 This file is usually located root project folder of your policy.
 
-For example, we save this file as `metadata.yml` in the current
+For example, you can save this file as `metadata.yml` in the current
 directory:
 
 ```yaml
@@ -78,10 +78,10 @@ annotations:
 
     This policy accepts the following settings:
 
-    - `invert_behavior`: bool that inverts the policy behavior. If enabled, only palindrome names will be accepted.
+    - `invert_behavior`: bool that inverts the policy behavior. If enabled, only palindrome names are accepted.
 ```
 
-Now, let's annotate the policy:
+Now, you can annotate the policy:
 
 ```shell
 $ kwctl annotate policy.wasm \
@@ -89,8 +89,8 @@ $ kwctl annotate policy.wasm \
     --output-path annotated-policy.wasm
 ```
 
-The annotation process performs some optimizations on the policy, so often the annotated policy is smaller than the original.
-This depends considerably on the toolchain that was used to produce the original Wasm object.
+The annotation process performs certain optimizations on the policy, so often the annotated policy is smaller than the original.
+This depends considerably on the toolchain used to produce the original Wasm object.
 
 :::info
 
@@ -135,12 +135,12 @@ This is markdown text and as such allows you to define a free form usage text.
 
 This policy allows you to reject requests if:
 
-• The name of the resource is a palindrome name.
-• The namespace name where this resource is created has a palindrome name.
+- The name of the resource is a palindrome name.
+- The namespace name where this resource is created has a palindrome name.
 
 This policy accepts the following settings:
 
-• invert_behavior: bool that inverts the policy behavior. If enabled, only palindrome names will be accepted.
+- invert_behavior: bool that inverts the policy behavior. If enabled, only palindrome names will be accepted.
 
 Cannot determine if the policy has been signed. There was an error while attempting to fetch its signatures from the remote registry: invalid uri
 ```
@@ -158,10 +158,10 @@ $ kwctl push annotated-policy.wasm \
      <oci-registry>/kubewarden-policies/palindromify-policy:v0.0.1
 ```
 
-It is discouraged to push unannotated policies.
+It's discouraged to push unannotated policies.
 The policy server uses the metadata provided by annotations to correctly execute a policy.
-By default, `kwctl push` will refuse to push such a policy to an OCI registry.
+By default, `kwctl push` refuses to push such a policy to an OCI registry.
 If you need an unannotated policy, use the `--force` flag of `kwctl push`.
 
-The policy can then be referenced from the Kubewarden Policy Server or `kwctl` as
+You can reference a policy from the Kubewarden Policy Server or `kwctl` as
 `registry://<oci-registry>/kubewarden-policies/palindromify-policy:v0.0.1`.

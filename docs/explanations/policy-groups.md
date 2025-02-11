@@ -13,39 +13,40 @@ doc-topic: [explanations, policy-group]
   <link rel="canonical" href="https://docs.kubewarden.io/explanations/policy-groups"/>
 </head>
 
-The policy group feature allows users to create complex policies by combining
+The policy group feature permits users to create complex policies by combining
 simpler ones. It introduces two new Custom Resource Definitions
 (CRDs):
 
-- `AdmissionPolicyGroup`: For admission policies that apply to specific
+- `AdmissionPolicyGroup`: for admission policies that apply to specific
   namespaces.
-- `ClusterAdmissionPolicyGroup`: For admission policies that apply across the
+- `ClusterAdmissionPolicyGroup`: for admission policies that apply across the
   entire cluster.
 
 These policy groups enable users to use existing policies, reducing the
-need for custom policy creation and enhancing reusability. By avoiding
+need for custom policy creation and enhancing reuse. By avoiding
 duplication of policy logic, users can simplify management and create custom
 policies with a DSL-like configuration.
 
 Policy groups enable the combined evaluation of
-multiple policies using logical operators. This allows the definition of
-complex logic. However, it is important to note that while ordinary policies
+multiple policies using logical operators. This permits the definition of
+complex logic. However, while ordinary policies
 can include mutation logic to modify resources during admission, policy groups
-are limited to validation only.
+only do validation.
 
 Configuration for policy groups is similar to that of ordinary
 policies. The difference is the addition of the `expression`,
-`message`, and `policies` fields, as well as the declaration of context-aware
+`message`, and `policies` fields, and the declaration of context-aware
 rules in a different location.
 
-This is an example of a `ClusterAdmissionPolicyGroup` that we will use in
+This is an example of a `ClusterAdmissionPolicyGroup` that you can use in
 the next sections to explain the different fields:
 
 <details>
 
 <summary>
-A `ClusterAdmissionPolicyGroup` that rejects Pods that use images with the `latest` tag,
-unless the images are signed by two trusted parties: Alice and Bob.
+A `ClusterAdmissionPolicyGroup` that rejects Pods that use images with the
+`latest` tag, unless the images are signed by two trusted parties: Alice and
+Bob.
 </summary>
 
 ```yaml
@@ -104,15 +105,16 @@ This section covers the main configuration fields of a policy group.
 
 ### The `policies` attribute
 
-The policies field is a map of ordinary policies. Kubewarden
-policies are called by the policy group, to determine whether the resource under
-evaluation is accepted or rejected. The definitions of these policies are a
-simplified version of ordinary Kubewarden policies, containing only the
-`module`, `settings` and `contextAwareResources` attributes. These
-elements are necessary for the policies to function within a policy group.
+The policies field is a map of ordinary policies. Kubewarden calls policies by
+the policy group, to determine whether to accept or reject the resource under
+evaluation. The definitions of these policies are a simplified version of
+ordinary Kubewarden policies, containing only the `module`, `settings` and
+`contextAwareResources` attributes. These elements are necessary for the
+policies to function within a policy group.
 
-Each policy of the group policy is identified by a unique name. For example,
-the following snippet defines two policies: `signed_by_alice`, `signed_by_bob` and `reject_latest_tag`.
+A unique name identifies each policy of the group policy. For example, the
+following snippet defines three policies: `signed_by_alice`, `signed_by_bob`
+and `reject_latest_tag`.
 
 ```yaml
 policies:
@@ -128,21 +130,19 @@ policies:
 ```
 
 :::tip
-The same policy can be included multiple times in the same policy group, with
-different settings.
+A policy group can include the same policy multiple times with different settings.
 :::
 
 ### The `expression` attribute
 
-The `expression` attribute contains a statement made of the policy
-identifiers joined together by logical operators.
+The `expression` attribute contains a statement made of the policy identifiers
+joined together by logical operators.
 
 The evaluation of the `expression` statement must evaluate to a boolean value.
 
 Each policy is represented as a function named after the identifier specified
-inside of the `.spec.policies` map. The results produced
-by the evaluation of the policies are then evaluated using the logical operators
-provided by the user.
+in the `.spec.policies` map. The results produced by the evaluation of the
+policies are then evaluated using the logical operators provided by the user.
 
 These are the supported operators:
 
@@ -150,7 +150,7 @@ These are the supported operators:
 - `||`: used to perform `OR` operations
 - `!`: used to perform `NOT` operations
 
-Round brackets `( )` can be used to define evaluation priorities.
+You can use round brackets `( )` to define evaluation priorities.
 
 For example, given the following expression:
 
@@ -158,17 +158,17 @@ For example, given the following expression:
 reject_latest() || (signed_by_alice() && signed_by_bob())
 ```
 
-The policy will reject workloads that have images using the `latest` tag, unless
-these images are signed both by Alice and Bob.
+The policy rejects workloads that have images using the `latest` tag, unless
+these images both by Alice and Bob have signed the images.
 
 ### The `message` attribute and the response format
 
 The `message` field specifies the message returned when the evaluation of the
-`expression` results in a rejection. The message is included in the response,
+`expression` results in a rejection. The response includes the message,
 together with the results of the individual policies evaluation.
 
 :::info
-The policies that belong to the group are evaluated only
+Evaluation of policies that belong to the group takes place only
 if necessary.
 
 For example, given the following expression:
@@ -177,21 +177,22 @@ For example, given the following expression:
 reject_latest() || (signed_by_alice() && signed_by_bob())
 ```
 
-The `signed_by_bob` and `signed_by_alice` policies are not evaluated when
-the `reject_latest` policy returns `true`.
+The `signed_by_bob` and `signed_by_alice` policies aren't evaluated when the
+`reject_latest` policy returns `true`.
 
-In the same way, the `signed_by_bob` policy is not evaluated if the `signed_by_alice`
-and the `reject_latest` policies return `false`.
+In the same way, the `signed_by_bob` policy isn't evaluated if the
+`signed_by_alice` and the `reject_latest` policies return `false`.
 
 This avoids unnecessary evaluations of policies in the group and grants
 fast responses to the admission requests.
 :::
 
-When a group policy performs a rejection, all the evaluation details of the
-group policies are sent as part of the AdmissionResponse `.status.details.causes`.
+The system sends all evaluation details of the group policies as part of the
+AdmissionResponse `.status.details.causes` when a group policy performs a
+rejection.
 
-The full details of a rejected admission request can be obtained by increasing the verbosity
-level of `kubectl`:
+You can obtain the full details of a rejected admission request by increasing
+the verbosity level of `kubectl`:
 
 ```shell
 kubectl -v4 apply -f signed-pod.yml
@@ -218,19 +219,21 @@ I0919 18:29:40.251332    4330 helpers.go:246] server response object: [{
 Error from server: error when creating "signed-pod.yml": admission webhook "clusterwide-demo.kubewarden.admission" denied the request: the image is using the latest tag or is not signed by Alice and Bob
 ```
 
-The full admission response is available in the logs of the Policy Server
-when running in debug mode.
-Moreover, the evaluation details are always part of the OpenTelemetry traces emitted by Policy Server.
+The full admission response is available in the logs of the Policy Server when
+running in debug mode. Moreover, the evaluation details are always part of the
+OpenTelemetry traces emitted by Policy Server.
 
-## Context-Aware Policies
+## Context-aware policies
 
-Another distinction between policy groups and ordinary policies is the location
-where context-aware resource rules are defined. Each policy in a group
+Another distinction between policy groups and ordinary policies is the
+definition location of context-aware resource rules. Each policy in a group
 accepts an optional `contextAwareResources` field to specify the resources that
-the policy is allowed to access during evaluation.
-Similarly to ordinary policies, context-aware capabilities can only be used by defining a `ClusterAdmissionPolicyGroup`.
-This is for security reasons, as `AdmissionPolicyGroup` resources can be deployed by unprivileged users.
-For more details, refer to the [context-aware policies](./context-aware-policies.md) documentation.
+the policy can access during evaluation. Similarly to ordinary policies, you
+can only use context-aware capabilities by defining a
+`ClusterAdmissionPolicyGroup`. This is for security reasons, as only
+unprivileged users can deploy `AdmissionPolicyGroup` resources. For more
+details, refer to the [context-aware policies](./context-aware-policies.md)
+documentation.
 
 <details>
 
@@ -275,26 +278,26 @@ spec:
 
 </details>
 
-In the previous example, the `unique_service_selector` policy is allowed to
-access the `Service` resource. On the other hand, the `owned_by_foo_team`
+In the previous example, the `unique_service_selector` policy can
+access the `Service` resource. However, the `owned_by_foo_team`
 has no access to Kubernetes resources.
 
-## Settings Validation
+## Settings validation
 
-When the policy server starts, it will validate the settings of both policy
+When the policy server starts, it validates the settings of both policy
 groups and ordinary policies. However, policy groups undergo an additional
-validation step to ensure that the expression is valid and evaluates to a
+validation step to check that the expression is valid and evaluates to a
 boolean value.
 
 ## Audit Scanner
 
 Similar to the AdmissionPolicy and ClusterAdmissionPolicy CRDs, the
-`backgroundAudit` field indicates if the policy group should be included
+`backgroundAudit` field indicates whether to include the policy group
 during [audit checks](../explanations/audit-scanner/audit-scanner.md).
 
 ## Policy Server
 
-The `policies.yml` settings file is extended to include policy groups
-alongside ordinary policies. As with ordinary policies, modules are
-downloaded once. The same policy module is used in both a policy
-group and an ordinary policy.
+You can extend the `policies.yml` settings file to include policy groups
+alongside ordinary policies. As with ordinary policies, module download takes
+place once. You use the same policy module in both a policy group and an
+ordinary policy.

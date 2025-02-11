@@ -20,18 +20,18 @@ This language must generate a WebAssembly binary for Kubewarden to use.
 ## What _is_ a policy?
 
 A policy is an [Open Container Initiative](https://opencontainers.org/) (OCI)
-artifact containing a WebAssembly module,
+artifact. It contains a WebAssembly module,
 the policy code, and the metadata required by PolicyServer
-performing admission request validations and mutations.
+to perform admission request validations and mutations.
 
 :::note
 
-In the same manner as
+Like
 [Kubernetes](https://kubernetes.io/docs/contribute/style/style-guide/),
 Kubewarden uses the terms
 'PolicyServer' when discussing the Kubewarden policy server
 and
-`policy-server` when discussing Pod or Deployment of a Kubewarden PolicyServer.
+`policy-server` when discussing a Pod or Deployment of a Kubewarden PolicyServer.
 
 :::
 
@@ -48,47 +48,48 @@ The project utilizes a combination of:
 - Webhooks (Validation and Mutating)
 - the Control Plane's event notification system
 
-### Effectively uses Kubernetes architecture
+### Makes effective use of the Kubernetes architecture
 
-Kubewarden operates seamlessly within the Kubernetes ecosystem.
-At its core, the Kubewarden controller is a Kubernetes controller,
-monitoring Kubewarden Custom Resource Definitions (CRDs)
-and configuring Kubernetes resources to execute them.
-This integration ensures that Kubewarden uses the built-in Kubernetes mechanisms,
-such as controllers and CRDs, to watch, manage, and apply security policies efficiently.
+Kubewarden operates seamlessly within the Kubernetes ecosystem. At its core,
+the Kubewarden controller is a Kubernetes controller, monitoring Kubewarden
+Custom Resource Definitions (CRDs) and configuring Kubernetes resources to
+execute them. This integration ensures that Kubewarden uses the built-in
+Kubernetes mechanisms, such as controllers and CRDs, to watch, manage, and
+apply security policies efficiently.
 
 ### Extensible policy definition
 
-Kubewarden employs CRDs to define and manage Kubewarden resources,
-which specify the rules for admission request validations.
-This design enables users to extend Kubernetes' capabilities with custom admission controls,
-ensuring that security and compliance policy enforcement is consistent across the cluster.
+Kubewarden employs CRDs to define and manage Kubewarden resources, which
+specify the rules for admission request validations. This design enables users
+to extend Kubernetes' capabilities with custom admission controls, so
+that security and compliance policy enforcement is consistent across the
+cluster.
 
 ### Direct admission control
 
-When setup by the Kubewarden controller,
-the policy-server Service receives admission requests directly from the Kubernetes control plane,
-using `ValidationWebhooks` and `MutatingWebhooks`.
-This direct interaction streamlines the admission control process,
-reducing latency and increasing efficiency in policy enforcement.
+When setup by the Kubewarden controller, the policy-server Service receives
+admission requests directly from the Kubernetes control plane, using
+`ValidationWebhooks` and `MutatingWebhooks`. This direct interaction
+streamlines the admission control process, reducing latency and increasing
+efficiency in policy enforcement.
 
-WebAssembly offers a sand-boxed execution environment,
-ensuring policies run in isolation,
-thus enhancing the security and stability of the policy enforcement mechanism.
-This isolation prevents policies from interfering with each other or with the host system,
-mitigating the risk of malicious code execution.
-WebAssembly is portable and efficient,
-enabling policies to run across different environments without modification.
-This cross-platform compatibility ensures that Kubewarden policies are versatile,
-and can be distributed and executed in diverse Kubernetes clusters
+WebAssembly offers a sand-boxed execution environment, ensuring policies run in
+isolation, thus enhancing the security and stability of the policy enforcement
+mechanism. This isolation prevents policies from interfering with each other or
+with the host system, mitigating the risk of malicious code execution.
+WebAssembly is portable and efficient, enabling policies to run across
+different environments without modification.
+
+This cross-platform compatibility ensures that Kubewarden policies are
+versatile, so you can distribute and run them on diverse Kubernetes clusters
 
 ### OCI based policy artifacts
 
 Policies in Kubewarden are OCI (Open Container Initiative) artifacts.
-This standardization makes the distribution and versioning of policies easier,
+This standardization makes the distribution and versioning of policies easier.
 Policies contain both the WebAssembly modules for enforcement logic,
 and metadata necessary for the PolicyServer's operation.
-Leveraging OCI artifacts promotes interoperability and ease of management
+Using OCI artifacts promotes interoperability and ease of management
 within cloud ecosystems.
 
 ### Fine-grained policy application
@@ -110,7 +111,8 @@ The Kubewarden consists of these components:
   Kubewarden integrates with Kubernetes using
   [Dynamic Admission Control](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
   In particular, Kubewarden operates as a Kubernetes Admission Webhook.
-  The `policy-server` is the Webhook endpoint called by the Kubernetes API server to validate requests.
+  The `policy-server` is the Webhook endpoint called by the Kubernetes
+  API server to validate requests.
 
 - The [Kubewarden controller](https://github.com/kubewarden/kubewarden-controller)
   is a Kubernetes controller that reconciles Kubewarden's Custom Resources.
@@ -137,7 +139,7 @@ The Kubewarden consists of these components:
 
   [Audit scanner](/explanations/audit-scanner/audit-scanner.md)
   constantly checks the resources declared in the cluster,
-  flagging the ones that no longer adhere with the deployed Kubewarden policies.
+  flagging the ones that no longer adhere to the deployed Kubewarden policies.
 
   ```mermaid
   %%{
@@ -227,7 +229,7 @@ a reconciliation loop activates in `kubewarden-controller`,
 for the `policy-server` owning the policy.
 This reconciliation loop creates a `ConfigMap` with all the policies bound to the `policy-server`.
 Then the Deployment rollout of the `policy-server` starts.
-It results in starting the new `policy-server` instance with the updated configuration.
+This results in starting the new `policy-server` instance with the updated configuration.
 
 At start time, the `policy-server` reads its configuration from the ConfigMap
 and downloads all the Kubewarden policies specified.
@@ -243,8 +245,8 @@ There is further documentation in the
 [specification reference](../reference/spec/01-intro-spec.md)
 section of the documentation.
 
-If one or more policies received wrong configuration parameters,
-from the policy specification provided by the user,
+If any policies received wrong configuration parameters,
+from the users policy specification,
 then any admission requests evaluated by that policy return an error.
 
 When Kubewarden has configured all policies,
@@ -309,7 +311,7 @@ A cluster can have many PolicyServers and Kubewarden policies defined.
 There are benefits of having many PolicyServers:
 
 - You can isolate noisy namespaces or tenants,
-  those generating many policy evaluations,
+  or those generating many policy evaluations,
   from the rest of the cluster so as not to adversely affect other cluster operations.
 
 - You can run mission-critical policies in a dedicated PolicyServer pool,
