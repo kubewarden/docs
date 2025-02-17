@@ -34,8 +34,7 @@ This document contains the help content for the `policy-server` command-line pro
   Default value: `0.0.0.0`
 * `--always-accept-admission-reviews-on-namespace <NAMESPACE>` — Always accept AdmissionReviews that target the given namespace
 * `--cert-file <CERT_FILE>` — Path to an X.509 certificate file for HTTPS
-
-  Default value: ``
+* `--client-ca-file <CLIENT_CA_FILE>` — Path to an CA certificate file that issued the client certificate. Required to enable mTLS
 * `--daemon` — If set, runs policy-server in detached mode as a daemon
 * `--daemon-pid-file <DAEMON-PID-FILE>` — Path to the PID file, used only when running in daemon mode
 
@@ -48,8 +47,6 @@ This document contains the help content for the `policy-server` command-line pro
 * `--enable-pprof` — Enable pprof profiling
 * `--ignore-kubernetes-connection-failure` — Do not exit with an error if the Kubernetes connection fails. This will cause context-aware policies to break when there's no connection with Kubernetes.
 * `--key-file <KEY_FILE>` — Path to an X.509 private key file for HTTPS
-
-  Default value: ``
 * `--log-fmt <LOG_FMT>` — Log output format
 
   Default value: `text`
@@ -73,6 +70,9 @@ This document contains the help content for the `policy-server` command-line pro
 
   Default value: `2`
 * `--port <PORT>` — Listen on PORT
+
+  Default value: `3000`
+* `--readiness-probe-port <READINESS_PROBE_PORT>` — Expose readiness endpoint on READINESS_PROBE_PORT
 
   Default value: `3000`
 * `--sigstore-cache-dir <SIGSTORE_CACHE_DIR>` — Directory used to cache sigstore data
