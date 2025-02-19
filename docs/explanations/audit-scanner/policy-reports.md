@@ -214,15 +214,15 @@ The Policy Reporter is shipped as a subchart of `kubewarden-controller`.
 Refer to the [Audit Scanner Installation](../../howtos/audit-scanner)
 page for more information.
 
-The Policy Reporter UI provides a dashboard showing all violations as shown in the screenshot below:
+The Policy Reporter UI provides a dashboard showing all violations. See the screenshot below:
 
 ![Policy Reporter dashboard example](/img/policy-reporter_dashboard.png)
 
-We ship the Policy Reporter UI with a preconfigured filter that only shows Kubewarden policies, with expanded information:
+Kubewarden ships the Policy Reporter UI with a preconfigured filter that only shows Kubewarden policies, along with expanded information:
 
 ![Policy Reporter Kubewarden section example](/img/policy-reporter_kubewarden-filter.png)
 
-If one clicks on a specific policy or resource, one can see s summary of results for those:
+Click on a specific policy or resource to see a summary of results for it:
 
 ![Policy Reporter Kubewarden section example](/img/policy-reporter_per-resource.png)
 
