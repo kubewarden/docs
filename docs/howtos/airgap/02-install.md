@@ -23,27 +23,27 @@ The following sections describe the process.
 
 ## Save container images in your workstation
 
-1. Download `kubewarden-images.txt` from the Kubewarden
-[release page](https://github.com/kubewarden/helm-charts/releases/).
-Alternatively, the `imagelist.txt` and `policylist.txt` files are shipped inside the helm charts containing the used container images and policy Wasm modules, respectively.
+1.  Download `kubewarden-images.txt` from the Kubewarden
+    [release page](https://github.com/kubewarden/helm-charts/releases/).
+    Alternatively, the `imagelist.txt` and `policylist.txt` files are shipped inside the helm charts containing the used container images and policy Wasm modules, respectively.
 
-    :::note
+        :::note
 
-    Optionally, you can verify the signatures of the
-    [helm charts](../../tutorials/verifying-kubewarden.md#helm-charts) and
-    [container images](../../tutorials/verifying-kubewarden.md#container-images)
+        Optionally, you can verify the signatures of the
+        [helm charts](../../tutorials/verifying-kubewarden.md#helm-charts) and
+        [container images](../../tutorials/verifying-kubewarden.md#container-images)
 
-    :::
+        :::
 
-1. Download `kubewarden-save-images.sh` and `kubewarden-load-images.sh` from the
-[utilities repository](https://github.com/kubewarden/utils).
-1. Save Kubewarden container images into a `.tar.gz` file:
+1.  Download `kubewarden-save-images.sh` and `kubewarden-load-images.sh` from the
+    [utilities repository](https://github.com/kubewarden/utils).
+1.  Save Kubewarden container images into a `.tar.gz` file:
 
     ```shell
     ./kubewarden-save-images.sh \
       --image-list ./kubewarden-images.txt \
       --images kubewarden-images.tar.gz
-   ```
+    ```
 
     Docker begins pulling the images used for an air gap install.
     Be patient.
@@ -53,17 +53,17 @@ Alternatively, the `imagelist.txt` and `policylist.txt` files are shipped inside
 ## Save policies in your workstation
 
 1. Add all the policies you want to use in a `policies.txt` file.
-A file with a list of default policies is in the Kubewarden defaults
-[release page](https://github.com/kubewarden/helm-charts/releases/).
+   A file with a list of default policies is in the Kubewarden defaults
+   [release page](https://github.com/kubewarden/helm-charts/releases/).
 1. Download `kubewarden-save-policies.sh` and `kubewarden-load-policies.sh` from the
-[kwctl repository](https://github.com/kubewarden/kwctl/tree/main/scripts)
+   [kwctl repository](https://github.com/kubewarden/kwctl/tree/main/scripts)
 1. Save policies into a `.tar.gz` file:
 
-    ```shell
-    ./kubewarden-save-policies.sh --policies-list policies.txt
-    ```
+   ```shell
+   ./kubewarden-save-policies.sh --policies-list policies.txt
+   ```
 
-    The policies are downloaded by `kwctl` and stored in the `kubewarden-policies.tar.gz` archive.
+   The policies are downloaded by `kwctl` and stored in the `kubewarden-policies.tar.gz` archive.
 
 ## Helm charts
 
@@ -85,27 +85,27 @@ Move these files to the air gap environment:
 - `kubewarden-load-policies.sh` and
 - `policies.txt`
 
-1. Load Kubewarden images into the private registry.
-The Docker client must be authenticated against the local registry.
+1.  Load Kubewarden images into the private registry.
+    The Docker client must be authenticated against the local registry.
 
-    ```shell
-    ./kubewarden-load-images.sh \
-      --image-list ./kubewarden-images.txt \
-      --images kubewarden-images.tar.gz \
-      --registry <REGISTRY.YOURDOMAIN.COM:PORT>
-    ```
+        ```shell
+        ./kubewarden-load-images.sh \
+          --image-list ./kubewarden-images.txt \
+          --images kubewarden-images.tar.gz \
+          --registry <REGISTRY.YOURDOMAIN.COM:PORT>
+        ```
 
-1. Load Kubewarden policies into the private registry.
-Kwctl must be authenticated against the local registry
-(`kwctl` uses the same mechanism to authenticate as `docker`, a `~/.docker/config.json` file)
+1.  Load Kubewarden policies into the private registry.
+    Kwctl must be authenticated against the local registry
+    (`kwctl` uses the same mechanism to authenticate as `docker`, a `~/.docker/config.json` file)
 
-    ```shell
-    ./kubewarden-load-policies.sh \
-      --policies-list policies.txt \
-      --policies kubewarden-policies.tar.gz \
-      --registry <REGISTRY.YOURDOMAIN.COM:PORT> \
-      --sources-path sources.yml
-    ```
+        ```shell
+        ./kubewarden-load-policies.sh \
+          --policies-list policies.txt \
+          --policies kubewarden-policies.tar.gz \
+          --registry <REGISTRY.YOURDOMAIN.COM:PORT> \
+          --sources-path sources.yml
+        ```
 
 :::caution
 The `sources.yaml` file is needed by kwctl to connect to registries in these categories:
