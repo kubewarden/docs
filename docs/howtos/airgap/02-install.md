@@ -158,7 +158,7 @@ helm install --wait -n kubewarden kubewarden-controller kubewarden-controller.tg
 It's necessary to define `auditScanner.policyReporter` to enable the sub-chart and 4 more values,
 to configure the registry and repository where the Policy Reporter images are stored.
 For more information about the policy report sub-chart values see
-[chart repository](https://github.com/kyverno/policy-reporter/tree/policy-reporter-2.19.4/charts/policy-reporter).
+[Policy Reporter documentation](https://kyverno.github.io/policy-reporter-docs/getting-started/helm.html).
 :::
 
 ```shell
