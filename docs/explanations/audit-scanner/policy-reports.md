@@ -4,7 +4,12 @@ title: Audit Scanner - Policy Reports
 description: The policy reports that the Audit Scanner produces.
 keywords: [kubewarden, kubernetes, audit scanner]
 doc-persona:
-  [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-integrator]
+  [
+    kubewarden-user,
+    kubewarden-operator,
+    kubewarden-policy-developer,
+    kubewarden-integrator,
+  ]
 doc-type: [explanation]
 doc-topic: [explanations, audit-scanner, policy-reports]
 ---
@@ -209,14 +214,17 @@ The Policy Reporter is shipped as a subchart of `kubewarden-controller`.
 Refer to the [Audit Scanner Installation](../../howtos/audit-scanner)
 page for more information.
 
-The Policy Reporter UI provides a dashboard showing all violations
-from `PolicyReports` and the `ClusterPolicyReport` as shown in the screenshot below.
+The Policy Reporter UI provides a dashboard showing all violations. See the screenshot below:
 
 ![Policy Reporter dashboard example](/img/policy-reporter_dashboard.png)
 
-It also provides a tab for PolicyReports, and a tab for ClusterPolicyReports, with expanded information.
+Kubewarden ships the Policy Reporter UI with a preconfigured filter that only shows Kubewarden policies, along with expanded information:
 
-![Policy Reporter PolicyReports example](/img/policy-reporter_policyreports.png)
+![Policy Reporter Kubewarden section example](/img/policy-reporter_kubewarden-filter.png)
+
+Click on a specific policy or resource to see a summary of results for it:
+
+![Policy Reporter Kubewarden section example](/img/policy-reporter_per-resource.png)
 
 Other features of Policy Reporter include forwarding of results to different
 clients (like Grafana Loki, Elasticsearch, chat applications), metrics
