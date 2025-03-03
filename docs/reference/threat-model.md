@@ -13,11 +13,16 @@ doc-topic: [security, threat-model]
   <link rel="canonical" href="https://docs.kubewarden.io/reference/threat-model"/>
 </head>
 
-The [Kubernetes Security Special Interest Group (SIG)](https://github.com/kubernetes/community/tree/master/sig-security) has defined an Admission Control Threat Model for Kubernetes.
-The Kubewarden team continuously evaluates Kubewarden against this threat model, and works to provide secure defaults.
-It's recommended that Kubewarden administrators read and understand the threat model, and use it to devise their own circumstance specific threat model as needed.
+The
+[Kubernetes Security Special Interest Group (SIG)](https://github.com/kubernetes/community/tree/master/sig-security)
+has defined an Admission Control Threat Model for Kubernetes.
+The Kubewarden team continuously evaluates Kubewarden against this threat model,
+and works to provide secure defaults.
+It's recommended that Kubewarden administrators read and understand the threat model,
+and use it to devise their own circumstance specific threat model as needed.
 
-Details about each threat is provided in the [document published by SIG Security](https://github.com/kubernetes/sig-security/tree/main/sig-security-docs/papers/admission-control).
+Details about each threat is in the
+[document published by SIG Security](https://github.com/kubernetes/sig-security/tree/main/sig-security-docs/papers/admission-control).
 
 ## Kubernetes threats
 
@@ -40,7 +45,7 @@ This is Kubewarden's default behavior.
 Failing closed means that if, for any reason,
 Kubewarden stops responding or crashes,
 the API server rejects the request by default.
-This is even if the request would normally be accepted by Kubewarden.
+This is even if the request is normally accepted by Kubewarden.
 
 ### Threat 2 - Attacker passes workloads which require complex processing causing timeouts
 
@@ -80,10 +85,10 @@ RBAC rights should be strictly controlled.
 #### To-do
 
 Most of RBAC isn't within the scope of the current discussion.
-However, the following will be provided in due course for helping Kubewarden
+However, the following is coming, in due course, to help Kubewarden
 users:
 
-- Directions around minimum RBAC to be implemented.
+- Directions around the implementation of minimum RBAC features.
 - Provision & documentation of a policy that detects and could block RBAC changes.
 
 ### Threat 5 - Attacker gets access to valid credentials for the webhook
@@ -122,14 +127,16 @@ Since the webhook uses TLS encryption for all traffic, Kubewarden is safe.
 
 #### Scenario
 
-An attacker on the container network, who has access to the NET_RAW capability
+An attacker on the container network, who has access to the NET_RAW capability,
 can try to use MITM tooling to intercept traffic between the API server
 and admission controller webhook.
 
 #### Mitigation
 
-Webhook mTLS authentication should be used.
-You should also use [capabilities-psp](https://artifacthub.io/packages/kubewarden/capabilities-psp/capabilities-psp) and configure it to drop NET_RAW capabilities.
+Use Webhook mTLS authentication.
+You should also use
+[capabilities-psp](https://artifacthub.io/packages/kubewarden/capabilities-psp/capabilities-psp)
+and configure it to drop NET_RAW capabilities.
 
 #### To-do
 
@@ -142,12 +149,12 @@ capability.
 
 #### Scenario
 
-An attacker is able to redirect traffic from the API server which is intended
-for the admission controller webhook by spoofing.
+An attacker is able to redirect traffic from the intended API server,
+for the admission controller webhook, by spoofing.
 
 #### Mitigation
 
-Webhook mTLS authentication is used.
+Use Webhook mTLS authentication.
 
 #### To-do
 
@@ -162,13 +169,13 @@ such that it allows for privileged container creation.
 
 #### Mitigation
 
-All rules should be reviewed and tested.
+Review and test all rules.
 
 ### Threat 11 - Attacker deploys workloads to namespaces that are exempt from admission control
 
 #### Scenario
 
-An attacker is able to deploy workloads to Kubernetes namespaces that are exempt
+An attacker is able to deploy workloads to Kubernetes namespaces exempt
 from the admission controller configuration.
 
 #### Mitigation
@@ -177,21 +184,22 @@ RBAC rights are strictly controlled
 
 #### To-do
 
-Most of the RBAC is out of scope with respect to this decision. However, the Kubewarden team aims to:
+Most of the RBAC is out of scope regarding this decision. However, the Kubewarden team aims to:
 
-- Warn users via our docs and *suggest* some minimum RBAC to be used.
-- Provide a policy which detects RBAC changes and **maybe** block them.
+- Warn users via our docs and *suggest* the minimum RBAC to be used.
+- Provide a policy which detects RBAC changes and **perhaps** block them.
 
 ### Threat 12 - Block rule can be bypassed due to missing match (for example, missing initcontainers)
 
 #### Scenario
 
 An attacker created a workload manifest which uses a feature of the Kubernetes
-API which is not covered by the admission controller
+API which isn't covered by the admission controller
 
 #### Mitigation
 
-All rules should be reviewed and tested. You should review PRs changing any rules in policies deployment.
+Review and test all rules.
+You should review PRs changing any rules in policies deployment.
 
 ### Threat 13 - Attacker exploits bad string matching on a blocklist to bypass rules
 
@@ -202,7 +210,7 @@ bad string matching.
 
 #### Mitigation
 
-All rules should be reviewed and tested.
+Review and test all rules.
 
 #### To-do
 
@@ -218,10 +226,13 @@ API (for example, a changed API version) to bypass a rule.
 
 #### Mitigation
 
-All rules should be reviewed and tested. There is a policy that tests for the use of deprecated resources. It's available from [the deprecated-api-versions-policy](https://github.com/kubewarden/deprecated-api-versions-policy).
+All rules should be reviewed and tested. There is a policy that tests for the use of deprecated resources.
+It's available from [the deprecated-api-versions-policy](https://github.com/kubewarden/deprecated-api-versions-policy).
 
-Note:  `deprecated-api-versions-policy` only deals with Custom Resources known to it. The threat is both deprecated resource versions, and new unknown ones that are misused, hence the policy only covers part
-of the problem.
+Note:  `deprecated-api-versions-policy` only deals with Custom Resources known to it.
+The threat is both deprecated resource versions, and misuse of new unknown ones,
+hence the policy only covers partof the problem.
+
 ### Threat 15 - Attacker deploys privileged container to node running Webhook controller
 
 #### Scenario
@@ -276,14 +287,16 @@ Kubewarden policies run in a restrictive environment. They don't have network ac
 
 #### Scenario
 
-Assuming a trusted but new Kubernetes cluster, an attacker is able to compromise the Kubewarden stack before any of the policies securing it are deployed and enforced.
+Assuming a trusted but new Kubernetes cluster, an attacker is able to
+compromise the Kubewarden stack before deployment and enforcement of any of the
+policies securing it.
 
 For example, by:
 
 - using unsigned and malicious images for:
   - Kubewarden-controller
   - policy-server
-  - any of the Kubewarden dependencies 
+  - any of the Kubewarden dependencies
   - any optional dependencies (Grafana, Prometheus, and others)
 - by compromising the Helm charts payload
 
@@ -292,7 +305,7 @@ For example, by:
 1. Kubewarden provides a Software Bill Of Materials, which lists all images needed. This aids with Zero-Trust.
 The Kubernetes Administrator must verify the Kubewarden images, its dependencies' images, and charts
 out of the Kubernetes cluster, in a trusted environment.
-This can be done with `cosign`, for example.
+You can do this with `cosign`, for example.
 Incidentally, this is part of the implementation needed for air-gapped installations.
 2. Use signed Helm charts, and verified digests instead of tags for Kubewarden images in those Helm charts.
 This doesn't secure dependencies though.
