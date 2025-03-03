@@ -33,9 +33,9 @@ your administrator's policies.
 
 - Some [[< admission-policy >]] resources: policies for a defined namespace.
 
-- A deployment of a `kubewarden-controller`: this controller monitors the [[<
-cluster-admission-policy >]] resources and interacts with the Kubewarden [[<
-policy-server >]] components.
+- A deployment of a `kubewarden-controller`: this controller monitors the
+[[< cluster-admission-policy >]] resources and interacts with the Kubewarden
+[[< policy-server >]] components.
 
 :::tip
 
