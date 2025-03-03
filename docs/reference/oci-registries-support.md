@@ -13,11 +13,11 @@ doc-topic: [distributing-policies, oci-registries-support]
   <link rel="canonical" href="https://docs.kubewarden.io/reference/oci-registries-support"/>
 </head>
 
-Kubewarden policies are distributed as
+You distribute your Kubewarden policies as
 [OCI Artifacts](https://opencontainers.org/)
 using regular Open Container Initiative (OCI) registries.
 
-Policies are stored alongside container images.
+Kubewarden policy storage is alongside container images.
 They don't require extra setup or maintenance
 other than that needed for regular container images.
 
@@ -25,7 +25,7 @@ other than that needed for regular container images.
 
 You can add a registry that works with Kubewarden or
 correct any registry inaccuracies by using the
-"Edit this page" button at the bottom of the page
+"Edit this page" button at the bottom of the page.
 
 :::
 
@@ -33,12 +33,12 @@ correct any registry inaccuracies by using the
 
 - [Harbor](https://goharbor.io/).
 - [Distribution](https://github.com/distribution/distribution) ([>= 2.7.0](https://github.com/distribution/distribution/releases/tag/v2.7.0)).
-- [Quay](https://access.redhat.com/products/red-hat-quay/): Supported, but [disabled by default in v3.6](https://access.redhat.com/documentation/en-us/red_hat_quay/3/html/use_red_hat_quay/oci-intro#other-oci-artifacts-with-quay).
+- [Quay](https://access.redhat.com/products/red-hat-quay/): Supported, but [inactive by default in v3.6](https://access.redhat.com/documentation/en-us/red_hat_quay/3/html/use_red_hat_quay/oci-intro#other-oci-artifacts-with-quay).
 
 ## Hosted OCI registries
 
 - [GitHub Container Registry](https://github.com/container-registry/). See [here](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).
-- [Quay.io](https://quay.io). See projects list above.
+- [Quay.io](https://quay.io). See the projects list
 - [Amazon ECR](https://aws.amazon.com/ecr/): See [here](https://aws.amazon.com/blogs/containers/oci-artifact-support-in-amazon-ecr/).
 - [Google Artifact Registry](https://cloud.google.com/artifact-registry). See [here](https://cloud.google.com/anthos-config-management/docs/how-to/sync-oci-artifacts-from-artifact-registry).
 - [Azure Container Registry](https://azure.microsoft.com/en-us/products/container-registry/). See [here](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-oci-artifacts).
@@ -48,9 +48,9 @@ correct any registry inaccuracies by using the
 
 ## Tools that work with OCI registries
 
-We recommend:
+The Kubewarden project recommend:
 
-- [Kwctl](https://github.com/kubewarden/kwctl) (our cli tool).
+- [Kwctl](https://github.com/kubewarden/kwctl) (our CLI tool).
 - [Skopeo](https://github.com/containers/skopeo) ([>= 1.9.0](https://github.com/containers/skopeo/pull/1705)).
 - [Crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md).
 
