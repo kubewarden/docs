@@ -86,3 +86,7 @@ can lint and test them and you can plug them into current CI and CD workflows.
 You can serve Kubewarden policies using a standard web server or, better, you
 can be publish them in an OCI compliant registry as
 [OCI artifacts](https://github.com/opencontainers/artifacts).
+
+## Vendor neutrality
+
+Kubewarden is a [vendor neutral](https://contribute.cncf.io/maintainers/community/vendor-neutrality/) project as defined by the CNCF.
