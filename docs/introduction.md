@@ -17,7 +17,7 @@ doc-topic: [introduction]
 Kubewarden is a Kubernetes Policy Engine.
 It aims to be the Universal Policy Engine for Kubernetes.
 
-Kubewarden is a [CNCF](https://cncf.io) Sandbox project,
+Kubewarden is a [vendor neutral](#vendor-neutrality), [CNCF](https://cncf.io) Sandbox project,
 originally created by [SUSE Rancher](https://www.rancher.com/).
 
 ## How does Kubewarden help?
@@ -86,3 +86,7 @@ can lint and test them and you can plug them into current CI and CD workflows.
 You can serve Kubewarden policies using a standard web server or, better, you
 can be publish them in an OCI compliant registry as
 [OCI artifacts](https://github.com/opencontainers/artifacts).
+
+## Vendor neutrality {#vendor-neutrality}
+
+Kubewarden is a [vendor neutral](https://contribute.cncf.io/maintainers/community/vendor-neutrality/) project as defined by the CNCF.
