@@ -14,10 +14,10 @@ doc-topic: [introduction]
   <link rel="canonical" href="https://docs.kubewarden.io"/>
 </head>
 
-Kubewarden is a [vendor neutral](#vendor-neutrality) Kubernetes Policy Engine.
+Kubewarden is a Kubernetes Policy Engine.
 It aims to be the Universal Policy Engine for Kubernetes.
 
-Kubewarden is a [CNCF](https://cncf.io) Sandbox project,
+Kubewarden is a [vendor neutral](#vendor-neutrality), [CNCF](https://cncf.io) Sandbox project,
 originally created by [SUSE Rancher](https://www.rancher.com/).
 
 ## How does Kubewarden help?
