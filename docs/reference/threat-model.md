@@ -133,17 +133,11 @@ and admission controller webhook.
 
 #### Mitigation
 
-Use Webhook mTLS authentication.
-You should also use
+Configure the cluster with mTLS authentication for the Webhooks and enable the mTLS feature in the
+Kubewarden stack. Alternatively, setup mTLS using a CNI that supports Network Policies.
+Use the
 [capabilities-psp](https://artifacthub.io/packages/kubewarden/capabilities-psp/capabilities-psp)
-and configure it to drop NET_RAW capabilities.
-
-#### To-do
-
-Implement mutual TLS authentication.
-Additionally, it would be possible to add a policy within the recommended
-policies section in the `kubewarden-defaults` which drops the `NET_RAW`
-capability.
+policy and configure it to drop NET_RAW capabilities.
 
 ### Threat 9 - Attacker steals traffic from the webhook via spoofing
 
@@ -154,11 +148,8 @@ for the admission controller webhook, by spoofing.
 
 #### Mitigation
 
-Use Webhook mTLS authentication.
-
-#### To-do
-
-Kubewarden should implement mutual TLS authentication
+Configure the cluster with mTLS authentication for the Webhooks and enable the mTLS feature in the
+Kubewarden stack. Alternatively, setup mTLS using a CNI that supports Network Policies.
 
 ### Threat 10 - Abusing a mutation rule to create a privileged container
 
@@ -278,8 +269,12 @@ sends sensitive data to an external system.
 
 #### Mitigation
 
-Strictly control external access for webhook
-Kubewarden policies run in a restrictive environment. They don't have network access.
+- Configure the cluster with mTLS authentication for the Webhooks and enable
+  the mTLS feature in the Kubewarden stack. Alternatively, setup mTLS using a CNI
+  that supports Network Policies.
+
+- By default, Kubewarden policies don't have network access and run in a
+  restrictive environment, strictly controlling external access on Webhooks.
 
 ## Kubewarden threats
 
