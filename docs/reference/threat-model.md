@@ -244,11 +244,9 @@ volume that allows for access to the admission controller pod’s files.
 
 #### Mitigation
 
-Admission controller uses restrictive policies to prevent privileged workloads
-
-#### To-do
-
-Add a recommended policy in the `kubewarden-default` Helm chart to prevent this.
+Deploy the `kubewarden-default` Helm chart and enable its
+recommended policies, which includes the `hostpaths-psp` policy. This policy
+is configured to reduce the shared hostPath volumes.
 
 ### Threat 17 - Attacker has privileged SSH access to cluster node running admission webhook
 
