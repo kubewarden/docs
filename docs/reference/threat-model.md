@@ -177,7 +177,7 @@ RBAC rights are strictly controlled
 
 Most of the RBAC is out of scope regarding this decision. However, the Kubewarden team aims to:
 
-- Warn users via our docs and *suggest* the minimum RBAC to be used.
+- Warn users via our docs and _suggest_ the minimum RBAC to be used.
 - Provide a policy which detects RBAC changes and **perhaps** block them.
 
 ### Threat 12 - Block rule can be bypassed due to missing match (for example, missing initcontainers)
@@ -220,7 +220,7 @@ API (for example, a changed API version) to bypass a rule.
 All rules should be reviewed and tested. There is a policy that tests for the use of deprecated resources.
 It's available from [the deprecated-api-versions-policy](https://github.com/kubewarden/deprecated-api-versions-policy).
 
-Note:  `deprecated-api-versions-policy` only deals with Custom Resources known to it.
+Note: `deprecated-api-versions-policy` only deals with Custom Resources known to it.
 The threat is both deprecated resource versions, and misuse of new unknown ones,
 hence the policy only covers partof the problem.
 
@@ -296,9 +296,9 @@ For example, by:
 #### Mitigation
 
 1. Kubewarden provides a Software Bill Of Materials, which lists all images needed. This aids with Zero-Trust.
-The Kubernetes Administrator must verify the Kubewarden images, its dependencies' images, and charts
-out of the Kubernetes cluster, in a trusted environment.
-You can do this with `cosign`, for example.
-Incidentally, this is part of the implementation needed for air-gapped installations.
+   The Kubernetes Administrator must verify the Kubewarden images, its dependencies' images, and charts
+   out of the Kubernetes cluster, in a trusted environment.
+   You can do this with `cosign`, for example.
+   Incidentally, this is part of the implementation needed for air-gapped installations.
 2. Use signed Helm charts, and verified digests instead of tags for Kubewarden images in those Helm charts.
-This doesn't secure dependencies though.
+   This doesn't secure dependencies though.
