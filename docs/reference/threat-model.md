@@ -133,17 +133,11 @@ and admission controller webhook.
 
 #### Mitigation
 
-Use Webhook mTLS authentication.
-You should also use
+Configure the cluster with mTLS authentication for the Webhooks and enable the mTLS feature in the
+Kubewarden stack. Alternatively, setup mTLS using a CNI that supports Network Policies.
+Use the
 [capabilities-psp](https://artifacthub.io/packages/kubewarden/capabilities-psp/capabilities-psp)
-and configure it to drop NET_RAW capabilities.
-
-#### To-do
-
-Implement mutual TLS authentication.
-Additionally, it would be possible to add a policy within the recommended
-policies section in the `kubewarden-defaults` which drops the `NET_RAW`
-capability.
+policy and configure it to drop NET_RAW capabilities.
 
 ### Threat 9 - Attacker steals traffic from the webhook via spoofing
 
@@ -154,11 +148,8 @@ for the admission controller webhook, by spoofing.
 
 #### Mitigation
 
-Use Webhook mTLS authentication.
-
-#### To-do
-
-Kubewarden should implement mutual TLS authentication
+Configure the cluster with mTLS authentication for the Webhooks and enable the mTLS feature in the
+Kubewarden stack. Alternatively, setup mTLS using a CNI that supports Network Policies.
 
 ### Threat 10 - Abusing a mutation rule to create a privileged container
 
@@ -186,7 +177,7 @@ RBAC rights are strictly controlled
 
 Most of the RBAC is out of scope regarding this decision. However, the Kubewarden team aims to:
 
-- Warn users via our docs and *suggest* the minimum RBAC to be used.
+- Warn users via our docs and _suggest_ the minimum RBAC to be used.
 - Provide a policy which detects RBAC changes and **perhaps** block them.
 
 ### Threat 12 - Block rule can be bypassed due to missing match (for example, missing initcontainers)
@@ -229,7 +220,7 @@ API (for example, a changed API version) to bypass a rule.
 All rules should be reviewed and tested. There is a policy that tests for the use of deprecated resources.
 It's available from [the deprecated-api-versions-policy](https://github.com/kubewarden/deprecated-api-versions-policy).
 
-Note:  `deprecated-api-versions-policy` only deals with Custom Resources known to it.
+Note: `deprecated-api-versions-policy` only deals with Custom Resources known to it.
 The threat is both deprecated resource versions, and misuse of new unknown ones,
 hence the policy only covers partof the problem.
 
@@ -253,11 +244,9 @@ volume that allows for access to the admission controller pod’s files.
 
 #### Mitigation
 
-Admission controller uses restrictive policies to prevent privileged workloads
-
-#### To-do
-
-Add a recommended policy in the `kubewarden-default` Helm chart to prevent this.
+Deploy the `kubewarden-default` Helm chart and enable its
+recommended policies, which includes the `hostpaths-psp` policy. This policy
+is configured to reduce the shared hostPath volumes.
 
 ### Threat 17 - Attacker has privileged SSH access to cluster node running admission webhook
 
@@ -278,8 +267,12 @@ sends sensitive data to an external system.
 
 #### Mitigation
 
-Strictly control external access for webhook
-Kubewarden policies run in a restrictive environment. They don't have network access.
+- Configure the cluster with mTLS authentication for the Webhooks and enable
+  the mTLS feature in the Kubewarden stack. Alternatively, setup mTLS using a CNI
+  that supports Network Policies.
+
+- By default, Kubewarden policies don't have network access and run in a
+  restrictive environment, strictly controlling external access on Webhooks.
 
 ## Kubewarden threats
 
@@ -303,9 +296,9 @@ For example, by:
 #### Mitigation
 
 1. Kubewarden provides a Software Bill Of Materials, which lists all images needed. This aids with Zero-Trust.
-The Kubernetes Administrator must verify the Kubewarden images, its dependencies' images, and charts
-out of the Kubernetes cluster, in a trusted environment.
-You can do this with `cosign`, for example.
-Incidentally, this is part of the implementation needed for air-gapped installations.
+   The Kubernetes Administrator must verify the Kubewarden images, its dependencies' images, and charts
+   out of the Kubernetes cluster, in a trusted environment.
+   You can do this with `cosign`, for example.
+   Incidentally, this is part of the implementation needed for air-gapped installations.
 2. Use signed Helm charts, and verified digests instead of tags for Kubewarden images in those Helm charts.
-This doesn't secure dependencies though.
+   This doesn't secure dependencies though.
