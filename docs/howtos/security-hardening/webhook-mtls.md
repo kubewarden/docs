@@ -86,7 +86,7 @@ Finally, create a `kubeconfig` file at `/etc/rancher/k3s/admission/kubeconfig`:
 apiVersion: v1
 kind: Config
 users:
-- name: '*.kubewarden.svc'
+- name: '*.kubewarden.svc' # namespace where the kubewarden stack is deployed
   user:
     client-certificate: /etc/rancher/k3s/admission/certs/client.crt
     client-key: /etc/rancher/k3s/admission/certs/client.key
