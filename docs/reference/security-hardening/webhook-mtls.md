@@ -104,6 +104,13 @@ spec:
 
 ## Require the Kubernetes API Server to Authenticate to the Webhook
 
+:::tip
+
+Checkout [this how-to](../../howtos/security-hardening/webhook-mtls/) for a step-by-step guide on
+how to configure the Kubernetes API server of k3s to authenticate to the webhook.
+
+:::
+
 The webhooks exposed by the Kubewarden stack should only accept requests from the Kubernetes API server or
 from the audit scanner component.
 By default, these webhooks don't require clients to authenticate to it. Theny will accept any request.
