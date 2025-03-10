@@ -266,7 +266,7 @@ Pushes a Kubewarden policy to an OCI registry
 
 The annotations found inside of policy's metadata are going to be part of the OCI manifest.
 The multi-line annotations are skipped because they are not compatible with the OCI specification.
-The 'io.kubewarden.policy.source' annotation is propaged as 'org.opencontainers.image.source' to allow tools like
+The 'io.kubewarden.policy.source' annotation is propagated as 'org.opencontainers.image.source' to allow tools like
 renovatebot to detect policy updates.
 
 ###### **Arguments:**
@@ -402,6 +402,7 @@ Output an artifacthub-pkg.yml file from a metadata.yml file
 
 ###### **Options:**
 
+* `-t`, `--gh-release-tag <VALUE>` — Specifies the GitHub release tag of the policy. If set, this tag will be used for generating GitHub release links instead of the version.
 * `-m`, `--metadata-path <PATH>` — File containing the metadata of the policy
 * `-o`, `--output <FILE>` — Path where the artifact-pkg.yml file will be stored
 * `-q`, `--questions-path <PATH>` — File containing the questions-ui content of the policy
@@ -451,11 +452,11 @@ Convert a Kubernetes `ValidatingAdmissionPolicy` into a Kubewarden `ClusterAdmis
 
 ###### **Options:**
 
-* `-b`, `--binding <VALIDATING-ADMISSION-POLICY-BINDING.yaml>` — The file containining the ValidatingAdmissionPolicyBinding definition
+* `-b`, `--binding <VALIDATING-ADMISSION-POLICY-BINDING.yaml>` — The file containing the ValidatingAdmissionPolicyBinding definition
 * `--cel-policy <URI>` — The CEL policy module to use
 
   Default value: `ghcr.io/kubewarden/policies/cel-policy:latest`
-* `-p`, `--policy <VALIDATING-ADMISSION-POLICY.yaml>` — The file containining the ValidatingAdmissionPolicy definition
+* `-p`, `--policy <VALIDATING-ADMISSION-POLICY.yaml>` — The file containing the ValidatingAdmissionPolicy definition
 
 
 
