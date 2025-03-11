@@ -135,6 +135,8 @@ and admission controller webhook.
 
 Configure the cluster with mTLS authentication for the Webhooks and enable the mTLS feature in the
 Kubewarden stack. Alternatively, setup mTLS using a CNI that supports Network Policies.
+See [here](./security-hardening/webhook-mtls.md) for more information.
+
 Use the
 [capabilities-psp](https://artifacthub.io/packages/kubewarden/capabilities-psp/capabilities-psp)
 policy and configure it to drop NET_RAW capabilities.
@@ -150,6 +152,7 @@ for the admission controller webhook, by spoofing.
 
 Configure the cluster with mTLS authentication for the Webhooks and enable the mTLS feature in the
 Kubewarden stack. Alternatively, setup mTLS using a CNI that supports Network Policies.
+See [here](./security-hardening/webhook-mtls.md) for more information.
 
 ### Threat 10 - Abusing a mutation rule to create a privileged container
 

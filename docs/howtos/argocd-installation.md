@@ -94,6 +94,12 @@ spec:
     namespace: kubewarden-system
     jsonPointers:
       - /data
+  - group: ""
+    kind: "Secret"
+    name: kubewarden-audit-scanner-client-cert
+    namespace: kubewarden-system
+    jsonPointers:
+      - /data
   - group: "admissionregistration.k8s.io"
     kind: "MutatingWebhookConfiguration"
     jqPathExpressions:
