@@ -1,7 +1,7 @@
 ---
-sidebar_label: Webhook Mutual TLS
-title: Secure webhooks with mutual TLS
-description: Harden the webhook configuration.
+sidebar_label: Webhooks
+title: Harderning the Kubewarden webhooks
+description: Limit access to Kubewarden webhooks.
 keywords: [kubewarden, kubernetes, security]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
 doc-type: [reference]
@@ -9,7 +9,7 @@ doc-topic: [reference, security]
 ---
 
 <head>
-  <link rel="canonical" href="https://docs.kubewarden.io/reference/security-hardening/webhook-mtls"/>
+  <link rel="canonical" href="https://docs.kubewarden.io/reference/security-hardening/webhooks-hardening"/>
 </head>
 
 The Kubewarden stack uses various webhooks to enforce policies in a Kubernetes cluster. Each `PolicyServer` instance exposes a webhook
