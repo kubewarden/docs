@@ -1,6 +1,6 @@
 ---
 sidebar_label: Policy Groups
-sidebar_position: 36
+sidebar_position: 33
 title: How to use policy groups
 description: How to use Kubewarden policy groups
 keywords: [kubewarden, policy groups, clusteradmissionpolicygroup, admissionpolicygroup]

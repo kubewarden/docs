@@ -2,6 +2,7 @@
 sidebar_label: Production deployments
 title: Configuring Kubewarden stack for production
 description: Configuring Kubewarden stack for production
+sidebar_position: 20
 keywords:
   [
     kubewarden,
