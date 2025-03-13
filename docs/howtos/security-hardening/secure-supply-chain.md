@@ -295,7 +295,7 @@ The following checks were performed on each of these signatures:
 ## Configuring the policy server to check policy signatures
 
 You can configure Kubewarden with a `ConfigMap` to only run trusted policies.
-The `ConfigMap` structure described in [Signature Config Reference](../reference/verification-config.md#signature-configuration-reference).
+The `ConfigMap` structure described in [Signature Config Reference](../../reference/verification-config.md#signature-configuration-reference).
 It's used to verify a policy using `kwctl`.
 The `ConfigMap` should define allowable configurations under the `verification-config` field.
 
