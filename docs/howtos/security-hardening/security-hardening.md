@@ -65,7 +65,12 @@ Security-conscious operators can tune these Namespaces list via the
 `.global.skipNamespaces` Value for both the `kubewarden-controller` and
 `kubewarden-defaults` Helm charts.
 
-## SecurityContexts
+### SecurityContexts
+
+Starting from 1.23, Kubewarden's stack is able to run inside of a Namespace
+where the [restricted
+Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted)
+is enforced, with current Pod hardening best practices.
 
 The `kubewarden-controller` Helm chart configures the SecurityContexts and
 exposes it in its `values.yaml`.
