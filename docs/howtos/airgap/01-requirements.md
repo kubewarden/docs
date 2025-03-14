@@ -1,7 +1,7 @@
 ---
 sidebar_label: Requirements
-title: Requirements for a Kubewarden air gap installation
-description: Requirements for a Kubewarden air gap installation.
+title: Requirements for installing Kubewarden in an air gapped environment
+description: Requirements for installing Kubewarden in an air gapped installation.
 keywords: [kubewarden, kubernetes, air gap installation]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
 doc-type: [howto]

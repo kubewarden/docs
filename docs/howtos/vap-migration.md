@@ -1,6 +1,6 @@
 ---
 sidebar_label: ValidatingAdmissionPolicy migration
-sidebar_position: 35
+sidebar_position: 41
 title: ValidatingAdmissionPolicy migration
 description: Discusses how to migrate from Kubernetes VAP policies to Kubewarden.
 keywords: [kubewarden, kubernetes, cel, vap, validatingadmissionpolicy]

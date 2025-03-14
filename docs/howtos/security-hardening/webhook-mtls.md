@@ -15,6 +15,9 @@ doc-topic: [operator-manual, security]
 This guide shows you how to enable mutual TLS (mTLS) for all the webhooks used by the Kubewarden
 stack when using [k3s](https://k3s.io/) as your Kubernetes distribution.
 
+For more information on how to harden the webhooks, see the [reference
+page](../../reference/security-hardening/webhooks-hardening).
+
 ## Prerequisites
 
 Before installing k3s, you need to create a certificate authority (CA) and a client certificate to use to secure the communication between the Kubewarden webhooks and the Kubernetes API server.

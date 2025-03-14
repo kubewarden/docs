@@ -302,6 +302,6 @@ For example, by:
    The Kubernetes Administrator must verify the Kubewarden images, its dependencies' images, and charts
    out of the Kubernetes cluster, in a trusted environment.
    You can do this with `cosign`, for example.
-   Incidentally, this is part of the implementation needed for air-gapped installations.
+   Incidentally, this is part of the implementation needed for air gapped installations.
 2. Use signed Helm charts, and verified digests instead of tags for Kubewarden images in those Helm charts.
    This doesn't secure dependencies though.

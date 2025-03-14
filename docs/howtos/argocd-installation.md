@@ -1,6 +1,6 @@
 ---
 sidebar_label: ArgoCD Installation
-sidebar_position: 35
+sidebar_position: 90
 title: ArgoCD Installation
 description: How to install Kubewarden with ArgoCD
 keywords: [kubewarden, gitops, argocd]

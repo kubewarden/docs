@@ -1,6 +1,6 @@
 ---
 sidebar_label: Pod Security Admission
-sidebar_position: 30
+sidebar_position: 42
 title: Using Pod Security Admission with Kubewarden
 description: Using Pod Security Admission with Kubewarden, since the Kubernetes 1.25 release.
 keywords: [kubewarden, pod security admission, pod security policy, kubernetes]

@@ -12,8 +12,8 @@ doc-topic: [operator-manual, airgap, installation]
   <link rel="canonical" href="https://docs.kubewarden.io/howtos/airgap/install"/>
 </head>
 
-This guide shows you how to install Kubewarden in air-gapped environments.
-For an air-gapped installation of Kubewarden,
+This guide shows you how to install Kubewarden in air gapped environments.
+For an air gapped installation of Kubewarden,
 you need a private Open Container Initiative (OCI) registry accessible by your Kubernetes cluster.
 Kubewarden Policies are WebAssembly modules,
 therefore you can store them in an OCI-compliant registry as OCI artifacts.
@@ -142,7 +142,7 @@ helm install --wait -n kubewarden \
 :::caution
 To use the Policy Reported sub-chart available in the
 `kubewarden-controller` chart you need to define other values specific for the
-sub-chart in an air-gapped environment.
+sub-chart in an air gapped environment.
 See an example below:
 
 ```shell

@@ -26,7 +26,7 @@ however,
 the Kubewarden controller is installed through the Rancher UI as a cluster scoped resource.
 
 :::note
-For air-gapped installations, follow [these steps](../airgap/02-install.md).
+For air gapped installations, follow [these steps](../airgap/02-install.md).
 :::
 
 Within the Extensions page,
@@ -101,7 +101,7 @@ As Kubewarden is a Rancher Official Extension,
 the Rancher team provides a mechanism to automatically generate an Extension Catalog Image.
 This is added to the `rancher-images.txt` file when
 [installing Rancher Manager](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/air-gapped-helm-cli-install/publish-images#1-find-the-required-assets-for-your-rancher-version)
-for air-gapped instances.
+for air gapped instances.
 
 Once this image has been mirrored to a registry accessible to your air-gapped cluster,
 you can import the image within the Rancher UI.
