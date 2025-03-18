@@ -20,7 +20,7 @@ The verification-config format is used by:
 - `policy-server` to verify policy modules provenance
 - `verify-image-signatures` policy to verify cluster images provenance
 
-See [secure supply chain](../howtos/secure-supply-chain.md) for more info.
+See [secure supply chain](../howtos/security-hardening/secure-supply-chain.md) for more info.
 
 ## Format
 

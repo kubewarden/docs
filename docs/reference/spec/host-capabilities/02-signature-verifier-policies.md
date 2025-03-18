@@ -26,7 +26,7 @@ This allows implementing a "Secure Supply Chain" for your cluster.
 Part of the function of the secure supply chain is to ensure that all container images running in the cluster are signed and verified.
 This proves that they come from their stated authors, with no tampering.
 For further reading, check the docs on
-[how we implement a Secure Supply Chain for the policies themselves](../../../howtos/secure-supply-chain.md).
+[how we implement a Secure Supply Chain for the policies themselves](../../../howtos/security-hardening/secure-supply-chain.md).
 
 Sigstore signatures are stored inside of container registries,
 next to the OCI object being signed.
