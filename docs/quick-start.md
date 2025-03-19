@@ -146,6 +146,11 @@ options.
 ```bash
 brew install kwctl
 ```
+- Verify Installation:
+```bash
+kwctl --version
+```
+
 ##### Manual Installation
 ###### **Step 1: Download `kwctl`**
 Download the latest release of `kwctl` for Linux:
@@ -169,9 +174,9 @@ This will extract the following files:
 - `kwctl-linux-x86_64.sig`: A signature file for verifying the binary.
 - `kwctl-linux-x86_64.pem`: A certificate file for verifying the signature.
 
-###### **Step 3: Go to the new directory  `kwctl-darwin`**
+###### **Step 3: Go to the new directory  `kwctl-linux`**
 ```shell
-cd ./kwctl-darwin
+cd ./kwctl-linux
 ```
 
 ###### **Step 4: Make the Binary Executable**
@@ -204,8 +209,8 @@ Extract the `.zip` file. It will contain:
 - `kwctl-windows-x86_64.sig`: A signature file for verifying the binary.
 - `kwctl-windows-x86_64.pem`: A certificate file for verifying the signature.
 
-##### **Step 3: Rename binary file from `kwctl-windows-x86_64.exe` to `kwctl.exe`**
-- to make it easy call it in `cmd` or `powershell`.
+##### **Step 3: Rename the Binary**
+Rename the binary file from `kwctl-windows-x86_64.exe` to `kwctl.exe` for easier use.
 
 ##### **Step 4: Add path of `kwctl-windows` to Your PATH**
 -  Add the directory containing `kwctl-windows-x86_64.exe` to your `PATH` environment variable:
@@ -232,37 +237,42 @@ kwctl --version
 
 ##### Manual Installation
 ###### **Step 1: Download `kwctl`**
-Download the latest release of `kwctl` for Linux:
+Download the latest release of `kwctl` for macOS:
 ```bash
-curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-linux-x86_64.zip
+curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-darwin-x86_64.zip
 ```
 
-- For **ARM64** systems (e.g., Raspberry Pi), use:
+- For **Apple Silicon (ARM64)** systems, use:
   ```bash
-  curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-linux-aarch64.zip
+curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-darwin-aarch64.zip
   ```
 
-###### **Step 2: Extract the Files to new folder**
-Extract the downloaded `.zip` file to new folder `kwctl-linux` :
+###### **Step 2: Extract the Files**
+Extract the downloaded `.zip` file:
 ```bash
-unzip kwctl-linux-x86_64.zip -d ./kwctl-linux
+unzip kwctl-darwin-x86_64.zip -d ./kwctl-darwin
 ```
 
 This will extract the following files:
-- `kwctl-linux-x86_64`: The `kwctl` binary.
-- `kwctl-linux-x86_64.sig`: A signature file for verifying the binary.
-- `kwctl-linux-x86_64.pem`: A certificate file for verifying the signature.
+- `kwctl-darwin-x86_64`: The `kwctl` binary.
+- `kwctl-darwin-x86_64.sig`: A signature file for verifying the binary.
+- `kwctl-darwin-x86_64.pem`: A certificate file for verifying the signature.
 
-###### **Step 3: Make the Binary Executable**
-Set the executable permission for the `kwctl` binary which is file `kwctl-linux-x86_64`:
-```bash
-chmod +x kwctl-linux-x86_64
+###### **Step 3: Go to the new directory  `kwctl-darwin`**
+```shell
+cd ./kwctl-darwin
 ```
 
-###### **Step 4: Move the Binary to `/usr/local/bin`**
+###### **Step 4: Make the Binary Executable**
+Set the executable permission:
+```bash
+chmod +x kwctl-darwin-x86_64
+```
+
+###### **Step 5: Move the Binary to `/usr/local/bin`**
 Move the binary to a directory in your `PATH`:
 ```bash
-sudo mv kwctl-linux-x86_64 /usr/local/bin/kwctl
+sudo mv kwctl-darwin-x86_64 /usr/local/bin/kwctl
 ```
 
 ###### **Step 6: Verify the Installation**
@@ -270,6 +280,7 @@ Check if `kwctl` is installed correctly:
 ```bash
 kwctl --version
 ```
+
 
 
 #### **Install Shell Completions**
@@ -292,18 +303,22 @@ kwctl completions --shell powershell > $PROFILE
 . $PROFILE
 ```
 
-- if you have this error in windows 
+If you encounter the following error in Windows:
 ```powershell
 Line |
   71 |  …  [CompletionResultType]::ParameterName, 'How long the bench ‘should'’ …
      |                                                                 ~
      | Missing ')' in method call.
 ```
-- open `$PROFILE` in any editor and replace `'How long the bench ‘should'’ run` with `'How long the bench should run`.
-- Re run command 
-```powershell
-. $PROFILE
-```
+
+1. Open `$PROFILE` in any editor.
+2. Replace `'How long the bench ‘should'’ run` with `'How long the bench should run'`.
+3. Save the file.
+4. Re-run the command:
+   ```powershell
+   . $PROFILE
+   ```
+
 
 
 ## Main components
