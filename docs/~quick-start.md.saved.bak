@@ -140,7 +140,7 @@ options.
 
 ### Install kwctl (Kubewarden CLI)
 
-#### For Linux
+#### Install for Linux
 
 ##### Using Homebrew 
 ```bash
@@ -197,33 +197,7 @@ Check if `kwctl` is installed correctly:
 kwctl --version
 ```
 
-#### Install for Windows
-##### **Step 1: Download `kwctl`**
-1. Open your browser and go to the [Kubewarden releases page](https://github.com/kubewarden/kwctl/releases/latest).
-
-2. Download the `kwctl-windows-x86_64.zip` file.
-
-##### **Step 2: Extract the Files in a new folder `kwctl-windows`**
-Extract the `.zip` file. It will contain:
-- `kwctl-windows-x86_64.exe`: The `kwctl` binary.
-- `kwctl-windows-x86_64.sig`: A signature file for verifying the binary.
-- `kwctl-windows-x86_64.pem`: A certificate file for verifying the signature.
-
-##### **Step 3: Rename the Binary**
-Rename the binary file from `kwctl-windows-x86_64.exe` to `kwctl.exe` for easier use.
-
-##### **Step 4: Add path of `kwctl-windows` to Your PATH**
--  Add the directory containing `kwctl-windows-x86_64.exe` to your `PATH` environment variable:
-   - Open **System Properties** > **Environment Variables**.
-   - Edit the `Path` variable and add the directory containing `kwctl-windows-x86_64.exe`.
-
-##### **Step 5: Verify the Installation**
-Open a new Command Prompt or PowerShell window and check if `kwctl` is installed correctly:
-```cmd
-kwctl --version
-```
-
-#### install for Apple
+#### Install for Apple
 ##### Using Homebrew 
 - Install `kwctl`
 ```shell
@@ -243,9 +217,9 @@ curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-darw
 ```
 
 - For **Apple Silicon (ARM64)** systems, use:
-  ```bash
+```bash
 curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-darwin-aarch64.zip
-  ```
+```
 
 ###### **Step 2: Extract the Files**
 Extract the downloaded `.zip` file:
@@ -281,9 +255,37 @@ Check if `kwctl` is installed correctly:
 kwctl --version
 ```
 
+#### Install for Windows
+##### **Step 1: Download `kwctl`**
+1. Open your browser and go to the [Kubewarden releases page](https://github.com/kubewarden/kwctl/releases/latest).
+
+2. Download the `kwctl-windows-x86_64.zip` file.
+
+##### **Step 2: Extract the Files in a new folder `kwctl-windows`**
+Extract the `.zip` file. It will contain:
+- `kwctl-windows-x86_64.exe`: The `kwctl` binary.
+- `kwctl-windows-x86_64.sig`: A signature file for verifying the binary.
+- `kwctl-windows-x86_64.pem`: A certificate file for verifying the signature.
+
+##### **Step 3: Rename the Binary**
+Rename the binary file from `kwctl-windows-x86_64.exe` to `kwctl.exe` for easier use.
+
+##### **Step 4: Add path of `kwctl-windows` to Your PATH**
+-  Add the directory containing `kwctl-windows-x86_64.exe` to your `PATH` environment variable:
+   - Open **System Properties** > **Environment Variables**.
+   - Edit the `Path` variable and add the directory containing `kwctl-windows-x86_64.exe`.
+
+##### **Step 5: Verify the Installation**
+Open a new Command Prompt or PowerShell window and check if `kwctl` is installed correctly:
+```cmd
+kwctl --version
+```
+
+
 
 
 #### **Install Shell Completions**
+Feature that allow auto-complete commands for `kwctl` by pressing the `Tab` key.
 
 ##### **For Bash**
 ```bash
