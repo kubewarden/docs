@@ -142,6 +142,11 @@ options.
 
 #### For Linux
 
+##### Use brew
+```bash
+brew install kwctl
+```
+
 ##### **Step 1: Download `kwctl`**
 Download the latest release of `kwctl` for Linux:
 ```bash
@@ -209,6 +214,40 @@ kwctl --version
 ```
 
 #### install for Apple
+
+
+#### **Install Shell Completions**
+
+### **For Bash**
+```bash
+kwctl completions --shell bash > ~/.bash_completion
+source ~/.bash_completion
+```
+
+### **For Zsh**
+```bash
+kwctl completions --shell zsh > ~/.zshrc
+source ~/.zshrc
+```
+
+### **For PowerShell**
+```powershell
+kwctl completions --shell powershell > $PROFILE
+. $PROFILE
+```
+
+- if you have this error in windows 
+```powershell
+Line |
+  71 |  …  [CompletionResultType]::ParameterName, 'How long the bench ‘should'’ …
+     |                                                                 ~
+     | Missing ')' in method call.
+```
+- open `$PROFILE` in any editor and replace `'How long the bench ‘should'’ run` with `'How long the bench should run`.
+- Re run command 
+```powershell
+. $PROFILE
+```
 
 
 ## Main components
