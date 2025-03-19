@@ -142,12 +142,12 @@ options.
 
 #### For Linux
 
-##### Use brew
+##### Using Homebrew 
 ```bash
 brew install kwctl
 ```
-
-##### **Step 1: Download `kwctl`**
+##### Manual Installation
+###### **Step 1: Download `kwctl`**
 Download the latest release of `kwctl` for Linux:
 ```bash
 curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-linux-x86_64.zip
@@ -158,7 +158,7 @@ curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-linu
   curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-linux-aarch64.zip
   ```
 
-##### **Step 2: Extract the Files to new folder**
+###### **Step 2: Extract the Files to new folder**
 Extract the downloaded `.zip` file to new folder `kwctl-linux` :
 ```bash
 unzip kwctl-linux-x86_64.zip -d ./kwctl-linux
@@ -169,19 +169,24 @@ This will extract the following files:
 - `kwctl-linux-x86_64.sig`: A signature file for verifying the binary.
 - `kwctl-linux-x86_64.pem`: A certificate file for verifying the signature.
 
-##### **Step 3: Make the Binary Executable**
+###### **Step 3: Go to the new directory  `kwctl-darwin`**
+```shell
+cd ./kwctl-darwin
+```
+
+###### **Step 4: Make the Binary Executable**
 Set the executable permission for the `kwctl` binary which is file `kwctl-linux-x86_64`:
 ```bash
 chmod +x kwctl-linux-x86_64
 ```
 
-##### **Step 4: Move the Binary to `/usr/local/bin`**
+###### **Step 5: Move the Binary to `/usr/local/bin`**
 Move the binary to a directory in your `PATH`:
 ```bash
 sudo mv kwctl-linux-x86_64 /usr/local/bin/kwctl
 ```
 
-##### **Step 6: Verify the Installation**
+###### **Step 6: Verify the Installation**
 Check if `kwctl` is installed correctly:
 ```bash
 kwctl --version
@@ -199,8 +204,8 @@ Extract the `.zip` file. It will contain:
 - `kwctl-windows-x86_64.sig`: A signature file for verifying the binary.
 - `kwctl-windows-x86_64.pem`: A certificate file for verifying the signature.
 
-##### **Step 3: Rename folder `kwctl-windows-x86_64.exe` to `kwctl.exe`**
-- to make it easy call it in cmd or powershell.
+##### **Step 3: Rename binary file from `kwctl-windows-x86_64.exe` to `kwctl.exe`**
+- to make it easy call it in `cmd` or `powershell`.
 
 ##### **Step 4: Add path of `kwctl-windows` to Your PATH**
 -  Add the directory containing `kwctl-windows-x86_64.exe` to your `PATH` environment variable:
