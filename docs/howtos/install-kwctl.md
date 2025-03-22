@@ -42,6 +42,30 @@ Verify Installation:
 kwctl --version
 ```
 
+### Using AUR (Arch User Repository)
+
+If you're using Arch Linux or an Arch-based distribution (like Manjaro or EndeavourOS), you can install kwctl from the AUR.
+
+#### Using an AUR Helper (yay)
+```bash
+yay -S kwctl
+```
+
+#### Using makepkg
+```bash
+# Clone the AUR package
+git clone https://aur.archlinux.org/kwctl.git
+cd kwctl
+
+# Build and install the package
+makepkg -si
+```
+
+#### Verify the Installation
+```bash
+kwctl --version
+```
+
 ### Manual Installation
 
 #### Step 1: Download `kwctl`
