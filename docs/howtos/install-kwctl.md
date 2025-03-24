@@ -1,6 +1,6 @@
 ---
 sidebar_label: Install kwctl
-sidebar_position: 10
+sidebar_position: 15
 title: Install kwctl
 description: Description of how to install kwctl
 keywords:
