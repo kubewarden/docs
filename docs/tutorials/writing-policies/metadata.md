@@ -54,6 +54,7 @@ annotations:
   io.kubewarden.policy.ociUrl: ghcr.io/myorg/my-policy
   # kubewarden specific:
   io.kubewarden.policy.title: My policy
+  io.kubewarden.policy.version: 0.1.0 # should match the OCI tag
   io.kubewarden.policy.description: Short description
   io.kubewarden.policy.author: myself
   io.kubewarden.policy.url: https://github.com/yourorg/my-policy

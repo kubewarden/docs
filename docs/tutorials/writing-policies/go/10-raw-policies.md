@@ -50,6 +50,7 @@ annotations:
   io.kubewarden.policy.ociUrl: ghcr.io/yourorg/policies/policy-name # must match release workflow oci-target
   # kubewarden specific:
   io.kubewarden.policy.title: policy-name
+  io.kubewarden.policy.version: 0.1.0  # should match the OCI tag
   io.kubewarden.policy.description: Short description
   io.kubewarden.policy.author: "Author name <author-email@example.com>"
   io.kubewarden.policy.url: https://github.com/yourorg/policy-name
