@@ -94,20 +94,13 @@ This will extract the following files:
 ```shell
 cd ./kwctl-linux
 ```
-
-#### Step 4: Make the Binary Executable
-Set the executable permission for the `kwctl` binary which is file `kwctl-linux-x86_64`:
-```bash
-chmod +x kwctl-linux-x86_64
-```
-
-#### Step 5: Move the Binary to `/usr/local/bin`
+#### Step 4: Move the Binary to `/usr/local/bin`
 Move the binary to a directory in your `PATH`:
 ```bash
 sudo mv kwctl-linux-x86_64 /usr/local/bin/kwctl
 ```
 
-#### Step 6: Verify the Installation
+#### Step 5: Verify the Installation
 Check if `kwctl` is installed correctly:
 ```bash
 kwctl --version
@@ -133,14 +126,19 @@ kwctl --version
 
 #### Step 1: Download `kwctl`
 Download the latest release of `kwctl` for macOS:
-```bash
-curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-darwin-x86_64.zip
-```
+
 
 For **Apple Silicon (ARM64)** systems, use:
 ```bash
 curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-darwin-aarch64.zip
 ```
+
+For **Intel (x86_64)** systems, use:
+
+```bash
+curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-darwin-x86_64.zip
+```
+
 
 #### Step 2: Extract the Files
 Extract the downloaded `.zip` file:
@@ -158,19 +156,13 @@ This will extract the following files:
 cd ./kwctl-darwin
 ```
 
-#### Step 4: Make the Binary Executable
-Set the executable permission:
-```bash
-chmod +x kwctl-darwin-x86_64
-```
-
-#### Step 5: Move the Binary to `/usr/local/bin`
+#### Step 4: Move the Binary to `/usr/local/bin`
 Move the binary to a directory in your `PATH`:
 ```bash
 sudo mv kwctl-darwin-x86_64 /usr/local/bin/kwctl
 ```
 
-#### Step 6: Verify the Installation
+#### Step 5: Verify the Installation
 Check if `kwctl` is installed correctly:
 ```bash
 kwctl --version
