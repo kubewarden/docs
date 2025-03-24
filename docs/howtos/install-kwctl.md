@@ -113,8 +113,8 @@ Check if `kwctl` is installed correctly:
 kwctl --version
 ```
 
-  </TabItem>
-  <TabItem value="mac">
+</TabItem>
+<TabItem value="mac">
 
 ## Install for Apple
 
