@@ -210,53 +210,8 @@ kwctl --version
 
 ## Install Shell Completions
 
-Shell completions allow auto-complete commands for `kwctl` by pressing the `Tab` key.
-
-<Tabs
-  defaultValue="bash"
-  values={[
-    {label: 'Bash', value: 'bash'},
-    {label: 'Zsh', value: 'zsh'},
-    {label: 'PowerShell', value: 'powershell'},
-  ]}>
-  <TabItem value="bash">
+The `kwctl` CLI has the `--shell` option to generate shell completion commands for your shell. You can use the output from this command to integrate completions into your shell.
 
 ```bash
-kwctl completions --shell bash > ~/.bash_completion
-source ~/.bash_completion
+kwctl completions --shell [bash|elvish|fish|powershell|zsh]
 ```
-
-  </TabItem>
-  <TabItem value="zsh">
-
-```bash
-kwctl completions --shell zsh > ~/.zshrc
-source ~/.zshrc
-```
-
-  </TabItem>
-  <TabItem value="powershell">
-
-```powershell
-kwctl completions --shell powershell > $PROFILE
-. $PROFILE
-```
-
-If you encounter the following error in Windows:
-```powershell
-Line |
-  71 |  …  [CompletionResultType]::ParameterName, 'How long the bench 'should'' …
-     |                                                                 ~
-     | Missing ')' in method call.
-```
-
-1. Open `$PROFILE` in any editor
-2. Replace `'How long the bench 'should'' run` with `'How long the bench should run'`
-3. Save the file
-4. Re-run the command:
-   ```powershell
-   . $PROFILE
-   ```
-
-  </TabItem>
-</Tabs>
