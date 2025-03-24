@@ -1,7 +1,7 @@
 ---
 sidebar_label: Install kwctl
 sidebar_position: 15
-title: Install kwctl
+title: Installing kwctl
 description: Description of how to install kwctl
 keywords:
   [kubewarden, kubernetes, install kwctl, install, kwctl, policy, policyserver, clusteradmissionpolicy, admissionpolicy]
