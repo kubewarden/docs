@@ -4,7 +4,14 @@ sidebar_position: 40
 title: Publish policies to Artifact Hub
 description: A brief introduction to publishing Kubewarden policies on Artifact Hub.
 keywords: [kubewarden, kubernetes, publishing policies, artifact hub]
-doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
+doc-persona:
+  [
+    kubewarden-user,
+    kubewarden-operator,
+    kubewarden-policy-developer,
+    kubewarden-distributor,
+    kubewarden-integrator,
+  ]
 doc-type: [tutorial]
 doc-topic: [distributing-policies, publish-policy-to-artifacthub]
 ---
@@ -41,48 +48,47 @@ are all documented in depth in the [official Artifact Hub documentation](https:/
 
 Artifact Hub is pretty flexible and allows you to organize your code in these ways:
 
-* Have a Git repository dedicated to Artifact Hub: this repository will not contain
+- Have a Git repository dedicated to Artifact Hub: this repository will not contain
   any policy source code. It will be a collection of the YAML files required by
   Artifact Hub.
-* Add a Artifact Hub directory inside of the Git repository that holds the source
+- Add a Artifact Hub directory inside of the Git repository that holds the source
   of your policy. This is an iteration of the previous approach, the only difference
   is that it focuses just on one policy: the one defined inside of the Git repository.
   This approach allows to keep multiple versions of the policy published on Artifact Hub.
-* Add the `artifacthub-pkg.yml` and the `artifacthub-repo.yml` files to the root
+- Add the `artifacthub-pkg.yml` and the `artifacthub-repo.yml` files to the root
   of the Git repository that holds the policy source code. This approach is the
   simplest one. The only limitation is that only the latest version of the policy
   will be visible on Artifact Hub.
 
-The last approach is what we used inside of our official policy templates.
-The Git repository that is scaffolded includes the `artifacthub-pkg.yml`
-and `artifacthub-repo.yml` files.
+The last approach is what we used inside of our official policy templates. The
+Git repository that is scaffolded includes the `artifacthub-repo.yml` file,
+and our GitHub Actions generate and push the `artifacthub-pkg.yml` to an
+`artifacthub` branch for Artifact Hub to consume.
 
 ## Publishing Steps
 
 Before publishing a policy to Artifact Hub, you must create an account on
 the [website](https://artifacthub.io/).
 
-Before publishing the policy, ensure your Git repository has the proper layout.
-The `artifacthub-pkg.yml` contains fields such as `version: `, `createdAt: `,
-that need to match specific format, and be up-to-date. The format of the
-`artifacthub-pkg.yml` is described
+Before publishing the policy, ensure your Git repository has the proper layout,
+with a well formatted `metadata.yml` with the obligatory annotations.
+
+If you want to do this manually, one can create the `artifacthub-pkg.yml` file
+by doing a `kwctl scaffold artifacthub` (with version `>= 1.23`). This command
+takes the `metadata.yml` in the current path and outputs an
+`artifacthub-pkg.yml`. The `artifacthub-pkg.yml` contains fields such as
+`version: `, `createdAt: `, that need to match specific format, and be
+up-to-date. The format of the `artifacthub-pkg.yml` is described
 [here](https://github.com/artifacthub/hub/blob/master/docs/metadata/artifacthub-pkg.yml).
 
-If you created the policy using one of our templates, then you have a `make
-artifacthub-pkg.yml` target. Execute that target to generate the
-`artifacthub-pkg.yml` file programmatically from `metadata.yml` and other
-inputs. This target gets called as part as a normal build of a policy, so
-your task is to commit the resulting changes to `artifacthub-pkg.yml`.
-
-The policy templates make use of our GitHub Actions at
-[github.com/kubewarden/github-actions](https://github.com/kubewarden/github-actions):
-- If you are using our GitHub Actions >= `v3.1.0`, the workflows provide by
-  default automated checking of the `artifacthub-pkg.yml` file.
-- After a successful release, that is, after the policy has been successfully
-  built, signed, and pushed, our GitHub Actions have a last job that pushes the
-  files needed by Artifact Hub to an orphan `artifacthub` branch. The canonical
-  files are always the ones in the `main` branch, and the GHA job overwrites the
-  ones in `artifacthub` branch every time.
+If you are using our GitHub Actions >= `v4.0.0`, the release workflow can be
+configured with the input `artifacthub: true`. If configured so, after a
+successful release (after the policy has been successfully built, signed and
+pushed), our GitHub Actions have a last job that generates the
+`artifacthub-pkg.yml` for you and pushes the commits the changes to the
+`artifacthub` branch. The canonical files are always the ones in the `main`
+branch. For the behaviour of previous releases of our GitHub Actions, see the
+docs versions pre 1.23.
 
 Finally, ensure your policy is published inside of a container registry or on a
 web server.
@@ -95,19 +101,19 @@ Once everything is in place, log into Artifact Hub and go to your
 [control plane](https://artifacthub.io/control-panel/repositories?page=1).
 
 Decide whether you want to publish the policy as a user or under an Artifact Hub
-organization you belong to. This is done by choosing the correct *"control panel context"*.
+organization you belong to. This is done by choosing the correct _"control panel context"_.
 
-Then press the *"Add"* button and fill the form:
+Then press the _"Add"_ button and fill the form:
 
-  * Choose *"Kubewarden policies"* as kind.
-  * Enter a *"Name"* and *"Display name"* of your choice.
-  * Enter the URL to your Git repository.
-  * Enter `artifacthub` as the branch to track.
+- Choose _"Kubewarden policies"_ as kind.
+- Enter a _"Name"_ and _"Display name"_ of your choice.
+- Enter the URL to your Git repository.
+- Enter `artifacthub` as the branch to track.
 
-Finally, press the *"Add"* button. This will bring you back to the *"Repositories"*
+Finally, press the _"Add"_ button. This will bring you back to the _"Repositories"_
 page, where you will see your freshly created repository.
 
-Each repository has several information fields. Find the *"ID"* property of the
+Each repository has several information fields. Find the _"ID"_ property of the
 repository you just created and copy it.
 
 Go back to your Git repository and edit the `artifacthub-repo.yml`. Ensure the
@@ -124,13 +130,15 @@ Now it's a good time to do some further customizations to this file.
 Once you are done with the changes, commit the updated `artifacthub-repo.yml`
 file and push it. During the next scan, Artifact Hub will find this file and
 it will add the
-[*"Verified Publisher"* badge](https://artifacthub.io/docs/topics/repositories/#verified-publisher)
+[_"Verified Publisher"_ badge](https://artifacthub.io/docs/topics/repositories/#verified-publisher)
 to you Artifact Hub repository.
 
 ## Keeping Artifact Hub in Sync
 
-Do not forget to update the contents of the `artifacthub-pkg.yml` file
-every time you release a new version of your policy.
+Do not forget to update the contents of the `metadata.yml` file
+every time you release a new version of your policy. For example,
+you must update the `io.kubewarden.policy.version` field (which usually matches
+the policy OCI tag), and any other annotation you wish to change.
 
 :::note
 The contents of the `artifacthub-repo.yml` file do not need to be changed.
