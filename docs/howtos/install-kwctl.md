@@ -176,8 +176,8 @@ Check if `kwctl` is installed correctly:
 kwctl --version
 ```
 
-  </TabItem>
-  <TabItem value="windows">
+</TabItem>
+<TabItem value="windows">
 
 ## Install for Windows
 
