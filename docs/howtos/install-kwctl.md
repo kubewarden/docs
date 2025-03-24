@@ -205,7 +205,7 @@ Open a new Command Prompt or PowerShell window and check if `kwctl` is installed
 kwctl --version
 ```
 
-  </TabItem>
+</TabItem>
 </Tabs>
 
 ## Install Shell Completions
