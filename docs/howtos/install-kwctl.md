@@ -28,7 +28,7 @@ import TabItem from '@theme/TabItem';
     {label: 'macOS', value: 'mac'},
     {label: 'Windows', value: 'windows'},
   ]}>
-  <TabItem value="linux">
+<TabItem value="linux">
 
 ## Install for Linux
 
