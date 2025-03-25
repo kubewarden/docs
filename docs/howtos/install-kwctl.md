@@ -141,10 +141,10 @@ curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-darw
 ```
 
 
-#### Step 2: Extract the Files
-Extract the downloaded `.zip` file:
+#### Step 2: Extract the files
+Extract the files from the downloaded `.zip` file:
 ```bash
-unzip kwctl-darwin-x86_64.zip -d ./kwctl-darwin
+unzip kwctl-darwin-x86_64.zip
 ```
 
 This will extract the following files:
