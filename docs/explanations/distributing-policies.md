@@ -56,7 +56,7 @@ The `kwctl annotate` command requires two inputs:
 - the Kubewarden policy to annotate, a local file in the filesystem.
 
 - the annotations file, a file containing a YAML description of the policy metadata.
-  This file is usually located root project folder of your policy.
+  This file is usually located in the root project folder of your policy.
 
 For example, you can save this file as `metadata.yml` in the current
 directory:
