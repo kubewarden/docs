@@ -36,15 +36,39 @@ create all needed certificates:
 ```console
 export FQDN=mtls.kubewarden.io
 
+# Create openssl config file
+cat > openssl.cnf <<EOL
+[ req ]
+default_keyfile     = rootCA.key
+distinguished_name  = req_distinguished_name
+x509_extensions     = v3_ca
+string_mask         = utf8only
+
+[ req_distinguished_name ]
+countryName         = Country Name (2 letter code)
+countryName_default = US
+stateOrProvinceName = State or Province Name (full name)
+localityName        = Locality Name (eg, city)
+organizationName    = Organization Name (eg, company)
+commonName          = Common Name (eg, your domain or your CA name)
+
+[ v3_ca ]
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true, pathlen:1
+keyUsage = critical, keyCertSign, cRLSign
+EOL
+
 # Create CA
-openssl req -nodes -batch -x509 -sha256 -days 365 -newkey rsa:2048 -keyout rootCA.key -out rootCA.crt
+openssl req -nodes -batch -x509 -sha256 -days 3650 -newkey rsa:4096 -keyout rootCA.key -out rootCA.crt \
+  -config openssl.cnf
 
 # Create CSR
-openssl req -nodes -batch -newkey rsa:2048 -keyout client.key -out client.csr \
-    -addext "subjectAltName = DNS:$FQDN"
+openssl req -nodes -batch -newkey rsa:4096 -keyout client.key -out client.csr \
+    -addext "subjectAltName = DNS:$FQDN"  -config openssl.cnf
 
 # Create CRT
-openssl x509 -req -CA rootCA.crt -CAkey rootCA.key -in client.csr -out client.crt -days 365 -CAcreateserial \
+openssl x509 -req -CA rootCA.crt -CAkey rootCA.key -in client.csr -out client.crt -days 3650 -CAcreateserial \
     -extfile <(echo "subjectAltName=DNS:$FQDN")
 
 # Print CRT
@@ -62,23 +86,23 @@ The following files should have been created:
 
 ### Create the Kubernetes configuration file
 
-Create the `/etc/rancher/admission/admission.yaml` file with the following content:
+Create the `/etc/rancher/k3s/admission/admission.yaml` file with the following content:
 
 ```yaml
-# /etc/rancher/admission/admission.yaml
+# /etc/rancher/k3s/admission/admission.yaml
 apiVersion: apiserver.config.k8s.io/v1
 kind: AdmissionConfiguration
 plugins:
-- name: ValidatingAdmissionWebhook
-  configuration:
-    apiVersion: apiserver.config.k8s.io/v1
-    kind: WebhookAdmissionConfiguration
-    kubeConfigFile: "/etc/rancher/k3s/admission/kubeconfig"
-- name: MutatingAdmissionWebhook
-  configuration:
-    apiVersion: apiserver.config.k8s.io/v1
-    kind: WebhookAdmissionConfiguration
-    kubeConfigFile: "/etc/rancher/k3s/admission/kubeconfig"
+  - name: ValidatingAdmissionWebhook
+    configuration:
+      apiVersion: apiserver.config.k8s.io/v1
+      kind: WebhookAdmissionConfiguration
+      kubeConfigFile: "/etc/rancher/k3s/admission/kubeconfig"
+  - name: MutatingAdmissionWebhook
+    configuration:
+      apiVersion: apiserver.config.k8s.io/v1
+      kind: WebhookAdmissionConfiguration
+      kubeConfigFile: "/etc/rancher/k3s/admission/kubeconfig"
 ```
 
 Finally, create a `kubeconfig` file at `/etc/rancher/k3s/admission/kubeconfig`:
@@ -88,10 +112,10 @@ Finally, create a `kubeconfig` file at `/etc/rancher/k3s/admission/kubeconfig`:
 apiVersion: v1
 kind: Config
 users:
-- name: '*.kubewarden.svc' # namespace where the kubewarden stack is deployed
-  user:
-    client-certificate: /etc/rancher/k3s/admission/certs/client.crt
-    client-key: /etc/rancher/k3s/admission/certs/client.key
+  - name: "*.kubewarden.svc" # namespace where the kubewarden stack is deployed
+    user:
+      client-certificate: /etc/rancher/k3s/admission/certs/client.crt
+      client-key: /etc/rancher/k3s/admission/certs/client.key
 ```
 
 ### Create a k3s configuration file
@@ -101,7 +125,7 @@ Create a k3s configuration file at `/etc/rancher/k3s/config.yaml`:
 ```yaml
 # /etc/rancher/k3s/config.yaml
 kube-apiserver-arg:
-- admission-control-config-file=/etc/rancher/k3s/admission/admission.yaml
+  - admission-control-config-file=/etc/rancher/k3s/admission/admission.yaml
 ```
 
 ## Install k3s
