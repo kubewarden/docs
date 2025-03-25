@@ -46,34 +46,33 @@ Artifact Hub crawls Git repositories looking for special metadata files.
 There are different kind of layouts the Git repository can have. They
 are all documented in depth in the [official Artifact Hub documentation](https://artifacthub.io/docs/topics/repositories/#kubewarden-policies-repositories).
 
-Artifact Hub is pretty flexible and allows you to organize your code in these ways:
+Artifact Hub is flexible and allows you to organize your code in these ways:
 
 - Have a Git repository dedicated to Artifact Hub: this repository will not contain
   any policy source code. It will be a collection of the YAML files required by
   Artifact Hub.
-- Add a Artifact Hub directory inside of the Git repository that holds the source
-  of your policy. This is an iteration of the previous approach, the only difference
-  is that it focuses just on one policy: the one defined inside of the Git repository.
-  This approach allows to keep multiple versions of the policy published on Artifact Hub.
+- Add a Artifact Hub directory in the Git repository holding the source
+  of your policy. This is an iteration of the previous approach, focusing on just one policy, 
+  that which is defined in the Git repository.
+  This approach allows keeping multiple versions of the policy published on Artifact Hub.
 - Add the `artifacthub-pkg.yml` and the `artifacthub-repo.yml` files to the root
   of the Git repository that holds the policy source code. This approach is the
   simplest one. The only limitation is that only the latest version of the policy
   will be visible on Artifact Hub.
 
-The last approach is what we used inside of our official policy templates. The
+The last approach is used in our official policy templates. The
 Git repository that is scaffolded includes the `artifacthub-repo.yml` file,
 and our GitHub Actions generate and push the `artifacthub-pkg.yml` to an
 `artifacthub` branch for Artifact Hub to consume.
 
 ## Publishing Steps
 
-Before publishing a policy to Artifact Hub, you must create an account on
-the [website](https://artifacthub.io/).
+Before publishing a policy to Artifact Hub, you must create an account [there](https://artifacthub.io/).
 
 Before publishing the policy, ensure your Git repository has the proper layout,
 with a well formatted `metadata.yml` with the obligatory annotations.
 
-If you want to do this manually, one can create the `artifacthub-pkg.yml` file
+If you want to do this manually, you can create the `artifacthub-pkg.yml` file
 by doing a `kwctl scaffold artifacthub` (with version `>= 1.23`). This command
 takes the `metadata.yml` in the current path and outputs an
 `artifacthub-pkg.yml`. The `artifacthub-pkg.yml` contains fields such as
@@ -81,8 +80,8 @@ takes the `metadata.yml` in the current path and outputs an
 up-to-date. The format of the `artifacthub-pkg.yml` is described
 [here](https://github.com/artifacthub/hub/blob/master/docs/metadata/artifacthub-pkg.yml).
 
-If you are using our GitHub Actions >= `v4.0.0`, the release workflow can be
-configured with the input `artifacthub: true`. If configured so, after a
+If you use our GitHub Actions >= `v4.0.0`, the release workflow can be
+configured with the input `artifacthub: true`. If so configured, after a
 successful release (after the policy has been successfully built, signed and
 pushed), our GitHub Actions have a last job that generates the
 `artifacthub-pkg.yml` for you and pushes the commits the changes to the
