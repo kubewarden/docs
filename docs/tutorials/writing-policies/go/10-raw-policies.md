@@ -27,7 +27,7 @@ Please refer to the [metadata](../metadata.md) specification for more informatio
 
 <details>
 <summary>`metadata.yml` with `policyType: raw`</summary>
-```console
+```yaml
 rules:
 - apiGroups: [""]
   apiVersions: ["v1"]
@@ -43,13 +43,9 @@ policyType: raw
 # skip this policy and not generate false positives.
 backgroundAudit: true
 annotations:
-  # artifacthub specific:
-  io.artifacthub.displayName: Policy Name
-  io.artifacthub.resources: Pod
-  io.artifacthub.keywords: pod, cool policy, kubewarden
-  io.kubewarden.policy.ociUrl: ghcr.io/yourorg/policies/policy-name # must match release workflow oci-target
   # kubewarden specific:
   io.kubewarden.policy.title: policy-name
+  io.kubewarden.policy.version: 0.1.0  # should match the OCI tag
   io.kubewarden.policy.description: Short description
   io.kubewarden.policy.author: "Author name <author-email@example.com>"
   io.kubewarden.policy.url: https://github.com/yourorg/policy-name
@@ -60,6 +56,11 @@ annotations:
   # Category indicates policy category. See more here at docs.kubewarden.io
   io.kubewarden.policy.severity: medium # one of info, low, medium, high, critical. See docs.
   io.kubewarden.policy.category: Resource validation
+  # artifacthub specific: (optional, to release in Artifact Hub)
+  io.kubewarden.policy.ociUrl: ghcr.io/yourorg/policies/policy-name # must match release workflow oci-target
+  io.artifacthub.displayName: Policy Name
+  io.artifacthub.resources: Pod
+  io.artifacthub.keywords: pod, cool policy, kubewarden
 ```
 </details>
 

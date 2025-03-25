@@ -47,13 +47,9 @@ executionMode: kubewarden-wapc
 policyType: kubernetes
 backgroundAudit: true
 annotations:
-  # artifacthub specific:
-  io.artifacthub.displayName: Policy Name
-  io.artifacthub.resources: Pod
-  io.artifacthub.keywords: pod, cool policy, kubewarden
-  io.kubewarden.policy.ociUrl: ghcr.io/myorg/my-policy
   # kubewarden specific:
   io.kubewarden.policy.title: My policy
+  io.kubewarden.policy.version: 0.1.0 # should match the OCI tag
   io.kubewarden.policy.description: Short description
   io.kubewarden.policy.author: myself
   io.kubewarden.policy.url: https://github.com/yourorg/my-policy
@@ -64,6 +60,11 @@ annotations:
   # Category indicates policy category. See more here at docs.kubewarden.io
   io.kubewarden.policy.severity: medium
   io.kubewarden.policy.category: Resource validation
+  # artifacthub specific: (optional, to release in Artifact Hub)
+  io.kubewarden.policy.ociUrl: ghcr.io/myorg/my-policy
+  io.artifacthub.displayName: Policy Name
+  io.artifacthub.resources: Pod
+  io.artifacthub.keywords: pod, cool policy, kubewarden
 ```
 
 ## Enabling background audit checks

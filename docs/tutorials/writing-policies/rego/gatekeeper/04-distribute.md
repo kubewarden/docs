@@ -23,24 +23,25 @@ You're going to write a `metadata.yaml` file in your policy directory with conte
 
 ```yaml
 rules:
-- apiGroups: [""]
-  apiVersions: ["*"]
-  resources: ["*"]
-  operations: ["CREATE"]
+  - apiGroups: [""]
+    apiVersions: ["*"]
+    resources: ["*"]
+    operations: ["CREATE"]
 mutating: false
 contextAware: false
 executionMode: gatekeeper
 annotations:
   io.kubewarden.policy.title: no-default-namespace
+  io.kubewarden.policy.version: 0.1.0 # should match the OCI tag
   io.kubewarden.policy.description: This policy will reject any resource created inside the default namespace
   io.kubewarden.policy.author: The Kubewarden Authors
   io.kubewarden.policy.url: https://github.com/kubewarden/some-policy
   io.kubewarden.policy.source: https://github.com/kubewarden/some-policy
   io.kubewarden.policy.license: Apache-2.0
   io.kubewarden.policy.usage: |
-      This policy is just an example.
+    This policy is just an example.
 
-      You can write interesting descriptions about the policy here.
+    You can write interesting descriptions about the policy here.
 ```
 
 you can see everything is the same as the Open Policy Agent version metadata,
