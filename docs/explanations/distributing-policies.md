@@ -64,6 +64,7 @@ rules:
 mutating: false
 annotations:
   io.kubewarden.policy.title: palindromify
+  io.kubewarden.policy.version: 0.1.0
   io.kubewarden.policy.description: Allows you to reject palindrome names in resources and namespace names, or to only accept palindrome names
   io.kubewarden.policy.author: Name Surname <name.surname@example.com>
   io.kubewarden.policy.url: https://github.com/<org>/palindromify

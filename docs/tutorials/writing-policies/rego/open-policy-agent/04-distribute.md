@@ -38,6 +38,7 @@ contextAware: false
 executionMode: opa
 annotations:
   io.kubewarden.policy.title: no-default-namespace
+  io.kubewarden.policy.version: 0.1.0 # should match the OCI tag
   io.kubewarden.policy.description: This policy will reject any resource created inside the default namespace
   io.kubewarden.policy.author: The Kubewarden Authors
   io.kubewarden.policy.url: https://github.com/kubewarden/some-policy
