@@ -85,7 +85,8 @@ Extract the downloaded `.zip` file to new folder `kwctl-linux`:
 unzip kwctl-linux-x86_64.zip -d ./kwctl-linux
 ```
 
-This will extract the following files:
+This extracts the following files:
+
 - `kwctl-linux-x86_64`: The `kwctl` binary
 - `kwctl-linux-x86_64.sig`: A signature file for verifying the binary
 - `kwctl-linux-x86_64.pem`: A certificate file for verifying the signature
