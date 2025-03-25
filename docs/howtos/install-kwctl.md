@@ -79,10 +79,10 @@ For **ARM64** systems (e.g., Raspberry Pi), use:
 curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-linux-aarch64.zip
 ```
 
-#### Step 2: Extract the Files to new folder
-Extract the downloaded `.zip` file to new folder `kwctl-linux`:
+#### Step 2: Extract the files
+Extract the files from the downloaded `.zip` file:
 ```bash
-unzip kwctl-linux-x86_64.zip -d ./kwctl-linux
+unzip kwctl-linux-x86_64.zip
 ```
 
 This extracts the following files:
