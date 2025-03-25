@@ -74,7 +74,7 @@ Download the latest release of `kwctl` for Linux:
 curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-linux-x86_64.zip
 ```
 
-For **ARM64** systems (e.g., Raspberry Pi), use:
+For ARM64 systems (e.g., Raspberry Pi), use:
 ```bash
 curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-linux-aarch64.zip
 ```
