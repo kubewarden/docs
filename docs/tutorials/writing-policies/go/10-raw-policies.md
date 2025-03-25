@@ -27,7 +27,7 @@ Please refer to the [metadata](../metadata.md) specification for more informatio
 
 <details>
 <summary>`metadata.yml` with `policyType: raw`</summary>
-```console
+```yaml
 rules:
 - apiGroups: [""]
   apiVersions: ["v1"]

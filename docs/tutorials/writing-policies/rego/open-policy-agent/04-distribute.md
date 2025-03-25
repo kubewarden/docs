@@ -29,10 +29,10 @@ To annotate your policy you need to write a `metadata.yaml` file:
 
 ```yaml
 rules:
-- apiGroups: [""]
-  apiVersions: ["*"]
-  resources: ["*"]
-  operations: ["CREATE"]
+  - apiGroups: [""]
+    apiVersions: ["*"]
+    resources: ["*"]
+    operations: ["CREATE"]
 mutating: false
 contextAware: false
 executionMode: opa
@@ -45,24 +45,24 @@ annotations:
   io.kubewarden.policy.source: https://github.com/kubewarden/some-policy
   io.kubewarden.policy.license: Apache-2.0
   io.kubewarden.policy.usage: |
-      This policy is just an example.
+    This policy is just an example.
 
-      You can write interesting descriptions about the policy here.
+    You can write interesting descriptions about the policy here.
 ```
 
 You can see several details:
 
 - Rules:
-What resources this policy is targeting.
+  What resources this policy is targeting.
 - Mutating:
-Whether this policy is mutating.
-In this case, it is just validating.
+  Whether this policy is mutating.
+  In this case, it is just validating.
 - Context aware:
-Whether this policy requires context from the cluster to evaluate the request.
+  Whether this policy requires context from the cluster to evaluate the request.
 - Execution mode:
-Since this is a Rego policy it's mandatory to specify what execution mode it expects,
-`opa` or `gatekeeper`.
-This policy is written in the `opa` style, returning a whole `AdmissionReview` object.
+  Since this is a Rego policy it's mandatory to specify what execution mode it expects,
+  `opa` or `gatekeeper`.
+  This policy is written in the `opa` style, returning a whole `AdmissionReview` object.
 - Annotations: Metadata stored in the policy itself.
 
 Go ahead and annotate your policy:

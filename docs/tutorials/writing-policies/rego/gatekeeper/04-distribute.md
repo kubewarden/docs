@@ -23,10 +23,10 @@ You're going to write a `metadata.yaml` file in your policy directory with conte
 
 ```yaml
 rules:
-- apiGroups: [""]
-  apiVersions: ["*"]
-  resources: ["*"]
-  operations: ["CREATE"]
+  - apiGroups: [""]
+    apiVersions: ["*"]
+    resources: ["*"]
+    operations: ["CREATE"]
 mutating: false
 contextAware: false
 executionMode: gatekeeper
@@ -39,9 +39,9 @@ annotations:
   io.kubewarden.policy.source: https://github.com/kubewarden/some-policy
   io.kubewarden.policy.license: Apache-2.0
   io.kubewarden.policy.usage: |
-      This policy is just an example.
+    This policy is just an example.
 
-      You can write interesting descriptions about the policy here.
+    You can write interesting descriptions about the policy here.
 ```
 
 you can see everything is the same as the Open Policy Agent version metadata,

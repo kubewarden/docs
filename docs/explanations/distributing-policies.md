@@ -4,7 +4,13 @@ sidebar_position: 30
 title: Distributing policies
 description: A description of how Kubewarden policies are distributed from OCI-compliant repositories.
 keywords: [oci, kubewarden, policy, wasm, webassembly]
-doc-persona: [kubewarden-operator, kubewarden-policy-developer, kubewarden-distributor, kubewarden-integrator]
+doc-persona:
+  [
+    kubewarden-operator,
+    kubewarden-policy-developer,
+    kubewarden-distributor,
+    kubewarden-integrator,
+  ]
 doc-type: [explanation]
 doc-topic: [distributing-policies]
 ---
@@ -50,17 +56,17 @@ The `kwctl annotate` command requires two inputs:
 - the Kubewarden policy to annotate, a local file in the filesystem.
 
 - the annotations file, a file containing a YAML description of the policy metadata.
-This file is usually located root project folder of your policy.
+  This file is usually located root project folder of your policy.
 
 For example, you can save this file as `metadata.yml` in the current
 directory:
 
 ```yaml
 rules:
-- apiGroups: ["*"]
-  apiVersions: ["*"]
-  resources: ["*"]
-  operations: ["*"]
+  - apiGroups: ["*"]
+    apiVersions: ["*"]
+    resources: ["*"]
+    operations: ["*"]
 mutating: false
 annotations:
   io.kubewarden.policy.title: palindromify
