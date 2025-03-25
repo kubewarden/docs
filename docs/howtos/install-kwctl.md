@@ -94,7 +94,7 @@ This will extract the following files:
 ```shell
 cd ./kwctl-linux
 ```
-#### Step 4: Move the Binary to `/usr/local/bin`
+#### Step 4: Move the binary to a directory in your PATH and make executable.
 Move the binary to a directory in your `PATH`:
 ```bash
 sudo mv kwctl-linux-x86_64 /usr/local/bin/kwctl
