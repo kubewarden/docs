@@ -52,7 +52,7 @@ Artifact Hub is flexible and allows you to organize your code in these ways:
   any policy source code. It will be a collection of the YAML files required by
   Artifact Hub.
 - Add a Artifact Hub directory in the Git repository holding the source
-  of your policy. This is an iteration of the previous approach, focusing on just one policy, 
+  of your policy. This is an iteration of the previous approach, focusing on just one policy,
   that which is defined in the Git repository.
   This approach allows keeping multiple versions of the policy published on Artifact Hub.
 - Add the `artifacthub-pkg.yml` and the `artifacthub-repo.yml` files to the root
@@ -84,7 +84,7 @@ If you use our GitHub Actions >= `v4.0.0`, the release workflow can be
 configured with the input `artifacthub: true`. If so configured, after a
 successful release (after the policy has been successfully built, signed and
 pushed), our GitHub Actions have a last job that generates the
-`artifacthub-pkg.yml` for you and pushes the commits the changes to the
+`artifacthub-pkg.yml` for you then commits, and pushes the changes to the
 `artifacthub` branch. The canonical files are always the ones in the `main`
 branch. For the behaviour of previous releases of our GitHub Actions, see the
 docs versions pre 1.23.
