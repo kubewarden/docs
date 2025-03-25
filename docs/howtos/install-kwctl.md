@@ -100,7 +100,7 @@ Move the binary to a directory in your `PATH`:
 sudo mv kwctl-linux-x86_64 /usr/local/bin/kwctl
 ```
 
-#### Step 5: Verify the Installation
+#### Step 5: Verify the installation
 Check if `kwctl` is installed correctly:
 ```bash
 kwctl --version
