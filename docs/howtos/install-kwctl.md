@@ -19,7 +19,8 @@ import TabItem from '@theme/TabItem';
 
 # Installing kwctl (Kubewarden CLI)
 
-`kwctl` is the command line interface (CLI) tool for Kubewarden. Below are installation instructions for some operating systems.
+`kwctl` is the command-line interface (CLI) tool for Kubewarden. Below are installation instructions for some operating systems.
+
 
 <Tabs
   defaultValue="linux"
