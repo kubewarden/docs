@@ -109,7 +109,8 @@ Install `kwctl`:
 brew install kwctl
 ```
 
-Verify Installation:
+Verify installation:
+
 ```bash
 kwctl --version
 ```
