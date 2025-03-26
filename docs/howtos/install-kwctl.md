@@ -33,9 +33,13 @@ import TabItem from '@theme/TabItem';
 ## Install for Linux
 
 ### Using Homebrew
+
+If you use the Homebrew package manager on Linux, then:
+
 ```bash
 brew install kwctl
 ```
+
 
 Verify Installation:
 ```bash
