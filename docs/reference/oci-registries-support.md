@@ -48,7 +48,7 @@ correct any registry inaccuracies by using the
 
 ## Tools that work with OCI registries
 
-The Kubewarden project recommend:
+The Kubewarden project recommends:
 
 - [Kwctl](https://github.com/kubewarden/kwctl) (our CLI tool).
 - [Skopeo](https://github.com/containers/skopeo) ([>= 1.9.0](https://github.com/containers/skopeo/pull/1705)).
