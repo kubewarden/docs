@@ -72,20 +72,8 @@ ___Policy Server detail view___
 When creating policies, you will initially be given a "Custom Policy" option from the Policy Grid.
 Provide the required information for your policy's Name, Module, and Rules.
 
-___Creating a custom policy___ 
+___Creating a custom policy___
 ![UI Policy Whitelist](/img/ui_policy_custom.png)
-
-If you wish to use policies from [ArtifactHub](https://artifacthub.io/packages/search?kind=13),
-you will need to add `artifacthub.io` to the `management.cattle.io.settings/whitelist-domain` setting.
-This allows your Rancher instance to retrieve package information from ArtifactHub.
-Use the "Add ArtifactHub To Whitelist" button to automatically add the domain,
-the Policy Grid will refresh with the fetched policies.
-
-___ArtifactHub whitelist banner___ 
-![UI Policy Whitelist](/img/ui_policy_whitelist.png)
-
-___Policy Grid___
-![UI Policy Create](/img/ui_policy_create.png)
 
 ### Additional features
 
