@@ -1,6 +1,6 @@
 ---
 sidebar_label: Webhooks
-title: Harderning the Kubewarden webhooks
+title: Hardening the Kubewarden webhooks
 description: Limit access to Kubewarden webhooks.
 keywords: [kubewarden, kubernetes, security]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
@@ -157,13 +157,13 @@ matchExpressions:
 :::tip
 
 See [this how-to](../../howtos/security-hardening/webhook-mtls/) for a step-by-step guide on
-configuring the Kubernetes API server of k3s to authenticate to the webhook.
+configuring the Kubernetes API server of K3s to authenticate to the webhook.
 
 :::
 
 The webhooks exposed by the Kubewarden stack should only accept requests from the Kubernetes API server or
 from the audit scanner component.
-By default, these webhooks don't require clients to authenticate to it. They will accept any request.
+By default, these webhooks don’t require clients to authenticate to it. They will accept any request.
 
 You can configure the webhooks to require credentials so that only the API server and the audit scanner processes
 can access them.
