@@ -34,7 +34,7 @@ Please ensure that the policy author has marked the policy as `policyType: raw` 
 You can inspect the metadata by using `kwctl`
 
 ```bash
-kwctl inpect ghcr.io/kubewarden/tests/raw-mutation-policy:v0.1.0
+kwctl inspect ghcr.io/kubewarden/tests/raw-mutation-policy:v0.1.0
 ```
 
 :::

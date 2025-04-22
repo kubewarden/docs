@@ -53,7 +53,7 @@ PolicyServer resource:
   that must be available at all times. Can be an integer or a percentage.
 
   Useful for maintaining the operational integrity of the PolicyServer,
-  ensuring that policies are continously enforced without interruption.
+  ensuring that policies are continuously enforced without interruption.
 
 - `maxUnavailable`: specifies the maximum number of policy-server Pods that can
   be unavailable at any given time. Can be an integer or a percentage.
@@ -188,7 +188,7 @@ This is achieved by setting the following PolicyServer resource fields:
   mechanism).
 
 :::note
-Undercommitting resources of PolicyServers may cause realibility issues in the
+Undercommitting resources of PolicyServers may cause reliability issues in the
 cluster.
 :::
 
