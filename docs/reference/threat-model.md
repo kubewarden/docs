@@ -135,7 +135,7 @@ and admission controller webhook.
 
 Configure the cluster with mTLS authentication for the Webhooks and enable the mTLS feature in the
 Kubewarden stack. Alternatively, setup mTLS using a CNI that supports Network Policies.
-See [here](./security-hardening/webhooks-hardening.md) for more information.
+See ["Secure webhooks with mTLS"](./security-hardening/webhooks-hardening.md) for more information.
 
 Use the
 [capabilities-psp](https://artifacthub.io/packages/kubewarden/capabilities-psp/capabilities-psp)
@@ -243,7 +243,7 @@ Admission controller uses restrictive policies to prevent privileged workloads.
 #### Scenario
 
 An attacker, who has rights to deploy hostPath volumes with workloads, creates a
-volume that allows for access to the admission controller pod’s files.
+volume that allows for access to the admission controller pod's files.
 
 #### Mitigation
 
@@ -302,6 +302,6 @@ For example, by:
    The Kubernetes Administrator must verify the Kubewarden images, its dependencies' images, and charts
    out of the Kubernetes cluster, in a trusted environment.
    You can do this with `cosign`, for example.
-   Incidentally, this is part of the implementation needed for air gapped installations.
+   Incidentally, this is part of the implementation needed for air-gapped installations.
 2. Use signed Helm charts, and verified digests instead of tags for Kubewarden images in those Helm charts.
    This doesn't secure dependencies though.

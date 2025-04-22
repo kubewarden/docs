@@ -1,6 +1,6 @@
 ---
-sidebar_label: Enable mTLS with k3s
-title: Secure webhooks with mutual TLS with k3s
+sidebar_label: Enable mTLS with K3s
+title: Secure webhooks with mutual TLS with K3s
 description: Harden the webhook configuration.
 keywords: [kubewarden, kubernetes, security]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
@@ -13,14 +13,14 @@ doc-topic: [operator-manual, security]
 </head>
 
 This guide shows you how to enable mutual TLS (mTLS) for all the webhooks used by the Kubewarden
-stack when using [k3s](https://k3s.io/) as your Kubernetes distribution.
+stack when using [K3s](https://k3s.io/) as your Kubernetes distribution.
 
 For more information on how to harden the webhooks, see the [reference
 page](../../reference/security-hardening/webhooks-hardening).
 
 ## Prerequisites
 
-Before installing k3s, you need to create a certificate authority (CA) and a client certificate to use to secure the communication between the Kubewarden webhooks and the Kubernetes API server.
+Before installing K3s, you need to create a certificate authority (CA) and a client certificate to use to secure the communication between the Kubewarden webhooks and the Kubernetes API server.
 
 As a first step, create the `/etc/rancher/k3s/admission/certs` directory:
 
@@ -118,9 +118,9 @@ users:
       client-key: /etc/rancher/k3s/admission/certs/client.key
 ```
 
-### Create a k3s configuration file
+### Create a K3s configuration file
 
-Create a k3s configuration file at `/etc/rancher/k3s/config.yaml`:
+Create a K3s configuration file at `/etc/rancher/k3s/config.yaml`:
 
 ```yaml
 # /etc/rancher/k3s/config.yaml
@@ -128,9 +128,9 @@ kube-apiserver-arg:
   - admission-control-config-file=/etc/rancher/k3s/admission/admission.yaml
 ```
 
-## Install k3s
+## Install K3s
 
-Install k3s using the following command:
+Install K3s using the following command:
 
 ```console
 curl -sfL https://get.k3s.io | sh -
