@@ -191,7 +191,7 @@ $ kubectl apply -f ./cel-policy-example.yaml
 ```
 
 Now we can test it by instantiating Ingresses. The first one will succeed as
-there's no other targetting that host:
+there's no other targeting that host:
 
 ```console
 $ kubectl apply -f - <<EOF

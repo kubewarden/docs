@@ -33,7 +33,7 @@ requiring more information have links to further explanation.
 | Policy language [[1]](#writing-policies)              | Rego                        | Rego, CEL, Go, Rust,...                                 |
 | Context aware [[2]](#context-aware)                   | ✅                          | ✅                                                      |
 | Kubernetes integration [[3]](#kubernetes-integration) | cluster wide CRD            | cluster wide and namespaced CRDs                        |
-| Policy distribution [[4]](#policy-distribution)       | embedded into Kubernetes CR | Container registry, or embeded into Kubernetes CR (CEL) |
+| Policy distribution [[4]](#policy-distribution)       | embedded into Kubernetes CR | Container registry, or embedded into Kubernetes CR (CEL) |
 | CI/CD integration [[5]](#cicd-integration)            | ✅                          | ✅                                                      |
 | Policy enforcement modes                              | deny, warn                  | deny, warn                                              |
 | Deployment mode [[6]](#deployment-mode)               | single evaluation server    | multiple evaluation servers                             |

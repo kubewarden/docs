@@ -51,7 +51,7 @@ kubectl get clusterroles,roles -A | grep kubewarden
 ### Per-policy permissions
 
 For context-aware policies, operators specify fine-grained permissions per
-policy under its `spec.contectAwareResources`, and those work in conjuction
+policy under its `spec.contextAwareResources`, and those work in conjunction
 with the Service Account configured for the Policy Server where the policy
 runs.
 
@@ -74,7 +74,7 @@ are enforced, with current Pod hardening best practices.
 The `kubewarden-controller` Helm chart configures the SecurityContexts and
 exposes them in its `values.yaml`.
 
-The `kubewarden-defaults` Helm chart allows for configuing the default Policy
+The `kubewarden-defaults` Helm chart allows for configuring the default Policy
 Server `.spec.securityContexts` under `.Values.policyServer.securityContexts`.
 
 For Policy Servers managed by operators, you can configure them via their

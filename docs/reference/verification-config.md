@@ -39,7 +39,7 @@ A full list of accepted keys based on different use cases is given below.
   certificate extension `workflow_repository` created by the OpenID Connect of
   Github, and not only the `issuer` and `subject`. Hence, it is strongly
   recommended to use this `kind` if dealing with GitHub Actions.
-- `genericIssuer`: for signatures performed with Sigstore's keyless worfklow,
+- `genericIssuer`: for signatures performed with Sigstore's keyless workflow,
   where the user needs to validate the certificate `issuer` and `subject` on
   their own.
   It accepts a `subject`, which can be:

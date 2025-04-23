@@ -69,7 +69,7 @@ flowchart LR;
   linkStyle 7 color:red,stroke-width:2px,stroke-dasharray: 3 5
 ```
 
-<figcaption>Upgrade path suppport graph</figcaption>
+<figcaption>Upgrade path support graph</figcaption>
 </figure>
 
 For example, the user is allowed to upgrade components from version `1.1.10` to

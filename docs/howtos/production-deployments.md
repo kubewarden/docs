@@ -145,6 +145,6 @@ and [Affinity and
 Anti-Affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity).
 
 For more information about production configuration for PolicyServers, refer to
-the [policy server documentaiton](/docs/howtos/policy-servers/03-production-deployments.md) guide.
+the [policy server documentation](/docs/howtos/policy-servers/03-production-deployments.md) guide.
 
 
