@@ -38,6 +38,9 @@ sources:
           doc-type: {{ $file.doc_type }}
           doc-topic: {{ $file.doc_topic }}
           ---
+      - replacer:
+          from: "↴"
+          to: ""
     spec:
       file: {{ $file.path }}
 # {{ end }}
