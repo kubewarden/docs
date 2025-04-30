@@ -14,8 +14,8 @@ This document contains the help content for the `policy-server` command-line pro
 
 **Command Overview:**
 
-* [`policy-server`↴](#policy-server)
-* [`policy-server docs`↴](#policy-server-docs)
+* [`policy-server`](#policy-server)
+* [`policy-server docs`](#policy-server-docs)
 
 ## `policy-server`
 
