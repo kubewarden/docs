@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - main
+permissions:
+  contents: read
+  id-token: write
+  pages: write
 
 jobs:
   deploy:
+    environment:
+      name: github-pages
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main docs repo
@@ -20,8 +26,11 @@ jobs:
         run: |
           yarn install --frozen-lockfile
           yarn build
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact for deployment
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          path: ./build
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
