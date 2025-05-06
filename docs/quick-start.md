@@ -300,7 +300,7 @@ This produces the following output:
 clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
 ```
 
-When defining a [[< cluster-admission-policy >]], the status becomes
+After instantiating a [[< cluster-admission-policy >]], the status becomes
 `pending`, and it forces a rollout of the targeted `PolicyServer`. In the
 example, it's the `PolicyServer` named `default`. You can monitor the rollout
 by running the following command:
