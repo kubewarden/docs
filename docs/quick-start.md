@@ -125,7 +125,7 @@ This means that if not using the latest version of the `kubewarden-controller`
 while upgrading or deleting, your default policy server isn't upgraded or
 deleted. So, you might run into issues if you try to install the
 `kubewarden-defaults` with conflicting information, for example, the same
-policy server name. To install future upgrades in the
+policy server name. To install future upgrades of the
 `kubewarden-defaults` Helm chart remove the existing `PolicyServer` resource
 created by the `kubewarden-controller` before installing the new chart. Now you
 can update your policy server using Helm upgrades without resource conflicts.
