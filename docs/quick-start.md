@@ -240,7 +240,7 @@ Overview of the attributes of the [[< cluster-admission-policy >]] resource:
 
 :::note
 
-You register the [[< cluster-admission-policy >]] resources with a `*`
+The controller registers the [[< cluster-admission-policy >]] resources with a `*`
 webhook `scope`. This means that registered webhooks forward all requests
 matching the given `resources` and `operations`, either namespaced or
 cluster-wide resources.
