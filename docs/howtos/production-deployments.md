@@ -179,7 +179,7 @@ As an example, we could use:
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
-  name: kubewarden--high-priority
+  name: kubewarden-high-priority
 value: 1000000
 globalDefault: false
 description: "This priority class should be used for XYZ service pods only."
