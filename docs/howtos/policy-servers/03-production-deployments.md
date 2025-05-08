@@ -11,6 +11,7 @@ keywords:
     poddisruptionbudget,
     affinity,
     limits,
+    priorityClass,
   ]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
 doc-type: [howto]
@@ -22,6 +23,7 @@ doc-topic:
     poddisruptionbudget,
     affinity,
     limits,
+    priorityClass,
   ]
 ---
 
@@ -206,4 +208,32 @@ spec:
   limits:
     cpu: 500m
     memory: 1Gi
+```
+
+# PriorityClasses
+
+The Kubewarden controller can set the PriorityClass used for the pods of
+PolicyServers. This means PolicyServer workloads are scheduled with priority,
+preventing eviction and ensuring service reliability. [See the Kubernetes docs
+for more
+information](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/).
+
+:::warning
+If you delete a PriorityClass, existing Pods that use the name of the deleted
+PriorityClass remain unchanged, but following Pods that use the
+name of the deleted PriorityClass will not be created by Kubernetes.
+:::
+
+## Configuring PriorityClasses
+
+Example: Using the default `system-cluster-critical` priorityClass:
+
+```yaml
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: your-policy-server
+spec:
+  # Other configuration fields
+  priorityClassName: system-cluster-critical
 ```
