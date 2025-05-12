@@ -41,7 +41,7 @@ These include:
 
 Security expectations change over time. Previously correct deployments in the
 cluster may no longer be so. Yet Kubewarden has already accepted those
-operations in the cluster. In these situations the operator can deploy the
+operations in the cluster. In these situations, the operator can deploy the
 Audit Scanner feature, a CronJob that runs periodically and evaluates the
 existing resources in the cluster. This checks the cluster is safe and
 compliant even over time.
