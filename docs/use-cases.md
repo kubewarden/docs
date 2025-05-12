@@ -55,7 +55,7 @@ consuming logs and OpenTelemetry information for metrics and tracing.
 ## Case B: As a Kubernetes operator, I want to provide a framework to my Kubernetes users so they can self-service in their Namespaces.
 
 As an operator, I deploy Kubewarden as in Case A for a set of policies of my
-choosing. This provides me with safe baseline in the cluster, that other users
+choosing. This provides me with a safe baseline in the cluster that other users
 can't evade.
 
 As well as Case A, I have different personas per Namespaces: perhaps teams,
