@@ -105,6 +105,10 @@ I can create new components, for example an image scanner, and interface with
 it via a context-aware policy, without having a monolithic implementation in
 a Kubernetes controller.
 
+System integrators can create new components. For example, an image scanner,
+and interface with it via a context-aware policy, without having a monolithic
+implementation in a Kubernetes controller.
+
 ## Non-goals
 
 Kubewarden doesn't intend to:
@@ -122,7 +126,4 @@ Kubewarden doesn't intend to:
 - Provide infinite policy execution flexibility. To prevent DoS attacks,
   policies' processing times are limited.
 
-System integrators can create new components. For example, an image scanner,
-and interface with it via a context-aware policy, without having a monolithic
-implementation in a Kubernetes controller.
 
