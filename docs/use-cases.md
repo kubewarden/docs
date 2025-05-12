@@ -114,8 +114,8 @@ implementation in a Kubernetes controller.
 Kubewarden doesn't intend to:
 
 - Replace Kubernetes built-in security features, but complement them:
-  - We provide migration from PSPs.
-  - One can re-use ValidatingAdmissionPolicies and CEL policies with our
+  - Kubewarden provides migration from PSPs.
+  - You can re-use ValidatingAdmissionPolicies and CEL policies with Kubewarden's
     `cel-policy`.
   - Kubewarden policies can be mutating, while Pod Security Admission cannot.
   - Kubewarden policies benefit from the Kubewarden stack features (audit
