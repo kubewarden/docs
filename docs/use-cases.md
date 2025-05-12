@@ -27,7 +27,7 @@ As an operator, I can add more PolicyServers under a managed Namespace (such as
 
 Operators can deploy more ClusterAdmissionPolicies and
 ClusterAdmissionPolicyGroups. These check the totality of the Kubernetes
-resources, for any type of operation (GET, CREATE, UPDATE, PATCH, DELETE,
+resources for any type of operation (GET, CREATE, UPDATE, PATCH, DELETE,
 PROXY). This ensures operations into the cluster are safe and compliant.
 
 These include:
