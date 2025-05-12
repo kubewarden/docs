@@ -97,8 +97,8 @@ As a system integrator, I can reuse parts of Kubewarden. For example, the
 `policy-server`, to police resources, internal or external to the Kubernetes
 cluster via the ["raw policies"](./howtos/raw-policies.md) feature.
 
-System integrators can chose to deploy the `kubewarden-controller` or manage
-the CRDs on their own. They can chose to deploy or scale the Audit Scanner as
+System integrators can choose to deploy the `kubewarden-controller` or manage
+the CRDs on their own. They can choose to deploy or scale the Audit Scanner as
 needed.
 
 System integrators can create new components. For example, an image scanner,
