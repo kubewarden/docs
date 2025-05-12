@@ -13,6 +13,8 @@ doc-topic: [explanation]
   <link rel="canonical" href="https://docs.kubewarden.io/use-cases"/>
 </head>
 
+## Use cases
+
 Here stand some example use cases for our [personas](./personas.md).
 
 #### Case A: as a Kubernetes operator, I want to ensure my cluster is safe and compliant.
@@ -98,3 +100,20 @@ Scanner as needed.
 I can create new components, for example an image scanner, and interface with
 it via a context-aware policy, without having a monolithic implementation in
 a Kubernetes controller.
+
+## Non-goals
+
+Kubewarden doesn't intend to:
+
+- Replace Kubernetes built-in security features, but complement them:
+  - We provide migration from PSPs.
+  - One can re-use ValidatingAdmissionPolicies and CEL policies with our
+    `cel-policy`.
+  - Kubewarden policies can be mutating, while Pod Security Admission cannot.
+  - Kubewarden policies benefit from the Kubewarden stack features (audit
+    scanner, telemetry, CRD management).
+- Provide runtime security like intrusion detection or runtime container
+  isolation.
+- Provide host system protection of clusters.
+- Provide infinite policy execution flexibility. To prevent DoS attacks,
+  policies' processing times are limited.
