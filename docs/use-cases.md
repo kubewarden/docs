@@ -74,7 +74,7 @@ throughput and low latency, for example.
 
 Kubewarden achieves this by supporting any language that compiles to
 WebAssembly as possible target languages for policies. This means that policy
-authors can reuse their workflows (`git`, CI, editors, peer reviews, etc), and
+authors can reuse their workflows (`git`, CI, editors, peer reviews, etc.), and
 tools: languages, language libraries, testing harnesses and frameworks, etc.
 
 It permits re-using Domain Specific Languages (like Rego, CEL, Kyverno's
