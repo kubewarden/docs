@@ -63,7 +63,7 @@ team administrators, test deployments, and others. I allow each Namespace
 administrator to self-service by letting them deploy PolicyServers in their
 Namespace, along with namespaced AdmissionPolicies and AdmissionPolicyGroups.
 This architecture means that they're in control of their PolicyServer and
-policies, the policies only apply to their Namespace, and they constrain
+policies. The policies only apply to their Namespace, and they constrain
 resource usage to their Namespace.
 
 It also permits the operator to segregate noisy tenants, reserving
