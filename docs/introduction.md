@@ -38,9 +38,13 @@ Kubewarden offers flexibility for policy admission and enforcement in a Kubernet
 
 ### Use cases
 
-- Security hardening. For example, enforce policies restricting container privileges, enforce network policies, or block insecure image registries.
-- Compliance auditing. Ensure workloads comply with organizational or regulatory standards and best practices.
+- Security hardening. For example, enforce policies restricting container
+  privileges, enforce network policies, or block insecure image registries.
+- Compliance auditing. Ensure workloads follow organizational or regulatory
+  standards and best practices.
 - Resource optimization. Enforce resource limits and quotas.
+
+There is further documentation of use cases on the [use cases](use-cases.md) page.
 
 ## New to Kubewarden?
 

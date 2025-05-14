@@ -37,7 +37,7 @@ Denial of Service, or deadlock.
 Kubewarden provides several ways to increase the reliability of PolicyServers.
 Production deployments can vary a great deal, it is up to the operator to configure the deployment for their needs.
 
-# PodDistruptionBudgets
+# PodDisruptionBudgets
 
 The Kubewarden controller can create a
 [PodDisruptionBudget](https://kubernetes.io/docs/tasks/run-application/configure-pdb/)
