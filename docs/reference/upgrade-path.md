@@ -94,7 +94,7 @@ Nevertheless, there's a reasonable expectation that they should work.
 
 ## SDKs, policies
 
-Policy SDKs for the different languages, and policies maintained by the
+Policy SDKs for the different languages and policies maintained by the
 Kubewarden team follow their own semantic versioning. Kubewarden supports the
 latest release. There is no need for an upgrade path for them, just a bump to
 the latest release.
