@@ -17,7 +17,7 @@ doc-topic: [operator-manual, upgrade-path]
 
 The Kubewarden project uses [Semantic versioning](https://semver.org/)
 to define the "stack" version of all its components: the version follows the
-`MAJOR.MINOR.PATCH` pattern. The supported version is only the latest release.
+`MAJOR.MINOR.PATCH` pattern. The supported version is the latest release.
 
 The Kubewarden components that follow the rules for the "stack" version are:
 
@@ -39,46 +39,19 @@ Therefore, if the `kubewarden-controller` version running is `1.1.x`, the
 
 ## Helm chart versions
 
-Helm charts define the `version` field and the `appVersion` field. The `appVersion` field informs
-of the Kubewarden "stack" version as talked before. The `version` field also
-follows [Semantic versioning](https://semver.org/) and informs of
+Helm charts define the `version` field and the `appVersion` field. The
+`appVersion` field describes the Kubewarden "stack" version as mentioned
+before. The `version` field also follows semantic versioning and describes
 backwards-compatible changes in the chart templates and `values.yaml`.
 
 ## Upgrade paths
 
-When upgrading components, it is allowed to upgrade multiple `PATCH` stack versions
-in a single operation. However, the upgrade of multiple `MAJOR` or `MINOR` stack versions
-in a single upgrade is **not** supported.
+When upgrading components, you can upgrade multiple `PATCH` stack versions in a
+single operation. However, the upgrade of multiple `MAJOR` or `MINOR` stack
+versions in a single upgrade is **not** supported.
 
-<figure>
-
-```mermaid
-%%{init: "theme": "neutral"}%%
-flowchart LR;
-  1.0.0(1.0.0)-->1.0.1(1.0.1);
-  1.0.1-->1.0.2(1.0.2);
-  1.0.2-->1.1.0(1.1.0);
-  1.1.0-->1.1.2(1.1.2);
-  1.1.0-->1.1.1;
-  1.1.1-->1.1.2;
-  1.1.2-->|Not recommended|1.2.0(1.2.0);
-  1.0.2-->|Not supported|1.2.0(1.2.0);
-  1.1.2-->1.2.1(1.2.1);
-  1.2.0-->1.2.1;
-  linkStyle 6 color:brown,stroke-width:2px,stroke-dasharray: 3 5
-  linkStyle 7 color:red,stroke-width:2px,stroke-dasharray: 3 5
-```
-
-<figcaption>Upgrade path support graph</figcaption>
-</figure>
-
-For example, the user is allowed to upgrade components from version `1.1.10` to
-`1.1.50` in a single upgrade. But the upgrade from `1.1.10` to `1.5.0` is not supported.
-In these cases, the user must upgrade individually to each `MAJOR`/`MINOR` version
-between the two versions. Therefore, it's necessary to upgrade `1.1.10` to `1.2.0`
-then `1.3.0` then `1.4.0` and finally to `1.5.0`. Users that want to upgrade one
-`MAJOR` version to another, also need to follow all the `MINOR` updates between the
-two `MAJOR` versions.
+To upgrade one `MAJOR` version to another, you need to apply all the `MINOR`
+updates between the two `MAJOR` versions.
 
 ## Upgrade order
 
@@ -89,20 +62,20 @@ custom ones) and `kwctl`.
 
 ## Downgrades
 
-Downgrades are **not** supported, and haven't been tested. Nevertheless,
-there's a reasonable expectation that they should work.
+Downgrades are **not** supported, and Kubewarden does not test them.
+Nevertheless, there's a reasonable expectation that they should work.
 
 ## SDKs, policies
 
 Policy SDKs for the different languages, and policies maintained by the
-Kubewarden team follow their own semantic versioning and are supported on their
+Kubewarden team follow their own semantic versioning. Kubewarden supports the
 latest release. There is no need for an upgrade path for them, just a bump to
 the latest release.
 
 Changes to the Kubewarden stack may mean that policies and SDKs receive updates
-to make use of the latest Kubewarden features. Care is taken to perform these updates
-in a backwards-compatible manner.
+to use the latest Kubewarden features. Kubewarden takes care to perform these
+updates in a backwards-compatible manner.
 
 For example, a Kubewarden minor version adding support for Audit Scanner
-(`v1.7.0`) means that policies gained a new `spec.backgroundAudit` field,
-optional, backwards-compatible and set to `true` by default.
+(`v1.7.0`) means that policies gained a new `spec.backgroundAudit` field. This
+is optional, backwards-compatible and set to `true` by default.
