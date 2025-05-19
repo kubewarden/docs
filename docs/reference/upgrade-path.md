@@ -50,8 +50,35 @@ When upgrading components, you can upgrade multiple `PATCH` stack versions in a
 single operation. However, the upgrade of multiple `MAJOR` or `MINOR` stack
 versions in a single upgrade is **not** supported.
 
-To upgrade one `MAJOR` version to another, you need to apply all the `MINOR`
-updates between the two `MAJOR` versions.
+For example, you can upgrade components from version `1.1.10` to `1.1.nn` in a
+single upgrade. But, the upgrade from `1.1.10` to `1.5.0` isn't supported. In
+these cases, you must upgrade individually to each `MAJOR`/`MINOR` version
+between the two versions. Therefore, it's necessary to upgrade `1.1.10` to
+`1.2.0` then `1.3.0` then `1.4.0` and finally to `1.5.0`. To upgrade from one
+`MAJOR` version to another, you need to apply all the `MINOR` updates between
+the two `MAJOR` versions.
+
+<figure>
+
+```mermaid
+%%{init: "theme": "neutral"}%%
+flowchart LR;
+  1.0.0(1.0.0)-->1.0.1(1.0.1);
+  1.0.1-->1.0.2(1.0.2);
+  1.0.2-->1.1.0(1.1.0);
+  1.1.0-->1.1.2(1.1.2);
+  1.1.0-->1.1.1;
+  1.1.1-->1.1.2;
+  1.1.2-->|Not recommended|1.2.0(1.2.0);
+  1.0.2-->|Not supported|1.2.0(1.2.0);
+  1.1.2-->1.2.1(1.2.1);
+  1.2.0-->1.2.1;
+  linkStyle 6 color:brown,stroke-width:2px,stroke-dasharray: 3 5
+  linkStyle 7 color:red,stroke-width:2px,stroke-dasharray: 3 5
+```
+
+<figcaption>Example upgrade path support graph</figcaption>
+</figure>
 
 ## Upgrade order
 
