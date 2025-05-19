@@ -62,7 +62,7 @@ Despite using the same language, policies written for kube-mgmt are
 not compatible with OPA Gatekeeper and vice versa.
 
 Kubewarden can use Rego policies that have been written for both Open Policy Agent and
-for OPA Gatekeeper. More information is [here](https://docs.kubewarden.io/writing-policies/rego/intro-rego).
+for OPA Gatekeeper. More information is [here](https://docs.kubewarden.io/tutorials/writing-policies/rego/intro-rego).
 :::
 
 ## Context aware

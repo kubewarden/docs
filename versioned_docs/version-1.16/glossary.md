@@ -80,7 +80,7 @@ WebAssembly System Interface. https://wasi.dev.
 ### Wasm
 
 A binary instruction format for a stack-based virtual machine. Designed for web
-deployment. https://webassemly.org.
+deployment. https://webassembly.org.
 
 ### Wasmtime
 
