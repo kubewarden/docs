@@ -61,7 +61,7 @@ OpenTelemetry collector and the Jaeger endpoint.
 
 This is **not meant to be a production deployment**.
 We recommend
-you read Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
+you read Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/kubernetes/).
 :::
 
 You should now be able to view any failed requests for policies tied to a specific Policy Server or the detail view for any given policy.
