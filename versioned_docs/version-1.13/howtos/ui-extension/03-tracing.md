@@ -69,7 +69,7 @@ we're not encrypting the communication between the OpenTelemetry collector and t
 
 This is __not suitable for production deployment__.
 We recommend you read Jaeger's
-[documentation](https://www.jaegertracing.io/docs/latest/operator/).
+[documentation](https://www.jaegertracing.io/docs/latest/kubernetes/).
 :::
 
 You should now be able to view any failed requests for policies tied to a specific Policy Server,

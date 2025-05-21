@@ -51,7 +51,7 @@ OpenTelemetry collector and the Jaeger endpoint.
 
 This is **not meant to be a production deployment**.
 We strongly recommend
-to read Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/operator/).
+to read Jaeger's [official documentation](https://www.jaegertracing.io/docs/latest/kubernetes/).
 :::
 
 
