@@ -45,7 +45,7 @@ This is a walk-through the code described above:
     automatically populates the `Settings` instance inside of `ValidationRequest` with
     the params provided by the user.
   2. Convert the Kubernetes raw JSON object embedded into the request
-    into an instance of the [Pod struct](https://arnavion.github.io/k8s-openapi/v0.11.x/k8s_openapi/api/core/v1/struct.Pod.html)
+    into an instance of the [Pod struct](https://arnavion.github.io/k8s-openapi/v0.25.x/k8s_openapi/api/core/v1/struct.Pod.html)
   3. The request contains a Pod object, the code approves only the requests
     that do not have `metadata.name` equal to the hard-coded value `invalid-pod-name`
   4. The request doesn't contain a Pod object, hence the policy accepts the request

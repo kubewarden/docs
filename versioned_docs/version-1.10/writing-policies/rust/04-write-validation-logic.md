@@ -65,7 +65,7 @@ Walking through the code listing:
 - In line 2. Parse the incoming `payload` into a `ValidationRequest<Setting>` object.
 This automatically populates the `Settings` instance inside the `ValidationRequest` with the parameters provided by the user.
 - In line 10. Convert the Kubernetes raw JSON object embedded into the request into an instance of the
-[Pod struct](https://arnavion.github.io/k8s-openapi/v0.11.x/k8s_openapi/api/core/v1/struct.Pod.html)
+[Pod struct](https://arnavion.github.io/k8s-openapi/v0.25.x/k8s_openapi/api/core/v1/struct.Pod.html)
 - In line 13. The request has a Pod object, the code approves only the requests that don't have `metadata.name` equal to the hard-coded value `invalid-pod-name`
 - In line 36. The request doesn't contain a Pod object, hence the policy accepts the request.
 
