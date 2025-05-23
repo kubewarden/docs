@@ -24,7 +24,7 @@ This policy will check all container images in the Pod Sigstore, and verify
 that the images are signed and trusted.
 
 In this case, we will check for a Sigstore keyless signature performed in
-GitHub Actions. These type of keyless signatures are tied to Github's OIDC
+GitHub Actions. These type of keyless signatures are tied to GitHub's OIDC
 issuer when creating the cryptographic certificates, so we will only need to
 know the GitHub organization under where the container image is published. You
 can read more about the host capabilities for Sigstore
