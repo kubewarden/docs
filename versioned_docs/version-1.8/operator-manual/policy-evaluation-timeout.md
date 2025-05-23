@@ -92,7 +92,7 @@ spec:
 
 ## Comparison with Kubernetes Dynamic Admission Controller timeout
 
-Kubewarden is a [webook](https://en.wikipedia.org/wiki/Webhook) implementation of  the[ Kubernetes Dynamic Admission Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
+Kubewarden is a [webhook](https://en.wikipedia.org/wiki/Webhook) implementation of  the[ Kubernetes Dynamic Admission Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
 
 Under the hood, the Kubernetes API server makes an HTTP request against  Kubewarden's Policy Server
 describing an event that is about to happen. After the HTTP request is made,
