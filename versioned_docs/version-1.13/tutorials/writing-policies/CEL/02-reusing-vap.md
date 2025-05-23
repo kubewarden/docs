@@ -28,7 +28,7 @@ The following ValidatingAdmissionPolicy comes from the [Kubernetes
 docs](https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/#creating-a-validatingadmissionpolicy).
 This policy checks that the number of Replicas in Deployments is less or equal
 to 5. It is bound with a ValidatingAdmissionPolicyBinding so it only affects
-Namespaces that havel a label `environment` set to `test`.
+Namespaces that have a label `environment` set to `test`.
 
 ### ValidatingAdmissionPolicy
 

@@ -101,7 +101,7 @@ spec:
 
 ## Comparison with Kubernetes Dynamic Admission Controller timeout
 
-Kubewarden is a [webook](https://en.wikipedia.org/wiki/Webhook) implementation of  the[ Kubernetes Dynamic Admission Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
+Kubewarden is a [webhook](https://en.wikipedia.org/wiki/Webhook) implementation of  the[ Kubernetes Dynamic Admission Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
 
 Under the hood, the Kubernetes API server makes an HTTP request against  Kubewarden's Policy Server
 describing an event that is about to happen. After the HTTP request is made,
@@ -146,7 +146,7 @@ Kubernetes API server sends an admission request to be evaluated by this
 bugged policy. As a result, the policy evaluation will enter an infinite loop.
 In the meantime the Kubernetes API server will be waiting for a response.
 
-After 10 seconds Kubernetes' webhoook timeout will take place, the request
+After 10 seconds Kubernetes' webhook timeout will take place, the request
 will be handled according to the webhook's failure policy.
 
 Unfortunately, the Policy Server will be left with some computation resources stuck
