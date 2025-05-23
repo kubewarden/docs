@@ -141,7 +141,7 @@ Kubernetes API server sends an admission request to be evaluated by this
 bugged policy. As a result, the policy evaluation will enter an infinite loop.
 In the meantime the Kubernetes API server will be waiting for a response.
 
-After 10 seconds Kubernetes' webhoook timeout will take place, the request
+After 10 seconds Kubernetes' webhook timeout will take place, the request
 will be handled according to the webhook's failure policy.
 
 Unfortunately, the Policy Server will be left with some computation resources stuck
