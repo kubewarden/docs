@@ -17,13 +17,13 @@ This page lists the dependencies of Kubewarden, with their relevant
 version constraints. Versions outside of the provided ranges may work but are
 not tested.
 
-## Opentelemetry, metrics and tracing dependencies
+## OpenTelemetry, metrics and tracing dependencies
 
-At the time of writing, the [Opentelemetry](https://opentelemetry.io) stack
+At the time of writing, the [OpenTelemetry](https://opentelemetry.io) stack
 keeps improving. Still, is not yet stable, and unannounced
 backwards-incompatible changes still happen. Kubewarden devs do their best to
-track Opentelemetry stack changes and adjust to them. Kubewarden is tested against a known working
-range of Opentelemetry, metrics and tracing stack.
+track OpenTelemetry stack changes and adjust to them. Kubewarden is tested against a known working
+range of OpenTelemetry, metrics and tracing stack.
 
 ## Optional dependencies
 

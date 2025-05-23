@@ -84,7 +84,7 @@ spec:
 
 Once the policy is active, the creation of a non-compliant Pod will be rejected.
 To obtain more information about the evaluation of the policies that are part of the
-group, increase the vebosity level of `kubectl`:
+group, increase the verbosity level of `kubectl`:
 
 ```shell
 kubectl -v4 apply -f signed-pod.yml
