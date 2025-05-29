@@ -284,7 +284,7 @@ NAME              POLICY SERVER   MUTATING   STATUS
 privileged-pods   default         false      pending
 ```
 
-Once the new policy is ready to be served, the `kubewarden-controller` will register a [ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io) object.
+Once the new policy is ready to be served, the `kubewarden-controller` will register a [ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.33/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io) object.
 
 The [[< cluster-admission-policy >]] status will be set to `active` once the Deployment is done for every `PolicyServer` instance.
 Show [[< validating-webhook-configuration >]]s with the following command:
