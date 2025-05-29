@@ -85,7 +85,7 @@ policy. This policy will check all container images from
 artifacts.
 
 We configure the policy settings with the [public
-key](https://docs.apps.rancher.io/howto-guides/verify-signatures/) from
+key](https://docs.apps.rancher.io/howto-guides/verify-signatures-with-kubewarden/) from
 Application Collection (at the time of writing) in the `pubKeys` array.
 
 ```console
