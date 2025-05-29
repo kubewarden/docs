@@ -315,7 +315,7 @@ privileged-pods   default         false      pending
 
 Once the new policy is ready to be served, the `kubewarden-controller` will
 register a
-[ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io)
+[ValidatingWebhookConfiguration](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.33/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io)
 object.
 
 The [[< cluster-admission-policy >]] status is set to `active` once the
