@@ -251,7 +251,7 @@ It's too bulky, forces horizontal scrolling.
 
 ```hcl
 {
-  type: "SigstoreGithubActionsVerify",
+  type: "SigstoreGitHubActionsVerify",
 
   # mandatory: image URI to verify
   "image": string,

@@ -212,11 +212,11 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-#### `SigstoreGithubActionsVerify` input
+#### `SigstoreGitHubActionsVerify` input
 
 ```hcl
 {
-  type: "SigstoreGithubActionsVerify",
+  type: "SigstoreGitHubActionsVerify",
 
   # mandatory: image URI to verify
   "image": string,
@@ -235,7 +235,7 @@ these are the functions a policy, that verifies signatures, can use:
 }
 ```
 
-#### `SigstoreGithubActionsVerify` output
+#### `SigstoreGitHubActionsVerify` output
 
 ```hcl
 {

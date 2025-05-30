@@ -236,7 +236,7 @@ policy that verifies signatures can use:
 
 ```hcl
 {
-  type: "SigstoreGithubActionsVerify",
+  type: "SigstoreGitHubActionsVerify",
 
   # mandatory: image URI to verify
   "image": string,
