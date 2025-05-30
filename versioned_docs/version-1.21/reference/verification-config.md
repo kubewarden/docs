@@ -37,7 +37,7 @@ A full list of accepted keys based on different use cases is given below.
 - `githubAction`: for signatures performed with Sigstore's keyless workflow
   inside GitHub Actions. Kubewarden checks this information against the x509
   certificate extension `workflow_repository` created by the OpenID Connect of
-  Github, and not only the `issuer` and `subject`. Hence, it is strongly
+  GitHub, and not only the `issuer` and `subject`. Hence, it is strongly
   recommended to use this `kind` if dealing with GitHub Actions.
 - `genericIssuer`: for signatures performed with Sigstore's keyless workflow,
   where the user needs to validate the certificate `issuer` and `subject` on
