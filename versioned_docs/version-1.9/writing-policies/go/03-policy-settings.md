@@ -34,7 +34,7 @@ As you can see we're using the `regexp` package to handle regular expression obj
 we use the [`mapset.Set`](https://github.com/deckarep/golang-set) type to store
 the list of denied labels.
 
-Since `regexp.Regexp` doesn't handle deserialization, we need to define a custom type to handle marshaling and unmarshalling of regular expressions:
+Since `regexp.Regexp` doesn't handle deserialization, we need to define a custom type to handle marshaling and unmarshaling of regular expressions:
 
 ```go
 // UnmarshalText satisfies the encoding.TextMarshaler interface,
@@ -150,7 +150,7 @@ is simplified by the usage of the `Intersect` method provided by `mapset.Set`.
 :::note
 The `Valid` method is invoked against an already instantiated `Setting` object. That means
 the validation of the regular expression provided by the user already took place
-inside of the `Settings` unmarshaller.
+inside of the `Settings` unmarshaler.
 :::
 
 Finally, we have to ensure the `validateSettings` function that was automatically generated
