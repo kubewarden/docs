@@ -23,7 +23,7 @@ by extracting the relevant data from the JSON document using ad-hoc queries.
 This _"jq-like"_ approach can be useful when the policy has to look deep inside a Kubernetes object.
 It's especially helpful when dealing with optional inner objects.
 
-This document re-implements the earlier code using JSON queries instead of unmarshalling the JSON payload into Go types.
+This document re-implements the earlier code using JSON queries instead of unmarshaling the JSON payload into Go types.
 
 ## The `validate` function
 

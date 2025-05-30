@@ -51,7 +51,7 @@ You're using the `regexp` package to handle regular expression objects and the
 the list of denied labels.
 
 Since `regexp.Regexp` doesn't handle deserialization,
-you need to define custom functions to handle marshaling and unmarshalling of regular expressions:
+you need to define custom functions to handle marshaling and unmarshaling of regular expressions:
 
 ```go
 // UnmarshalText satisfies the encoding.TextMarshaler interface,
@@ -160,7 +160,7 @@ Usage of the `Intersect` method provided by `mapset.Set` simplifies the check.
 
 :::note
 The `Valid` method invocation is on an already instantiated `Setting` object.
-This means the validation of the regular expression provided by the user already took place in of the `Settings` unmarshaller.
+This means the validation of the regular expression provided by the user already took place in of the `Settings` unmarshaler.
 :::
 
 Finally, you need the `validateSettings` function,
