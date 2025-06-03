@@ -41,7 +41,7 @@ to fix it.
 ## Tools that work with OCI registries
 
 We recommend:
-- [Kwctl](https://github.com/kubewarden/kwctl) (our cli tool).
+- [`kwctl`](https://github.com/kubewarden/kwctl) (our cli tool).
 - [Skopeo](https://github.com/containers/skopeo) ([>= 1.9.0](https://github.com/containers/skopeo/pull/1705)).
 - [Crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md).
 

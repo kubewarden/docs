@@ -35,7 +35,7 @@ You can also write tests that execute against the Wasm binary containing your po
 To do this without having to deploy a Kubernetes cluster you can use these tools:
 
 - [bats](https://github.com/bats-core/bats-core): is to write tests and automate their execution.
-- [kwctl](https://github.com/kubewarden/kwctl): Kubewarden's default CLI tool that helps you with policy-related operations; pull, inspect, annotate, push, and run.
+- [`kwctl`](https://github.com/kubewarden/kwctl): Kubewarden's default CLI tool that helps you with policy-related operations; pull, inspect, annotate, push, and run.
 
 To use `kwctl run` you need the following:
 

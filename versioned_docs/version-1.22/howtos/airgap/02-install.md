@@ -56,7 +56,7 @@ The following sections describe the process.
    A file with a list of default policies is in the Kubewarden defaults
    [release page](https://github.com/kubewarden/helm-charts/releases/).
 1. Download `kubewarden-save-policies.sh` and `kubewarden-load-policies.sh` from the
-   [kwctl repository](https://github.com/kubewarden/kwctl/tree/main/scripts)
+   [`kwctl` repository](https://github.com/kubewarden/kwctl/tree/main/scripts)
 1. Save policies into a `.tar.gz` file:
 
    ```shell

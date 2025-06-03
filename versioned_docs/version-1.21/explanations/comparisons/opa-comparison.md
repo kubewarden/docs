@@ -160,7 +160,7 @@ new releases of the policy (leveraging automation tools like
 policy configuration.
 
 The pipeline tests the policy against different types of requests. The testing can be done using
-the [kwctl](https://github.com/kubewarden/kwctl) cli tool, without requiring a running
+the [`kwctl`](https://github.com/kubewarden/kwctl) cli tool, without requiring a running
 Kubernetes cluster. kwctl uses the same evaluation engine used by the Kubewarden stack deployed
 inside of a Kubernetes cluster.
 

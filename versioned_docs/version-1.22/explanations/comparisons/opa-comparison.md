@@ -172,7 +172,7 @@ react to new releases of the policy (using automation tools like
 configuration.
 
 The pipeline tests the policy against different types of requests. You can do
-the testing using the [kwctl](https://github.com/kubewarden/kwctl) CLI tool,
+the testing using the [`kwctl`](https://github.com/kubewarden/kwctl) CLI tool,
 without requiring a running Kubernetes cluster. kwctl uses the same evaluation
 engine used by the Kubewarden stack deployed in a Kubernetes cluster.
 
