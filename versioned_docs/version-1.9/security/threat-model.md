@@ -47,12 +47,12 @@ timeouts as the admission controller uses compute power to process the workloads
 Webhook fails closed and authenticate callers.
 This is Kubewarden's default behavior.
 
-### Threat 3 - Attacker exploits mis-configuration of webhook to bypass
+### Threat 3 - Attacker exploits misconfiguration of webhook to bypass
 
 #### Scenario
 
 An attacker, who has rights to create workloads in the cluster, is able to exploit
-a mis-configuration to bypass the intended security control.
+a misconfiguration to bypass the intended security control.
 
 #### Mitigation
 

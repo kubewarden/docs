@@ -37,7 +37,7 @@ When the process completes, your current directory will output a tarball named `
 ## Save policies in your workstation
 
 1. Add all the policies you want to use in a `policies.txt` file. A file with a list of the default policies can be found in the Kubewarden defaults [release page](https://github.com/kubewarden/helm-charts/releases/)
-2. Download `kubewarden-save-policies.sh` and `kubewarden-load-policies.sh` from the [kwctl repository](https://github.com/kubewarden/kwctl/tree/main/scripts)
+2. Download `kubewarden-save-policies.sh` and `kubewarden-load-policies.sh` from the [`kwctl` repository](https://github.com/kubewarden/kwctl/tree/main/scripts)
 3. Save policies into a .tar.gz file:
 ```
 ./kubewarden-save-policies.sh --policies-list policies.txt
