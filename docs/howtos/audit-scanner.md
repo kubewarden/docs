@@ -1,10 +1,11 @@
 ---
 sidebar_label: Audit Scanner
-sidebar_position: 21
+sidebar_position: 22
 title: Audit Scanner
 description: How-to install and use Audit Scanner.
 keywords: [kubewarden, kubernetes, audit scanner]
-doc-persona: [kubewarden-operator, kubewarden-distributor, kubewarden-integrator]
+doc-persona:
+  [kubewarden-operator, kubewarden-distributor, kubewarden-integrator]
 doc-type: [howto]
 doc-topic: [howto, audit-scanner-installation]
 ---
