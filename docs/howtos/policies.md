@@ -3,7 +3,14 @@ sidebar_label: Configuring policies
 sidebar_position: 30
 title: Configuring policies
 description: Dependency matrix of Kubewarden.
-keywords: [policies, ClusterAdmissionPolicies, AdmissionPolicies, configuration, namespaces]
+keywords:
+  [
+    policies,
+    ClusterAdmissionPolicies,
+    AdmissionPolicies,
+    configuration,
+    namespaces,
+  ]
 doc-persona: [kubewarden-operator, kubewarden-integrator]
 doc-type: [howto]
 doc-topic: [operator-manual, policies]
@@ -77,4 +84,67 @@ spec:
   settings:
     modes:
       enforce: "restricted"
+```
+
+## Custom rejection message
+
+When a policy rejects a resource, the error message shown to the user is, by
+default, the error message returned by the policy. However, sometimes cluster
+operators may want to set their own custom reject messages, providing
+instructions to users. This can be done using the `message` field in the
+`ClusterAdmissionPolicy` and `AdmissionPolicy` types.
+
+:::note
+`ClusterAdmissionPolicyGroup` and `AdmissionPolicyGroup` also have the
+`message` field. But these policies types already uses it as rejection message
+by design.
+:::
+
+The `message` field allows cluster operators to define a custom reject message
+that will override the message returned by the policy. When this configuration
+is set, the original reject message returned by the policy will be stored in the
+`causes` field of the response.
+
+```yaml
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: pod-privileged-with-message
+spec:
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:latest
+  policyServer: default
+  mode: protect
+  message: "Nops! You cannot do that"
+  settings: {}
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - "*"
+      operations:
+        - CREATE
+  mutating: false
+```
+
+When a privileged pod is deployed in the cluster, the user will get
+the following feedback:
+
+```console
+$ kubectl -v4 run pod-privileged2 --image=registry.k8s.io/pause --privileged
+I0612 16:32:43.647601   48424 cert_rotation.go:137] Starting client certificate rotation controller
+I0612 16:32:43.662550   48424 helpers.go:246] server response object: [{
+  "metadata": {},
+  "status": "Failure",
+  "message": "admission webhook \"clusterwide-pod-privileged-with-message.kubewarden.admission\" denied the request: Nops! You cannot do that",
+  "details": {
+    "causes": [
+      {
+        "message": "Privileged container is not allowed"
+      }
+    ]
+  },
+  "code": 400
+}]
 ```
