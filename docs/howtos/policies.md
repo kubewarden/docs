@@ -128,7 +128,7 @@ spec:
 ```
 
 When you deploy a privileged pod in the cluster, the user gets
-tthis feedback:
+this feedback:
 
 ```console
 $ kubectl -v4 run pod-privileged2 --image=registry.k8s.io/pause --privileged
