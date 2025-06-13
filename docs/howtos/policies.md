@@ -88,21 +88,20 @@ spec:
 
 ## Custom rejection message
 
-When a policy rejects a resource, the error message shown to the user is, by
-default, the error message returned by the policy. However, sometimes cluster
-operators may want to set their own custom reject messages, providing
-instructions to users. This can be done using the `message` field in the
+When a policy rejects a resource, the error message shown to the user is
+the error message returned by the policy. Sometimes cluster
+operators may want to set custom reject messages, providing
+instructions to users. You can do this using the `message` field in the
 `ClusterAdmissionPolicy` and `AdmissionPolicy` types.
 
 :::note
 `ClusterAdmissionPolicyGroup` and `AdmissionPolicyGroup` also have the
-`message` field. But these policies types already uses it as rejection message
-by design.
+`message` field. These policy types already use the `message` field as a rejection message.
 :::
 
-The `message` field allows cluster operators to define a custom reject message
-that will override the message returned by the policy. When this configuration
-is set, the original reject message returned by the policy will be stored in the
+The `message` field lets cluster operators define a custom reject message
+overriding the message returned by the policy. When using this configuration,
+the original reject message returned by the policy is stored in the
 `causes` field of the response.
 
 ```yaml
@@ -128,8 +127,8 @@ spec:
   mutating: false
 ```
 
-When a privileged pod is deployed in the cluster, the user will get
-the following feedback:
+When you deploy a privileged pod in the cluster, the user gets
+tthis feedback:
 
 ```console
 $ kubectl -v4 run pod-privileged2 --image=registry.k8s.io/pause --privileged
