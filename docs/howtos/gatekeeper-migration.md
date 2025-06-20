@@ -325,9 +325,11 @@ run kwctl run -e gatekeeper annotated-policy.wasm --settings-path test_data/sett
 }
 ```
 
-You'll need to create the `test_data/settings.json` and
-`test_data/accept_deploy_request.json` / `test_data/reject_deploy_request.json`
-files to support these tests. For example:
+You'll need to create the `test_data/settings.json`,
+`test_data/accept_deploy_request.json` and `test_data/reject_deploy_request.json`
+files to support these tests.
+
+Here's the content for `test_data/settings.json`:
 
 <details>
 <summary>test_data/settings.json</summary>
@@ -340,216 +342,13 @@ files to support these tests. For example:
 
 </details>
 
-<details>
-<summary>test_data/accept_deploy_request.json</summary>
-
-```json
-{
-  "uid": "705ab4f5-6393-11e8-b7cc-42010a800002",
-  "kind": {
-    "group": "apps",
-    "version": "v1",
-    "kind": "Deployment"
-  },
-  "resource": {
-    "group": "apps",
-    "version": "v1",
-    "resource": "deployments"
-  },
-  "requestKind": {
-    "group": "apps",
-    "version": "v1",
-    "kind": "Deployment"
-  },
-  "requestResource": {
-    "group": "apps",
-    "version": "v1",
-    "resource": "deployments"
-  },
-  "name": "sample-deployment",
-  "namespace": "default",
-  "operation": "CREATE",
-  "userInfo": {
-    "username": "system:serviceaccount:kube-system:replicaset-controller",
-    "uid": "b06b5f63-63a9-11e8-8f3e-42010a800003",
-    "groups": [
-      "system:serviceaccounts",
-      "system:serviceaccounts:kube-system",
-      "system:authenticated"
-    ]
-  },
-  "object": {
-    "apiVersion": "apps/v1",
-    "kind": "Deployment",
-    "metadata": {
-      "name": "sample-deployment",
-      "namespace": "default",
-      "labels": {
-        "app": "sample-app",
-        "test": "value"
-      }
-    },
-    "spec": {
-      "replicas": 3,
-      "selector": {
-        "matchLabels": {
-          "app": "sample-app"
-        }
-      },
-      "template": {
-        "metadata": {
-          "labels": {
-            "app": "sample-app"
-          }
-        },
-        "spec": {
-          "containers": [
-            {
-              "name": "main-container",
-              "image": "nginx:latest",
-              "env": [
-                {
-                  "name": "ENV_VAR_1",
-                  "value": "value1"
-                },
-                {
-                  "name": "ENV_VAR_2",
-                  "value": "value2"
-                },
-                {
-                  "name": "ENV_VAR_3",
-                  "value": "value3"
-                },
-                {
-                  "name": "ENV_VAR_4",
-                  "value": "value4"
-                },
-                {
-                  "name": "ENV_VAR_5",
-                  "value": "value5"
-                }
-              ]
-            }
-          ]
-        }
-      }
-    }
-  },
-  "oldObject": null,
-  "dryRun": false,
-  "options": {
-    "kind": "CreateOptions",
-    "apiVersion": "meta.k8s.io/v1"
-  }
-}
-```
-
-</details>
-
-<details>
-<summary>test_data/reject_deploy_request.json</summary>
-
-```json
-{
-  "uid": "705ab4f5-6393-11e8-b7cc-42010a800002",
-  "kind": {
-    "group": "apps",
-    "version": "v1",
-    "kind": "Deployment"
-  },
-  "resource": {
-    "group": "apps",
-    "version": "v1",
-    "resource": "deployments"
-  },
-  "requestKind": {
-    "group": "apps",
-    "version": "v1",
-    "kind": "Deployment"
-  },
-  "requestResource": {
-    "group": "apps",
-    "version": "v1",
-    "resource": "deployments"
-  },
-  "name": "sample-deployment",
-  "namespace": "default",
-  "operation": "CREATE",
-  "userInfo": {
-    "username": "system:serviceaccount:kube-system:replicaset-controller",
-    "uid": "b06b5f63-63a9-11e8-8f3e-42010a800003",
-    "groups": [
-      "system:serviceaccounts",
-      "system:serviceaccounts:kube-system",
-      "system:authenticated"
-    ]
-  },
-  "object": {
-    "apiVersion": "apps/v1",
-    "kind": "Deployment",
-    "metadata": {
-      "name": "sample-deployment",
-      "namespace": "default",
-      "labels": {
-        "app": "sample-app"
-      }
-    },
-    "spec": {
-      "replicas": 3,
-      "selector": {
-        "matchLabels": {
-          "app": "sample-app"
-        }
-      },
-      "template": {
-        "metadata": {
-          "labels": {
-            "app": "sample-app"
-          }
-        },
-        "spec": {
-          "containers": [
-            {
-              "name": "main-container",
-              "image": "nginx:latest",
-              "env": [
-                {
-                  "name": "ENV_VAR_1",
-                  "value": "value1"
-                },
-                {
-                  "name": "ENV_VAR_2",
-                  "value": "value2"
-                },
-                {
-                  "name": "ENV_VAR_3",
-                  "value": "value3"
-                },
-                {
-                  "name": "ENV_VAR_4",
-                  "value": "value4"
-                },
-                {
-                  "name": "ENV_VAR_5",
-                  "value": "value5"
-                }
-              ]
-            }
-          ]
-        }
-      }
-    }
-  },
-  "oldObject": null,
-  "dryRun": false,
-  "options": {
-    "kind": "CreateOptions",
-    "apiVersion": "meta.k8s.io/v1"
-  }
-}
-```
-
-</details>
+We won't include the full content of `accept_deploy_request.json` and
+`reject_deploy_request.json` here, as `AdmissionRequest` JSON can be quite
+long, and we want to keep this guide concise. However, you can use the [`kwctl
+scaffold`](docs/reference/kwctl-cli.md#kwctl-scaffold-admission-request)
+command to generate these files. The key for this guide is that one request
+should be missing the required label, while the other should have the label
+defined.
 
 Check if the e2e tests are passing:
 
