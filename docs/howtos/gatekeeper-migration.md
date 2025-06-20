@@ -191,22 +191,22 @@ See more information on how to build Gatekeeper policies from our
 With the release of OPA (Open Policy Agent) v1.0.0 in December 2024, a
 potentially breaking change was introduced regarding Rego policy syntax.
 
-Previously, if for all rule definitions and contains for multi-value rules were
+Previously, `if` for all rule definitions and `contains` for multi-value rules were
 optional; now, they are mandatory. This change affects most older policies.
 
 Here's a summary of what you need to know:
 
-- OPA v1.0.0 Syntax: OPA v1.0.0 mandates the use of if for all rule definitions
-  and contains for multi-value rules. Policies not adhering to this syntax will
+- OPA v1.0.0 Syntax: OPA v1.0.0 mandates the use of `if` for all rule definitions
+  and `contains` for multi-value rules. Policies not adhering to this syntax will
   break.
 - Backward Compatibility: If you need to build older policies that do not use
-  the new v1.0.0 syntax, you must provide the --v0-compatible flag to the opa
-  build command.
+  the new v1.0.0 syntax, you must provide the `--v0-compatible` flag to the `opa
+build` command.
 - Gatekeeper Integration: Gatekeeper updated its OPA dependency to v1.0.0 in
   its v3.19.0 release.
-- Rego Version in Gatekeeper Templates: Gatekeeper assumes v0 syntax is used
-  unless the template explicitly specifies version: "v1" within the source field
-  under code.engine: Rego.
+- Rego Version in Gatekeeper Templates: Gatekeeper assumes `v0` syntax is used
+  unless the template explicitly specifies `version: "v1"` within the `source` field
+  under `code.engine: Rego`.
 - For example, to explicitly use Rego v1 syntax in a Gatekeeper template:
 
 ```yaml
@@ -222,12 +222,13 @@ targets:
 
 What this means for you:
 
-- If your Rego policy template does NOT specify a version (or implies v0): You
-  must either use the `--v0-compatible` flag with the `opa build` command defined
-  in the `Makefile` or update your policy to the new v1.0.0 syntax.
-- If your Rego policy template explicitly specifies version: "v1": You must use
+- If your Rego policy template does NOT specify a `version` (or implies `v0`): You
+  must either call the `Makefile` target with the `OPA_V0_COMPATIBLE=true` variable
+  (e.g., `make OPA_V0_COMPATIBLE=true`) to ensure `opa` commands are called with the
+  `--v0-compatible` flag, or update your policy to the new `v1.0.0` syntax.
+- If your Rego policy template explicitly specifies `version: "v1"`: You must use
   a recent version of OPA (v1.0.0 or later), and no special build flags are
-  required for the opa build command.
+  required for the `opa build` command.
 
 ## Step 3: Update and Run Tests
 
