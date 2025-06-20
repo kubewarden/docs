@@ -23,7 +23,7 @@ Definitions (CRDs) and migrating them into a functional Kubewarden policy. We
 will use a basic Gatekeeper demo policy Prerequisites:
 
 - [opa](https://github.com/open-policy-agent/opa/releases): you use this tool
-  to build the code into wasm
+  to build the code into wasm. This guide was written using the `v1.5.1` version.
 - [kwctl](https://github.com/kubewarden/kwctl/releases): tool you use to
   prepare and run Kubewarden web assembly module
 
@@ -33,7 +33,7 @@ Before starting the process of migration Gatekeeper policies, consider to use
 the already available policies in the Kubewarden
 [catalog](https://artifacthub.io/packages/search?kind=13). Some of the
 [policies](https://github.com/kubewarden/rego-policies-library) are public
-available OPA and Gatekeeper policies migrated migrated to Kubewarden
+available OPA and Gatekeeper policies migrated to Kubewarden
 
 Furthermore, you may be interested in our
 [comparison](docs/explanations/comparisons/opa-comparison.md) documentation
@@ -151,10 +151,11 @@ policy.rego:3: rego_parse_error: `contains` keyword is required for partial set 
 make: *** [Makefile:4: policy.wasm] Error 1
 ```
 
-The policy author must fix these errors to allow the `opa` CLI to build the code
-successfully. The specific changes may vary depending on the `opa` version and
-the original policy code. For this example, the final `policy.rego` code looks
-like this:
+The policy author must fix these errors to allow the `opa` CLI to build the
+code successfully. The specific changes may vary depending on the `opa` version
+and the original policy code. For this example, as we are migrationg a rego
+policy previous the OPA v1, more changes are required. The final `policy.rego`
+code looks like this:
 
 ```rego
 package policy
@@ -182,6 +183,49 @@ touch policy.wasm # opa creates the bundle with unix epoch timestamp, fix it
 
 See more information on how to build Gatekeeper policies from our
 [tutorial](docs/tutorials/writing-policies/rego/gatekeeper/03-build-and-run.md)
+
+### Rego Policy code and OPA v1.0.0 Compatibility
+
+With the release of OPA (Open Policy Agent) v1.0.0 in December 2024, a
+potentially breaking change was introduced regarding Rego policy syntax.
+
+Previously, if for all rule definitions and contains for multi-value rules were
+optional; now, they are mandatory. This change affects most older policies.
+
+Here's a summary of what you need to know:
+
+- OPA v1.0.0 Syntax: OPA v1.0.0 mandates the use of if for all rule definitions
+  and contains for multi-value rules. Policies not adhering to this syntax will
+  break.
+- Backward Compatibility: If you need to build older policies that do not use
+  the new v1.0.0 syntax, you must provide the --v0-compatible flag to the opa
+  build command.
+- Gatekeeper Integration: Gatekeeper updated its OPA dependency to v1.0.0 in
+  its v3.19.0 release.
+- Rego Version in Gatekeeper Templates: Gatekeeper assumes v0 syntax is used
+  unless the template explicitly specifies version: "v1" within the source field
+  under code.engine: Rego.
+- For example, to explicitly use Rego v1 syntax in a Gatekeeper template:
+
+```yaml
+targets:
+  - target: admission.k8s.gatekeeper.sh
+    code:
+      - engine: Rego
+        source:
+          version: "v1"
+          rego: |
+            # <v1-rego-code>
+```
+
+What this means for you:
+
+- If your Rego policy template does NOT specify a version (or implies v0): You
+  must either use the `--v0-compatible` flag with the `opa build` command defined
+  in the `Makefile` or update your policy to the new v1.0.0 syntax.
+- If your Rego policy template explicitly specifies version: "v1": You must use
+  a recent version of OPA (v1.0.0 or later), and no special build flags are
+  required for the opa build command.
 
 ## Step 3: Update and Run Tests
 
