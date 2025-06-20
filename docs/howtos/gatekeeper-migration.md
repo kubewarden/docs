@@ -15,17 +15,17 @@ Kubewarden policy. This process involves two main steps:
 1. Compile the Rego program into a WebAssembly (Wasm) module.
 2. Distribute the WebAssembly module as a Kubewarden policy.
 
-Our Rego policies tutorial covers most of the build process for compiling Rego
-code into a WebAssembly module. This guide focuses on the step-by-step process
-of extracting Gatekeeper Custom Resource Definitions (CRDs) and migrating them
-into a functional Kubewarden policy. We will use a basic Gatekeeper demo policy
-as an example. Prerequisites
+Our [Rego policies
+tutorial](docs/tutorials/writing-policies/rego/01-intro-rego.md) covers most of
+the build process for compiling Rego code into a WebAssembly module. This guide
+focuses on the step-by-step process of extracting Gatekeeper Custom Resource
+Definitions (CRDs) and migrating them into a functional Kubewarden policy. We
+will use a basic Gatekeeper demo policy Prerequisites:
 
-You need the same tooling as the Rego policies tutorial for the following
-steps:
-
-- opa: you use this tool to build the code into wasm
-- kwctl: tool you use to prepare and run Kubewarden web assembly module
+- [opa](https://github.com/open-policy-agent/opa/releases): you use this tool
+  to build the code into wasm
+- [kwctl](https://github.com/kubewarden/kwctl/releases): tool you use to
+  prepare and run Kubewarden web assembly module
 
 ## Before migrate your policies
 
@@ -63,17 +63,19 @@ PASS: 2/2
 ## Step 2: Migrate Gatekeeper Policy Code
 
 Now, begin migrating the Gatekeeper policy. This involves converting a
-ConstraintTemplate and its associated Constraint resources into a Kubewarden
-policy. In the Kubewarden context, consider the ConstraintTemplate as the core
-policy code, while the Constraint instances translate into policy instances
-running within Kubewarden. Extract Rego Code from ConstraintTemplate
+`ConstraintTemplate` and its associated `Constraint` resources into a Kubewarden
+policy. In the Kubewarden context, consider the `ConstraintTemplate` as the core
+policy code, while the `Constraint instances` translate into policy instances
+running within Kubewarden.
 
-First, copy the Rego code from your ConstraintTemplate into the policy.rego
+First, copy the Rego code from your `ConstraintTemplate` into the `policy.rego`
 file the Kubewarden template generated. For this example, we will use the
 following basic
-[demo](https://github.com/open-policy-agent/gatekeeper/blob/896d6620f9c16d7a5d91a74a6a4260db8d735640/demo/basic/demo.sh#L1)
-from the Gatekeeper repository:
+[demo policy](https://github.com/open-policy-agent/gatekeeper/blob/896d6620f9c16d7a5d91a74a6a4260db8d735640/demo/basic/demo.sh#L1)
+from the Gatekeeper repository.
 
+<details>
+<summary> Gatekeeper policy yaml </summary>
 ```yaml
 apiVersion: templates.gatekeeper.sh/v1
 kind: ConstraintTemplate
@@ -105,50 +107,43 @@ spec:
           count(missing) > 0
           msg := sprintf("you must provide labels: %v", [missing])
         }
-```
 
-Copy the Rego code snippet from the `rego` field and paste it into your
-`policy.rego` file.
+````
 
-**Adapt Rego Code for Kubewarden**
+</details>
 
-You may need to adapt the copied Rego code to fit the Kubewarden template's
-expectations. One common adjustment is the package name. When the `opa` CLI
-builds the WebAssembly module, it requires an entry point for the policy. The
-Makefile defines the default entry point as `policy/violation`:
+Copy the Rego code snippet from the `rego` field into your `policy.rego` file:
 
 ```console
-opa build -t wasm -e policy/violation -o bundle.tar.gz policy.rego
-```
+cat gatekeeper/demo/basic/templates/k8srequiredlabels_template.yaml | yq ".spec.targets[0].rego" > policy.rego
+````
 
-Notice that the entry point specifies `policy/violation`. Therefore, you must
-either change the Rego package name to `policy` or modify the `opa build` command's
-entry point to match your existing package name. Otherwise, you might encounter
-errors like this:
+### Adapt Rego Code for Kubewarden
 
-```
-opa build -t wasm -e policy/violation -o bundle.tar.gz policy.rego
-error: entrypoint "policy/violation" does not refer to a rule or policy decision
-make: *** [Makefile:4: policy.wasm] Error 1
-```
+You need to make sure the `package` name used inside of the Rego code is `policy`.
+This is the value expected in many places by the Kubewarden Gatekeeper template.
 
-For this guide, we will change the package name within the Rego code:
+If you don't change it, you will have errors when building the policy and running its end-to-end tests.
 
-```
+For example, the demo policy we're converting is defined inside of the `k8srequiredlabels` package, this value must be changed to be `policy`.
+
+This is how the contents of the `policy.rego` file have to be:
+
+```rego
 package policy
 
 violation[{"msg": msg, "details": {"missing_labels": missing}}] {
-  provided := {label | input.review.object.metadata.labels[label]}
-  required := {label | label := input.parameters.labels[_]}
-  missing := required - provided
-  count(missing) > 0
-  msg := sprintf("you must provide labels: %v", [missing])
+provided := {label | input.review.object.metadata.labels[label]}
+required := {label | label := input.parameters.labels[_]}
+missing := required - provided
+count(missing) > 0
+msg := sprintf("you must provide labels: %v", [missing])
 }
 ```
 
 Attempting to build the code after this change might reveal new compilation errors:
 
-```
+```console
 opa build -t wasm -e policy/violation -o bundle.tar.gz policy.rego
 error: load error: 2 errors occurred during loading:
 policy.rego:3: rego_parse_error: `if` keyword is required before rule body
@@ -679,7 +674,7 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-policy-name.kubewarden.admission" denied the request: you must provide labels: [gatekeeper]
 ```
 
-And another namesapce with the required label:
+And another namespace with the required label:
 
 ```console
 kubectl apply -f - <<EOF
