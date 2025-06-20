@@ -26,6 +26,8 @@ will use a basic Gatekeeper demo policy Prerequisites:
   to build the code into wasm. This guide was written using the `v1.5.1` version.
 - [kwctl](https://github.com/kubewarden/kwctl/releases): tool you use to
   prepare and run Kubewarden web assembly module
+- [bats](https://github.com/bats-core/bats-core): tool used to run end-to-end
+  tests. If you decided to write such kind of tests
 
 ## Before migrate your policies
 
@@ -154,8 +156,8 @@ make: *** [Makefile:4: policy.wasm] Error 1
 The policy author must fix these errors to allow the `opa` CLI to build the
 code successfully. The specific changes may vary depending on the `opa` version
 and the original policy code. For this example, as we are migrationg a rego
-policy previous the OPA v1, more changes are required. The final `policy.rego`
-code looks like this:
+policy previous the OPA v1, we need to update the code to be v1 complaint.The
+final `policy.rego` code looks like this:
 
 ```rego
 package policy
@@ -229,12 +231,30 @@ What this means for you:
 
 ## Step 3: Update and Run Tests
 
-Once your code compiles, you must update and run tests to ensure the policy
-functions as expected. The Kubewarden Gatekeeper template includes both Rego
-unit tests and end-to-end (e2e) tests using Bats and `kwctl`. You will need to
-adapt both sets of tests.
+While highly recommended, policy authors might skip creating tests for the
+initial version of a policy. If this applies to you, you'll need to disable the
+Makefile targets used to run tests. You can't remove these targets entirely, as
+the default CI jobs expect them to be defined. Instead, you should replace the
+commands that call `opa` and `bats` with a "no-op" operation. For example, you can
+use an `echo` command to print an explanation for why the tests aren't being run.
 
-First, update the unit tests in your Rego `policy_test.rego` test file:
+The Kubewarden Gatekeeper template includes both Rego unit tests and end-to-end
+(e2e) tests using Bats and `kwctl`. If you plan to include tests, both sets will
+need to be adapted for your policy.
+
+If your Gatekeeper policy already has Rego tests, you can copy them into the
+`policy_test.rego` file. These will then run automatically when you execute the
+`make test` command.
+
+:::warning
+Keep in mind that any Rego tests you write in `policy_test.rego` are subject to
+the same compatibility issues detailed in the [Rego Policy code and OPA v1.0.0
+Compatibility](#rego-policy-code-and-opa-v100-compatibility) section.
+:::
+
+The policy we are migrating in this guide does not have tests, we need to add
+them by ourselves. Therefore, we'll update the `policy_test.rego` test file
+with some basic tests:
 
 ```rego
 package policy
