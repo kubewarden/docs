@@ -15,29 +15,30 @@ Kubewarden policy. This process involves two main steps:
 1. Compile the Rego program into a WebAssembly (Wasm) module.
 2. Distribute the WebAssembly module as a Kubewarden policy.
 
-Our [Rego policies
+The [Rego policies
 tutorial](docs/tutorials/writing-policies/rego/01-intro-rego.md) covers most of
 the build process for compiling Rego code into a WebAssembly module. This guide
 focuses on the step-by-step process of extracting Gatekeeper Custom Resource
-Definitions (CRDs) and migrating them into a functional Kubewarden policy. We
-will use a basic Gatekeeper demo policy Prerequisites:
+Definitions (CRDs) and migrating them into a functional Kubewarden policy. It
+uses a basic Gatekeeper demo policy Prerequisites:
 
 - [opa](https://github.com/open-policy-agent/opa/releases): you use this tool
   to build the code into wasm. This guide was written using the `v1.5.1` version.
-- [kwctl](https://github.com/kubewarden/kwctl/releases): tool you use to
+- [`kwctl`](https://github.com/kubewarden/kwctl/releases): tool you use to
   prepare and run Kubewarden web assembly module
-- [bats](https://github.com/bats-core/bats-core): tool used to run end-to-end
+- [`bats`](https://github.com/bats-core/bats-core): tool used to run end-to-end
   tests. If you decided to write such kind of tests
+- [yq](https://github.com/mikefarah/yq): tool used to extract data from yaml files
 
 ## Before migrate your policies
 
-Before starting the process of migration Gatekeeper policies, consider to use
-the already available policies in the Kubewarden
+Before starting the process of migrating Gatekeeper policies, consider using
+already available policies in the Kubewarden
 [catalog](https://artifacthub.io/packages/search?kind=13). Some of the
-[policies](https://github.com/kubewarden/rego-policies-library) are public
+[policies](https://github.com/kubewarden/rego-policies-library) are publicly
 available OPA and Gatekeeper policies migrated to Kubewarden
 
-Furthermore, you may be interested in our
+Also, take a look at our
 [comparison](docs/explanations/comparisons/opa-comparison.md) documentation
 between Kubewarden and Gatekeeper
 
@@ -47,7 +48,7 @@ First, use the Kubewarden Gatekeeper
 [template](https://github.com/kubewarden/gatekeeper-policy-template) to create
 a basic policy project structure. This provides Makefile targets for building
 and testing your policy. After you create the policy code from the template,
-run the Makefile commands to ensure the policy builds and tests run
+run the Makefile commands to check the policy builds and tests run
 successfully:
 
 ```console
@@ -66,12 +67,12 @@ PASS: 2/2
 
 Now, begin migrating the Gatekeeper policy. This involves converting a
 `ConstraintTemplate` and its associated `Constraint` resources into a Kubewarden
-policy. In the Kubewarden context, consider the `ConstraintTemplate` as the core
+policy. In a Kubewarden context, consider the `ConstraintTemplate` as the core
 policy code, while the `Constraint instances` translate into policy instances
 running within Kubewarden.
 
 First, copy the Rego code from your `ConstraintTemplate` into the `policy.rego`
-file the Kubewarden template generated. For this example, we will use the
+file the Kubewarden template generated. For this example, you should use the
 following basic
 [demo policy](https://github.com/open-policy-agent/gatekeeper/blob/896d6620f9c16d7a5d91a74a6a4260db8d735640/demo/basic/demo.sh#L1)
 from the Gatekeeper repository.
@@ -155,8 +156,8 @@ make: *** [Makefile:4: policy.wasm] Error 1
 
 The policy author must fix these errors to allow the `opa` CLI to build the
 code successfully. The specific changes may vary depending on the `opa` version
-and the original policy code. For this example, as we are migrationg a rego
-policy previous the OPA v1, we need to update the code to be v1 complaint.The
+and the original policy code. As we are migrating a rego
+policy prior to OPA v1, we need to update the code to be v1-compliant. The
 final `policy.rego` code looks like this:
 
 ```rego
@@ -183,52 +184,44 @@ rm bundle.tar.gz
 touch policy.wasm # opa creates the bundle with unix epoch timestamp, fix it
 ```
 
-See more information on how to build Gatekeeper policies from our
+There is more information on how to build Gatekeeper policies in our
 [tutorial](docs/tutorials/writing-policies/rego/gatekeeper/03-build-and-run.md)
 
 ### Rego Policy code and OPA v1.0.0 Compatibility
 
-With the release of OPA (Open Policy Agent) v1.0.0 in December 2024, a
-potentially breaking change was introduced regarding Rego policy syntax.
+With the release of OPA (Open Policy Agent)
+[v1.0.0](https://github.com/open-policy-agent/opa/releases/tag/v1.0.0) in
+December 2024, a breaking change was introduced regarding Rego policy syntax.
 
 Previously, `if` for all rule definitions and `contains` for multi-value rules were
-optional; now, they are mandatory. This change affects most older policies.
+optional; now, they're mandatory. This change affects most older policies.
 
 Here's a summary of what you need to know:
 
 - OPA v1.0.0 Syntax: OPA v1.0.0 mandates the use of `if` for all rule definitions
   and `contains` for multi-value rules. Policies not adhering to this syntax will
   break.
-- Backward Compatibility: If you need to build older policies that do not use
+- Backward Compatibility: If you need to build older policies that don't use
   the new v1.0.0 syntax, you must provide the `--v0-compatible` flag to the `opa
 build` command.
-- Gatekeeper Integration: Gatekeeper updated its OPA dependency to v1.0.0 in
-  its v3.19.0 release.
-- Rego Version in Gatekeeper Templates: Gatekeeper assumes `v0` syntax is used
+- Gatekeeper integration: Gatekeeper updated its OPA dependency to v1.0.0 in
+  its [v3.19.0 release](https://github.com/open-policy-agent/gatekeeper/releases/tag/v3.19.0).
+- Rego version in Gatekeeper templates: Gatekeeper assumes `v0` syntax is used
   unless the template explicitly specifies `version: "v1"` within the `source` field
   under `code.engine: Rego`.
-- For example, to explicitly use Rego v1 syntax in a Gatekeeper template:
 
-```yaml
-targets:
-  - target: admission.k8s.gatekeeper.sh
-    code:
-      - engine: Rego
-        source:
-          version: "v1"
-          rego: |
-            # <v1-rego-code>
-```
+Checkout [this
+section](https://open-policy-agent.github.io/gatekeeper/website/docs/constrainttemplates/#enable-opa-rego-v1-syntax-in-constrainttemplates)
+of Gatekeeper's docs for more details about how `v0` and `v1` versions of Rego
+are handled.
 
 What this means for you:
 
-- If your Rego policy template does NOT specify a `version` (or implies `v0`): You
-  must either call the `Makefile` target with the `OPA_V0_COMPATIBLE=true` variable
-  (e.g., `make OPA_V0_COMPATIBLE=true`) to ensure `opa` commands are called with the
-  `--v0-compatible` flag, or update your policy to the new `v1.0.0` syntax.
-- If your Rego policy template explicitly specifies `version: "v1"`: You must use
-  a recent version of OPA (v1.0.0 or later), and no special build flags are
-  required for the `opa build` command.
+- If the Gatekeeper CR doesn't specify a Rego version, it implies `v0` is going
+  to be used. You must invoke build the policy using the `OPA_V0_COMPATIBLE=true
+make` command.
+- If the Gatekeeper CR explicitly specifies `version: "v1"`, you must invoke
+  build the policy using the without any environment variable set.
 
 ## Step 3: Update and Run Tests
 
@@ -240,11 +233,11 @@ commands that call `opa` and `bats` with a "no-op" operation. For example, you c
 use an `echo` command to print an explanation for why the tests aren't being run.
 
 The Kubewarden Gatekeeper template includes both Rego unit tests and end-to-end
-(e2e) tests using Bats and `kwctl`. If you plan to include tests, both sets will
+(e2e) tests using Bats and `kwctl`. If you plan to include tests, both sets
 need to be adapted for your policy.
 
 If your Gatekeeper policy already has Rego tests, you can copy them into the
-`policy_test.rego` file. These will then run automatically when you execute the
+`policy_test.rego` file. These run automatically when you execute the
 `make test` command.
 
 :::warning
@@ -253,8 +246,8 @@ the same compatibility issues detailed in the [Rego Policy code and OPA v1.0.0
 Compatibility](#rego-policy-code-and-opa-v100-compatibility) section.
 :::
 
-The policy we are migrating in this guide does not have tests, we need to add
-them by ourselves. Therefore, we'll update the `policy_test.rego` test file
+The policy you are migrating in this guide does not have tests; we need to add
+them ourselves. Therefore, we'll update the `policy_test.rego` test file
 with some basic tests:
 
 ```rego
@@ -362,7 +355,7 @@ e2e.bats
 ```
 
 :::important Important Note on Policy Parameters
-The policy parameters (e.g., labels in
+The policy parameters (for example, labels in
 this example) originate from the policy settings. This allows you to deploy
 multiple instances of the same policy with different parameters/settings,
 similar to how Constraints function in Gatekeeper.
@@ -379,7 +372,7 @@ deploying the policy in your cluster.
 
 Gatekeeper's `Constraints` CRDs, which are instances of policies defined in
 `ConstraintTemplates`, specify which resources a policy instance evaluates.
-Therefore, if you have existing `Constraints` that apply a `ConstraintTemplat`,
+Therefore, if you have existing `Constraints` that apply a `ConstraintTemplate`,
 they offer a good reference for the resources you should define in your
 `metadata.yml` file. For instance, in the Gatekeeper example used earlier, the
 `K8sRequiredLabels` `Constraint` created from the `k8srequiredlabels`
@@ -441,10 +434,10 @@ annotations:
   io.kubewarden.policy.category: Resource validation
 ```
 
-Now, your policy is ready to be distributed and deployed. Refer to the
+Now, your policy is ready for distribution and deployment. Refer to the
 [Publishing the
 policy](docs/tutorials/writing-policies/rego/gatekeeper/04-distribute.md#pushing-the-policy)
-section from our tutorial to learn how to push it to a remote registry.
+section from the tutorial to learn how to push it to a remote registry.
 
 You can scaffold the policy manifest using `kwctl`:
 
@@ -484,10 +477,10 @@ spec:
 
 **Define Policy Settings**
 
-Note that this policy has parameters, which Gatekeeper defines within the
+This policy has parameters, which Gatekeeper defines within the
 `Constraint`. You need to update the `settings` section in the generated Kubewarden
 policy manifest to include these required parameters. In the following example,
-beyond defining the settings, let's test the policy from OCI registry:
+beyond defining the settings, let's test the policy from the OCI registry:
 
 ```yaml
 apiVersion: policies.kubewarden.io/v1
