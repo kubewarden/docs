@@ -30,19 +30,19 @@ uses a basic Gatekeeper demo policy Prerequisites:
   tests. If you decided to write such kind of tests
 - [yq](https://github.com/mikefarah/yq): tool used to extract data from yaml files
 
-## Before migrate your policies
+## Before migrating your policies
 
 Before starting the process of migrating Gatekeeper policies, consider using
 already available policies in the Kubewarden
 [catalog](https://artifacthub.io/packages/search?kind=13). Some of the
 [policies](https://github.com/kubewarden/rego-policies-library) are publicly
-available OPA and Gatekeeper policies migrated to Kubewarden
+available OPA and Gatekeeper policies migrated to Kubewarden.
 
 Also, take a look at our
 [comparison](docs/explanations/comparisons/opa-comparison.md) documentation
-between Kubewarden and Gatekeeper
+between Kubewarden and Gatekeeper.
 
-## Step 1: Initialize Your Kubewarden Policy Project
+## Step 1: Initialize Your Kubewarden policy project
 
 First, use the Kubewarden Gatekeeper
 [template](https://github.com/kubewarden/gatekeeper-policy-template) to create
@@ -63,7 +63,7 @@ opa test *.rego
 PASS: 2/2
 ```
 
-## Step 2: Migrate Gatekeeper Policy Code
+## Step 2: Migrate Gatekeeper policy code
 
 Now, begin migrating the Gatekeeper policy. This involves converting a
 `ConstraintTemplate` and its associated `Constraint` resources into a Kubewarden
@@ -121,7 +121,7 @@ Copy the Rego code snippet from the `rego` field into your `policy.rego` file:
 cat gatekeeper/demo/basic/templates/k8srequiredlabels_template.yaml | yq ".spec.targets[0].rego" > policy.rego
 ````
 
-### Adapt Rego Code for Kubewarden
+### Adapt Rego code for Kubewarden
 
 You need to make sure the `package` name used inside of the Rego code is `policy`.
 This is the value expected in many places by the Kubewarden Gatekeeper template.
@@ -187,7 +187,7 @@ touch policy.wasm # opa creates the bundle with unix epoch timestamp, fix it
 There is more information on how to build Gatekeeper policies in our
 [tutorial](docs/tutorials/writing-policies/rego/gatekeeper/03-build-and-run.md)
 
-### Rego Policy code and OPA v1.0.0 Compatibility
+### Rego Policy code and OPA v1.0.0 compatibility
 
 With the release of OPA (Open Policy Agent)
 [v1.0.0](https://github.com/open-policy-agent/opa/releases/tag/v1.0.0) in
@@ -218,12 +218,12 @@ are handled.
 What this means for you:
 
 - If the Gatekeeper CR doesn't specify a Rego version, it implies `v0` is going
-  to be used. You must invoke build the policy using the `OPA_V0_COMPATIBLE=true
+  to be used. You must build the policy using the `OPA_V0_COMPATIBLE=true
 make` command.
-- If the Gatekeeper CR explicitly specifies `version: "v1"`, you must invoke
-  build the policy using the without any environment variable set.
+- If the Gatekeeper CR explicitly specifies `version: "v1"`, you must
+  build the policy without any environment variable set.
 
-## Step 3: Update and Run Tests
+## Step 3: Update and run tests
 
 While highly recommended, policy authors might skip creating tests for the
 initial version of a policy. If this applies to you, you'll need to disable the
@@ -361,7 +361,7 @@ multiple instances of the same policy with different parameters/settings,
 similar to how Constraints function in Gatekeeper.
 :::
 
-## Step 4: Prepare `metadata.yml` for Distribution
+## Step 4: Prepare `metadata.yml` for distribution
 
 Now that you have a functional policy, prepare the `metadata.yml` file for
 distribution. This file defines annotations with the policy description,
@@ -480,7 +480,7 @@ spec:
 This policy has parameters, which Gatekeeper defines within the
 `Constraint`. You need to update the `settings` section in the generated Kubewarden
 policy manifest to include these required parameters. In the following example,
-beyond defining the settings, let's test the policy from the OCI registry:
+beyond defining the settings, you can test the policy from the OCI registry:
 
 ```yaml
 apiVersion: policies.kubewarden.io/v1
