@@ -39,7 +39,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: psa-enforcer-privileged-namespaces
 spec:
-  module: registry://ghcr.io/kubewarden/policies/psa-label-enforcer:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/psa-label-enforcer:v1.0.3
   rules:
     - apiGroups: [""]
       apiVersions: ["v1"]
@@ -67,7 +67,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: psa-enforcer-default-mode
 spec:
-  module: registry://ghcr.io/kubewarden/policies/psa-label-enforcer:v0.1.1
+  module: registry://ghcr.io/kubewarden/policies/psa-label-enforcer:v1.0.3
   rules:
     - apiGroups: [""]
       apiVersions: ["v1"]
@@ -112,7 +112,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: pod-privileged-with-message
 spec:
-  module: registry://ghcr.io/kubewarden/policies/pod-privileged:latest
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v1.0.2
   policyServer: default
   mode: protect
   message: "Nops! You cannot do that"
