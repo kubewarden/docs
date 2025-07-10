@@ -25,9 +25,25 @@ Since version X.Y.Z, `rancher-backup` has support for Kubewarden. This includes:
 - The `policy-reporter` subchart of the `kubewarden-controller` chart, for their
   default values. This doesn't include the Grafana integration nor other plugins.
 
-The backup process doesn't include Secrets created to [configure PolicyServers
-for private registries](./policy-servers/private-registry#creating-the-secret)
-unless those are correctly labeled.
+### User Secrets
+
+The backup process doesn't include user-created Secrets such as those used to
+[configure PolicyServers for private
+registries](,/policy-servers/private-registry#creating-the-secret), unless
+those are correctly labeled. For that, label the secrets in on of the following
+ways. Either:
+
+```shell
+$ kubectl label secret secret-ghcr-docker \
+    app.kubernetes.io/part-of=kubewarden
+```
+
+Or:
+
+```shell
+$ kubectl label secret secret-ghcr-docker \
+    resources.cattle.io/backup=true
+```
 
 ## Installing Rancher Backup Operator
 
