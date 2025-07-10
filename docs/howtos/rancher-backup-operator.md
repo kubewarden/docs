@@ -18,9 +18,9 @@ Kubernetes cluster.
 
 Since version X.Y.Z, `rancher-backup` has support for Kubewarden. This includes:
 
-- the default Rancher Namespace `catttle-kubewarden-system` (or
+- the default Rancher Namespace `cattle-kubewarden-system` (or
   `cattle-kubewarden-*`), and the default Kubewarden Namespace `kubewarden`.
-- Kubewarden needed resources installed via the Helm charts.
+- Kubewarden needed resources are installed via the Helm charts.
 - Kubewarden CRDs, which get reconciled after restore by the Kubewarden controller.
 - The `policy-reporter` subchart of the `kubewarden-controller` chart, for their
   default values. This doesn't include the Grafana integration nor other plugins.
@@ -29,8 +29,8 @@ Since version X.Y.Z, `rancher-backup` has support for Kubewarden. This includes:
 
 The backup process doesn't include user-created Secrets such as those used to
 [configure PolicyServers for private
-registries](,/policy-servers/private-registry#creating-the-secret), unless
-those are correctly labeled. For that, label the secrets in on of the following
+registries](./policy-servers/private-registry#creating-the-secret), unless
+they are correctly labeled. For that, label the secrets in one of the following
 ways. Either:
 
 ```shell
@@ -50,7 +50,7 @@ $ kubectl label secret secret-ghcr-docker \
 Follow the [Rancher
 documentation](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery).
 For a Minikube install using the PersistentVolumes of type `hostPath` named
-`standard` that Minikube supports out of the box, the installation would be as
+`standard` that Minikube supports out of the box. The installation would be as
 follows:
 
 ```console
@@ -68,7 +68,7 @@ $ helm install --wait -n cattle-resources-system \
 Use the `rancher-resource-set-full` to backup the Kubewarden Secrets. These
 include the TLS Secrets that get created on Helm installation.
 
-If you prefer the use `rancher-resource-basic`, please remember to backup or
+If you prefer to use `rancher-resource-basic`, please remember to backup or
 manually create needed TLS Secrets.
 
 Here is an example of performing an unencrypted backup to the default location
