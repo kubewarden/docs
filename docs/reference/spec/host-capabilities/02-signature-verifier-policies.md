@@ -51,6 +51,10 @@ so the WebAssembly runtime (PolicyServer, `kwctl`) ensures both
 signature pulls and verification computations are cached.
 The cached entries are automatically expired after 60 seconds to help prevent stale data from being served.
 
+### Caching
+
+Signature verification results are cached for 1 minute.
+
 The SDKs provide functions similar to the following:
 
 - ```rust
