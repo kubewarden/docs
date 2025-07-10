@@ -86,7 +86,7 @@ EOF
 backup.resources.cattle.io/default-location-backup created
 ```
 
-The `rancher-backup` logs or the backup will show the creation of the backup file:
+The `rancher-backup` logs or the backup show the creation of the backup file:
 
 ```
 $ kubectl logs -n cattle-resources-system -l app.kubernetes.io/name=rancher-backup -f
