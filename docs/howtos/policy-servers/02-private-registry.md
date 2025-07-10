@@ -49,24 +49,10 @@ kubectl --namespace kubewarden create secret docker-registry secret-ghcr-docker 
 ```
 
 :::tip
-Label the secret as follows for it to be part of the backups of
-Rancher Backup Operator.
-
-Either:
-
-```shell
-$ kubectl label secret secret-ghcr-docker \
-    app.kubernetes.io/part-of=kubewarden
-```
-
-Or:
-
-```shell
-$ kubectl label secret secret-ghcr-docker \
-    resources.cattle.io/backup=true
-```
-
-::::
+Label the Secret as specified
+[here](../rancher-backup-operator.md#User-secrets) for it to be part of the
+backups of Rancher Backup Operator
+:::
 
 For more information on how to create the Docker Secrets, see the [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/secret/#docker-config-secrets).
 
