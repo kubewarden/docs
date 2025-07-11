@@ -102,6 +102,12 @@ Use the `list_resources_all` when dealing with cluster-wide resources.
 
 ### Operation - `get_resource`
 
+#### Caching
+
+The result of the `get_resource` operation is cached for five seconds by default to improve performance and reduce unnecessary load on the Kubernetes API server.
+ 
+Use the `disable_cache` field to bypass the cache when fresh data is required.
+
 #### Input
 
 ```hcl
