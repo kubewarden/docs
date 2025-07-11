@@ -53,7 +53,7 @@ The cached entries are automatically expired after 60 seconds to help prevent st
 
 ### Caching
 
-Signature verification results are cached for 1 minute.
+Signature verification results are cached for one minute.
 
 The SDKs provide functions similar to the following:
 
