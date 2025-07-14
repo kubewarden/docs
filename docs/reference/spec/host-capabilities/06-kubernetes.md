@@ -153,18 +153,39 @@ The `can_i` operation requires a JSON object with the following parameters:
 ```hcl
 {
   "subject_access_review": {
+    // The groups you're testing for.
     "groups": null,
+    // Information for a resource access request
     "resource_attributes": {
+      // Group is the API Group of the Resource.  "*" means all.
       "group": "",
+      // Name is the name of the resource being requested for a "get" or deleted for a "delete". ""
+      // (empty) means all.
       "name": null,
+      // Namespace is the namespace of the action being requested.  Currently, there is no
+      // distinction between no namespace and all namespaces.
+      // - "" (empty) is empty for cluster-scoped resources
+      // - "" (empty) means "all" for namespace scoped resources
       "namespace": "kube-system",
+      // Resource is one of the existing resource types.  "*" means all.
       "resource": "pods",
+      // Subresource is one of the existing resource types.  "" means none.
       "subresource": null,
+      // Verb is a kubernetes resource API verb, like: get, list, watch, create, update, delete,
+      // proxy.  "*" means all.
       "verb": "create",
+      // Version is the API Version of the Resource.  "*" means all.
       "version": null
     },
+    // User is the user you're testing for. If you specify "User" but not "Groups", then is it
+    // interpreted as "What if User were not a member of any groups
     "user": "system:serviceaccount:customer-1:testing"
   },
+  // Disable caching of results obtained from Kubernetes API Server
+  // By default query results are cached for 5 seconds, that might cause
+  // stale data to be returned.
+  // However, making too many requests against the Kubernetes API Server
+  // might cause issues to the cluster
   "disable_cache": false
 }
 ```
@@ -190,8 +211,8 @@ Example of an allowed operation. Some of the authorization plugins allows the op
 {
   "allowed": true, // Allowed is required. True if the action would be allowed, false otherwise.
   "denied": false, // Denied is optional. True if the action would be denied, otherwise false. If both allowed is false and denied is false, then the authorizer has no opinion on whether to authorize the action. Denied may not be true if Allowed is true.
-  "evaluationError": "EvaluationError is an indication that some error occurred during the authorization check. It is entirely possible to get an error and be able to continue determine authorization status in spite of it. For instance, RBAC can be missing a role, but enough roles are still present and bound to reason about the request.",
-  "reason": "Reason is optional. It indicates why a request was allowed or denied."
+  "evaluationError": "", // EvaluationError is an indication that some error occurred during the authorization check. It is entirely possible to get an error and be able to continue determine authorization status in spite of it. For instance, RBAC can be missing a role, but enough roles are still present and bound to reason about the request.
+  "reason": "" // Reason is optional. It indicates why a request was allowed or denied.
 }
 ```
 
@@ -200,10 +221,10 @@ Example of an operation blocked by some authorization plugin:
 ```hcl
 
 {
-  "allowed": false,
-  "denied": true,
-  "evaluationError": "EvaluationError is an indication that some error occurred during the authorization check. It is entirely possible to get an error and be able to continue determine authorization status in spite of it. For instance, RBAC can be missing a role, but enough roles are still present and bound to reason about the request.",
-  "reason": "Reason is optional. It indicates why a request was allowed or denied."
+  "allowed": false, // Allowed is required. True if the action would be allowed, false otherwise.
+  "denied": true,   // Denied is optional. True if the action would be denied, otherwise false. If both allowed is false and denied is false, then the authorizer has no opinion on whether to authorize the action. Denied may not be true if Allowed is true.
+  "evaluationError": "", // EvaluationError is an indication that some error occurred during the authorization check. It is entirely possible to get an error and be able to continue determine authorization status in spite of it. For instance, RBAC can be missing a role, but enough roles are still present and bound to reason about the request.
+  "reason": "" // Reason is optional. It indicates why a request was allowed or denied.
 }
 ```
 
@@ -212,9 +233,9 @@ neither deny the operation:
 
 ```hcl
 {
-  "allowed": false,
-  "denied": false,
-  "evaluationError": "EvaluationError is an indication that some error occurred during the authorization check. It is entirely possible to get an error and be able to continue determine authorization status in spite of it. For instance, RBAC can be missing a role, but enough roles are still present and bound to reason about the request.",
-  "reason": "Reason is optional. It indicates why a request was allowed or denied."
+  "allowed": false, // Allowed is required. True if the action would be allowed, false otherwise.
+  "denied": false,  // Denied is optional. True if the action would be denied, otherwise false. If both allowed is false and denied is false, then the authorizer has no opinion on whether to authorize the action. Denied may not be true if Allowed is true.
+  "evaluationError": "", // EvaluationError is an indication that some error occurred during the authorization check. It is entirely possible to get an error and be able to continue determine authorization status in spite of it. For instance, RBAC can be missing a role, but enough roles are still present and bound to reason about the request.
+  "reason": "" // Reason is optional. It indicates why a request was allowed or denied.
 }
 ```
