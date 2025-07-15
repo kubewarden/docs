@@ -224,7 +224,7 @@ Example of an operation blocked by some authorization plugin:
   "allowed": false, // Allowed is required. True if the action would be allowed, false otherwise.
   "denied": true,   // Denied is optional. True if the action would be denied, otherwise false. If both allowed is false and denied is false, then the authorizer has no opinion on whether to authorize the action. Denied may not be true if Allowed is true.
   "evaluationError": "", // EvaluationError is an indication that some error occurred during the authorization check. It is entirely possible to get an error and be able to continue determine authorization status in spite of it. For instance, RBAC can be missing a role, but enough roles are still present and bound to reason about the request.
-  "reason": "" // Reason is optional. It indicates why a request was allowed or denied.
+  "reason": "User \"john\" cannot create resource \"pods\" in API group \"\" in the namespace \"development\": no RBAC rule matched" // Reason is optional. It indicates why a request was allowed or denied.
 }
 ```
 
