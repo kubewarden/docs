@@ -85,7 +85,7 @@ docker run --rm -it \
     -v $(pwd)/policies.yml:/policies.yml \
     -v policy-store:/registry \
     ghcr.io/kubewarden/policy-server \
-    --ignore-kubernetes-connection-failure=true
+    --ignore-kubernetes-connection-failure
 ```
 
 If you're on a Mac, it might be easier to use a bind mount:
