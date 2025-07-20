@@ -34,7 +34,7 @@ Please ensure that the policy author has marked the policy as `policyType: raw` 
 You can inspect the metadata by using `kwctl`
 
 ```bash
-kwctl inspect ghcr.io/kubewarden/tests/raw-mutation-policy:v0.1.0
+kwctl inspect registry://ghcr.io/kubewarden/tests/raw-mutation-policy:v0.1.0
 ```
 
 :::
@@ -84,11 +84,27 @@ docker run --rm -it \
     -p 3000:3000 \
     -v $(pwd)/policies.yml:/policies.yml \
     -v policy-store:/registry \
-    ghcr.io/kubewarden/policy-server:1.9.0 \
+    ghcr.io/kubewarden/policy-server \
     --ignore-kubernetes-connection-failure=true
 ```
 
-NOTE: the flag `--ignore-kubernetes-connection-failure=true` is required to start the policy server without Kubernetes.
+If you're on a Mac, it might be easier to use a bind mount:
+```
+# If you're on a Mac, it might be easier to use a bind mount
+# this directory is required so the policy can be downloaded and stored on disk
+mkdir -p ./registry
+
+# start the policy server
+docker run --rm -it \
+    -p 3000:3000 \
+    -v $(pwd)/policies.yml:/policies.yml \
+    -v $(pwd)/registry:/registry \
+    ghcr.io/kubewarden/policy-server \
+    --ignore-kubernetes-connection-failure
+```
+
+
+NOTE: the flag `--ignore-kubernetes-connection-failure` is required to start the policy server without Kubernetes.
 However, it is possible to start the Policy Server with/inside Kubernetes and use the raw validation endpoint.
 Raw policies can access context-aware[ capabilities](../explanations/context-aware-policies.md) like standard policies.
 
