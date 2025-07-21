@@ -103,8 +103,6 @@ docker run --rm -it \
     --ignore-kubernetes-connection-failure
 ```
 
-
-NOTE: the flag `--ignore-kubernetes-connection-failure` is required to start the policy server without Kubernetes.
 However, it is possible to start the Policy Server with/inside Kubernetes and use the raw validation endpoint.
 Raw policies can access context-aware[ capabilities](../explanations/context-aware-policies.md) like standard policies.
 
