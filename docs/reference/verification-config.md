@@ -263,7 +263,7 @@ With Kubewarden, you can verify policy signatures from trusted users
 The next validation checks two conditions for the policy:
 
 - that it's signed with a specific key
-- it has a production environment annotation.
+- it has a production environment annotation
 
 ```yaml
 - kind: pubKey
