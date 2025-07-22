@@ -29,9 +29,9 @@ information.
 The configuration has 2 root keys:
 
 - `allOf`: You should satisfy all verification information listed here to
-  verify a container images as signed.
+  verify container images as signed.
 - `anyOf`: You must satisfy at least `anyOf.minimumMatches` of all listed
-  information to accept a container image as signed.
+  verification information to accept a container image as signed.
 
 These two root keys accept an array of keys of type `kind`. A full list of
 accepted keys based on different use cases is below:
@@ -162,9 +162,8 @@ anyOf: # at least `anyOf.minimumMatches` are required to match
 
 The previous configuration contains the two sections, `allOf` and `anyOf`:
 
-- `allOf`: The policy is trusted only if all signature requirements here are
-  valid.
-- `anyOf`: The policy is trusted if the `minimumMatches` criterion is met.
+- `allOf`: You trust the policy only if all signature requirements are valid.
+- `anyOf`: You trust the policy if the `minimumMatches` criterion are valid.
 
 In the example, the `minimumMatches` field is 2. So, you need to meet at least
 two of the signature requirements. The default value for `minimumMatches` field
@@ -175,8 +174,8 @@ from `allOf` **and** the minimum number from `anyOf`.
 
 ### Public key validation
 
-To check a policy is signed with the correct public key, you specify the key
-data and the owner of the key. In this example, `kind` is set to `pubKey` and
+To check a policy has the correct public key signature, you specify the key
+data and the owner of the key. In this example, you set `kind` to `pubKey` and
 the `key` has the public key. The owner field is optional, but can be useful to
 clarify who owns the key.
 
