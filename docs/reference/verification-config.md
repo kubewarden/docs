@@ -280,7 +280,7 @@ The next validation checks two conditions for the policy:
 
 You can test if a policy passes verification using the verification
 configuration file. Use the `--verification-config-path` flag of the `kwctl
-verify` command
+verify` command.
 
 ```console
 $ cat signatures_requirements.yaml
