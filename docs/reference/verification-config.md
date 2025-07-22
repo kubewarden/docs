@@ -238,7 +238,7 @@ owned by the GitHub user `flavio`:
 
 ### GitHub actions signature verification
 
-The "kind", `githubAction` is to validate policies signed in GitHub Actions.
+The "kind" `githubAction` is to validate policies signed in GitHub Actions.
 You can do this with the `genericIssuer` kind as well. To simplify the
 signature requirement process, use two extra fields for `githubAction`:
 
