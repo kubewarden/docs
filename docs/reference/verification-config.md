@@ -41,11 +41,11 @@ accepted keys based on different use cases is below:
 - `githubAction`: For signatures performed with Sigstore's keyless workflow
   inside GitHub Actions. Kubewarden checks this information against the x509
   certificate extension `workflow_repository` created by the OpenID Connect of
-  GitHub, and not only the `issuer` and `subject`. You should use this `kind` if dealing with GitHub Actions.
+  GitHub, and not only the `issuer` and `subject`. You should use this `kind`
+  if dealing with GitHub Actions.
 - `genericIssuer`: For signatures performed with Sigstore's keyless workflow,
   where the user needs to validate the certificate `issuer` and `subject` on
-  their own.
-  It accepts a `subject`, which can be:
+  their own. It accepts a `subject`, which can be:
 
   - `equal`: The value passed here must match exactly the `subject` in
     the signing certificate.
@@ -170,8 +170,8 @@ In the example, the `minimumMatches` field is 2. So, you need to meet at least
 two of the signature requirements. The default value for `minimumMatches` field
 is `1`.
 
-For signature validation, you need to meet all the signature's requirements from
-`allOf` **and** the minimum number from `anyOf`.
+For signature validation, you need to meet all the signature's requirements
+from `allOf` **and** the minimum number from `anyOf`.
 
 ### Public key validation
 
