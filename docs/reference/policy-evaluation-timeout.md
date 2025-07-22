@@ -18,8 +18,8 @@ doc-topic: [operator-manual, policy-evaluation-timeout]
 This feature is available starting from Kubewarden v1.5.0.
 :::
 
-Policy evaluation timeout protection is a security feature of Policy Server.
-It's purpose is to limit the amount of time a request evaluation can take.
+Policy evaluation timeout protection is a security feature of the Policy Server.
+Its purpose is to limit the amount of time a request evaluation can take.
 
 Kubewarden enables this feature from version v1.5.0.
 
@@ -38,7 +38,7 @@ When using a traditional, [Turing-complete](https://en.wikipedia.org/wiki/Turing
 * [infinite loops](https://en.wikipedia.org/wiki/Infinite_loop)
 * [deadlocks](https://en.wikipedia.org/wiki/Deadlock).
 * slow running code lacking optimizations
-* computationally intense operations.
+* computationally intense operations
 
 The policy evaluation timeout protection feature terminates the evaluation of a
 request after a defined period of time. This ensures Policy Server always has
@@ -100,13 +100,13 @@ spec:
 ## Comparison with Kubernetes Dynamic Admission Controller timeout
 
 Kubewarden is a [webhook](https://en.wikipedia.org/wiki/Webhook) implementation
-of the[ Kubernetes Dynamic Admission
+of the [Kubernetes Dynamic Admission
 Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/).
 
 Internally, the Kubernetes API server makes an HTTP request to  Kubewarden's
 Policy Server describing an event that's about to happen. After the HTTP
 request, the Kubernetes API Server waits for an answer. However, the Kubernetes
-API server doesn't wait forever. After a certain amount of time it considers
+API server doesn't wait forever. After a certain amount of time, it considers
 the request to have timed out.
 
 Quoting the [Kubernetes documentation](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts):
@@ -156,7 +156,7 @@ The Kubernetes API server sends an admission request for evaluation by this
 buggy policy. As a result, the policy evaluation enters an infinite loop.
 Meanwhile, the Kubernetes API server is waiting for a response.
 
-After 10 seconds Kubernetes' webhook timeout takes place, and the request is
+After 10 seconds, Kubernetes' webhook timeout takes place, and the request is
 handled according to the webhook's failure policy.
 
 Now the Policy Server has computational resources stuck in this infinite loop.
