@@ -257,7 +257,7 @@ For example, the last snippet, using `genericIssuer`, could be rewritten as:
 All signature types can have other optional validation fields, `annotations`.
 These fields are key/value data added during the signing process.
 
-With Kubewarden, you can check policies signature by trusted users
+With Kubewarden, you can verify policy signatures from trusted users
 **and** have specific annotations.
 
 The next validation checks two conditions for the policy:
