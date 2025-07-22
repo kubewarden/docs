@@ -203,7 +203,7 @@ It's possible to verify information from the signature:
 - `subject`: The field used to match the `Subject` attribute in Fulcio's
   certificate. The `Subject` (Fulcio) field contains the user used to
   authenticate against the OIDC provider. The verification field, `subject`,
-  can have one of two sub fields:
+  can have one of two subfields:
   - `equal`: The `Subject` (Fulcio) from the certificate must be equal to the
     value in the signature validation;
   - `urlPrefix`: The certificate's `Subject` (Fulcio) field value must be
