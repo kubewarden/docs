@@ -15,47 +15,51 @@ doc-topic: [operator-manual, verification-config]
 
 ## Introduction
 
-The verification-config format is used by:
+You can use the `verification-config` format with:
 
 - `policy-server` to verify policy modules provenance
 - `verify-image-signatures` policy to verify cluster images provenance
 
-See [secure supply chain](../howtos/security-hardening/secure-supply-chain.md) for more info.
+Refer to [secure supply
+chain](../howtos/security-hardening/secure-supply-chain.md) for more
+information.
 
 ## Format
 
-The config has 2 root keys:
-- `allOf`: All verification info listed here must be satisfied for accepting a
-  container image as signed.
-- `anyOf`: At least `anyOf.minimumMatches` of all info listed here must be
-  satisfied for accepting a container image as signed.
+The configuration has 2 root keys:
 
-These two root keys accept an array of keys of type `kind`.
-A full list of accepted keys based on different use cases is given below.
-- `pubKey`: for signatures performed with traditional public/private key
+- `allOf`: You should satisfy all verification information listed here to
+  verify container images as signed.
+- `anyOf`: You must satisfy at least `anyOf.minimumMatches` of all listed
+  verification information to accept a container image as signed.
+
+These two root keys accept an array of keys of type `kind`. A full list of
+accepted keys based on different use cases is below:
+
+- `pubKey`: For signatures performed with traditional public/private key
   cryptography.
-- `githubAction`: for signatures performed with Sigstore's keyless workflow
+- `githubAction`: For signatures performed with Sigstore's keyless workflow
   inside GitHub Actions. Kubewarden checks this information against the x509
   certificate extension `workflow_repository` created by the OpenID Connect of
-  GitHub, and not only the `issuer` and `subject`. Hence, it is strongly
-  recommended to use this `kind` if dealing with GitHub Actions.
-- `genericIssuer`: for signatures performed with Sigstore's keyless workflow,
+  GitHub, and not only the `issuer` and `subject`. You should use this `kind`
+  if dealing with GitHub Actions.
+- `genericIssuer`: For signatures performed with Sigstore's keyless workflow,
   where the user needs to validate the certificate `issuer` and `subject` on
-  their own.
-  It accepts a `subject`, which can be:
-  - `equal`: the value passed here must match exactly against the `subject` in
+  their own. It accepts a `subject`, which can be:
+
+  - `equal`: The value passed here must match exactly the `subject` in
     the signing certificate.
-  - `urlPrefix`: the value passed here is post-fixed with `/` to prevent
+  - `urlPrefix`: The value passed here is post-fixed with `/` to prevent
     typo-squatting, and must be a prefix of the `subject` in the signing
     certificate.
 
-the `kind` key optionally accepts an `annotations` key, with a list of
+The `kind` key accepts an optional `annotations` key, with a list of
 key-values, that must be present in the signature.
 
 ## Example
 
-Here you can see an example of a configuration for verifying
-signatures using the Sigstore workflow:
+This is an example of a configuration for verifying signatures using the
+Sigstore workflow:
 
 ```yaml
 ---
@@ -98,7 +102,8 @@ anyOf: # at least `anyOf.minimumMatches` are required to match
 
 ## Signature configuration reference
 
-You can validate signature requirements contained in a file. Here is an example:
+You can validate signature requirements contained in a file. Expand for an
+example:
 
 <details>
 
@@ -155,23 +160,24 @@ anyOf: # at least `anyOf.minimumMatches` are required to match
 
 ### Signature validation
 
-The configuration above contains the two sections, `allOf` and `anyOf`:
+The previous configuration contains the two sections, `allOf` and `anyOf`:
 
-- `allOf`: The policy is trusted only if all signature requirements here are valid.
+- `allOf`: You trust the policy only if all signature requirements are valid.
+- `anyOf`: You trust the policy if the `minimumMatches` criterion are valid.
 
-- `anyOf`:  The policy is trusted if the `minimumMatches` criterion is met.
+In the example, the `minimumMatches` field is 2. So, you need to meet at least
+two of the signature requirements. The default value for `minimumMatches` field
+is `1`.
 
-Above, the `minimumMatches` field is 2.
-So, at least two of the signature requirements must be met.
-The default value for `minimumMatches` field is `1`.
-
-All the signatures requirements from `allOf` **and** the minimum number from `anyOf` must be met.
+For signature validation, you need to meet all the signature's requirements
+from `allOf` **and** the minimum number from `anyOf`.
 
 ### Public key validation
 
-To check a policy is signed with the correct public key, you specify the key data and the owner of the key.
-In this example, `kind` is set to `pubKey` and the `key` has the public key.
-The owner field is optional, but can be useful to clarify who owns the key.
+To check a policy has the correct public key signature, you specify the key
+data and the owner of the key. In this example, you set `kind` to `pubKey` and
+the `key` has the public key. The owner field is optional, but can be useful to
+clarify who owns the key.
 
 ```  yaml
   - kind: pubKey
@@ -185,27 +191,33 @@ The owner field is optional, but can be useful to clarify who owns the key.
 
 ### Keyless signature validation
 
-A policy signed in keyless mode doesn't have a public key we can verify.
-You can still verify the policy with the OIDC data used during the signing process.
-For that, it's necessary to define the signature validation as `genericIssuer`.
+A policy signed in keyless mode doesn't have a public key you can verify. You
+can still verify the policy with the OpenID Connect (OIDC) data used during the
+signing process. For that, it's necessary to define the signature validation as
+`genericIssuer`.
 
 It's possible to verify information from the signature:
 
-- `issuer`(mandatory): this matches the `Issuer` attribute in the certificate generated by Fulcio.
-This shows the OIDC used to sign the policy.
-- `subject`: field used to match the `Subject` attribute in Fulcio's certificate.
-The `Subject` (Fulcio) field contains the user used to authenticate against the OIDC provider.
-The verification field, `subject`, can have one of two sub fields:
-  - `equal`: the `Subject` (Fulcio) from the certificate must be equal to the value in the signature validation;
-  - `urlPrefix`: the certificate's `Subject` (Fulcio) field value must be prefixed by the value defined in the signature validation.
+- `issuer`(mandatory): This matches the `Issuer` attribute in the certificate
+  generated by Fulcio. This shows the OIDC used to sign the policy.
+- `subject`: The field used to match the `Subject` attribute in Fulcio's
+  certificate. The `Subject` (Fulcio) field contains the user used to
+  authenticate against the OIDC provider. The verification field, `subject`,
+  can have one of two subfields:
+  - `equal`: The `Subject` (Fulcio) from the certificate must be equal to the
+    value in the signature validation;
+  - `urlPrefix`: The certificate's `Subject` (Fulcio) field value must be
+    prefixed by the value defined in the signature validation.
 
 :::note
 
-Both the `cosign verify` and the `kwctl inspect` can show information about keyless signatures.
+Both the `cosign verify` and the `kwctl inspect` commands can show information
+about keyless signatures.
 
 :::
 
-For example, this configuration means the policy must have a keyless signature from Alice using the GitHub OIDC:
+For example, this configuration means the policy must have a keyless signature
+from Alice using the GitHub OIDC:
 
 ```yaml
 - kind: genericIssuer
@@ -214,8 +226,8 @@ For example, this configuration means the policy must have a keyless signature f
     equal: alice@example.com
 ```
 
-This configuration needs the policy to be signed in GitHub actions,
-from a repository owned by the GitHub user `flavio`:
+This configuration needs the policy signed in GitHub actions, from a repository
+owned by the GitHub user `flavio`:
 
 ```yaml
 - kind: genericIssuer
@@ -226,12 +238,12 @@ from a repository owned by the GitHub user `flavio`:
 
 ### GitHub actions signature verification
 
-The "kind", `githubAction` is to validate policies signed in GitHub Actions.
-You can do this with the `genericIssuer` kind as well.
-To simplify the signature requirement process, use two extra fields for `githubAction`:
+The "kind" `githubAction` is to validate policies signed in GitHub Actions.
+You can do this with the `genericIssuer` kind as well. To simplify the
+signature requirement process, use two extra fields for `githubAction`:
 
-- `owner` (mandatory): GitHub ID of the user or organization to trust
-- `repo`: the name of the repository to trust
+- `owner` (mandatory): GitHub ID of the user or organization to trust.
+- `repo`: The name of the repository to trust.
 
 For example, the last snippet, using `genericIssuer`, could be rewritten as:
 
@@ -243,15 +255,15 @@ For example, the last snippet, using `genericIssuer`, could be rewritten as:
 ### Signature annotations validation
 
 All signature types can have other optional validation fields, `annotations`.
-These fields are key/value data added by during the signing process.
+These fields are key/value data added during the signing process.
 
-With Kubewarden, you can ensure policies are signed by trusted users
+With Kubewarden, you can verify policy signatures from trusted users
 **and** have specific annotations.
 
-The next validation checks 2 conditions for the policy:
+The next validation checks two conditions for the policy:
 
 - that it's signed with a specific key
-- it has a production environment annotation.
+- it has a production environment annotation
 
 ```yaml
 - kind: pubKey
@@ -266,8 +278,9 @@ The next validation checks 2 conditions for the policy:
 
 ### Using a signature verification configuration file to check a policy OCI artifact
 
-You can test if a policy passes verification using the verification config file.
-Use the `--verification-config-path`  flag of the `kwctl verify` command
+You can test if a policy passes verification using the verification
+configuration file. Use the `--verification-config-path` flag of the `kwctl
+verify` command.
 
 ```console
 $ cat signatures_requirements.yaml
@@ -284,7 +297,8 @@ $ kwctl verify --verification-config-path signatures_requirements.yaml ghcr.io/k
 2022-03-29T17:34:37.847169Z  INFO kwctl::verify: Policy successfully verified
 ```
 
-This last example tests if a given policy came from the Kubewarden organization:
+This last example tests if a given policy came from the Kubewarden
+organization:
 
 ```console
 $ cat kubewarden_signatures.yaml
