@@ -13,15 +13,18 @@ doc-topic: [operator-manual, sources.yaml]
   <link rel="canonical" href="https://docs.kubewarden.io/reference/sources_yaml"/>
 </head>
 
-You can tune the push-pull behavior of `kwctl` and `policy-server` binaries with the `--sources-path` argument, 
-for specifying the path to the `sources.yaml` file.
+You can tune the push-pull behavior of `kwctl` and `policy-server` binaries
+with the `--sources-path` argument, for specifying the path to the
+`sources.yaml` file.
 
-To configure a PolicyServer CR, set its `spec.insecureSources` and `spec.sourceAuthorities` fields. The format
-of these fields corresponds with the respective sections below.
+To configure a PolicyServer CR, set its `spec.insecureSources` and
+`spec.sourceAuthorities` fields. The format of these fields corresponds with
+the respective sections below.
 
 ## The `sources.yaml` file
 
-The command `kwctl` tries to load the `sources.yaml` file from these folders if the `--sources-path` argument is omitted:
+If you omit the `--sources-path` argument from the `kwctl` command, it tries to
+load the `sources.yaml` file from these folders:
 
 - Linux: `$HOME/.config/kubewarden/sources.yaml`
 - Mac: `$HOME/Library/Application Support/io.kubewarden.kubewarden/sources.yaml`
@@ -85,23 +88,23 @@ Hosts in the `insecure_sources` section behave differently to those not listed.
 
 :::note
 
-It's usually fine to use `insecure_sources` when using local registries or
-HTTP servers for development.
-It avoids the burden of managing certificates.
-Clearly, it's not for production use.
+It's usually fine to use `insecure_sources` when using local registries or HTTP
+servers for development. It avoids the burden of managing certificates.
+Clearly, this is not for production use.
 
 :::
 
 ### Source authorities section
 
-The `source_authorities` section contains URIs and CA certificates.
-It forms a certificate chain for that URI.
-It's used to verify the identity of OCI registries and HTTPS servers.
+The `source_authorities` section contains URIs and CA certificates. It forms a
+certificate chain for that URI. It's used to verify the identity of
+OpenContainer Initiative (OCI) registries and HTTPS servers.
 
-These certificates are encoded in either PEM or DER format.
-You specify DER format certificates as path to a file containing the certificate.
-In PEM format you specify either a path to the certificate file, or a string with the actual certificate.
-You specify both with a `type` key:
+You encode these certificates in either Privacy Enhanced Mail (PEM) or
+Distinguished Encoding Rule (DER) formats. For specifying DER format
+certificates you use a path to a file containing the certificate. In PEM format
+you specify either a path to the certificate file, or a string with the actual
+certificate. You specify both with a `type` key:
 
 ```yaml
 source_authorities:
