@@ -19,7 +19,7 @@ The Kubewarden policy server receives:
 objects from the Kubernetes API server.
 It then forwards the value of its `request` attribute, of type
 [`AdmissionRequest`](https://godoc.org/k8s.io/api/admission/v1#AdmissionRequest),
-to the policy to be evaluated.
+to the policy for evaluation.
 
 or:
 
@@ -29,20 +29,20 @@ Check the
 [Raw policies](../../howtos/raw-policies.md)
 section for more details.
 
-The policy evaluates the `request` and states whether it should be accepted or not.
-When the request is rejected,
-the policy might provide the explanation message and an error code to be shown to the end user.
+The policy evaluates the `request` and states whether it should accept it or
+not. When request rejection happens, the policy might provide the explanation
+message and an error code to display to the end user.
 
-By convention, of the `policy-server` project,
-the guest has to expose a function named `validate`,
-through the waPC guest SDK,
-so that the `policy-server` (waPC host) can invoke it.
+By convention, of the `policy-server` project, the guest has to expose a
+function named `validate`, through the waPC guest SDK, so that the
+`policy-server` (waPC host) can invoke it.
 
-The `validate` function receives a `ValidationRequest` JSON object and returns a `ValidationResponse` JSON object.
+The `validate` function receives a `ValidationRequest` JSON object and returns
+a `ValidationResponse` JSON object.
 
 ## The `ValidationRequest` object
 
-The `ValidationRequest` is a JSON object that is received by the `validate` function.
+The `ValidationRequest` is a JSON object received by the `validate` function.
 It looks like:
 
 ```yaml
@@ -54,9 +54,8 @@ It looks like:
 }
 ```
 
-The `settings` key points to a free-form JSON document holds the policy
-specific settings.
-The previous chapter focused on policies and settings.
+The `settings` key points to a free-form JSON document holding the policy
+specific settings. The previous chapter focused on policies and settings.
 
 ## An example
 
@@ -215,9 +214,10 @@ The `ValidationRequest` object would look like:
 
 ## The `ValidationResponse` object
 
-The `validate` function returns the outcome of its validation using a `ValidationResponse` object.
+The `validate` function returns the outcome of its validation using a
+`ValidationResponse` object.
 
-The `ValidationResponse` is structured in the following way:
+The `ValidationResponse` has this structure:
 
 ```yaml
 {
@@ -235,15 +235,17 @@ The `ValidationResponse` is structured in the following way:
 }
 ```
 
-These `message` and `code` attributes can be specified when the request is not accepted.
-The `message` is a free-form textual error and `code` represents an HTTP error code.
+You can specify these `message` and `code` attributes when he request isn't
+accepted. The `message` is a free-form textual error and `code` represents an
+HTTP error code.
 
-If the request is accepted,
-the `message` and `code` values are ignored by the Kubernetes API server if present.
+On request acceptance, the `message` and `code` values are ignored by the
+Kubernetes API server if present.
 
-If `message` or `code` are provided,
-and the request is not accepted,
-then the Kubernetes API server returns this information, as part of the body of the error, to the Kubernetes API client that issued the rejected request.
+On request denial and if the `message` or `code` are present, then the
+Kubernetes API server returns this information. The information is part of the
+body of the error, and the server returns it to the Kubernetes API client that
+issued the rejected request.
 
-The `mutated_object` is an optional field used only by mutating policies.
-This is the topic of the next chapter.
+The `mutated_object` is an optional field used only by mutating policies. This
+is the topic of the next chapter.
