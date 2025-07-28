@@ -12,10 +12,11 @@ doc-topic: [writing-policies, specification, mutating-policies]
   <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/mutating-policies"/>
 </head>
 
-Mutating policies are structured in the same way as validating ones:
+The structure os mutating policies is the same as validating ones:
 
 - They have to register `validate` and `validate_settings` waPC functions.
-- The communication API used between the host and the policy is the same as that used by validating policies.
+- The communication API used between the host and the policy is the same as
+  that used by validating policies.
 
 Mutating policies accept a request and can propose a mutation of the incoming
 object by returning a `ValidationResponse` object that looks like this:
@@ -27,8 +28,8 @@ object by returning a `ValidationResponse` object that looks like this:
 }
 ```
 
-The `mutated_object` field contains the object the policy wants to be created in the Kubernetes cluster,
-serialized to JSON.
+The `mutated_object` field contains the object the policy wants creating
+in the Kubernetes cluster, serialized to JSON.
 
 ## A concrete example
 
@@ -64,11 +65,13 @@ Let's assume the policy received this `ValidationRequest`:
 ```
 
 :::note
-For learning purposes we left some unimportant fields out of the `request` object.
+
+Only important field are in the `request` object for this example.
+
 :::
 
-This request is generated because someone tried to create a Pod that would
-look like this:
+This request generation happens because someone tried to create a Pod that
+would look like this:
 
 ```yaml
 apiVersion: v1
@@ -86,7 +89,7 @@ spec:
         - SYS_TIME
 ```
 
-Let's assume our policy replies with the following `ValidationResponse`:
+Assume the policy replies with the following `ValidationResponse`:
 
 ```json
 {
@@ -120,8 +123,7 @@ Let's assume our policy replies with the following `ValidationResponse`:
 }
 ```
 
-That would lead to the request being accepted, but the final Pod would look like
-this:
+That would lead to request acceptance, but the final Pod would look like this:
 
 ```yaml
 apiVersion: v1
@@ -141,9 +143,10 @@ spec:
         - BPF
 ```
 
-As you can see, the policy altered the `securityContext.capabilities.drop` section of the only container declared in the Pod.
+As you can see, the policy altered the `securityContext.capabilities.drop`
+section of the only container declared in the Pod.
 
-The container is now dropping the `BPF` capability due to our policy.
+The container is now dropping the `BPF` capability due to the policy.
 
 ## Recap
 
