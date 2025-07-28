@@ -93,7 +93,7 @@ The flag `--ignore-kubernetes-connection-failure` is required to start the polic
 :::
 
 You can also use a bind mount to store the policies modules in a persistent way:
-```
+```bash
 mkdir -p ./registry
 
 # start the policy server
