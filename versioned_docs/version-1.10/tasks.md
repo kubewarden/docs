@@ -65,7 +65,7 @@ You can list all the `kwctl` options and sub-commands by running the following c
 ```shell
 $ kwctl --help
 kwctl 0.2.5
-Kubewarden Developers <kubewarden@suse.de>
+Kubewarden Developers <cncf-kubewarden-maintainers@lists.cncf.io>
 Tool to manage Kubewarden policies
 
 USAGE:
