@@ -24,7 +24,7 @@ side, this means:
 - We will always transparently let the community know about any incident that affects them.
 
 If you have found a security vulnerability in Kubewarden, we kindly ask that you
-disclose it responsibly by emailing kubewarden@suse.de. Please do not discuss
+disclose it responsibly by emailing cncf-kubewarden-maintainers@lists.cncf.io. Please do not discuss
 potential vulnerabilities in public without validating with us first.
 
 On receipt the security team will:
