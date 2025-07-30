@@ -15,7 +15,7 @@ doc-topic:
 </head>
 
 Kubewarden context aware policies require access to resources from the
-Kubernetes cluster where they are running. For that, the Kubewarden SDKs expose
+Kubernetes cluster where they're running. For that, the Kubewarden SDKs expose
 functions that use the waPC communication protocol to talk with the host system
 asking for data about the cluster.
 
@@ -25,25 +25,25 @@ Internally, the SDKs rely on these functions exposed by the policy host
 environment:
 
 - `list_resources_by_namespace` : Given a resource type and a namespace, list
-  all the resources of that type that are defined in it. This cannot be used to
-  list cluster-wide resources, like `Namespace`.
-- `list_resources_all`: Given a resource type, list all the resources of that
-  type that are defined inside the whole cluster. This can be used to list
+  all the resources of that type defined in it. You can't use this to list
   cluster-wide resources, like `Namespace`.
+- `list_resources_all`: Given a resource type, list all the resources of that
+  type defined in the whole cluster. You can use this to list cluster-wide
+  resources, like `Namespace`.
 - `get_resource`: Find the exact resource identified by the given resource
   type, given name and an optional namespace identifier.
-- `can_i`: Allow policy authors to send `SubjectAccessReview` object to
+- `can_i`: Send a `SubjectAccessReview` object, as written by the policy authors, to
   Kubernetes authorization API to verify user permissions. Please refer to the
   [Kubernetes authorization
-  docs](https://kubernetes.io/docs/reference/access-authn-authz/authorization/)
+  documentation](https://kubernetes.io/docs/reference/access-authn-authz/authorization/)
   for more information.
 
-This guest-host communication is performed using the standard waPC host calling
-mechanism. Any guest implementing the waPC intercommunication mechanism is able
-to request this information from the host.
+The standard waPC host calling mechanism performs guest-host communication. Any
+guest implementing the waPC intercommunication mechanism is able to request
+this information from the host.
 
-waPC has the following function arguments when performing a call from the guest
-to the host:
+The following function arguments are provided by waPc when performing a call
+from the guest to the host:
 
 - Binding - `kubewarden`
 - Namespace - `kubernetes`
@@ -77,12 +77,12 @@ information by calling the host in the following ways:
 
 #### Output
 
-Return a Kubernetes
+Returns a Kubernetes
 [`List`](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#types-kinds),
 which is a collection of Kubernetes objects of the same type.
 
 :::info
-Use this API function to fetch cluster-wide resources (e.g. namespaces)
+Use this API function to fetch cluster-wide resources (for example, namespaces)
 :::
 
 ### Operation - `list_resources_by_namespace`
@@ -106,23 +106,28 @@ Use this API function to fetch cluster-wide resources (e.g. namespaces)
 
 #### Output
 
-Return a Kubernetes
+Returns a Kubernetes
 [`List`](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#types-kinds),
 which is a collection of Kubernetes objects of the same type.
 
 :::caution
-This API function returns an error when used to fetch cluster-wide
-resources (for example, namespaces). Use the `list_resources_all` when dealing
-with cluster-wide resources.
+
+This API function returns an error when used to fetch cluster-wide resources
+(for example, namespaces). Use the `list_resources_all` when dealing with
+cluster-wide resources.
+
 :::
 
 ### Operation - `get_resource`
 
 #### Caching
 
-The result of the `get_resource` operation is cached for five seconds by default to improve performance and reduce unnecessary load on the Kubernetes API server.
- 
-Use the `disable_cache` field to bypass the cache when fresh data is required.
+Result caching of the `get_resource` operation is for five seconds, by default,
+to improve performance and reduce unnecessary load on the Kubernetes API
+server.
+
+If you require fresh data then use the `disable_cache` field to bypass the
+cache.
 
 #### Input
 
@@ -147,8 +152,8 @@ Result of `GET /apis/$api_version/namespaces/$namespace/$kind/$name`
 
 ### Operation - `can_i`
 
-This operation determines if a specific user or group has the permission to perform an
-action on a Kubernetes resource. It does this by making a
+This operation determines if a specific user or group has the permission to
+perform an action on a Kubernetes resource. It does this by making a
 [`SubjectAccessReview`](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#subjectaccessreview-v1-authorization-k8s-io)
 request to the Kubernetes API server.
 
@@ -199,19 +204,22 @@ The `can_i` operation requires a JSON object with the following parameters:
 #### Output
 
 The output is a JSON object that contains the status of the
-`SubjectAccessReview` request. This object indicates whether the requested
-action is allowed or not. For a complete reference of all the fields available in the
+`SubjectAccessReview` request. It indicates access permissions for the
+requested action. For a complete reference of all the fields available in the
 output, see the official
 [`SubjectAccessReviewStatus`](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#subjectaccessreviewstatus-v1-authorization-k8s-io)
 documentation.
 
 :::caution
-It's important to remember that all of the returned values came from the
-Kubernetes authorization API. Therefore, any configuration differences or
-future change in the API can affect the results here as well.
+
+Remember that all returned values come from the Kubernetes authorization API.
+Therefore, any configuration differences or future change in the API can affect
+the results here as well.
+
 :::
 
-Example of an allowed operation. Some of the authorization plugins allows the operation:
+Example of an allowed operation. Some authorization plug-ins permit the
+operation:
 
 ```hcl
 {
@@ -222,7 +230,7 @@ Example of an allowed operation. Some of the authorization plugins allows the op
 }
 ```
 
-Example of an operation blocked by some authorization plugin:
+Example of an operation blocked by some authorization plug-ins:
 
 ```hcl
 
@@ -234,8 +242,8 @@ Example of an operation blocked by some authorization plugin:
 }
 ```
 
-Example of an operation that none of the authorization plugins decided to allow
-neither deny the operation:
+Example of an operation that none of the authorization plug-ins decided to
+neither allow or deny the operation:
 
 ```hcl
 {

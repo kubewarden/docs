@@ -13,31 +13,32 @@ doc-topic:
   <link rel="canonical" href="https://docs.kubewarden.io/reference/spec/host-capabilities/container-registry"/>
 </head>
 
-Container registries can be used to distribute many types of OCI objects.
-From well-known container images to generic OCI Artifacts.
-OCI Artifacts are used to store objects such as Kubewarden policies,
+You can use container registries can to distribute many types of Open Container
+Initiative (OCI) objects. From well-known container images to generic OCI
+Artifacts. You use OCI Artifacts to store objects such as Kubewarden policies,
 Helm charts, and more.
 
-These are the capabilities exposed by the Kubewarden host,
-to interact with container registries.
+These are the capabilities exposed by the Kubewarden host, to interact with
+container registries.
 
 ## Get OCI manifest digest
 
-This callback computes the digest of an OCI manifest. The digest can be used to
+This callback computes the digest of an OCI manifest. You can use the digest to
 identify an object stored in an OCI registry. This is an immutable way, as
 opposed to `tags` which are mutable.
 
 ### Caching
 
-Computing the digest involves a series of network requests between the Kubewarden policy host and the remote registry.
-These operations can be time expensive,
-so the results are cached for 1 minute.
+Computing the digest involves a series of network requests between the
+Kubewarden policy host and the remote registry. These operations can be time
+expensive. Caching of results is for one minute to mitigate this.
 
 ### Authentication
 
-Interactions with private registries require the Kubewarden policy host to authenticate against the remote registry.
+Interactions with private registries require the Kubewarden policy host to
+authenticate against the remote registry.
 
-The policy host will use the same set of credentials used to fetch policies
+The policy host uses the same set of credentials used to fetch policies
 from the remote registry.
 
 ### Communication protocol
@@ -68,23 +69,23 @@ the payload would be:
 
 ## OCI manifest
 
-This callback fetches the OCI objects manifest. When available, this
-information can be used to identify specific images manifests, for one or more
+This callback fetches the OCI objects manifest. When available, you can use
+this information to identify specific images manifests, for one or more
 platforms. Or a single image manifest for the image.
 
 ### Caching
 
 Fetching this information involves network requests between the Kubewarden
-policy host and the remote registry. These operations can be time expensive so
-the results are cached for 1 minute.
+policy host and the remote registry. These operations can be time expensive.
+Caching of results is for one minute to mitigate this.
 
 ### Authentication
 
 Interactions with private registries require the Kubewarden policy host to
 authenticate against the remote registry.
 
-The policy host uses the same set of credentials as that used to fetch policies
-from the remote registry.
+The policy host uses the same set of credentials as used to fetch policies from
+the remote registry.
 
 ### Communication protocol
 
@@ -187,27 +188,27 @@ OR
 ```
 
 For example, when requesting the manifest of the
-`ghcr.io/kubewarden/policy-server:v1.10.0` image,
-the payload would be:
+`ghcr.io/kubewarden/policy-server:v1.10.0` image, the payload would be:
 
 - Input payload: `"ghcr.io/kubewarden/policy-server:v1.10.0"`
 - Output payload: the body of the successful response obtained from the
-  registry.
-  It can be an [OCI index image](https://github.com/opencontainers/image-spec/blob/main/image-index.md)
-  or an [OCI image manifest](https://github.com/opencontainers/image-spec/blob/main/manifest.md).
+  registry. It can be an [OCI index
+  image](https://github.com/opencontainers/image-spec/blob/main/image-index.md)
+  or an [OCI image
+  manifest](https://github.com/opencontainers/image-spec/blob/main/manifest.md).
   The details may change depending on the registry and image.
 
-## OCI manifest and config
+## OCI manifest and configuration
 
-This callback fetches the OCI images manifest and its configuration. This
-information can be used to get the container image manifest and the
-configuration information used by the container runtime to run it.
+This callback fetches the OCI images manifest and its configuration. You can
+use this information to get the container image manifest and the configuration
+information used by the container runtime to run it.
 
 ### Caching
 
 Fetching this information involves network requests between the Kubewarden
-policy host and the remote registry. These operations can be time expensive so
-the results are cached for 1 minute.
+policy host and the remote registry. These operations can be time expensive.
+Caching of results is for one minute to mitigate this.
 
 ### Authentication
 
@@ -339,7 +340,7 @@ For example, when requesting the image manifest and configuration of the
 
 - Input payload: `"ghcr.io/kubewarden/policy-server:v1.13.0"`
 - Output payload: the body of the successful response obtained from the
-  registry. It will contain the [OCI image
+  registry. It contains the [OCI image
   manifest](https://github.com/opencontainers/image-spec/blob/main/manifest.md)
   , image digest and the [OCI image
   configuration](https://github.com/opencontainers/image-spec/blob/main/config.md).
