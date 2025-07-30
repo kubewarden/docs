@@ -32,7 +32,7 @@ environment:
   resources, like `Namespace`.
 - `get_resource`: Find the exact resource identified by the given resource
   type, given name and an optional namespace identifier.
-- `can_i`: Permit policy authors to send `SubjectAccessReview` object to
+- `can_i`: Send a `SubjectAccessReview` object, as written by the policy authors, to
   Kubernetes authorization API to verify user permissions. Please refer to the
   [Kubernetes authorization
   documentation](https://kubernetes.io/docs/reference/access-authn-authz/authorization/)
