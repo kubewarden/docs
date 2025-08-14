@@ -18,8 +18,8 @@ Application Collection](https://apps.rancher.io/) with Kubewarden.
 
 You perform image verification by deploying the [Verify Image
 Signatures](https://artifacthub.io/packages/kubewarden/verify-image-signatures/verify-image-signatures)
-policy and configuring the PolicyServers so they can pull the signature layers,
-of the images, from Application Collection.
+policy and configuring the PolicyServers to pull the images' signature layers
+from the Application Collection.
 
 :::info
 
@@ -33,7 +33,7 @@ Collection.
 Following the [Application Collection
 docs](https://docs.apps.rancher.io/get-started/authentication/), create an
 access token and configure the cluster so it can pull from the Application
-Collection registry, with a Docker Config Secret, such as this one:
+Collection registry with a Docker Config Secret, such as this one:
 
 ```console
 $ kubectl create secret docker-registry application-collection \
@@ -48,8 +48,8 @@ The PolicyServer in use needs configuration so it can pull the image layers
 that contain the signatures.
 
 Follow the [private registries how-to](../policy-servers/private-registry) for
-Policy Servers to create a Docker Config Secret **in the same namespace of the
-PolicyServer**. You do this by instantiating a Secret with the same contents as
+Policy Servers to create a Docker Config Secret **in the PolicyServer's
+namespace**. You do this by instantiating a Secret with the same contents as
 the previous `application-collection`.
 
 For PolicyServer `default`, installed with the `kubewarden-defaults` Helm chart
