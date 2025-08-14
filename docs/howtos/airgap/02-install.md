@@ -15,7 +15,7 @@ doc-topic: [operator-manual, air gap, installation]
 This guide shows you how to install Kubewarden in air-gapped environments. For
 an air-gapped installation of Kubewarden, you need a private Open Container
 Initiative (OCI) registry accessible by your Kubernetes cluster. Kubewarden
-Policies are WebAssembly modules, therefore you can store them in an
+Policies are WebAssembly modules; therefore, you can store them in an
 OCI-compliant registry as OCI artifacts. You need to add Kubewarden's images
 and policies to this OCI registry. You can see a list of Kubewarden artifacts
 in the [Artifacts reference](../../reference/artifacts.md) page. The following
@@ -53,7 +53,7 @@ sections describe the process.
 
 ## Save policies in your workstation
 
-1. Add all the policies you want to use in a `policies.txt` file. A file with a
+1. Add all the policies you want to use to a `policies.txt` file. A file with a
    list of default policies is in the Kubewarden defaults [release
    page](https://github.com/kubewarden/helm-charts/releases/).
 1. Download `kubewarden-save-policies.sh` and `kubewarden-load-policies.sh`
@@ -116,12 +116,12 @@ The `kwctl` command needs the `sources.yaml` file to connect to registries in
 these categories:
 
 - Authentication is required.
-- Self signed certificate is being used.
+- Self-signed certificate is being used.
 - No TLS termination is done.
 
 Please refer to the [section on custom certificate
 authorities](../custom-certificate-authorities.md) in the documentation to
-learn how to configure the `sources.yaml` file
+learn how to configure the `sources.yaml` file.
 
 :::
 
@@ -147,8 +147,8 @@ helm install --wait -n kubewarden \
 
 :::caution
 
-To use the Policy Reported sub-chart available in the `kubewarden-controller`
-chart you need to define other values specific for the sub-chart in an
+To use the Policy Reported subchart available in the `kubewarden-controller`
+chart, you need to define other values specific for the subchart in an
 air-gapped environment. See an example below:
 
 ```shell
@@ -161,10 +161,10 @@ helm install --wait -n kubewarden kubewarden-controller kubewarden-controller.tg
     --set policy-reporter.ui.image.repository=kyverno/policy-reporter-ui
 ```
 
-It's necessary to define `auditScanner.policyReporter` to enable the sub-chart
-and 4 more values, to configure the registry and repository where you store the
-Policy Reporter images. For more information about the policy report sub-chart
-values see [Policy Reporter
+It's necessary to define `auditScanner.policyReporter` to enable the subchart
+and 4 more values to configure the registry and repository where you store the
+Policy Reporter images. For more information about the policy report subchart
+values, see [Policy Reporter
 documentation](https://kyverno.github.io/policy-reporter-docs/getting-started/helm.html).
 
 :::
@@ -184,7 +184,7 @@ This configuration lets users specify a registry dedicated to pulling the OCI
 artifacts of the policies. It's particularly useful when their container image
 repository doesn't support OCI artifacts.
 
-To install, and wait for the installation to complete, use the following
+To install and wait for the installation to complete, use the following
 command:
 
 ```console
