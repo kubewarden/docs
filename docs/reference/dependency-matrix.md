@@ -31,7 +31,7 @@ Needed for specific features.
 
 | Chart dependency                                   | Helm chart `appVersion` |             Helm chart `version`             |      Feature      |
 | -------------------------------------------------- | :---------------------: | :------------------------------------------: | :---------------: |
-| `open-telemetry/opentelemetry-operator` chart      |       `>= 0.104`        |              Example: `0.92.3`               |       OTEL        |
+| `open-telemetry/opentelemetry-operator` chart      |       `>= 0.104`        |              Example: `0.93.0`               |       OTEL        |
 | `prometheus-community/kube-prometheus-stack` chart |       `>= v0.69`        |              Example: `75.17.1`               |      Metrics      |
 | `jaegertracing/jaeger-operator` chart              |      `>= 1.49 < 2`      |              Example: `2.57.0`               |      Tracing      |
 | `kyverno/policy-reporter` chart                    |       `>= 2 < 4`        | In `kubewarden-controller` chart as subchart | Policy Reports UI |
