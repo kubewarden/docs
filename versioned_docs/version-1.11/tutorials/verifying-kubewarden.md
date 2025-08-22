@@ -37,7 +37,7 @@ To verify a Helm chart, you need `cosign` installed. Then execute the following
 command, for example:
 
 ```
-cosign verify ghrc.io/kubewarden/charts/kubewarden-defaults:1.5.4 \
+cosign verify ghcr.io/kubewarden/charts/kubewarden-defaults:1.5.4 \
   --certificate-identity-regexp 'https://github.com/kubewarden/*' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
