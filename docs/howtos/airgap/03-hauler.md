@@ -100,10 +100,26 @@ hauler store copy registry://localhost:5000
 ```
 
 You can also run Hauler to start a registry with all the resources from the
-store:
+store. This registry is insecure, you will need to adapt cluster configuration:
 
 ```shell
-hauler store server registry
+# Find IP address of your host
+# hostname -I
+
+# Update registries.yaml for k3s based cluster to allow insecure access
+# mirrors:
+#   "<HOST_IP>:5000":
+#     endpoint:
+#       - "http://<HOST_IP>:5000"
+# configs:
+#   "<HOST_IP>:5000":
+#     tls:
+#       insecure_skip_verify: true
+
+# Configure policy-server to allow pulling policies from insecure sources
+# helm install .. kubewarden-defaults .. --set policyServer.insecureSources[0]=<HOST_IP:5000>
+
+hauler store serve registry
 ```
 
 This will start a registry at the `localhost:5000` address. From this point,
@@ -121,7 +137,7 @@ artifacts.
 Install the Kubewarden stack:
 
 ```shell
-helm install --wait -n kubewarden kubewarden-crds \
+helm install --wait -n kubewarden kubewarden-crds --create-namespace \
     oci://<REGISTRY.YOURDOMAIN.COM:PORT>/hauler/kubewarden-crds
 helm install --wait -n kubewarden kubewarden-controller \
     --set "global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>" \
