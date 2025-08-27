@@ -159,10 +159,14 @@ policy](https://artifacthub.io/packages/kubewarden/priority-class-policy/priorit
 to reject a set of priority classes. But at the time of writing, the
 `priority-class` policy only supports allowlists, not denylist.
 
-A common pattern then is to wrap your policy in an AdmissionPolicyGroup or ClusterAdmissionPolicyGroup,
+A common pattern then is to wrap your policy in an `AdmissionPolicyGroup` or `ClusterAdmissionPolicyGroup`,
 and negate the result of the policy in its `spec.expression`.
 
-For example, here is a policy that implements a denylist for priority classes:
+For example, let's assume we want users to use all the priority classes defined
+inside of the cluster except for one of the following ones: `low-priority`,
+`med-priority` and `high-priority`.
+
+Currently the policy settings allows to express only the list of allowed priority classes. The following group policy overcomes this limitation.
 
 ```yaml
 apiVersion: policies.kubewarden.io/v1
@@ -189,13 +193,13 @@ spec:
       resources: ["jobs", "cronjobs"]
       operations: ["CREATE", "UPDATE"]
   policies:
-    priority_class:
+    is_a_denied_priority_class:
       module: ghcr.io/kubewarden/policies/priority-class-policy:v1.0.4
       settings:
         allowed_priority_classes:
           - low-priority
           - med-priority
           - high-priority
-  expression: "!priority_class()" # negated result
+  expression: "!is_a_denied_priority_class()" # negated result
   message: "the Pod is using a priorityClass that is not allowed"
 ```
