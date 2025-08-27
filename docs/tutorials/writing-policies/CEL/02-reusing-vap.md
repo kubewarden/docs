@@ -116,9 +116,12 @@ Notice the commented numbers on both the YAML manifests. Let's expand on them:
 |     | `---`               | Kubewarden-only features              | For other features, see the rest of tutorial CEL examples.                                                                                                                                                               |
 
 :::tip
-The `kwctl` tool can be used to migrate a VAP policy to Kubewarden.
 
-This is described inside of [this howto](../../../howtos/vap-migration).
+You can use the `kwctl` tool to migrate a VAP policy to Kubewarden.
+
+This [VAP migration how-to](../../../howtos/vap-migration) describes how to do
+so.
+
 :::
 
 ### Yet to be implemented equivalences

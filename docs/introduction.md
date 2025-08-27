@@ -53,7 +53,7 @@ If new to the Kubewarden project start with the
 and the [architecture](./explanations/architecture.md) page.
 Then it depends where your interests take you.
 For policy developers there are language specific sections in the tutorials.
-For integrators and administrators there is a 'howtos' section.
+For integrators and administrators there is a 'how-tos' section.
 The explanations section contains useful background material.
 There is also a [glossary](./glossary.md).
 

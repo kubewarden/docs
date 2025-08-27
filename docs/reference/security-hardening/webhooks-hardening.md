@@ -170,7 +170,7 @@ matchExpressions:
 
 :::tip
 
-Refere to [this how-to](../../howtos/security-hardening/webhook-mtls/) for a
+Refer to [this how-to](../../howtos/security-hardening/webhook-mtls/) for a
 step-by-step guide on configuring the Kubernetes API server of K3s to
 authenticate to the webhook.
 

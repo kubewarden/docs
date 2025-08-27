@@ -19,7 +19,7 @@ Kubewarden organizes project documentation as follows:
 - [Quick start](./quick-start.md)
 - _Tutorials_ — learning through examples.
 - _Explanations_ — underlying concepts.
-- _Howtos_ — getting Kubewarden tasks done.
+- _How-tos_ — getting Kubewarden tasks done.
 - _Reference_
 - Organization — this page
 - [Personas](./personas.md) — who is Kubewarden for?
@@ -27,7 +27,7 @@ Kubewarden organizes project documentation as follows:
 - [Glossary](./glossary.md)
 
 Most of the material is in the four sections,
-_Tutorials_, _Explanations_, _Howtos_, and _Reference_.
+_Tutorials_, _Explanations_, _How-tos_, and _Reference_.
 There may be overlap as the sections aren't mutually exclusive.
 The Kubewarden project tries to follow the [Diátaxis](https://diataxis.fr/) documentation framework
 
