@@ -148,3 +148,58 @@ I0612 16:32:43.662550   48424 helpers.go:246] server response object: [{
   "code": 400
 }]
 ```
+
+## Negating a policy result by wrapping it in a PolicyGroup
+
+Sometimes when using a policy, it doesn't implement the inverse logic of what
+you need yet.
+
+For example, you want to use the [`priority-class`
+policy](https://artifacthub.io/packages/kubewarden/priority-class-policy/priority-class-policy)
+to reject a set of priority classes. But at the time of writing, the
+`priority-class` policy only supports allowlists, not denylist.
+
+A common pattern then is to wrap your policy in an `AdmissionPolicyGroup` or `ClusterAdmissionPolicyGroup`,
+and negate the result of the policy in its `spec.expression`.
+
+For example, let's assume we want users to use all the priority classes defined
+inside of the cluster except for one of the following ones: `low-priority`,
+`med-priority` and `high-priority`.
+
+Currently the policy settings allows to express only the list of allowed priority classes. The following group policy overcomes this limitation.
+
+```yaml
+apiVersion: policies.kubewarden.io/v1
+kind: AdmissionPolicyGroup
+metadata:
+  name: priority-class-denylist
+  namespace: your-namespace # or use a CLusterAdmissionPolicyGroup and set spec.namespaceSelector
+spec:
+  rules:
+    - apiGroups: [""]
+      apiVersions: ["v1"]
+      resources: ["pods"]
+      operations: ["CREATE", "UPDATE"]
+    - apiGroups: [""]
+      apiVersions: ["v1"]
+      resources: ["replicationcontrollers"]
+      operations: ["CREATE", "UPDATE"]
+    - apiGroups: ["apps"]
+      apiVersions: ["v1"]
+      resources: ["deployments", "replicasets", "statefulsets", "daemonsets"]
+      operations: ["CREATE", "UPDATE"]
+    - apiGroups: ["batch"]
+      apiVersions: ["v1"]
+      resources: ["jobs", "cronjobs"]
+      operations: ["CREATE", "UPDATE"]
+  policies:
+    is_a_denied_priority_class:
+      module: ghcr.io/kubewarden/policies/priority-class-policy:v1.0.4
+      settings:
+        allowed_priority_classes:
+          - low-priority
+          - med-priority
+          - high-priority
+  expression: "!is_a_denied_priority_class()" # negated result
+  message: "the Pod is using a priorityClass that is not allowed"
+```
