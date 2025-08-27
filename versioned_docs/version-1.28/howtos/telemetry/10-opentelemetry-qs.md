@@ -1,0 +1,144 @@
+---
+sidebar_label: Open Telemetry
+title: Open Telemetry quick start
+description: An Open Telemetry quickstart for Kubewarden.
+keywords: [kubewarden, kubernetes, opentelemetry, open telemetry, quickstart]
+doc-persona: [kubewarden-operator, kubewarden-integrator]
+doc-type: [howto]
+doc-topic: [operator-manual, telemetry, opentelemetry, quick-start]
+---
+
+<head>
+  <link rel="canonical" href="https://docs.kubewarden.io/howtos/telemetry/opentelemetry-qs"/>
+</head>
+
+[OpenTelemetry](https://opentelemetry.io/) is a CNCF (Cloud Native Computing Foundation) framework for
+observability. It enables your microservices to provide metrics, logs and traces.
+
+Kubewarden's components using the OpenTelemetry SDK, report data to an
+OpenTelemetry collector -- called the agent.
+
+This guide explains how to deploy the OpenTelemetry collector in `sidecar` mode by using
+the official Kubernetes Helm chart.
+
+This is a simple deployment pattern using OpenTelemetry. Its final setup looks like this:
+
+- Each Pod of the Kubewarden stack (Policy Server, Controller) has an OpenTelemetry sidecar.
+- The sidecar receives tracing and monitoring information from the Kubewarden component via the OpenTelemetry Protocol (OTLP)
+- The OpenTelemetry collector:
+  - Sends the trace events to a central Jaeger instance
+  - Exposes Prometheus metrics on a specific port
+
+The Kubewarden Helm chart doesn't cover all the possible deployment scenarios of the OpenTelemetry collector.
+It's also possible to configure Kubewarden to send data to an OpenTelemetry collector
+deployed by the user. Documentation for that scenario is in the [custom OpenTelemetry guide](./40-custom-otel-collector.md).
+
+You first deploy OpenTelemetry in a Kubernetes cluster, so you can use it in the following sections
+addressing tracing and metrics.
+
+## Setting up a Kubernetes cluster
+
+> This section has step-by-step instructions to create a
+> Kubernetes cluster with an ingress controller enabled.
+>
+> Feel free to skip this section if you already have a Kubernetes
+> cluster where you can define Ingress resources.
+
+You can create a testing Kubernetes cluster using [minikube](https://minikube.sigs.k8s.io/docs/).
+
+Minikube has many backends, for this case you can use the
+[kvm2](https://minikube.sigs.k8s.io/docs/drivers/kvm2/) driver
+which relies on libvirt.
+
+Assuming `libvirtd` is correctly running on your machine, issue the
+following command:
+
+```console
+minikube start --driver=kvm2
+```
+
+The command produces output similar to the following one:
+
+```console
+$ minikube start --driver=kvm2
+😄  minikube v1.23.2 on Opensuse-Leap 15.3
+✨  Using the kvm2 driver based on user configuration
+👍  Starting control plane node minikube in cluster minikube
+🔥  Creating kvm2 VM (CPUs=2, Memory=6000MB, Disk=20000MB) ...
+🐳  Preparing Kubernetes v1.22.2 on Docker 20.10.8 ...
+    ▪ Generating certificates and keys ...
+    ▪ Booting up control plane ...
+    ▪ Configuring RBAC rules ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+🌟  Enabled addons: storage-provisioner, default-storageclass
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+```
+
+Now you need to enable the Ingress addon:
+
+```console
+minikube addons enable ingress
+```
+
+This produces an output similar to the following one:
+
+```console
+$ minikube addons enable ingress
+    ▪ Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.0
+    ▪ Using image registry.k8s.io/ingress-nginx/controller:v1.0.0-beta.3
+    ▪ Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.0
+🔎  Verifying ingress addon...
+🌟  The 'ingress' addon is enabled
+```
+
+## Install OpenTelemetry {#install-opentelemetry}
+
+You use the [OpenTelemetry Operator](https://github.com/open-telemetry/opentelemetry-operator)
+to manage the automatic injection of the OpenTelemetry Collector sidecar
+into the PolicyServer pod.
+
+The OpenTelemetry Operator requires installation of [cert-manager](https://cert-manager.io/docs/installation/)
+in the cluster.
+
+At the time of writing (2022-06-21), only specific versions of OpenTelemetry are compatible
+with Cert Manager, [see the compatibility chart](https://github.com/open-telemetry/opentelemetry-operator#opentelemetry-operator-vs-kubernetes-vs-cert-manager).
+
+You should install the latest cert-manager Helm chart:
+
+:::note
+At time of writing (2024-07-17) the latest cert-manager chart version is `v1.15.1`
+:::
+
+```console
+helm repo add jetstack https://charts.jetstack.io
+
+helm install --wait \
+    --namespace cert-manager \
+    --create-namespace \
+    --set crds.enabled=true \
+    --version 1.15.1 \
+    cert-manager jetstack/cert-manager
+```
+
+Once cert-manager is running, you can install the OpenTelemetry operator Helm chart:
+
+:::note
+At the time of writing (2024-11-11) the latest OpenTelemetry operator chart version is `0.65.0`
+:::
+
+```console
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+
+helm install --wait \
+  --namespace open-telemetry \
+  --create-namespace \
+  --version 0.65.0 \
+  --set "manager.collectorImage.repository=otel/opentelemetry-collector-contrib" \
+  my-opentelemetry-operator open-telemetry/opentelemetry-operator
+```
+
+## OpenTelemetry integration
+
+You can now move to the next chapters to enable application metrics (via Prometheus
+integration) and application tracing (via Jaeger integration).
