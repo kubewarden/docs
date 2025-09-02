@@ -53,12 +53,14 @@ For instance:
 
 ```yaml
 telemetry:
-  tracing:
-    enabled: True
-    jaeger:
-      endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:4317"
-      tls:
-        insecure: true
+  tracing: true
+  mode: sidecar
+  sidecar:
+    tracing:
+      jaeger:
+        endpoint: my-open-telemetry-collector.jaeger.svc.cluster.local:4317
+        tls:
+          insecure: true
 ```
 
 `my-open-telemetry-collector` is the service we installed under the `jaeger` namespace.

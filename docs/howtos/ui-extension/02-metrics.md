@@ -18,11 +18,7 @@ integrating it with Kubewarden,
 to view overall metrics for a Policy Server or metrics for a given policy.
 
 :::caution
-
-- Issues with Rancher Manager `v2.7.1` can cause issues with the Metrics dashboard view. The project recommends version `v2.7.2` or greater.
-
-- You need a cluster with at least 4 cores to install the Monitoring tool.
-
+You need a cluster with at least 4 cores to install the Monitoring tool.
 :::
 
 ## Prerequisites
@@ -49,7 +45,7 @@ metadata:
   namespace: cattle-kubewarden-system
 spec:
   endpoints:
-    - interval: 10s 
+    - interval: 10s
       port: metrics
   namespaceSelector:
     matchNames:
@@ -83,9 +79,11 @@ spec:
 
 ```yml
 telemetry:
-  metrics:
-    enabled: True
-    port: 8080
+  metrics: true
+  mode: sidecar
+  sidecar:
+    metrics:
+      port: 8080
 ```
 
 :::note
