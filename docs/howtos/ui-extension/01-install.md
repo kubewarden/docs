@@ -66,7 +66,7 @@ ___Policy Server detail view___
 ### Creating policies
 
 When creating policies, you will initially be given a "Custom Policy" option from the Policy Grid.
-Provide the required information for your policy's Name, Module, and Rules. We recommend to add Policy Catalog repository to access Kubewarden official policies.
+Provide the required information for your policy's Name, Module, and Rules. It's recommended to add the Policy Catalog repository to access Kubewarden's official policies.
 
 ___Creating a custom policy___
 ![UI Policy Whitelist](/img/ui_policy_custom.png)
