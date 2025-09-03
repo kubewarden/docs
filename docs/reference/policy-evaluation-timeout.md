@@ -37,7 +37,7 @@ When using a traditional,
 programming language, it's possible to have issues like:
 
 - [Infinite loops](https://en.wikipedia.org/wiki/Infinite_loop)
-- [Deadlocks](https://en.wikipedia.org/wiki/Deadlock).
+- [Deadlocks](https://en.wikipedia.org/wiki/Deadlock)
 - Slow running code lacking optimizations
 - Computationally intense operations
 
@@ -65,7 +65,7 @@ webhook timeout.
 ### Per Policy
 
 Starting with Kubewarden v1.29.0, every Kubewarden Policy can set its own
-timeout value via its `spec.timeoutEvalSeconds` attribute. Not to confuse with
+timeout value via its `spec.timeoutEvalSeconds` attribute. This is not to be confused with
 `spec.timeoutSeconds`, used for the Webhook timeout (see section
 [below](#comparison-with-kubernetes-dynamic-admission-controller-timeout)).
 
@@ -168,7 +168,7 @@ Quoting the [Kubernetes
 documentation](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts):
 
 > Because webhooks add to API request latency, they should evaluate as quickly
-> as possible. `timeoutSeconds` allows configuring how long the API server
+> as possible. Setting `timeoutSeconds` configures how long the API server
 > should wait for a webhook to respond before treating the call as a
 > failure.
 >
