@@ -56,9 +56,9 @@ A future release of Policy Server will address these scenarios.
 
 ## Configuration
 
-All values of the per-Policies evaluation timeouts, the per-Policy-Server
+All values of the per-Policy evaluation timeouts, the per-Policy-Server
 evaluation timeout, and the webhook timeouts are validated so they all are
-within acceptable values between each other. For example, it is not possible to
+within acceptable values of each other. For example, it is not possible to
 set a Policy evaluation timeout value that is higher than the Kubernetes'
 webhook timeout.
 
@@ -69,14 +69,14 @@ timeout value via its `spec.timeoutEvalSeconds` attribute. Not to confuse with
 `spec.timeoutSeconds`, used for the Webhook timeout (see section
 [below](#comparison-with-kubernetes-dynamic-admission-controller-timeout)).
 
-This is fine-grained, allowing per-Policy tuning on their evaluation timeout.
+This is fine-grained, allowing per-Policy tuning of their evaluation timeout.
 
-This setting has precedence over the global timeout evaluation configuration
+This setting takes precedence over the global timeout evaluation configuration
 per-Policy-Server.
 
 ### Per Policy Server
 
-Staring with Kubewarden v1.5.0, Policy Servers come with a configurable
+Starting with Kubewarden v1.5.0, Policy Servers come with a configurable
 evaluation timeout, enabled by default. Interruption of a request evaluation
 takes place after 2 seconds. This configuration affects all policies scheduled
 in that Policy Server. The per-Policy configurable `spec.timeoutEvalSeconds`
