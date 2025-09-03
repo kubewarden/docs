@@ -69,10 +69,45 @@ timeout value via its `spec.timeoutEvalSeconds` attribute. Not to confuse with
 `spec.timeoutSeconds`, used for the Webhook timeout (see section
 [below](#comparison-with-kubernetes-dynamic-admission-controller-timeout)).
 
-This is fine-grained, allowing per-Policy tuning of their evaluation timeout.
+The `spec.timeoutEvalSeconds` is fine-grained, allowing per-Policy tuning of
+their evaluation timeout.
 
 This setting takes precedence over the global timeout evaluation configuration
 per-Policy-Server.
+
+For example, to set a longer evaluation timeout for a specific policy:
+
+```yaml
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  annotations:
+    io.kubewarden.policy.category: Secrets
+    io.kubewarden.policy.severity: medium
+  name: env-variable-secrets-scanner
+spec:
+  module: registry://ghcr.io/kubewarden/policies/env-variable-secrets-scanner:v1.0.6
+  settings: {}
+  timeoutEvalSeconds: 10 # Set evaluation timeout
+  mutating: false
+  rules:
+    - apiGroups: [""]
+      apiVersions: ["v1"]
+      resources: ["pods"]
+      operations: ["CREATE"]
+    - apiGroups: [""]
+      apiVersions: ["v1"]
+      resources: ["replicationcontrollers"]
+      operations: ["CREATE", "UPDATE"]
+    - apiGroups: ["apps"]
+      apiVersions: ["v1"]
+      resources: ["deployments", "replicasets", "statefulsets", "daemonsets"]
+      operations: ["CREATE", "UPDATE"]
+    - apiGroups: ["batch"]
+      apiVersions: ["v1"]
+      resources: ["jobs", "cronjobs"]
+      operations: ["CREATE", "UPDATE"]
+```
 
 ### Per Policy Server
 
