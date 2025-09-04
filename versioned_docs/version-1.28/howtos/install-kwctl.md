@@ -41,10 +41,15 @@ If you use the Homebrew package manager on Linux, then:
 brew install kwctl
 ```
 
-
 Verify Installation:
 ```bash
 kwctl --version
+```
+
+### Using Zypper (openSUSE)
+
+```bash
+zypper install kwctl
 ```
 
 ### Using AUR (Arch User Repository)
