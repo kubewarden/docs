@@ -14,22 +14,26 @@ doc-topic: [operator-manual, policy-servers, custom-certificate-authorities]
 
 ## Custom Certificate Authorities for Policy registries
 
-It is possible to specify and configure the Certificate Authorities that a
+It's possible to specify and configure the Certificate Authorities that a
 PolicyServer uses when pulling the ClusterAdmissionPolicy artifacts from the
-policy registry. The following `spec` fields will configure the deployed
+policy registry. The following `spec` fields configure the deployed
 `policy-server` executable to that effect.
 
 ### Insecure sources
 
-> **Important**: the default behavior of `kwctl` and `policy-server` is to
-> enforce HTTPS with trusted certificates matching the system CA store. You can
-> interact with registries using untrusted certificates or even without TLS, by
-> using the `insecure_sources` setting. This approach is **highly discouraged**
-> for environments closer to production.
+:::note
+
+The default behavior of `kwctl` and `policy-server` is to enforce HTTPS with
+trusted certificates matching the system CA store. You can interact with
+registries using untrusted certificates or even without TLS, by using the
+`insecure_sources` setting. This approach is **highly discouraged** for
+environments closer to production.
+
+:::
 
 To configure the PolicyServer to accept insecure connections to specific
 registries, use the `spec.insecureSources` field of PolicyServer. This field
-accepts a list of URIs to be regarded as insecure. Example:
+accepts a list of insecure URIs. For example:
 
 ```yaml
 spec:
@@ -38,17 +42,19 @@ spec:
     - host.k3d.internal:5000
 ```
 
-See [here](../custom-certificate-authorities.md) for more
-information on how the `policy-server` executable treats them.
+See the [Custom Certificates Authority](../custom-certificate-authorities.md)
+documentation for more information on how the `policy-server` executable treats
+insecure URIs.
 
 
 ### Custom Certificate Authorities
 
-To configure the PolicyServer with a custom certificate chain of 1 or more
-certificates for a specific URI, use the field `spec.sourceAuthorities`.
+You can configure the PolicyServer with a custom certificate chain of 1 or more
+certificates for a specific URI. To do this you use the field
+`spec.sourceAuthorities`.
 
-This field is a map of URIs, each with its own list of strings that contain PEM
-encoded certificates. Example:
+This field is a map of URIs, each with its own list of strings that contain
+Privacy-Enhanced Mail (PEM) encoded certificates. For example:
 
 ```yaml
 spec:
@@ -69,5 +75,6 @@ spec:
         -----END CERTIFICATE-----
 ```
 
-See [here](../custom-certificate-authorities.md) for more
-information on how the `policy-server` executable treats them.
+See the [Custom Certificate Authorities](../custom-certificate-authorities.md)
+documentation for more information on how the `policy-server` executable treats
+them.
