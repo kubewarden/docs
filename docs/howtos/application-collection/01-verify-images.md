@@ -32,8 +32,8 @@ Collection.
 
 Following the [Application Collection
 docs](https://docs.apps.rancher.io/get-started/authentication/), create an
-access token and configure the cluster so it can pull from the Application
-Collection registry with a Docker Config Secret, such as this one:
+access token and configure the cluster to pull from the Application
+Collection registry with a Docker Config Secret:
 
 ```console
 $ kubectl create secret docker-registry application-collection \
@@ -146,14 +146,14 @@ spec:
 EOF
 ```
 
-```
+```console
 $ kubectl apply -f mypolicy.yml
 $ kubectl get admissionpolicies -n default # wait for status active
 ```
 
 To test it, deploy a Pod with a signed image from Application Collection:
 
-```
+```console
 $ kubectl run nginx --image [dp.apps.rancher.io/containers/nginx:1.24.0](http://dp.apps.rancher.io/containers/nginx:1.24.0) --overrides='{"spec": {"imagePullSecrets":[{"name": "application-collection"}]}}'
 pod/nginx created
 ```

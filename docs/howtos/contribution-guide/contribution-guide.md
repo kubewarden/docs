@@ -15,4 +15,5 @@ doc-persona: [kubewarden-developer, kubewarden-operator, kubewarden-manager]
 
 _Kubewarden welcomes all contributors, whether new or experienced._
 
-Please review our contributing guide [here](https://github.com/kubewarden/community/blob/main/CONTRIBUTING.md).
+Please review the contributing guide,
+[`CONTRIBUTING.md`](https://github.com/kubewarden/community/blob/main/CONTRIBUTING.md).
