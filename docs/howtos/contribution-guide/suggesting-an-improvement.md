@@ -26,7 +26,7 @@ work to avoid duplicate efforts.
 
 ## Opening an issue
 
-To suggest improvements to existing documentation content or report an error
+To suggest improvements to existing documentation content or report an error,
 open an issue.
 
 - Click the GitHub Octocat icon at the top. This redirects you to the
