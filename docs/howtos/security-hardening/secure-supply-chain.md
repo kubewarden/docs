@@ -623,7 +623,7 @@ For example, the last snippet, using `genericIssuer`, could be rewritten as:
 ### Signature annotations validation
 
 All signature types can have other optional validation fields, `annotations`.
-These fields are key/value data added by during the signing process.
+These fields are key/value data added during the signing process.
 
 With Kubewarden, you can check the policy signature is by trusted users **and**
 that they have specific annotations.
