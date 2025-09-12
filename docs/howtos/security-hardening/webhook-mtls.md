@@ -13,8 +13,8 @@ doc-topic: [operator-manual, security]
 </head>
 
 This guide shows you how to enable mutual Transport Layer Security (mTLS) for
-webhooks used by the Kubewarden stack when using [K3s](https://k3s.io/)
-as your Kubernetes distribution.
+Kubewarden stack webhooks when using [K3s](https://k3s.io/) as your Kubernetes
+distribution.
 
 For more information on how to harden the webhooks, see the [reference
 page](../../reference/security-hardening/webhooks-hardening).
@@ -150,7 +150,7 @@ The certificate of the root CA, that issued the Kubernetes client certificate,
 needs to be available to the Kubewarden stack.
 
 The root CA is available at `/etc/rancher/k3s/admission/certs/rootCA.crt` on
-the Kubernetes node. Its content has to be put into a `ConfigMap` under the
+the Kubernetes node. You need its content in a `ConfigMap` under the
 `kubewarden` namespace. You store the contents of the `rootCA.crt` file in the
 key named `client-ca.crt`.
 
@@ -168,7 +168,7 @@ kubectl create configmap -n kubewarden api-server-mtls \
     --from-file=client-ca.crt=/etc/rancher/k3s/admission/certs/rootCA.crt
 ```
 
-The resulting `ConfigMap` is named `api-server-mtls`.
+The name of the resulting `ConfigMap` is `api-server-mtls`.
 
 ### Install the Kubewarden stack
 
