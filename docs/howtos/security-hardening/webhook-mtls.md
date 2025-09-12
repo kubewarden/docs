@@ -12,15 +12,18 @@ doc-topic: [operator-manual, security]
   <link rel="canonical" href="https://docs.kubewarden.io/howtos/security-hardening/webhook-mtls"/>
 </head>
 
-This guide shows you how to enable mutual TLS (mTLS) for all the webhooks used by the Kubewarden
-stack when using [K3s](https://k3s.io/) as your Kubernetes distribution.
+This guide shows you how to enable mutual Transport Layer Security (mTLS) for
+webhooks used by the Kubewarden stack when using [K3s](https://k3s.io/)
+as your Kubernetes distribution.
 
 For more information on how to harden the webhooks, see the [reference
 page](../../reference/security-hardening/webhooks-hardening).
 
 ## Prerequisites
 
-Before installing K3s, you need to create a certificate authority (CA) and a client certificate to use to secure the communication between the Kubewarden webhooks and the Kubernetes API server.
+Before installing K3s, you need to create a certificate authority (CA) and a
+client certificate. You use to secure the communication between the Kubewarden
+webhooks and the Kubernetes API server.
 
 As a first step, create the `/etc/rancher/k3s/admission/certs` directory:
 
@@ -30,8 +33,8 @@ sudo mkdir -p /etc/rancher/k3s/admission/certs
 
 ### Create a root CA and the client certificate
 
-As `root` user, change directory to the `/etc/rancher/k3s/admission/certs` directory and
-create all needed certificates:
+As `root` user, change directory to the `/etc/rancher/k3s/admission/certs`
+directory and create all needed certificates:
 
 ```console
 export FQDN=mtls.kubewarden.io
@@ -75,7 +78,7 @@ openssl x509 -req -CA rootCA.crt -CAkey rootCA.key -in client.csr -out client.cr
 openssl x509 -text -noout -in client.crt
 ```
 
-The following files should have been created:
+This creates the following files:
 
 - `client.crt`
 - `client.csr`
@@ -86,7 +89,8 @@ The following files should have been created:
 
 ### Create the Kubernetes configuration file
 
-Create the `/etc/rancher/k3s/admission/admission.yaml` file with the following content:
+Create the `/etc/rancher/k3s/admission/admission.yaml` file with the following
+content:
 
 ```yaml
 # /etc/rancher/k3s/admission/admission.yaml
@@ -142,12 +146,13 @@ Wait for the installation to complete.
 
 ### Prerequisites
 
-The certificate of the root CA, that issued the Kubernetes client certificate, must be made available to
-the Kubewarden stack.
+The certificate of the root CA, that issued the Kubernetes client certificate,
+needs to be available to the Kubewarden stack.
 
-The root CA is available at `/etc/rancher/k3s/admission/certs/rootCA.crt` on the Kubernetes node. Its content
-has to be put into a `ConfigMap` under the `kubewarden` namespace. The contents of the `rootCA.crt` file
-must be stored in a key named `client-ca.crt`.
+The root CA is available at `/etc/rancher/k3s/admission/certs/rootCA.crt` on
+the Kubernetes node. Its content has to be put into a `ConfigMap` under the
+`kubewarden` namespace. You store the contents of the `rootCA.crt` file in the
+key named `client-ca.crt`.
 
 First, create the `kubewarden` namespace:
 
@@ -155,8 +160,8 @@ First, create the `kubewarden` namespace:
 kubectl create namespace kubewarden
 ```
 
-Then create the `ConfigMap` in it. The following command, run on the Kubernetes node,
-does that:
+Then create the `ConfigMap` in it. The following command, run on the Kubernetes
+node, does that:
 
 ```console
 kubectl create configmap -n kubewarden api-server-mtls \
@@ -167,15 +172,16 @@ The resulting `ConfigMap` is named `api-server-mtls`.
 
 ### Install the Kubewarden stack
 
-Install the Kubewarden stack as described in the [quickstart guide](../../quick-start.md).
-Follow all the steps, but when installing the `kubewarden-controller` Helm chart, make sure to
-enable the following values:
+Install the Kubewarden stack as described in the [quickstart
+guide](../../quick-start.md). Follow all the steps, but when installing the
+`kubewarden-controller` Helm chart, make sure to enable the following values:
 
-- `mTLS.enable`: must be set to `true`.
-- `mTLS.configMapName`: must be set to name of the `ConfigMap` that was previously created.
+- `mTLS.enable`: must be `true`.
+- `mTLS.configMapName`: must be the name of the `ConfigMap` that was previously
+  created.
 
-Given the `ConfigMap` was named `api-server-mtls`, the Helm command to install the `kubewarden-controller`
-is:
+The `ConfigMap` name is `api-server-mtls`. The Helm command to install
+the `kubewarden-controller` is:
 
 ```console
 helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller \
@@ -183,4 +189,5 @@ helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-co
     --set mTLS.configMapName=api-server-mtls
 ```
 
-Once this command finishes, the Kubewarden stack is installed and its webhooks are secured with mTLS.
+Once this command finishes, mTLS secures the installation of the Kubewarden
+stack and its webhooks.
