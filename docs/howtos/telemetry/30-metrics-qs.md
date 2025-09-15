@@ -15,32 +15,37 @@ doc-topic: [operator-manual, telemetry, metrics, quick-start]
 This section documents how to enable metrics reporting on the Policy Server.
 
 :::note
+
 Before continuing, make sure you completed the previous
-[OpenTelemetry](10-opentelemetry-qs.md#install-opentelemetry) section of this book. You
-need it for this section to work correctly.
+[OpenTelemetry](10-opentelemetry-qs.md#install-opentelemetry) section of this
+book. You need it for this section to work correctly.
+
 :::
 
-You use [Prometheus](https://prometheus.io/) to collect metrics exposed by the Policy
-Server.
+You use [Prometheus](https://prometheus.io/) to collect metrics exposed by the
+Policy Server.
 
 ## Install Prometheus
 
 You use the [Prometheus Operator](https://github.com/prometheus-operator/prometheus-operator),
 that lets define Prometheus' targets.
 
-There are many ways to install and set up Prometheus.
-For ease of deployment, you should use the
-Prometheus community Helm chart.
+There are many ways to install and set up Prometheus. For ease of deployment,
+you should use the Prometheus community Helm chart.
 
-The Prometheus Operator deployed with this Helm chart uses [Service Monitors](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/design.md#servicemonitor) to define which services Prometheus should monitor.
+The Prometheus Operator deployed with this Helm chart uses [Service
+Monitors](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/design.md#servicemonitor)
+to define which services Prometheus should monitor.
 
-In your case, you are adding a ServiceMonitor targeting the `kubewarden` namespace for services that
-match labels `app=kubewarden-policy-server-default` and `app.kubernetes.io/name: kubewarden-controller`.
-This configures the Prometheus Operator to inspect which Kubernetes endpoints belong to services matching these conditions.
+In your case, you are adding a ServiceMonitor targeting the `kubewarden`
+namespace for services that match labels `app=kubewarden-policy-server-default`
+and `app.kubernetes.io/name: kubewarden-controller`. This configures the
+Prometheus Operator to inspect which Kubernetes endpoints belong to services
+matching these conditions.
 
-You can create two ServiceMonitors named `kubewarden-controller` and `kubewarden-policy-server` for use by the
-default Prometheus instance installed by the Helm chart.
-To do that, you should create the following values file:
+You can create two ServiceMonitors named `kubewarden-controller` and
+`kubewarden-policy-server` for use by the default Prometheus instance installed
+by the Helm chart. To do that, you should create the following values file:
 
 ```console
 cat <<EOF > kube-prometheus-stack-values.yaml
@@ -112,8 +117,9 @@ helm install --wait \
 Now you can deploy the rest of the Kubewarden stack. The official helm
 chart creates a PolicyServer named `default`.
 
-You should configure the Helm chart so that you have metrics enabled
-in Kubewarden. The `kubewarden-values.yaml` file should have the following contents:
+You should configure the Helm chart so that you have metrics enabled in
+Kubewarden. The `kubewarden-values.yaml` file should have the following
+contents:
 
 ```yaml
 telemetry:
@@ -153,8 +159,8 @@ By default, this policy server doesn't have metrics enabled.
 
 ## Accessing Prometheus
 
-Prometheus exposes a UI that you can use to inspect metrics exposed by different
-components within your Kubernetes cluster.
+Prometheus exposes a UI that you can use to inspect metrics exposed by
+different components within your Kubernetes cluster.
 
 You can forward the Prometheus port so you can access it.
 
@@ -163,9 +169,8 @@ kubectl port-forward -n prometheus --address 0.0.0.0 svc/prometheus-operated 909
 ```
 
 Now, you can visit Prometheus on port `9090` and perform a query, for example:
-`kubewarden_policy_evaluations_total`.
-You see that the number of evaluations grows over
-time as more requests go through the policy.
+`kubewarden_policy_evaluations_total`. You see that the number of evaluations
+grows over time as more requests go through the policy.
 
 ## Accessing Grafana
 
@@ -179,11 +184,10 @@ You can now login with the default username `admin` and password `prom-operator`
 
 ### Using the Kubewarden Grafana dashboard
 
-Kubewarden has a Grafana dashboard with basic metrics
-giving an overview about how Kubewarden behaves in the cluster.
-This dashboard
-is available in the GitHub releases of the Kubewarden `policy-server` repository as a
-[JSON file](https://github.com/kubewarden/policy-server/releases/latest/download/kubewarden-dashboard.json)
+Kubewarden has a Grafana dashboard with basic metrics giving an overview about
+how Kubewarden behaves in the cluster. This dashboard is available in the
+GitHub releases of the Kubewarden `policy-server` repository as a [JSON
+file](https://github.com/kubewarden/policy-server/releases/latest/download/kubewarden-dashboard.json)
 or at the [Grafana website](https://grafana.com/grafana/dashboards/15314).
 
 To import the dashboard into your environment, you can download the JSON file
@@ -193,8 +197,8 @@ from the Grafana website or the repository:
 curl https://github.com/kubewarden/policy-server/releases/latest/download/kubewarden-dashboard.json
 ```
 
-Once you have the file you should access the Grafana dashboard and
-[import it](https://grafana.com/docs/grafana/latest/dashboards/export-import/#import-dashboard).
+Once you have the file you should access the Grafana dashboard and [import
+it](https://grafana.com/docs/grafana/latest/dashboards/export-import/#import-dashboard).
 Visit `/dashboard/import` in the Grafana dashboard and follow these steps:
 
 1. Copy and paste the JSON file contents into the `Import via panel json` box in the Grafana UI.
@@ -204,16 +208,18 @@ Visit `/dashboard/import` in the Grafana dashboard and follow these steps:
 
 Another option is import it directly from the Grafana.com website. For this:
 
-1. Copy the dashboard ID from the [dashboard page](https://grafana.com/grafana/dashboards/15314),
+1. Copy the dashboard ID from the [dashboard
+   page](https://grafana.com/grafana/dashboards/15314),
 1. Paste it into the `Import via grafana.com` field.
 1. Click the `load` button.
-1. After importing the dashboard, define the Prometheus data source to use and finish
-   the import process.
+1. After importing the dashboard, define the Prometheus data source to use and
+   finish the import process.
 
-The Grafana dashboard has panes showing the state of all
-policies managed by Kubewarden. It also has policy-specific panels.
+The Grafana dashboard has panes showing the state of all policies managed by
+Kubewarden. It also has policy-specific panels.
 
-You can obtain detailed metrics for a specific policy by changing the value of the `policy_name` variable to match the required policy's name.
+You can obtain detailed metrics for a specific policy by changing the value of
+the `policy_name` variable to match the required policy's name.
 
 You should be able to see the dashboard similar to this:
 

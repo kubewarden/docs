@@ -12,32 +12,30 @@ doc-topic: [operator-manual, telemetry, metrics, quick-start]
   <link rel="canonical" href="https://docs.kubewarden.io/howtos/telemetry/custom-otel-collector"/>
 </head>
 
-This guide explains how to configure Kubewarden to send telemetry data to an OpenTelemetry collector
-already deployed on the cluster.
+This guide explains how to configure Kubewarden to send telemetry data to an
+OpenTelemetry collector already deployed on the cluster.
 
-You should deploy only one instance of the [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/)
-in the cluster.
+You should deploy only one instance of the [OpenTelemetry
+Collector](https://opentelemetry.io/docs/collector/) in the cluster.
 
 ## Install dependencies
 
 First, begin by installing the dependencies of OpenTelemetry Collector.
 
-You need the communication between the Kubewarden components and the collector to be encrypted.
-You can use [cert-manager](https://cert-manager.io/) to manage all the certificates
-required for secure communications.
+You need encrypted communication between the Kubewarden components and the
+collector. You can use [cert-manager](https://cert-manager.io/) to manage all
+the certificates required for secure communications.
 
-OpenTelemetry Collector traces get sent to a [Jaeger](https://www.jaegertracing.io/)
-instance.
+OpenTelemetry Collector traces get sent to a
+[Jaeger](https://www.jaegertracing.io/) instance.
 
-The Kubewarden stack sends metrics to the OpenTelemetry Collector.
-This one exposes the metrics
-as a Prometheus endpoint.
-The metrics are then collected by a Prometheus instance and stored in its
-database. The same Prometheus instance also exposes a UI to view and use the metrics.
+The Kubewarden stack sends metrics to the OpenTelemetry Collector. This one
+exposes the metrics as a Prometheus endpoint. The metrics are then collected by
+a Prometheus instance and stored in its database. The same Prometheus instance
+also exposes a UI to view and use the metrics.
 
-Resources you create get defined in the `kubewarden`
-Namespace, or expect its existence.
-Due to that, you should begin by creating the Namespace:
+Resources you create get defined in the `kubewarden` Namespace, or expect its
+existence. Due to that, you should begin by creating the Namespace:
 
 ```console
 kubectl create namespace kubewarden
@@ -65,10 +63,10 @@ helm install --wait \
   my-opentelemetry-operator open-telemetry/opentelemetry-operator
 ```
 
-You set up communication between Kubewarden components and the OpenTelemetry Collector
-using mTLS.
+You set up communication between Kubewarden components and the OpenTelemetry
+Collector using mTLS.
 
-To do that, you need to create the whole PKI infrastructure:
+To do that, you need to create the whole Public Key Infrastructure (PKI):
 
 ```yaml
 # pki.yaml file
@@ -143,7 +141,8 @@ spec:
 EOF
 ```
 
-Now you install [Prometheus](https://prometheus.io/) to store and visualize metrics.
+Now you install [Prometheus](https://prometheus.io/) to store and visualize
+metrics.
 
 ```console
 cat <<EOF > kube-prometheus-stack-values.yaml
@@ -170,13 +169,15 @@ helm install --wait --create-namespace \
 ```
 
 :::note
+
 The Prometheus service monitor obtains the Kubewarden metrics by scraping the
 OpenTelemetry collector running in the `kubewarden` Namespace.
+
 :::
 
 ## Install OpenTelemetry Collector
 
-Now you can  deploy a custom OpenTelemetry Collector in the `kubewarden` Namespace.
+Now you can deploy a custom OpenTelemetry Collector in the `kubewarden` Namespace.
 
 ```yaml
 # otel-collector.yaml file
@@ -239,21 +240,20 @@ kubectl apply -f otel-collector.yaml
 ```
 
 That configuration uses a trivial processing pipeline to receive trace events
-and forward them to Jaeger.
-It also receives metrics and exposes them for
+and forward them to Jaeger. It also receives metrics and exposes them for
 collection by Prometheus.
 
-You secure communication between the Kubewarden stack and the OpenTelemetry Collector
-using mTLS. However the communication between the OpenTelemetry
+You secure communication between the Kubewarden stack and the OpenTelemetry
+Collector using mTLS. However the communication between the OpenTelemetry
 Collector and Jaeger isn't secured, to reduce the complexity of the example.
 
 ## Install Kubewarden stack
 
-When the OpenTelemetry Collector is running, you can deploy Kubewarden in
-the usual way.
+When the OpenTelemetry Collector is running, you can deploy Kubewarden in the
+usual way.
 
-You need to configure the Kubewarden components so they send
-events and metrics to the OpenTelemetry Collector.
+You need to configure the Kubewarden components so they send events and metrics
+to the OpenTelemetry Collector.
 
 ```yaml
 # values.yaml
@@ -269,16 +269,15 @@ telemetry:
 ```
 
 The Secret referenced by the `otelCollectorCertificateSecret` key must have an
-entry named `ca.crt`.
-That holds the certificate of the CA that issued the
+entry named `ca.crt`. That holds the certificate of the CA that issued the
 certificate used by the OpenTelemetry Collector.
 
-The Secret referenced by the `otelCollectorClientCertificateSecret` key must have
-the following entries: `tls.crt` and `tls.key` keys.
-These are the client certificate and
-its key that used by the Kubewarden stack to authenticate against the OpenTelemetry Collector.
+The Secret referenced by the `otelCollectorClientCertificateSecret` key must
+have the following entries: `tls.crt` and `tls.key` keys. These are the client
+certificate and its key that used by the Kubewarden stack to authenticate
+against the OpenTelemetry Collector.
 
-Leave these values empty if you do not use encryption or mTLS.
+Leave these values empty if you don't use encryption or mTLS.
 
 Install the Kubewarden stack:
 
@@ -305,8 +304,8 @@ Now everything is in place.
 
 ## Exploring the Jaeger UI
 
-You can see the trace events generated by Kubewarden by using the Jaeger web UI.
-They're grouped under the `kubewarden-policy-server` service:
+You can see the trace events generated by Kubewarden by using the Jaeger web
+UI. They're grouped under the `kubewarden-policy-server` service:
 
 ![The Jaeger dashboard](/img/jaeger-custom-otel-collector.png "The Jaeger dashboard")
 
