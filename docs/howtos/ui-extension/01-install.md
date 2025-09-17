@@ -17,75 +17,82 @@ This section describes installing the Kubewarden UI as an extension of
 
 ## Install Kubewarden UI Extension
 
-The Kubewarden UI is installed as a global extension,
-however,
-the Kubewarden controller is installed through the Rancher UI as a cluster scoped resource.
+You install the Kubewarden UI as a global extension. However, you install the
+Kubewarden controller through the Rancher UI as a cluster-scoped resource.
 
 :::note
-For air gapped installations, follow [these steps](../airgap/02-install.md).
+For air-gapped installations, follow [these steps](../airgap/02-install.md).
 :::
 
-Within the Extensions page,
-select the "Enable" button and choose the option to add the Rancher Extensions Repository.
-When enabled, the "Kubewarden" extension item appears automatically.
-Select this item to install the extension.
-Once installed, you can install Kubewarden into the required cluster.
+Within the Extensions page, select the "Enable" button and choose the option to
+add the Rancher Extensions Repository. When enabled, the "Kubewarden" extension
+item appears automatically. Select this item to install the extension. Once
+installed, you can install Kubewarden into the required cluster.
 
 ### Install Kubewarden
 
-Following the previous steps, within your cluster a new item appears in the side-menu for Kubewarden.
-This dashboard page guides you through the installation process, completing the prerequisites.
+Following the previous steps, within your cluster a new item appears in the
+side-menu for Kubewarden. This dashboard page guides you through the
+installation process, completing the prerequisites.
 
 :::note
-During the "App Install" step of the installation wizard,
-the "Install Kubewarden" button may remain grayed out.
-If this happens, refresh the page and navigate back to this step.
+
+During the "App Install" step of the installation wizard, the "Install
+Kubewarden" button may remain grayed out. If this happens, refresh the page and
+navigate back to this step.
+
 :::
 
 ## Post-Installation
 
-After completing the installation the dashboard page and side menu now contain new items,
-namely Policy Servers, Cluster Admission Policies, and Admission Policies.
-From here you can create Policy Servers and Policies to control behavior within your cluster.
+After completing the installation the dashboard page and side menu now contain
+new items, namely, Policy Servers, Cluster Admission Policies, and Admission
+Policies. From here you can create Policy Servers and Policies to control
+behavior within your cluster.
 
 ___Dashboard view___
 ![UI Dashboard](/img/ui_dashboard.png)
 
 ### Enabling the default Policy Server and policies
 
-Within the dashboard page you can select the "Install Chart" button to install the
+Within the dashboard page you can select the "Install Chart" button to install
+the
 [`kubewarden-defaults`](https://github.com/kubewarden/helm-charts/tree/main/charts/kubewarden-defaults)
-Helm chart,
-which includes the default Policy Server and a few curated policies.
+Helm chart. This chart includes the default Policy Server and a few curated
+policies.
 
-After installing the chart, you can view the default Policy Server details with the related policies in a sortable table.
+After installing the chart, you can view the default Policy Server details with
+the related policies in a sortable table.
 
 ___Policy Server detail view___
 ![UI PolicyServer Detail](/img/ui_policyserver_detail.png)
 
 ### Creating policies
 
-When creating policies, you will initially be given a "Custom Policy" option from the Policy Grid.
-Provide the required information for your policy's Name, Module, and Rules. It's recommended to add the Policy Catalog repository to access Kubewarden's official policies.
+When creating policies, you are initially given a "Custom Policy" option from
+the Policy Grid. Provide the required information for your policy's Name,
+Module, and Rules. It's recommended to add the Policy Catalog repository to
+access Kubewarden's official policies.
 
 ___Creating a custom policy___
 ![UI Policy Whitelist](/img/ui_policy_custom.png)
 
 ### Additional features
 
-Follow the instructions to include [Monitoring](./02-metrics.md) or [Tracing](./03-tracing.md).
+Follow the instructions to include [Monitoring](./02-metrics.md) or
+[Tracing](./03-tracing.md).
 
 ## Airgap installation
 
-As Kubewarden is a Rancher Official Extension,
-the Rancher team provides a mechanism to automatically generate an Extension Catalog Image.
-This is added to the `rancher-images.txt` file when
-[installing Rancher Manager](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/air-gapped-helm-cli-install/publish-images#1-find-the-required-assets-for-your-rancher-version)
-for air gapped instances.
+As Kubewarden is a Rancher Official Extension, the Rancher team provides a
+mechanism to automatically generate an Extension Catalog Image. This becomes
+added to the `rancher-images.txt` file when [installing Rancher
+Manager](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/other-installation-methods/air-gapped-helm-cli-install/publish-images#1-find-the-required-assets-for-your-rancher-version)
+for air-gapped instances.
 
-Once this image has been mirrored to a registry accessible to your air-gapped cluster,
-you can import the image within the Rancher UI.
-This creates a local Helm repository with the Kubewarden UI chart for installation.
+Once this image is mirrored to a registry accessible to your air-gapped
+cluster, you can import the image within the Rancher UI. This creates a local
+Helm repository with the Kubewarden UI chart for installation.
 
 ### Installation steps
 
