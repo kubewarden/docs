@@ -274,7 +274,7 @@ certificate used by the OpenTelemetry Collector.
 
 The Secret referenced by the `otelCollectorClientCertificateSecret` key must
 have the following entries: `tls.crt` and `tls.key` keys. These are the client
-certificate and its key that used by the Kubewarden stack to authenticate
+certificate and its key used by the Kubewarden stack to authenticate
 against the OpenTelemetry Collector.
 
 Leave these values empty if you don't use encryption or mTLS.
