@@ -32,7 +32,7 @@ instructions](../telemetry/30-metrics-qs.md#install-prometheus) to install it.
 - Import the manifest to create the ServiceMonitors.
 - You need to specify the Kubewarden installation namespace.
 
-These steps are an adpation from the [telemetry metrics
+These steps are an adaptation from the [telemetry metrics
 instructions](../telemetry/30-metrics-qs.md):
 
 ```yaml
@@ -97,7 +97,7 @@ the `cattle-monitoring-system` namespace and select the `Redeploy` action.
 ### Create the Grafana dashboard ConfigMap for Policies and Policy Server
 
 :::note
-This method is suitable for air gap installations
+This method is suitable for air-gapped installations.
 :::
 
 The dashboards are unique between Policy Server and Policies, so need separate

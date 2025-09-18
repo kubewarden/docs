@@ -45,9 +45,9 @@ navigate back to this step.
 
 ## Post-Installation
 
-After completing the installation the dashboard page and side menu now contain
-new items, namely, Policy Servers, Cluster Admission Policies, and Admission
-Policies. From here you can create Policy Servers and Policies to control
+After completing the installation, the dashboard page and side menu now contain
+new items: Policy Servers, Cluster Admission Policies and Admission
+Policies. From here, you can create Policy Servers and Policies to control
 behavior within your cluster.
 
 ___Dashboard view___
@@ -55,7 +55,7 @@ ___Dashboard view___
 
 ### Enabling the default Policy Server and policies
 
-Within the dashboard page you can select the "Install Chart" button to install
+Within the dashboard page, you can select the "Install Chart" button to install
 the
 [`kubewarden-defaults`](https://github.com/kubewarden/helm-charts/tree/main/charts/kubewarden-defaults)
 Helm chart. This chart includes the default Policy Server and a few curated
@@ -82,7 +82,7 @@ ___Creating a custom policy___
 Follow the instructions to include [Monitoring](./02-metrics.md) or
 [Tracing](./03-tracing.md).
 
-## Airgap installation
+## Air-gapped installation
 
 As Kubewarden is a Rancher Official Extension, the Rancher team provides a
 mechanism to automatically generate an Extension Catalog Image. This becomes

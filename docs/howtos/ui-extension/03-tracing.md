@@ -43,9 +43,9 @@ https://<CLUSTER_IP>/api/v1/namespaces/jaeger/services/http:my-open-telemetry-qu
 ```
 
 This endpoint may be unique depending on your configuration. You can find the
-endpoint listed for your Jaeger resource under the Services page.
+endpoint listed for your Jaeger resource on the Services page.
 
-### Update `rancher-kubewarden-controller` with Jaeger endpoint
+### Update `rancher-kubewarden-controller` with a Jaeger endpoint
 
 You'll need to edit the `rancher-kubewarden-controller` resource to add the
 Jaeger endpoint "my-open-telemetry-collector.jaeger.svc.cluster.local:4317".
