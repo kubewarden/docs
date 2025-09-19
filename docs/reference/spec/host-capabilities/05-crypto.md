@@ -52,8 +52,7 @@ performing cryptographic checks exposed by the host:
   "cert_chain": [
       # list of certs, ordered by trust
       # usage (intermediates first, root last)
-      # If empty or missing, certificate is assumed
-      # trusted
+      # If not provided, the Mozilla's CA is used.
       Certificate,
       ...
       Certificate,
