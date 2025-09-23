@@ -31,7 +31,7 @@ Refer to the rustup [install documentation](https://rust-lang.github.io/rustup/i
 Once you have installed `rustup` add the WebAssembly System Interface (WASI) target:
 
 ```console
-rustup target add wasm32-wasi
+rustup target add wasm32-wasip1
 ```
 
 ## OSX dependencies
