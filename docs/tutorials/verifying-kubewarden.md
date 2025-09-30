@@ -135,6 +135,17 @@ The same Helm charts are signed via Sigstore's keyless signing, and pushed to an
 OCI repository that holds both the Helm chart, its signature, and its
 provenance attestation as OCI artifacts.
 
+The Helm charts are published alongside a [Hauler](https://hauler.dev/) manifest
+that lists all needed artifacts.
+
+### Verifying with Hauler
+
+Hauler automatically verifies the artifacts on download. For more information,
+see [our docs](../howtos/airgap/hauler).
+
+
+### Verifying manually
+
 Since Helm 3.8.0, Helm has support for OCI registries, but because of
 constraints in them, they can't be searched via `helm`. You can find the
 [list of charts in GitHub Container Registry](https://github.com/orgs/kubewarden/packages?tab=packages&q=charts).
