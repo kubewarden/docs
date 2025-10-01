@@ -25,6 +25,22 @@ needing those libraries can perform callbacks to evaluate the cryptographic
 functions on the host side. They receive the result, and continue with their
 tasks.
 
+## Behaviour
+
+The Wasm host relies on `rustls-wepki` for the implementation of x.509 and PKI certificates.
+This means:
+
+- Key usage: We have elected to accept any key usage, which helps covering
+  several use cases (as usual, please get in contact if you would like to discuss
+  different approaches).
+- Certificate chains: A certificate will be considered untrusted if its
+  intermediate CA is expired.
+- Certificate expiration dates: If a certificate chain is provided, we will
+  always validate the certificate's entire validity period. Wepki does not check
+  the expiration of the root CA.
+- We always validate the certificate, and if no chain is provided, the
+  Mozilla's CA is used.
+
 ## WaPC protocol contract
 
 If you are implementing your own language SDK, these are the functions
@@ -59,7 +75,7 @@ performing cryptographic checks exposed by the host:
     ],
   # RFC 3339 time format string, to check expiration
   # against.
-  # If missing, certificate is assumed never expired
+  # If missing, time is now
   "not_after": string
 }
 ```
