@@ -16,7 +16,7 @@ doc-topic: [operator-manual, rancher-backup-operator]
 The `rancher-backup` operator can be used to backup and restore Rancher on any
 Kubernetes cluster.
 
-Since version X.Y.Z, `rancher-backup` has support for Kubewarden. This includes:
+Since version `v9.0.0`, `rancher-backup` has support for Kubewarden. This includes:
 
 - the default Rancher Namespace `cattle-kubewarden-system` (or
   `cattle-kubewarden-*`), and the default Kubewarden Namespace `kubewarden`.
