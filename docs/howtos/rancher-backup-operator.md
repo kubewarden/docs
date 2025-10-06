@@ -50,8 +50,13 @@ $ kubectl label secret secret-ghcr-docker \
 Follow the [Rancher
 documentation](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/backup-restore-and-disaster-recovery).
 For a Minikube install using the PersistentVolumes of type `hostPath` named
-`standard` that Minikube supports out of the box. The installation would be as
-follows:
+`standard` that Minikube supports out of the box.
+
+One needs to instruct the Backup Operator to also backup
+Kubewarden user-defined CRs by setting the Value
+`optionalResources.kubewarden.enabled` to `true`.
+
+The installation would be as follows:
 
 ```console
 $ helm repo add rancher-charts https://charts.rancher.io
@@ -60,7 +65,8 @@ $ helm install --wait --create-namespace -n cattle-resources-system \
     rancher-backup-crd rancher-charts/rancher-backup-crd
 $ helm install --wait -n cattle-resources-system \
     rancher-backup rancher-charts/rancher-backup \
-    --set persistence.enabled=true --set persistence.storageClass=standard
+    --set persistence.enabled=true --set persistence.storageClass=standard \
+    --set optionalResources.kubewarden.enabled=true
 ```
 
 ## Backup
