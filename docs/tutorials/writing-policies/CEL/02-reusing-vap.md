@@ -58,14 +58,14 @@ spec:
   validations: # (5)
     - expression: |
         object.spec.replicas <= (
-          params.overrideReplicas != null && params.overrideReplicas < variables.maxReplicas
-          ? params.overrideReplicas
+          params.data.overrideReplicas != null && params.data.overrideReplicas < variables.maxReplicas
+          ? params.data.overrideReplicas
           : variables.maxReplicas
         )
       messageExpression: |
         'The number of replicas must be less than or equal to ' +
-        string(params.overrideReplicas != null && params.overrideReplicas < variables.maxReplicas
-          ? params.overrideReplicas
+        string(params.data.overrideReplicas != null && params.data.overrideReplicas < variables.maxReplicas
+          ? params.data.overrideReplicas
           : variables.maxReplicas)
 ---
 apiVersion: admissionregistration.k8s.io/v1
@@ -128,14 +128,14 @@ spec:
     validations: # (5)
       - expression: |
           object.spec.replicas <= (
-            params.overrideReplicas != null && params.overrideReplicas < variables.maxReplicas
-            ? params.overrideReplicas
+            params.data.overrideReplicas != null && params.data.overrideReplicas < variables.maxReplicas
+            ? params.data.overrideReplicas
             : variables.maxReplicas
           )
         messageExpression: |
           'The number of replicas must be less than or equal to ' +
-          string(params.overrideReplicas != null && params.overrideReplicas < variables.maxReplicas
-            ? params.overrideReplicas
+          string(params.data.overrideReplicas != null && params.data.overrideReplicas < variables.maxReplicas
+            ? params.data.overrideReplicas
             : variables.maxReplicas)
   backgroundAudit: true # (8). Defaults to "true"
   namespaceSelector: # (7)
@@ -155,12 +155,12 @@ Notice the commented numbers on both the YAML manifests. Let's expand on them:
 
 | #   | VAP field              | `cel-policy` field                       |                                                                                                                                                                                                                          |
 | --- | ---------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1   | `failurePolicy`        | `failurePolicy`                          | Both inform on behaviour when the policy server errors. Not to confuse with (5).                                                                                                                                         |
+| 1   | `failurePolicy`        | `failurePolicy`                          | Both inform on behaviour when the policy server errors. Not to confuse with (6).                                                                                                                                         |
 | 2   | `matchConstraints`     | `rules`                                  | Both accept the same [RuleWithOperations](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#rulewithoperations-v1-admissionregistration) that informs on what kind of Resource the policy applies to. |
 | 3   | `variables`            | `settings.variables`                     | In Kubewarden's `cel-policy`, expressions that define variables are in `settings.variables`. Apart from that, they are equivalent.                                                                                       |
 | 4   | `paramKind`,`paramRef` | `settings.paramKind`,`settings.paramRef` | In Kubewarden's `cel-policy`, parameter definitions are in `settings.paramKind`, `settings.paramRef`. Apart from that, they are equivalent.                                                                              |
 | 5   | `validations`          | `settings.validations`                   | In Kubewarden's `cel-policy`, expressions that define validations are in `settings.validations`. Apart from that, they are equivalent.                                                                                   |
-| 6   | `validationActions`    | `mode`                                   | `mode` has as options `protect` and `monitor`. Auditing is more full featured in Kubewarden, see (7).                                                                                                                    |
+| 6   | `validationActions`    | `mode`                                   | `mode` has as options `protect` and `monitor`. Auditing is more full featured in Kubewarden, see (8).                                                                                                                    |
 | 7   | `matchResources`       | `namespaceSelector`, `objectSelector`    | Define ways to constraint using Selectors. Kubewarden's policies have them as `namespaceSelector` and `objectSelector`.                                                                                                  |
 | 8   | `auditAnnotations`     | `backgroundAudit`, annotations           | These Kubewarden fields set the policy usage in [Audit Scanner](../../../explanations/audit-scanner), and its category and severity for PolicyReports.                                                                   |
 |     | `matchConditions`      | `matchConditions`                        | Kubewarden's policies have `matchConditions` (not pictured in this example).                                                                                                                                             |
