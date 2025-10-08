@@ -51,15 +51,15 @@ helm install --wait \
     --namespace cert-manager \
     --create-namespace \
     --set crds.enabled=true \
-    --version 1.15.1 \
+    --version 1.18.2 \
     cert-manager jetstack/cert-manager
 
 helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 helm install --wait \
   --namespace open-telemetry \
   --create-namespace \
-  --version 0.65.0 \
-  --set "manager.collectorImage.repository=otel/opentelemetry-collector-contrib" \
+  --version 0.97.1 \
+  --set "manager.collectorImage.repository=ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib" \
   my-opentelemetry-operator open-telemetry/opentelemetry-operator
 ```
 
@@ -123,7 +123,7 @@ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 helm upgrade -i --wait \
   --namespace jaeger \
   --create-namespace \
-  --version 2.49.0 \
+  --version 2.57.0 \
   jaeger-operator jaegertracing/jaeger-operator \
   --set rbac.clusterRole=true
 
@@ -163,7 +163,7 @@ EOF
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm install --wait --create-namespace \
   --namespace prometheus \
-  --version 51.5.3 \
+  --version 77.13.0 \
   --values kube-prometheus-stack-values.yaml \
   prometheus prometheus-community/kube-prometheus-stack
 ```
@@ -322,8 +322,8 @@ The web UI is reachable at [localhost:16686](localhost:16686).
 
 You can access the Prometheus UI by port forwarding to your local machine:
 
-```console 
-kubectl port-forward -n prometheus --address 0.0.0.0 svc/prometheus-operated 9090 
+```console
+kubectl port-forward -n prometheus --address 0.0.0.0 svc/prometheus-operated 9090
 ```
 
 The web UI is now reachable at [localhost:9090](localhost:9090).

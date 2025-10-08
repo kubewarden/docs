@@ -101,6 +101,10 @@ $ minikube addons enable ingress
 
 ## Install OpenTelemetry {#install-opentelemetry}
 
+:::note
+See [Dependency matrix](reference/dependency-matrix.md) for the latest supported component versions.
+:::
+
 You use the [OpenTelemetry
 Operator](https://github.com/open-telemetry/opentelemetry-operator) to manage
 the automatic injection of the OpenTelemetry Collector sidecar into the
@@ -109,19 +113,6 @@ PolicyServer pod.
 The OpenTelemetry Operator requires installation of
 [cert-manager](https://cert-manager.io/docs/installation/) in the cluster.
 
-At the time of writing (2022-06-21), only specific versions of OpenTelemetry
-are compatible with Cert Manager, [see the compatibility
-chart](https://github.com/open-telemetry/opentelemetry-operator#opentelemetry-operator-vs-kubernetes-vs-cert-manager).
-
-You should install the latest cert-manager Helm chart:
-
-:::note
-
-At time of writing (2024-07-17) the latest cert-manager chart version is
-`v1.15.1`
-
-:::
-
 ```console
 helm repo add jetstack https://charts.jetstack.io
 
@@ -129,18 +120,11 @@ helm install --wait \
     --namespace cert-manager \
     --create-namespace \
     --set crds.enabled=true \
-    --version 1.15.1 \
+    --version 1.18.2 \
     cert-manager jetstack/cert-manager
 ```
 
 Once cert-manager is running, you can install the OpenTelemetry operator Helm chart:
-
-:::note
-
-At the time of writing (2024-11-11) the latest OpenTelemetry operator chart
-version is `0.65.0`
-
-:::
 
 ```console
 helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
@@ -148,8 +132,8 @@ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm
 helm install --wait \
   --namespace open-telemetry \
   --create-namespace \
-  --version 0.65.0 \
-  --set "manager.collectorImage.repository=otel/opentelemetry-collector-contrib" \
+  --version 0.97.1 \
+  --set "manager.collectorImage.repository=ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib" \
   my-opentelemetry-operator open-telemetry/opentelemetry-operator
 ```
 
