@@ -107,8 +107,7 @@ The command produces output similar to this:
 
 <summary>Output from the migration</summary>
 
-```shell
-2024-06-24T16:00:16.516062Z  WARN kwctl::scaffold: Using the 'latest' version of the CEL policy could lead to unexpected behavior. It is recommended to use a specific version to avoid breaking changes.
+```yaml
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
@@ -116,35 +115,42 @@ metadata:
 spec:
   module: ghcr.io/kubewarden/policies/cel-policy:latest
   settings:
+    failurePolicy: Fail
     variables:
-    - expression: |
-        object.spec.template.spec.containers.filter(c, !has(c.livenessProbe)).map(c, c.name)
-      name: containers_without_liveness_probe
+      - expression: |
+          object.spec.template.spec.containers.filter(c, !has(c.livenessProbe)).map(c, c.name)
+        name: containers_without_liveness_probe
     validations:
-    - expression: |
-        size(variables.containers_without_liveness_probe) == 0
-      messageExpression: |
-        'These containers are missing a liveness probe: ' + variables.containers_without_liveness_probe.join(' ')
-      reason: Invalid
+      - expression: |
+          size(variables.containers_without_liveness_probe) == 0
+        messageExpression: |
+          'These containers are missing a liveness probe: ' + variables.containers_without_liveness_probe.join(' ')
+        reason: Invalid
   rules:
-  - apiGroups:
-    - apps
-    apiVersions:
-    - v1
-    resources:
-    - deployments
-    operations:
-    - CREATE
-    - UPDATE
+    - apiGroups:
+        - apps
+      apiVersions:
+        - v1
+      resources:
+        - deployments
+      operations:
+        - CREATE
+        - UPDATE
   mutating: false
-  failurePolicy: Fail
   namespaceSelector:
     matchLabels:
       docs.kubewarden.io/vap-migration: enabled
 ```
 
 :::note
-The command warns the user about the usage of the `latest` version of the CEL policy.
+The command warns the user about the usage of the `latest` version of the CEL policy:
+
+```console
+2024-06-24T16:00:16.516062Z  WARN kwctl::scaffold:
+  Using the 'latest' version of the CEL policy could lead to unexpected behavior.
+  It is recommended to use a specific version to avoid breaking changes.
+```
+
 It is recommended to use a specific version to avoid breaking changes.
 
 This can be done using the `--cel-policy` flag, like this:
