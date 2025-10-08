@@ -39,15 +39,18 @@ Kubewarden supports WASI policies from the Kubewarden 1.7.0 release forward.
 
 ## Limitations
 
-You shouldn't use WASI policies under regular circumstances because they suffer from the following limitations:
-
-- No bi-directional communication, hence [host capabilities](../../../reference/spec/host-capabilities/01-intro-host-capabilities.md) aren't available
-- [Context-aware](../../../explanations/context-aware-policies.md) capabilities only through the Go SDK (though see the following note)
-- Inferior performance at evaluation time compared to waPC/Rego based policies
+You shouldn't use WASI policies under regular circumstances because they have inferior performance at
+evaluation time compared to waPC/Rego ones.
 
 :::note
 
-Host capabilities can be used also by WASI policies. Currently only the Kubewarden Go SDK exposes them to WASI policies.
+Bidirectional communication between the policy and the host can be achieved, but requires
+changes to be done inside of the language SDK.
+This is required to use [host capabilities](../../../reference/spec/host-capabilities/01-intro-host-capabilities.md)
+and to write [context-aware](../../../explanations/context-aware-policies.md) policies.
+
+Currently, only the Kubewarden Go and JavaScript/TypeScript SDKs expose them to WASI policies.
+
 If this is of interest to you, please get in touch.
 We can then prioritize the effort.
 
