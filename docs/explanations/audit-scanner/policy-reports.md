@@ -11,7 +11,7 @@ doc-persona:
     kubewarden-integrator,
   ]
 doc-type: [explanation]
-doc-topic: [explanations, audit-scanner, policy-reports]
+doc-topic: [explanations, audit-scanner, reports]
 ---
 
 <head>

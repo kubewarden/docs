@@ -34,8 +34,8 @@ your administrator's policies.
 - One or more [[< admission-policy >]] resources: policies for a defined namespace.
 
 - A deployment of a `kubewarden-controller`: this controller monitors the
-[[< cluster-admission-policy >]] resources and interacts with the Kubewarden
-[[< policy-server >]] components.
+  [[< cluster-admission-policy >]] resources and interacts with the Kubewarden
+  [[< policy-server >]] components.
 
 :::tip
 
@@ -88,7 +88,7 @@ Kubernetes cluster:
 
 - `kubewarden-crds`, which registers the [[< cluster-admission-policy >]],
   [[< admission-policy >]] and [[< policy-server >]] Custom Resource Definitions. Also,
-  the [[< policy-report >]] Custom Resource Definitions used by the audit scanner.
+  the [[< report >]] Custom Resource Definitions used by the audit scanner.
 
 - `kubewarden-controller`, which installs the Kubewarden controller and the
   audit scanner
