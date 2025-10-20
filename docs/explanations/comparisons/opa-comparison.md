@@ -224,6 +224,5 @@ OPA Gatekeeper adds the violation details to the `status` field of a given
 `Constraint` Custom Resource (see
 [here](https://open-policy-agent.github.io/gatekeeper/website/docs/audit#constraint-status)).
 
-Kubewarden instead stores the results in a set of the Policy Report
-Custom Resources defined by the [Policy Report working
-group](https://github.com/kubernetes-sigs/wg-policy-prototypes/tree/master/policy-report).
+Kubewarden instead stores the results in a set of the Reports
+Custom Resources defined by [openreports.io](https://openreports.io).

@@ -16,7 +16,8 @@ doc-topic: [howto, audit-scanner-installation]
 
 Beginning with version `v1.7.0`, Kubewarden has a new feature called "Audit Scanner".
 A new component, called "audit-scanner", constantly checks the resources declared in the
-cluster, flagging the ones that do not adhere with the deployed Kubewarden policies.
+cluster, flagging the ones that do not adhere with the deployed Kubewarden policies,
+and saving these results into specific report Custom Resources.
 
 Policies evolve over the time: new ones are deployed and the existing ones can be
 updated, both in terms of version and configuration settings.
@@ -26,30 +27,45 @@ are no longer compliant.
 The audit scanner feature provides Kubernetes administrators
 with a tool to consistently verify the compliance state of their clusters.
 
+Since version `v1.30`, the Audit Scanner can save its results either in Custom
+Resource Definitions (CRDs) of PolicyReports from the [Kubernetes policy
+working group](https://github.com/kubernetes-sigs/wg-policy-prototypes) (the
+default setting, and also marked as deprecated), or OpenReports from
+[openreports.io](https://openreports.io).
+
 ## Installation
 
 The audit scanner component is available since Kubewarden `v1.7.0`. Therefore,
 make sure you are installing the Helm chart with app version `v1.7.0` or
 higher.
 
-1. Install the `kubewarden-crds` Helm chart. The chart install the needed
-   `PolicyReport` CRDs by default.
+1. Install the `kubewarden-crds` Helm chart. The chart installs the needed
+   report CRDs by default.
 
    ```console
    helm install kubewarden-crds kubewarden/kubewarden-crds
    ```
 
-   :::caution
-   To store the results of policy reports, you need to have the PolicyReport
-   Custom Resource Definitions (CRDs) available. If the necessary
-   PolicyReport CRDs are already in the cluster, you cannot install them
-   using the kubewarden-crds chart. In such case, you can disable the
-   installation of PolicyReport CRDs by setting `installPolicyReportCRDs` to
-   `false` in the chart. This means that the Kubewarden stack will not manage
-   those CRDs, and the responsibility will be with the administrator.
+   :::note
+   With Kubewarden 1.30, the Audit Scanner feature also allows to save the reports
+   into OpenReports CRDs from [openreports.io](https://openreports.io).
 
-   See more info about the CRDs at the [policy work group
-   repository](https://github.com/kubernetes-sigs/wg-policy-prototypes)
+   The PolicyReports CRDs from the K8s Policy working group are still the default,
+   yet marked as deprecated.
+
+   Both CRDs will be installed by default.
+   :::
+
+   :::caution
+   To store the results of policy reports, you need to have either the
+   PolicyReports CRDs (default, marked as deprecated) or the OpenReports CRDs.
+
+   If the necessary CRDs are already in the cluster, you cannot install them
+   using the kubewarden-crds chart. In such case, you can disable their
+   installation by either setting `installOpenReportsCRDs` (for OpenReports) or
+   `installPolicyReportCRDs` (for PolicyReports) to `false` in the chart. This
+   means that the Kubewarden stack will not manage those CRDs, and the
+   responsibility will be with the administrator.
    :::
 
 2. Install the `kubewarden-controller` Helm chart.
@@ -61,6 +77,12 @@ higher.
    :::note
    The audit scanner is enabled by default. If you want to disable it, set the
    `auditScanner.enable=false`.
+   :::
+
+   :::note
+   If you want for the Audit Scanner to save its reports in OpenReports CRDs
+   instead of the default (yet marked as deprecated) PolicyReports CRDs,
+   set `auditScanner.reportCRDsKind="openreports"`.
    :::
 
    For more information about the installation of Kubewarden see the [Quick Start guide](../quick-start.md)
@@ -82,7 +104,7 @@ The values of the Policy Reporter subchart are exposed under the `policyReporter
 the `kubewarden-controller` values.
 
 This will install only part of the Policy Reporter upstream chart, the UI, which provides a visualization
-of the PolicyReports and ClusterPolicyReports in cluster.
+of the PolicyReports and OpenReports in cluster.
 See [here](../explanations/audit-scanner) more information about the Policy Reporter UI.
 
 By default, the Policy Reporter UI is only exposed as a ClusterIP service with
