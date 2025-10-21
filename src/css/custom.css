@@ -16,6 +16,9 @@
   --ifm-color-primary-lightest: #fe5f16;
   --ifm-background-color: #fefefe;
   --ifm-code-font-size: 95%;
+  --ifm-heading-font-family: "SUSE", sans-serif;
+  --ifm-font-family-base: "SUSE", sans-serif;
+  --ifm-font-family-monospace: "SUSEMono", monospace;
 }
 
 html[data-theme='dark'] {
