@@ -25,17 +25,17 @@ doc-topic: [quick-start]
 The Kubewarden stack comprises:
 
 - One or more [[< cluster-admission-policy >]] resources: this defines policies for
-Kubernetes clusters.
+  Kubernetes clusters.
 
 - One or more [[< policy-server >]] resources: representing a deployment of a
-Kubewarden `PolicyServer`. The Kubewarden `PolicyServer` loads and evaluates
-your administrator's policies.
+  Kubewarden `PolicyServer`. The Kubewarden `PolicyServer` loads and evaluates
+  your administrator's policies.
 
 - One or more [[< admission-policy >]] resources: policies for a defined namespace.
 
 - A deployment of a `kubewarden-controller`: this controller monitors the
-[[< cluster-admission-policy >]] resources and interacts with the Kubewarden
-[[< policy-server >]] components.
+  [[< cluster-admission-policy >]] resources and interacts with the Kubewarden
+  [[< policy-server >]] components.
 
 :::tip
 
@@ -46,13 +46,13 @@ Kubewarden CRDs mentioned in this tutorial and in the whole documentation have
 short names, which are easier to use. These are the short names for all the
 CRDs:
 
-| Resource | shortName |
-| - | - |
-| AdmissionPolicies | **ap** |
-| ClusterAdmissionPolicies | **cap** |
-| AdmissionPolicyGroups | **apg** |
-| ClusterAdmissionPolicyGroups | **capg** |
-| PolicyServers | **ps** |
+| Resource                     | shortName |
+| ---------------------------- | --------- |
+| AdmissionPolicies            | **ap**    |
+| ClusterAdmissionPolicies     | **cap**   |
+| AdmissionPolicyGroups        | **apg**   |
+| ClusterAdmissionPolicyGroups | **capg**  |
+| PolicyServers                | **ps**    |
 
 :::
 
@@ -88,7 +88,7 @@ Kubernetes cluster:
 
 - `kubewarden-crds`, which registers the [[< cluster-admission-policy >]],
   [[< admission-policy >]] and [[< policy-server >]] Custom Resource Definitions. Also,
-  the [[< policy-report >]] Custom Resource Definitions used by the audit scanner.
+  the [[< report >]] Custom Resource Definitions used by the audit scanner.
 
 - `kubewarden-controller`, which installs the Kubewarden controller and the
   audit scanner
@@ -98,8 +98,8 @@ Kubernetes cluster:
   :::
 
 - `kubewarden-defaults`, which creates a `PolicyServer` resource named
-`default`. It can also install a set of recommended policies to secure your
-cluster by enforcing well known best practices.
+  `default`. It can also install a set of recommended policies to secure your
+  cluster by enforcing well known best practices.
 
 ```console
 helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
@@ -175,13 +175,13 @@ Check the [latest released `PolicyServer` version](https://github.com/kubewarden
 
 Overview of the attributes of the `PolicyServer` resource:
 
-| Required | Placeholder | Description |
-|:-:| - | - |
-| Y | `image`  | The name of the container image |
-| Y | `replicas`  | The number of desired instances |
-| N | `serviceAccountName` | The name of the `ServiceAccount` to use for the `PolicyServer` deployment. If there is no provided value, the default `ServiceAccount` from the installation namespace, of `kubewarden-controller`, gets used |
-| N | `env` | The list of environment variables |
-| N | `annotations` | The list of annotations |
+| Required | Placeholder          | Description                                                                                                                                                                                                   |
+| :------: | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    Y     | `image`              | The name of the container image                                                                                                                                                                               |
+|    Y     | `replicas`           | The number of desired instances                                                                                                                                                                               |
+|    N     | `serviceAccountName` | The name of the `ServiceAccount` to use for the `PolicyServer` deployment. If there is no provided value, the default `ServiceAccount` from the installation namespace, of `kubewarden-controller`, gets used |
+|    N     | `env`                | The list of environment variables                                                                                                                                                                             |
+|    N     | `annotations`        | The list of annotations                                                                                                                                                                                       |
 
 Changing any of these attributes causes a `PolicyServer` deployment with the new configuration.
 
@@ -223,20 +223,20 @@ spec:
 
 Overview of the attributes of the [[< cluster-admission-policy >]] resource:
 
-| Required | Placeholder | Description |
-| :--: | - | - |
-| N | `policy-server` | Identifies an existing `PolicyServer` object. Only by this `PolicyServer` instance serves the policy. The policy server named `default` serves a [[< cluster-admission-policy >]] without an explicit `PolicyServer`. |
-| Y | `module` | The location of the Kubewarden policy. Kubewarden permits the following schemes: |
-| N | | - `registry`: policy download from an [OCI artifacts](https://github.com/opencontainers/artifacts) compliant container registry. Example: `registry://<OCI registry/policy URL>`. |
-| N | | - `http`, `https`: policy download from a regular HTTP(s) server. Example: `https://<website/policy URL>`. |
-| N | | - `file`: load the policy from a file in the computer file system. Example: `file:///<policy WASM binary full path>`. |
-| Y | `resources` | The Kubernetes resources evaluated by the policy. |
-| Y | `operations` | What operations for the previously given types to forward to this admission policy by the API server for evaluation. |
-| Y | `mutating` | Set this boolean value to `true` for policies that can mutate incoming requests. |
-| N | `settings` | A free-form object that contains the policy configuration values. |
-| N | `failurePolicy` | The action to take if the request evaluated by a policy results in an error. Permitted options: |
-| N | | - `Ignore`: ignore an error calling the webhook, and the API request continues. |
-| N | | - `Fail`: an error calling the webhook causes the admission to fail and API request rejection. |
+| Required | Placeholder     | Description                                                                                                                                                                                                           |
+| :------: | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    N     | `policy-server` | Identifies an existing `PolicyServer` object. Only by this `PolicyServer` instance serves the policy. The policy server named `default` serves a [[< cluster-admission-policy >]] without an explicit `PolicyServer`. |
+|    Y     | `module`        | The location of the Kubewarden policy. Kubewarden permits the following schemes:                                                                                                                                      |
+|    N     |                 | - `registry`: policy download from an [OCI artifacts](https://github.com/opencontainers/artifacts) compliant container registry. Example: `registry://<OCI registry/policy URL>`.                                     |
+|    N     |                 | - `http`, `https`: policy download from a regular HTTP(s) server. Example: `https://<website/policy URL>`.                                                                                                            |
+|    N     |                 | - `file`: load the policy from a file in the computer file system. Example: `file:///<policy WASM binary full path>`.                                                                                                 |
+|    Y     | `resources`     | The Kubernetes resources evaluated by the policy.                                                                                                                                                                     |
+|    Y     | `operations`    | What operations for the previously given types to forward to this admission policy by the API server for evaluation.                                                                                                  |
+|    Y     | `mutating`      | Set this boolean value to `true` for policies that can mutate incoming requests.                                                                                                                                      |
+|    N     | `settings`      | A free-form object that contains the policy configuration values.                                                                                                                                                     |
+|    N     | `failurePolicy` | The action to take if the request evaluated by a policy results in an error. Permitted options:                                                                                                                       |
+|    N     |                 | - `Ignore`: ignore an error calling the webhook, and the API request continues.                                                                                                                                       |
+|    N     |                 | - `Fail`: an error calling the webhook causes the admission to fail and API request rejection.                                                                                                                        |
 
 :::note
 

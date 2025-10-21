@@ -164,7 +164,7 @@ Notice the commented numbers on both the YAML manifests. Let's expand on them:
 | 6   | `---`                             | `failurePolicy`                          | Webhook behavior, for Kubernetes API Webhook error or timeout, or for matchConditions evaluation. Not to confuse with (1).                                                                                                                       |
 | 7   | `validationActions`               | `mode`                                   | `mode` has as options `protect` and `monitor`. Auditing is more full featured in Kubewarden, see (9).                                                                                                                                            |
 | 8   | `matchResources`                  | `namespaceSelector`, `objectSelector`    | Define ways to constraint using Selectors. Kubewarden's policies have them as `namespaceSelector` and `objectSelector`.                                                                                                                          |
-| 9   | `auditAnnotations` (not pictured) | `backgroundAudit`, annotations           | Use Kubewarden fields instead to set the policy usage in [Audit Scanner](../../../explanations/audit-scanner), and its category and severity for PolicyReports.                                                                                  |
+| 9   | `auditAnnotations` (not pictured) | `backgroundAudit`, annotations           | Use Kubewarden fields instead to set the policy usage in [Audit Scanner](../../../explanations/audit-scanner), and its category and severity for OpenReports.                                                                                    |
 |     | `matchConditions`                 | `matchConditions`                        | Kubewarden's policies have `matchConditions` (not pictured in this example).                                                                                                                                                                     |
 |     | `---`                             | Kubewarden-only features                 | For other features, see the rest of tutorial CEL examples.                                                                                                                                                                                       |
 
@@ -184,7 +184,7 @@ There are some VAP features that aren't yet implemented. If look forward to them
 - VAP [authorizer library](https://pkg.go.dev/k8s.io/apiserver/pkg/cel/library#Authz).
 - VAP [Audit Annotations](https://kubernetes.io/docs/reference/labels-annotations-taints/audit-annotations/)
   (ValidatingAdmissionPolicy `spec.auditAnnotations` when ValidatingAdmissionPolicyBinding `spec.validationActions` is set to "Audit").
-  This is covered by Kubewarden's [Audit Scanner](../../../explanations/audit-scanner) and PolicyReports, which allows
+  This is covered by Kubewarden's [Audit Scanner](../../../explanations/audit-scanner) and OpenReports, which allows
   to audit resources already in the cluster.
 - CEL [resource constraints and estimated cost
   limit](https://kubernetes.io/docs/reference/using-api/cel/#resource-constraints).
