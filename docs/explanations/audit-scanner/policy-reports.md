@@ -24,7 +24,7 @@ using the [OpenReports](https://openreports.io) Custom Resources.
 :::caution
 
 Since Kubewarden 1.30, [PolicyReport](https://htmlpreview.github.io/?https://github.com/kubernetes-sigs/wg-policy-prototypes/blob/045372e558b896695b2daae92e8c7a04d4d40282/policy-report/docs/index.html)
-Custom Resourcess ship as default but are marked as deprecated.
+Custom Resources ship as default but are marked as deprecated.
 
 This page explains the usage of the new Reports and ClusterReports from [OpenReports](https://openreports.io),
 which are functionally equal.
