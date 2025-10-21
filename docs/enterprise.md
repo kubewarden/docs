@@ -17,5 +17,5 @@ These organization(s) provide enterprise support for Kubewarden:
 
 | Organization | Offering |
 |-|-|
-| [SUSE](https://suse.com) | SUSE provides complete Kubewarden enterprise support with [SUSE® Rancher Prime](https://www.suse.com/products/rancher). |
+| [SUSE](https://suse.com) | SUSE provides complete Kubewarden enterprise support with the [SUSE® Application Collection](https://www.suse.com/products/rancher/application-collection/). |
 
