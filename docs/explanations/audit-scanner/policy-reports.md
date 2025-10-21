@@ -148,7 +148,7 @@ summary:
 
 ## ClusterReport example
 
-The following example shows a `ClusterPolicyReport` for the `Namespace`
+The following example shows a `ClusterReport` for the `Namespace`
 resource `default`. The report indicates that the resource has failed the
 `safe-annotations` ClusterAdmissionPolicy validation.
 
