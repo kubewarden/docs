@@ -26,9 +26,9 @@ the namespace in which the AdmissionPolicy is defined.
 
 An [AdmissionPolicy](#admissionpolicy) which targets cluster-wide resources.
 
-### ClusterPolicyReport
+### ClusterReport
 
-A [PolicyReport](#policyreport) and a ClusterPolicyReport store results of
+A [Report](#report) and a ClusterReport store results of
 policy scans. Which one is used, depends on the scope of the resource.
 
 ## K
@@ -49,9 +49,9 @@ this is how a Kubewarden controller informs Kubernetes where to find a resource 
 
 ## P
 
-### PolicyReport
+### Report
 
-A PolicyReport and a [ClusterPolicyReport](#clusterpolicyreport) store results of
+A Report and a [ClusterReport](#clusterreport) store results of
 policy scans. Which one is used depends on the scope of the resource.
 
 ### PolicyServer {#policy-server}

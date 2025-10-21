@@ -467,4 +467,4 @@ resouces available to avoid impacting the admission controller performance
 :::
 
 Set `disableStore: true` to reduce load if you consume audit results from logs
-and do not require `PolicyReport` custom resources in the cluster.
+and do not require policy `Reports` nor `ClusterReports` custom resources in the cluster.

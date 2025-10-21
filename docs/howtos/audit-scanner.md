@@ -14,10 +14,10 @@ doc-topic: [howto, audit-scanner-installation]
   <link rel="canonical" href="https://docs.kubewarden.io/howtos/audit-scanner"/>
 </head>
 
-Beginning with version `v1.7.0`, Kubewarden has a new feature called "Audit
-Scanner". A new component, called "audit-scanner", constantly checks the
-resources declared in the cluster, flagging the ones that don't adhere with
-the deployed Kubewarden policies.
+Beginning with version `v1.7.0`, Kubewarden has a new feature called "Audit Scanner".
+A new component, called "audit-scanner", constantly checks the resources declared in the
+cluster, flagging the ones that do not adhere with the deployed Kubewarden policies,
+and saving these results into specific report Custom Resources.
 
 Policies evolve over the time: you deploy new policies and update existing
 policies. Both version and configuration settings change. This can lead to
@@ -26,18 +26,34 @@ situations where resources already in the cluster are no longer compliant.
 The audit scanner feature provides Kubernetes administrators with a tool to
 consistently verify the compliance state of their clusters.
 
+Since version `v1.30`, the Audit Scanner can save its results either in Custom
+Resource Definitions (CRDs) of PolicyReports from the [Kubernetes policy
+working group](https://github.com/kubernetes-sigs/wg-policy-prototypes) (the
+default setting, and also marked as deprecated), or OpenReports from
+[openreports.io](https://openreports.io).
+
 ## Installation
 
 The audit scanner component is available since Kubewarden `v1.7.0`. Therefore,
 make sure you are installing the Helm chart with app version `v1.7.0` or
 higher.
 
-1. Install the `kubewarden-crds` Helm chart. The chart install the needed
-   `PolicyReport` CRDs by default.
+1. Install the `kubewarden-crds` Helm chart. The chart installs the needed
+   report CRDs by default.
 
    ```console
    helm install kubewarden-crds kubewarden/kubewarden-crds
    ```
+
+   :::note
+   With Kubewarden 1.30, the Audit Scanner feature also allows to save the reports
+   into OpenReports CRDs from [openreports.io](https://openreports.io).
+
+   The PolicyReports CRDs from the K8s Policy working group are still the default,
+   yet marked as deprecated.
+
+   Both CRDs will be installed by default.
+   :::
 
    :::caution
 
@@ -67,8 +83,13 @@ higher.
 
    :::
 
-   For more information about Kubewarden installation see the [Quick
-   Start](../quick-start.md) guide.
+   :::note
+   If you want Audit Scanner to save its reports in OpenReports CRDs
+   instead of the default (yet marked as deprecated) PolicyReports CRDs,
+   set `auditScanner.reportCRDsKind="openreports"`.
+   :::
+
+   For more information about the installation of Kubewarden see the [Quick Start guide](../quick-start.md)
 
 By default, Audit Scanner implementation is as a
 [Cronjob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs)

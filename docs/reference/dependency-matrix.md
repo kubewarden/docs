@@ -36,9 +36,10 @@ Needed for specific features.
 | `jaegertracing/jaeger-operator` chart              |      `>= 1.49 < 2`      |              Example: `2.57.0`               |      Tracing      |
 | `kyverno/policy-reporter` chart                    |       `>= 2 < 4`        | In `kubewarden-controller` chart as subchart | Policy Reports UI |
 
-| CRD dependency                      |  Version   |                 Helm chart `version`                 |    Feature    |
-| ----------------------------------- | :--------: | :--------------------------------------------------: | :-----------: |
-| `policyreports.wgpolicyk8s.io` CRDs | `v1alpha1` | In `kubewarden-defaults` chart or manually installed | Audit Scanner |
+| CRD dependency                      |  Version   |               Helm chart `version`               |    Feature    |
+| ----------------------------------- | :--------: | :----------------------------------------------: | :-----------: |
+| `policyreports.wgpolicyk8s.io` CRDs | `v1beta1`  | In `kubewarden-crds` chart or manually installed | Audit Scanner |
+| `openreports.io` CRDs               | `v1alpha1` | In `kubewarden-crds` chart or manually installed | Audit Scanner |
 
 ## Rancher
 

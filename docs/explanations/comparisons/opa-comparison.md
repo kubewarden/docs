@@ -26,18 +26,18 @@ Both OPA Gatekeeper and Kubewarden are open source projects, and part of CNCF.
 This table provides a comparison between OPA Gatekeeper and Kubewarden. Topics
 requiring more information have links to further explanation.
 
-|                                                       | OPA Gatekeeper              | Kubewarden                                              |
-| ----------------------------------------------------- | --------------------------- | ------------------------------------------------------- |
-| Validation                                            | ✅                          | ✅                                                      |
-| Mutation                                              | ✅                          | ✅                                                      |
-| Policy language [[1]](#writing-policies)              | Rego                        | Rego, CEL, Go, Rust,...                                 |
-| Context aware [[2]](#context-aware)                   | ✅                          | ✅                                                      |
-| Kubernetes integration [[3]](#kubernetes-integration) | cluster wide CRD            | cluster wide and namespaced CRDs                        |
+|                                                       | OPA Gatekeeper              | Kubewarden                                               |
+| ----------------------------------------------------- | --------------------------- | -------------------------------------------------------- |
+| Validation                                            | ✅                          | ✅                                                       |
+| Mutation                                              | ✅                          | ✅                                                       |
+| Policy language [[1]](#writing-policies)              | Rego                        | Rego, CEL, Go, Rust,...                                  |
+| Context aware [[2]](#context-aware)                   | ✅                          | ✅                                                       |
+| Kubernetes integration [[3]](#kubernetes-integration) | cluster wide CRD            | cluster wide and namespaced CRDs                         |
 | Policy distribution [[4]](#policy-distribution)       | embedded into Kubernetes CR | Container registry, or embedded into Kubernetes CR (CEL) |
-| CI/CD integration [[5]](#cicd-integration)            | ✅                          | ✅                                                      |
-| Policy enforcement modes                              | deny, warn                  | deny, warn                                              |
-| Deployment mode [[6]](#deployment-mode)               | single evaluation server    | multiple evaluation servers                             |
-| Background checks [[7]](#background-checks)           | ✅                          | ✅                                                      |
+| CI/CD integration [[5]](#cicd-integration)            | ✅                          | ✅                                                       |
+| Policy enforcement modes                              | deny, warn                  | deny, warn                                               |
+| Deployment mode [[6]](#deployment-mode)               | single evaluation server    | multiple evaluation servers                              |
+| Background checks [[7]](#background-checks)           | ✅                          | ✅                                                       |
 
 ## Types of policies
 
@@ -224,6 +224,5 @@ OPA Gatekeeper adds the violation details to the `status` field of a given
 `Constraint` Custom Resource (see
 [here](https://open-policy-agent.github.io/gatekeeper/website/docs/audit#constraint-status)).
 
-Kubewarden instead stores the results in a set of the Policy Report
-Custom Resources defined by the [Policy Report working
-group](https://github.com/kubernetes-sigs/wg-policy-prototypes/tree/master/policy-report).
+Kubewarden instead stores the results in a set of the Reports
+Custom Resources defined by [openreports.io](https://openreports.io).
