@@ -25,8 +25,8 @@ for 10 year expiry, but each policy-server certificate secret has a one-year
 expiry. However, the controller is currently unable to renew them
 automatically.
 
-In the v1.14 release, the Kubewarden team ensure that creation of policy-server
-secrets is with 10-year expiry.
+In the v1.14 release, the Kubewarden team ensured that policy-server
+secrets are created with a 10-year expiry.
 
 An automated renewal process is in place for releases > v1.16.0.
 

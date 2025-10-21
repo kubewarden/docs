@@ -13,9 +13,9 @@ doc-topic: [argocd-installation]
   <link rel="canonical" href="https://docs.kubewarden.io/howtos/argocd-installation"/>
 </head>
 
-If you're using ArgoCD to manage your Kubernetes resources, you may ant to
+If you're using ArgoCD to manage your Kubernetes resources, you may want to
 install Kubewarden using ArgoCD. This is possible, but there are some
-considerations. Since Kubewarden v1.17.0, the cert-manager dependency is
+considerations. Since Kubewarden v1.17.0, the cert-manager dependency has been
 removed. There is a new certificate reconciler that automatically renews the
 certificates. This means that the Kubewarden controller takes care of creating
 and renewing the certificates for you. This includes both the root CA and all
@@ -29,9 +29,9 @@ if not, it creates them.
 This poses a problem when using ArgoCD, as it uses Helm solely to render the
 templates, with all resource lifecycle management by ArgoCD. Whenever ArgoCD
 renders the Helm chart to check that the cluster application doesn't deviate
-from the chart definition, it attempts certificates creation again. As a
-result, it marks the secrets that store the certificates, and the
-webhook configuration, as unsynchronized.
+from the chart definition, it attempts certificate creation again. As a
+result, it marks the secrets that store the certificates and the
+webhook configuration as unsynchronized.
 
 To resolve this issue, it's necessary to configure the ArgoCD application to
 ignore:
