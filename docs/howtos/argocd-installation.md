@@ -13,30 +13,34 @@ doc-topic: [argocd-installation]
   <link rel="canonical" href="https://docs.kubewarden.io/howtos/argocd-installation"/>
 </head>
 
-If you are using ArgoCD to manage your Kubernetes resources, you may be
-interested in installing Kubewarden using ArgoCD. This is possible, but there
-are some considerations to take into account. Since Kubewarden v1.17.0, the 
-cert-manager dependency has been removed. There is a new certificate reconciler that
-automatically renews the certificates. This means that the Kubewarden
-controller takes care of creating and renewing the certificates for you,
-including both the root CA and all the webhook certificates.
+If you're using ArgoCD to manage your Kubernetes resources, you may ant to
+install Kubewarden using ArgoCD. This is possible, but there are some
+considerations. Since Kubewarden v1.17.0, the cert-manager dependency is
+removed. There is a new certificate reconciler that automatically renews the
+certificates. This means that the Kubewarden controller takes care of creating
+and renewing the certificates for you. This includes both the root CA and all
+webhook certificates.
 
-However, the initial root CA and webhook certificates are created during the
-Helm chart installation using the available Helm functions. This means that
-when the Helm chart is rendered, it checks if the certificates are already
-created, and if not, it will create them. This poses a problem when using
-ArgoCD, as it uses Helm solely to render the templates, while all resource
-lifecycle management is handled by ArgoCD. Consequently, every time ArgoCD
-renders the Helm chart to ensure that the application running in the cluster
-does not deviate from the definition in the Helm chart, it will attempt to
-create the certificates again. As a result, it marks the secrets that store
-the certificates, as well as the webhook configuration, as unsynchronized.
+The initial root CA and webhook certificate creation is during the Helm chart
+installation using the available Helm functions. So, during Helm chart
+rendering, the installation checks if the certificates are already created, and
+if not, it creates them.
 
-To resolve this issue, it is necessary to configure the ArgoCD application to
-ignore the `data` field in secrets and the `caBundle` field in the
-`MutatingWebhookConfiguration` and `ValidatingWebhookConfiguration` resources.
-This can be accomplished by adding the `ignoreDifferences` field in the ArgoCD
-application:
+This poses a problem when using ArgoCD, as it uses Helm solely to render the
+templates, with all resource lifecycle management by ArgoCD. Whenever ArgoCD
+renders the Helm chart to check that the cluster application doesn't deviate
+from the chart definition, it attempts certificates creation again. As a
+result, it marks the secrets that store the certificates, and the
+webhook configuration, as unsynchronized.
+
+To resolve this issue, it's necessary to configure the ArgoCD application to
+ignore:
+
+* the `data` field in secrets
+* the `caBundle` field in the `MutatingWebhookConfiguration`
+* `ValidatingWebhookConfiguration` resources.
+
+You do this by adding the `ignoreDifferences` field in the ArgoCD application:
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -131,10 +135,9 @@ spec:
 
 :::note
 
-In the example above, the key aspect is the
-`ignoreDifferences` configuration for the Kubewarden controller application.
-The rest of the content is included to provide context on how the ArgoCD
-application should be configured and to offer a complete example.
+In the example, the key aspect is the `ignoreDifferences` configuration for the
+Kubewarden controller application. The rest of the content provides context on
+how to configure the ArgoCD application and to provide a complete example.
 
 :::
 
