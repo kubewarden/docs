@@ -17,5 +17,4 @@ These organization(s) provide enterprise support for Kubewarden:
 
 | Organization | Offering |
 |-|-|
-| [SUSE](https://suse.com) | SUSE provides complete Kubewarden enterprise support with the [SUSE® Application Collection](https://www.suse.com/products/rancher/application-collection/). |
-
+| [SUSE](https://suse.com) | SUSE provides complete Kubewarden enterprise support with the [SUSE Application Collection](https://www.suse.com/products/rancher/application-collection/). Kubewarden is named SUSE Security Admission Controller in the SUSE Application Collection. |
