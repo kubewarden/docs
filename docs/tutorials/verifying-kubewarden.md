@@ -43,7 +43,7 @@ bypass validation. For example: `github.com/kubewarden/policy-server1`.
 If you want a more secure check, you need to use a full URL:
 
 ```
-https://github.com/kubewarden/policy-server/.github/workflows/container-image.yml@refs/tags/v1.19.0
+https://github.com/kubewarden/policy-server/.github/workflows/container-image.yml@refs/tags/v1.30.0
 ```
 
 Note that the URL includes the full repository path, the workflow file path,
@@ -58,11 +58,11 @@ you can use the `cosign` CLI tool. For example, to verify the
 `kubewarden/policy-server` image, you can execute the following command:
 
 ```
-cosign verify ghcr.io/kubewarden/policy-server:v1.19.0 \
+cosign verify ghcr.io/kubewarden/policy-server:v1.30.0 \
   --certificate-identity-regexp 'https://github.com/kubewarden/*' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
-Verification for ghcr.io/kubewarden/policy-server:v1.19.0 --
+Verification for ghcr.io/kubewarden/policy-server:v1.30.0 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
@@ -75,10 +75,10 @@ You can then verify that the certificate in the returned JSON contains the
 correct issuer, subject, and `github_workflow_repository` extensions.
 
 You can also verify with [`slsactl`](https://github.com/rancherlabs/slsactl).
-For example, for version 1.19.0:
+For example, for version 1.30.0:
 
 ```console
-slsactl verify ghcr.io/kubewarden/policy-server:v1.19.0
+slsactl verify ghcr.io/kubewarden/policy-server:v1.30.0
 ```
 
 The same applies to all other images produced by the Kubewarden team, such as
@@ -99,31 +99,24 @@ documentation](https://docs.docker.com/build/metadata/attestations/attestation-s
 and use tools like `crane` or `docker` itself to download the files from the
 registry.
 
-When downloading the tarball with attestation files from the release page of
-the Kubewarden components, extract them, verify the signature for the checksum
-file, and then check the attestation files:
+When downloading the attestation files from the release page of the Kubewarden
+components, check them:
 
 ```console
-$ tar -xvf attestation-amd64.tar.gz
-
-$ cosign verify-blob --bundle audit-scanner-attestation-amd64-checksum-cosign.bundle \
-    --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-    --certificate-identity="https://github.com/kubewarden/audit-scanner/.github/workflows/attestation.yml@refs/tags/v1.19.0" \
-    audit-scanner-attestation-amd64-checksum.txt
+$ cosign verify-blob --bundle policy-server-attestation-amd64-provenance.intoto.jsonl.bundle.sigstore \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --certificate-identity="https://github.com/kubewarden/policy-server/.github/workflows/release.yml@refs/tags/v1.30.0" \
+  policy-server-attestation-amd64-provenance.intoto.jsonl
 Verified OK
-
-$ sha256sum -c audit-scanner-attestation-amd64-checksum.txt
-audit-scanner-attestation-amd64-provenance.json: OK
-audit-scanner-attestation-amd64-sbom-451fac2e52226302ff449bfe053b3831fd93409b4dad24581b6121cc24daa2c2.json: OK
 ```
 
 Now that the files integrity is verified, you can inspect the SBOM and Provenance files.
 You can get these from the container image, using [`slsactl`](https://github.com/rancherlabs/slsactl).
-For example, for version 1.19.0:
+For example, for version 1.30.0:
 
 ```console
-slsactl download provenance ghcr.io/kubewarden/policy-server:v1.19.0
-slsactl download sbom ghcr.io/kubewarden/policy-server:v1.19.0
+slsactl download provenance ghcr.io/kubewarden/policy-server:v1.30.0
+slsactl download sbom ghcr.io/kubewarden/policy-server:v1.30.0
 ```
 
 ## Helm charts
@@ -142,7 +135,6 @@ that lists all needed artifacts.
 
 Hauler automatically verifies the artifacts on download. For more information,
 see [our docs](../howtos/airgap/hauler).
-
 
 ### Verifying manually
 
@@ -207,17 +199,17 @@ instructions from the [previous section](#container-images).
 
 When you download a [`kwctl`
 release](https://github.com/kubewarden/kwctl/releases/) each zip file contains
-two files that can be used for verification: `kwctl.sig` and `kwctl.pem`.
+a Sigstore bundle file that can be used for verification: `kwctl-*.bundle.sigstore`
 
 In order to verify kwctl you need cosign installed, and then execute the
 following command:
 
 ```console
 cosign verify-blob \
-  --signature kwctl-linux-x86_64.sig \
-  --cert kwctl-linux-x86_64.pem kwctl-linux-x86_64
+  --bundle kwctl-linux-x86_64.bundle.sigstore \
   --certificate-identity-regexp 'https://github.com/kubewarden/*' \
-  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+  kwctl-linux-x86_64
 
 Verified OK
 ```
