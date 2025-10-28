@@ -58,14 +58,14 @@ spec:
   validations: # (5)
     - expression: |
         object.spec.replicas <= (
-          params.data.overrideReplicas != null && params.data.overrideReplicas < variables.maxReplicas
-          ? params.data.overrideReplicas
+          has(params.data.overrideReplicas) && int(params.data.overrideReplicas) < variables.maxReplicas
+          ? int(params.data.overrideReplicas)
           : variables.maxReplicas
         )
       messageExpression: |
         'The number of replicas must be less than or equal to ' +
-        string(params.data.overrideReplicas != null && params.data.overrideReplicas < variables.maxReplicas
-          ? params.data.overrideReplicas
+        string( has(params.data.overrideReplicas) && int(params.data.overrideReplicas) < variables.maxReplicas
+          ? int(params.data.overrideReplicas)
           : variables.maxReplicas)
 ---
 apiVersion: admissionregistration.k8s.io/v1
@@ -82,6 +82,7 @@ spec:
   paramRef: # (4)
     name: "replica-limit-override"
     namespace: "test"
+    parameterNotFoundAction: Deny
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -96,7 +97,7 @@ Here we have an equivalent Kubewarden policy:
 
 ### Kubewarden's `cel-policy`
 
-```yaml title="./cel-policy-example.yaml" {10,11,12,18,19,24,27,30,43}
+```yaml title="./cel-policy-example.yaml" {10,11,12,17,21,22,25,28,32,45}
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
 metadata:
@@ -105,7 +106,7 @@ metadata:
     io.kubewarden.policy.severity: low # (9)
   name: "cel-policy-replica-example"
 spec:
-  module: registry://ghcr.io/kubewarden/policies/cel-policy:v1.0.0
+  module: registry://ghcr.io/kubewarden/policies/cel-policy:v1.4.0
   failurePolicy: Fail # (6). Webhook behavior. Defaults to "Fail"
   mode: protect # (7). Defaults to "protect"
   rules: # (2)
@@ -113,11 +114,12 @@ spec:
       apiVersions: ["v1"]
       operations: ["CREATE", "UPDATE"]
       resources: ["deployments"]
+  contextAwareResources: # (10). Fine-grained perms for accessing resources
+    - apiVersion: v1
+      kind: ConfigMap
   settings:
     failurePolicy: Fail # (1). CEL behavior. Defaults to "Fail"
     variables: # (3)
-      - name: "replicas"
-        expression: "object.spec.replicas"
       - name: maxReplicas
         expression: int(5)
     paramKind: # (4)
@@ -126,17 +128,18 @@ spec:
     paramRef: # (4)
       name: "replica-limit-override"
       namespace: "test"
+      parameterNotFoundAction: Deny
     validations: # (5)
       - expression: |
           object.spec.replicas <= (
-            params.data.overrideReplicas != null && params.data.overrideReplicas < variables.maxReplicas
-            ? params.data.overrideReplicas
+            has(params.data.overrideReplicas) && int(params.data.overrideReplicas) < variables.maxReplicas
+            ? int(params.data.overrideReplicas)
             : variables.maxReplicas
           )
         messageExpression: |
           'The number of replicas must be less than or equal to ' +
-          string(params.data.overrideReplicas != null && params.data.overrideReplicas < variables.maxReplicas
-            ? params.data.overrideReplicas
+          string( has(params.data.overrideReplicas) && int(params.data.overrideReplicas) < variables.maxReplicas
+            ? int(params.data.overrideReplicas)
             : variables.maxReplicas)
   backgroundAudit: true # (9). Defaults to "true"
   namespaceSelector: # (8)
@@ -165,6 +168,7 @@ Notice the commented numbers on both the YAML manifests. Let's expand on them:
 | 7   | `validationActions`               | `mode`                                   | `mode` has as options `protect` and `monitor`. Auditing is more full featured in Kubewarden, see (9).                                                                                                                                            |
 | 8   | `matchResources`                  | `namespaceSelector`, `objectSelector`    | Define ways to constraint using Selectors. Kubewarden's policies have them as `namespaceSelector` and `objectSelector`.                                                                                                                          |
 | 9   | `auditAnnotations` (not pictured) | `backgroundAudit`, annotations           | Use Kubewarden fields instead to set the policy usage in [Audit Scanner](../../../explanations/audit-scanner), and its category and severity for OpenReports.                                                                                    |
+| 10  | `---`                             | `contextAwareResources` permissions      | Kubewarden's policies have fine-grained permissions for reading cluster Resources. Here it is used for reading the params.                                                                                                                       |
 |     | `matchConditions`                 | `matchConditions`                        | Kubewarden's policies have `matchConditions` (not pictured in this example).                                                                                                                                                                     |
 |     | `---`                             | Kubewarden-only features                 | For other features, see the rest of tutorial CEL examples.                                                                                                                                                                                       |
 
