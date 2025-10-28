@@ -1,10 +1,10 @@
 policies:
   - name: Copy kwctl CLI reference documentation files
-    policy: ghcr.io/jvanz/updatecli/policies/copy:0.1.0
+    policy: ghcr.io/updatecli/policies/file:0.2.1
     values:
       - values.d/update-kwctl-cli-ref-docs.yaml
   - name: Copy policy server CLI reference documentation files
-    policy: ghcr.io/jvanz/updatecli/policies/copy:0.1.0
+    policy: ghcr.io/updatecli/policies/file:0.2.1
     values:
       - values.d/update-policy-server-cli-ref-docs.yaml
   - name: Add header to the CLI reference documentation
