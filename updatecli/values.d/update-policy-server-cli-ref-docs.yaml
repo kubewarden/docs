@@ -1,5 +1,8 @@
 ---
 # Values.yaml contains settings that be used from Updatecli manifest.
+scm:
+  enabled: false
+
 files:
   - src: "cli-docs.md"
     dst: "docs/reference/policy-server-cli.md"
