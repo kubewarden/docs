@@ -48,8 +48,13 @@ kubectl --namespace kubewarden create secret docker-registry secret-ghcr-docker 
   --docker-server=myregistry.io
 ```
 
-For more information on how to create the Docker Secrets, see the [Kubernetes
-documentation](https://kubernetes.io/docs/concepts/configuration/secret/#docker-config-secrets).
+:::tip
+Label the Secret as specified
+[here](../rancher-backup-operator.md#User-secrets) for it to be part of
+backups done by Rancher Backup Operator
+:::
+
+For more information on how to create the Docker Secrets, see the [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/secret/#docker-config-secrets).
 
 ## Consuming the Secret in PolicyServers
 
