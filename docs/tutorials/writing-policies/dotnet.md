@@ -1,6 +1,6 @@
 ---
 sidebar_label: C#
-sidebar_position: 40
+sidebar_position: 50
 title: C#
 description: Kubewarden policies using C# and .NET
 keywords: [kubewarden, kubernetes, writing policies, c#, .net]

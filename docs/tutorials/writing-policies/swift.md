@@ -1,6 +1,6 @@
 ---
 sidebar_label: Swift
-sidebar_position: 50
+sidebar_position: 60
 title: Swift
 description: Kubewarden policies with Swift
 keywords: [kubewarden, kubernetes, writing policies, swift]
