@@ -103,3 +103,10 @@ html[data-theme='light'] .tooltip:hover .tooltiptext {
 html[data-theme='dark'] .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+/* Align SUSE Mono baseline with SUSE proportional font */
+code, kbd, samp {
+  font-family: 'SUSE Mono', monospace;
+  position: relative;
+  top: -0.07em; /* Adjust this value as needed */
+}
