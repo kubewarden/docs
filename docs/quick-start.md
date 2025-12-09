@@ -22,6 +22,7 @@ doc-topic: [quick-start]
   <script async src="https://artifacthub.io/artifacthub-widget.js"></script>
 </head>
 
+TESTING NETLIFY BUILD IMAGE
 The Kubewarden stack comprises:
 
 - One or more [[< cluster-admission-policy >]] resources: this defines policies for
