@@ -12,8 +12,7 @@ doc-topic: [operator-manual, air gap, installation]
   <link rel="canonical" href="https://docs.kubewarden.io/howtos/airgap/install"/>
 </head>
 
-This guide shows you how to install Kubewarden in air-gapped environments. For
-an air-gapped installation of Kubewarden, you need a private Open Container
+For an air-gapped installation of Kubewarden, you need a private Open Container
 Initiative (OCI) registry accessible by your Kubernetes cluster. Kubewarden
 Policies are WebAssembly modules; therefore, you can store them in an
 OCI-compliant registry as OCI artifacts. You need to add Kubewarden's images
@@ -21,7 +20,7 @@ and policies to this OCI registry. You can see a list of Kubewarden artifacts
 in the [Artifacts reference](../../reference/artifacts.md) page. The following
 sections describe the process.
 
-## Save container images in your workstation
+## Save container images on your workstation
 
 1. Download `kubewarden-images.txt` from the Kubewarden [release
    page](https://github.com/kubewarden/helm-charts/releases/). Alternatively,
@@ -37,9 +36,9 @@ sections describe the process.
 
    :::
 
-1.  Download `kubewarden-save-images.sh` and `kubewarden-load-images.sh` from the
-    [utilities repository](https://github.com/kubewarden/utils).
-1.  Save Kubewarden container images into a `.tar.gz` file:
+1. Download `kubewarden-save-images.sh` and `kubewarden-load-images.sh` from
+   the [utilities repository](https://github.com/kubewarden/utils).
+1. Save Kubewarden container images into a `.tar.gz` file:
 
     ```shell
     ./kubewarden-save-images.sh \
@@ -47,11 +46,11 @@ sections describe the process.
       --images kubewarden-images.tar.gz
     ```
 
-    Docker begins pulling the images used for an air gap install. Be patient.
-    This process takes a few minutes. When complete, your current directory,
-    where you ran the command, has a tarball, `kubewarden-images.tar.gz`.
+    Docker begins pulling the images used for an air gap install. This process
+    can take a few minutes. When complete, your current directory, where you
+    ran the command, has a tarball, `kubewarden-images.tar.gz`.
 
-## Save policies in your workstation
+## Save policies on your workstation
 
 1. Add all the policies you want to use to a `policies.txt` file. A file with a
    list of default policies is in the Kubewarden defaults [release
@@ -65,7 +64,7 @@ sections describe the process.
    ./kubewarden-save-policies.sh --policies-list policies.txt
    ```
 
-   You use `kwctl` to download the policies. The `kubewarden-policies.tar.gz`
+   Use `kwctl` to download the policies. The `kubewarden-policies.tar.gz`
    archive contains the policies.
 
 ## Helm charts
@@ -119,7 +118,7 @@ these categories:
 - Self-signed certificate is being used.
 - No TLS termination is done.
 
-Please refer to the [section on custom certificate
+Refer to the [section on custom certificate
 authorities](../custom-certificate-authorities.md) in the documentation to
 learn how to configure the `sources.yaml` file.
 
@@ -179,7 +178,7 @@ helm install --wait -n kubewarden \
 
 To download the recommended policies installed by the `kubewarden-defaults`
 Helm Chart from a registry other than `global.cattle.systemDefaultRegistry`,
-you can use the `recommendedPolicies.defaultPoliciesRegistry` configuration.
+use the `recommendedPolicies.defaultPoliciesRegistry` configuration.
 This configuration lets users specify a registry dedicated to pulling the OCI
 artifacts of the policies. It's particularly useful when their container image
 repository doesn't support OCI artifacts.
