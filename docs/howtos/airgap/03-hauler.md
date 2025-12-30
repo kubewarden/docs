@@ -17,10 +17,9 @@ This guide shows you how to install Kubewarden in air-gapped environments using
 run workloads in air-gapped environments. It moves the required resources for
 apps into those air-gapped environments.
 
-Kubewarden uses Hauler capabilities by providing a manifest file with all the
-required resources to run Kubewarden in a private environment. This
-documentation describes how you can use it. Refer to the Hauler documentation
-to learn more about it.
+Kubewarden provides a manifest file with all the required resources to run
+Kubewarden in a private environment. This documentation describes how to use
+it. Refer to the Hauler documentation to learn more about Hauler.
 
 The basic workflow using the Hauler manifest is:
 
@@ -91,7 +90,7 @@ your isolated environment.
 
 ## Populate private registry
 
-To use the resources from your Hauler store, it is necessary to make them
+To use the resources from your Hauler store, it's necessary to make them
 available in an internal registry. You can use Hauler commands to copy them
 into your private registry.
 
@@ -100,7 +99,7 @@ hauler store copy registry://localhost:5000
 ```
 
 You can also run Hauler to start a registry with all the resources from the
-store. This registry is insecure, you will need to adapt cluster configuration:
+store. This registry is insecure, you'll need to adapt cluster configuration:
 
 ```shell
 # Find IP address of your host
@@ -122,17 +121,16 @@ store. This registry is insecure, you will need to adapt cluster configuration:
 hauler store serve registry
 ```
 
-This will start a registry at the `localhost:5000` address. From this point,
+This starts a registry at the `localhost:5000` address. From this point,
 you can use other commands like Skopeo to copy all the container images, policy
 modules and Helm charts used by Kubewarden into your private registry.
 
 ## Install Kubewarden
 
-Now that your private registry has everything required, you can install
-Kubewarden. The difference from a standard Kubewarden installation is that you
-need to change the registry in the container images and policies to be the
-private registry. Additionally, the Helm charts must be installed from OCI
-artifacts.
+Now that your private registry is complete, you can install Kubewarden. The
+difference from a standard Kubewarden installation is that you need to change
+the registry referenced in the container images and policies to be the private
+registry. Additionally, the Helm charts must be installed from OCI artifacts.
 
 Install the Kubewarden stack:
 
@@ -145,6 +143,7 @@ helm install --wait -n kubewarden kubewarden-controller \
 ```
 
 :::caution
+
 To use the PolicyReporter sub-chart available in the `kubewarden-controller`
 chart you need to define other values specific for the sub-chart in an
 air-gapped environment. See an example below:
@@ -160,10 +159,11 @@ helm install --wait -n kubewarden kubewarden-controller oci://<REGISTRY.YOURDOMA
 ```
 
 It's necessary to define `auditScanner.policyReporter` and four other values to
-enable the sub-chart and to configure the registry and repository where the
-Policy Reporter images are stored. For more information about the policy report
-sub-chart values, refer to [Policy Reporter
+enable the sub-chart and to configure the registry and repository with the
+location of the Policy Reporter image store. For more information about the
+policy report sub-chart values, refer to [Policy Reporter
 documentation](https://kyverno.github.io/policy-reporter-docs/getting-started/helm.html).
+
 :::
 
 ```shell
@@ -172,12 +172,12 @@ helm install --wait -n kubewarden \
   --set global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>
 ```
 
-Finally, you need to configure each Policy Server to fetch policies from your
-private registry. See the [using private
-registry](../policy-servers/private-registry) section of the documentation.
+Finally, configure each Policy Server to fetch policies from your private
+registry. See the [using private registry](../policy-servers/private-registry)
+section of the documentation.
 
-Now you can create Kubewarden policies in your cluster. Policies must be
-available in your private registry.
+Now create Kubewarden policies in your cluster. Policies must be available in
+your private registry.
 
 ```
 kubectl apply -f - <<EOF
