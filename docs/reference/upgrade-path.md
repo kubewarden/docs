@@ -32,10 +32,10 @@ The Kubewarden components that follow the rules for the "stack" version are:
 
 `kubewarden-crds` chart, `kubewarden-controller` chart, `kubewarden-defaults`
 chart, any manually deployed `policy-server` image, and `kwctl` should run the
-same `MAJOR`/`MINOR`. The `PATCH` version can increase independently though.
+same `MAJOR.MINOR.PATCH` version.
 
-Therefore, if the `kubewarden-controller` version running is `1.1.x`, the
-`policy-server`s and `kwctl` version in use should be `1.1.x` as well.
+Therefore, if the `kubewarden-controller` version running is `1.1.2`, the
+`policy-server`s and `kwctl` version in use should be `1.1.2` as well.
 
 ## Helm chart versions
 
