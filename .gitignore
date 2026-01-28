@@ -26,3 +26,6 @@ yarn-error.log*
 
 files_without_canonical.txt
 /tmp
+
+.vscode
+/bkp
