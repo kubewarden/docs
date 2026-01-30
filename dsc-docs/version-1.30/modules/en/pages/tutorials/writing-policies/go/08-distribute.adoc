@@ -1,0 +1,26 @@
+include::partial$variables.adoc[]
+= Distributing policy
+:revdate: 2025-07-09
+:page-revdate: {revdate}
+:description: Distributing {project-name} policies developed with Go.
+:doc-persona: ["kubewarden-policy-developer", "kubewarden-operator"]
+:doc-topic: ["kubewarden", "writing-policies", "go", "distributing-policies"]
+:doc-type: ["tutorial"]
+:keywords: ["kubewarden", "kubernetes", "distributing kubewarden policies"]
+:sidebar_label: Distributing policy
+:sidebar_position: 080
+:current-version: {page-origin-branch}
+
+It's been a lengthy, and hopefully enjoyable, wander through the Go tutorial,
+congratulations for having made it this far 🎉.
+
+During this tutorial you've recreated the
+https://github.com/kubewarden/safe-labels-policy[safe-labels-policy].
+
+There's nothing special to do when it comes to distributing a policy.
+If you followed this guide, you have already published your policy using the
+GitHub `release.yml` Action defined in the last chapter.
+
+The topic of distributing policies is covered in greater depth in the
+xref:/explanations/distributing-policies.adoc["distributing policies"]
+section of {project-name}'s documentation.

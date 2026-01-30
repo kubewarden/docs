@@ -1,0 +1,76 @@
+ifdef::kw-build-community[]
+:build-type: community
+endif::[]
+ifndef::kw-build-community[]
+:build-type: product
+endif::[]
+
+// The source of truth for the kw-product-name and kw-community-name values are in the playbooks
+// for the product-docs-playbook repository. Those below are a convenience for local builds.
+// It's worth checking they are aligned occasionally.
+
+ifndef::kw-product-name[]
+:kw-product-name: SUSE Security Admission Controller
+endif::[]
+
+ifndef::kw-product-short-name[]
+:kw-product-short-name: Admission Controller
+endif::[]
+
+ifndef::kw-product-abbrev[]
+:kw-product-abbrev: SSAC
+endif::[]
+
+ifndef::kw-community-name[]
+:kw-community-name: Kubewarden
+endif::[]
+
+ifeval::["{build-type}" == "community"]
+:project-name: {kw-community-name}
+:product-name: {project-name}
+:community-name: Kubewarden
+:short-project-name: {product-name}
+:short-product-name: {short-project-name}
+:project-abbrev: {product-name}
+:product-abbrev: {project-abbrev}
+:intro-paragraph: {project-name} is a xref:#_vendor_neutrality[vendor neutral], https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
+endif::[]
+
+ifeval::["{build-type}" == "product"]
+:project-name: {kw-product-name}
+:product-name: {project-name}
+:community-name: {kw-community-name}
+:short-project-name: {kw-product-short-name}
+:short-product-name: {short-project-name}
+:project-abbrev: {kw-product-abbrev}
+:product-abbrev: {project-abbrev}
+:intro-paragraph: {short-project-name} is derived from a vendor neutral, https://cncf.io[CNCF] Sandbox project, called link:https://kubewarden.io[{community-name}], originally created by https://www.rancher.com/[SUSE Rancher]. The name {project-name} may be shortened to {short-project-name} or abbreviated as {project-abbrev}. The name {community-name} refers to the open-source community project. The name {community-name} may also be used throughout this documentation in place of {project-name}, {short-project-name}, or {project-abbrev}.
+endif::[]
+
+// Glossary terms start
+
+:admission-policy: xref:glossary.adoc#_admissionpolicy[AdmissionPolicy]
+
+:cluster-admission-policy: xref:glossary.adoc#_clusteradmissionpolicy[ClusterAdmissionPolicy]
+
+:cluster-policy-report: xref:glossary.adoc#_clusterpolicyreport[ClusterPolicyReport]
+
+:kwctl: xref:glossary.adoc#_kwctl[kwctl]
+
+:mutating-webhook-configuration: xref:glossary.adoc#_mutatingwebhookconfiguration[MutatingWebhookConfiguration]
+
+:policy-report: xref:glossary.adoc#_policyreport[PolicyReport]
+
+:policy-server: xref:glossary.adoc#_policyserver[PolicyServer]
+
+:validating-webhook-configuration: xref:glossary.adoc#_walidatingwebhookconfiguration[ValidatingWebhookConfiguration]
+
+:waPC: xref:glossary.adoc#_wapc[waPC]
+
+:WASI: xref:glossary.adoc#_wasi[WASI]
+
+:Wasm: xref:glossary.adoc#_wasm[Wasm]
+
+:Wasmtime: xref:glossary.adoc#_wasmtime[Wasmtime]
+
+// Glossary terms end

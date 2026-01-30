@@ -1,0 +1,9 @@
+include::partial$variables.adoc[]
+
+:revdate: 2025-11-25
+:page-revdate: {revdate}
+:description: Introducing SBOMScanner.
+
+= Introduction
+
+SBOMScanner is cool.

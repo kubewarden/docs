@@ -1,0 +1,53 @@
+include::partial$variables.adoc[]
+= Documentation organization
+:revdate: 2025-11-25
+:page-revdate: {revdate}
+:sidebar_label: Organization
+:sidebar_position: 75
+:description: How is the {project-name} documentation organized?
+:keywords: ["admission policy manager", "{project-name}", documentation, organization]
+:doc-persona: [kubewarden-all]
+:doc-type: [explanation]
+:doc-topic: [explanation]
+
+{project-name} organizes project documentation as follows:
+
+* xref:/introduction.adoc[Introduction]
+* xref:/quick-start.adoc[Quick start]
+* _Tutorials_—learning through examples.
+* _Explanations_—underlying concepts.
+* _How-tos_—getting {short-project-name} tasks done.
+* _Reference_
+* Organization—this page
+* xref:/personas.adoc[Personas]—who is {short-project-name} for?
+* xref:/disclosure.adoc[Security]
+* xref:/glossary.adoc[Glossary]
+
+Most of the material is in the four sections, _Tutorials_, _Explanations_,
+_How-tos_, and _Reference_. There may be overlap as the sections are not
+mutually exclusive. The {short-project-name} project tries to follow the
+link:https://diataxis.fr/[Diátaxis] documentation framework.
+
+== Navigation
+
+The left hand contents menu always indicates your current document location.
+The right hand sections menu shows the current page sections. There is also a
+'breadcrumbs' feature at the top of the main content panel on each page.
+
+== Search
+
+A search box facility is in the header panel of each page.
+
+== Editing
+
+A link to the page source on GitHub is at the bottom of each page.
+
+== Other resources
+
+Also maintained are:
+
+* link:https://github.com/kubewarden/rfc[RFCs] for the project.
+* A series of link:https://www.kubewarden.io/blog/[blog posts] related to
+  {community-name} releases.
+* Items related to the link:https://github.com/kubewarden/community[community]
+  management of {community-name}.

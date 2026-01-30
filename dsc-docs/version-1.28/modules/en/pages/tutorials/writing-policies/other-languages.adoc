@@ -1,0 +1,17 @@
+= Other languages
+:revdate: 2025-07-09
+:page-revdate: {revdate}
+:description: Writing Kubewarden policies in other languages
+:doc-persona: ["kubewarden-policy-developer"]
+:doc-topic: ["kubewarden", "writing-policies", "other-languages"]
+:doc-type: ["tutorial"]
+:keywords: ["kubewarden", "kubernetes", "writing policies", "other languages"]
+:sidebar_label: Other languages
+:sidebar_position: 70
+:current-version: {page-origin-branch}
+
+Kubewarden Policies can be written with any programming language that can produce
+WebAssembly modules targeting the WASI interface.
+
+Please open a Pull Request or a GitHub Issue https://github.com/kubewarden/docs[here]
+if you know of a programming language that can be used to write Kubewarden Policies.

@@ -1,0 +1,55 @@
+= Swift
+:revdate: 2025-07-09
+:page-revdate: {revdate}
+:description: Kubewarden policies with Swift
+:doc-persona: ["kubewarden-policy-developer"]
+:doc-topic: ["kubewarden", "writing-policies", "swift"]
+:doc-type: ["tutorial"]
+:keywords: ["kubewarden", "kubernetes", "writing policies", "swift"]
+:sidebar_label: Swift
+:sidebar_position: 50
+:current-version: {page-origin-branch}
+
+As stated on the https://swift.org/[official website]:
+
+____
+Swift is a general-purpose programming language that's approachable for newcomers and powerful for experts.
+It is fast, modern, safe, and a joy to write.
+____
+
+The swift compiler doesn't yet have WebAssembly support, however the
+https://swiftwasm.org/[SwiftWasm] project provides a patched compiler with this
+capability.
+
+The SwiftWasm team is working to merge these changes into the Swift project.
+In the meantime, you can use the tool chain provided by the SwiftWasm project to build Kubewarden policies.
+
+[NOTE]
+====
+
+You don't need an Apple system to write or run Swift code. Everything
+can be done also on a Linux machine or on Windows (by using Docker for Windows).
+====
+
+
+== Current State
+
+Policy authors can use the following resources:
+
+* https://github.com/kubewarden/policy-sdk-swift[Kubewarden Swift SDK]: this provides a set of ``struct``s and functions that simplify the process of writing policies.
+* https://github.com/kubewarden/swift-policy-template[Kubewarden Swift template project]: use this template to scaffold a Swift-based policy.
+The template comes with a working policy and a set of GitHub Actions to automate its lifecycle.
+
+There are no severe limitations with Swift, only some minor issues:
+
+* It's critical to perform some post-build optimizations before using the
+policy _"in production"_:
+ .. Strip the Wasm module via `wasm-strip` to reduce its size
+ .. Optimize the Wasm module via `wasm-opt`
+
+The GitHub Action provided by the template repository already takes care of that.
+
+== More examples
+
+https://github.com/kubewarden/pod-runtime-class-policy/tree/swift-implementation[This GitHub repository branch]
+has a Kubewarden Policy written in Swift.

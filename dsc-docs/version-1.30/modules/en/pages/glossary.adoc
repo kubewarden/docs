@@ -1,0 +1,86 @@
+include::partial$variables.adoc[]
+= Glossary
+:revdate: 2025-11-03
+:page-revdate: {revdate}
+:description: {project-name} glossary
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["glossary"]
+:doc-type: ["explanation"]
+:keywords: ["kubewarden", "glossary"]
+:sidebar_label: Glossary
+:sidebar_position: 90
+:current-version: {page-origin-branch}
+
+== A
+
+=== AdmissionPolicy
+
+A namespace-wide resource. The policy processes only those requests targeting
+the namespace in which the AdmissionPolicy is defined.
+
+== C
+
+=== ClusterAdmissionPolicy
+
+An <<_admissionpolicy,AdmissionPolicy>> which targets cluster-wide resources.
+
+=== ClusterReport
+
+A <<_report,Report>> and a ClusterReport store results of policy scans. Which
+one is used, depends on the scope of the resource.
+
+== K
+
+=== kwctl
+
+A CLI tool to generate and test Kubernetes YAML files for policy deployment.
+
+== M
+
+=== MutatingWebhookConfiguration
+
+A
+https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#what-are-admission-webhooks[Kubernetes resource]
+created by the {short-project-name} controller to let Kubernetes know where to send an `AdmissionReview`.
+In other words,
+this is how a {short-project-name} controller informs Kubernetes where to find a resource mutating policy.
+
+== P
+
+=== Report
+
+A Report and a <<_clusterreport,ClusterReport>> store results of
+policy scans. Which one is used depends on the scope of the resource.
+
+[#_policy_server]
+=== PolicyServer
+
+A PolicyServer validates incoming requests by executing {short-project-name} policies against requests.
+
+== V
+
+=== ValidatingWebhookConfiguration
+
+A
+https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#what-are-admission-webhooks[Kubernetes resource]
+created by the {short-project-name} controller to let Kubernetes know where to send a `AdmissionReview`.
+In other words, this is how {short-project-name} informs Kubernetes where to find a resource validating policy.
+
+== W
+
+=== waPC
+
+WebAssembly Procedure Calls. https://wapc.io.
+
+=== WASI
+
+WebAssembly System Interface. https://wasi.dev.
+
+=== Wasm
+
+A binary instruction format for a stack-based virtual machine. Designed for web
+deployment. https://webassembly.org.
+
+=== Wasmtime
+
+A runtime for WebAssembly. https://wasmtime.dev.

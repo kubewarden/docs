@@ -1,0 +1,3 @@
+include::partial$variables.adoc[]
+
+* xref:introduction.adoc[Introduction]

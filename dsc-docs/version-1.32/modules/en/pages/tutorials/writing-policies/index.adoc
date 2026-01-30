@@ -1,0 +1,55 @@
+include::partial$variables.adoc[]
+= Writing {project-name} policies
+:revdate: 2025-11-25
+:page-revdate: {revdate}
+:description: An introduction to writing {project-name} policies.
+:doc-persona: ["kubewarden-policy-developer"]
+:doc-topic: ["writing-policies"]
+:doc-type: ["tutorial"]
+:keywords: ["kubewarden", "kubernetes", "writing policies"]
+:sidebar_label: Writing Policies
+:current-version: {page-origin-branch}
+
+This section introduces {project-name} policies using traditional computing analogies.
+
+A {short-project-name} policy is like a program that does one job.
+It receives input data, performs computation with that data and returns a result.
+
+The input data is Kubernetes admission requests.
+The result of the computation is a validation response,
+which tells Kubernetes whether to accept, reject, or mutate the input data, the admission request.
+
+The https://github.com/kubewarden/policy-server[policy-server]
+component of {short-project-name} performs these operations.
+
+The policy server doesn't include any data processing capability.
+You add processing capabilities at runtime with add-ons.
+These add-ons are the {short-project-name} policies.
+
+So, a {short-project-name} policy is like a
+https://en.wikipedia.org/wiki/Plug-in_%28computing%29[traditional plug-in]
+of the "policy server" program.
+
+To recap:
+
+* {short-project-name} policies are plug-ins that expose a set of well-defined
+functionalities (validate a Kubernetes request object, validate policy settings provided by the user, and other functions) using a well-defined API
+* Policy server is the "main" program that loads the plug-ins
+(aka policies) and uses their exposed functionalities to accept, reject, or mutate Kubernetes requests
+
+Writing {short-project-name} policies consists of writing the validation business logic and then exposing it through a well-defined API.
+
+== Programming language requirements
+
+You supply {short-project-name} policies as
+https://webassembly.org/[WebAssembly] binaries.
+
+Policy authors can write policies using any programming language that supports WebAssembly as a compilation target.
+The list of supported language is constantly evolving, https://github.com/appcypher/awesome-wasm-langs[this page] provides a nice overview of the WebAssembly landscape.
+
+Currently, WebAssembly doesn't have an official way to share complex data types between the host and a WebAssembly guest.
+To overcome this limitation {short-project-name} policies use the https://github.com/wapc[waPC] project, which provides a bi-directional communication channel.
+
+So, your programming language of choice must have an available waPC guest SDK.
+If that's not the case, feel free to reach out.
+The project team can help you overcome this limitation.

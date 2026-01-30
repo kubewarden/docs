@@ -1,0 +1,3 @@
+= Kubewarden/Admission Controller Documentation
+
+Documentation for Kubewarden/Admission Controller.

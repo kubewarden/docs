@@ -1,0 +1,28 @@
+include::partial$variables.adoc[]
+
+= Enterprise support
+:revdate: 2025-11-06
+:page-revdate: {revdate}
+:sidebar_label: Enterprise
+:sidebar_position: 85
+:description: Enterprise support for {project-name}
+:keywords: [ {project-name}, kubewarden, support, ]
+:doc-persona: [kubewarden-all]
+:doc-type: [explanation]
+:doc-topic: [support]
+
+ifeval::["{build-type}" == "community"]
+These organization(s) provide enterprise support for {project-name}:
+
+[cols="1,1"]
+|===
+| Organization | Offering
+
+| link:https://suse.com[SUSE]
+| SUSE provides complete {project-name} (as {kw-product-name}) enterprise support with the link:https://www.suse.com/products/rancher/application-collection[SUSE Application Collection].
+|===
+endif::[]
+
+ifeval::["{build-type}" == "product"]
+SUSE provides complete {project-name} enterprise support with the link:https://www.suse.com/products/rancher/application-collection[SUSE Application Collection].
+endif::[]

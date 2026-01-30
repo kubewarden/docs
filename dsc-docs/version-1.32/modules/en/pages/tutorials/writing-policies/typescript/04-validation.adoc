@@ -1,0 +1,176 @@
+include::partial$variables.adoc[]
+= Writing the validation logic
+:revdate: 2025-11-25
+:page-revdate: {revdate}
+:description: A tutorial on writing validation logic for a {project-name} policy using TypeScript.
+:keywords: "{project-name}", kubewarden, kubernetes, writing policies, typescript
+:doc-type: tutorial
+:doc-topic: {project-name}, kubewarden, writing-policies, typescript, validation-logic
+:doc-persona: kubewarden-policy-developer
+:current-version: {page-origin-branch}
+
+[WARNING]
+====
+Critical: Don't write logging information to STDOUT.
+
+Writing to STDOUT breaks policies. Instead, use STDERR for logging or the logging facility provided by the {project-name} SDK. The policy's output to STDOUT must only contain the validation response.
+====
+
+The validation logic goes in the `src/index.ts` file.
+
+Your validation logic needs to:
+
+* Get the relevant information from the incoming validation request.
+* Return a response based on the input and the policy settings.
+
+The incoming request contains a JSON object with the Kubernetes resource to validate.
+You can access this JSON object data through the {short-project-name} SDK's helper functions.
+
+== The `validate` function
+
+The policy provided by the template already has a `validate` function in `src/index.ts`.
+You can use it there, adding your logic to reject Pods with denied hostnames.
+
+This is how the function should look once complete:
+
+[source,javascript]
+----
+/**
+ * Validates the incoming request against policy settings.
+ * Accepts or rejects the request based on denied hostnames.
+ */
+function validate(): void {
+  try {
+    // NOTE 1
+    // Read the validation request payload
+    const validationRequest = Validation.Validation.readValidationRequest();
+
+    // NOTE 2
+    // Extract policy settings from the validation request
+    const settings: PolicySettings = validationRequest.settings || {};
+
+    // NOTE 3
+    // Extract the Kubernetes object (Pod) from the validation request
+    const resource = getKubernetesResource(validationRequest);
+    if (!resource) {
+      writeOutput(Validation.Validation.rejectRequest('Failed to parse Kubernetes resource.'));
+      return;
+    }
+
+    // Only process Pod resources
+    if (resource.kind !== 'Pod') {
+      writeOutput(Validation.Validation.acceptRequest());
+      return;
+    }
+
+    // NOTE 4
+    // Extract hostname from the Pod spec
+    const hostname = getPodHostname(resource as Pod);
+    const deniedHostnames = settings.denied_hostnames || [];
+
+    // NOTE 5
+    // Validate the hostname against the deny list
+    if (!hostname) {
+      writeOutput(Validation.Validation.acceptRequest());
+      return;
+    }
+
+    if (deniedHostnames.includes(hostname)) {
+      writeOutput(
+        Validation.Validation.rejectRequest(
+          `Pod hostname '${hostname}' is not allowed. Denied hostnames: [${deniedHostnames.join(', ')}]`
+        ),
+      );
+    } else {
+      writeOutput(Validation.Validation.acceptRequest());
+    }
+  } catch (err) {
+    console.error('Validation error:', err);
+    writeOutput(Validation.Validation.rejectRequest(`Validation failed: ${err}`));
+  }
+}
+----
+
+=== What each NOTE does
+
+* NOTE 1: Read the incoming validation request using `readValidationRequest()`.
+* NOTE 2: Extract user-defined settings from the validation request (for example, denied hostnames).
+* NOTE 3: Parse the Kubernetes object (expected to be a Pod) from the request payload.
+* NOTE 4: Extract the hostname field from the Pod's spec section.
+* NOTE 5: Compare the hostname against the denied list and return an appropriate response.
+
+== Helper functions
+
+The policy uses several helper functions to process the validation request:
+
+=== getKubernetesResource
+
+This function extracts the Kubernetes resource from the validation request:
+
+[source,javascript]
+----
+/**
+ * Safely parses and extracts the Kubernetes resource from the validation request.
+ *
+ * @param {ValidationRequest} validationRequest - The validation request object.
+ * @returns {KubernetesResource | undefined} The parsed Kubernetes resource if available.
+ */
+function getKubernetesResource(validationRequest: ValidationRequest): KubernetesResource | undefined {
+  try {
+    let requestObject: string | KubernetesResource | undefined = validationRequest.request?.object;
+    if (typeof requestObject === 'string') {
+      requestObject = JSON.parse(requestObject) as unknown as KubernetesResource;
+    } else if (requestObject === undefined) {
+      return undefined;
+    }
+    return requestObject as KubernetesResource;
+  } catch (error) {
+    console.error('Error parsing Kubernetes resource:', error);
+    return undefined;
+  }
+}
+----
+
+This function handles the case where the Kubernetes object is a JSON string or an already parsed object.
+
+=== getPodHostname
+
+This function extracts the hostname from a Pod resource:
+
+[source,javascript]
+----
+/**
+ * Extracts the hostname from a Pod resource.
+ *
+ * @param {Pod} pod - The Pod resource.
+ * @returns {string | undefined} The hostname if set, otherwise undefined.
+ */
+import type { Pod } from 'kubernetes-types/core/v1';
+function getPodHostname(pod: Pod): string | undefined {
+  return pod.spec?.hostname;
+}
+----
+
+This function extracts the hostname from the Pod's specification.
+
+== Policy entry point
+
+The policy uses a switch statement to handle different actions:
+
+[source,javascript]
+----
+const action = policyAction();
+switch (action) {
+  case 'validate':
+    validate();
+    break;
+  case 'validate-settings':
+    validateSettings();
+    break;
+  default:
+    console.error('Unknown action:', action);
+    writeOutput(new Validation.Validation.ValidationResponse(false, 'Unknown policy action'));
+}
+----
+
+The {short-project-name} Javy plug-in provides the `policyAction()` function indicating whether the policy should validate a resource or validate its settings.

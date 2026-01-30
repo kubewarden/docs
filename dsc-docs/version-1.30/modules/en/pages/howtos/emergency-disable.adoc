@@ -1,0 +1,70 @@
+include::partial$variables.adoc[]
+= Emergency disable
+:revdate: 2025-07-09
+:page-revdate: {revdate}
+:sidebar_label: Emergency disable
+:sidebar_position: 31
+:title: Emergency disable
+:description: How to temporarily disable {project-name} policies during emergencies
+:keywords: ["{project-name}", kubewarden, ClusterAdmissionPolicies, AdmissionPolicies, configuration]
+:doc-persona: kubewarden-operator
+:doc-type: howto
+:doc-topic: operator-manual
+
+In an emergency, operations teams might need to perform actions that {project-name} would block.
+
+This document explains how to disable {short-project-name} so operations teams can address cluster failures. After resolving the situation, operations teams can restart {short-project-name}.
+
+== Disable {short-project-name}
+
+First, stop the {short-project-name} controller. You do this by scaling its Deployment to zero:
+
+[source,console]
+----
+kubectl scale deployment kubewarden-controller \
+  --replicas=0 \
+  -n kubewarden
+----
+
+[tip]
+====
+Ensure you use the name of the Namespace where the {short-project-name} stack is deployed.
+Here, the stack is deployed in the `kubewarden` Namespace.
+====
+
+Next, delete all the `ValidatingWebhookConfigurations` and `MutatingWebhookConfigurations`
+created by {short-project-name}:
+
+[source,console]
+----
+# Delete all the ValidatingWebhookConfiguration created by {short-project-name}
+kubectl delete validatingwebhookconfigurations \
+  -l app.kubernetes.io/part-of=kubewarden
+
+# Delete all the MutatingWebhookConfiguration created by {short-project-name}
+kubectl delete mutatingwebhookconfigurations \
+  -l app.kubernetes.io/part-of=kubewarden
+----
+
+== Restore {short-project-name}
+
+When the emergency is over, restore the {short-project-name} stack by bringing back
+the {short-project-name} controller:
+
+[source,console]
+----
+kubectl scale deployment kubewarden-controller \
+  --replicas=1 \
+  -n kubewarden
+----
+
+[tip]
+====
+- Ensure you use the name of the Namespace where the {short-project-name} stack is deployed.
+  Here, the stack is deployed in the `kubewarden` Namespace.
+- Ensure you scale the controller back to its original value. This example assumes
+  there's only one replica of the controller running.
+====
+Once the controller is running, it reconciles the deployed
+policies. The `ValidatingWebhookConfiguration` and `MutatingWebhookConfiguration` resources,
+previously deleted, are recreated, thus enforcing the policies.

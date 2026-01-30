@@ -1,0 +1,22 @@
+include::partial$variables.adoc[]
+= Policy testing
+:revdate: 2025-07-09
+:page-revdate: {revdate}
+:description: A tutorial about testing policies in {project-name}.
+:doc-persona: ["kubewarden-operator", "kubewarden-policy-developer"]
+:doc-topic: ["testing-policies", "introduction"]
+:doc-type: ["tutorial"]
+:keywords: ["kubewarden", "persons", "policy author", "cluster operator"]
+:sidebar_label: Policy testing
+:current-version: {page-origin-branch}
+
+== Policy testing personas
+
+This section covers the topic of testing {project-name} Policies.
+There are two personas interested in testing policies:
+
+* *Policy developer*: you're writing a {short-project-name} Policy and you want to make sure your code behaves the way you expect.
+* *Cluster operator*: you found a {short-project-name} Policy and you want to test and tune the policy settings before deploying it.
+You want to keep testing these settings in your CI/CD pipelines, and other administrative tasks.
+
+The next sections of the documentation shows how these personas can test {short-project-name} policies.

@@ -1,0 +1,124 @@
+include::partial$variables.adoc[]
+= Monitoring
+:revdate: 2025-07-09
+:page-revdate: {revdate}
+:description: Monitoring and metrics for {short-project-name}.
+:doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
+:doc-topic: ["operator-manual", "metrics-and-monitoring"]
+:doc-type: ["howto"]
+:keywords: ["kubewarden", "kubernetes", "user interface extension", "metrics", "monitoring"]
+:current-version: {page-origin-branch}
+
+Rancher has a Cluster Tool for monitoring that uses Grafana and
+Prometheus. You can use this tool, integrating it with {short-project-name}, to
+view overall metrics for a Policy Server or metrics for a given policy.
+
+[CAUTION]
+====
+
+You need a cluster with at least 4 cores to install the Monitoring tool.
+
+====
+
+
+== Prerequisites
+
+You need the Prometheus Operator. Follow
+xref:howtos/telemetry/30-metrics-qs.adoc#_install_prometheus[these
+instructions] to install it.
+
+== Install
+
+=== Create the ServiceMonitors
+
+* Import the manifest to create the ServiceMonitors.
+* You need to specify the {short-project-name} installation namespace
+
+These steps are an adaptation from the
+xref:howtos/telemetry/30-metrics-qs.adoc[telemetry metrics instructions].
+
+[subs="+attributes",yaml]
+----
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kubewarden-controller
+  namespace: cattle-kubewarden-system
+spec:
+  endpoints:
+    - interval: 10s
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - cattle-kubewarden-system
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kubewarden-controller
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kubewarden-policy-server
+  namespace: cattle-kubewarden-system
+spec:
+  endpoints:
+    - interval: 10s
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - cattle-kubewarden-system
+  selector:
+    matchLabels:
+      app: kubewarden-policy-server-default
+----
+
+=== Enable telemetry for your `rancher-kubewarden-controller` resource
+
+* Navigate to Apps & Marketplace → Installed Apps.
+* Select the `Edit/Upgrade` action for your `rancher-kubewarden-controller`
+  resource.
+* Edit the YAML for `telemetry` to be `enabled: "true"` and verify that the metrics
+  port is correct.
+
+[,yml]
+----
+telemetry:
+  metrics: true
+  mode: sidecar
+  sidecar:
+    metrics:
+      port: 8080
+----
+
+[NOTE]
+====
+
+You may need to redeploy your Monitoring resources for the new ConfigMap to
+load. You can do this from Workloads → Deployments. Select all the resources in
+the `cattle-monitoring-system` namespace and select the `Redeploy` action.
+
+====
+
+
+=== Create the Grafana dashboard ConfigMap for Policies and Policy Server
+
+[NOTE]
+====
+This method is suitable for air-gapped installations.
+====
+
+
+The dashboards are unique between Policy Server and Policies, so you need to separate
+creation.
+
+Within the detail view for a Policy Server or a specific Policy:
+
+* Navigate to the "Metrics" tab.
+* Follow the prompt to create the ConfigMap.
+* Reload the page to update the Grafana view
+(Grafana may be slow to acknowledge the new dashboard).
+
+You should be able to view the metrics for a Policy Server, or any given Policy
+on the detail page for each respective resource. You can also view the
+{short-project-name} dashboards within the Grafana UI, or the events from the
+Prometheus UI.

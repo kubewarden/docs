@@ -1,0 +1,6 @@
+name: ROOT
+title: Kubewarden
+version: 1.28
+start_page: introduction.adoc
+nav:
+- modules/ROOT/nav.adoc

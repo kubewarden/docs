@@ -1,0 +1,100 @@
+include::partial$variables.adoc[]
+= What is {project-name}?
+:revdate: 2025-11-17
+:page-revdate: {revdate}
+:description: Introducing {project-name}, a SUSE® Rancher Prime product.
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["introduction"]
+:doc-type: ["explanation"]
+:keywords: ["kubewarden", "cncf", "cncf sandbox", "kubernetes", "admission policy manager"]
+:sidebar_label: Introduction
+:sidebar_position: 1
+:slug: /
+:current-version: {page-origin-branch}
+
+{project-name} is a Kubernetes Policy Engine.
+It aims to be the Universal Policy Engine for Kubernetes.
+
+{intro-paragraph}
+
+== How does {project-name} help?
+
+{short-project-name} offers flexibility for policy admission and enforcement in
+a Kubernetes environment.
+
+=== Benefits and value
+
+- Use any programming language that generates https://webassembly.org[WebAssembly] binaries to write your policies.
+- WebAssembly enables policy compatibility across processors and operating systems.
+- Reuse of policies from other policy engines without the need for rewriting them.
+- Distribute policies using standard and secure mechanisms such as https://opencontainers.org[OCI] compliant registries.
+- Policy enforcement at admission ensures only compliant workloads run.
+- The {short-project-name} audit scanner actively and continuously checks policy enforcement over time.
+- Verify policies using https://slsa.dev[SLSA] (Supply Chain Levels for Software Artifacts) tools and practices.
+- {project-name} provides a comprehensive approach to admission policy management.
+- CNCF membership and a growing open source community and ecosystem help {short-project-name} with transparency, collaboration and improvement.
+
+=== Use cases
+
+- Security hardening. For example, enforce policies restricting container
+  privileges, enforce network policies, or block insecure image registries.
+- Compliance auditing. Ensure workloads comply with organizational or
+  regulatory standards and best practices.
+- Resource optimization. Enforce resource limits and quotas.
+
+There is further documentation of use cases on the xref:use-cases.adoc[use
+cases] page.
+
+== New to {short-project-name}?
+
+If new to the {short-project-name} project start with the xref:quick-start.adoc[Quick
+start guide] and the xref:explanations/architecture.adoc[architecture] page.
+Then it depends where your interests take you. For policy developers there are
+language specific sections in the tutorials. For integrators and administrators
+there is a 'how-tos' section. The explanations section contains useful
+background material. There is also a xref:glossary.adoc[glossary].
+
+== What is WebAssembly?
+
+As stated on https://webassembly.org/[WebAssembly's official website]:
+
+____
+WebAssembly (abbreviated Wasm) is a binary instruction format for a
+stack-based virtual machine. Wasm is designed as a portable
+compilation target for programming languages, enabling deployment on
+the web for client and server applications.
+____
+
+Wasm was originally conceived as a browser "extension". However, the
+WebAssembly community is engaged in efforts to allow the execution of Wasm code
+outside browsers.
+
+== Why use WebAssembly?
+
+Users can write Kubernetes policies using their
+favorite programming language, provided its toolchain can generate
+Wasm binaries.
+
+Wasm modules are portable, once built they can run on any kind of processor
+architecture and operating system. For example, a policy developed and built on
+Apple Silicon can run on AMD64/Intel64 Linux without conversion.
+
+Policy authors can reuse their skills, tools and best practices. Policies are
+"traditional" programs that can have reusable blocks (regular libraries). You
+can lint and test them and you can plug them into current CI and CD workflows.
+
+== Policy distribution
+
+You can serve {short-project-name} policies using a standard web server or, better,
+you can publish them in an OCI compliant registry as
+https://github.com/opencontainers/artifacts[OCI artifacts].
+
+ifeval::["{build-type}" == "community"]
+
+== Vendor neutrality
+
+{short-project-name} is a
+link:https://contribute.cncf.io/maintainers/community/vendor-neutrality/[vendor
+neutral] project as defined by the CNCF.
+
+endif::[]

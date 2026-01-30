@@ -1,0 +1,50 @@
+include::partial$variables.adoc[]
+= Security disclosure
+:revdate: 2025-07-09
+:page-revdate: {revdate}
+:description: Security disclosure.
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["security", "disclosure"]
+:doc-type: ["explanation"]
+:keywords: ["kubewarden", "kubernetes", "security", "disclosure"]
+:sidebar_label: Security disclosure
+:sidebar_position: 80
+:current-version: {page-origin-branch}
+
+The {project-name} team appreciates investigative work on security vulnerabilities
+carried out by well-intentioned, ethical security researchers. {short-project-name}
+follows the practice of [responsible
+disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure) to best
+protect {short-project-name}'s user base from the impact of security issues. On
+{short-project-name}'s side, this means:
+
+* {short-project-name} responds to security incidents on priority.
+* {short-project-name} releases fixes for issues as soon as is practical, prioritizing by risk.
+* {short-project-name} always transparently lets the community know about any incident that
+  affects them.
+
+If you have found a security vulnerability in {short-project-name}, the easiest way to
+report a vulnerability is through the
+https://github.com/kubewarden/community/security/advisories[Security tab on
+GitHub]. This mechanism allows maintainers to communicate privately with you,
+and you don't need to encrypt your messages.
+
+Alternatively, you can disclose it responsibly by emailing
+xref:mailto:cncf-kubewarden-maintainers@lists.cncf.io.adoc[cncf-kubewarden-maintainers@lists.cncf.io]
+in an *unencrypted* message. Please don't discuss potential vulnerabilities in
+public without validating with us first.
+
+You can also come talk in our
+https://kubernetes.slack.com/archives/C03L52JRAFM[slack-room] on the Kubernetes
+Slack server.
+
+On receipt the security team:
+
+* Reviews the report, verifies the vulnerability and responds with confirmation
+  and/or further information requests.
+* After addressing the reported security bug, {short-project-name} notifies the
+  Researcher, who is then welcome to optionally disclose publicly.
+
+Please, refer to the https://github.com/kubewarden/community[community
+repository] to find more about the
+project Governance and Security Policy.

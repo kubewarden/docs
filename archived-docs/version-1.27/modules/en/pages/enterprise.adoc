@@ -1,0 +1,21 @@
+include::partial$variables.adoc[]
+= Enterprise support
+:revdate: 2025-07-09
+:page-revdate: {revdate}
+:sidebar_label: Enterprise
+:sidebar_position: 85
+:description: Enterprise support for {short-project-name}
+:keywords: [ Kubewarden, support, ]
+:doc-persona: [kubewarden-all]
+:doc-type: [explanation]
+:doc-topic: [support]
+
+These organization(s) provide enterprise support for {project-name}:
+
+[cols="1,1"]
+|===
+| Organization | Offering
+
+| link:https://suse.com[SUSE]
+| SUSE provides complete {project-name} enterprise support with link:https://www.suse.com/products/rancher[SUSE® Rancher Prime].
+|===

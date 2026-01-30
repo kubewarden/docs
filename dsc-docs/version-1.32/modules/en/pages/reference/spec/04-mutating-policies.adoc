@@ -1,0 +1,170 @@
+include::partial$variables.adoc[]
+= Mutating policies
+:revdate: 2025-11-25
+:page-revdate: {revdate}
+:description: Mutating policies.
+:doc-persona: ["kubewarden-policy-developer"]
+:doc-topic: ["writing-policies", "specification", "mutating-policies"]
+:doc-type: ["reference"]
+:keywords: ["kubewarden", "kubernetes", "policy specification", "mutating policies"]
+:sidebar_label: Mutating policies
+:current-version: {page-origin-branch}
+
+The structure of mutating policies is the same as validating ones:
+
+* They have to register `validate` and `validate_settings` waPC functions.
+* The communication API used between the host and the policy is the same as
+  that used by validating policies.
+
+Mutating policies accept a request and can propose a mutation of the incoming
+object by returning a `ValidationResponse` object that looks like this:
+
+[subs="+attributes",json]
+----
+{
+  "accepted": true,
+  "mutated_object": <object to be created>
+}
+----
+
+The `mutated_object` field contains the object the policy wants creating
+in the Kubernetes cluster, serialized to JSON.
+
+== A concrete example
+
+Assume the policy received this `ValidationRequest`:
+
+[subs="+attributes",json]
+----
+{
+  "settings": {},
+  "request": {
+    "operation": "CREATE",
+    "object": {
+      "apiVersion": "v1",
+      "kind": "Pod",
+      "metadata": {
+        "name": "security-context-demo-4"
+      },
+      "spec": {
+        "containers": [
+        {
+          "name": "sec-ctx-4",
+          "image": "gcr.io/google-samples/node-hello:1.0",
+          "securityContext": {
+            "capabilities": {
+              "add": ["NET_ADMIN", "SYS_TIME"]
+            }
+          }
+        }
+        ]
+      }
+    }
+  }
+}
+----
+
+[NOTE]
+====
+
+Only important fields are in the `request` object for this example.
+
+====
+
+
+This request generation happens because someone tried to create a Pod that
+would look like this:
+
+[subs="+attributes",yaml]
+----
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-demo-4
+spec:
+  containers:
+  - name: sec-ctx-4
+    image: gcr.io/google-samples/node-hello:1.0
+    securityContext:
+      capabilities:
+        add:
+        - NET_ADMIN
+        - SYS_TIME
+----
+
+Assume the policy replies with the following `ValidationResponse`:
+
+[subs="+attributes",json]
+----
+{
+  "accepted": true,
+  "mutated_object": {
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+      "name": "security-context-demo-4"
+    },
+    "spec": {
+      "containers": [
+        {
+          "name": "sec-ctx-4",
+          "image": "gcr.io/google-samples/node-hello:1.0",
+          "securityContext": {
+            "capabilities": {
+              "add": [
+                "NET_ADMIN",
+                "SYS_TIME"
+              ],
+              "drop": [
+                "BPF"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+----
+
+That would lead to request acceptance, but the final Pod would look like this:
+
+[subs="+attributes",yaml]
+----
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-demo-4
+spec:
+  containers:
+  - name: sec-ctx-4
+    image: gcr.io/google-samples/node-hello:1.0
+    securityContext:
+      capabilities:
+        add:
+        - NET_ADMIN
+        - SYS_TIME
+        drop:
+        - BPF
+----
+
+As you can see, the policy altered the `securityContext.capabilities.drop`
+section of the only container declared in the Pod.
+
+The container is now dropping the `BPF` capability due to the policy.
+
+== Recap
+
+These are the functions a mutating policy must implement:
+
+|===
+| *waPC function name* | *Input payload* | *Output payload*
+
+| `validate`
+| `\{  "request": \{    // AdmissionReview.request data  \},  "settings": \{    // your policy configuration  \}\}`
+| `+\{  **// mandatory**  "accepted": boolean,  // optional, ignored if accepted  // recommended for rejections  "message": string,  // optional, ignored if accepted  "code": integer,   // JSON Object to be created  // Can be used only when the  // request is accepted  "mutated_object": object\}+`
+
+| `validate_settings`
+| `\{  // your policy configuration\}`
+| `+\{  **// mandatory**  "validate": boolean,  // optional, ignored if accepted  // recommended for rejections  "message": string,\}+`
+|===

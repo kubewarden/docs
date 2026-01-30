@@ -1,0 +1,4 @@
+// Include shared project global variables
+include::latest@shared:en:partial$kubewarden-variables.adoc[]
+
+// global variables for this version below:
