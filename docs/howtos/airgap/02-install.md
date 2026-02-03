@@ -20,44 +20,81 @@ and policies to this OCI registry. You can see a list of Kubewarden artifacts
 in the [Artifacts reference](../../reference/artifacts.md) page. The following
 sections describe the process.
 
-## Save container images on your workstation
+:::note
 
-1. Download `kubewarden-images.txt` from the Kubewarden [release
-   page](https://github.com/kubewarden/helm-charts/releases/). Alternatively,
-   you can use the `imagelist.txt` and `policylist.txt` files shipped inside
-   the helm charts containing the container images and policy Wasm modules,
-   respectively.
+We recommend using [Hauler](https://docs.hauler.dev/docs/intro). See our [docs
+page](./hauler) for that effect.
 
-   :::note
+Alternatively, you can use the manual process listed below.
 
-   Optionally, you can verify the signatures of the [helm
-   charts](../../tutorials/verifying-kubewarden.md#helm-charts) and [container
-   images](../../tutorials/verifying-kubewarden.md#container-images)
+:::
 
-   :::
+## Save Helm charts locally
+
+You need to download the following helm charts to your workstation:
+
+```shell
+helm pull kubewarden/kubewarden-crds
+helm pull kubewarden/kubewarden-controller
+helm pull kubewarden/kubewarden-defaults
+helm pull kubewarden/sbomscanner
+```
+
+:::note
+
+Optionally, you can verify the signatures of the [helm
+charts](../../tutorials/verifying-kubewarden.md#helm-charts) and [container
+images](../../tutorials/verifying-kubewarden.md#container-images)
+
+:::
+
+## Save container images locally
+
+1. Each of our Helm charts contains an `imagelist.txt` with the container
+   images consumed by it, and, when applicable, a `policylist.txt` with the OCI
+   Wasm modules of the policies that it consumes too.
+
+   To obtain them, you can do:
+
+   ```shell
+   helm pull --untar \
+     kubewarden/kubewarden-crds \
+     kubewarden/kubewarden-controller \
+     kubewarden/kubewarden-defaults \
+     kubewarden/sbomscanner
+   ```
+
+   And then concat them into 1 file:
+
+   ```shell
+   cat */imagelist.txt > kubewarden-images.txt
+   ```
 
 1. Download `kubewarden-save-images.sh` and `kubewarden-load-images.sh` from
    the [utilities repository](https://github.com/kubewarden/utils).
 1. Save Kubewarden container images into a `.tar.gz` file:
 
-    ```shell
-    ./kubewarden-save-images.sh \
-      --image-list ./kubewarden-images.txt \
-      --images kubewarden-images.tar.gz
-    ```
+   ```shell
+   ./kubewarden-save-images.sh \
+     --image-list ./kubewarden-images.txt \
+     --images kubewarden-images.tar.gz
+   ```
 
-    Docker begins pulling the images used for an air gap install. This process
-    can take a few minutes. When complete, your current directory, where you
-    ran the command, has a tarball, `kubewarden-images.tar.gz`.
+   Docker begins pulling the images used for an air gap install. This process
+   can take a few minutes. When complete, your current directory, where you
+   ran the command, has a tarball, `kubewarden-images.tar.gz`.
 
-## Save policies on your workstation
+## Save policies locally
 
-1. Add all the policies you want to use to a `policies.txt` file. A file with a
-   list of default policies is in the Kubewarden defaults [release
-   page](https://github.com/kubewarden/helm-charts/releases/).
+1. Add all the policies you want to use to a `policies.txt` file:
+
+   ```shell
+   cat */policylist.txt > policies.txt
+   ```
+
 1. Download `kubewarden-save-policies.sh` and `kubewarden-load-policies.sh`
-   from the [`kwctl`
-   repository](https://github.com/kubewarden/kwctl/tree/main/scripts)
+   from the [`kubewarden-controller`
+   repository](https://github.com/kubewarden/kubewarden-controller/blob/main/scripts)
 1. Save policies into a `.tar.gz` file:
 
    ```shell
@@ -67,20 +104,11 @@ sections describe the process.
    Use `kwctl` to download the policies. The `kubewarden-policies.tar.gz`
    archive contains the policies.
 
-## Helm charts
-
-You need to download the following helm charts to your workstation:
-
-```shell
-helm pull kubewarden/kubewarden-crds
-helm pull kubewarden/kubewarden-controller
-helm pull kubewarden/kubewarden-defaults
-```
-
 ## Populate private registry
 
 Move these files to the air gap environment:
 
+- Helm charts in `tgz` format (e.g: `kubewarden-crds-1.23.0.tgz`)
 - `kubewarden-policies.tar.gz`,
 - `kubewarden-images.tar.gz`,
 - `kubewarden-load-images.sh`,
@@ -146,7 +174,7 @@ helm install --wait -n kubewarden \
 
 :::caution
 
-To use the Policy Reported subchart available in the `kubewarden-controller`
+To use the Policy Reporter subchart available in the `kubewarden-controller`
 chart, you need to define other values specific for the subchart in an
 air-gapped environment. See an example below:
 
