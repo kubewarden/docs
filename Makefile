@@ -1,16 +1,16 @@
-.PHONY: dsc-local
-dsc-local: tmpdir environment
-	bin/switch-prod-comm product | tee tmp/dsc-local-build.log
-	npx antora --version | tee -a tmp/dsc-local-build.log
-	npx antora --stacktrace --log-format=pretty --log-level=info \
-		kw-local-dsc-playbook.yml  2>&1 | tee -a tmp/dsc-local-build.log
-
 .PHONY: community-local
 community-local: tmpdir environment
 	npx antora --version | tee tmp/community-local-build.log
 	npx antora --stacktrace --log-format=pretty --log-level=info \
 		kw-local-community-playbook.yml \
 		2>&1 | tee -a tmp/community-local-build.log
+
+.PHONY: dsc-local
+dsc-local: tmpdir environment
+	bin/switch-prod-comm product | tee tmp/dsc-local-build.log
+	npx antora --version | tee -a tmp/dsc-local-build.log
+	npx antora --stacktrace --log-format=pretty --log-level=info \
+		kw-local-dsc-playbook.yml  2>&1 | tee -a tmp/dsc-local-build.log
 
 .PHONY: clean
 clean:
@@ -38,6 +38,10 @@ checkmake:
 .PHONY: preview
 preview:
 	npx http-server build-rancher-dsc-local/site -c-1
+
+.PHONY: preview-local-community
+preview-local-community:
+	npx http-server build-local-community/site -c-1
 
 .PHONY: all
 all:

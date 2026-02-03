@@ -3,6 +3,9 @@ site:
   title: Kubewarden
   start_page: 1.31@ROOT:ROOT:introduction.adoc
 
+urls:
+  html_extension_style: drop
+
 content:
   sources:
     - url: ./
