@@ -7,7 +7,7 @@ content:
   sources:
     - url: ./
       branches: HEAD
-      start_paths: [shared, community-docs/version-*, sboms-docs/v*]
+      start_paths: [shared, comm-build/version-*, sboms-docs/v*]
 
 ui:
   bundle:

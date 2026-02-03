@@ -6,7 +6,7 @@ content:
   sources:
     - url: ./
       branches: [HEAD]
-      start_paths: [shared, dsc-docs/version-*, sboms-docs/v*]
+      start_paths: [shared, docs/version-*, sboms-docs/v*]
 
 ui:
   bundle:
