@@ -1,3 +1,13 @@
+.PHONY: all
+all:
+	@echo "Available targets:"
+	@echo "  community-local            Build the local community documentation site"
+	@echo "  preview-local-community    Preview the local community documentation site"
+	@echo "  clean                      Clean build artifacts"
+	@echo "  checkmake                  Check Makefile for common issues"
+	@echo "  environment                Set up the Node.js environment"
+	@echo "  tmpdir                     Create temporary directories"
+
 .PHONY: community-local
 community-local: tmpdir environment
 	npx antora --version | tee tmp/community-local-build.log
@@ -31,9 +41,6 @@ checkmake:
 .PHONY: preview-local-community
 preview-local-community:
 	npx http-server build-local-community/site -c-1
-
-.PHONY: all
-all:
 
 .PHONY: test
 test:
