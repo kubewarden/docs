@@ -1,6 +1,3 @@
 [submodule "kw-community-docs-supp-files"]
 	path = kw-community-docs-supp-files
 	url = https://github.com/jhkrug/kw-community-docs-supp-files.git
-[submodule "dsc-style-bundle"]
-	path = dsc-style-bundle
-	url = https://github.com/susedoc/dsc-style-bundle.git
