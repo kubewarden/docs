@@ -1,0 +1,17 @@
+include::partial$variables.adoc[]
+
+* xref:introduction.adoc[]
+* xref:quickstart.adoc[]
+* Tutorials
+** User guide
+*** xref:user-guide/airgap-support.adoc[]
+*** xref:user-guide/private-registries.adoc[]
+*** xref:user-guide/querying-reports.adoc[]
+*** xref:user-guide/scanning-registries.adoc[]
+*** xref:user-guide/vex.adoc[]
+* Explanations
+* Howtos
+** xref:installation/uninstall.adoc[]
+** xref:installation/helm-values.adoc[]
+** xref:troubleshooting/collecting-logs.adoc[]
+* Reference

@@ -1,0 +1,72 @@
+include::partial$variables.adoc[]
+
+= Collecting logs for debugging
+
+== Install dependencies
+
+Please follow the instructions in the
+link:../installation/quickstart.md#requirements[quickstart guide] to
+ensure you have the necessary dependencies installed.
+
+== Install or upgrade an existing installation with debug logging activated
+
+[source,bash]
+----
+helm repo add kubewarden https://charts.kubewarden.io
+helm repo update
+helm upgrade --install sbomscanner kubewarden/sbomscanner \
+  --set=controller.logLevel=debug \
+  --set=storage.logLevel=debug \
+  --set=worker.logLevel=debug \
+  --namespace sbomscanner \
+  --create-namespace \
+  --wait
+----
+
+== Verify installation
+
+Check the version. It should match the latest `sbomscanner-chart-++*++`
+version found in the
+https://github.com/kubewarden/sbomscanner/releases[releases] page.
+
+[source,bash]
+----
+helm list
+----
+
+Wait for pods to be running:
+
+[source,bash]
+----
+kubectl get pods
+----
+
+== Collect the logs
+
+[WARNING]
+====
+*Warning:* ⚠️ Troubleshooting logs do not contain sensitive data such as
+Secrets, but they may include container registry names and URIs. Review
+the tarball contents before sharing to ensure no sensitive information
+is disclosed.
+====
+
+Using
+https://github.com/kubewarden/sbomscanner/blob/main/hack/sbombscanner-debug.sh[the
+script found in the sbomscanner repository]:
+
+[source,bash]
+----
+./hack/sbomscanner-debug.sh collect --compress-results
+----
+
+The script collects the following information:
+
+* Logs from the pods of all SBOMscanner components (controller, workers,
+storage, NATS).
+* Manifest of all SBOMscanner related resources (Registry, VEXHub,
+ScanJob, Image, VulnerabilityReport).
+
+The script prints the names of the manifests being collected at runtime.
+
+Upload the generated tar.gz file.
