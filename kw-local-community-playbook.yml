@@ -10,7 +10,7 @@ content:
   sources:
     - url: ./
       branches: HEAD
-      start_paths: [shared, comm-build/version-*, sboms-docs/v*]
+      start_paths: [shared, comm-kw-build/version-*, comm-ss-build/v*]
 
 ui:
   bundle:
