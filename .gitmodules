@@ -1,3 +1,6 @@
 [submodule "kw-community-docs-supp-files"]
 	path = kw-community-docs-supp-files
 	url = https://github.com/jhkrug/kw-community-docs-supp-files.git
+[submodule "product-docs-common"]
+	path = product-docs-common
+	url = https://github.com/rancher/product-docs-common.git

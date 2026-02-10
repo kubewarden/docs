@@ -1,9 +1,9 @@
 # Configuration file to customize the build process of the website when
 # previewing it on Netlify.
-[build]
-publish = "build"
-command = "yarn build --dev" # Build in development mode to disable Google Analytics
-
-[build.environment]
-  NODE_OPTIONS = "--max_old_space_size=4096"
+#[build]
+#publish = "build"
+#command = "yarn build --dev" # Build in development mode to disable Google Analytics
+#
+#[build.environment]
+#  NODE_OPTIONS = "--max_old_space_size=4096"
 
