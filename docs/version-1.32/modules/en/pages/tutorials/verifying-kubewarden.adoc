@@ -121,6 +121,7 @@ slsactl download provenance ghcr.io/kubewarden/policy-server:v1.30.0
 slsactl download sbom ghcr.io/kubewarden/policy-server:v1.30.0
 ----
 
+[#helm-charts]
 == Helm charts
 
 You can find {short-project-name} Helm charts in our `https://` traditional
