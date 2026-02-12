@@ -1,0 +1,46 @@
+include::partial$variables.adoc[]
+= C#
+:revdate: 2025-11-25
+:page-revdate: {revdate}
+:description: {project-name} policies using C# and .NET
+:doc-persona: ["kubewarden-policy-developer"]
+:doc-topic: ["kubewarden", "writing-policies", "c#"]
+:doc-type: ["tutorial"]
+:keywords: ["kubewarden", "kubernetes", "writing policies", "c#", ".net"]
+:sidebar_label: C#
+:sidebar_position: 40
+:current-version: {page-origin-branch}
+
+Currently, .NET Core has experimental support for the WebAssembly WASI platform.
+This is from the https://github.com/SteveSandersonMS/dotnet-wasi-sdk[`dotnet-wasi-sdk`] project.
+
+[NOTE]
+====
+
+You don't need a Windows installation to write or run .NET Core code.
+Everything can be done also on a Linux or on an macOS machine.
+====
+
+
+== Current state
+
+Policy authors can use the following resources:
+
+* https://github.com/kubewarden/policy-sdk-dotnet[{project-name} .NET Core SDK]:
+this provides a set of objects and functions that simplify the process of writing policies.
+* https://github.com/kubewarden/policy-sdk-dotnet/tree/main/example[{short-project-name} policy example]:
+this is an example of a working policy.
+
+No limitations are known.
+The SDK enables writing both validating and mutating policies.
+
+It's possible to use the
+https://www.nuget.org/packages/KubernetesClient.Models[`KubernetesClient.Models`]
+library to deal with the Kubernetes objects.
+
+== Project template
+
+Currently, we don't have a project template that can scaffold a C# policy.
+
+Please, https://github.com/kubewarden/policy-sdk-dotnet/issues[open an issue]
+if interested.

@@ -1,7 +1,6 @@
 name: ROOT
 title: Kubewarden
-version: '1.32'
-prerelease: -dev
+version: '1.32-latest'
 start_page: introduction.adoc
 nav:
 - modules/ROOT/nav.adoc

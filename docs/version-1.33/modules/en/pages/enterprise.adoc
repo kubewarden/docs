@@ -1,0 +1,26 @@
+include::partial$variables.adoc[]
+
+= Enterprise support
+:revdate: 2025-11-25
+:page-revdate: {revdate}
+:description: Enterprise support for {project-name}
+:keywords: [ {project-name}, kubewarden, support, ]
+:doc-persona: [kubewarden-all]
+:doc-type: [explanation]
+:doc-topic: [support]
+
+ifeval::["{build-type}" == "community"]
+These organization(s) provide enterprise support for {project-name}:
+
+[cols="1,1"]
+|===
+| Organization | Offering
+
+| link:https://suse.com[SUSE]
+| SUSE provides full enterprise support for CNCF {kw-community-name} through the link:https://apps.rancher.io/applications/suse-security-admission-controller[SUSE Security Admission Controller] — a curated and trusted version of {kw-community-name} built on top of SUSE Linux BCI base images. This solution ensures enhanced security, stability, and compatibility for enterprise-grade Kubernetes environments.
+|===
+endif::[]
+
+ifeval::["{build-type}" == "product"]
+SUSE provides full enterprise support for CNCF {kw-community-name} through the link:https://apps.rancher.io/applications/suse-security-admission-controller[SUSE Security Admission Controller] — a curated and trusted version of {kw-community-name} built on top of SUSE Linux BCI base images. This solution ensures enhanced security, stability, and compatibility for enterprise-grade Kubernetes environments.
+endif::[]

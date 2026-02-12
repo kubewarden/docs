@@ -1,0 +1,38 @@
+include::partial$variables.adoc[]
+= Gatekeeper support
+:revdate: 2025-11-25
+:page-revdate: {revdate}
+:description: Introducing Gatekeeper support in {project-name}.
+:doc-persona: ["kubewarden-policy-developer"]
+:doc-topic: ["writing-policies", "rego", "gatekeeper", "introduction"]
+:doc-type: ["tutorial"]
+:keywords: ["kubewarden", "kubernetes", "rego", "gatekeeper"]
+:current-version: {page-origin-branch}
+
+[NOTE]
+====
+Gatekeeper support starts from these releases:
+
+* kwctl: v0.2.0
+* policy-server: v0.2.0
+====
+
+
+Gatekeeper is a project targeting Kubernetes with out-of-the-box features for integration.
+
+== Compatibility with existing policies
+
+All existing Gatekeeper policies should be compatible with {short-project-name} as explained in this chapter.
+
+[IMPORTANT]
+====
+If you find this not to be true, for your Gatekeeper policies,
+report it,
+and we'll work to ensure your Gatekeeper policy runs with {short-project-name}.
+====
+
+
+Policies need compilation with the `opa` CLI to `wasm` target.
+
+For policy execution, you can read more about the Open Policy Agent
+xref:tutorials/writing-policies/rego/02-builtin-support.adoc[built-in support] in {short-project-name}.
