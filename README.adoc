@@ -1,3 +1,11 @@
 = Kubewarden Documentation
 
 Documentation for Kubewarden.
+
+You need `node` v24.12.0. Or  thereabouts.
+
+* `git clone --recurse submodules git@github.com/kubewarden/docs.git`
+* `git checkout antora` - To get the Antora branch used for testing.
+* `git submodule update`
+* `make clean environment community-local`
+* `make preview-local-community`
