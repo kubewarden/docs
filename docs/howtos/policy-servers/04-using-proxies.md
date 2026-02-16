@@ -35,5 +35,5 @@ These variables are:
 - `NO_PROXY` or `no_proxy`: comma-separated list of hosts to exclude from proxying
 
 Please refer to the
-[`PolicyServer.spec.env`](,,/../reference/CRDs#policyserverspec) field of the
+[`PolicyServer.spec.env`](,,/../reference/CRDs.md#policyserverspec) field of the
 CRD to set these environment variables.
