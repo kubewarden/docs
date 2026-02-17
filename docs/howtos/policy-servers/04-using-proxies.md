@@ -26,7 +26,7 @@ doc-topic:
 ---
 
 PolicyServers respect the standard environment variables for dealing with proxy setups.
-The policy-server will use the configured proxy when downloading policies. This includes
+The policy-server uses the configured proxy when downloading policies. This includes
 Sigstore operations when verifying policies and images.
 
 These variables are:
