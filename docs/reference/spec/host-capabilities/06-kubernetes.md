@@ -64,14 +64,20 @@ information by calling the host in the following ways:
 
 ```hcl
 {
-	# API Group version. Use `v1` for the `core` group and `groupName/groupVersion` for all other groups
-	"api_version": string,
-	# Resource kind
-	"kind": string,
-	# Label selector to filter the resources
-	"label_selector": string,
-	# Field selector to filter the resources
-	"field_selector": string
+  # API Group version. Use `v1` for the `core` group and
+  # `groupName/groupVersion` for all other groups
+  "api_version": string,
+  # Resource kind
+  "kind": string,
+  # Label selector to filter the resources
+  "label_selector": string,
+  # Field selector to filter the resources
+  "field_selector": string,
+  # Field masks: A list of fields to include in the response.
+  #
+  # If strictly defined, the host will prune the Kubernetes resource to contain *only*
+  # the specified fields, reducing memory usage and serialization overhead.
+  "field_masks": [string]
 }
 ```
 
@@ -91,16 +97,22 @@ Use this API function to fetch cluster-wide resources (for example, namespaces)
 
 ```hcl
 {
-	# API Group version. Use `v1` for the `core` group and `groupName/groupVersion` for all other groups
-	"api_version": string,
-	# Resource kind
-	"kind": string,
-	# Namespace where the requested resource lives in
-	"namespace": string,
-	# Label selector to filter the resources
-	"label_selector": string,
-	# Field selector to filter the resources
-	"field_selector": string
+  # API Group version. Use `v1` for the `core` group and
+  # `groupName/groupVersion` for all other groups
+  "api_version": string,
+  # Resource kind
+  "kind": string,
+  # Namespace where the requested resource lives in
+  "namespace": string,
+  # Label selector to filter the resources
+  "label_selector": string,
+  # Field selector to filter the resources
+  "field_selector": string,
+  # Field masks: A list of fields to include in the response.
+  #
+  # If strictly defined, the host will prune the Kubernetes resource to contain *only*
+  # the specified fields, reducing memory usage and serialization overhead.
+  "field_masks": [string]
 }
 ```
 
@@ -133,16 +145,22 @@ cache.
 
 ```hcl
 {
-	# API Group version. Use `v1` for the `core` group and `groupName/groupVersion` for all other groups
-	"api_version": string,
-	# Singular PascalCase name of the resource
-	"kind": string,
-	# Namespace scoping the search
-	"namespace": string,
-	# The name of the resource
-	"name": string,
-	# Disable caching of results obtained from Kubernetes API Server
-	"disable_cache": bool
+  # API Group version. Use `v1` for the `core` group
+  # and `groupName/groupVersion` for all other groups
+  "api_version": string,
+  # Singular PascalCase name of the resource
+  "kind": string,
+  # Namespace scoping the search
+  "namespace": string,
+  # The name of the resource
+  "name": string,
+  # Disable caching of results obtained from Kubernetes API Server
+  "disable_cache": bool,
+  # Field masks: A list of fields to include in the response.
+  #
+  # If strictly defined, the host will prune the Kubernetes resource to contain *only*
+  # the specified fields, reducing memory usage and serialization overhead.
+  "field_masks": [string]
 }
 ```
 
