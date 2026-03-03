@@ -131,7 +131,7 @@ lowercase counterparts).
 
 This configuration has precedence over setting those environment variables.
 
-See its [how-to page](../howtos/proxy-configuration.html) for more information
+See its [how-to page](../howtos/proxy-configuration.md) for more information
 on this feature.
 
 Its format is as follows:
