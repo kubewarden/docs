@@ -53,8 +53,8 @@ With this configuration:
   that have OCI image manifest digests for containers in that repository.
 - Encrypted traffic via HTTPS  will be routed through
   `https://proxy.corp:3129`. For example, this includes pulling and pushing
-  policies to any secure OCI registry, policies obtaining OCI manifests from any
-  secure registry, and Sigstore capabilities.
+  policies to any secure OCI registry, and the mentioned context-aware capabilities
+  of policies.
 - Traffic to and from localhost or any domain under `.corp` will be exempt of the
   previous configurations.
 
