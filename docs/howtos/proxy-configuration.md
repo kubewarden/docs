@@ -16,13 +16,13 @@ doc-topic: [operator-manual, proxy]
 For both of `kwctl` and `policy-server` you can configure HTTP and HTTPS
 proxies, as well as exempt domains from this proxy configuration.
 
-This can be done in two ways:
+You can do this in two ways:
 - By setting the environment variables `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`
   (and its lowercase counterparts) for either `kwctl` or `policy-server`. To
   configure a PolicyServer CR, set its `spec.env` array.
 - By providing a `sources.yaml` file via the `--sources-path` argument. A
   `sources.yaml` file has precedence over the environment variables. Consuming
-  this configuration via `spec` field is not yet exposed in PolicyServer CRs.
+  this configuration via the `spec` field is not yet exposed in PolicyServer CRs.
 
 Setting a proxy configuration influences:
 
@@ -32,12 +32,12 @@ Setting a proxy configuration influences:
     Instead of hitting the OCI registry directly, traffic will be routed
     through the configured proxies.
   - Sigstore capabilities, like verifying a keyless signature. Instead
-    of hitting the Sigstore defined services, traffic will be router through
+    of hitting the Sigstore defined services, traffic will be routed through
     the configured proxies.
 
 ### Example
 
-Let's set the following environment variables, for either `kwctl` or
+You can set the following environment variables, for either `kwctl` or
 `policy-server` (through the PolicyServer `spec.env`):
 
 ```
@@ -48,11 +48,11 @@ Let's set the following environment variables, for either `kwctl` or
 
 With this configuration:
 - Unsecured traffic via HTTP, such as the one to and from  an insecure OCI
-  registry, will be routed through `http://proxy.corp:3128`. For example, this
+  registry, is routed through `http://proxy.corp:3128`. This
   will affect pulling policies, and policies calling context-aware capabilities
-  that OCI image manifest digests for containers in that repository.
+  that have OCI image manifest digests for containers in that repository.
 - Encrypted traffic via HTTPS  will be routed through
-  `https://proxy.corp:3129`. For example, this will include pulling and pushing
+  `https://proxy.corp:3129`. For example, this includes pulling and pushing
   policies to any secure OCI registry, policies obtaining OCI manifests from any
   secure registry, and Sigstore capabilities.
 - Traffic to and from localhost or any domain under `.corp` will be exempt of the
