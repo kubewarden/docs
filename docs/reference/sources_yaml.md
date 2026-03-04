@@ -122,3 +122,24 @@ source_authorities:
     - type: Path
       path: /opt/example.com/pki/ca-pre2-1.der
 ```
+
+### Proxies section
+
+The `proxies` section contains proxy configuration analogous to the usual
+environment variables `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY` (and their
+lowercase counterparts).
+
+This configuration has precedence over setting those environment variables.
+
+See its [how-to page](../howtos/proxy-configuration.md) for more information
+on this feature.
+
+Its format is:
+
+```yaml
+
+proxies:
+  http_proxy: "http://proxy.corp:3128"
+  https_proxy: "http://proxy.corp:3129"
+  no_proxy: "localhost,.corp"
+```
