@@ -26,11 +26,12 @@ situations where resources already in the cluster are no longer compliant.
 The audit scanner feature provides Kubernetes administrators with a tool to
 consistently verify the compliance state of their clusters.
 
-Since version `v1.30`, the Audit Scanner can save its results either in Custom
-Resource Definitions (CRDs) of PolicyReports from the [Kubernetes policy
-working group](https://github.com/kubernetes-sigs/wg-policy-prototypes) (the
-default setting, and also marked as deprecated), or OpenReports from
-[openreports.io](https://openreports.io).
+The Audit Scanner can save its results either in Custom Resource Definitions (CRDs)
+OpenReports from [openreports.io](https://openreports.io) (the default setting since v1.33)
+or PolicyReports from the [Kubernetes policy working
+group](https://github.com/kubernetes-sigs/wg-policy-prototypes) (marked as
+deprecated since v1.30, not installed nor created by default since v1.30,
+scheduled for removal in a future release).
 
 ## Installation
 
@@ -46,13 +47,20 @@ higher.
    ```
 
    :::note
-   With Kubewarden 1.30, the Audit Scanner feature also allows to save the reports
-   into OpenReports CRDs from [openreports.io](https://openreports.io).
+   With Kubewarden 1.33, the Audit Scanner feature saves the reports
+   into OpenReports CRDs from [openreports.io](https://openreports.io) by default.
 
-   The PolicyReports CRDs from the K8s Policy working group are still the default,
-   yet marked as deprecated.
+   The [PolicyReport](https://htmlpreview.github.io/?https://github.com/kubernetes-sigs/wg-policy-prototypes/blob/045372e558b896695b2daae92e8c7a04d4d40282/policy-report/docs/index.html)
+   CRDs from the K8s Policy working group are not installed
+   by default, marked as deprecated, and will be removed in a future release.
 
-   Both CRDs will be installed by default.
+   Users wishing to keep using the deprecated PolicyReports, that is, the
+   behavior pre 1.33, need to:
+   - Change the `kubewarden-crds` Helm chart value of
+     `.Values.install.installPolicyReportCRDs` to `true`.
+   - Change the `kubewarden-controller` Helm chart value of
+     `.Values.auditScanner.reportCRDsKind` from `openreports` to `policyreport`.
+   
    :::
 
    :::caution
@@ -61,9 +69,11 @@ higher.
    Custom Resource Definitions (CRDs) available. If the necessary
    PolicyReport CRDs are already in the cluster, you can't install them
    using the kubewarden-crds chart. In that case, you can disable the
-   installation of PolicyReport CRDs by setting `installPolicyReportCRDs` to
-   `false` in the chart. This means that the Kubewarden stack won't manage
-   those CRDs, and the responsibility is the administrators.
+   installation of OpenReport CRDs by setting `installOpenReportCRDs` to
+   `false` in the chart (or `installPolicyReportCRDs` to `false` if using the
+   deprecated PolicyReports).
+   This means that the Kubewarden stack won't manage those CRDs, and the
+   responsibility is the administrators.
 
    See more info about the CRDs at the [policy work group
    repository](https://github.com/kubernetes-sigs/wg-policy-prototypes)
@@ -84,9 +94,9 @@ higher.
    :::
 
    :::note
-   If you want Audit Scanner to save its reports in OpenReports CRDs
-   instead of the default (yet marked as deprecated) PolicyReports CRDs,
-   set `auditScanner.reportCRDsKind="openreports"`.
+   If you want Audit Scanner to save its reports in PolicyReports CRDs (marked
+   as deprecated) instead of the default OpenReports CRDs,
+   set `auditScanner.reportCRDsKind="policyreport"`.
    :::
 
    For more information about the installation of Kubewarden see the [Quick Start guide](../quick-start.md)

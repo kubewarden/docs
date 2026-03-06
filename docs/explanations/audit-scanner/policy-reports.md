@@ -23,14 +23,23 @@ using the [OpenReports](https://openreports.io) Custom Resources.
 
 :::caution
 
-Since Kubewarden 1.30, [PolicyReport](https://htmlpreview.github.io/?https://github.com/kubernetes-sigs/wg-policy-prototypes/blob/045372e558b896695b2daae92e8c7a04d4d40282/policy-report/docs/index.html)
-Custom Resources ship as default but are marked as deprecated.
+With Kubewarden 1.33, the Audit Scanner feature saves the reports
+into OpenReports CRDs from [openreports.io](https://openreports.io) by default.
 
-This page explains the usage of the new Reports and ClusterReports from [OpenReports](https://openreports.io),
-which are functionally equal.
+The [PolicyReport](https://htmlpreview.github.io/?https://github.com/kubernetes-sigs/wg-policy-prototypes/blob/045372e558b896695b2daae92e8c7a04d4d40282/policy-report/docs/index.html)
+CRDs from the K8s Policy working group are not installed
+by default, marked as deprecated, and will be removed in a future release.
+
+Users wishing to keep using the deprecated PolicyReports, that is, the
+behavior pre 1.33, need to:
+- Change the `kubewarden-crds` Helm chart value of
+  `.Values.install.installPolicyReportCRDs` to `true`.
+- Change the `kubewarden-controller` Helm chart value of
+  `.Values.auditScanner.reportCRDsKind` from `openreports` to `policyreport`.
+  
 :::
 
-These CRDs offer a structured way to store and manage the audit results.
+These OpenReport CRDs offer a structured way to store and manage the audit results.
 
 You store audit scanner policy scan results using `Report` and
 `ClusterReport`. The audit scanner creates a `Report` or a
