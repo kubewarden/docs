@@ -133,11 +133,32 @@ kind: Jaeger
 metadata:
   name: my-open-telemetry
   namespace: jaeger
+spec: {}
+EOF
+```
+
+If you installed Traefik in the OpenTelemetry quickstart, expose the Jaeger
+Query UI with this `Ingress`:
+
+```console
+kubectl apply -f - <<EOF
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-open-telemetry-query
+  namespace: jaeger
 spec:
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: nginx
+  ingressClassName: traefik
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-open-telemetry-query
+                port:
+                  number: 16686
 EOF
 ```
 
@@ -309,14 +330,22 @@ UI. They're grouped under the `kubewarden-policy-server` service:
 
 ![The Jaeger dashboard](/img/jaeger-custom-otel-collector.png "The Jaeger dashboard")
 
-To access the Jaeger UI, you can create an Ingress or you can do a port
-forwarding to your local machine:
+To access the Jaeger UI with Traefik, port-forward the Traefik Service:
+
+```console
+kubectl -n traefik port-forward service/traefik 8080:80
+```
+
+The web UI is reachable at [localhost:8080](http://localhost:8080).
+
+If you prefer to bypass Traefik, port-forward the Jaeger Query service
+directly:
 
 ```console
 kubectl -n jaeger port-forward service/my-open-telemetry-query 16686
 ```
 
-The web UI is reachable at [localhost:16686](localhost:16686).
+The web UI is reachable at [localhost:16686](http://localhost:16686).
 
 ## Exploring the Prometheus UI
 
