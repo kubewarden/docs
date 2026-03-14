@@ -45,10 +45,10 @@ the following sections addressing tracing and metrics.
 ## Setting up a Kubernetes cluster
 
 > This section has step-by-step instructions to create a
-> Kubernetes cluster with an ingress controller enabled.
+> Kubernetes cluster for the telemetry quickstarts.
 >
 > Feel free to skip this section if you already have a Kubernetes
-> cluster where you can define Ingress resources.
+> cluster available.
 
 You can create a testing Kubernetes cluster using
 [minikube](https://minikube.sigs.k8s.io/docs/).
@@ -82,22 +82,32 @@ $ minikube start --driver=kvm2
 🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 ```
 
-Now you need to enable the Ingress add-on:
+After the cluster is ready, you can continue with the rest of the guide.
+
+### Install Traefik
+
+The next telemetry guides use [Traefik](https://traefik.io/traefik/) as the
+Ingress controller when exposing the Jaeger UI with Kubernetes `Ingress`
+resources.
+
+Install Traefik by using its Helm chart:
 
 ```console
-minikube addons enable ingress
+helm repo add traefik https://traefik.github.io/charts
+helm repo update
+
+helm install --wait \
+  --namespace traefik \
+  --create-namespace \
+  traefik traefik/traefik
 ```
 
-This produces an output similar to the following one:
+The next guides create a standard Kubernetes `Ingress` with
+`ingressClassName: traefik` and route the Jaeger Query UI through the Traefik
+Service.
 
-```console
-$ minikube addons enable ingress
-    ▪ Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.0
-    ▪ Using image registry.k8s.io/ingress-nginx/controller:v1.0.0-beta.3
-    ▪ Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.0
-🔎  Verifying ingress addon...
-🌟  The 'ingress' addon is enabled
-```
+If you prefer not to install Traefik, the tracing guides also keep
+`kubectl port-forward` as a fallback to access Jaeger directly.
 
 ## Install OpenTelemetry {#install-opentelemetry}
 
