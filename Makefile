@@ -21,19 +21,6 @@ community-local: tmpdir environment
 	@echo "setting 'html_extension_style: drop'."
 	@echo
 
-.PHONY: product-local
-product-local: tmpdir environment
-	npx antora --version | tee tmp/product-local-product-build.log
-	npx antora --stacktrace --log-format=pretty --log-level=info \
-		kw-local-product-playbook.yml \
-		2>&1 | tee -a tmp/product-local-product-build.log
-	@echo
-	@echo "If your build was successful, you can preview the site with"
-	@echo "'make preview-local-product'. The server needs to be used, viewing"
-	@echo "the html files directly will not work due to the Antora playbook"
-	@echo "setting 'html_extension_style: drop'."
-	@echo
-
 .PHONY: clean
 clean:
 	rm -rf build*
@@ -60,10 +47,6 @@ checkmake:
 .PHONY: preview-local-community
 preview-local-community:
 	npx http-server build-local-community/site -c-1
-
-.PHONY: preview-local-product
-preview-local-product:
-	npx http-server build-local-product/site -c-1
 
 .PHONY: test
 test:
