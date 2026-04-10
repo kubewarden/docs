@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Creating a new Gatekeeper Rego policy
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Implement Gatekeeper Rego policies to reject resources targeting the default namespace by creating and testing a new policy.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

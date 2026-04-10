@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Writing raw policies
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn how to write raw policies that evaluate arbitrary JSON documents and enforce access control rules in your system.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Build and run a Gatekeeper policy
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Develop and deploy a Gatekeeper policy using familiar Rego syntax and tools to enforce admission control within Kubernetes environments.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

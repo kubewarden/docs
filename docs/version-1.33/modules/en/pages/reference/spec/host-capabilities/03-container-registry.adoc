@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Container registry capabilities
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Explore container registry capabilities including calculating OCI manifest digests and fetching OCI object manifests.

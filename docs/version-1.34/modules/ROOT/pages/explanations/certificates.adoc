@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Certificate rotation
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Learn how to rotate certificates in your {project-name} without causing downtime.

@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = Air gap installation
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-12
 :page-revdate: {revdate}
 :description: Configure a private registry with {project-name} images and policies to install {project-name} in an air-gapped environment.

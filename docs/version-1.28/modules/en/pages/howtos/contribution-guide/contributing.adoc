@@ -1,4 +1,5 @@
 = Contributing to Kubewarden documentation
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: Contributing to kubewarden documentation.

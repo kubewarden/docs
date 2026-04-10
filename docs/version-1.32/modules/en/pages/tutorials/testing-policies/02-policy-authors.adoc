@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Testing for policy authors
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn how to test policy authors with kwctl, either using bats or standard testing, specifically for {project-name} policies in Wasm.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

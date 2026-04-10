@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Distributing policy
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Learn how to distribute policies and access related information for {project-name}, including configuration details.

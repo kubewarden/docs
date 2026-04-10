@@ -1,4 +1,5 @@
 = Build and run a OPA policy for Kubewarden
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: Build and run a OPA policy for Kubewarden.

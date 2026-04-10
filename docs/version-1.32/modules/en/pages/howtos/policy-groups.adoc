@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = How to use policy groups
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Implement policy groups with specific rules that reject non-compliant Pods based on image signatures and other criteria.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

@@ -1,4 +1,5 @@
 = Kubernetes capabilities
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-14
 :page-revdate: {revdate}
 :description: Kubernetes capabilities.

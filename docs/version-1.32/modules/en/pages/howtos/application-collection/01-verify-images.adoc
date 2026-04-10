@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Verify Rancher Application Collection images
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Configure PolicyServers to authenticate with and pull images from Rancher Application Collection using a Docker Config Secret.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

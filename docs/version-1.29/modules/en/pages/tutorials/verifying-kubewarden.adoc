@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Verifying Kubewarden
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-10-08
 :page-revdate: {revdate}
 :description: Verifying Kubewarden.

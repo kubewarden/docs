@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Policy settings
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Configure policy settings using {project-name}'s for validation and serialization of policy data.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

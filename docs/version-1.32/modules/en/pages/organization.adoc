@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Documentation organization
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Access comprehensive documentation organized into tutorials, explanations, how-to guides, and reference materials for the {project-name}.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Metrics quickstart
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Configure metrics reporting on the Policy Server using Prometheus and {project-name} enabled through Helm charts for data collection.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

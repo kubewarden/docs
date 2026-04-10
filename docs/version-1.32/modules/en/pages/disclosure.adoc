@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = Security disclosure
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Investigative security researchers work with the {project-name}'s team to identify vulnerabilities using responsible disclosure protocols.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

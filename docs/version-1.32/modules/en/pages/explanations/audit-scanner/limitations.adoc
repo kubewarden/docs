@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Audit Scanner - Limitations
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn about limitations when using the Audit Scanner to evaluate policies and event types in a Kubernetes environment, including its use for policy and event type evaluation.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

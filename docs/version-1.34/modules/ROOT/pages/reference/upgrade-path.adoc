@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Upgrade path
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Upgrade your {project-name} stack using supported versioning strategies and compatibility rules among its components.

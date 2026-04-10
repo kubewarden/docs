@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Suggesting a documentation improvement
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Initiate a documentation improvement by opening a GitHub issue with clear details about what's missing, outdated, erroneous, or requires a quality review.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

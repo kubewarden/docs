@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Audit Scanner
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Verify the compliance state of your clusters using the Audit Scanner feature within {project-name}, to ensure their proper configuration.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

@@ -1,4 +1,5 @@
 = Context aware policies
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: Context aware policies.

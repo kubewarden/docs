@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Context aware policies
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Explore context-aware policy capabilities in admission control, including resource access and caching, to optimize policy evaluation.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

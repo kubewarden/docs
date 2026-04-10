@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = C#
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Explore and write validation and mutation of admission control policies using .NET Core SDK with WASI support on WebAssembly platforms like Kubernetes.

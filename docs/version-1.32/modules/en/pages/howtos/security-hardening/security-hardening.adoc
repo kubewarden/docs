@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Security hardening
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Secure {project-name}'s with hardening tips and best practices to mitigate threats.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

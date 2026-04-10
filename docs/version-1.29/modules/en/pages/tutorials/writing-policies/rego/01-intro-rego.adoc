@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Rego
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: Writing Kubewarden policies using Rego.

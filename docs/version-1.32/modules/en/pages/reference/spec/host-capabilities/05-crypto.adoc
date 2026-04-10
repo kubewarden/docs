@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Cryptographic capabilities
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn about the cryptographic capabilities and functions of the Wasm host for evaluating PKI certificates in use.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

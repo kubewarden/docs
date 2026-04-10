@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Audit Scanner - Limitations
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-17
 :page-revdate: {revdate}
 :description: The limitation of the audit scanner

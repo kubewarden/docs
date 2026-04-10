@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Integrating with GitHub Actions
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn about integrating GitHub Actions for automated tasks, unit testing, end-to-end testing, and CI/CD workflows.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

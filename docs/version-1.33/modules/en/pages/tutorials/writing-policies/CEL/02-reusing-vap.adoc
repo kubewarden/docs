@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Reusing ValidatingAdmissionPolicies
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Learn about reusing and validating admission policies in Kubernetes using {project-name}'s (cel-policy).

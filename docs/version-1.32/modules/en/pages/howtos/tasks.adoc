@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = Common tasks
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Manage policies in your Kubernetes cluster with {project-name} using the kwctl CLI tool.
 :revdate: 2025-12-30
 :page-revdate: {revdate}

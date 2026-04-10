@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = End-to-end testing
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: A tutorial introduction to end-to-end testing for writing Kubewarden policies in the Go language.

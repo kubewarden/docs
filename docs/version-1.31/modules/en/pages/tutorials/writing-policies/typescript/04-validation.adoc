@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Writing the validation logic
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-18
 :page-revdate: {revdate}
 :description: A tutorial on writing validation logic for a {project-name} policy using TypeScript.

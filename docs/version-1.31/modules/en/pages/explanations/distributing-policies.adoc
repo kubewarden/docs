@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Distributing policies
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-17
 :page-revdate: {revdate}
 :description: A description of how {project-name} policies are distributed from OCI-compliant repositories.

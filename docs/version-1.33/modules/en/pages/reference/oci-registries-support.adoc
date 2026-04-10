@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = OCI registry support for {short-project-name}
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Distribute {project-name} policies as OCI artifacts via regular Open Container Initiative (OCI) registries.

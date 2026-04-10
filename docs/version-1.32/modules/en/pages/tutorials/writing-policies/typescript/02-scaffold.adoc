@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Creating a new validation policy
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Create a new validation policy to reject invalid hostnames in Pod objects through configuration of policy settings, tested with provided tools.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Writing {project-name} policies
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Develop admission controller policies by exposing well-defined functionalities via a specific API using any supported programming language.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

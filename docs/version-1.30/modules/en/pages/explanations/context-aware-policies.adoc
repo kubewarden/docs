@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Context aware policies
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: A description of {project-name} context aware policies, what they are and how they are useful.

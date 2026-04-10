@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Creating a policy
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-17
 :page-revdate: {revdate}
 :description: Creating a {project-name} policy using Rust.

@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Tracing quickstart
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Enable tracing support for the Policy Server using this quickstart guide to collect fine-grained details about policy evaluations, which can be used to debug SUSE Security Admission issues.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

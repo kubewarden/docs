@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Policy evaluation timeout protection
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Configure policy evaluation timeouts to ensure timely completion and prevent resource exhaustion with the Policy Server's built-in protection feature.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

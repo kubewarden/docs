@@ -1,4 +1,5 @@
 = Writing the validation logic
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: A tutorial on writing validation logic for a Kubewarden policy using Go.

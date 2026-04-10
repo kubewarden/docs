@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Build and run a OPA policy for {short-project-name}
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Build a custom OPA policy for your project by constructing a Rego policy package, compiling it into a WASM target, and integrating with kwctl.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

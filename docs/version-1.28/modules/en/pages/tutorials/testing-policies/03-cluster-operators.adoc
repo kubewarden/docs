@@ -1,4 +1,5 @@
 = Testing for cluster operators
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: An introduction to testing Kubewarden policies for cluster operators.

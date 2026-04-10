@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = {project-name} use cases
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn about various use cases for {project-name} in different Kubernetes environments and personas, including multiple scenarios.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

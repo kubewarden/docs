@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Contributing to {short-project-name} documentation
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Contribute to {project-name} documentation through improvements to existing content, creation of new topics, and assistance with translation.

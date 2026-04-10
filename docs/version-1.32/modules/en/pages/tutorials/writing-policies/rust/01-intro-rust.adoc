@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Rust
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn how to write admission controller policies in Rust with SUSE's security admission controllers simplified SDK and template projects.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

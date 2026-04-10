@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Writing policies in Go
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Write effective admission controller validation policies using TinyGo, using its useful libraries and tools designed specifically for Go developers.

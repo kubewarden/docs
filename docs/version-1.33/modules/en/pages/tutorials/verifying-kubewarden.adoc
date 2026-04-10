@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Verifying {project-name}
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Verify different artifacts produced by the {project-name} team to ensure a secure supply chain through use of SBOMs and provenance files.

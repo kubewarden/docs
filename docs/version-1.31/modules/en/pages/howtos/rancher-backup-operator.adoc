@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = Backup and restore with Rancher Backup Operator
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-20
 :page-revdate: {revdate}
 :description: Backup and restore with Rancher Backup Operator

@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Secure supply chain
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Configure {project-name} to validate the integrity of artifact signatures and admission policies.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

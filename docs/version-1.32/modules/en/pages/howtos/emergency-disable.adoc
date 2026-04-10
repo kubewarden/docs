@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Emergency disable
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn how to disable the {project-name} in emergency situations, stopping and deleting related configurations, and then restore.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

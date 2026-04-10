@@ -5,10 +5,6 @@ ifndef::kw-build-community[]
 :build-type: product
 endif::[]
 
-// The source of truth for the kw-product-name and kw-community-name values are in the playbooks
-// for the product-docs-playbook repository. Those below are a convenience for local builds.
-// It's worth checking they are aligned occasionally.
-
 ifndef::kw-product-name[]
 :kw-product-name: SUSE Security Admission Controller
 endif::[]

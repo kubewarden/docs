@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Configuring policies
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-17
 :page-revdate: {revdate}
 :description: Dependency matrix of {project-name}.

@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Context aware policies
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Developers can create context-aware policies that fetch Kubernetes cluster information at runtime to determine AdmissionRequest acceptance criteria.

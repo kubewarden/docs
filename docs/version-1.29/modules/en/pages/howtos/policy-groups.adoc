@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = How to use policy groups
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: How to use Kubewarden policy groups

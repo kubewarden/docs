@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Writing the validation logic
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn how to write and test validation logic in Go by extracting relevant information from incoming payloads and creating setting objects.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

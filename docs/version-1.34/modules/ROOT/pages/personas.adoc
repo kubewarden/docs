@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Who is this project for? The personas.
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-13
 :page-revdate: {revdate}
 :description: Who is this project for? The personas.

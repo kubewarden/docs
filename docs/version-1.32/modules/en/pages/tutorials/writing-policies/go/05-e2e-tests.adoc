@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = End-to-end testing
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Discover how to write and automate end-to-end tests running against the WebAssembly binary produced by TinyGo with bats and kwctl.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

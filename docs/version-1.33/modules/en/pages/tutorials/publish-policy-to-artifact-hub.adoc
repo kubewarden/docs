@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Publish policies to Artifact Hub
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Publish {project-name} policies to Artifact Hub by creating a well-formatted Git repository layout and configuring GitHub Actions for automated packaging, facilitating continuous integration.

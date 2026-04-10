@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Custom Resource Definitions (CRD)
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-10-08
 :page-revdate: {revdate}
 :description: {project-name}'s Custom Resource Definitions (CRD)

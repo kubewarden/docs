@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Build and run a Gatekeeper policy
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-17
 :page-revdate: {revdate}
 :description: Building and running a Gatekeeper policy written in Rego.

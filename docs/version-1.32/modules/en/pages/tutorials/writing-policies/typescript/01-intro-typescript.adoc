@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Writing policies in TypeScript/JavaScript
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn how to write effective {project-name} validation policies using TypeScript/JavaScript.
 :revdate: 2025-11-25
 :page-revdate: {revdate}
