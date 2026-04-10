@@ -268,3 +268,63 @@ spec:
 ```
 
 :::
+
+## Configuring the default PolicyServer in an air gap environment
+
+The `kubewarden-defaults` Helm chart creates and manages a default
+PolicyServer resource. In an air gap environment, this PolicyServer
+must be configured to pull policies from your private registry.
+
+### Using a private registry with credentials
+
+If your private registry requires authentication, first create a
+Docker registry Secret in the `kubewarden` namespace:
+
+```bash
+kubectl --namespace kubewarden create secret docker-registry my-registry-secret \
+  --docker-username=<USERNAME> \
+  --docker-password=<PASSWORD> \
+  --docker-server=<REGISTRY.YOURDOMAIN.COM:PORT>
+```
+
+Then pass the Secret name when installing `kubewarden-defaults`:
+
+```bash
+helm install --wait -n kubewarden \
+  kubewarden-defaults kubewarden-defaults.tgz \
+  --set global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \
+  --set policyServer.imagePullSecret=my-registry-secret
+```
+
+### Using a registry with a custom or self-signed CA
+
+If your private registry uses a custom certificate authority,
+configure the `policyServer.sourceAuthorities` value in a
+`values.yaml` file:
+
+```yaml
+policyServer:
+  sourceAuthorities:
+    "<REGISTRY.YOURDOMAIN.COM:PORT>":
+      - |
+        -----BEGIN CERTIFICATE-----
+        <your CA certificate in PEM format>
+        -----END CERTIFICATE-----
+```
+
+Then install with:
+
+```bash
+helm install --wait -n kubewarden \
+  kubewarden-defaults kubewarden-defaults.tgz \
+  --set global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \
+  -f values.yaml
+```
+
+:::note
+For more details on configuring custom CAs and private registry
+credentials on custom (self-deployed) PolicyServers, see
+[Custom Certificate Authorities](../policy-servers/custom-cas) and
+[Private Registries](../policy-servers/private-registry).
+
+:::
