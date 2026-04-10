@@ -33,6 +33,7 @@ ifeval::["{build-type}" == "community"]
 endif::[]
 
 ifeval::["{build-type}" == "product"]
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :project-name: {kw-product-name}
 :product-name: {project-name}
 :community-name: {kw-community-name}
