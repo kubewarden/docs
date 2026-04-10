@@ -90,3 +90,10 @@ policyServer:
     enabled: False
   imagePullSecret: secret-ghcr-docker
 ```
+
+:::note
+If you are using the default PolicyServer managed by the
+`kubewarden-defaults` Helm chart (for example, in an air gap
+environment), see [Consuming the Secret in Helm charts](#consuming-the-secret-in-helm-charts)
+for the Helm-specific configuration.
+:::

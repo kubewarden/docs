@@ -46,7 +46,6 @@ See the [Custom Certificates Authority](../custom-certificate-authorities.md)
 documentation for more information on how the `policy-server` executable treats
 insecure URIs.
 
-
 ### Custom Certificate Authorities
 
 You can configure the PolicyServer with a custom certificate chain of 1 or more
@@ -78,3 +77,38 @@ spec:
 See the [Custom Certificate Authorities](../custom-certificate-authorities.md)
 documentation for more information on how the `policy-server` executable treats
 them.
+
+## Configuring custom CAs on the default PolicyServer
+
+The instructions above apply to self-deployed (custom) PolicyServer
+resources. If you are using the default PolicyServer managed by the
+`kubewarden-defaults` Helm chart, configure the same setting via
+Helm values instead of editing the resource directly.
+
+Create a `values.yaml` file:
+
+```yaml
+policyServer:
+  sourceAuthorities:
+    "registry.example.com":
+      - |
+        -----BEGIN CERTIFICATE-----
+        <PEM certificate>
+        -----END CERTIFICATE-----
+    "registry2.example.com:5500":
+      - |
+        -----BEGIN CERTIFICATE-----
+        <PEM certificate>
+        -----END CERTIFICATE-----
+```
+
+Apply it during install or upgrade:
+
+```bash
+helm upgrade --install --wait -n kubewarden \
+  kubewarden-defaults kubewarden-defaults.tgz \
+  -f values.yaml
+```
+
+The Helm chart propagates these values to the
+`spec.sourceAuthorities` field of the default PolicyServer resource.
