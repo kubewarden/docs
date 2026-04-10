@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Logging
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Configure logger initialization for structured logging in your policy using the oneLog project's Go SDK integration.

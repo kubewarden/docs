@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Migrating Gatekeeper Policies to {project-name}
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Configure a {project-name} policy by migrating an existing Gatekeeper policy through two main steps: compiling Rego code into WebAssembly.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

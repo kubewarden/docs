@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Swift
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Learn how to use the Swift compiler with WebAssembly support through SwiftWasm to access tools for building {project-name} policies.

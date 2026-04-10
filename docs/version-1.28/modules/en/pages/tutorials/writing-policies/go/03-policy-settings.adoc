@@ -1,5 +1,4 @@
 = Defining policy settings
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: Defining policy setting for a Kubewarden policy written in Go.

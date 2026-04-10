@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Monitor mode
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Configure ClusterAdmissionPolicies or AdmissionPolicies for monitor mode to track and analyze policy actions without modifying incoming requests.

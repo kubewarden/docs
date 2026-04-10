@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Hardening the {short-project-name} webhooks
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Configure network policies and authentication to limit access to webhooks in your Kubernetes cluster, specifically restricting connections from invalid callers.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

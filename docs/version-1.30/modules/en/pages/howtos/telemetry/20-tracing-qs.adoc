@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Tracing quickstart
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: A tracing quickstart for {project-name}.

@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Policy communication specification
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Discover how to effectively use the {project-name} policies through a well-defined API enabling seamless interaction and communication.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Introduction to Open Policy Agent
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn how the Open Policy Agent uses the Rego language to write policies that evaluate and produce outputs for secure decision-making.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

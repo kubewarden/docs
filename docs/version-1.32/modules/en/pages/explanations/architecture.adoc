@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = {project-name} architecture
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Discover how {project-name} uses core Kubernetes features to integrate seamlessly into your cluster.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = What is {project-name}?
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn about {project-name}'s role in Kubernetes policy management, which includes enforcing compliance and optimizing resources.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

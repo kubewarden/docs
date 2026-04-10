@@ -1,7 +1,6 @@
 include::partial$variables.adoc[]
 
 = ArgoCD Installation
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-17
 :page-revdate: {revdate}
 :sidebar_label: ArgoCD Installation

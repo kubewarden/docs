@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Glossary
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Explore key resources and configurations related to {project-name} policies in Kubernetes environments for more information.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

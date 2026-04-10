@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Reference for sources.yaml
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Configure your sources.yaml file to work with PolicyServer CRs by specifying the path and format for source authorities, as well as insecure sources.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

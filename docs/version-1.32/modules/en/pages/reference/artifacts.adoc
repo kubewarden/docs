@@ -6,7 +6,6 @@ include::partial$variables.adoc[]
 :doc-topic: [operator-manual, artifacts, registry, images]
 
 = {title}
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Verify {project-name} artifacts and access related binaries, Helm charts, for efficient security management.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

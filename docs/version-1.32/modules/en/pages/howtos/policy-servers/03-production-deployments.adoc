@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Configuring PolicyServers for production
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-25
 :page-revdate: {revdate}
 :description: Configuring PolicyServers for production.

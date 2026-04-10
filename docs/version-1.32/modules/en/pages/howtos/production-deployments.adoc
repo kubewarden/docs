@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Configuring the {project-name} stack for production
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Configure tolerations and affinity rules for optimal scheduling and reliability within the {project-name} stack in a Kubernetes cluster.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

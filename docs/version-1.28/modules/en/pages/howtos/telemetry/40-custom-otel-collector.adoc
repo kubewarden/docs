@@ -1,5 +1,4 @@
 = Custom OpenTelemetry Collector
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: How to use a custom OpenTelemetry Collector with Kubewarden.

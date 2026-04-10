@@ -10,7 +10,6 @@ include::partial$variables.adoc[]
 :page-revdate: {revdate}
 
 = {title}
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Explore the policy-server command-line help and options to customize and run the `policy-server` program.
 
 == Command-Line Help for `policy-server`

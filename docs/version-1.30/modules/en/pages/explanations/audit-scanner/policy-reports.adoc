@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Audit Scanner - Policy Reports
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-03
 :page-revdate: {revdate}
 :description: The policy reports that the Audit Scanner produces.

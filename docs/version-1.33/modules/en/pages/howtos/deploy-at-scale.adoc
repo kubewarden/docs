@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = {project-name} in a Large-Scale Environment
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Configure {project-name}s with {project-name} to ensure high availability and performance in demanding large-scale environments.

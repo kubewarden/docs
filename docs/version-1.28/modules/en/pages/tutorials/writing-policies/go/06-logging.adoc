@@ -1,5 +1,4 @@
 = Logging
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: A tutorial introduction to logging when using Go to write a Kubewarden policy.

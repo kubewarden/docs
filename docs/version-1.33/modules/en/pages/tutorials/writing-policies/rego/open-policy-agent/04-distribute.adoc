@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Distributing an OPA policy with {project-name}
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Annotate your Rego policy with relevant metadata, then push it to an OCI registry to prepare for deployment.

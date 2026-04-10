@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Quick start
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-03
 :page-revdate: {revdate}
 :description: Getting started with {project-name}, installing the {project-name} stack and taking care of prerequisites and authentication

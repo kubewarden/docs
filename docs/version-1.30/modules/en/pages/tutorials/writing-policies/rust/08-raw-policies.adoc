@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Raw policies
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: {project-name} support for raw policies using Rust.

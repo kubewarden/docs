@@ -1,7 +1,6 @@
 // This file was converted from Markdown to AsciiDoc.
 
 = kwctl CLI
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :sidebar_label: kwctl CLI Reference

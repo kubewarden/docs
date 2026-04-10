@@ -9,7 +9,6 @@ include::partial$variables.adoc[]
 :current-version: {page-origin-branch}
 
 = {title}
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Configure {project-name} policies in your Kubernetes clusters to achieve granular control over policy configuration, replacing PodSecurityPolicy (PSP).
 :revdate: 2025-11-25
 :page-revdate: {revdate}

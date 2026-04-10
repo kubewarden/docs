@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Custom certificate authorities
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Configure custom certificate authorities for use with {project-name} installations to ensure secure communication and authentication.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

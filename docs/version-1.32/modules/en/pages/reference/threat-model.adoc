@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Threat Model
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Read and understand the Admission Control Threat Model to devise your own circumstance-specific threat model, ensuring secure defaults within Kubernetes.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

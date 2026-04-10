@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Introduction to CEL
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Learn about CEL (Computation Expression Language) as a fast, portable, and safe expression language designed for Kubernetes validation rules and extensions to the Kubernetes API.

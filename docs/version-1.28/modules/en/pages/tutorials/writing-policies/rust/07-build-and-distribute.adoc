@@ -1,5 +1,4 @@
 = Building and distributing policies
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: Building and distributing Kubewarden policies developed with Rust.

@@ -1,7 +1,6 @@
 include::partial$variables.adoc[]
 
 = Air gap installation with Hauler
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Use Hauler to install {project-name} in air-gapped environments.

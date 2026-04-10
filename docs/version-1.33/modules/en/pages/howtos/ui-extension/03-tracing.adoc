@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Tracing
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Enable tracing for fine-grained details about policy evaluations and debug issues related to the {project-name} deployment.

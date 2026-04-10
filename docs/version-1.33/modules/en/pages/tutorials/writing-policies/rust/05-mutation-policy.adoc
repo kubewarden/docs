@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Creating a new mutation policy
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Configure a new {project-name} mutation policy to mutate incoming objects with custom annotations, then test it.

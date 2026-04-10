@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Dependency matrix
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn about the dependencies of the {project-name}, including their version constraints.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

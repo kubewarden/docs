@@ -11,7 +11,6 @@ include::partial$variables.adoc[]
 :page-revdate: {revdate}
 
 = {title}
-:page-languages: [en, de, es, fr, ja, pt, zh]
 
 == Command-Line Help for `policy-server`
 

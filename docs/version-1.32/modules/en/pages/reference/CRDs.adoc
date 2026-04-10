@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Custom Resource Definitions (CRD)
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn about Custom Resource Definitions (CRDs) for {project-name}, and access related API references.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

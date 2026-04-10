@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Distributing policies
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Distribute policies securely via an OCI-compliant registry using tools like kwctl, and ensure cluster security through {project-name} policy management.

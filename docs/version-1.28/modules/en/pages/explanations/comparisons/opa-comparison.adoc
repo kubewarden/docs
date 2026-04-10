@@ -1,5 +1,4 @@
 = Kubewarden vs OPA Gatekeeper
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :page-aliases: explanations/opa-comparison.adoc

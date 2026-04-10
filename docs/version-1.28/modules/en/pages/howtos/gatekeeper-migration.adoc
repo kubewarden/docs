@@ -1,5 +1,4 @@
 = Migrating Gatekeeper Policies to Kubewarden
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 description: "How to migrate Gatekeeper policies to Kubewarden"

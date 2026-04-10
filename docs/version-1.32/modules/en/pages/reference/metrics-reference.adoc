@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Metrics reference
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Explore cluster metrics and patterns with {project-name}'s exposed platform metrics to inform decision-making processes.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

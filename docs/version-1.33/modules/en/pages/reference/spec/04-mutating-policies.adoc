@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Mutating policies
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Configure mutating policies by implementing validation functions (validate and validate_settings) in a waPC (whatever-after Policy Configurator) for proposing object mutations in Kubernetes clusters.

@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Writing validation logic
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Write validation logic to check the validity of incoming requests by parsing payloads and verifying Pod objects.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

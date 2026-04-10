@@ -1,7 +1,6 @@
 include::partial$variables.adoc[]
 
 = Enterprise support
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Access centralized information on enterprise support for {project-name} solutions through various interfaces.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

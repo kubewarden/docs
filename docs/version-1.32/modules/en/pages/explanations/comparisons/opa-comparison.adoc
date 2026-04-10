@@ -1,7 +1,6 @@
 include::partial$variables.adoc[]
 
 = {project-name} vs OPA Gatekeeper
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Compare OPA Gatekeeper and {project-name} policy management for Kubernetes environments to determine the best approach for your use case.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Defining policy settings
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Define and implement effective policy settings structures through {project-name} policies in src/types.ts and src/index.ts files.

@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Suggesting a documentation improvement
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-17
 :page-revdate: {revdate}
 :description: Suggesting a doc improvement.

@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Host capabilities specification
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-11-17
 :page-revdate: {revdate}
 :description: Host capabilities specification.

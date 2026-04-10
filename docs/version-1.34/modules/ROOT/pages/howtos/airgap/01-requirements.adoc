@@ -1,7 +1,6 @@
 include::partial$variables.adoc[]
 
 = Requirements for installing {project-name} in an air-gapped installation
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Learn about installation requirements for {project-name} in air-gapped environments, including supported private registries and compatibility details.

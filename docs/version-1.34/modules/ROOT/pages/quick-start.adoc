@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Quick start
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Understand the {project-name} stack by learning how to deploy and manage its main components, including PolicyServers and ClusterAdmissionPolicy resources.

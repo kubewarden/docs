@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Contribution guide
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn about contributing to SUSE projects with our comprehensive contribution guide, which outlines the steps and best practices.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

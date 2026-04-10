@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 = Sigstore host capabilities
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Learn how to implement Sigstore host capabilities using CEL policies in Kubewarden to verify container images and enforce secure admission control.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

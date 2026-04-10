@@ -1,5 +1,4 @@
 = Integrating with GitHub Actions
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 :description: Integrating with GitHub actions when developing policies for Kubewarden in Go.

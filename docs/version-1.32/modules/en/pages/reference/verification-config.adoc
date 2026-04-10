@@ -7,7 +7,6 @@ include::partial$variables.adoc[]
 :current-version: {page-origin-branch}
 
 = Verification configuration format
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :description: Configure verification configuration formats for secure container image signing using a policy-server or policy to verify provenance and signatures.
 :revdate: 2025-11-25
 :page-revdate: {revdate}

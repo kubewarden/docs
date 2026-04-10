@@ -8,7 +8,6 @@ include::partial$variables.adoc[]
 :current-version: {page-origin-branch}
 
 = Verification configuration format
-:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 
