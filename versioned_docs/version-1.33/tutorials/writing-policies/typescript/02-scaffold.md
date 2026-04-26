@@ -88,7 +88,7 @@ asset bundled.js 5.52 KiB [compared for emit] [minimized] (name: main)
 asset types.d.ts 430 bytes [compared for emit]
 asset index.d.ts 11 bytes [compared for emit]
 ./src/index.ts 3.84 KiB [built] [code generated]
-./node_modules/kubewarden-policy-sdk/dist/bundle.js 3.85 KiB [built] [code generated]
+./node_modules/@kubewarden/policy-sdk/dist/bundle.js 3.85 KiB [built] [code generated]
 webpack 5.101.3 compiled successfully in 2280 ms
 npm install
 
@@ -107,7 +107,7 @@ asset bundled.js 5.52 KiB [compared for emit] [minimized] (name: main)
 asset types.d.ts 430 bytes [compared for emit]
 asset index.d.ts 11 bytes [compared for emit]
 ./src/index.ts 3.84 KiB [built] [code generated]
-./node_modules/kubewarden-policy-sdk/dist/bundle.js 3.85 KiB [built] [code generated]
+./node_modules/@kubewarden/policy-sdk/dist/bundle.js 3.85 KiB [built] [code generated]
 webpack 5.101.3 compiled successfully in 1909 ms
 bats e2e.bats
 e2e.bats

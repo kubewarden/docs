@@ -79,13 +79,13 @@ The Kubewarden project provides a [template JavaScript/TypeScript policy project
 The easiest way to get the toolchain is by using the Kubewarden JavaScript SDK, which includes the Javy compilation plug-in:
 
 ```bash
-npm install kubewarden-policy-sdk
+npm install @kubewarden/policy-sdk
 ```
 
 The Javy plug-in binary is automatically included and you can find it at:
 
 ```
-node_modules/kubewarden-policy-sdk/plugin/javy-plugin-kubewarden.wasm
+node_modules/@kubewarden/policy-sdk/plugin/javy-plugin-kubewarden.wasm
 ```
 
 ## Tutorial prerequisites
