@@ -86,6 +86,47 @@ spec:
       enforce: "restricted"
 ```
 
+## Filtering admission requests with matchConditions
+
+Use `spec.matchConditions` when `rules`, `namespaceSelector`, and
+`objectSelector` are not precise enough. Match conditions are
+[Kubernetes CEL expressions](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-matchconditions)
+that Kubernetes evaluates before calling the policy webhook. If any condition
+evaluates to `false`, the policy is skipped. If all conditions evaluate to
+`true`, Kubewarden evaluates the policy.
+
+The following policy rejects privileged containers in Deployments, but it skips
+updates that only change fields outside the Pod template. This avoids evaluating
+the policy for scale-only updates while still checking new Deployments and
+changes that can affect the Pods created by the Deployment:
+
+```yaml
+---
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: pod-privileged-template-changes
+spec:
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v1.0.10
+  policyServer: default
+  mode: protect
+  rules:
+    - apiGroups: ["apps"]
+      apiVersions: ["v1"]
+      resources: ["deployments"]
+      operations: ["CREATE", "UPDATE"]
+  matchConditions:
+    - name: pod-template-changed
+      expression: 'request.operation == "CREATE" || object.spec.template != oldObject.spec.template'
+  mutating: false
+  settings: {}
+```
+
+Match conditions can use AdmissionReview data such as `object`, `oldObject`,
+and `request`. In this example, `oldObject` is only needed for `UPDATE`
+requests, and the `CREATE` check keeps the expression valid when there is no
+previous object.
+
 ## Custom rejection message
 
 When a policy rejects a resource, the message shown to the user is
