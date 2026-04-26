@@ -78,3 +78,40 @@ spec:
 See the [Custom Certificate Authorities](../custom-certificate-authorities.md)
 documentation for more information on how the `policy-server` executable treats
 them.
+
+## Default PolicyServer managed by Helm
+
+The `kubewarden-defaults` Helm chart owns the `PolicyServer` named `default`.
+If you use that default PolicyServer, configure custom source settings with
+`policyServer.*` Helm values instead of editing the generated resource
+directly.
+
+For registries without TLS, set `policyServer.insecureSources`:
+
+```yaml
+# values.yaml
+policyServer:
+  insecureSources:
+    - registry-pre.example.com:5000
+```
+
+For a registry that uses a custom CA, set `policyServer.sourceAuthorities`:
+
+```yaml
+# values.yaml
+policyServer:
+  sourceAuthorities:
+    - uri: registry-pre2.example.com:5500
+      certs:
+        - |
+          -----BEGIN CERTIFICATE-----
+          ca-pre2 PEM cert
+          -----END CERTIFICATE-----
+```
+
+Apply those values when installing or upgrading `kubewarden-defaults`:
+
+```shell
+helm upgrade --install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults \
+  -f values.yaml
+```

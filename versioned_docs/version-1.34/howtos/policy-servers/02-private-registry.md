@@ -50,7 +50,7 @@ kubectl --namespace kubewarden create secret docker-registry secret-ghcr-docker 
 
 :::tip
 Label the Secret as specified
-[here](../rancher-backup-operator.md#User-secrets) for it to be part of
+[here](../rancher-backup-operator.md#user-secrets) for it to be part of
 backups done by Rancher Backup Operator
 :::
 
@@ -76,17 +76,22 @@ spec:
   imagePullSecret: "secret-ghcr-docker"
 ```
 
-## Consuming the Secret in Helm charts
+## Default PolicyServer managed by Helm
 
-When deployed from the `kubewarden-defaults` Helm chart, you can set the
-`policyServer.imagePullSecret` value to the Secret name. Then,
-the created default policy server is able to download policies from your
-private registry as well:
+The `kubewarden-defaults` Helm chart owns the `PolicyServer` named `default`.
+If you use that default PolicyServer, set `policyServer.imagePullSecret` to
+the Secret name. Then, the default PolicyServer can download policies from your
+private registry:
 
 ```yaml
-# values file example
+# values.yaml
 policyServer:
-  telemetry:
-    enabled: False
   imagePullSecret: secret-ghcr-docker
+```
+
+Apply those values when installing or upgrading `kubewarden-defaults`:
+
+```shell
+helm upgrade --install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults \
+  -f values.yaml
 ```
