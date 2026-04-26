@@ -1,0 +1,43 @@
+name: Copy CLI reference documentation files
+
+scms:
+  kwctl:
+    kind: git
+    spec:
+      url: "https://github.com/kubewarden/kwctl.git"
+      branch: "main"
+  policyServer:
+    kind: git
+    spec:
+      url: "https://github.com/kubewarden/policy-server.git"
+      branch: "main"
+
+sources:
+  kwctlCliDocs:
+    name: Get kwctl CLI reference documentation
+    kind: file
+    scmid: kwctl
+    spec:
+      file: "cli-docs.md"
+  policyServerCliDocs:
+    name: Get policy-server CLI reference documentation
+    kind: file
+    scmid: policyServer
+    spec:
+      file: "cli-docs.md"
+
+targets:
+  kwctlCliDocs:
+    name: Copy kwctl CLI reference documentation
+    kind: file
+    sourceid: kwctlCliDocs
+    spec:
+      file: "docs/reference/kwctl-cli.md"
+      forcecreate: true
+  policyServerCliDocs:
+    name: Copy policy-server CLI reference documentation
+    kind: file
+    sourceid: policyServerCliDocs
+    spec:
+      file: "docs/reference/policy-server-cli.md"
+      forcecreate: true
