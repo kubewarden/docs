@@ -14,28 +14,28 @@ This document contains the help content for the `kwctl` command-line program.
 
 **Command Overview:**
 
-* [`kwctl`](#kwctl)
-* [`kwctl annotate`](#kwctl-annotate)
-* [`kwctl bench`](#kwctl-bench)
-* [`kwctl completions`](#kwctl-completions)
-* [`kwctl digest`](#kwctl-digest)
-* [`kwctl docs`](#kwctl-docs)
-* [`kwctl info`](#kwctl-info)
-* [`kwctl inspect`](#kwctl-inspect)
-* [`kwctl load`](#kwctl-load)
-* [`kwctl policies`](#kwctl-policies)
-* [`kwctl pull`](#kwctl-pull)
-* [`kwctl push`](#kwctl-push)
-* [`kwctl rm`](#kwctl-rm)
-* [`kwctl run`](#kwctl-run)
-* [`kwctl save`](#kwctl-save)
-* [`kwctl scaffold`](#kwctl-scaffold)
-* [`kwctl scaffold admission-request`](#kwctl-scaffold-admission-request)
-* [`kwctl scaffold artifacthub`](#kwctl-scaffold-artifacthub)
-* [`kwctl scaffold manifest`](#kwctl-scaffold-manifest)
-* [`kwctl scaffold vap`](#kwctl-scaffold-vap)
-* [`kwctl scaffold verification-config`](#kwctl-scaffold-verification-config)
-* [`kwctl verify`](#kwctl-verify)
+* [`kwctl`↴](#kwctl)
+* [`kwctl annotate`↴](#kwctl-annotate)
+* [`kwctl bench`↴](#kwctl-bench)
+* [`kwctl completions`↴](#kwctl-completions)
+* [`kwctl digest`↴](#kwctl-digest)
+* [`kwctl docs`↴](#kwctl-docs)
+* [`kwctl info`↴](#kwctl-info)
+* [`kwctl inspect`↴](#kwctl-inspect)
+* [`kwctl load`↴](#kwctl-load)
+* [`kwctl policies`↴](#kwctl-policies)
+* [`kwctl pull`↴](#kwctl-pull)
+* [`kwctl push`↴](#kwctl-push)
+* [`kwctl rm`↴](#kwctl-rm)
+* [`kwctl run`↴](#kwctl-run)
+* [`kwctl save`↴](#kwctl-save)
+* [`kwctl scaffold`↴](#kwctl-scaffold)
+* [`kwctl scaffold admission-request`↴](#kwctl-scaffold-admission-request)
+* [`kwctl scaffold artifacthub`↴](#kwctl-scaffold-artifacthub)
+* [`kwctl scaffold manifest`↴](#kwctl-scaffold-manifest)
+* [`kwctl scaffold vap`↴](#kwctl-scaffold-vap)
+* [`kwctl scaffold verification-config`↴](#kwctl-scaffold-verification-config)
+* [`kwctl verify`↴](#kwctl-verify)
 
 ## `kwctl`
 
@@ -112,7 +112,8 @@ Only the following attributes of the Custom Resource Definition (CRD) are evalua
 
 Other fields, such as `rules`, `matchConditions`, `objectSelector`, and `namespaceSelector`, are ignored.
 
-A YAML file may contain multiple Custom Resource declarations. In this case, `kwctl` evaluates each policy in the file using the same request during each evaluation.
+A YAML file may contain multiple Custom Resource declarations. In this case, `kwctl` evaluates
+each policy in the file using the same request during each evaluation.
 
 
 **Usage:** `kwctl bench [OPTIONS] --request-path <PATH> <uri_or_sha_prefix_or_yaml_file>`
@@ -124,7 +125,7 @@ A YAML file may contain multiple Custom Resource declarations. In this case, `kw
 ###### **Options:**
 
 * `--allow-context-aware <ALLOW-CONTEXT-AWARE>` — Grant access to the Kubernetes resources defined inside of the policy's `contextAwareResources` section. Warning: review the list of resources carefully to avoid abuses. Disabled by default
-* `--allowed-host-capabilities <ALLOWED-HOST-CAPABILITIES>` — Host capabilities the policy is allowed to use. Use `*` to allow all. Can be repeated multiple times. Examples: `oci/*`, `net/v1/dns_lookup_host`
+* `--allowed-host-capabilities <ALLOWED-HOST-CAPABILITIES>` — Host capabilities the policy is allowed to use. Use '*' to allow all. Can be repeated multiple times. Examples: 'oci/*', 'net/v1/dns_lookup_host'
 
   Default value: `*`
 * `--cert-email <VALUE>` — Expected email in Fulcio certificate
@@ -263,6 +264,11 @@ Pulls a Kubewarden policy from a given URI
 
 **Usage:** `kwctl pull [OPTIONS] <uri>`
 
+It respects standard proxy environment variables when downloading policies:
+- HTTP_PROXY or http_proxy: proxy server for HTTP requests
+- HTTPS_PROXY or https_proxy: proxy server for HTTPS requests
+- NO_PROXY or no_proxy: comma-separated list of hosts to exclude from proxying
+
 ###### **Arguments:**
 
 * `<URI>` — Policy URI. Supported schemes: registry://, https://, file://
@@ -293,6 +299,11 @@ The annotations found inside of policy's metadata are going to be part of the OC
 The multi-line annotations are skipped because they are not compatible with the OCI specification.
 The 'io.kubewarden.policy.source' annotation is propagated as 'org.opencontainers.image.source' to allow tools like
 renovatebot to detect policy updates.
+
+It respects standard proxy environment variables when downloading policies:
+- HTTP_PROXY or http_proxy: proxy server for HTTP requests
+- HTTPS_PROXY or https_proxy: proxy server for HTTPS requests
+- NO_PROXY or no_proxy: comma-separated list of hosts to exclude from proxying
 
 ###### **Arguments:**
 
@@ -350,10 +361,16 @@ Only the following attributes of the Custom Resource Definition (CRD) are evalua
 
 Other fields, such as `rules`, `matchConditions`, `objectSelector`, and `namespaceSelector`, are ignored.
 
-A YAML file may contain multiple Custom Resource declarations. In this case, `kwctl` evaluates each policy in the file using the same request during each evaluation.
+A YAML file may contain multiple Custom Resource declarations. In this case, `kwctl` evaluates
+each policy in the file using the same request during each evaluation.
 
 
 **Usage:** `kwctl run [OPTIONS] --request-path <PATH> <uri_or_sha_prefix_or_yaml_file>`
+
+It respects standard proxy environment variables when downloading policies:
+- HTTP_PROXY or http_proxy: proxy server for HTTP requests
+- HTTPS_PROXY or https_proxy: proxy server for HTTPS requests
+- NO_PROXY or no_proxy: comma-separated list of hosts to exclude from proxying
 
 ###### **Arguments:**
 
@@ -362,7 +379,7 @@ A YAML file may contain multiple Custom Resource declarations. In this case, `kw
 ###### **Options:**
 
 * `--allow-context-aware <ALLOW-CONTEXT-AWARE>` — Grant access to the Kubernetes resources defined inside of the policy's `contextAwareResources` section. Warning: review the list of resources carefully to avoid abuses. Disabled by default
-* `--allowed-host-capabilities <ALLOWED-HOST-CAPABILITIES>` — Host capabilities the policy is allowed to use. Use `*` to allow all. Can be repeated multiple times. Examples: `oci/*`, `net/v1/dns_lookup_host`
+* `--allowed-host-capabilities <ALLOWED-HOST-CAPABILITIES>` — Host capabilities the policy is allowed to use. Use '*' to allow all. Can be repeated multiple times. Examples: 'oci/*', 'net/v1/dns_lookup_host'
 
   Default value: `*`
 * `--cert-email <VALUE>` — Expected email in Fulcio certificate
@@ -522,6 +539,11 @@ Output a default Sigstore verification configuration file
 Verify a Kubewarden policy from a given URI using Sigstore
 
 **Usage:** `kwctl verify [OPTIONS] <uri>`
+
+It respects standard proxy environment variables when downloading policies:
+- HTTP_PROXY or http_proxy: proxy server for HTTP requests
+- HTTPS_PROXY or https_proxy: proxy server for HTTPS requests
+- NO_PROXY or no_proxy: comma-separated list of hosts to exclude from proxying
 
 ###### **Arguments:**
 
