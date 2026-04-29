@@ -5,7 +5,7 @@ scm:
 
 files:
   - src: "cli-docs.md"
-    dst: "docs/reference/kwctl-cli.md"
+    dst: "crates/kwctl/cli-docs.md"
 src:
   branch: "main"
-  url: "https://github.com/kubewarden/kwctl.git"
+  url: "https://github.com/kubewarden/kubewarden-controller.git"
