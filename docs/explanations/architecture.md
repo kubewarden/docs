@@ -114,7 +114,7 @@ The Kubewarden consists of these components:
   The `policy-server` is the Webhook endpoint called by the Kubernetes
   API server to validate requests.
 
-- The [Kubewarden controller](https://github.com/kubewarden/kubewarden-controller)
+- The [Kubewarden controller](https://github.com/kubewarden/adm-controller)
   is a Kubernetes controller that reconciles Kubewarden's Custom Resources.
   This controller creates parts of the Kubewarden stack.
   It also translates Kubewarden configuration into Kubernetes directives.
