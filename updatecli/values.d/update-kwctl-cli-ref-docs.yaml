@@ -4,8 +4,8 @@ scm:
   enabled: false
 
 files:
-  - src: "cli-docs.md"
+  - src: "crates/kwctl/cli-docs.md"
     dst: "docs/reference/kwctl-cli.md"
 src:
   branch: "main"
-  url: "https://github.com/kubewarden/kwctl.git"
+  url: "https://github.com/kubewarden/kubewarden-controller.git"
