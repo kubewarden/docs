@@ -1,0 +1,115 @@
+include::partial$variables.adoc[]
+
+= Installing {project-name} with KubeStellar Console
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-05-04
+:page-revdate: {revdate}
+:sidebar_label: KubeStellar Console
+:sidebar_position: 150
+:description: How to install {project-name} using the KubeStellar Console guided install mission.
+:doc-persona: [kubewarden-operator, kubewarden-integrator]
+:doc-type: [howto]
+:doc-topic: [kubestellar-console-installation]
+:keywords: ["{project-name}", kubernetes, kubestellar, console, guided install]
+
+link:https://console.kubestellar.io[KubeStellar Console] is a standalone
+Kubernetes dashboard that includes guided install missions for CNCF projects.
+The {project-name} install mission walks you through the full installation
+step-by-step, with live cluster validation after each step.
+
+== What the mission does
+
+The guided install mission runs against your cluster via kubeconfig. Each step:
+
+1. *Pre-flight* -- checks prerequisites (Helm 3, kubectl, cluster access)
+1. *Commands* -- shows the exact `helm install` commands for all three charts
+   (`kubewarden-crds`, `kubewarden-controller`, `kubewarden-defaults`) with
+   `--wait` flags, matching the
+   xref:/quick-start.adoc[quick-start] docs
+1. *Validation* -- after each step, queries the cluster to verify success
+   (pod phase, PolicyServer registration)
+1. *Troubleshooting* -- on failure, reads pod logs, events, and resource
+   status from your cluster and suggests fixes
+1. *Rollback* -- each step includes the corresponding `helm uninstall` command
+   to undo the change
+
+The mission also works as read-only documentation -- no cluster connection is
+required to browse the steps.
+
+== Prerequisites
+
+* A running Kubernetes cluster
+* `kubectl` configured with access to the cluster
+* link:https://helm.sh/[Helm] v3 installed
+* link:https://console.kubestellar.io[KubeStellar Console] installed
+  (see the link:https://github.com/kubestellar/console#install[install guide] for
+  options including Homebrew, Docker, and binary downloads)
+
+== Opening the install mission
+
+1. Launch KubeStellar Console and connect to your cluster.
+1. Open the *AI Mission Explorer* from the sidebar.
+1. Search for *Kubewarden* or browse the *Install* category.
+1. Select the *Install Kubewarden* mission to begin.
+
+Alternatively, open the mission directly at:
+
+[literal]
+https://console.kubestellar.io/missions/install-kubewarden
+
+== Installation steps
+
+The mission guides you through the following Helm chart installations in order:
+
+=== 1. Install CRDs
+
+[subs="+attributes",console]
+----
+helm repo add kubewarden https://charts.kubewarden.io
+helm repo update kubewarden
+helm install --wait \
+  -n kubewarden \
+  --create-namespace \
+  kubewarden-crds kubewarden/kubewarden-crds
+----
+
+The mission validates that the {short-project-name} CRDs are registered in the cluster
+before proceeding.
+
+=== 2. Install the controller
+
+[subs="+attributes",console]
+----
+helm install --wait \
+  -n kubewarden \
+  kubewarden-controller kubewarden/kubewarden-controller
+----
+
+The mission validates that the controller pod reaches `Running` status.
+
+=== 3. Install defaults
+
+[subs="+attributes",console]
+----
+helm install --wait \
+  -n kubewarden \
+  kubewarden-defaults kubewarden/kubewarden-defaults
+----
+
+The mission validates that the default `PolicyServer` is registered and ready.
+
+== What's next
+
+After completing the mission, you have a working {project-name} installation with
+the default PolicyServer. From here you can:
+
+* xref:/quick-start.adoc#defining-your-first-policy[Create your first policy]
+* link:https://artifacthub.io/packages/search?kind=13[Explore the policy catalog]
+* Browse additional install missions for other CNCF projects in the
+  link:https://console.kubestellar.io/missions[KubeStellar Console mission explorer]
+
+== Resources
+
+* link:https://github.com/kubestellar/console-kb/blob/master/fixes/cncf-install/install-kubewarden.json[Mission definition on GitHub]
+* link:https://console.kubestellar.io[KubeStellar Console]
+* link:https://github.com/kubestellar/console[KubeStellar Console on GitHub]

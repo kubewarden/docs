@@ -2,7 +2,7 @@
 site:
   url: https://docs.kubewarden.io
   title: Kubewarden
-  start_page: 1.34@ROOT:ROOT:introduction.adoc
+  start_page: 1.35@ROOT:ROOT:introduction.adoc
 
 urls:
   html_extension_style: drop
@@ -11,7 +11,7 @@ content:
   sources:
     - url: ./
       branches: HEAD
-      start_paths: [shared, docs/version-1.34, sboms-docs/v*]
+      start_paths: [shared, docs/version-*, sboms-docs/v*]
 
 ui:
   bundle:

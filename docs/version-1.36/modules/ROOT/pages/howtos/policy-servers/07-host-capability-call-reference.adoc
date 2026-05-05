@@ -1,0 +1,63 @@
+include::partial$variables.adoc[]
+
+= Host capabilities call reference
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-05-04
+:page-revdate: {revdate}
+:sidebar_label: Capabilities call reference
+:description: List of all host capabilities calls.
+:keywords: ["{project-name}", kubernetes, policyserver, host-capabilities, capabilities, namespaced-policies, security]
+:doc-persona: [kubewarden-operator, kubewarden-integrator]
+:doc-type: [reference]
+:doc-topic: [operator-manual, policy-servers, host-capabilities, namespaced-policies, security]
+
+Each host capability is identified by a path string. The following paths can
+be gated in `spec.namespacedPoliciesCapabilities`:
+
+[cols="1,2,4", options="header"]
+|===
+| Category | Path | Description
+
+| OCI
+| `oci/v1/verify`
+| Verify an OCI artifact signature (v1)
+
+| OCI
+| `oci/v2/verify`
+| Verify an OCI artifact signature (v2)
+
+| OCI
+| `oci/v1/manifest_digest`
+| Fetch an OCI manifest digest
+
+| OCI
+| `oci/v1/oci_manifest`
+| Fetch an OCI manifest
+
+| OCI
+| `oci/v1/oci_manifest_config`
+| Fetch an OCI manifest configuration
+
+| Kubernetes
+| `kubernetes/can_i`
+| Perform a SubjectAccessReview check
+
+| Net
+| `net/v1/dns_lookup_host`
+| Resolve a host name via DNS
+
+| Crypto
+| `crypto/v1/is_certificate_trusted`
+| Verify certificate trust chain
+|===
+
+[NOTE]
+====
+The `kubernetes/list_resources_by_namespace`, `kubernetes/list_resources_all`,
+and `kubernetes/get_resource` calls aren't applicable to namespaced policies
+because those policies have no `spec.contextAwareResources` field. They're
+only relevant for `ClusterAdmissionPolicy` resources, which always receive
+full host capability access.
+
+The `tracing/log` call emits a log entry and is always available.
+====

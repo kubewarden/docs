@@ -1,7 +1,6 @@
-name: kubewarden
+name: ROOT
 title: Kubewarden
 version: 1.29
-display_version: '1.29'
-start_page: en:introduction.adoc
+start_page: ROOT:introduction.adoc
 nav:
-- modules/en/nav.adoc
+- modules/ROOT/nav.adoc

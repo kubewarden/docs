@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Defining policy settings
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Define policy settings and structure in your code to establish a foundation for validating policy integrity through efficient setting management. Ensure that all changes are tracked, such as who made the change, when, and what was changed.

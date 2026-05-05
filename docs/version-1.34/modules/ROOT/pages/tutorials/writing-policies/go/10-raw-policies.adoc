@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Writing raw policies
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Learn to write raw policies that can evaluate arbitrary JSON documents for validation and mutation, allowing for flexible data processing.

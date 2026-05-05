@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Creating a policy
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Learn to create and configure validation policies that control Pod creation requests based on customizable rejection criteria.

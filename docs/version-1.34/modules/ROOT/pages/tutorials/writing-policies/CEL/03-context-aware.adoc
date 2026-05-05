@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Context-aware CEL policies
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Configure context-aware policies to ensure unique Ingress rules across hosts, preventing conflicts with {project-name}'s CEL extension libraries.

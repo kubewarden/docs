@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Upgrade path
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Upgrade your {project-name} stack using supported versioning strategies and compatibility rules among its components.
@@ -62,25 +63,7 @@ between the two versions. Therefore, it's necessary to upgrade `1.1.10` to
 the two `MAJOR` versions.
 
 .Example upgrade path support graph
-[mermaid]
-....
-%%{init: "theme": "neutral"}%%
-flowchart LR;
-  accTitle: Upgrade path support graph
-  accDescr: A diagram showing recommended and supported upgrade paths for {short-project-name}.
-  1.0.0(1.0.0)-->1.0.1(1.0.1);
-  1.0.1-->1.0.2(1.0.2);
-  1.0.2-->1.1.0(1.1.0);
-  1.1.0-->1.1.2(1.1.2);
-  1.1.0-->1.1.1;
-  1.1.1-->1.1.2;
-  1.1.2-->|Not recommended|1.2.0(1.2.0);
-  1.0.2-->|Not supported|1.2.0(1.2.0);
-  1.1.2-->1.2.1(1.2.1);
-  1.2.0-->1.2.1;
-  linkStyle 6 color:brown,stroke-width:2px,stroke-dasharray: 3 5
-  linkStyle 7 color:red,stroke-width:2px,stroke-dasharray: 3 5
-....
+include::latest@shared:en:partial$upg-path.adoc[]
 
 == Upgrade order
 

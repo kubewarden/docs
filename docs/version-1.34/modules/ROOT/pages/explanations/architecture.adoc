@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = {project-name} architecture
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Discover how {project-name} uses core Kubernetes features to integrate seamlessly into your cluster.
@@ -137,45 +138,7 @@ checks the resources declared in the cluster, flagging the ones that no
 longer adhere to the deployed {project-name} policies.
 +
 .Architecture
-[mermaid]
-....
-%%{
-  init: {
-    "flowchart": {
-      "htmlLabels": false,
-    }
-  }
-}%%
-graph LR
-    accTitle: Admission Controller architecture
-    accDescr: A diagram showing the architecture of Admission Controller components.
-    subgraph " "
-      direction LR
-      subgraph " "
-        direction LR
-          k8s(("Kubernetes"))
-          registry[("OCI registry")]
-        end
-        subgraph kw["`**Admission Controller**`"]
-          controller("`**Controller**`")
-          subgraph policy-server["`**policy-server**`"]
-            direction LR
-            kw-policy-1{{"Policy 1"}}
-            kw-policy-2{{"Policy 2"}}
-            kw-policy-3{{"Policy 3"}}
-        end
-        webhooks(["ValidationWebhooks and\nMutatingWebhooks"])
-        audit-scanner["KW audit scanner"]
-      end
-    end
-    policy-server -->|"downloads\npolicies from"| registry
-    controller -->|"watches for\nevents"| k8s
-    controller -->|"creates"| webhooks
-    controller -->|"creates\npolicy-server\ninstances"| policy-server
-    k8s -. "sends admission\nrequests using" .-> webhooks
-    webhooks -. "sent admission\nrequests from K8s" .-> policy-server
-    audit-scanner -->|"sends audit\nadmission requests"| policy-server
-....
+include::latest@shared:en:partial$architecture.adoc[]
 
 == The journey of a {project-name} policy
 

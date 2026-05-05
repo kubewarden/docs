@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Policy Groups
+:page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-03-18
 :page-revdate: {revdate}
 :description: Learn about creating complex policies by combining simpler ones through Policy Groups, specifically using AdmissionPolicyGroup and ClusterAdmissionPolicyGroup definitions.
