@@ -2,7 +2,7 @@
 sidebar_label: Host network mode
 title: Running Kubewarden in host network mode
 description: How to enable and configure host network mode for the Kubewarden stack.
-sidebar_position: 23
+sidebar_position: 71
 keywords:
   [
     kubewarden,
