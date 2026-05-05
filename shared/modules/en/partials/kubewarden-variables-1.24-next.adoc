@@ -5,6 +5,7 @@ ifndef::kw-build-community[]
 :build-type: product
 endif::[]
 
+
 ifndef::kw-product-name[]
 :kw-product-name: SUSE Security Admission Controller
 endif::[]
