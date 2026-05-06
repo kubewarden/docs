@@ -102,7 +102,7 @@ policy author using the Kubewarden SDKs.
 ## ClusterAdmissionPolicies
 
 ClusterAdmissionPolicies have the field
-[spec.contextAwareResources](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller/policies.kubewarden.io/ClusterAdmissionPolicy/v1#spec-contextAwareResources).
+[spec.contextAwareResources](../CRDs#contextawareresource).
 This field provides a list a `GroupVersionKind` resources that the policy needs
 to access. This permist policy writers to ship the "permissions" that the
 policy needs together with the policy. Moreover, this permits policy operators

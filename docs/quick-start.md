@@ -116,7 +116,7 @@ helm install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defa
 :::caution
 
 Since
-[`v0.4.0`](https://github.com/kubewarden/kubewarden-controller/releases/tag/v0.4.0),
+[`v0.4.0`](https://github.com/kubewarden/adm-controller/releases/tag/v0.4.0),
 a `PolicyServer` resource named `default` isn't created using the
 `kubewarden-controller` chart. Now a Helm chart called `kubewarden-defaults`,
 installs the default policy server.
@@ -264,9 +264,7 @@ Kubernetes 1.21.0
 :::
 
 The complete documentation of these Custom Resources is
-[here](https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.md)
-or on
-[docs.crds.dev](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller).
+[here](./reference/CRDs.md)
 
 ## Example: Enforce your first policy
 

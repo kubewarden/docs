@@ -82,7 +82,7 @@ slsactl verify ghcr.io/kubewarden/policy-server:v1.30.0
 ```
 
 The same applies to all other images produced by the Kubewarden team, such as
-`kubewarden/kubewarden-controller` and `kubewarden/audit-scanner`.
+`kubewarden/controller` and `kubewarden/audit-scanner`.
 
 All container images also have SBOM and provenance files that can be used to
 ensure the secure supply chain of the images. You can find attestation files on

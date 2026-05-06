@@ -125,7 +125,7 @@ You can tune this behavior using these environment variables:
   The value is in seconds with a default value of `2`.
 
 When using the
-[`PolicyServer`](https://doc.crds.dev/github.com/kubewarden/kubewarden-controller/policies.kubewarden.io/PolicyServer/v1@v1.4.2)
+[`PolicyServer`](./CRDs#policyserver)
 Kubernetes Custom Resource Definition, you can set these environment variables
 as follows:
 

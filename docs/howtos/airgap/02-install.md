@@ -93,8 +93,8 @@ images](../../tutorials/verifying-kubewarden.md#container-images)
    ```
 
 1. Download `kubewarden-save-policies.sh` and `kubewarden-load-policies.sh`
-   from the [`kubewarden-controller`
-   repository](https://github.com/kubewarden/kubewarden-controller/blob/main/scripts)
+   from the [`kubewarden/adm-controller`
+   repository](https://github.com/kubewarden/adm-controller/blob/main/scripts)
 1. Save policies into a `.tar.gz` file:
 
    ```shell
