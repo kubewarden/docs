@@ -2,7 +2,7 @@
 site:
   url: https://docs.kubewarden.io
   title: Kubewarden
-  start_page: 1.35@ROOT:ROOT:introduction.adoc
+  start_page: 1.35@ROOT:introduction.adoc
 
 urls:
   html_extension_style: drop
