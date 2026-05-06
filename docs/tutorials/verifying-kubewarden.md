@@ -75,14 +75,14 @@ You can then verify that the certificate in the returned JSON contains the
 correct issuer, subject, and `github_workflow_repository` extensions.
 
 You can also verify with [`slsactl`](https://github.com/rancherlabs/slsactl).
-For example, for version 1.30.0:
+For example, for version 1.36.0:
 
 ```console
-slsactl verify ghcr.io/kubewarden/policy-server:v1.30.0
+slsactl verify ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
 ```
 
 The same applies to all other images produced by the Kubewarden team, such as
-`kubewarden/controller` and `kubewarden/audit-scanner`.
+`adm-controller/controller` and `adm-controller/audit-scanner`.
 
 All container images also have SBOM and provenance files that can be used to
 ensure the secure supply chain of the images. You can find attestation files on
@@ -112,11 +112,11 @@ Verified OK
 
 Now that the files integrity is verified, you can inspect the SBOM and Provenance files.
 You can get these from the container image, using [`slsactl`](https://github.com/rancherlabs/slsactl).
-For example, for version 1.30.0:
+For example, for version 1.36.0:
 
 ```console
-slsactl download provenance ghcr.io/kubewarden/policy-server:v1.30.0
-slsactl download sbom ghcr.io/kubewarden/policy-server:v1.30.0
+slsactl download provenance ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
+slsactl download sbom ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
 ```
 
 ## Helm charts
