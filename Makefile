@@ -2,6 +2,7 @@
 all:
 	@echo "Available targets:"
 	@echo "  community-local            Build the local community docs site"
+	@echo "  community-remote           Build the remote community docs site (as would happen on GH)"
 	@echo "  preview-local-community    Preview the local community docs site"
 	@echo "  clean                      Clean build artifacts"
 	@echo "  checkmake                  Check Makefile for common issues"
@@ -20,6 +21,13 @@ community-local: tmpdir environment
 	@echo "the html files directly will not work due to the Antora playbook"
 	@echo "setting 'html_extension_style: drop'."
 	@echo
+
+.PHONY: community-remote
+community-remote: tmpdir environment
+	npx antora --version | tee tmp/community-remote-build.log
+	npx antora --stacktrace --log-format=pretty --log-level=info \
+		kw-remote-community-playbook.yml \
+		2>&1 | tee -a tmp/community-remote-build.log
 
 .PHONY: clean
 clean:
