@@ -15,6 +15,7 @@ community-local: tmpdir environment
 	npx antora --stacktrace --log-format=pretty --log-level=info \
 		kw-local-community-playbook.yml \
 		2>&1 | tee -a tmp/community-local-build.log
+	#cd build-local-community/site && ln -s . latest
 	@echo 
 	@echo "If your build was successful, you can preview the site with" 
 	@echo "'make preview-local-community'. The server needs to be used, viewing" 
@@ -28,6 +29,7 @@ community-remote: tmpdir environment
 	npx antora --stacktrace --log-format=pretty --log-level=info \
 		kw-remote-community-playbook.yml \
 		2>&1 | tee -a tmp/community-remote-build.log
+	#cd build/site && ln -s . latest
 
 .PHONY: clean
 clean:
