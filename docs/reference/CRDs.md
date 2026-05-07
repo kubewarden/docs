@@ -17,7 +17,7 @@ You can find the definitions for the Kubewarden Custom Resources on this page
 
 <!--
 API REFERENCE GOES BELOW.
-From a file generated in the kubewarden/kubewarden-controller repo
+From a file generated in the kubewarden/adm-controller repo
 in docs/crds. Make sure to delete the old stuff below this line first!
 And then delete the L1 heading line.
 
@@ -898,7 +898,6 @@ _Appears in:_
 | `scheduled` | PolicyStatusScheduled is a transient state that will continue to<br />pending. This is the default state if a policy server is<br />assigned.<br /> |
 | `pending` | PolicyStatusPending informs that the policy server exists,<br />we are reconciling all resources.<br /> |
 | `active` | PolicyStatusActive informs that the k8s API server should be<br />forwarding admission review objects to the policy.<br /> |
-
 
 
 
