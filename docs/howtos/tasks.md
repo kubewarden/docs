@@ -25,7 +25,7 @@ Kubewarden uses two tools to help you find and test policies locally:
 
 - [Artifact Hub](https://artifacthub.io/packages/search?kind=13&sort=relevance&page=1)
   using their package filter for Kubewarden policies.
-- [`kwctl`](https://github.com/kubewarden/kwctl) CLI tool
+- [`kwctl`](https://github.com/kubewarden/adm-controller) CLI tool
 
 ### Artifact hub
 
@@ -86,8 +86,8 @@ _As a cluster administrator_
 #### Installation
 
 `kwctl` binaries for the stable releases are available from the [GitHub
-repository](https://github.com/kubewarden/kwctl/releases). To build `kwctl`
-from the GitHub [repo](https://github.com/kubewarden/kwctl), you need a
+repository](https://github.com/kubewarden/adm-controller/releases). To build `kwctl`
+from the GitHub [repo](https://github.com/kubewarden/adm-controller), you need a
 [Rust](https://www.rust-lang.org/tools/install) development environment.
 
 #### Usage
