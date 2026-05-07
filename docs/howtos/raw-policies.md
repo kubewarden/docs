@@ -84,7 +84,7 @@ docker run --rm -it \
     -p 3000:3000 \
     -v $(pwd)/policies.yml:/policies.yml \
     -v policy-store:/registry \
-    ghcr.io/kubewarden/policy-server \
+    ghcr.io/kubewarden/adm-controller/policy-server \
     --ignore-kubernetes-connection-failure
 ```
 
@@ -93,6 +93,7 @@ The flag `--ignore-kubernetes-connection-failure` is required to start the polic
 :::
 
 You can also use a bind mount to store the policies modules in a persistent way:
+
 ```bash
 mkdir -p ./registry
 
@@ -101,7 +102,7 @@ docker run --rm -it \
     -p 3000:3000 \
     -v $(pwd)/policies.yml:/policies.yml \
     -v $(pwd)/registry:/registry \
-    ghcr.io/kubewarden/policy-server \
+    ghcr.io/kubewarden/adm-controller/policy-server \
     --ignore-kubernetes-connection-failure
 ```
 
@@ -135,7 +136,7 @@ spec:
     spec:
       containers:
         - name: policy-server
-          image: ghcr.io/kubewarden/policy-server:v1.9.0
+          image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
           ports:
             - containerPort: 3000
           volumeMounts:
