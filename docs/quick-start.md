@@ -90,7 +90,7 @@ Kubernetes cluster:
   [[< admission-policy >]] and [[< policy-server >]] Custom Resource Definitions. Also,
   the [[< report >]] Custom Resource Definitions used by the audit scanner.
 
-- `kubewarden-controller`, which installs the Kubewarden controller and the
+- `kubewarden-controller`, which installs the Kubewarden admission controller and the
   audit scanner
   :::note
   If you need to disable the audit scanner component check the audit
@@ -161,7 +161,7 @@ kind: PolicyServer
 metadata:
   name: reserved-instance-for-tenant-a
 spec:
-  image: ghcr.io/kubewarden/policy-server:v1.3.0
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   replicas: 2
   serviceAccountName: ~
   env:
@@ -170,7 +170,7 @@ spec:
 ```
 
 :::note
-Check the [latest released `PolicyServer` version](https://github.com/kubewarden/policy-server/pkgs/container/policy-server) and change the tag to match.
+Check the [latest released `PolicyServer` version](https://github.com/kubewarden/adm-controller/pkgs/container/adm-controller%2Fpolicy-server) and change the tag to match.
 :::
 
 Overview of the attributes of the `PolicyServer` resource:
