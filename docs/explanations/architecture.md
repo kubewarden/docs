@@ -114,26 +114,24 @@ The Kubewarden consists of these components:
   The `policy-server` is the Webhook endpoint called by the Kubernetes
   API server to validate requests.
 
-- The [Kubewarden controller](https://github.com/kubewarden/adm-controller)
+- The [Kubewarden admission controller](https://github.com/kubewarden/adm-controller)
   is a Kubernetes controller that reconciles Kubewarden's Custom Resources.
   This controller creates parts of the Kubewarden stack.
   It also translates Kubewarden configuration into Kubernetes directives.
 
-  The `kubewarden-controller` registers the needed
-  `MutatingWebhookConfiguration` or
-  `ValidatingWebhookConfiguration`
-  objects with the Kubernetes API server.
+  The admission controller registers the needed `MutatingWebhookConfiguration`
+  or `ValidatingWebhookConfiguration` objects with the Kubernetes API server.
 
 - [Kubewarden policies](../tutorials/writing-policies/index.md)
   are WebAssembly modules holding the validation or mutation logic.
   WebAssembly modules have detailed documentation in the
   [writing policies](../tutorials/writing-policies/index.md) sections.
 
-- The [PolicyServer](https://github.com/kubewarden/policy-server)
+- The [PolicyServer](https://github.com/kubewarden/adm-controller)
   receives requests for validation.
   It validates the requests by executing Kubewarden policies.
 
-- The [audit scanner](https://github.com/kubewarden/audit-scanner)
+- The [audit scanner](./audit-scanner/audit-scanner.md)
   inspects the resources already in the cluster.
   It identifies those violating Kubewarden policies.
 
@@ -158,7 +156,7 @@ The Kubewarden consists of these components:
             registry[("OCI registry")]
           end
           subgraph kw["`**Kubewarden**`"]
-            controller("`**KW controller**`")
+            controller("`**KW admission controller**`")
             subgraph policy-server["`**policy-server**`"]
               direction LR
               kw-policy-1{{"Policy 1"}}
