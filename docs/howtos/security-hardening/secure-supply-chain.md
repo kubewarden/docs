@@ -4,7 +4,13 @@ sidebar_position: 40
 title: Secure supply chain
 description: A secure supply chain infrastructure using Kubewarden.
 keywords: [kubewarden, kubernetes, secure supply chain, infrastructure]
-doc-persona: [kubewarden-user, kubewarden-operator, kubewarden-distributor, kubewarden-integrator]
+doc-persona:
+  [
+    kubewarden-user,
+    kubewarden-operator,
+    kubewarden-distributor,
+    kubewarden-integrator,
+  ]
 doc-type: [howto]
 doc-topic: [distributing-policies, secure-supply-chain]
 ---
@@ -35,7 +41,7 @@ In the following sections, you need to install a few tools so that users
 can sign and verify Open Container Initiative (OCI) artifact signatures. The
 examples show the use of
 [`cosign`](https://docs.sigstore.dev/quickstart/quickstart-cosign/) and
-[`kwctl`](https://github.com/kubewarden/kwctl) utilities for signing and
+[`kwctl`](https://github.com/kubewarden/adm-controller) utilities for signing and
 inspecting policies.
 
 To use GitHub to sign policies you need to install [GitHub
@@ -380,8 +386,8 @@ allOf:
     annotations: ~
 anyOf: ~
 ```
-</details>
 
+</details>
 
 You can use this `verification_config.yml` to create the `ConfigMap`.
 
@@ -443,7 +449,7 @@ metadata:
   finalizers:
     - kubewarden
 spec:
-  image: ghcr.io/kubewarden/policy-server:v0.2.7
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   serviceAccountName: policy-server
   replicas: 1
   #name of the configmap with the signatures requirements
@@ -456,7 +462,9 @@ spec:
     - name: "KUBEWARDEN_LOG_LEVEL"
       value: "info"
 ```
+
 ➀ `verificationConfig`
+
 <hr/>
 
 If you deploy the default Policy Server using the `kubewarden-defaults` Helm
@@ -483,47 +491,49 @@ apiVersion: v1
 
 allOf: # ➀
   - kind: githubAction
-    owner: kubewarden   # mandatory
+    owner: kubewarden # mandatory
     annotations:
       env: prod
 
 anyOf: # ➁ : at least `anyOf.minimumMatches` are required to match
   minimumMatches: 2 # default is 1
   signatures:
-  - kind: pubKey
-    owner: flavio # optional
-    key: .... # mandatory
-    annotations:  # optional
-      env: prod
-      foo: bar
-  - kind: pubKey
-    owner: victor # optional
-    key: .... # mandatory
-  - kind: genericIssuer
-    issuer: https://github.com/login/oauth
-    subject:
-      equal: alice@example.com
-  - kind: genericIssuer
-    issuer: https://token.actions.githubusercontent.com
-    subject:
-      equal: https://github.com/flavio/policy-secure-pod-images/.github/workflows/release.yml@refs/heads/main
-  - kind: genericIssuer
-    issuer: https://token.actions.githubusercontent.com
-    subject:
-      urlPrefix: https://github.com/flavio/
-  - kind: genericIssuer
-    issuer: https://token.actions.githubusercontent.com
-    subject:
-      urlPrefix: https://github.com/kubewarden # <- it will be post-fixed with `/` for security reasons
-  - kind: githubAction
-    owner: flavio   # mandatory
-    repo: policy1 # optional
-  - kind: pubKey
-    owner: alice # optional
-    key: .... # mandatory
+    - kind: pubKey
+      owner: flavio # optional
+      key: .... # mandatory
+      annotations: # optional
+        env: prod
+        foo: bar
+    - kind: pubKey
+      owner: victor # optional
+      key: .... # mandatory
+    - kind: genericIssuer
+      issuer: https://github.com/login/oauth
+      subject:
+        equal: alice@example.com
+    - kind: genericIssuer
+      issuer: https://token.actions.githubusercontent.com
+      subject:
+        equal: https://github.com/flavio/policy-secure-pod-images/.github/workflows/release.yml@refs/heads/main
+    - kind: genericIssuer
+      issuer: https://token.actions.githubusercontent.com
+      subject:
+        urlPrefix: https://github.com/flavio/
+    - kind: genericIssuer
+      issuer: https://token.actions.githubusercontent.com
+      subject:
+        urlPrefix: https://github.com/kubewarden # <- it will be post-fixed with `/` for security reasons
+    - kind: githubAction
+      owner: flavio # mandatory
+      repo: policy1 # optional
+    - kind: pubKey
+      owner: alice # optional
+      key: .... # mandatory
 ```
+
 ➀ : `allOf`<br/>
 ➁ : `anyOf`
+
 </details>
 
 ### Signature validation
@@ -547,14 +557,14 @@ data and the owner of the key. In this example, you set `kind` to `pubKey` and
 the `key` has the public key. The owner field is optional, but can be useful to
 clarify who owns the key.
 
-```  yaml
-  - kind: pubKey
-    owner: bob # optional
-    key: |
-      -----BEGIN PUBLIC KEY-----
-      MBFKHFDGHKIJH0CAQYIKoZIzj0DAQcDQgAEX0HFTtCfTtPmkx5p1RbDE6HJSGAVD
-      BVDF6SKFSF87AASUspkQsN3FO4iyWodCy5j3o0CdIJD/KJHDJFHDFIu6sA==
-      -----END PUBLIC KEY-----
+```yaml
+- kind: pubKey
+  owner: bob # optional
+  key: |
+    -----BEGIN PUBLIC KEY-----
+    MBFKHFDGHKIJH0CAQYIKoZIzj0DAQcDQgAEX0HFTtCfTtPmkx5p1RbDE6HJSGAVD
+    BVDF6SKFSF87AASUspkQsN3FO4iyWodCy5j3o0CdIJD/KJHDJFHDFIu6sA==
+    -----END PUBLIC KEY-----
 ```
 
 ### Keyless signature validation
