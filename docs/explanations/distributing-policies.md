@@ -43,7 +43,7 @@ specification permits storing any binary blob inside a regular OCI-compliant con
 
 The target OCI-compliant registry **must support artifacts** to successfully push a Kubewarden Policy to it.
 
-You can use the [`kwctl`](https://github.com/kubewarden/kwctl) CLI to push a Kubewarden Policy to an OCI-compliant registry.
+You can use the [`kwctl`](https://github.com/kubewarden/adm-controller) CLI to push a Kubewarden Policy to an OCI-compliant registry.
 
 ## Annotating the policy
 
