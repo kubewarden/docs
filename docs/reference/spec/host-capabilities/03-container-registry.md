@@ -188,9 +188,9 @@ OR
 ```
 
 For example, when requesting the manifest of the
-`ghcr.io/kubewarden/policy-server:v1.10.0` image, the payload would be:
+`ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0` image, the payload would be:
 
-- Input payload: `"ghcr.io/kubewarden/policy-server:v1.10.0"`
+- Input payload: `"ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0"`
 - Output payload: the body of the successful response obtained from the
   registry. It can be an [OCI index
   image](https://github.com/opencontainers/image-spec/blob/main/image-index.md)
@@ -336,9 +336,9 @@ string
 ```
 
 For example, when requesting the image manifest and configuration of the
-`ghcr.io/kubewarden/policy-server:v1.13.0` image, the payload would be:
+`ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0` image, the payload would be:
 
-- Input payload: `"ghcr.io/kubewarden/policy-server:v1.13.0"`
+- Input payload: `"ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0"`
 - Output payload: the body of the successful response obtained from the
   registry. It contains the [OCI image
   manifest](https://github.com/opencontainers/image-spec/blob/main/manifest.md)
