@@ -95,7 +95,7 @@ kind: PolicyServer
 metadata:
   name: custom-ports
 spec:
-  image: ghcr.io/kubewarden/policy-server:latest
+  image: ghcr.io/kubewarden/adm-controller/policy-server:1.36.0
   replicas: 2
   webhookPort: 9443
   readinessProbePort: 9081
@@ -180,7 +180,7 @@ kind: PolicyServer
 metadata:
   name: secondary
 spec:
-  image: ghcr.io/kubewarden/policy-server:latest
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   replicas: 3
   affinity:
     podAntiAffinity:
