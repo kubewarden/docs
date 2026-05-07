@@ -23,7 +23,7 @@ You'll have questions like:
   - change the configuration parameters of the policy?
   - and so forth?
 
-Kubewarden has a utility, [`kwctl`](https://github.com/kubewarden/kwctl),
+Kubewarden has a utility, [`kwctl`](https://github.com/kubewarden/adm-controller),
 that permits testing of the policies outside of Kubernetes.
 
 To use `kwctl` you invoke it with following inputs:
@@ -42,7 +42,7 @@ Or a JSON, or a YAML file, loaded from the file system via `--settings-path`.
 After the test `kwctl`, prints the `ValidationResponse` object to the standard output.
 
 You can download pre-built binaries of `kwctl`
-[here](https://github.com/kubewarden/kwctl/releases).
+[here](https://github.com/kubewarden/adm-controller/releases).
 
 ## A testing example
 
