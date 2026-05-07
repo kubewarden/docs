@@ -25,7 +25,7 @@ uses a basic Gatekeeper demo policy Prerequisites:
 
 - [opa](https://github.com/open-policy-agent/opa/releases): you use this tool
   to build the code into wasm. This guide was written using the `v1.5.1` version.
-- [`kwctl`](https://github.com/kubewarden/kwctl/releases): tool you use to
+- [`kwctl`](https://github.com/kubewarden/adm-controller/releases): tool you use to
   prepare and run Kubewarden web assembly module
 - [`bats`](https://github.com/bats-core/bats-core): tool used to run end-to-end
   tests. If you decided to write such kind of tests
