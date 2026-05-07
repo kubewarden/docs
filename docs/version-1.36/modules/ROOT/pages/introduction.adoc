@@ -1,4 +1,5 @@
 include::partial$variables.adoc[]
+
 = What is {project-name}?
 :page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-05-04
