@@ -50,7 +50,7 @@ correct any registry inaccuracies by using the
 
 The Kubewarden project recommends:
 
-- [`kwctl`](https://github.com/kubewarden/kwctl) (our CLI tool).
+- [`kwctl`](https://github.com/kubewarden/adm-controller) (our CLI tool).
 - [Skopeo](https://github.com/containers/skopeo) ([>= 1.9.0](https://github.com/containers/skopeo/pull/1705)).
 - [Crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md).
 
@@ -66,4 +66,4 @@ Docker Inc. has announced that Docker Hub will support OCI artifacts in the
 
 Although JFrog supports OCI artifacts,
 it's only partially possible to push to it, when following their specification.
-[Read more here](https://github.com/kubewarden/kwctl/issues/59).
+[Read more here](https://github.com/kubewarden/adm-controller/issues/59).
