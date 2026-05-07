@@ -2,7 +2,16 @@
 sidebar_label: Policy authors
 title: Testing for policy authors
 description: An introduction to testing Kubewarden policies for policy authors.
-keywords: [kubewarden, policy testing, policy author, rust, go, assemblyscript, development environment]
+keywords:
+  [
+    kubewarden,
+    policy testing,
+    policy author,
+    rust,
+    go,
+    assemblyscript,
+    development environment,
+  ]
 doc-persona: [kubewarden-policy-developer]
 doc-type: [tutorial]
 doc-topic: [testing-policies, policy-authors]
@@ -35,20 +44,19 @@ You can also write tests that execute against the Wasm binary containing your po
 To do this without having to deploy a Kubernetes cluster you can use these tools:
 
 - [bats](https://github.com/bats-core/bats-core): is to write tests and automate their execution.
-- [`kwctl`](https://github.com/kubewarden/kwctl): Kubewarden's default CLI tool that helps you with policy-related operations; pull, inspect, annotate, push, and run.
+- [`kwctl`](https://github.com/kubewarden/adm-controller): Kubewarden's default
+  CLI tool that helps you with policy-related operations; pull, inspect,
+  annotate, push, and run.
 
 To use `kwctl run` you need the following:
 
 1. The Wasm binary file reference of the policy to run.
-The Kubewarden policy can be loaded from:
-    - the local filesystem (`file://`)
-    - a HTTP(s) server (`https://`
-    - an OCI registry (`registry://`).
+   The Kubewarden policy can be loaded from: - the local filesystem (`file://`) - a HTTP(s) server (`https://` - an OCI registry (`registry://`).
 1. The admission request object to test.
-You give it via the `--request-path` argument,
-or on `stdin` by setting `--request-path` to `-`.
+   You give it via the `--request-path` argument,
+   or on `stdin` by setting `--request-path` to `-`.
 1. The policy settings for runtime as an inline JSON via `--settings-json` flag.
-Or a JSON, or a YAML file, loaded from the file system via `--settings-path`.
+   Or a JSON, or a YAML file, loaded from the file system via `--settings-path`.
 
 After the test `kwctl`, prints the `ValidationResponse` object to standard output.
 
@@ -63,7 +71,7 @@ $ curl https://raw.githubusercontent.com/kubewarden/ingress-policy/v0.1.8/test_d
 ```
 
 You can download pre-built binaries of `kwctl`
-[here](https://github.com/kubewarden/kwctl/releases).
+[here](https://github.com/kubewarden/adm-controller/releases).
 
 Using `bats` you can write a test that runs this command and looks for the expected outputs:
 
