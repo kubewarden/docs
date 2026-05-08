@@ -21,7 +21,7 @@ The input data is Kubernetes admission requests.
 The result of the computation is a validation response,
 which tells Kubernetes whether to accept, reject, or mutate the input data, the admission request.
 
-The [policy-server](https://github.com/kubewarden/adm-controller)
+The [policy-server](/reference/policy-server-cli)
 component of Kubewarden performs these operations.
 
 The policy server doesn't include any data processing capability.

@@ -44,7 +44,7 @@ You can also write tests that execute against the Wasm binary containing your po
 To do this without having to deploy a Kubernetes cluster you can use these tools:
 
 - [bats](https://github.com/bats-core/bats-core): is to write tests and automate their execution.
-- [`kwctl`](https://github.com/kubewarden/adm-controller): Kubewarden's default
+- [`kwctl`](/reference/kwctl-cli): Kubewarden's default
   CLI tool that helps you with policy-related operations; pull, inspect,
   annotate, push, and run.
 
@@ -70,8 +70,8 @@ $ curl https://raw.githubusercontent.com/kubewarden/ingress-policy/v0.1.8/test_d
         registry://ghcr.io/kubewarden/policies/ingress:v0.1.8 | jq
 ```
 
-You can download pre-built binaries of `kwctl`
-[here](https://github.com/kubewarden/adm-controller/releases).
+Learn how to install `kwctl` in the
+[install kwctl](/howtos/install-kwctl) documentation.
 
 Using `bats` you can write a test that runs this command and looks for the expected outputs:
 

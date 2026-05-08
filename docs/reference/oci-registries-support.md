@@ -50,7 +50,7 @@ correct any registry inaccuracies by using the
 
 The Kubewarden project recommends:
 
-- [`kwctl`](https://github.com/kubewarden/adm-controller) (our CLI tool).
+- [`kwctl`](/reference/kwctl-cli) (our CLI tool).
 - [Skopeo](https://github.com/containers/skopeo) ([>= 1.9.0](https://github.com/containers/skopeo/pull/1705)).
 - [Crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md).
 

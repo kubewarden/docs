@@ -127,7 +127,7 @@ The Kubewarden consists of these components:
   WebAssembly modules have detailed documentation in the
   [writing policies](../tutorials/writing-policies/index.md) sections.
 
-- The [PolicyServer](https://github.com/kubewarden/adm-controller)
+- The [PolicyServer](/reference/policy-server-cli)
   receives requests for validation.
   It validates the requests by executing Kubewarden policies.
 

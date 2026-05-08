@@ -94,5 +94,5 @@ During this tutorial you need these tools on your development machine:
 
 - **Node.js**: Version 18 or higher with npm for dependency management.
 - [**`bats`**](https://github.com/bats-core/bats-core): Used to write the tests and automate their execution.
-- [**`kwctl`** ≥ `v1.30`](https://github.com/kubewarden/adm-controller/releases): CLI tool provided by Kubewarden to run its policies outside of Kubernetes, among other actions. It's covered in [the testing policies section](../../testing-policies/index.md) of the documentation.
+- [**`kwctl`** ≥ `v1.30`](/howtos/install-kwctl): CLI tool provided by Kubewarden to run its policies outside of Kubernetes, among other actions. It's covered in [the testing policies section](../../testing-policies/index.md) of the documentation.
 - [**`javy`** ≥ `6.0.0`](https://github.com/bytecodealliance/javy): CLI tool for compiling JavaScript code to WebAssembly modules.

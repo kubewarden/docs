@@ -41,7 +41,7 @@ In the following sections, you need to install a few tools so that users
 can sign and verify Open Container Initiative (OCI) artifact signatures. The
 examples show the use of
 [`cosign`](https://docs.sigstore.dev/quickstart/quickstart-cosign/) and
-[`kwctl`](https://github.com/kubewarden/adm-controller) utilities for signing and
+[`kwctl`](/reference/kwctl-cli) utilities for signing and
 inspecting policies.
 
 To use GitHub to sign policies you need to install [GitHub

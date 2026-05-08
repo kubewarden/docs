@@ -24,6 +24,7 @@ demonstrating how to verify Kubewarden artifacts.
 
 Kubewarden publishes the `kwctl` CLI tool at
 [GitHub releases](https://github.com/kubewarden/adm-controller/releases).
+Learn how to install it in the [install kwctl](/howtos/install-kwctl) documentation.
 
 ### OCI artifacts
 
