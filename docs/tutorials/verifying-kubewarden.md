@@ -14,6 +14,11 @@ doc-topic: [security, verifying-kubewarden]
   <link rel="canonical" href="https://docs.kubewarden.io/tutorials/verifying-kubewarden"/>
 </head>
 
+:::note
+Repository and image URIs used in this documentation page changed in v1.36.
+If validating previous versions, refer to the documentation page for that version.
+:::
+
 The Kubewarden stack provides different attestations and assurances:
 
 - Provenance attestations: Inform of the build process, build dependencies,
