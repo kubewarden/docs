@@ -26,16 +26,33 @@
       <div class="navbar-end">
         <div class="navbar-item has-dropdown is-hoverable">
           <div class="navbar-link">
-            <img src="{{uiRootPath}}/img/resources.png" class="langIcon Resources" alt="Resources" title="Resources">
+            GitHub
           </div>
           <div class="navbar-dropdown">
             {{#with page.origin}}
-            <a class="navbar-item" href="{{./webUrl}}"><i class="fab fa-github"></i>&nbsp;{{@root.page.origin.descriptor.title}}</a>
-            <a class="navbar-item" href="{{./webUrl}}/issues"><i class="fab fa-github"></i>&nbsp;Documentation issues</a>
-            <a class="navbar-item" href="https://github.com/kubewarden/community/blob/main/CONTRIBUTING.md"><i class="fas fa-user-edit"></i>&nbsp;Contribute</a>
+            <a class="navbar-item" href="{{./webUrl}}" target="_blank"><i class="fab fa-github"></i>&nbsp;{{@root.page.origin.descriptor.title}} documentation</a>
+            <a class="navbar-item" href="{{./webUrl}}/issues" target="_blank"><i class="fab fa-github"></i>&nbsp;Documentation issues</a>
+            <a class="navbar-item" href="https://github.com/kubewarden/community/blob/main/CONTRIBUTING.md" target="_blank"><i class="fas fa-user-edit"></i>&nbsp;Contribute</a>
             {{/with}}
           </div>
         </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-link">
+            Community
+          </div>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://kubernetes.slack.com/archives/kubewarden" target="_blank"><i class="fas fa-user-edit"></i>&nbsp;Slack</a>
+            <a class="navbar-item" href="https://bsky.app/profile/kubewarden.io" target="_blank"><i class="fas fa-user-edit"></i>&nbsp;Bluesky</a>
+            <a class="navbar-item" href="https://hachyderm.io/@kubewarden" target="_blank"><i class="fas fa-user-edit"></i>&nbsp;Mastodon</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </nav>
+</header>
+
       </div>
     </div>
 
