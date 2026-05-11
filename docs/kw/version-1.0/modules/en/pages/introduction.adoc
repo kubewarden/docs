@@ -1,0 +1,6 @@
+= Welcome to Kubewarden
+
+The Kubewarden project comprises two components,
+the xref:latest@admc:en:introduction.adoc[Kubewarden Admission Controller]
+and xref:dev@sboms:en:introduction.adoc[SBOM Scanner].
+

@@ -1,0 +1,6 @@
+name: admc
+title: Admission Controller
+version: 1.28
+start_page: en:introduction.adoc
+nav:
+- modules/en/nav.adoc

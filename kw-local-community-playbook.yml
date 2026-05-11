@@ -2,19 +2,19 @@
 site:
   url: https://docs.kubewarden.io
   title: Kubewarden
-  start_page: 1.35@ROOT:introduction.adoc
+  start_page: 1.0@kubewarden:en:introduction.adoc
 
-urls:
-  html_extension_style: drop
-  latest_version_segment: ''
-  latest_prerelease_version_segment: dev
-  latest_version_segment_strategy: replace
+# urls:
+#   html_extension_style: drop
+#   latest_version_segment: ''
+#   latest_prerelease_version_segment: dev
+#   latest_version_segment_strategy: replace
 
 content:
   sources:
     - url: ./
       branches: HEAD
-      start_paths: [shared, docs/version-*, sboms-docs/v*]
+      start_paths: [shared, docs/kw/version-*, docs/admc/version-*, docs/sboms/v*]
 
 ui:
   bundle:
