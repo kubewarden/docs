@@ -25,7 +25,7 @@ CA store shipped with its Linux container.
 On the client side, `kwctl` uses your operating system CA store.
 
 If you are using the
-[Kubewarden Controller](https://github.com/kubewarden/adm-controller),
+[Kubewarden Controller](/explanations/architecture),
 you can configure the PolicyServer via its
 [`spec` fields](/howtos/policy-servers/01-custom-cas.md).
 

@@ -69,7 +69,7 @@ kind: PolicyServer
 metadata:
   name: default
 spec:
-  image: ghcr.io/kubewarden/policy-server:v1.1.1
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   serviceAccountName: policy-server
   replicas: 1
   annotations:

@@ -27,7 +27,7 @@ You need these tools to complete this tutorial:
 - [`opa`](https://github.com/open-policy-agent/opa/releases):
 you'll use the `opa` CLI to build your policy as a `wasm` target.
 
-- [`kwctl`](https://github.com/kubewarden/kwctl/releases):
+- [`kwctl`](/howtos/install-kwctl):
 you'll use `kwctl` to execute your built policy.
 
 ## The policy

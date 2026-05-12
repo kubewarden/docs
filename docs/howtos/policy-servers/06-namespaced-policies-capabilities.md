@@ -36,7 +36,6 @@ This how-to explains how cluster operators can enforce that promise by:
 2. Controlling which PolicyServer a namespaced policy runs on, using the
    `ns-policyserver-mapper` policy.
 
-
 :::warning
 The per PolicyServer restriction on host capabilities is part of Kubewarden
 `v1.35.0` and higher.
@@ -79,14 +78,14 @@ The field accepts an array of strings. Wildcard patterns follow the same
 conventions as Kubernetes Dynamic Admission Controller
 [match rules](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules):
 
-| Value | Meaning |
-|-------|---------|
-| _(unset)_ | Allow all host capabilities (default, backwards-compatible) |
-| `["*"]` | Explicitly allow all host capabilities |
-| `[]` | Deny all host capabilities to namespaced policies |
-| `["oci/*"]` | Allow all OCI capabilities, all versions |
-| `["oci/v2/*"]` | Allow all OCI v2 capabilities only |
-| `["oci/v1/verify", "net/v1/dns_lookup_host"]` | Allow only those two specific calls |
+| Value                                         | Meaning                                                     |
+| --------------------------------------------- | ----------------------------------------------------------- |
+| _(unset)_                                     | Allow all host capabilities (default, backwards-compatible) |
+| `["*"]`                                       | Explicitly allow all host capabilities                      |
+| `[]`                                          | Deny all host capabilities to namespaced policies           |
+| `["oci/*"]`                                   | Allow all OCI capabilities, all versions                    |
+| `["oci/v2/*"]`                                | Allow all OCI v2 capabilities only                          |
+| `["oci/v1/verify", "net/v1/dns_lookup_host"]` | Allow only those two specific calls                         |
 
 :::info
 Cluster-wide policies (`ClusterAdmissionPolicy` and `ClusterAdmissionPolicyGroup`)
@@ -102,7 +101,7 @@ kind: PolicyServer
 metadata:
   name: for-namespaced-policies
 spec:
-  image: ghcr.io/kubewarden/policy-server:latest
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   replicas: 1
   namespacedPoliciesCapabilities: []
 ```
@@ -118,7 +117,7 @@ kind: PolicyServer
 metadata:
   name: for-namespaced-policies
 spec:
-  image: ghcr.io/kubewarden/policy-server:latest
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   replicas: 1
   namespacedPoliciesCapabilities:
     - "oci/v1/verify"
@@ -133,7 +132,7 @@ kind: PolicyServer
 metadata:
   name: for-namespaced-policies
 spec:
-  image: ghcr.io/kubewarden/policy-server:latest
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   replicas: 1
   namespacedPoliciesCapabilities:
     - "*"
@@ -253,7 +252,7 @@ metadata:
   name: for-namespaced-policies
   namespace: kubewarden
 spec:
-  image: ghcr.io/kubewarden/policy-server:v1.35.0
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   namespacedPoliciesCapabilities: []
 ```
 
@@ -381,7 +380,6 @@ Use this information as one signal alongside other trust indicators (image
 signing, source code review, policy provenance, etc) not as an authoritative
 proof of what capabilities a policy exercises.
 :::
-
 
 ## Running a policy with host capability calls
 

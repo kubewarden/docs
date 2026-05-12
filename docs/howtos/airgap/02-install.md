@@ -262,7 +262,7 @@ kind: PolicyServer
 metadata:
   name: reserved-instance-for-tenant-a
 spec:
-  image: <REGISTRY.YOURDOMAIN.COM:PORT>/kubewarden/policy-server:v1.3.0
+  image: <REGISTRY.YOURDOMAIN.COM:PORT>/kubewarden/adm-controller/policy-server:v1.3.0
   replicas: 2
   serviceAccountName: sa
 ```
