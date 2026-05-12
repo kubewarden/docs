@@ -23,11 +23,6 @@
   {{/if}}
   <ul class="components">
     {{#each site.components}}
-      {{#if (eq ./name 'kubewarden')}}
-        {{> component-entry component=this}}
-      {{/if}}
-    {{/each}}
-    {{#each site.components}}
       {{#if (eq ./name 'admc')}}
         {{> component-entry component=this}}
       {{/if}}
@@ -36,11 +31,6 @@
       {{#if (eq ./name 'sboms')}}
         {{> component-entry component=this}}
       {{/if}}
-    {{/each}}
-    {{#each site.components}}
-      {{#unless (or (eq ./name 'shared') (eq ./name 'kubewarden') (eq ./name 'admc') (eq ./name 'sboms'))}}
-        {{> component-entry component=this}}
-      {{/unless}}
     {{/each}}
   </ul>
 </div>
