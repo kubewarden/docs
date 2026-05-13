@@ -221,6 +221,18 @@ a.navbar-logo {
 }
 
 .nav-panel-explore .context {
+  align-items: center;
+  display: flex;
+  gap: 0.4rem;
+}
+
+.nav-panel-explore .context .dropdown-indicator {
+  color: #0c322c;
+  font-size: 0.875rem;
+  margin-left: auto;
+}
+
+.nav-panel-explore .context {
   gap: 5px;
 }
 

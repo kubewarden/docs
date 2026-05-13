@@ -18,7 +18,12 @@
   {{#if page.component}}
   <div class="context">
     <span class="title">{{page.component.title}}</span>
+    {{#unless (eq page.component.name 'kubewarden')}}
     <span class="version">{{#if (or page.componentVersion.version (ne page.componentVersion.displayVersion 'default'))}}{{page.componentVersion.displayVersion}}{{/if}}</span>
+    {{/unless}}
+    {{#if (eq page.component.name 'kubewarden')}}
+    <span class="dropdown-indicator" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+    {{/if}}
   </div>
   {{/if}}
   <ul class="components">
