@@ -1,7 +1,8 @@
 include::partial$variables.adoc[]
+
 = Distributing policies
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Distribute policies securely via an OCI-compliant registry using tools like kwctl, and ensure cluster security through {admc-name} policy management.
 :doc-persona: ["kubewarden-operator", "kubewarden-policy-developer", "kubewarden-distributor", "kubewarden-integrator"]
@@ -37,7 +38,7 @@ container registry.
 The target OCI-compliant registry *must support artifacts* to successfully push
 a {admc-short-name} Policy to it.
 
-You can use the https://github.com/kubewarden/kwctl[`kwctl`] CLI to push a
+You can use the xref:/howtos/install-kwctl.adoc[`kwctl`] CLI to push a
 {admc-short-name} Policy to an OCI-compliant registry.
 
 == Annotating the policy

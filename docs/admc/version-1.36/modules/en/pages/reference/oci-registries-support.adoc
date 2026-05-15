@@ -1,7 +1,8 @@
 include::partial$variables.adoc[]
+
 = OCI registry support for {admc-short-name}
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Distribute {admc-name} policies as OCI artifacts via regular Open Container Initiative (OCI) registries.
 :doc-persona: ["kubewarden-all"]
@@ -49,7 +50,7 @@ correct any registry inaccuracies by using the
 
 The {admc-short-name} project recommends:
 
-* https://github.com/kubewarden/kwctl[`kwctl`] (our CLI tool).
+* xref:/reference/kwctl.adoc[`kwctl`] (our CLI tool).
 * https://github.com/containers/skopeo[Skopeo] (https://github.com/containers/skopeo/pull/1705[≥ 1.9.0]).
 * https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md[Crane].
 
@@ -65,4 +66,4 @@ https://www.docker.com/blog/announcing-docker-hub-oci-artifacts-support/[future]
 
 Although JFrog supports OCI artifacts,
 it's only partially possible to push to it, when following their specification.
-https://github.com/kubewarden/kwctl/issues/59[Read more here].
+https://github.com/kubewarden/adm-controller/issues/59[Read more here].

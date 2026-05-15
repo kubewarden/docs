@@ -141,6 +141,7 @@ include::partial$variables.adoc[]
 **** xref:reference/spec/host-capabilities/04-net.adoc[]
 **** xref:reference/spec/host-capabilities/05-crypto.adoc[]
 **** xref:reference/spec/host-capabilities/06-kubernetes.adoc[]
+**** xref:reference/spec/host-capabilities/07-host-capability-call-reference.adoc[]
 ** xref:reference/oci-registries-support.adoc[]
 ** Security
 *** xref:reference/security-hardening/webhooks-hardening.adoc[Webhooks]

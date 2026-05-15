@@ -6,7 +6,7 @@ include::partial$variables.adoc[]
 :revdate: 2026-05-04
 :page-revdate: {revdate}
 :title: kwctl CLI
-:description: Explore the `kwctl` command-line tool to manage {project-name} policies and perform tasks like loading policies.
+:description: Explore the `kwctl` command-line tool to manage {admc-name} policies and perform tasks like loading policies.
 :keywords: cli, reference, kwctl
 :doc-persona: kubewarden-operator
 :doc-type: reference
@@ -44,28 +44,28 @@ This document contains the help content for the `kwctl` command-line program.
 [[kwctl]]
 === `kwctl`
 
-Tool to manage {project-name} policies
+Tool to manage {admc-name} policies
 
 *Usage:* `kwctl [OPTIONS] <COMMAND>`
 
 ==== Subcommands
 
-* `annotate` — Add {short-project-name} metadata to a WebAssembly module
-* `bench` — Benchmarks a {short-project-name} policy
+* `annotate` — Add {admc-short-name} metadata to a WebAssembly module
+* `bench` — Benchmarks a {admc-short-name} policy
 * `completions` — Generate shell completions
 * `digest` — Fetch digest from the OCI manifest of a policy
 * `docs` — Generates the markdown documentation for kwctl commands
 * `info` — Display system information
-* `inspect` — Inspect {short-project-name} policy
+* `inspect` — Inspect {admc-short-name} policy
 * `load` — load policies from a tar.gz file
 * `policies` — Lists all downloaded policies
-* `pull` — Pulls a {short-project-name} policy from a given URI
-* `push` — Pushes a {short-project-name} policy to an OCI registry
-* `rm` — Removes a {short-project-name} policy from the store
-* `run` — Runs a {short-project-name} policy from a given URI
+* `pull` — Pulls a {admc-short-name} policy from a given URI
+* `push` — Pushes a {admc-short-name} policy to an OCI registry
+* `rm` — Removes a {admc-short-name} policy from the store
+* `run` — Runs a {admc-short-name} policy from a given URI
 * `save` — save policies to a tar.gz file
 * `scaffold` — Scaffold a Kubernetes resource or configuration file
-* `verify` — Verify a {short-project-name} policy from a given URI using Sigstore
+* `verify` — Verify a {admc-short-name} policy from a given URI using Sigstore
 
 ==== Options
 
@@ -75,7 +75,7 @@ Tool to manage {project-name} policies
 [[kwctl-annotate]]
 === `kwctl annotate`
 
-Add {short-project-name} metadata to a WebAssembly module
+Add {admc-short-name} metadata to a WebAssembly module
 
 *Usage:* `kwctl annotate [OPTIONS] --metadata-path <PATH> --output-path <PATH> <wasm-path>`
 
@@ -92,21 +92,21 @@ Add {short-project-name} metadata to a WebAssembly module
 [[kwctl-bench]]
 === `kwctl bench`
 
-Benchmarks a {short-project-name} policy.
+Benchmarks a {admc-short-name} policy.
 
 The policy can be specified in the following ways:
 - URI: e.g., `registry://ghcr.io/kubewarden/policies/psp-policy:latest` or `\https://example.com/kubewarden/policies/main/psp-policy/psp-policy.wasm`
 - SHA prefix: e.g., `c3b80a10f9c3` (requires the policy to be already pulled)
 - Local WASM file: e.g., `file://home/tux/new-policy/psp-policy.wasm`
-- Local YAML file: e.g., `file://home/tux/cluster-admission-policy.yaml` (contains declarations of {short-project-name} Custom Resources like `ClusterAdmissionPolicy`, `AdmissionPolicy`, etc.)
+- Local YAML file: e.g., `file://home/tux/cluster-admission-policy.yaml` (contains declarations of {admc-short-name} Custom Resources like `ClusterAdmissionPolicy`, `AdmissionPolicy`, etc.)
 
 Default Behavior:
 If the schema is omitted, `file://` is assumed, rooted in the current directory.
 
-Notes on {short-project-name} Custom Resources:
+Notes on {admc-short-name} Custom Resources:
 - Flags `--request-path`, `--settings-path`, and `--settings-json` are ignored; settings are read from the Custom Resource definition.
 - The `--execution-mode` flag applies to all policies in the YAML file.
-- The `--raw` flag cannot be used, as {short-project-name}'s Custom Resources do not support `raw` policies.
+- The `--raw` flag cannot be used, as {admc-short-name}'s Custom Resources do not support `raw` policies.
 
 Only the following attributes of the Custom Resource Definition (CRD) are evaluated:
 - Policy module
@@ -121,12 +121,12 @@ A YAML file may contain multiple Custom Resource declarations. In this case, `kw
 
 ==== Arguments
 
-* `<URI_OR_SHA_PREFIX_OR_YAML_FILE>` — Policy URI, SHA prefix or YAML file containing {short-project-name} policy resources. Supported schemes: registry://, https://, file://. If schema is omitted, file:// is assumed, rooted on the current directory.
+* `<URI_OR_SHA_PREFIX_OR_YAML_FILE>` — Policy URI, SHA prefix or YAML file containing {admc-short-name} policy resources. Supported schemes: registry://, https://, file://. If schema is omitted, file:// is assumed, rooted on the current directory.
 
 ==== Options
 
 * `--allow-context-aware <ALLOW-CONTEXT-AWARE>` — Grant access to the Kubernetes resources defined inside of the policy's `contextAwareResources` section. Warning: review the list of resources carefully to avoid abuses. Disabled by default
-* `--allowed-host-capabilities <ALLOWED-HOST-CAPABILITIES>` — Host capabilities the policy is allowed to use. Use '*' to allow all. Can be repeated multiple times. Examples: 'oci/*', 'net/v1/dns_lookup_host'.
+* `--allowed-host-capabilities <ALLOWED-HOST-CAPABILITIES>` — Host capabilities the policy is allowed to use. Use '\*' to allow all. Can be repeated multiple times. Examples: 'oci/*', 'net/v1/dns_lookup_host'.
 Default value: `*`
 * `--cert-email <VALUE>` — Expected email in Fulcio certificate
 * `--cert-oidc-issuer <VALUE>` — Expected OIDC issuer in Fulcio certificates
@@ -203,7 +203,7 @@ Display system information
 [[kwctl-inspect]]
 === `kwctl inspect`
 
-Inspect {short-project-name} policy
+Inspect {admc-short-name} policy
 
 *Usage:* `kwctl inspect [OPTIONS] <uri_or_sha_prefix>`
 
@@ -240,7 +240,13 @@ Lists all downloaded policies
 [[kwctl-pull]]
 === `kwctl pull`
 
-Pulls a {short-project-name} policy from a given URI
+Pulls a {admc-short-name} policy from a given URI
+
+It respects standard proxy environment variables when downloading policies:
+
+* HTTP_PROXY or http_proxy: proxy server for HTTP requests
+* HTTPS_PROXY or https_proxy: proxy server for HTTPS requests
+* NO_PROXY or no_proxy: comma-separated list of hosts to exclude from proxying
 
 *Usage:* `kwctl pull [OPTIONS] <uri>`
 
@@ -255,7 +261,7 @@ Pulls a {short-project-name} policy from a given URI
 * `--docker-config-json-path <DOCKER_CONFIG>` — Path to a directory containing the Docker 'config.json' file. Can be used to indicate registry authentication details
 * `--github-owner <VALUE>` — GitHub owner expected in the certificates generated in CD pipelines
 * `--github-repo <VALUE>` — GitHub repository expected in the certificates generated in CD pipelines
-* `-o`, `--output-path <PATH>` — Output file. If not provided will be downloaded to the {short-project-name} store
+* `-o`, `--output-path <PATH>` — Output file. If not provided will be downloaded to the {admc-short-name} store
 * `--sigstore-trust-config <PATH>` — JSON-formatted file conforming to the ClientTrustConfig message in the Sigstore protobuf specs. This file configures the entire Sigstore instance state, including the URIs used to access the CA and artifact transparency services as well as the cryptographic root of trust itself
 * `--sources-path <PATH>` — YAML file holding source information (https, registry insecure hosts, custom CA's...)
 * `-a`, `--verification-annotation <KEY=VALUE>` — Annotation in key=value format. Can be repeated multiple times
@@ -265,7 +271,13 @@ Pulls a {short-project-name} policy from a given URI
 [[kwctl-push]]
 === `kwctl push`
 
-Pushes a {short-project-name} policy to an OCI registry
+Pushes a {admc-short-name} policy to an OCI registry
+
+It respects standard proxy environment variables when downloading policies:
+
+* HTTP_PROXY or http_proxy: proxy server for HTTP requests
+* HTTPS_PROXY or https_proxy: proxy server for HTTPS requests
+* NO_PROXY or no_proxy: comma-separated list of hosts to exclude from proxying
 
 *Usage:* `kwctl push [OPTIONS] <policy> <uri>`
 
@@ -296,7 +308,7 @@ It respects standard proxy environment variables when downloading policies:
 [[kwctl-rm]]
 === `kwctl rm`
 
-Removes a {short-project-name} policy from the store
+Removes a {admc-short-name} policy from the store
 
 *Usage:* `kwctl rm <uri_or_sha_prefix>`
 
@@ -307,21 +319,21 @@ Removes a {short-project-name} policy from the store
 [[kwctl-run]]
 === `kwctl run`
 
-Run one or more {short-project-name} policies locally.
+Run one or more {admc-short-name} policies locally.
 
 The policy can be specified in the following ways:
 - URI: e.g., `registry://ghcr.io/kubewarden/policies/psp-policy:latest` or `https://example.com/kubewarden/policies/main/psp-policy/psp-policy.wasm`
 - SHA prefix: e.g., `c3b80a10f9c3` (requires the policy to be already pulled)
 - Local WASM file: e.g., `file://home/tux/new-policy/psp-policy.wasm`
-- Local YAML file: e.g., `file://home/tux/cluster-admission-policy.yaml` (contains declarations of {short-project-name} Custom Resources like `ClusterAdmissionPolicy`, `AdmissionPolicy`, etc.)
+- Local YAML file: e.g., `file://home/tux/cluster-admission-policy.yaml` (contains declarations of {admc-short-name} Custom Resources like `ClusterAdmissionPolicy`, `AdmissionPolicy`, etc.)
 
 Default Behavior:
 If the schema is omitted, `file://` is assumed, rooted in the current directory.
 
-Notes on {short-project-name} Custom Resources:
+Notes on {admc-short-name} Custom Resources:
 - Flags `--request-path`, `--settings-path`, and `--settings-json` are ignored; settings are read from the Custom Resource definition.
 - The `--execution-mode` flag applies to all policies in the YAML file.
-- The `--raw` flag cannot be used, as {short-project-name}'s Custom Resources do not support `raw` policies.
+- The `--raw` flag cannot be used, as {admc-short-name}'s Custom Resources do not support `raw` policies.
 
 Only the following attributes of the Custom Resource Definition (CRD) are evaluated:
 - Policy module
@@ -342,7 +354,7 @@ It respects standard proxy environment variables when downloading policies:
 
 ==== Arguments
 
-* `<URI_OR_SHA_PREFIX_OR_YAML_FILE>` — Policy URI, SHA prefix or YAML file containing {short-project-name} policy resources. Supported schemes: registry://, https://, file://. If schema is omitted, file:// is assumed, rooted on the current directory.
+* `<URI_OR_SHA_PREFIX_OR_YAML_FILE>` — Policy URI, SHA prefix or YAML file containing {admc-short-name} policy resources. Supported schemes: registry://, https://, file://. If schema is omitted, file:// is assumed, rooted on the current directory.
 
 ==== Options
 
@@ -397,7 +409,7 @@ Scaffold a Kubernetes resource or configuration file
 * `admission-request` — Scaffold an AdmissionRequest object
 * `artifacthub` — Output an artifacthub-pkg.yml file from a metadata.yml file
 * `manifest` — Output a Kubernetes resource manifest
-* `vap` — Convert a Kubernetes `ValidatingAdmissionPolicy` into a {short-project-name} `ClusterAdmissionPolicy`
+* `vap` — Convert a Kubernetes `ValidatingAdmissionPolicy` into a {admc-short-name} `ClusterAdmissionPolicy`
 * `verification-config` — Output a default Sigstore verification configuration file
 
 [[kwctl-scaffold-admission-request]]
@@ -411,7 +423,7 @@ Scaffold an AdmissionRequest object
 
 * `--object <PATH>` — The file containing the new object being admitted
 * `--old-object <PATH>` — The file containing the existing object
-* `-o`, `--operation <TYPE>` — {short-project-name} Custom Resource type +
+* `-o`, `--operation <TYPE>` — {admc-short-name} Custom Resource type +
   Possible values: `CREATE`
 
 [[kwctl-scaffold-artifacthub]]
@@ -454,7 +466,7 @@ Output a Kubernetes resource manifest
 * `--sigstore-trust-config <PATH>` — JSON-formatted file conforming to the ClientTrustConfig message in the Sigstore protobuf specs. This file configures the entire Sigstore instance state, including the URIs used to access the CA and artifact transparency services as well as the cryptographic root of trust itself
 * `--sources-path <PATH>` — YAML file holding source information (https, registry insecure hosts, custom CA's...)
 * `--title <VALUE>` — Policy title
-* `-t`, `--type <VALUE>` — {short-project-name} Custom Resource type +
+* `-t`, `--type <VALUE>` — {admc-short-name} Custom Resource type +
   Possible values: `ClusterAdmissionPolicy`, `AdmissionPolicy`
 * `-a`, `--verification-annotation <KEY=VALUE>` — Annotation in key=value format. Can be repeated multiple times
 * `--verification-config-path <PATH>` — YAML file holding verification config information (signatures, public keys...)
@@ -463,7 +475,7 @@ Output a Kubernetes resource manifest
 [[kwctl-scaffold-vap]]
 === `kwctl scaffold vap`
 
-Convert a Kubernetes `ValidatingAdmissionPolicy` into a {short-project-name} `ClusterAdmissionPolicy`
+Convert a Kubernetes `ValidatingAdmissionPolicy` into a {admc-short-name} `ClusterAdmissionPolicy`
 
 *Usage:* `kwctl scaffold vap [OPTIONS] --binding <VALIDATING-ADMISSION-POLICY-BINDING.yaml> --policy <VALIDATING-ADMISSION-POLICY.yaml>`
 
@@ -484,7 +496,7 @@ Output a default Sigstore verification configuration file
 [[kwctl-verify]]
 === `kwctl verify`
 
-Verify a {short-project-name} policy from a given URI using Sigstore
+Verify a {admc-short-name} policy from a given URI using Sigstore
 
 *Usage:* `kwctl verify [OPTIONS] <uri>`
 

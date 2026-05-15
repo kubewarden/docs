@@ -55,7 +55,7 @@ policies.
 == Host capability call reference
 
 See the full list on our
-xref:/reference/spec/host-capabilities/07-host-capabiliy-call-reference.adoc[capabilities call reference]
+xref:/reference/spec/host-capabilities/07-host-capability-call-reference.adoc[capabilities call reference]
 documentation page.
 
 == Configuring `spec.namespacedPoliciesCapabilities`
@@ -107,7 +107,7 @@ kind: PolicyServer
 metadata:
   name: for-namespaced-policies
 spec:
-  image: ghcr.io/kubewarden/policy-server:latest
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   replicas: 1
   namespacedPoliciesCapabilities: []
 ----
@@ -124,7 +124,7 @@ kind: PolicyServer
 metadata:
   name: for-namespaced-policies
 spec:
-  image: ghcr.io/kubewarden/policy-server:latest
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   replicas: 1
   namespacedPoliciesCapabilities:
     - "oci/v1/verify"
@@ -140,7 +140,7 @@ kind: PolicyServer
 metadata:
   name: for-namespaced-policies
 spec:
-  image: ghcr.io/kubewarden/policy-server:latest
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   replicas: 1
   namespacedPoliciesCapabilities:
     - "*"
@@ -268,7 +268,7 @@ metadata:
   name: for-namespaced-policies
   namespace: kubewarden
 spec:
-  image: ghcr.io/kubewarden/policy-server:v1.35.0
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   namespacedPoliciesCapabilities: []
 ----
 

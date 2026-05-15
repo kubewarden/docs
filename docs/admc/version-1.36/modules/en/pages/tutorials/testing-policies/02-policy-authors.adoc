@@ -1,7 +1,8 @@
 include::partial$variables.adoc[]
+
 = Testing for policy authors
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Learn how to test policy authors with kwctl, either using bats or standard testing, specifically for {admc-name} policies in Wasm.
 :doc-persona: ["kubewarden-policy-developer"]
@@ -29,11 +30,15 @@ The policies use GitHub Actions for their CI pipelines.
 
 == End-to-end tests
 
-You can also write tests that execute against the Wasm binary containing your policy.
-To do this without having to deploy a Kubernetes cluster you can use these tools:
+You can also write tests that execute against the Wasm binary containing your
+policy. To do this without having to deploy a Kubernetes cluster you can use
+these tools:
 
-* https://github.com/bats-core/bats-core[bats]: is to write tests and automate their execution.
-* https://github.com/kubewarden/kwctl[`kwctl`]: {admc-short-name}'s default CLI tool that helps you with policy-related operations; pull, inspect, annotate, push, and run.
+* https://github.com/bats-core/bats-core[bats]: is to write tests and automate
+  their execution.
+* xref:/reference/kwctl-cli.adoc[`kwctl`]: {admc-short-name}'s default CLI tool
+  that helps you with policy-related operations; pull, inspect, annotate, push,
+  and run.
 
 To use `kwctl run` you need the following:
 
@@ -61,8 +66,8 @@ $ curl https://raw.githubusercontent.com/kubewarden/ingress-policy/v0.1.8/test_d
         registry://ghcr.io/kubewarden/policies/ingress:v0.1.8 | jq
 ----
 
-You can download pre-built binaries of `kwctl`
-https://github.com/kubewarden/kwctl/releases[here].
+Learn how to install `kwctl` in the
+xref:/howtos/install-kwctl.adoc[install `kwctl`] documentation.
 
 Using `bats` you can write a test that runs this command and looks for the expected outputs:
 

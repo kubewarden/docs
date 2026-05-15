@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {admc-name} vs OPA Gatekeeper
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :page-aliases: explanations/opa-comparison.adoc
 :description: Compare OPA Gatekeeper and {admc-name} policy management for Kubernetes environments to determine the best approach for your use case.
@@ -214,7 +214,7 @@ https://www.updatecli.io/[updatecli] and others), or to changes to the
 policy configuration.
 
 The pipeline tests the policy against different types of requests. You can do
-the testing using the https://github.com/kubewarden/kwctl[`kwctl`] CLI tool,
+the testing using the xref:/reference/kwctl-cli.adoc[`kwctl`] CLI tool,
 without requiring a running Kubernetes cluster. The `kwctl` CLI tool uses the
 same evaluation engine used by the {admc-short-name} stack deployed in a Kubernetes
 cluster.

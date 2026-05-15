@@ -1,7 +1,8 @@
 include::partial$variables.adoc[]
+
 = Policy evaluation timeout protection
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Configure policy evaluation timeouts to ensure timely completion and prevent resource exhaustion with the Policy Server's built-in protection feature.
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
@@ -131,7 +132,7 @@ You can tune this behavior by using these environment variables:
   is in seconds with a default value of `2`.
 
 When using the
-https://doc.crds.dev/github.com/kubewarden/kubewarden-controller/policies.kubewarden.io/PolicyServer/v1@v1.4.2[`PolicyServer`]
+xref:/reference/CRDs.adoc#policyserver[`PolicyServer`]
 Kubernetes Custom Resource Definition, you can set these environment variables
 as follows:
 

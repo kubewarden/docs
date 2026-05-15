@@ -1,7 +1,8 @@
 include::partial$variables.adoc[]
+
 = Container registry capabilities
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Explore container registry capabilities including calculating OCI manifest digests and fetching OCI object manifests.
 :doc-persona: ["kubewarden-policy-developer"]
@@ -188,10 +189,10 @@ OR
 ----
 
 For example, when requesting the manifest of the
-`ghcr.io/kubewarden/policy-server:v1.10.0` image,
+`ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0` image,
 the payload would be:
 
-* Input payload: `"ghcr.io/kubewarden/policy-server:v1.10.0"`
+* Input payload: `"ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0"`
 * Output payload: the body of the successful response obtained from the
 registry.
 It can be an https://github.com/opencontainers/image-spec/blob/main/image-index.md[OCI index image]
@@ -338,9 +339,9 @@ string
 ----
 
 For example, when requesting the image manifest and configuration of the
-`ghcr.io/kubewarden/policy-server:v1.13.0` image, the payload would be:
+`ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0` image, the payload would be:
 
-* Input payload: `"ghcr.io/kubewarden/policy-server:v1.13.0"`
+* Input payload: `"ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0"`
 * Output payload: the body of the successful response obtained from the
 registry. It will contain the https://github.com/opencontainers/image-spec/blob/main/manifest.md[OCI image
 manifest]

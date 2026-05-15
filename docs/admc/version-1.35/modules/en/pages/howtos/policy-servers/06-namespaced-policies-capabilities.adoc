@@ -55,7 +55,7 @@ policies.
 == Host capability call reference
 
 See the full list on our
-xref:/reference/spec/host-capabilities/07-host-capabiliy-call-reference.adoc[capabilities call reference]
+xref:/reference/spec/host-capabilities/07-host-capability-call-reference.adoc[capabilities call reference]
 documentation page.
 
 == Configuring `spec.namespacedPoliciesCapabilities`

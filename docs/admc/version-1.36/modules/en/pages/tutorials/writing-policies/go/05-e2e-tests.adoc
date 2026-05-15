@@ -1,7 +1,8 @@
 include::partial$variables.adoc[]
+
 = End-to-end testing
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Discover how to write and automate end-to-end tests running against the WebAssembly binary produced by TinyGo with bats and kwctl.
 :doc-persona: ["kubewarden-policy-developer"]
@@ -23,7 +24,7 @@ Recall, you need these tools on your development machine:
 You'll use the compiler shipped within the official TinyGo container image.
 * https://github.com/bats-core/bats-core[bats]:
 Used to write the tests and automate their execution.
-* https://github.com/kubewarden/kwctl/releases[`kwctl`]:
+* xref:/howtos/install-kwctl.adoc[install `kwctl`]:
 CLI tool provided by {admc-name} to run its policies outside of Kubernetes, among other actions.
 It's covered in xref:tutorials/testing-policies/index.adoc[this section] of the documentation.
 

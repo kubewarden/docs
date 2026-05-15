@@ -1,7 +1,8 @@
 include::partial$variables.adoc[]
+
 = Quick start
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Understand the {admc-name} stack by learning how to deploy and manage its main components, including PolicyServers and ClusterAdmissionPolicy resources.
 :doc-persona: ["kubewarden-all"]
@@ -105,7 +106,7 @@ Kubernetes cluster:
 * `kubewarden-crds`, which registers the {cluster-admission-policy},
   {admission-policy} and {policy-server} Custom Resource Definitions. Also, the
   {report} Custom Resource Definitions used by the audit scanner.
-* `kubewarden-controller`, which installs the {admc-short-name} controller and the
+* `kubewarden-controller`, which installs the {admc-short-name} and the
   audit scanner
 +
 [NOTE]
@@ -139,7 +140,7 @@ helm install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defa
 ====
 
 Since
-https://github.com/kubewarden/kubewarden-controller/releases/tag/v0.4.0[`v0.4.0`],
+https://github.com/kubewarden/adm-controller/releases/tag/v0.4.0[`v0.4.0`],
 a `PolicyServer` resource named `default` isn't created using the
 `kubewarden-controller` chart. Now a Helm chart called `kubewarden-defaults`,
 installs the default policy server.
@@ -186,7 +187,7 @@ kind: PolicyServer
 metadata:
   name: reserved-instance-for-tenant-a
 spec:
-  image: ghcr.io/kubewarden/policy-server:v1.3.0
+  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
   replicas: 2
   serviceAccountName: ~
   env:
@@ -198,7 +199,7 @@ spec:
 ====
 
 Check the
-https://github.com/kubewarden/policy-server/pkgs/container/policy-server[latest
+https://github.com/kubewarden/adm-controller/policy-server/pkgs/container/adm-controller%2Fpolicy-server[latest
 released `PolicyServer` version] and change the tag to match.
 
 ====
@@ -365,7 +366,7 @@ Kubernetes 1.21.0
 
 ====
 
-The complete documentation of these Custom Resources is https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc[here] or on https://doc.crds.dev/github.com/kubewarden/kubewarden-controller[docs.crds.dev].
+The complete documentation of these Custom Resources is xref:/reference/CRDs.adoc[here].
 
 == Example: Enforce your first policy
 

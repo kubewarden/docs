@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Common tasks
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Manage policies in your Kubernetes cluster with {admc-name} using the kwctl CLI tool.
 :doc-persona: ["kubewarden-all"]
@@ -24,7 +24,7 @@ locally:
 
 * https://artifacthub.io/packages/search?kind=13&sort=relevance&page=1[Artifact
   Hub], using their package filter for {admc-short-name} policies
-* https://github.com/kubewarden/kwctl[`kwctl`], a CLI tool
+* xref:/howtos/install-kwctl.adoc[`kwctl`], a CLI tool
 
 === Artifact hub
 
@@ -89,8 +89,8 @@ _As a cluster administrator_
 ==== Installation
 
 `kwctl` binaries for the stable releases are available from the
-https://github.com/kubewarden/kwctl/releases[GitHub repository]. To build
-`kwctl` from the GitHub https://github.com/kubewarden/kwctl[repo], you
+xref:/howtos/install-kwctl.adoc[install kwctl page]. To build
+`kwctl` from the GitHub https://github.com/kubewarden/adm-controller[repository], you
 need a https://www.rust-lang.org/tools/install[Rust] development environment.
 
 ==== Usage

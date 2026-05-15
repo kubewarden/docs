@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Verifying {admc-name}
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Verify different artifacts produced by the {admc-name} team to ensure a secure supply chain through use of SBOMs and provenance files.
 :doc-persona: ["kubewarden-operator", "kubewarden-policy-developer", "kubewarden-integrator"]
@@ -9,6 +9,12 @@ include::partial$variables.adoc[]
 :doc-type: ["tutorial"]
 :keywords: ["kubewarden", "kubernetes", "security", "verification"]
 :current-version: {page-origin-branch}
+
+[NOTE]
+====
+Repository and image URIs used in this documentation page changed in v1.36. If
+validating previous versions, refer to the documentation page for that version.
+====
 
 The {admc-name} stack provides different attestations and assurances:
 
@@ -26,43 +32,33 @@ following info, where `*` matches any following characters:
 
 [IMPORTANT]
 ====
-The subject used in the `--certificate-identity-regexp` cosign CLI flag in this
-tutorial utilizes the `+https://github.com/kubewarden/*+` values to simplify the
-explanation. However, this allows artifacts from repositories with the same prefix to
-bypass validation. For example: `github.com/kubewarden/policy-server1`.
+Some examples in this tutorial use wildcard patterns (`\*`) in the
+`--certificate-identity-regexp` cosign flag for simplicity. Broader patterns
+like `\https://github.com/kubewarden/*` will match any workflow in any repository
+under the `kubewarden` organization, which may be less restrictive than desired.
 
-If you want a more secure check, you need to use a full URL:
+For a more secure verification, use `--certificate-identity` with a fully
+qualified URL that includes the repository, workflow file, and version tag:
 
-----
-https://github.com/kubewarden/policy-server/.github/workflows/container-image.yml@refs/tags/v1.30.0
-----
+`\https://github.com/kubewarden/policy-server/.github/workflows/release.yml@refs/tags/v1.36.0`
 
-Note that the URL includes the full repository path, the workflow file path,
-and the version tag. If you follow this best practice, you can use the cosign
-CLI flag `--certificate-identity` with the full URL.
+This ensures only artifacts produced by that exact workflow and release are accepted.
 ====
-
-The {admc-short-name} team is also making efforts to improve the secure supply chain
-and to make the whole stack SLSA level 3 compliant. Therefore, the main
-artifacts also include SBOM and provenance files. In the following sections, we
-will show how to verify the different artifacts produced by the {admc-short-name} team
-and how to ensure the secure supply chain of the artifacts using SBOM and
-provenance files.
 
 [#container-images]
 == Container images
 
 To verify the keyless-signed container images produced by the {admc-short-name} team,
 you can use the `cosign` CLI tool. For example, to verify the
-`kubewarden/policy-server` image, you can execute the following command:
+`kubewarden/adm-controller/policy-server` image, you can execute the following command:
 
 [source, console]
 ----
-cosign verify ghcr.io/kubewarden/policy-server:v1.30.0 \
-  --certificate-identity-regexp 'https://github.com/kubewarden/*' \
+cosign verify ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0 \
+  --certificate-identity-regexp 'https://github.com/kubewarden/adm-controller/.github/workflows/release.ya?ml@refs/tags/v1.36.0' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
-Verification for ghcr.io/kubewarden/policy-server:v1.30.0 --
+Verification for ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
@@ -75,7 +71,7 @@ You can then verify that the certificate in the returned JSON contains the
 correct issuer, subject, and `github_workflow_repository` extensions.
 
 You can also verify with link:https://github.com/rancherlabs/slsactl[`slsactl`].
-For example, for version 1.30.0:
+For example, for version 1.36.0:
 
 [source, console]
 ----
@@ -83,7 +79,7 @@ slsactl verify ghcr.io/kubewarden/policy-server:v1.30.0
 ----
 
 The same applies to all other images produced by the {admc-short-name} team,
-such as `kubewarden/kubewarden-controller` and `kubewarden/audit-scanner`.
+such as `kubewarden/adm-controller` and `kubewarden/adm-controller/audit-scanner`.
 
 All container images also have SBOM and provenance files that can be used to
 ensure the secure supply chain of the images. You can find attestation files on
@@ -107,19 +103,19 @@ the {admc-short-name} components, check them:
 ----
 $ cosign verify-blob --bundle audit-scanner-attestation-amd64-checksum-cosign.bundle \
     --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-    --certificate-identity="https://github.com/kubewarden/audit-scanner/.github/workflows/attestation.yml@refs/tags/v1.30.0" \
-    audit-scanner-attestation-amd64-checksum.txt
+    --certificate-identity="https://github.com/kubewarden/adm-controller/.github/workflows/release.yml@refs/tags/v1.36.0" \
+    policy-server-attestation-amd64-provenance.intoto.jsonl
 Verified OK
 ----
 
 Now that the files integrity is verified, you can inspect the SBOM and Provenance files.
 You can get these from the container image, using link:https://github.com/rancherlabs/slsactl[`slsactl].
-For example, for version 1.30.0:
+For example, for version 1.36.0:
 
 [,console]
 ----
-slsactl download provenance ghcr.io/kubewarden/policy-server:v1.30.0
-slsactl download sbom ghcr.io/kubewarden/policy-server:v1.30.0
+slsactl download provenance ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
+slsactl download sbom ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
 ----
 
 == Helm charts
@@ -149,11 +145,11 @@ To verify a Helm chart, you need `cosign` installed. Then execute the following
 command, for example:
 
 ----
-cosign verify ghcr.io/kubewarden/charts/kubewarden-defaults:1.5.4 \
-  --certificate-identity-regexp 'https://github.com/kubewarden/*' \
+cosign verify ghcr.io/kubewarden/charts/kubewarden-defaults:3.14.0 \
+  --certificate-identity-regexp 'https://github.com/kubewarden/helm-charts/*' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
-Verification for ghcr.io/kubewarden/charts/kubewarden-defaults:1.5.4 --
+Verification for ghcr.io/kubewarden/charts/kubewarden-defaults:3.14.0 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
@@ -188,9 +184,10 @@ helm pull --untar kubewarden/kubewarden-defaults && \
 which gives us:
 
 ----
-ghcr.io/kubewarden/kubewarden-controller:v0.5.5
-ghcr.io/kubewarden/policy-server:v0.3.1
-ghcr.io/kubewarden/kubectl:v1.21.4
+ghcr.io/kubewarden/adm-controller/controller:v1.36.0
+ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
+ghcr.io/kubewarden/adm-controller/audit-scanner:v1.36.0
+ghcr.io/rancher/kuberlr-kubectl:v8.0.0
 ----
 
 Now, for each image in that list you can verify their Sigstore signatures following the instructions from the xref:#container-images[previous section].
@@ -199,7 +196,7 @@ Now, for each image in that list you can verify their Sigstore signatures follow
 
 kwctl binaries are signed using https://docs.sigstore.dev/cosign/signing/signing_with_blobs/[Sigstore's blob signing].
 
-When you download a https://github.com/kubewarden/kwctl/releases/[`kwctl`
+When you download a https://github.com/kubewarden/adm-controller/releases/[`kwctl`
 release] each zip file contains
 a Sigstore bundle file that you can use for verification: `kwctl-*bundle.sigstore`.
 
@@ -209,7 +206,7 @@ following command:
 ----
 cosign verify-blob \
   --bundle kwctl-linux-x86_64.bundle.sigstore \
-  --certificate-identity-regexp 'https://github.com/kubewarden/*' \
+  --certificate-identity-regexp 'https://github.com/kubewarden/adm-controller/.github/workflows/build-kwctl.ya?ml@refs/tags/v*' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
   kwctl-linux-x86_64
 
@@ -220,11 +217,23 @@ You can then verify that the cert in the returned json contains the correct
 issuer, subject, and `github_workflow_repository` extensions.
 
 The SBOMs are signed and published in the
-https://github.com/kubewarden/kwctl/releases[GitHub Releases] of the project.
+https://github.com/kubewarden/adm-controller/releases[GitHub Releases] of the project.
 
 The provenance attestation for `kwctl` is verified by using
 https://cli.github.com/manual/gh_attestation_verify[`gh attestation verify`]. For
-example with `gh attestation verify kwctl-linux-x86_64 --repo kubewarden/kwctl`.
+example
+
+[console]
+----
+$ gh attestation verify kwctl-linux-x86_64 --repo kubewarden/adm-controller
+Loaded digest sha256:b22755eeac497614b8ab6d182c2337a5de7c74080297a29b1d68434883bb36ff for file://kwctl-linux-x86_64
+Loaded 2 attestations from GitHub API
+✓ Verification succeeded!
+sha256:b22755eeac497614b8ab6d182c2337a5de7c74080297a29b1d68434883bb36ff was attested by:
+REPO                       PREDICATE_TYPE                  WORKFLOW
+kubewarden/adm-controller  https://slsa.dev/provenance/v1  .github/workflows/build-kwctl.yml@refs/tags/v1.36.0
+kubewarden/adm-controller  https://slsa.dev/provenance/v1  .github/workflows/build-kwctl.yml@refs/heads/main
+----
 
 == Policies
 

@@ -1,0 +1,208 @@
+include::partial$variables.adoc[]
+
+= Running Kubewarden in host network mode
+:description: How to enable and configure host network mode for the Kubewarden stack.
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-05-14
+:page-revdate: {revdate}
+:keywords: ["kubewarden", "kubernetes", "hostnetwork", "host network", "policyserver", "ports", "affinity", "networking"]
+:doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
+:doc-type: ["howto"]
+:doc-topic: ["operator-manual", "host-network", "networking", "policy-servers"]
+:current-version: {page-origin-branch}
+
+In certain restricted Kubernetes environments, the API server can't reach webhook
+endpoints on the pod network. This happens, for example, in AWS EKS clusters
+using a non-VPC CNI that performs NAT on worker nodes instead of assigning
+routable IPs to pods. To work around this, Kubewarden supports running the
+controller and all PolicyServer pods in *host network mode*.
+
+== Enabling host network mode
+
+Enable host network mode by setting the `hostNetwork` value when installing the
+`kubewarden-controller` Helm chart:
+
+[source,console]
+----
+helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller \
+    --set hostNetwork=true
+----
+
+This sets `hostNetwork: true` on both the *kubewarden-controller* Deployment
+and on every *PolicyServer* Deployment managed by it. The controller also
+automatically sets `dnsPolicy: ClusterFirstWithHostNet` so that in-cluster DNS
+resolution keeps working.
+
+== What changes when host network is enabled
+
+When `hostNetwork` is enabled, all Kubewarden pods share the host node's
+network namespace instead of having their own isolated network. This has certain
+implications.
+
+*Ports are bound on the host.* Each port used by a Kubewarden component
+occupies a port on the node's network interface, not in a pod-private
+namespace. Two pods that try to bind the same port on the same node conflict.
+
+*Increased attack surface.* Processes inside host-network pods can see all
+network interfaces of the host node, and webhook endpoints become reachable
+outside the cluster. See the <<security_considerations,Security considerations>>
+section below.
+
+== Custom port configuration
+
+To help avoid port conflicts in host network mode, the `PolicyServer` CRD
+provides fields for overriding the default ports used by each PolicyServer
+instance:
+
+* *`spec.webhookPort`* - The port the PolicyServer pod binds to serve webhook
+  HTTPS requests. Defaults to `8443`. Affects the actual host port used.
+* *`spec.readinessProbePort`* - The port the PolicyServer pod binds for the
+  readiness probe HTTP endpoint. Defaults to `8081`. Affects the actual host
+  port used.
+* *`spec.metricsPort`* - The port exposed by the metrics *Service* for
+  Prometheus scraping. Defaults to `8080`. This is a Service-layer setting only:
+  it changes the port Prometheus uses to reach the Service externally, but does
+  *not* change the port the pod binds on the host. Use it to customize metrics
+  scraping, not to resolve host-port conflicts.
+
+`spec.webhookPort` and `spec.readinessProbePort` are the fields that directly
+help with host-port conflicts for two main reasons:
+
+1. *Running multiple PolicyServers on the same node.* By assigning different
+   ports to each PolicyServer, you can schedule them on the same node without
+   port conflicts.
+2. *Avoiding conflicts with other host services.* If another service on the
+   node already uses a default port, you can change the PolicyServer port to
+   avoid the collision.
+
+=== Example: PolicyServer with custom ports
+
+[source,yaml]
+----
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: custom-ports
+spec:
+  image: ghcr.io/kubewarden/adm-controller/policy-server:1.36.0
+  replicas: 2
+  webhookPort: 9443
+  readinessProbePort: 9081
+----
+
+== Affinity configuration
+
+When running in host network mode, if two Kubewarden pods land on the same node
+and try to bind the same port, one of them can fail to start and enter a crash
+loop. That's where anti-affinity configuration becomes necessary. Without
+anti-affinity rules:
+
+* Two PolicyServer replicas using the same ports could be scheduled on the same
+  node, causing one to crash.
+* A PolicyServer pod and the kubewarden-controller could be scheduled on the
+  same node, conflicting on port `8081` because both use it for readiness
+  probes by default.
+
+=== Configuring anti-affinity via Helm charts
+
+The Kubewarden Helm charts provide values for setting affinity on different
+components:
+
+*Controller chart (`kubewarden-controller`):*
+
+* `affinity` - Sets affinity rules on the controller Deployment.
+* `global.affinity` - Falls back to this if `affinity` isn't set. Also
+  propagates to the defaults chart.
+
+*Defaults chart (`kubewarden-defaults`):*
+
+* `policyServer.affinity` - Sets affinity on the default PolicyServer resource.
+* `global.affinity` - Falls back to this if `policyServer.affinity` isn't set.
+
+Example Helm values to spread all Kubewarden components across different nodes:
+
+[source,yaml]
+----
+# kubewarden-controller values
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app.kubernetes.io/component
+              operator: In
+              values:
+                - policy-server
+                - kubewarden-controller
+        topologyKey: kubernetes.io/hostname
+----
+
+[source,yaml]
+----
+# kubewarden-defaults values
+policyServer:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: In
+                values:
+                  - policy-server
+                  - kubewarden-controller
+          topologyKey: kubernetes.io/hostname
+----
+
+[WARNING]
+====
+Kubewarden doesn't automatically inject anti-affinity rules. It's the
+operator's responsibility to configure appropriate affinity or anti-affinity
+rules to prevent port conflicts.
+====
+
+=== Configuring affinity on additional PolicyServers
+
+For PolicyServer resources created outside the defaults chart, set the
+`spec.affinity` field directly:
+
+[source,yaml]
+----
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: secondary
+spec:
+  image: ghcr.io/kubewarden/adm-controller/policy-server:1.36.0
+  replicas: 3
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: In
+                values:
+                  - policy-server
+                  - kubewarden-controller
+          topologyKey: kubernetes.io/hostname
+----
+
+[[security_considerations]]
+== Security considerations
+
+[WARNING]
+====
+Enabling `hostNetwork` increases the attack surface of your deployment:
+
+* Processes inside the pods can see *all network interfaces of the host node*.
+* Webhook endpoints become reachable *outside the cluster*, not just from
+  within the Kubernetes service network.
+* This setting is *incompatible* with the more restricted
+  https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted[Pod Security Standards].
+
+Only enable this option when necessary, and ensure appropriate
+network-level controls are in place. See the
+xref:../reference/security-hardening/webhooks-hardening.adoc[webhooks hardening]
+reference for recommendations on restricting access to webhook endpoints.
+====

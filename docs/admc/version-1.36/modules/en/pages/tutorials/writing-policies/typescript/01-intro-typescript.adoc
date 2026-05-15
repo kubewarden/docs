@@ -1,7 +1,8 @@
 include::partial$variables.adoc[]
+
 = Writing policies in TypeScript/JavaScript
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Learn how to write effective {admc-name} validation policies using TypeScript/JavaScript.
 :keywords: kubewarden, kubernetes, writing policies in TypeScript, writing policies in JavaScript
@@ -98,5 +99,5 @@ During this tutorial you need these tools on your development machine:
 
 * *Node.js*: Version 18 or higher with npm for dependency management.
 * https://github.com/bats-core/bats-core[`bats`]: Used to write the tests and automate their execution.
-* https://github.com/kubewarden/kwctl/releases[`kwctl` ≥ v1.30]: CLI tool provided by {admc-short-name} to run its policies outside of Kubernetes, among other actions. It's covered in xref:/tutorials/testing-policies/index.adoc[the testing policies section] of the documentation.
+* xref:/howtos/install-kwctl.adoc[`kwctl` ≥ v1.30]: CLI tool provided by {admc-short-name} to run its policies outside of Kubernetes, among other actions. It's covered in xref:/tutorials/testing-policies/index.adoc[the testing policies section] of the documentation.
 * https://github.com/bytecodealliance/javy[`javy` ≥ 6.0.0]: CLI tool for compiling JavaScript code to WebAssembly modules.

@@ -1,15 +1,14 @@
 include::partial$variables.adoc[]
+
 = {admc-name} architecture
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Discover how {admc-name} uses core Kubernetes features to integrate seamlessly into your cluster.
 :doc-persona: ["kubewarden-all"]
 :doc-topic: ["architecture"]
 :doc-type: ["explanation"]
 :keywords: ["{admc-name}", "kubewarden", "kubernetes", "architecture"]
-:sidebar_label: Architecture
-:sidebar_position: 61
 :current-version: {page-origin-branch}
 
 {admc-name} is a Kubernetes policy engine.
@@ -111,25 +110,25 @@ Admission Control]. In particular, {admc-name} operates as a Kubernetes
 Admission Webhook. The `policy-server` is the Webhook endpoint called by the
 Kubernetes API server to validate requests.
 
-* The https://github.com/kubewarden/kubewarden-controller[{admc-name}
+* The https://github.com/kubewarden/adm-controller[{admc-name}
 controller] is a Kubernetes controller that reconciles {admc-name}'s
 Custom Resources. This controller creates parts of the {admc-name} stack.
 It also translates {admc-name} configuration into Kubernetes directives.
 +
-The `kubewarden-controller` registers the needed
+The admission controller registers the needed
 `MutatingWebhookConfiguration` or `ValidatingWebhookConfiguration` objects
 with the Kubernetes API server.
 
-* xref:../tutorials/writing-policies/index.adoc[{admc-name} policies] are
+* xref:/tutorials/writing-policies/index.adoc[{admc-name} policies] are
 WebAssembly modules holding the validation or mutation logic. WebAssembly
 modules have detailed documentation in the
-xref:../tutorials/writing-policies/index.adoc[writing policies] sections.
+xref:/tutorials/writing-policies/index.adoc[writing policies] sections.
 
-* The https://github.com/kubewarden/policy-server[PolicyServer] receives
+* The xref:/reference/policy-server-cli.adoc[PolicyServer] receives
 requests for validation. It validates the requests by executing
 {admc-name} policies.
 
-* The https://github.com/kubewarden/audit-scanner[audit scanner] inspects the
+* The xref:/explanations/audit-scanner/audit-scanner.adoc[audit scanner] inspects the
 resources already in the cluster. It identifies those violating
 {admc-name} policies.
 +

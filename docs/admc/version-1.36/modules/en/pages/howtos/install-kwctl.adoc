@@ -1,7 +1,8 @@
 include::partial$variables.adoc[]
+
 = Installing kwctl ({admc-name} CLI)
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :title: Installing kwctl
 :description: Install kwctl (the {admc-name} CLI) by following its installation instructions for various operating systems, then enable shell completion.
@@ -78,14 +79,14 @@ kwctl --version
 +
 [source,console]
 ----
-curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-linux-x86_64.zip
+curl -LO https://github.com/kubewarden/adm-controller/releases/latest/download/kwctl-linux-x86_64.zip
 ----
 +
 For ARM64 systems (e.g., Raspberry Pi), use:
 +
 [source,console]
 ----
-curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-linux-aarch64.zip
+curl -LO https://github.com/kubewarden/adm-controller/releases/latest/download/kwctl-linux-aarch64.zip
 ----
 +
 .. Extract the files from the downloaded `.zip` file:
@@ -98,8 +99,7 @@ unzip kwctl-linux-x86_64.zip
 This extracts the following files:
 +
 * `kwctl-linux-x86_64`: The `kwctl` binary
-* `kwctl-linux-x86_64.sig`: A signature file for verifying the binary
-* `kwctl-linux-x86_64.pem`: A certificate file for verifying the signature
+* `kwctl-linux-x86_64.bundle.sigstore`: Sigstore bundle to verify the binary
 +
 .. Move the binary to a directory in your PATH, rename to `kwctl` and make executable.
 +
@@ -140,13 +140,13 @@ kwctl --version
 +
 [source,console]
 ----
-curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-darwin-aarch64.zip
+curl -LO https://github.com/kubewarden/adm-controller/releases/latest/download/kwctl-darwin-aarch64.zip
 ----
 ...  For **Intel (x86_64)** systems, use:
 +
 [source,console]
 ----
-curl -LO https://github.com/kubewarden/kwctl/releases/latest/download/kwctl-darwin-x86_64.zip
+curl -LO https://github.com/kubewarden/adm-controller/releases/latest/download/kwctl-darwin-x86_64.zip
 ----
 +
 ... Extract the files from the downloaded `.zip` file:
@@ -159,8 +159,7 @@ unzip kwctl-darwin-x86_64.zip
 This extracts the following files:
 +
 * `kwctl-darwin-x86_64`: The `kwctl` binary
-* `kwctl-darwin-x86_64.sig`: A signature file for verifying the binary
-* `kwctl-darwin-x86_64.pem`: A certificate file for verifying the signature
+* `kwctl-darwin-x86_64.bundle.sigstore`: Sigstore bundle to verify the binary
 +
 .. Move the binary to a directory in your PATH, rename to `kwctl` and make executable.
 +
@@ -178,14 +177,13 @@ Windows::
 Install for Windows
 
 . Download `kwctl`:
-    .. Open your browser and go to the https://github.com/kubewarden/kwctl/releases/latest[{admc-short-name} releases page].
+    .. Open your browser and go to the https://github.com/kubewarden/adm-controller/releases/latest[{admc-short-name} releases page].
     .. Download the `kwctl-windows-x86_64.zip` file.
 
 . Extract the files from the downloaded zip file. It will contain:
 +
 * `kwctl-windows-x86_64.exe`: the `kwctl` binary.
-* `kwctl-windows-x86_64.sig`: a signature file for verifying the binary.
-* `kwctl-windows-x86_64.pem`: a certificate file for verifying the signature.
+* `kwctl-windows-x86_64.bundle.sigstore`: Sigstore bundle to verify the binary.
 
 . Rename the binary file from `kwctl-windows-x86_64.exe` to `kwctl.exe` for easier use.
 

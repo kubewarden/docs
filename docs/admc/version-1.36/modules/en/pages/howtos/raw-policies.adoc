@@ -1,7 +1,8 @@
 include::partial$variables.adoc[]
+
 = Raw policies
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Configure raw policies as a generic policy evaluation engine using {admc-name}.
 :doc-persona: ["kubewarden-distributor", "kubewarden-integrator", "kubewarden-operator", "kubewarden-policy-developer"]
@@ -81,13 +82,32 @@ docker run --rm -it \
     -p 3000:3000 \
     -v $(pwd)/policies.yml:/policies.yml \
     -v policy-store:/registry \
-    ghcr.io/kubewarden/policy-server:1.9.0 \
+    ghcr.io/kubewarden/adm-controller/policy-server \
     --ignore-kubernetes-connection-failure=true
 ----
 
-NOTE: the flag `--ignore-kubernetes-connection-failure=true` is required to start the policy server without Kubernetes.
+[NOTE]
+====
+The flag `--ignore-kubernetes-connection-failure` is required to start the policy server without Kubernetes.
+====
+
+You can also use a bind mount to store the policies modules in a persistent way:
+
+[,bash]
+----
+mkdir -p ./registry
+
+# start the policy server
+docker run --rm -it \
+    -p 3000:3000 \
+    -v $(pwd)/policies.yml:/policies.yml \
+    -v $(pwd)/registry:/registry \
+    ghcr.io/kubewarden/adm-controller/policy-server \
+    --ignore-kubernetes-connection-failure
+----
+
 However, it is possible to start the Policy Server with/inside Kubernetes and use the raw validation endpoint.
-Raw policies can access context-awarexref:../explanations/context-aware-policies.adoc[capabilities] like standard policies.
+Raw policies can access context-aware xref:/explanations/context-aware-policies.adoc[capabilities] like standard policies.
 
 == Running a Policy Server inside Kubernetes without the {admc-short-name} controller
 
@@ -117,7 +137,7 @@ spec:
     spec:
       containers:
         - name: policy-server
-          image: ghcr.io/kubewarden/policy-server:v1.9.0
+          image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
           ports:
             - containerPort: 3000
           volumeMounts:

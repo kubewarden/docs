@@ -17,8 +17,8 @@ graph LR
           k8s(("Kubernetes"))
           registry[("OCI registry")]
         end
-        subgraph kw["`**Admission Controller**`"]
-          controller("`**Controller**`")
+        subgraph kw["`**Kubewarden**`"]
+          controller("`**KW admission Controller**`")
           subgraph policy-server["`**policy-server**`"]
             direction LR
             kw-policy-1{{"Policy 1"}}

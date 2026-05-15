@@ -1,7 +1,8 @@
 include::partial$variables.adoc[]
+
 = Migrating Gatekeeper Policies to {admc-name}
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Configure a {admc-name} policy by migrating an existing Gatekeeper policy through two main steps: compiling Rego code into WebAssembly.
 :keywords: ["{admc-name}", kubewarden, gatekeeper]
@@ -25,7 +26,7 @@ into a functional {admc-short-name} policy. It uses a basic Gatekeeper demo poli
 
 * link:https://github.com/open-policy-agent/opa/releases[opa]: you use this tool
   to build the code into wasm. This guide was written using the `v1.5.1` version.
-* link:https://github.com/kubewarden/kwctl/releases[`kwctl`]: tool you use to
+* xref:/howtos/install-kwctl.adoc[`kwctl`]: tool you use to
   prepare and run {admc-short-name} web assembly module
 * link:https://github.com/bats-core/bats-core[`bats`]: tool used to run end-to-end
   tests. If you decided to write such kind of tests

@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Air gap installation
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Configure a private registry with {admc-name} images and policies to install {admc-name} in an air-gapped environment.
 :doc-persona: [“kubewarden-operator”, “kubewarden-integrator”]
@@ -100,7 +100,7 @@ A file with a list of default policies is in the {admc-short-name} defaults
 https://github.com/kubewarden/helm-charts/releases/[release page].
 
 . Download `kubewarden-save-policies.sh` and `kubewarden-load-policies.sh` from
-  the https://github.com/kubewarden/kubewarden-controller/blob/main/scripts[`kubewarden-controller` repository].
+  the https://github.com/kubewarden/adm-controller/blob/main/scripts[`adm-controller` repository].
 
 . Save policies into a `.tar.gz` file:
 +
@@ -299,7 +299,7 @@ kind: PolicyServer
 metadata:
   name: reserved-instance-for-tenant-a
 spec:
-  image: <REGISTRY.YOURDOMAIN.COM:PORT>/kubewarden/policy-server:v1.3.0
+  image: <REGISTRY.YOURDOMAIN.COM:PORT>/kubewarden/adm-controller/policy-server:v1.3.0
   replicas: 2
   serviceAccountName: sa
 ----

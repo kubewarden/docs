@@ -1,7 +1,8 @@
 include::partial$variables.adoc[]
+
 = Creating a new policy
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-05-14
 :page-revdate: {revdate}
 :description: Create a policy that evaluates all namespaced resources and forbids their creation in the default namespace for hands-on learning.
 :doc-persona: ["kubewarden-policy-developer"]
@@ -27,7 +28,7 @@ You need these tools to complete this tutorial:
 
 * https://github.com/open-policy-agent/opa/releases[`opa`]:
 you'll use the `opa` CLI to build your policy as a `wasm` target.
-* https://github.com/kubewarden/kwctl/releases[`kwctl`]:
+* xref:/howtos/install-kwctl.adoc[install `kwctl`]:
 you'll use `kwctl` to execute your built policy.
 
 == The policy

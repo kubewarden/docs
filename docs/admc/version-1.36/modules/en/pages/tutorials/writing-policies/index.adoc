@@ -1,4 +1,5 @@
 include::partial$variables.adoc[]
+
 = Writing {admc-name} policies
 :page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-05-04
@@ -20,7 +21,7 @@ The input data is Kubernetes admission requests.
 The result of the computation is a validation response,
 which tells Kubernetes whether to accept, reject, or mutate the input data, the admission request.
 
-The https://github.com/kubewarden/policy-server[policy-server]
+The xref:reference/policy-server-cli.adoc[policy-server]
 component of {admc-short-name} performs these operations.
 
 The policy server doesn't include any data processing capability.
