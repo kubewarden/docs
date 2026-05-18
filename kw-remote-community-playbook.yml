@@ -49,4 +49,4 @@ antora:
 
 
 output:
-  dir: build-local-community/site
+  dir: build/site
