@@ -299,7 +299,7 @@ Removes a {short-project-name} policy from the store
 Run one or more {short-project-name} policies locally.
 
 The policy can be specified in the following ways:
-- URI: e.g., `registry://ghcr.io/kubewarden/policies/psp-policy:latest` or `https://example.com/kubewarden/policies/main/psp-policy/psp-policy.wasm`
+- URI: e.g., `registry://ghcr.io/kubewarden/policies/psp-policy:latest` or `\https://example.com/kubewarden/policies/main/psp-policy/psp-policy.wasm`
 - SHA prefix: e.g., `c3b80a10f9c3` (requires the policy to be already pulled)
 - Local WASM file: e.g., `file://home/tux/new-policy/psp-policy.wasm`
 - Local YAML file: e.g., `file://home/tux/cluster-admission-policy.yaml` (contains declarations of {short-project-name} Custom Resources like `ClusterAdmissionPolicy`, `AdmissionPolicy`, etc.)
