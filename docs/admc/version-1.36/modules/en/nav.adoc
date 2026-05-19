@@ -58,6 +58,7 @@ include::partial$variables.adoc[]
 ** xref:tutorials/verifying-kubewarden.adoc[]
 ** xref:tutorials/publish-policy-to-artifact-hub.adoc[]
 * Explanations
+** xref:explanations/policy-lifecycle.adoc[]
 ** xref:explanations/mutating-policies.adoc[]
 ** xref:explanations/context-aware-policies.adoc[]
 ** xref:explanations/policy-groups.adoc[]

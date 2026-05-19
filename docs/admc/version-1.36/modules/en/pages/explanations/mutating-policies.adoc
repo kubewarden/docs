@@ -9,7 +9,7 @@ include::partial$variables.adoc[]
 :doc-type: ["explanation"]
 :keywords: ["{admc-name}", "kubewarden", "policy mutating", "kubernetes", "clusteradmissionpolicy", "admissionpolicy"]
 :sidebar_label: Mutating policies
-:sidebar_position: 10
+:sidebar_position: 11
 :current-version: {page-origin-branch}
 
 Mutating policies receive an object request and rebuild it (mutate it) into a
