@@ -1,0 +1,108 @@
+= Writing policies in Go
+:revdate: 2025-07-09
+:page-revdate: {revdate}
+:description: A tutorial introduction to writing policies in Go.
+:doc-persona: ["kubewarden-policy-developer"]
+:doc-topic: ["kubewarden", "writing-policies", "go", "introduction"]
+:doc-type: ["tutorial"]
+:keywords: ["kubewarden", "kubernetes", "writing policies in Go"]
+:sidebar_label: Writing policies in Go
+:sidebar_position: 8
+:current-version: {page-origin-branch}
+
+[NOTE]
+====
+Go's support for WebAssembly is fast evolving.
+This page was last revised in December 2023.
+====
+
+
+The official Go compiler can produce WebAssembly binaries, for execution outside a browser, since v1.21.
+
+There's another Go compiler that can build WebAssembly binaries usable by Kubewarden.
+This compiler project is https://tinygo.org/[TinyGo]:
+
+____
+TinyGo brings the Go programming language to embedded systems and to the modern web by creating a new compiler based on LLVM.
+
+You can compile and run TinyGo programs on over 94 different microcontroller boards such as the BBC micro:bit and the Arduino Uno.
+
+TinyGo can also produce WebAssembly (Wasm) code which is very compact in size.
+You can compile programs for web browsers,
+as well as for server and edge computing environments that support the WebAssembly System Interface (WASI) family of interfaces.
+____
+
+The Kubewarden project currently suggests using TinyGo for two reasons:
+
+* binaries are smaller
+* support for https://wapc.io[waPC] by the ability to export functions to the runtime
+
+== TinyGo limitations
+
+TinyGo doesn't yet support all the Go features,
+see the TinyGo language support https://tinygo.org/lang-support/[page]
+to see the current project status.
+Currently, its largest limitation is the lack of a fully supported `reflect` package.
+This means that official Kubernetes Go API types (e.g.: `k8s.io/api/core/v1`) don't compile.
+
+Kubewarden policies need to process JSON data such as policy settings and the request received by Kubernetes.
+
+Despite TinyGo's current limitations, it's still easy to write Kubewarden validation policies with it.
+
+== Tooling
+
+Writing Kubewarden policies requires a version of TinyGo greater than `v0.28.1`.
+However, use the latest version, for the best results.
+
+[CAUTION]
+====
+Using older versions of TinyGo results in runtime errors due to the limited support for Go reflection.
+====
+
+
+These Go libraries are useful when writing a Kubewarden policy:
+
+* https://github.com/kubewarden/policy-sdk-go[Kubewarden Go SDK]:
+Provides structures and functions reducing the amount of code necessary.
+It also provides test helpers.
+* https://github.com/kubewarden/k8s-objects[Kubernetes Go types]:
+The https://github.com/kubernetes/kubernetes/tree/master/staging/src/k8s.io[official Kubernetes Go Types]
+can't be used with TinyGo.
+This module provides all the Kubernetes Types in a TinyGo-friendly way.
+* https://github.com/tidwall/gjson[gjson]:
+This provides a query language for quick navigation of JSON documents and data retrieval.
+This library doesn't use the `encoding/json` package provided by Go's `stdlib`, hence it's usable with TinyGo.
+* https://github.com/deckarep/golang-set[mapset]:
+Provides a Go implementation of the
+https://en.wikipedia.org/wiki/Set_(abstract_data_type)[Set]
+data structure.
+This library reduces the amount of code to write as operations such as
+Set `union`, `intersection`, `difference` are common operation in Kubewarden policies.
+
+Lastly, the Kubewarden project provides a
+https://github.com/kubewarden/go-policy-template[template Go policy project]
+you can use to create Kubewarden Go policies.
+
+== Getting TinyGo dependencies
+
+The easiest way to get TinyGo is by using the upstream container images.
+Official releases are
+https://hub.docker.com/r/tinygo/tinygo[here],
+while builds from the development branch are automatically pushed
+https://hub.docker.com/r/tinygo/tinygo-dev[here].
+
+If needed, try TinyGo's
+https://tinygo.org/getting-started/[getting started]
+page for more information.
+
+== Tutorial prerequisites
+
+During this tutorial you need these tools on your development machine:
+
+* docker or another container engine: used to build the WebAssembly policy.
+You'll be using the compiler shipped in the official TinyGo container image.
+* https://github.com/bats-core/bats-core[bats]:
+used to write the tests and automate their execution.
+* https://github.com/kubewarden/kwctl/releases[`kwctl`]:
+CLI tool provided by Kubewarden to run its policies outside of Kubernetes, among other actions.
+It's covered in xref:tutorials/testing-policies/index.adoc[this section] of the documentation.

@@ -8,6 +8,7 @@
 
 # Production
 /build
+/build-*
 
 # Generated files
 .docusaurus
@@ -26,3 +27,6 @@ yarn-error.log*
 
 files_without_canonical.txt
 /tmp
+
+.vscode
+/bkp

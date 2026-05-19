@@ -1,0 +1,432 @@
+include::partial$variables.adoc[]
+
+= Controlling host capabilities for namespaced policies
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-05-04
+:page-revdate: {revdate}
+:sidebar_label: Namespaced policy host capabilities
+:sidebar_position: 60
+:description: How to restrict host capability calls available to namespaced policies and control which PolicyServer they run on.
+:keywords: ["{project-name}", kubernetes, policyserver, admissionpolicy, admissionpolicygroup, host-capabilities, security, namespaced-policies]
+:doc-persona: [kubewarden-operator, kubewarden-integrator]
+:doc-type: [howto]
+:doc-topic: [operator-manual, policy-servers, host-capabilities, namespaced-policies, security]
+
+{project-name} upholds the following security promise:
+
+*"If you can deploy namespaced policies, you can do so without obtaining raised privileges."*
+
+This how-to explains how cluster operators can enforce that promise by:
+
+1. Restricting which host capabilities PolicyServers expose to namespaced policies.
+2. Controlling which PolicyServer a namespaced policy runs on, using the
+   `ns-policyserver-mapper` policy.
+
+[WARNING]
+====
+The per-PolicyServer restriction on host capabilities is part of {project-name}
+`v1.35.0` and higher.
+
+Earlier versions may be vulnerable to reconnaissance or information disclosure,
+see our xref:/reference/threat-model.adoc[Threat model].
+====
+
+== Background
+
+`AdmissionPolicy` and `AdmissionPolicyGroup` are namespaced resources.
+Because they can be made deployable to non-privileged users, they do not have
+a `spec.contextAwareResources` field and cannot fetch information from the
+Kubernetes API.
+
+However, namespaced policies can still exercise other *host capabilities*
+provided by policy-server:
+
+* Querying OCI registries (verifying signatures, fetching manifests)
+* Performing Kubernetes `SubjectAccessReview` checks (`can_i`)
+* DNS lookups
+* Certificate trust verification
+
+These capabilities could be abused for reconnaissance or information disclosure
+(see our xref:/reference/threat-model.adoc[Threat model]). The
+`spec.namespacedPoliciesCapabilities` field on `PolicyServer` lets cluster
+operators gate exactly which of these capabilities are available to namespaced
+policies.
+
+== Host capability call reference
+
+See the full list on our
+xref:/reference/spec/host-capabilities/07-host-capability-call-reference.adoc[capabilities call reference]
+documentation page.
+
+== Configuring `spec.namespacedPoliciesCapabilities`
+
+Add the `namespacedPoliciesCapabilities` field to any `PolicyServer` to control
+which host capabilities its namespaced policies may use.
+
+The field accepts an array of strings. Wildcard patterns follow the same
+conventions as Kubernetes Dynamic Admission Controller
+https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules[match rules]:
+
+[cols="1,3", options="header"]
+|===
+| Value | Meaning
+
+| _(unset)_
+| Allow all host capabilities (default, backwards-compatible)
+
+| `[*]`
+| Explicitly allow all host capabilities
+
+| `[]`
+| Deny all host capabilities to namespaced policies
+
+| `[oci/*]`
+| Allow all OCI capabilities, all versions
+
+| `[oci/v2/*]`
+| Allow all OCI v2 capabilities only
+
+| `[oci/v1/verify, net/v1/dns_lookup_host]`
+| Allow only those two specific calls
+|===
+
+[NOTE]
+====
+Cluster-wide policies (`ClusterAdmissionPolicy` and
+`ClusterAdmissionPolicyGroup`) are always granted all host capabilities
+regardless of this field. Their access to Kubernetes resources is governed
+separately via `spec.contextAwareResources`.
+====
+
+=== Example: deny all host capabilities
+
+[subs="+attributes",yaml]
+----
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: for-namespaced-policies
+spec:
+  image: ghcr.io/kubewarden/policy-server:latest
+  replicas: 1
+  namespacedPoliciesCapabilities: []
+----
+
+Any namespaced policy scheduled on this PolicyServer will have all host
+capability calls blocked.
+
+=== Example: allow only OCI signature verification
+
+[subs="+attributes",yaml]
+----
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: for-namespaced-policies
+spec:
+  image: ghcr.io/kubewarden/policy-server:latest
+  replicas: 1
+  namespacedPoliciesCapabilities:
+    - "oci/v1/verify"
+    - "oci/v2/verify"
+----
+
+=== Example: allow all capabilities (explicit)
+
+[subs="+attributes",yaml]
+----
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: for-namespaced-policies
+spec:
+  image: ghcr.io/kubewarden/policy-server:latest
+  replicas: 1
+  namespacedPoliciesCapabilities:
+    - "*"
+----
+
+== Configuring default PolicyServer via Helm
+
+The `kubewarden-defaults` Helm chart exposes
+`.Values.policyServer.namespacedPoliciesCapabilities` to configure the
+`default` PolicyServer. When unset, all host capabilities are allowed
+(backwards-compatible default).
+
+To lock down the `default` PolicyServer so namespaced policies have no host
+capability access:
+
+[subs="+attributes",console]
+----
+helm upgrade --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults \
+  --set 'policyServer.namespacedPoliciesCapabilities={}'
+----
+
+To allow only OCI and DNS capabilities:
+
+[subs="+attributes",console]
+----
+helm upgrade --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults \
+  --set 'policyServer.namespacedPoliciesCapabilities={oci/*,net/v1/dns_lookup_host}'
+----
+
+== Configuring custom PolicyServers
+
+Cluster operators can configure their custom PolicyServers by setting
+`spec.namespacedPoliciesCapabilities`. If not provided, PolicyServers by
+default allow all capability calls.
+
+== Controlling on which PolicyServer namespaced policies run
+
+Even with a well-configured PolicyServer, low-privileged users could explicitly
+set `spec.policyServer` in their `AdmissionPolicy` to a different PolicyServer
+that exposes broader capabilities. The `ns-policyserver-mapper` policy prevents
+this.
+
+=== `ns-policyserver-mapper` policy
+
+The `ns-policyserver-mapper` policy is a mutating `ClusterAdmissionPolicy` that
+intercepts `CREATE` and `UPDATE` requests for `AdmissionPolicy` and
+`AdmissionPolicyGroup` resources. It:
+
+1. Reads the `admission.kubewarden.io/policy-server` label from the `Namespace`
+   in which the policy is being deployed.
+2. Mutates the policy's `spec.policyServer` field to the value of that label,
+   overriding whatever the user specified.
+3. *Rejects* the request if the Namespace does not have the label, preventing
+   policies from being silently scheduled on an unintended PolicyServer.
+
+=== Labeling Namespaces
+
+Label each Namespace with the name of the PolicyServer that should handle its
+namespaced policies:
+
+[subs="+attributes",console]
+----
+kubectl label namespace my-team-ns admission.kubewarden.io/policy-server=for-namespaced-policies
+----
+
+Or declare it in the Namespace manifest:
+
+[subs="+attributes",yaml]
+----
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-team-ns
+  labels:
+    admission.kubewarden.io/policy-server: for-namespaced-policies
+----
+
+=== Deploying `ns-policyserver-mapper`
+
+Deploy the policy as a `ClusterAdmissionPolicy`:
+
+[subs="+attributes",yaml]
+----
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: ns-to-policyserver
+spec:
+  module: registry://ghcr.io/kubewarden/policies/ns-policyserver-mapper:v0.1.0
+  mode: protect
+  mutating: true
+  rules:
+    - apiGroups: ["policies.kubewarden.io"]
+      apiVersions: ["v1"]
+      resources: ["admissionpolicies", "admissionpolicygroups"]
+      operations:
+        - CREATE
+        - UPDATE
+  contextAwareResources:
+    - apiVersion: v1
+      kind: Namespace
+----
+
+[WARNING]
+====
+Deploy `ns-policyserver-mapper` and wait for it to become active *before*
+expecting namespaced policies to be constrained. Any `AdmissionPolicy` or
+`AdmissionPolicyGroup` created while the mapper policy is inactive will not be
+redirected.
+====
+
+== Complete example: secure self-service namespace setup
+
+The following walkthrough shows how to configure a fully locked-down,
+self-service setup where a team can deploy their own namespaced policies
+without elevated privileges.
+
+=== 1. Create a dedicated PolicyServer with restricted capabilities
+
+[subs="+attributes",yaml]
+----
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: for-namespaced-policies
+  namespace: kubewarden
+spec:
+  image: ghcr.io/kubewarden/policy-server:v1.35.0
+  namespacedPoliciesCapabilities: []
+----
+
+=== 2. Deploy the `ns-policyserver-mapper` policy
+
+[subs="+attributes",yaml]
+----
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: ns-to-policyserver
+spec:
+  module: registry://ghcr.io/kubewarden/policies/ns-policyserver-mapper:v0.1.0
+  mode: protect
+  mutating: true
+  rules:
+    - apiGroups: ["policies.kubewarden.io"]
+      apiVersions: ["v1"]
+      resources: ["admissionpolicies", "admissionpolicygroups"]
+      operations:
+        - CREATE
+        - UPDATE
+  contextAwareResources:
+    - apiVersion: v1
+      kind: Namespace
+----
+
+Wait for the policy to become active:
+
+[subs="+attributes",console]
+----
+kubectl wait --for=condition=PolicyActive clusteradmissionpolicy/ns-to-policyserver
+----
+
+=== 3. Label team Namespaces
+
+[subs="+attributes",console]
+----
+kubectl label namespace team-alpha admission.kubewarden.io/policy-server=for-namespaced-policies
+kubectl label namespace team-beta admission.kubewarden.io/policy-server=for-namespaced-policies
+----
+
+=== 4. Grant RBAC to deploy namespaced policies
+
+Team members only need RBAC rights to create `AdmissionPolicy` and
+`AdmissionPolicyGroup` resources in their own Namespace. They do not need any
+additional permissions to the PolicyServer.
+
+=== 5. Lock down the default PolicyServer (optional)
+
+If the `default` PolicyServer should also prevent namespaced policies from
+exercising host capabilities:
+
+[subs="+attributes",console]
+----
+helm upgrade --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults \
+  --set 'policyServer.namespacedPoliciesCapabilities={}'
+----
+
+== Upgrade considerations
+
+When upgrading from a {project-name} version that predates this feature
+(`<= v1.34`):
+
+* Existing namespaced policies continue to work without any change. The default
+  behavior when `spec.namespacedPoliciesCapabilities` is unset is to allow all
+  host capabilities, matching the previous behavior.
+* To begin restricting capabilities, set `spec.namespacedPoliciesCapabilities`
+  on each PolicyServer and deploy `ns-policyserver-mapper`.
+* If you set `spec.namespacedPoliciesCapabilities: []` on an existing
+  PolicyServer, any namespaced policies that rely on host capabilities will
+  have those calls blocked. Review your policies before applying this change.
+* Namespaced policies already deployed retain their scheduling until they are
+  updated. The `ns-policyserver-mapper` policy only applies on `CREATE` and
+  `UPDATE` operations. To migrate existing policies, trigger an update for each
+  one after labeling their Namespace.
+
+== Authoring and auditing a policy with host capability calls
+
+=== Authoring
+
+Policy authors can self-report a list of host capabilities that a policy uses
+using the policy metadata (see xref:/tutorials/writing-policies/metadata.adoc[metadata documentation page]).
+For example:
+
+[subs="+attributes",yaml]
+----
+[...]
+hostCapabilities:
+  - kubernetes/list_resources_by_namespace
+  - kubernetes/list_resources_all
+  - kubernetes/get_resource
+[...]
+----
+
+In addition, when the policy author annotates the policy Wasm module,
+`kwctl annotate` performs an heuristic scan of the Wasm binary's data for known
+host-capability strings, and compares what it detects against the
+`hostCapabilities` list declared in `metadata.yml`. Any mismatch is reported as
+warnings on stderr:
+
+* *Used but undeclared*: host capabilities found in the binary but absent from
+  the metadata declaration.
+* *Declared but not detected*: host capabilities listed in the metadata but not
+  found in the binary.
+
+which host capabilities it uses by running `kwctl annotate`.
+
+Here is an example output when the metadata declares `oci/v1/verify` but the
+binary actually uses `kubernetes/get_resource` and
+`kubernetes/list_resources_by_namespace`:
+
+[subs="+attributes",console]
+----
+kwctl annotate -m metadata.yml -o annotated-policy.wasm policy.wasm
+
+WARN host capabilities used by the policy but not declared in metadata
+     capabilities={"kubernetes/get_resource", "kubernetes/list_resources_by_namespace"}
+WARN host capabilities declared in metadata but not detected in the policy
+     capabilities={"oci/v1/verify"}
+----
+
+=== Auditing
+
+[WARNING]
+====
+Both the self-reporting from the policy author and the `kwctl annotate`
+heuristic scan cannot be used as a security boundary. A policy publisher could
+embed any arbitrary `hostCapabilities` list in the metadata regardless of what
+the binary actually does at runtime.
+
+Use this information as one signal alongside other trust indicators (image
+signing, source code review, policy provenance, and so on), not as an
+authoritative proof of what capabilities a policy exercises.
+====
+
+== Running a policy with host capability calls
+
+`kwctl run` and `kwctl bench` now have a flag
+`--allowed-host-capabilities`. This flag sets the host capabilities the policy
+is allowed to use and can be repeated many times. For example:
+
+[subs="+attributes",console]
+----
+kwctl run \
+  --allowed-host-capabilities 'oci/*' \
+  --allowed-host-capabilities 'kubernetes/get_resource'
+----
+
+`kwctl` will emit errors if the policy has not been granted enough permissions
+for the needed capabilities.
+
+This allows Policy Users to assess their policies out-of-cluster.
+
+== Further reading
+
+* xref:/reference/spec/host-capabilities/01-intro-host-capabilities.adoc[Host capabilities specification]
+* xref:/howtos/security-hardening/security-hardening.adoc[Security hardening]
+* xref:/reference/threat-model.adoc[Threat model]
+* xref:/explanations/context-aware-policies.adoc[Context aware policies]
+* xref:/reference/kwctl-cli.adoc#kwctl-annotate[`kwctl annotate` reference]

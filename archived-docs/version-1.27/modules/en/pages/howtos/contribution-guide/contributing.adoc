@@ -1,0 +1,32 @@
+= Contributing to Kubewarden documentation
+:revdate: 2025-07-09
+:page-revdate: {revdate}
+:description: Contributing to kubewarden documentation.
+:doc-persona: ["kubewarden-developer", "kubewarden-operator", "kubewarden-manager"]
+:doc-topic: ["contribution-guide", "docs-contribution"]
+:doc-type: ["howto"]
+:keywords: ["kubewarden", "documentation", "contributing"]
+:sidebar_label: Contributing to documentation
+:sidebar_position: 2
+:current-version: {page-origin-branch}
+
+_Kubewarden welcomes suggestions for improvement from all contributors, whether new or experienced._
+
+You can contribute to Kubewarden documentation by:
+
+* Improving existing content
+* Creating new content
+* (_Upcoming_) Helping with translation of the documentation
+
+== Getting started
+
+Everybody is welcome to suggest changes by submitting a pull request
+or report a bug/typo with the help of a GitHub issue to the
+https://github.com/kubewarden/docs[`kubewarden/docs` repository].
+
+To get involved with the documentation:
+
+* Familiarize yourself with the https://github.com/kubewarden/docs[documentation repository]
+and the https://docusaurus.io/[static site generator].
+* Docusaurus makes use of the Markdown syntax and uses https://mdxjs.com/[MDX] as the parser.
+* Understand how to xref:howtos/contribution-guide/suggesting-an-improvement.adoc[suggest an improvement] and open a pull request.

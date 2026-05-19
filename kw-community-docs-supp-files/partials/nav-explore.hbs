@@ -1,0 +1,41 @@
+<div class="nav-panel-explore{{#unless page.navigation}} is-active{{/unless}}" data-panel="explore">
+  {{#*inline "component-entry"}}
+    <li class="component{{#if (eq component @root.page.component)}} is-current{{/if}}">
+      <div class="title"><a href="{{{relativize component.url}}}">{{{component.title}}}</a></div>
+      {{#if (or component.versions.[1] component.versions.[0].version (ne component.versions.[0].displayVersion 'default'))}}
+      <ul class="versions">
+        {{#each component.versions}}
+        <li class="version
+          {{~#if (and (eq ..component @root.page.component) (eq this @root.page.componentVersion))}} is-current{{/if~}}
+          {{~#if (eq this ..component.latest)}} is-latest{{/if}}">
+          <a href="{{{relativize ./url}}}">{{./displayVersion}}</a>
+        </li>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </li>
+  {{/inline}}
+  {{#if page.component}}
+  <div class="context">
+    <span class="title">{{page.component.title}}</span>
+    {{#unless (eq page.component.name 'kubewarden')}}
+    <span class="version">{{#if (or page.componentVersion.version (ne page.componentVersion.displayVersion 'default'))}}{{page.componentVersion.displayVersion}}{{/if}}</span>
+    {{/unless}}
+    {{#if (eq page.component.name 'kubewarden')}}
+    <span class="dropdown-indicator" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+    {{/if}}
+  </div>
+  {{/if}}
+  <ul class="components">
+    {{#each site.components}}
+      {{#if (eq ./name 'admc')}}
+        {{> component-entry component=this}}
+      {{/if}}
+    {{/each}}
+    {{#each site.components}}
+      {{#if (eq ./name 'sboms')}}
+        {{> component-entry component=this}}
+      {{/if}}
+    {{/each}}
+  </ul>
+</div>

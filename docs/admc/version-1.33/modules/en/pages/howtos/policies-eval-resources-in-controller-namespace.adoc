@@ -1,0 +1,102 @@
+include::partial$variables.adoc[]
+
+= Allowing evaluations in the Admission Controller namespace
+:description: How to configure the Admission Controller to allow policy evaluation in its own namespace
+:keywords: ["policies", "ClusterAdmissionPolicies", "ClusterAdmissionPoliciesGroup", "configuration", "namespaces"]
+:doc-persona: ["kubewarden-operator"]
+:doc-type: ["howto"]
+:doc-topic: ["operator-manual", "policies"]
+
+By default, the Admission Controller does not allow policies to
+evaluate resources in its own namespace. This prevents misconfigurations that
+could break the {short-project-name} installation.
+
+This safety measure is implemented in two layers. The first layer is controlled
+by the `--always-accept-admission-reviews-on-deployments-namespace` CLI flag.
+This flag, which is enabled by default in the Helm charts, makes the controller
+configure the `KUBEWARDEN_ALWAYS_ACCEPT_ADMISSION_REVIEWS_ON_NAMESPACE`
+environment variable in the PolicyServer deployments. This variable tells the
+policy server to always accept admission reviews from the namespace defined in
+the variable. The second layer is the admission controller itself, which by
+default adds a namespace selector to cluster-wide policies to skip the
+namespace where the controller runs.
+
+However, in some scenarios cluster administrators might want policies to
+evaluate resources in this namespace. This page explains how to do that by
+disabling both layers of protection.
+
+== Remove the PolicyServer protection environment variable
+
+The first step is to configure the controller to not set the
+`KUBEWARDEN_ALWAYS_ACCEPT_ADMISSION_REVIEWS_ON_NAMESPACE` environment variable
+in the PolicyServer deployments.
+
+To do this, upgrade your {short-project-name} installation and set the
+`alwaysAcceptAdmissionReviewsOnDeploymentsNamespace` value of the
+`kubewarden-controller` Helm chart to `false`:
+
+[source,console]
+----
+helm upgrade -n kubewarden
+  --set "alwaysAcceptAdmissionReviewsOnDeploymentsNamespace=false"
+  kubewarden-controller kubewarden/kubewarden-controller
+----
+
+This change allows policy servers to evaluate resources from any namespace.
+Once this is done, policies can be configured to evaluate admission reviews
+from the {short-project-name} namespace.
+
+== Configure policies to evaluate resources in the Admission Controller namespace
+
+To allow a policy to evaluate resources created in the Admission Controller
+namespace, deploy cluster-wide policies with the `allowInsideAdmissionControllerNamespace`
+field in the spec set to `true`:
+
+[NOTE]
+.And the namespaced policies?
+====
+This spec field is available only in cluster-wide policies.
+Because namespaced policies evaluate resources in the same namespace where they are deployed,
+it does not make sense to add this field to their CRDs.
+Furthermore, the admission controller namespace should be managed by cluster operators,
+who can decide whether to deploy a policy there.
+====
+
+[source,yaml]
+----
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  annotations:
+    io.kubewarden.policy.category: PSP
+    io.kubewarden.policy.severity: medium
+  name: pod-privileged-policy
+spec:
+  module: registry://ghcr.io/kubewarden/policies/pod-privileged:v1.0.10
+  settings: {}
+  rules:
+    - apiGroups:
+        - ""
+      apiVersions:
+        - v1
+      resources:
+        - pods
+      operations:
+        - CREATE
+  mutating: false
+  allowInsideAdmissionControllerNamespace: true
+----
+
+This configuration option, which is `false` by default, makes the controller
+skip adding the namespace selector that excludes the Admission Controller
+namespace, allowing the policy to evaluate resources from all namespaces,
+including that namespace.
+
+[NOTE]
+.What about my custom namespace selectors?
+====
+Policies CRDs also allow users to define their own namespace selectors. These
+selectors are not changed. This means that if a user defines a selector that
+skips the {short-project-name} namespace, the policy will still ignore that namespace as
+expected.
+====

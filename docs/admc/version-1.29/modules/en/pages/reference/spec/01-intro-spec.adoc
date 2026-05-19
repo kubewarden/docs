@@ -1,0 +1,15 @@
+include::partial$variables.adoc[]
+= Policy communication specification
+:revdate: 2025-07-09
+:page-revdate: {revdate}
+:description: Policy communication specification.
+:doc-persona: ["kubewarden-policy-developer"]
+:doc-topic: ["writing-policies", "specification", "introduction"]
+:doc-type: ["reference"]
+:keywords: ["kubewarden", "kubernetes", "policy specification", "policy communication"]
+:sidebar_label: Policy communication specification
+:current-version: {page-origin-branch}
+
+The policy evaluator interacts with Kubewarden policies using a well-defined
+API. The purpose of this section is to document the API used by the host (be it
+`policy-server` or `kwctl`) to communicate with Kubewarden's policies.

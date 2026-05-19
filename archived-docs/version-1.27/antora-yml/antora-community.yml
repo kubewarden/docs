@@ -1,0 +1,6 @@
+name: kubewarden
+title: Kubewarden
+version: 1.27
+start_page: en:introduction.adoc
+nav:
+- modules/en/nav.adoc

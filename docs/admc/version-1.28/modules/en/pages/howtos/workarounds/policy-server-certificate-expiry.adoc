@@ -1,0 +1,29 @@
+= Policy Server certificate rotation issue
+:revdate: 2025-07-09
+:page-revdate: {revdate}
+:description: How-to work around Policy Server certificate expiry issue
+:doc-persona: ["kubewarden-operator", "kubewarden-distributor", "kubewarden-integrator"]
+:doc-topic: ["howto", "workarounds", "policy server certificates"]
+:doc-type: ["howto"]
+:keywords: ["kubewarden", "kubernetes", "policy server certificates"]
+:sidebar_label: Certificate Rotation
+:sidebar_position: 10
+:current-version: {page-origin-branch}
+
+[IMPORTANT]
+.Workaround for Kubewarden v1.16.0 and earlier
+====
+This workaround is only needed for Kubewarden v1.16.0 and earlier. Starting from
+v1.17.0, the controller automatically renews the policy server certificates.
+====
+
+During the release process for v1.14, a bug related to the policy server certificate rotation was discovered.
+The Root CA is configured to expire in 10 years, but each policy-server certificate secret has a one-year expiry.
+However, the controller is currently unable to renew them automatically.
+
+In the v1.14 release, we have ensured that policy-server secrets are created with a 10-year expiry.
+
+For future releases we'll implement an automated renewal process.
+
+Until then, users can manually delete the expired certificate secret (policy-server-default) and trigger a controller reconciliation.
+You do this by adding, removing, or updating a policy or by adjusting the number of replicas of a PolicyServer.

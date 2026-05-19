@@ -1,0 +1,2 @@
+Move directories here from the `docs` folder to archive. If you need to build
+them to view the HTML, move them back to `docs`.

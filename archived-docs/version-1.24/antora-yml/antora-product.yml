@@ -1,0 +1,6 @@
+name: policy-manager
+title: Policy Manager
+version: 1.24
+start_page: en:introduction.adoc
+nav:
+- modules/en/nav.adoc

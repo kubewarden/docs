@@ -1,0 +1,82 @@
+ifdef::kw-build-community[]
+:build-type: community
+endif::[]
+ifndef::kw-build-community[]
+:build-type: product
+endif::[]
+
+ifndef::kw-community-project-name[]
+:kw-community-project-name: Kubewarden
+endif::[]
+
+ifndef::admc-community-name[]
+:admc-community-name: Kubewarden Admission Controller
+endif::[]
+
+ifndef::admc-community-short-name[]
+:admc-community-short-name: Admission Controller
+endif::[]
+
+ifndef::admc-community-abbrev[]
+:admc-community-abbrev: ADMC
+endif::[]
+
+ifndef::admc-product-name[]
+:admc-product-name: SUSE Security Admission Controller
+endif::[]
+
+ifndef::admc-product-short-name[]
+:admc-product-short-name: Admission Controller
+endif::[]
+
+ifndef::admc-product-abbrev[]
+:admc-product-abbrev: SSAC
+endif::[]
+
+ifeval::["{build-type}" == "community"]
+:project-name: {kw-community-project-name}
+:product-project-name: SUSE Security
+:community-project-name: {kw-community-project-name}
+:admc-name: {admc-community-name}
+:admc-short-name: {admc-community-short-name}
+:admc-abbrev: {admc-community-abbrev}
+:intro-paragraph: {admc-name} is a xref:#_vendor_neutrality[vendor neutral], https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
+endif::[]
+
+ifeval::["{build-type}" == "product"]
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:admc-name: {admc-product-name}
+:admc-short-name: {admc-product-short-name}
+:admc-abbrev: {admc-product-abbrev}
+:product-project-name: SUSE Security
+:community-project-name: {kw-community-project-name}
+:intro-paragraph: {admc-name} is derived from a vendor neutral, https://cncf.io[CNCF] Sandbox project, called link:https://kubewarden.io[{community-project-name}], originally created by https://www.rancher.com/[SUSE Rancher]. The name {admc-name} may be shortened to {admc-short-name} or abbreviated as {admc-abbrev}. The name {community-project-name} refers to the open-source community project. The name {community-project-name} may also be used throughout this documentation in place of {admc-name}, {admc-short-name}, or {admc-abbrev}. This will be in references in source code or configuration examples.
+endif::[]
+
+// Glossary terms start
+
+:admission-policy: xref:glossary.adoc#_admissionpolicy[AdmissionPolicy]
+
+:cluster-admission-policy: xref:glossary.adoc#_clusteradmissionpolicy[ClusterAdmissionPolicy]
+
+:cluster-policy-report: xref:glossary.adoc#_clusterpolicyreport[ClusterPolicyReport]
+
+:kwctl: xref:glossary.adoc#_kwctl[kwctl]
+
+:mutating-webhook-configuration: xref:glossary.adoc#_mutatingwebhookconfiguration[MutatingWebhookConfiguration]
+
+:policy-report: xref:glossary.adoc#_policyreport[PolicyReport]
+
+:policy-server: xref:glossary.adoc#_policyserver[PolicyServer]
+
+:validating-webhook-configuration: xref:glossary.adoc#_walidatingwebhookconfiguration[ValidatingWebhookConfiguration]
+
+:waPC: xref:glossary.adoc#_wapc[waPC]
+
+:WASI: xref:glossary.adoc#_wasi[WASI]
+
+:Wasm: xref:glossary.adoc#_wasm[Wasm]
+
+:Wasmtime: xref:glossary.adoc#_wasmtime[Wasmtime]
+
+// Glossary terms end

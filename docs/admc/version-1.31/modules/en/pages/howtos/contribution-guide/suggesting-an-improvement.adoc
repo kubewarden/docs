@@ -1,0 +1,85 @@
+include::partial$variables.adoc[]
+= Suggesting a documentation improvement
+:revdate: 2025-11-17
+:page-revdate: {revdate}
+:description: Suggesting a doc improvement.
+:doc-persona: ["kubewarden-developer", "kubewarden-operator", "kubewarden-manager"]
+:doc-topic: ["contribution-guide", "docs-contribution", "improvement"]
+:doc-type: ["howto"]
+:keywords: ["kubewarden", "documentation", "suggesting an improvement"]
+:sidebar_label: Suggesting doc improvements
+:sidebar_position: 8
+:current-version: {page-origin-branch}
+
+If you notice an issue with {short-project-name} documentation or want to
+suggest new content, then open an issue. You only require access to a
+https://github.com/join[GitHub account] and a browser.
+
+Usually, any new documentation work for {short-project-name} begins with an issue in
+GitHub.
+ifeval::["{build-type}" == "community"]
+The https://github.com/orgs/kubewarden/teams/kubewarden-documentation[{short-project-name} documentation team] reviews, categorizes, and tags them. documentation team] reviews, categorizes, and tags them. ]
+endif::[]
+ifeval::["{build-type}" == "product"]
+The https://github.com/orgs/rancher/teams/docs[{short-project-name} documentation team] reviews, categorizes, and tags them. documentation team] reviews, categorizes, and tags them. ]
+endif::[]
+Everybody is welcome
+to work on any issue, including the reporter, but you should assign it to
+yourself before commencing any work to avoid duplicate efforts.
+
+== Opening an issue
+
+To suggest improvements to existing documentation content or report an error,
+open an issue.
+
+* Click the GitHub Octocat icon at the top. This redirects you to the
+ifeval::["{build-type}" == "community"]
+  https://github.com/kubewarden/docs[documentation repository for {short-project-name}].
+endif::[]
+ifeval::["{build-type}" == "product"]
+  https://github.com/rancher/kubewarden-product-docs[documentation repository for {short-project-name}].
+endif::[]
+* Navigate to the Issues tab and click *New issue*.
+* Describe the issue or suggestion for improvement. The more details, the
+  better.
+* Click *Submit new issue*.
+* After submitting the issue, you can either assign it to yourself or wait for
+  a community member to pick it up. Members of the documentation team and the
+  community might request clarifications before they can act on your issue. You
+  should actively check your issue or
+  https://docs.github.com/en/account-and-profile/managing-subscriptions-and-notifications-on-github/setting-up-notifications/configuring-notifications[turn
+  on GitHub notifications].
+
+== New content suggestions
+
+To suggest new content, please file an issue as using one of these mechanisms:
+
+* Choose an existing page in the section you think the content belongs in and
+  click *Create an issue*. OR
+ifeval::["{build-type}" == "community"]
+* Navigate to https://github.com/kubewarden/docs/issues/new/choose[GitHub] and
+  file the issue directly.
+endif::[]
+ifeval::["{build-type}" == "product"]
+* Navigate to https://github.com/rancher/kubewarden-product-docs/issues/new/choose[GitHub] and
+  file the issue directly.
+endif::[]
+
+== How you can make a contribution count?
+
+No contribution is too big or small. However, so the community derives maximum
+value, we request that you follow the below when reporting an issue:
+
+* Focus on providing a clear description of the issue. Some key points to
+  consider would be describing what's missing, outdated, erroneous, or requires
+  qualitative and technical improvement.
+* Describe the specific impact the issue has on users.
+* Limit the scope of the issue. If the scope is large, break it down to smaller
+  tasks within an issue. For example, "Creating a Contribution Guide" is wide
+  in scope since there would be multiple tasks associated with the issue.
+  However, "Fixing a grammatical error on the Quickstart page" is a more
+  narrowly scoped issue that would require only a single pull request.
+* Crosscheck existing issues to avoid duplicate work.
+* Check for an existing pull request or issue. Check you reference the existing
+  issue or pull request within the issue you're opening to give context for
+  contributors who may want to work on it.
