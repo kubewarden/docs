@@ -6,3 +6,14 @@ command = "make community-remote"
 
 #[build.environment]
 #  NODE_OPTIONS = "--max_old_space_size=4096"
+
+# Redirect old Docusaurus-style URLs (/<path>) to the new Antora URLs
+# (/admc/1.35/en/<path>).
+# Netlify serves existing files directly, so this only fires for paths that
+# don't have a real file in the build output (the old doc URLs).
+# Netlify pretty URL feature automatically adds the .html on the new Antora
+# URLs.
+[[redirects]]
+from = "/*"
+to = "/admc/1.35/en/:splat"
+status = 301
