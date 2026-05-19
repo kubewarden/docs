@@ -136,28 +136,6 @@ helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-co
 helm install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults
 ----
 
-[CAUTION]
-====
-
-Since
-https://github.com/kubewarden/adm-controller/releases/tag/v0.4.0[`v0.4.0`],
-a `PolicyServer` resource named `default` isn't created using the
-`kubewarden-controller` chart. Now a Helm chart called `kubewarden-defaults`,
-installs the default policy server.
-
-This means that if not using the latest version of the `kubewarden-controller`
-while upgrading or deleting, your default policy server isn't upgraded or
-deleted. So, you might run into issues if you try to install the
-`kubewarden-defaults` with conflicting information, for example, the same
-policy server name. To install future upgrades of the `kubewarden-defaults`
-Helm chart remove the existing `PolicyServer` resource created by the
-`kubewarden-controller` before installing the new chart. Now you can update
-your policy server using Helm upgrades without resource conflicts. When you
-remove the `PolicyServer`, you remove all the policies bound to it as well.
-
-====
-
-
 The default configuration values are sufficient for most deployments. The
 https://charts.kubewarden.io/#configuration[documentation] describes all the
 options.
