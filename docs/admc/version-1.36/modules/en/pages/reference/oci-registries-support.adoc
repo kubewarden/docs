@@ -50,7 +50,7 @@ correct any registry inaccuracies by using the
 
 The {admc-short-name} project recommends:
 
-* xref:/reference/kwctl.adoc[`kwctl`] (our CLI tool).
+* xref:/reference/kwctl-cli.adoc[`kwctl`] (our CLI tool).
 * https://github.com/containers/skopeo[Skopeo] (https://github.com/containers/skopeo/pull/1705[≥ 1.9.0]).
 * https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md[Crane].
 
