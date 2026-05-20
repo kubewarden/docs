@@ -25,6 +25,7 @@ ui:
 asciidoc:
   attributes:
     kw-build-community: true
+    ga-build: true
     page-pagination: ''
     tabs-sync-option: ''
   extensions:
