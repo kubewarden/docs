@@ -31,6 +31,15 @@ community-remote: tmpdir environment
 		2>&1 | tee -a tmp/community-remote-build.log
 	cd build/site && ln -s kubewarden/latest latest
 
+.PHONY: community-remote-netlify
+community-remote-netlify: tmpdir environment
+	npx antora --version | tee tmp/community-remote-netlify-build.log
+	npx antora --stacktrace --log-format=pretty --log-level=info \
+		kw-remote-community-playbook.yml \
+		2>&1 | tee -a tmp/community-remote-netlify-build.log
+	cd build/site && ln -s kubewarden/latest latest
+
+
 .PHONY: clean
 clean:
 	rm -rf build*

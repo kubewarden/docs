@@ -12,6 +12,8 @@ href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap" 
 <!-- <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap" rel="stylesheet"> -->
 <link rel="stylesheet" href="{{uiRootPath}}/css/vendor/light.css">
 
+{{#with (resolvePage page.relativeSrcPath model=false)}}
+{{#unless (eq (lookup asciidoc.attributes 'no-ga-build') undefined)}}
 {{!-- <!-- Start Google Analytics --> --}}
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -26,3 +28,5 @@ href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap" 
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PSW07XK7TM"></script>
 {{!-- <!-- End Google Analytics --> --}}
+{{/unless}}
+{{/with}}
