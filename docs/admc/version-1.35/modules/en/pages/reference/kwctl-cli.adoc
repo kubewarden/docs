@@ -6,7 +6,7 @@ include::partial$variables.adoc[]
 :revdate: 2026-05-04
 :page-revdate: {revdate}
 :title: kwctl CLI
-:description: Explore the `kwctl` command-line tool to manage {admc-name} policies and perform tasks like loading policies.
+:description: Explore the `kwctl` command-line tool to manage {project-name} policies and perform tasks like loading policies.
 :keywords: cli, reference, kwctl
 :doc-persona: kubewarden-operator
 :doc-type: reference
@@ -44,7 +44,7 @@ This document contains the help content for the `kwctl` command-line program.
 [[kwctl]]
 === `kwctl`
 
-Tool to manage {admc-name} policies
+Tool to manage {project-name} policies
 
 *Usage:* `kwctl [OPTIONS] <COMMAND>`
 
