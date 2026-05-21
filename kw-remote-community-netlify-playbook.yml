@@ -12,8 +12,8 @@ site:
 
 content:
   sources:
-    - url: ./
-      branches: HEAD
+    - url: https://github.com/kubewarden/docs.git
+      branches: [main]
       start_paths: [shared, docs/kw/version-*, docs/admc/version-*, docs/sboms/v*]
 
 ui:
@@ -25,6 +25,7 @@ ui:
 asciidoc:
   attributes:
     kw-build-community: true
+    build-environment: netlify
     page-pagination: ''
     tabs-sync-option: ''
   extensions:
@@ -47,4 +48,4 @@ antora:
 
 
 output:
-  dir: build-local-community/site
+  dir: build/site

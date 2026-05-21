@@ -1,8 +1,7 @@
 # Configuration file to customize the build process of the website on Netlify.
 [build]
 publish = "build/site"
-command = "make community-remote"
-# TODO disable google analytics when it is enabled
+command = "make community-remote-netlify"
 
 #[build.environment]
 #  NODE_OPTIONS = "--max_old_space_size=4096"
