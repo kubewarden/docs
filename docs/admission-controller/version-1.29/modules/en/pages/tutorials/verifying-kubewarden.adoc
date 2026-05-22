@@ -21,14 +21,14 @@ Kubewarden artifacts, provenance attestations and SBOMs are signed using https:/
 with the keyless workflow. This means that the signing certificate contains the
 following info, where `*` matches any following characters:
 
-* issuer: `+https://token.actions.githubusercontent.com+`
-* subject: `+https://github.com/kubewarden/*+`
+* issuer: `\https://token.actions.githubusercontent.com`
+* subject: `\https://github.com/kubewarden/*`
 * x509 certificate extension for GHA, "github_workflow_repository": `kubewarden/*`
 
 [IMPORTANT]
 ====
 The subject used in the `--certificate-identity-regexp` cosign CLI flag in this
-tutorial utilizes the `+https://github.com/kubewarden/*+` values to simplify the
+tutorial utilizes the `\https://github.com/kubewarden/*` values to simplify the
 explanation. However, this allows artifacts from repositories with the same prefix to
 bypass validation. For example: `github.com/kubewarden/policy-server1`.
 
