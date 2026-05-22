@@ -16,4 +16,4 @@ jobs:
           cache: npm
       - name: Build website
         run: |
-          make community-remote
+          make community-local
