@@ -1,9 +1,10 @@
 .PHONY: all
 all:
 	@echo "Available targets:"
-	@echo "  community-local            Build the local community docs site"
+	@echo "  community-local            Build the local community docs site for local workstation test"
 	@echo "  community-remote           Build the remote community docs site (as would happen on GH)"
-	@echo "  preview-local-community    Preview the local community docs site"
+	@echo "  community-netlify-preview  Build the community docs site for Netlify preview (as on Netlify)"
+	@echo "  preview                    Preview the local community docs site"
 	@echo "  clean                      Clean build artifacts"
 	@echo "  checkmake                  Check Makefile for common issues"
 	@echo "  environment                Set up the Node.js environment"
@@ -11,32 +12,30 @@ all:
 
 .PHONY: community-local
 community-local: tmpdir environment
-	npx antora --version | tee tmp/community-local-build.log
+	npx antora --version | tee tmp/build.log
 	npx antora --stacktrace --log-format=pretty --log-level=info \
 		kw-local-community-playbook.yml \
-		2>&1 | tee -a tmp/community-local-build.log
-	cd build-local-community/site && ln -s kubewarden/latest latest
-	@echo 
-	@echo "If your build was successful, you can preview the site with" 
-	@echo "'make preview-local-community'. The server needs to be used, viewing" 
-	@echo "the html files directly will not work due to the Antora playbook"
-	@echo "setting 'html_extension_style: drop'."
-	@echo
+		2>&1 | tee -a tmp/build.log
+	cd build/site && ln -s kubewarden/latest latest
+	@echo ""
+	@echo "If your build was successful, you can preview the site with"
+	@echo "'make preview'."
+	@echo ""
 
 .PHONY: community-remote
 community-remote: tmpdir environment
-	npx antora --version | tee tmp/community-remote-build.log
+	npx antora --version | tee tmp/build.log
 	npx antora --stacktrace --log-format=pretty --log-level=info \
 		kw-remote-community-playbook.yml \
-		2>&1 | tee -a tmp/community-remote-build.log
+		2>&1 | tee -a tmp/build.log
 	cd build/site && ln -s kubewarden/latest latest
 
-.PHONY: community-remote-netlify
-community-remote-netlify: tmpdir environment
-	npx antora --version | tee tmp/community-remote-netlify-build.log
-	npx antora --stacktrace --log-format=pretty --log-level=info \
-		kw-remote-community-netlify-playbook.yml \
-		2>&1 | tee -a tmp/community-remote-netlify-build.log
+.PHONY: community-netlify-preview
+community-netlify-preview: tmpdir environment
+	npx antora --version | tee tmp/build.log
+	npx antora --attribute build-environment=netlify --stacktrace --log-format=pretty --log-level=info \
+		kw-local-community-playbook.yml \
+		2>&1 | tee -a tmp/build.log
 	cd build/site && ln -s kubewarden/latest latest
 
 
@@ -63,9 +62,9 @@ checkmake:
 		fi; \
 	else echo "checkmake not available"; fi
 
-.PHONY: preview-local-community
-preview-local-community:
-	npx http-server build-local-community/site -c-1
+.PHONY: preview
+preview:
+	npx http-server build/site -c-1
 
 .PHONY: test
 test:

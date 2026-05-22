@@ -1,7 +1,7 @@
 # Configuration file to customize the build process of the website on Netlify.
 [build]
 publish = "build/site"
-command = "make community-remote-netlify"
+command = "make community-netlify-preview"
 
 #[build.environment]
 #  NODE_OPTIONS = "--max_old_space_size=4096"
