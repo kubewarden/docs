@@ -66,6 +66,7 @@ include::partial$variables.adoc[]
 ** xref:explanations/distributing-policies.adoc[]
 ** Comparisons
 *** xref:explanations/comparisons/opa-comparison.adoc[]
+*** xref:explanations/comparisons/kyverno-comparison.adoc[]
 ** xref:explanations/audit-scanner/audit-scanner.adoc[]
 *** xref:explanations/audit-scanner/limitations.adoc[]
 *** xref:explanations/audit-scanner/policy-reports.adoc[]
