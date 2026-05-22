@@ -1,6 +1,6 @@
-name: admc
+name: admission-controller
 title: Admission Controller
-version: '1.31'
+version: '1.32'
 start_page: en:introduction.adoc
 nav:
 - modules/en/nav.adoc

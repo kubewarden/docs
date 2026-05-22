@@ -1,5 +1,5 @@
 ---
-name: sboms
+name: sbom-scanner
 title: SBOM Scanner
 version: '0.9.0'
 prerelease: -dev

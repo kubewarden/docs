@@ -4,8 +4,8 @@ Welcome to the Kubewarden project.
 
 Since the 1.36 release of Kubewarden Admission Controller
 the Kubewarden project comprises two components,
-the xref:latest@admc:en:introduction.adoc[Kubewarden Admission Controller]
-and xref:dev@sboms:en:introduction.adoc[SBOMScanner].
+the xref:latest@admission-controller:en:introduction.adoc[Kubewarden Admission Controller]
+and xref:dev@sbom-scanner:en:introduction.adoc[SBOMScanner].
 
 Before that the Kubewarden project was a single component, the Kubewarden
 Admission Controller, known simply as Kubewarden. Since 1.36, the Kubewarden
