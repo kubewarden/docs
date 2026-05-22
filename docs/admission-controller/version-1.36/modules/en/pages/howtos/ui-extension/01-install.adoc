@@ -107,7 +107,7 @@ Helm repository with the {admc-short-name} UI chart for installation.
   a registry secret within the `cattle-ui-plugin-system` namespace. Enter the
   domain of the image address in the *Registry Domain Name* field.
 . Navigate back to the *Extensions* page (for example,
-  `+https://cluster-ip/dashboard/c/local/uiplugins+`).
+  `\https://cluster-ip/dashboard/c/local/uiplugins`).
 . On the top right, select *Manage Extension Catalogs*.
   image:ui_airgap_01.png[Manage Catalogs]
 . Select the *Import Extension Catalog* button. image:ui_airgap_02.png[Import
