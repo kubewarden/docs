@@ -82,7 +82,7 @@ i.fa[title="Tip:"] {
   background: #000;
   color: #fff;
   /* border-bottom-style: unset; */
-  background-color: #30ba78;
+  background-color: #008657;
 }
 
 .nav-container {
@@ -110,11 +110,11 @@ i.fa[title="Tip:"] {
 }
 
 .navbar-link {
-  background-color: #bc2a46;
+  background-color: #0a322c;
 }
 
 .navbar-link:hover {
-  background-color: #bc2a46;
+  background-color: #008657;
 }
 
 .has-submenu {
