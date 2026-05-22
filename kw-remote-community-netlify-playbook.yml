@@ -12,9 +12,9 @@ site:
 
 content:
   sources:
-    - url: https://github.com/kubewarden/docs.git
-      branches: [main]
-      start_paths: [shared, docs/kw/version-*, docs/admc/version-*, docs/sboms/v*]
+    - url: ./
+      branches: HEAD
+      start_paths: [shared, docs/kw/version-*, docs/admission-controller/version-*, docs/sbom-scanner/v*]
 
 ui:
   bundle:

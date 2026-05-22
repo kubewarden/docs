@@ -28,12 +28,12 @@
   {{/if}}
   <ul class="components">
     {{#each site.components}}
-      {{#if (eq ./name 'admc')}}
+      {{#if (eq ./name 'admission-controller')}}
         {{> component-entry component=this}}
       {{/if}}
     {{/each}}
     {{#each site.components}}
-      {{#if (eq ./name 'sboms')}}
+      {{#if (eq ./name 'sbom-scanner')}}
         {{> component-entry component=this}}
       {{/if}}
     {{/each}}
