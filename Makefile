@@ -16,7 +16,10 @@ community-local: tmpdir environment
 	npx antora --stacktrace --log-format=pretty --log-level=info \
 		kw-local-community-playbook.yml \
 		2>&1 | tee -a tmp/build.log
-	cd build/site && ln -s kubewarden/latest latest
+	cd build/site && ln -sf kubewarden/latest latest
+	./scripts/generate-redirects.sh \
+		build/site \
+		admission-controller/1.35/en
 	@echo ""
 	@echo "If your build was successful, you can preview the site with"
 	@echo "'make preview'."
@@ -28,7 +31,10 @@ community-remote: tmpdir environment
 	npx antora --stacktrace --log-format=pretty --log-level=info \
 		kw-remote-community-playbook.yml \
 		2>&1 | tee -a tmp/build.log
-	cd build/site && ln -s kubewarden/latest latest
+	cd build/site && ln -sf kubewarden/latest latest
+	./scripts/generate-redirects.sh \
+		build/site \
+		admission-controller/1.35/en
 
 .PHONY: community-netlify-preview
 community-netlify-preview: tmpdir environment
@@ -36,7 +42,10 @@ community-netlify-preview: tmpdir environment
 	npx antora --attribute build-environment=netlify --stacktrace --log-format=pretty --log-level=info \
 		kw-local-community-playbook.yml \
 		2>&1 | tee -a tmp/build.log
-	cd build/site && ln -s kubewarden/latest latest
+	cd build/site && ln -sf kubewarden/latest latest
+	./scripts/generate-redirects.sh \
+		build/site \
+		admission-controller/1.35/en
 
 
 .PHONY: clean
