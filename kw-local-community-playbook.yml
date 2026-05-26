@@ -4,12 +4,6 @@ site:
   title: Kubewarden
   start_page: 1.0@kubewarden:en:introduction.adoc
 
-# urls:
-#   html_extension_style: drop
-#   latest_version_segment: ''
-#   latest_prerelease_version_segment: dev
-#   latest_version_segment_strategy: replace
-
 content:
   sources:
     - url: ./
@@ -47,4 +41,4 @@ antora:
 
 
 output:
-  dir: build-local-community/site
+  dir: build/site
