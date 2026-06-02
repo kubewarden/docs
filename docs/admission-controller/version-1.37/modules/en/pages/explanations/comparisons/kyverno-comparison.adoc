@@ -1,0 +1,290 @@
+include::partial$variables.adoc[]
+
+= {admc-name} vs Kyverno
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-05-22
+:page-revdate: {revdate}
+:description: Compare Kyverno and {admc-name} policy management for Kubernetes environments to determine the best approach for your use case.
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["explanations", "kubewarden-vs-kyverno"]
+:doc-type: ["explanation"]
+:keywords: ["{admc-name}", "kubewarden", "kubernetes", "kyverno", "comparison"]
+:current-version: {page-origin-branch}
+
+[IMPORTANT]
+====
+
+This page is from May 2026. Both projects may have evolved since then.
+
+If you find something is missing or inaccurate, please
+https://github.com/kubewarden/docs/[file an issue] or open a PR using the link
+at the bottom of the page.
+
+====
+
+Both Kyverno and Kubewarden, from which {admc-name} is derived, are open source
+projects and part of CNCF.
+
+This table provides a comparison between Kyverno and {admc-short-name}. Topics
+requiring more information have links to further explanation.
+
+|===
+| Feature | Kyverno | {admc-short-name}
+
+| Validation
+| ✅
+| ✅
+
+| Mutation
+| ✅
+| ✅
+
+| Generation
+| ✅
+| ❌
+
+| Deletion
+| ✅
+| ❌
+
+| Image verification
+| ✅
+| ✅
+
+| Policy language <<_writing_policies,[1]>>
+| CEL (Kyverno DSL deprecated)
+| CEL, Rego, Go, Rust,...
+
+| Context aware <<_context_aware,[2]>>
+| ✅
+| ✅
+
+| Validating non-Kubernetes resources <<_validating_non_kubernetes_resources,[3]>>
+| ✅
+| ✅
+
+| Policy distribution <<_policy_distribution,[4]>>
+| embedded into Kubernetes CR
+| Container registry, or embedded into Kubernetes CR (CEL)
+
+| CI/CD integration <<_cicd_integration,[5]>>
+| ✅
+| ✅
+
+| Policy enforcement modes <<_policy_enforcement_modes,[6]>>
+| deny, warn
+| deny, warn
+
+| Deployment mode <<_deployment_mode,[7]>>
+| single evaluation server
+| multiple evaluation servers
+
+| Background checks <<_background_checks,[8]>>
+| ✅
+| ✅
+|===
+
+[#_types_of_policies]
+== Types of policies
+
+Both Kyverno and {admc-short-name} can write validation, mutation and image
+verification policies. These policies can target any kind of Kubernetes
+resource, including Custom Resources.
+
+Kyverno also supports additional policy types that {admc-short-name} does not
+provide:
+
+* *GeneratingPolicy*: automatically creates or clones Kubernetes resources based
+on triggers (for example, creating a NetworkPolicy when a new Namespace is
+created).
+* *DeletingPolicy*: deletes matching resources based on a schedule.
+
+[#_writing_policies]
+== Writing policies
+
+Kyverno has historically used its own
+https://en.wikipedia.org/wiki/Domain-specific_language[Domain Specific
+Language] based on JMESPath and YAML overlay patterns to write policies.
+This traditional language, used through the `ClusterPolicy` and `Policy`
+Custom Resources, has been
+https://kyverno.io/docs/policy-types/overview/#deprecation-schedule-for-legacy-types[deprecated
+as of Kyverno v1.17 (January 2026) and is planned for removal in v1.20 (October 2026)].
+
+The current recommended approach for writing Kyverno policies is
+https://kubernetes.io/docs/reference/using-api/cel/[CEL (Common Expression
+Language)], used through the new `ValidatingPolicy`, `MutatingPolicy`,
+`GeneratingPolicy`, `DeletingPolicy`, and `ImageValidatingPolicy` Custom
+Resources introduced starting from Kyverno v1.14.
+
+{admc-short-name} supports writing policies using CEL, the same language now
+adopted by Kyverno. Both projects can also run native Kubernetes
+https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/[ValidatingAdmissionPolicy]
+(VAP) resources.
+
+In addition, {admc-short-name} supports writing policies using traditional
+programming languages (like Go, Rust and others) or other
+https://en.wikipedia.org/wiki/Domain-specific_language[Domain Specific
+Languages] like Rego.
+
+[NOTE]
+====
+
+{admc-short-name} provides experimental support for policies written using
+Kyverno's traditional DSL through the
+https://artifacthub.io/packages/kubewarden/kubewarden-policy-library/kyverno-dsl[kyverno-dsl]
+policy available on ArtifactHub. This can help users migrating from Kyverno's
+legacy policy format.
+
+====
+
+[#_context_aware]
+== Context aware
+
+Sometimes a policy needs data about the current state of the cluster to make a
+validation or mutation decision. For example, a policy validating Ingress
+resources might need to know other Ingress resources already defined in the
+cluster to ensure no clashes happen. {admc-short-name} calls these policies "context
+aware".
+
+Both Kyverno and {admc-short-name} support these types of policies.
+
+When deploying Kyverno, a Kubernetes administrator decides which types of
+cluster data to make available to the policies at evaluation time. However, this
+data is then accessible by all the policies deployed.
+
+For example, if a Kyverno policy requires access to Kubernetes Secrets, all the
+other policies deployed are able to read this data as well.
+
+Conversely, {admc-short-name} provides a granular access to cluster resources.
+Each policy has access only to the resources that the Kubernetes administrator
+specifies. Attempting to read unauthorized data is immediately blocked and
+reported to the cluster administrators.
+
+[#_validating_non_kubernetes_resources]
+== Validating non-Kubernetes resources
+
+Both Kyverno and {admc-short-name} can validate arbitrary JSON data beyond
+Kubernetes resources.
+
+Kyverno provides this capability through its `ValidatingPolicy` type, by setting
+the `spec.evaluation.mode` field to `JSON`.
+See the https://kyverno.io/docs/policy-types/validating-policy/#evaluation[Kyverno ValidatingPolicy documentation]
+for details.
+
+{admc-short-name} provides the same capability through
+xref:/howtos/raw-policies.adoc[raw policies], which can evaluate policies
+against arbitrary JSON input data without requiring a running Kubernetes cluster.
+
+[#_policy_distribution]
+== Policy distribution
+
+Kyverno and {admc-short-name} CEL policies have the source code of the policy
+embedded in the Custom Resource defining a policy in Kubernetes.
+
+Additionally, {admc-short-name} policies can have the source code of the policy
+managed like container images (for Rego, Go, Rust, ...). Once built, they're
+pushed into container registries as OCI artifacts.
+
+You can sign and verify {admc-short-name} policies using container image tools like
+`cosign`, from the https://sigstore.dev[Sigstore project].
+
+You can distribute {admc-short-name} policies among geographically distributed
+container registries using the traditional tools and processes adopted for
+container images.
+
+[#_cicd_integration]
+== CI/CD integration
+
+Both Kyverno and {admc-short-name} are managed using GitOps methodologies.
+
+Kyverno provides the
+https://kyverno.io/docs/subprojects/kyverno-cli/[`kyverno` CLI] for testing
+policies in CI/CD pipelines. It includes the `kyverno test` command for running
+predefined test cases and the `kyverno apply` command for testing resources
+against policies. A
+https://github.com/marketplace/actions/kyverno-cli-installer[GitHub Action]
+is also available for integrating Kyverno CLI into GitHub Actions workflows.
+
+{admc-short-name} policies have CI/CD pipelines like traditional microservices.
+Usually their source code lives in a Git repository and then, using traditional
+CI/CD systems, unit tests run against it. You write unit tests using the
+testing frameworks of the language used to write the policy. Once all the tests
+pass, you compile the policy to WebAssembly and push it to a container
+registry. This kind of pipeline is usually maintained by the policy author.
+
+Kubernetes administrators typically maintain other automation pipelines that react to
+new releases of the policy (using automation tools like
+https://docs.github.com/en/code-security/dependabot/working-with-dependabot[Dependabot],
+https://www.mend.io/renovate/[Renovate bot],
+https://www.updatecli.io/[updatecli] and others), or to changes to the
+policy configuration.
+
+The pipeline tests the policy against different types of requests. You can do
+the testing using the xref:/reference/kwctl-cli.adoc[`kwctl`] CLI tool,
+without requiring a running Kubernetes cluster. The `kwctl` CLI tool uses the
+same evaluation engine used by the {admc-short-name} stack deployed in a Kubernetes
+cluster.
+
+[#_policy_enforcement_modes]
+== Policy enforcement modes
+
+Both Kyverno and {admc-short-name} can deploy policies using two different
+operation modes:
+
+* *Enforce / protect*: violation of a policy causes the request to be rejected.
+In Kyverno, this is configured via
+https://kyverno.io/docs/policy-types/cluster-policy/validate/#failure-action[`failureAction: Enforce`].
+In {admc-short-name}, this is configured as the `protect` mode.
+
+* *Audit / monitor*: violation of a policy doesn't cause rejection but is logged
+and reported. In Kyverno, this is configured via `failureAction: Audit`.
+In {admc-short-name}, this is configured as the `monitor` mode.
+
+[#_deployment_mode]
+== Deployment mode
+
+Kyverno runs as a set of Kubernetes Deployments (admission controller,
+background controller, reports controller, cleanup controller). The admission
+controller handles all policy evaluations. While it supports running multiple
+replicas for high availability, all replicas evaluate all policies. There is
+no way to assign specific policies to specific instances.
+
+Conversely, {admc-short-name} allows definition of multiple evaluation servers.
+You define these servers by a Custom Resource called `PolicyServer`.
+
+When declaring a {admc-short-name} policy, the Kubernetes administrator decides which
+`PolicyServer` host it.
+
+[NOTE]
+====
+
+The `PolicyServer` object is a high level abstraction introduced by {admc-short-name}.
+Behind the scenes a `Deployment` with a specific replica size is created.
+
+Each `PolicyServer` can have a different replica size from others.
+
+====
+
+This allows interesting scenarios like the following ones:
+
+* Deploy critical policies to a dedicated Policy Server pool.
+* Deploy the policies of a noisy tenant to a dedicated Policy Server pool.
+
+[#_background_checks]
+== Background checks
+
+As policies are added, removed, and reconfigured the resources already in the
+cluster might become non-compliant.
+
+Both Kyverno and {admc-short-name} have a scanner that operates in the
+background. This scanner evaluates resources already defined in the cluster and
+flags non-compliant ones.
+
+Kyverno stores the results in `PolicyReport` and `ClusterPolicyReport` Custom
+Resources following the format defined by the
+https://github.com/kubernetes-sigs/wg-policy-prototypes/tree/master/policy-report[Kubernetes
+Policy working group]. As of Kyverno v1.15, alpha support for
+https://openreports.io[openreports.io] is also available.
+
+{admc-short-name} stores the results inside of a set of the Reports
+Custom Resources defined by https://openreports.io[openreports.io].

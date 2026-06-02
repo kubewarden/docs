@@ -1,0 +1,74 @@
+include::partial$variables.adoc[]
+
+= Security disclosure
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-05-04
+:page-revdate: {revdate}
+:description: Investigative security researchers work with the {admc-name}'s team to identify vulnerabilities using responsible disclosure protocols.
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["security", "disclosure"]
+:doc-type: ["explanation"]
+:keywords: ["kubewarden", "kubernetes", "security", "disclosure"]
+:sidebar_label: Security disclosure
+:sidebar_position: 80
+:current-version: {page-origin-branch}
+
+The {admc-name} team appreciates investigative work on security vulnerabilities
+carried out by well-intentioned, ethical security researchers. {admc-short-name}
+follows the practice of [responsible
+disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure) to best
+protect {admc-short-name}'s user base from the impact of security issues. On
+{admc-short-name}'s side, this means:
+
+* {admc-short-name} responds to security incidents on priority.
+* {admc-short-name} releases fixes for issues as soon as is practical, prioritizing by risk.
+* {admc-short-name} always transparently lets the community know about any incident that
+  affects them.
+
+If you have found a security vulnerability in {admc-short-name}, the easiest way to
+report a vulnerability is through the
+https://github.com/kubewarden/community/security/advisories[Security tab on
+GitHub]. This mechanism allows maintainers to communicate privately with you,
+and you don't need to encrypt your messages.
+
+Alternatively, you can disclose it responsibly by emailing
+xref:mailto:cncf-kubewarden-maintainers@lists.cncf.io.adoc[cncf-kubewarden-maintainers@lists.cncf.io]
+in an *unencrypted* message. Please don't discuss potential vulnerabilities in
+public without validating with us first.
+
+You can also come talk in our
+https://kubernetes.slack.com/archives/C03L52JRAFM[slack-room] on the Kubernetes
+Slack server.
+
+On receipt the security team:
+
+* Reviews the report, verifies the vulnerability and responds with confirmation
+  and/or further information requests.
+* After addressing the reported security bug, {admc-short-name} notifies the
+  Researcher, who is then welcome to optionally disclose publicly.
+  
+== What information to provide
+
+The information below must be provided in order for the report to be timely and
+effectively analyzed. Reports that miss the required information might be
+considered AI generated spam or reviewed with a lower priority. 
+
+* Project name and version where the issue was observed. If the issue was
+  observed on the source code, the link to the specific code in GitHub instead.
+* Description of the problem.
+* Type of the issue and impact when exploited.
+* Steps to reproduce.
+* A valid proof of concept (POC) exploit (only on a valid system that you are
+  authorized to perform such proof). A working POC is now mandatory as a proof
+  of work (POW) to reduce the noise of AI generated low quality reports.
+* It's mandatory to inform if AI tools were used to find the issue being
+  reported, to automate or to write the report, POC code or possible patch. If
+  this was the case, then inform which AI tools and models were used.
+
+The more information you provide, the faster we will be able to reproduce the
+issue and address your concerns more effectively.
+  
+
+Please, refer to the https://github.com/kubewarden/community[community
+repository] to find more about the
+project Governance and Security Policy.
