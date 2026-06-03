@@ -62,11 +62,11 @@ case "$kw_component" in
 esac
 
 current_latest_version="$2"
-current_latest_version_dir="$version_str$2"
+current_latest_version_dir="$version_str$current_latest_version"
 current_prerelease_version="$3"
-current_prerelease_version_dir="$version_str$3"
+current_prerelease_version_dir="$version_str$current_prerelease_version"
 new_prerelease_version="$4"
-new_prerelease_version_dir="$version_str$4"
+new_prerelease_version_dir="$version_str$new_prerelease_version"
 
 docs_dir="docs/$kw_component"
 
