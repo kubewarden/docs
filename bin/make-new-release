@@ -1,0 +1,113 @@
+#!/bin/bash
+
+require_dir() {
+  local path="$1"
+  local label="$2"
+
+  if [[ ! -d "$path" ]]; then
+    echo "Error: '$label '$path' not found."
+    exit 1
+  fi
+}
+
+require_file() {
+  local path="$1"
+  local label="$2"
+
+  if [[ ! -f "$path" ]]; then
+    echo "Error: '$label '$path' not found."
+    exit 1
+  fi
+}
+
+run_sed_update() {
+  local path="$1"
+  shift
+
+  if ! sed -E -i.bkp "$@" "$path"; then
+    echo "Error: failed to update '$path'."
+    exit 1
+  fi
+
+  rm "$path.bkp"
+}
+
+repo_root="$(git rev-parse --show-toplevel)"
+
+if [ -z "$repo_root" ]; then
+  echo "Error: not a git docs repository?"
+  exit 1
+fi
+
+cd "$repo_root" || exit 1
+
+if [[ "$#" -ne 4 ]]; then
+  echo "Usage: $0 <kw_component> <current_latest_version> <current_prerelease_version> <new_prerelease_version>"
+  exit 1
+fi
+
+kw_component="$1"
+
+case "$kw_component" in
+  admission-controller)
+    version_str="version-"
+    ;;
+  sbom-scanner)
+    version_str="v"
+    ;;
+  *)
+    echo "Error: invalid component '$kw_component'. Expected one of: admission-controller sbom-scanner."
+    exit 1
+    ;;
+esac
+
+current_latest_version="$2"
+current_latest_version_dir="$version_str$2"
+current_prerelease_version="$3"
+current_prerelease_version_dir="$version_str$3"
+new_prerelease_version="$4"
+new_prerelease_version_dir="$version_str$4"
+
+docs_dir="docs/$kw_component"
+
+clv_dir="$docs_dir/$current_latest_version_dir"
+cpv_dir="$docs_dir/$current_prerelease_version_dir"
+npv_dir="$docs_dir/$new_prerelease_version_dir"
+
+clv_yml="$docs_dir/$current_latest_version_dir/antora.yml"
+cpv_yml="$docs_dir/$current_prerelease_version_dir/antora.yml"
+npv_yml="$docs_dir/$new_prerelease_version_dir/antora.yml"
+
+require_dir "$clv_dir" "Current latest version directory"
+require_file "$clv_yml" "Current latest version antora.yml"
+require_dir "$cpv_dir" "Current prerelease version directory"
+require_file "$cpv_yml" "Current prerelease version antora.yml"
+
+if [ -d "$npv_dir" ]; then
+  echo "Error: 'New prerelease version directory '$npv_dir' already exists."
+  exit 1
+fi
+
+# Safe to copy
+if ! cp -r "$cpv_dir" "$npv_dir"; then
+  echo "Error: failed to copy '$cpv_dir' to '$npv_dir'."
+  exit 1
+fi
+
+# Modify current_latest_version/antora.yml, remove -latest from 'display:'.
+
+run_sed_update "$clv_yml" "/^display: (['\"]).*-latest\\1$/d"
+
+# Modify current_prerelease_version/antora.yml, update 'display:' to
+# current_prerelease_version-latest and remove prerelease.
+run_sed_update "$cpv_yml" \
+  -e "/^prerelease:/d" \
+  -e "/^display: (['\"]).*\\1$/d" \
+  -e "s/^version: (['\"])$current_prerelease_version\\1$/&\\
+display: \\1$current_prerelease_version-latest\\1/"
+
+# Modify new_prerelease_version/antora.yml, Change version from
+# current_prerelease_version to new_prerelease_version.
+run_sed_update "$npv_yml" \
+  -e "s/^version: (['\"])$current_prerelease_version\\1$/version: \\1$new_prerelease_version\\1/" \
+  -e "s/^prerelease: .*$/prerelease: -dev/"
