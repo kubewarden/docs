@@ -1,0 +1,135 @@
+name: CI
+
+on:
+  workflow_call:
+    inputs:
+      run_all:
+        description: "Run all checks (ignore path filtering)"
+        required: false
+        type: boolean
+        default: true
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+    inputs:
+      run_all:
+        description: "Run all checks (ignore path filtering)"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  # Detect which files changed to run appropriate checks
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      ci-full: ${{ steps.changed-files.outputs.ci-full }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Detect changed files
+        id: changed-files
+        env:
+          RUN_ALL: ${{ inputs.run_all }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
+          EVENT_ACTION: ${{ github.event.action }}
+          EVENT_LABEL_NAME: ${{ github.event.label.name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          EVENT_BEFORE: ${{ github.event.before }}
+        run: |
+          # If run_all input is true (from workflow_call or workflow_dispatch), run everything
+          if [ "$RUN_ALL" = "true" ]; then
+            echo "run_all=true, running all checks"
+            echo "ci-full=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Check for CI trigger labels on PRs
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            LABELS="$PR_LABELS"
+            echo "PR Labels: $LABELS"
+            
+            if echo "$LABELS" | grep -q "ci-full"; then
+              echo "Label 'ci-full' found, running all checks"
+              echo "go=true" >> $GITHUB_OUTPUT
+              echo "rust=true" >> $GITHUB_OUTPUT
+              echo "ci-full=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            
+            if echo "$LABELS" | grep -q "ci-go"; then
+              echo "Label 'ci-go' found, running Go checks"
+              echo "go=true" >> $GITHUB_OUTPUT
+            fi
+            
+            # If triggered by label event and we found a matching label, skip path detection
+            if [ "$EVENT_ACTION" = "labeled" ]; then
+              LABEL_NAME="$EVENT_LABEL_NAME"
+              if [ "$LABEL_NAME" = "ci-full" ]; then
+                echo "Triggered by label event, skipping path detection"
+                exit 0
+              fi
+            fi
+          fi
+
+          # Determine base ref for comparison
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            BASE_REF="$PR_BASE_SHA"
+          else
+            # For push events, compare with previous commit
+            BASE_REF="$EVENT_BEFORE"
+            # If first push to branch, compare with parent
+            if [ "$BASE_REF" = "0000000000000000000000000000000000000000" ]; then
+              BASE_REF="HEAD^"
+            fi
+          fi
+
+          echo "Comparing against base: $BASE_REF"
+
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - run: shellcheck $(find scripts/ -name '*.sh')
+
+  spelling:
+    name: Spelling check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - name: Check spelling with typos
+        uses: crate-ci/typos@44e2070e6017f834bf069503acb35ca0ca0b75f2 # v1.47.1
+
+  # Rollup job for branch protection - single stable job name that depends on all checks
+  ci-success:
+    name: CI Success
+    if: always()
+    needs:
+      - changes
+      - shellcheck
+      - spelling
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all jobs status
+        run: |
+          # Check if any job failed or was cancelled
+          if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" || "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo "One or more jobs failed or were cancelled"
+            exit 1
+          fi
+          echo "All jobs passed or were skipped"
