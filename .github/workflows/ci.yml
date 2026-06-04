@@ -114,6 +114,12 @@ jobs:
           persist-credentials: false
       - name: Check spelling with typos
         uses: crate-ci/typos@44e2070e6017f834bf069503acb35ca0ca0b75f2 # v1.47.1
+      - name: Run spelling check as warning only
+        shell: bash
+        run: |
+          if ! typos .; then
+            echo "::warning::Spelling issues found."
+          fi
 
   # Rollup job for branch protection - single stable job name that depends on all checks
   ci-success:
