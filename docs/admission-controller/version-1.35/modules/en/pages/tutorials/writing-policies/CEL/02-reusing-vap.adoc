@@ -166,7 +166,7 @@ Notice the commented numbers on both the YAML manifests. Let's expand on them:
 |===
 | #   | VAP field                         | `cel-policy` field                       | Description
 
-| 1   | `failurePolicy`                   | `settings.failurePolicy`                 | CEL behavior, for when CEL expression evaluates to false, there's CEL runtime errors, or there's invalid or mis-configured CEL. For example, a CEL expression returning false, missing parameters, or missing variables. Not to confuse with (6).
+| 1   | `failurePolicy`                   | `settings.failurePolicy`                 | CEL behavior, for when CEL expression evaluates to false, there's CEL runtime errors, or there's invalid or misconfigured CEL. For example, a CEL expression returning false, missing parameters, or missing variables. Not to confuse with (6).
 | 2   | `matchConstraints`                | `rules`                                  | Both accept the same https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#rulewithoperations-v1-admissionregistration[RuleWithOperations] that informs on what kind of Resource the policy applies to.
 | 3   | `variables`                       | `settings.variables`                     | In {short-project-name}'s `cel-policy`, expressions that define variables are in `settings.variables`. Apart from that, they are equivalent.
 | 4   | `paramKind`,`paramRef`            | `settings.paramKind`,`settings.paramRef` | In {short-project-name}'s `cel-policy`, parameter definitions are in `settings.paramKind`, `settings.paramRef`. Apart from that, they are equivalent.
