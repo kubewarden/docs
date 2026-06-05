@@ -1,0 +1,96 @@
+# {{ $GitHubUser := env ""}}
+# {{ $GitHubRepositoryList := env "GITHUB_REPOSITORY" | split "/"}}
+# {{ $GitHubPAT := env "GITHUB_TOKEN"}}
+# {{ $GitHubUsername := env "GITHUB_ACTOR"}}
+
+name: Update Kubewarden admission controller CLI documentation target version
+pipelineid: "{{ .pipelineid }}"
+
+scms:
+  default:
+    kind: "github"
+    spec:
+      user: "{{ default $GitHubUser .scm.user}}"
+      email: "{{ .scm.email }}"
+      owner: "{{ default $GitHubRepositoryList._0 .scm.owner }}"
+      repository: "{{ default $GitHubRepositoryList._1 .scm.repository}}"
+      token: "{{ default $GitHubPAT .scm.token }}"
+      username: "{{ default $GitHubUsername .scm.username }}"
+      branch: "{{ .scm.branch }}"
+      commitusingapi: true
+      commitmessage:
+        hidecredit: true
+        footers: "Signed-off-by: Kubewarden bot <cncf-kubewarden-maintainers@lists.cncf.io>"
+
+sources:
+  releaseVersion:
+    name: "Get latest release version"
+    kind: githubrelease
+    spec:
+      # {{ $AppGitHubRepositoryList := .sourceRepository | split "/"}}
+      owner: "{{ $AppGitHubRepositoryList._0 }}"
+      repository: "{{ $AppGitHubRepositoryList._1 }}"
+      token: "{{ default .scm.token $GitHubPAT }}"
+      username: "{{ default .scm.username $GitHubUsername }}"
+      versionfilter:
+        kind: "semver"
+        pattern: ">0.1"
+    transformers:
+      - trimprefix: "v"
+      - findsubmatch:
+          pattern: '^(\d*).(\d*)'
+          captureindex: 0
+
+  devVersion:
+    name: "Compute next dev version (release + 1)"
+    kind: shell
+    dependson:
+      - "source#releaseVersion"
+    spec:
+      command: |
+        #!/bin/sh
+        VERSION='{{ source "releaseVersion" }}'
+        MAJOR=$(echo "$VERSION" | cut -d. -f1)
+        MINOR=$(echo "$VERSION" | cut -d. -f2)
+        NEXT_MINOR=$((MINOR + 1))
+        echo "${MAJOR}.${NEXT_MINOR}"
+
+targets:
+  updateKwctlValuesFile:
+    name: "Update kwctl CLI docs target version"
+    kind: yaml
+    sourceid: devVersion
+    scmid: default
+    spec:
+      file: "updatecli/values.d/update-kwctl-cli-ref-docs.yaml"
+      key: "$.files[0].dst"
+      value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/pages/reference/kwctl-cli.adoc'
+
+  updatePolicyServerValuesFile:
+    name: "Update policy-server CLI docs target version"
+    kind: yaml
+    sourceid: devVersion
+    scmid: default
+    spec:
+      file: "updatecli/values.d/update-policy-server-cli-ref-docs.yaml"
+      key: "$.files[0].dst"
+      value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/pages/reference/policy-server-cli.adoc'
+
+actions:
+  default:
+    kind: "github/pullrequest"
+    scmid: "default"
+    spec:
+      automerge: false
+# {{ if .pr.title }}
+      title: "{{ .pr.title }}"
+# {{ end }}
+# {{ if .pr.description }}
+      description: "{{ .pr.description }}"
+# {{ end }}
+# {{ if .pr.labels }}
+      labels:
+# {{ range .pr.labels }}
+        - "{{ . }}"
+# {{ end }}
+# {{ end }}
