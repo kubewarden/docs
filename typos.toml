@@ -1,6 +1,21 @@
 [files]
 extend-exclude = [
-  "shared"
+    # 1. Exclude everything in the root directory by default
+    "/*",
+
+    # 2. Allow typos to enter your two target folders
+    "!/shared/",
+    "!/docs/",
+
+    # 3. Rules for 'shared': Ignore all files, allow subfolders, whitelist .adoc
+    "/shared/**",
+    "!/shared/**/",
+    "!/shared/**/*.adoc",
+
+    # 4. Rules for 'docs': Ignore all files, allow subfolders, whitelist .adoc
+    "/docs/**",
+    "!/docs/**/",
+    "!/docs/**/*.adoc",
 ]
 
 [default.extend-words]
@@ -15,4 +30,8 @@ ANDed = "ANDed"
 extend-ignore-re = [
   # Ignore base64 encoded strings (certificates, keys, etc.)
   '[A-Za-z0-9+/]{20,}={0,2}',
+  '(?i)\b[0-9a-f]{12}\b',
+  '\-optin\-',
+  'adn:ignore',
+
 ]
