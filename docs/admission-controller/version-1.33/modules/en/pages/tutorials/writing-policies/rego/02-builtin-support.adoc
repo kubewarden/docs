@@ -25,7 +25,7 @@ in this case, {project-name}.
 OPA and Gatekeeper may use them depending on the needs of the policy.
 In any case, these built-ins are exposed to the policy and any new or existing policy could depend on them.
 
-There are still ceratin built-ins that aren't yet provided by {short-project-name},
+There are still certain built-ins that aren't yet provided by {short-project-name},
 however, based on the policies seen in the open,
 the ones already supported should be enough for the most Kubernetes users.
 

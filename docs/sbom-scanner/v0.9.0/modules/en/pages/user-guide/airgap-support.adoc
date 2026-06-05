@@ -11,7 +11,7 @@ sources:
 * Java Vulnerability Database
 * VEX Hub (optional)
 
-These external sources can be self-hosted in your private infrastucture
+These external sources can be self-hosted in your private infrastructure
 to make the whole environment air-gapped.
 
 == Self-Hosting Vulnerability Databases
