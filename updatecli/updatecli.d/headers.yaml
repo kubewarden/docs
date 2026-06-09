@@ -37,9 +37,6 @@ sources:
           :doc-persona: {{ $file.doc_persona }}
           :doc-type: {{ $file.doc_type }}
           :doc-topic: {{ $file.doc_topic }}
-      - replacer:
-          from: "Kubewarden"
-          to: "{admc-short-name}"
     spec:
       file: {{ $file.path }}
 # {{ end }}
