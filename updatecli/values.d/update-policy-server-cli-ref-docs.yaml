@@ -4,8 +4,8 @@ scm:
   enabled: false
 
 files:
-  - src: "cli-docs.md"
-    dst: "docs/reference/policy-server-cli.md"
+  - src: "crates/policy-server/cli-docs.adoc"
+    dst: "docs/admission-controller/version-1.36/modules/en/pages/reference/policy-server-cli.adoc"
 src:
   branch: "main"
-  url: "https://github.com/kubewarden/policy-server.git"
+  url: "https://github.com/kubewarden/adm-controller.git"

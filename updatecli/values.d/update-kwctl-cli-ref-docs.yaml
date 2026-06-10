@@ -4,8 +4,8 @@ scm:
   enabled: false
 
 files:
-  - src: "cli-docs.md"
-    dst: "docs/reference/kwctl-cli.md"
+  - src: "crates/kwctl/cli-docs.adoc"
+    dst: "docs/admission-controller/version-1.36/modules/en/pages/reference/kwctl-cli.adoc"
 src:
   branch: "main"
-  url: "https://github.com/kubewarden/kwctl.git"
+  url: "https://github.com/kubewarden/adm-controller.git"

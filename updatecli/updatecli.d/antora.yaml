@@ -1,0 +1,176 @@
+# {{ $GitHubUser := env ""}}
+# {{ $GitHubRepositoryList := env "GITHUB_REPOSITORY" | split "/"}}
+# {{ $GitHubPAT := env "GITHUB_TOKEN"}}
+# {{ $GitHubUsername := env "GITHUB_ACTOR"}}
+
+name: 'Bump {{ .component }} version in documentation'
+pipelineid: "{{ .pipelineid }}"
+
+scms:
+  default:
+    kind: "github"
+    spec:
+      user: "{{ default $GitHubUser .scm.user}}"
+      email: "{{ .scm.email }}"
+      owner: "{{ default $GitHubRepositoryList._0 .scm.owner }}"
+      repository: "{{ default $GitHubRepositoryList._1 .scm.repository}}"
+      token: "{{ default $GitHubPAT .scm.token }}"
+      username: "{{ default $GitHubUsername .scm.username }}"
+      branch: "{{ .scm.branch }}"
+      commitmessage:
+        hidecredit: true
+        footers: "Signed-off-by: Kubewarden bot <cncf-kubewarden-maintainers@lists.cncf.io>"
+
+sources:
+  releaseVersion:
+    name: "Get latest {{ .component }} release version"
+    kind: githubrelease
+    spec:
+      # {{ $AppGitHubRepositoryList := .sourceRepository | split "/"}}
+      owner: "{{ $AppGitHubRepositoryList._0 }}"
+      repository: "{{ $AppGitHubRepositoryList._1 }}"
+      token: "{{ default .scm.token $GitHubPAT }}"
+      username: "{{ default .scm.username $GitHubUsername }}"
+      versionfilter:
+        kind: "semver"
+        pattern: ">0.1"
+    transformers:
+      - trimprefix: "v"
+      - findsubmatch:
+          pattern: '^(\d*).(\d*)'
+          captureindex: 0
+
+conditions:
+  versionReadyForPromotion:
+    name: "Check if {{ .component }} version needs promotion"
+    kind: "shell"
+    scmid: "default"
+    disablesourceinput: true
+    spec:
+      environments:
+        - name: "PATH"
+      changedif:
+        kind: "exitcode"
+        spec:
+          failure: 1
+          success: 0
+          warning: 1
+      command: |+
+        #!/bin/sh
+        VERSION='{{ source "releaseVersion" }}'
+        COMPONENT_DIR="docs/{{ .component }}"
+        ANTORA_FILE="${COMPONENT_DIR}/version-${VERSION}/antora.yml"
+
+        if [ -f "$ANTORA_FILE" ]; then
+          if ! grep -q "prerelease:" "$ANTORA_FILE"; then
+            echo "Version ${VERSION} is already promoted to stable"
+            exit 1
+          fi
+        fi
+
+        DEV_COUNT=0
+        for dir in ${COMPONENT_DIR}/version-*/; do
+          if [ -f "${dir}antora.yml" ] && grep -q "prerelease:" "${dir}antora.yml"; then
+            DEV_COUNT=$((DEV_COUNT + 1))
+          fi
+        done
+
+        if [ "$DEV_COUNT" -ne 1 ]; then
+          echo "Expected exactly 1 dev version directory, found ${DEV_COUNT}"
+          exit 1
+        fi
+
+        LATEST_COUNT=0
+        for dir in ${COMPONENT_DIR}/version-*/; do
+          if [ -f "${dir}antora.yml" ] && grep -q "display:.*-latest" "${dir}antora.yml"; then
+            LATEST_COUNT=$((LATEST_COUNT + 1))
+          fi
+        done
+
+        if [ "$LATEST_COUNT" -ne 1 ]; then
+          echo "Expected exactly 1 version with -latest display marker, found ${LATEST_COUNT}"
+          exit 1
+        fi
+
+        exit 0
+
+targets:
+  antora:
+    kind: "shell"
+    name: "Promote {{ .component }} version and create next dev"
+    scmid: "default"
+    disablesourceinput: true
+    spec:
+      environments:
+        - name: "PATH"
+      command: |+
+        #!/bin/sh
+        set -e
+
+        VERSION='{{ source "releaseVersion" }}'
+        COMPONENT='{{ .component }}'
+        COMPONENT_DIR="docs/${COMPONENT}"
+        TARGET_DIR="${COMPONENT_DIR}/version-${VERSION}"
+
+        MAJOR=$(echo "$VERSION" | cut -d. -f1)
+        MINOR=$(echo "$VERSION" | cut -d. -f2)
+        NEXT_MINOR=$((MINOR + 1))
+        NEXT_VERSION="${MAJOR}.${NEXT_MINOR}"
+
+        # If the version directory does not exist, find the current dev
+        # version and rename it. The dev version content is preserved
+        # and released under the new version number.
+        if [ ! -d "$TARGET_DIR" ]; then
+          DEV_DIR=""
+          for dir in ${COMPONENT_DIR}/version-*/; do
+            if [ -f "${dir}antora.yml" ] && grep -q "prerelease:" "${dir}antora.yml"; then
+              DEV_DIR="$dir"
+              break
+            fi
+          done
+
+          if [ -z "$DEV_DIR" ]; then
+            echo "No dev version directory found to promote"
+            exit 1
+          fi
+
+          echo "Renaming $(basename "$DEV_DIR") to version-${VERSION}"
+          mv "$DEV_DIR" "$TARGET_DIR"
+          sed -i "s/^version:.*$/version: '${VERSION}'/" "${TARGET_DIR}/antora.yml"
+        fi
+
+        # Find current latest version (the one with display: *-latest)
+        CURRENT_LATEST=""
+        for dir in ${COMPONENT_DIR}/version-*/; do
+          if [ -f "${dir}antora.yml" ] && grep -q "display:.*-latest" "${dir}antora.yml"; then
+            CURRENT_LATEST=$(basename "$dir" | sed 's/^version-//')
+            break
+          fi
+        done
+
+        if [ -z "$CURRENT_LATEST" ]; then
+          echo "No version with -latest display marker found"
+          exit 1
+        fi
+
+        echo "Promoting: current_latest=${CURRENT_LATEST}, release=${VERSION}, next_dev=${NEXT_VERSION}"
+        scripts/make-new-release.sh "${COMPONENT}" "${CURRENT_LATEST}" "${VERSION}" "${NEXT_VERSION}" -n
+
+actions:
+  default:
+    kind: "github/pullrequest"
+    scmid: "default"
+    spec:
+      automerge: false
+# {{ if .pr.title }}
+      title: "{{ .pr.title }}"
+# {{ end }}
+# {{ if .pr.description }}
+      description: "{{ .pr.description }}"
+# {{ end }}
+# {{ if .pr.labels }}
+      labels:
+# {{ range .pr.labels }}
+        - "{{ . }}"
+# {{ end }}
+# {{ end }}
