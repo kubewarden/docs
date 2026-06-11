@@ -5,7 +5,7 @@ scm:
 
 files:
   - src: "crates/policy-server/cli-docs.adoc"
-    dst: "docs/admission-controller/version-1.36/modules/en/pages/reference/policy-server-cli.adoc"
+    dst: docs/admission-controller/version-1.37/modules/en/pages/reference/policy-server-cli.adoc
 src:
   branch: "main"
   url: "https://github.com/kubewarden/adm-controller.git"
