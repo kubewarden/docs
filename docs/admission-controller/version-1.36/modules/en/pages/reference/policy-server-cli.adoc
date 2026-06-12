@@ -13,7 +13,7 @@ include::partial$variables.adoc[]
 = {title}
 :page-languages: [en, de, es, fr, ja, pt, zh]
 
-= Command-Line Help for `policy-server`
+== Command-Line Help for `policy-server`
 
 This document contains the help content for the `policy-server` command-line program.
 

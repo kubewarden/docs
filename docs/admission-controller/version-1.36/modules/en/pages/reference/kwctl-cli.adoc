@@ -12,7 +12,7 @@ include::partial$variables.adoc[]
 :doc-type: reference
 :doc-topic: operator-manual
 
-= Command-Line Help for `kwctl`
+== Command-Line Help for `kwctl`
 
 This document contains the help content for the `kwctl` command-line program.
 

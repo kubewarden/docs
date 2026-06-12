@@ -81,7 +81,7 @@ Both OPA Gatekeeper and Kubernetes can write validation and mutation policies.
 These policies can target any kind of Kubernetes resource, including Custom
 Resources.
 
-[#_writing_-policies]
+[#_writing_policies]
 == Writing policies
 
 You write OPA Gatekeeper policies using

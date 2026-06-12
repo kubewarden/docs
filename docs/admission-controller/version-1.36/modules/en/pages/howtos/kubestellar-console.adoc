@@ -21,16 +21,16 @@ step-by-step, with live cluster validation after each step.
 
 The guided install mission runs against your cluster via kubeconfig. Each step:
 
-1. *Pre-flight* -- checks prerequisites (Helm 3, kubectl, cluster access)
-1. *Commands* -- shows the exact `helm install` commands for all three charts
+. *Pre-flight* -- checks prerequisites (Helm 3, kubectl, cluster access)
+. *Commands* -- shows the exact `helm install` commands for all three charts
    (`kubewarden-crds`, `kubewarden-controller`, `kubewarden-defaults`) with
    `--wait` flags, matching the
    xref:/quick-start.adoc[quick-start] docs
-1. *Validation* -- after each step, queries the cluster to verify success
+. *Validation* -- after each step, queries the cluster to verify success
    (pod phase, PolicyServer registration)
-1. *Troubleshooting* -- on failure, reads pod logs, events, and resource
+. *Troubleshooting* -- on failure, reads pod logs, events, and resource
    status from your cluster and suggests fixes
-1. *Rollback* -- each step includes the corresponding `helm uninstall` command
+. *Rollback* -- each step includes the corresponding `helm uninstall` command
    to undo the change
 
 The mission also works as read-only documentation -- no cluster connection is
@@ -47,10 +47,10 @@ required to browse the steps.
 
 == Opening the install mission
 
-1. Launch KubeStellar Console and connect to your cluster.
-1. Open the *AI Mission Explorer* from the sidebar.
-1. Search for *Kubewarden* or browse the *Install* category.
-1. Select the *Install Kubewarden* mission to begin.
+. Launch KubeStellar Console and connect to your cluster.
+. Open the *AI Mission Explorer* from the sidebar.
+. Search for *Kubewarden* or browse the *Install* category.
+. Select the *Install Kubewarden* mission to begin.
 
 Alternatively, open the mission directly at:
 

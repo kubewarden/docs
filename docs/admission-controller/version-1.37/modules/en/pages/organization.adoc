@@ -49,6 +49,6 @@ Also maintained are:
 
 * link:https://github.com/kubewarden/rfc[RFCs] for the project.
 * A series of link:https://www.kubewarden.io/blog/[blog posts] related to
-  {community-name} releases.
+  {admc-community-name} releases.
 * Items related to the link:https://github.com/kubewarden/community[community]
-  management of {community-name}.
+  management of {admc-community-name}.

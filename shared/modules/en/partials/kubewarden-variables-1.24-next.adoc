@@ -31,6 +31,9 @@ ifeval::["{build-type}" == "community"]
 :project-abbrev: {product-name}
 :product-abbrev: {project-abbrev}
 :intro-paragraph: {project-name} is a xref:#_vendor_neutrality[vendor neutral], https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
+// The two admc attributes below as some usage of admc has crep tinto earlier versions kwctl-cli.adoc.
+:admc-name: Kubewarden
+:admc-short-name: Kubewarden
 endif::[]
 
 ifeval::["{build-type}" == "product"]

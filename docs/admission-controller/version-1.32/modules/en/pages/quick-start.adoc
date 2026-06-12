@@ -103,7 +103,7 @@ Kubernetes cluster:
 
 * `kubewarden-crds`, which registers the {cluster-admission-policy},
   {admission-policy} and {policy-server} Custom Resource Definitions. Also, the
-  {report} Custom Resource Definitions used by the audit scanner.
+  {policy-report} Custom Resource Definitions used by the audit scanner.
 * `kubewarden-controller`, which installs the {short-project-name} controller and the
   audit scanner
 +
