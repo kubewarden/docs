@@ -76,6 +76,26 @@ targets:
       key: "$.files[0].dst"
       value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/pages/reference/policy-server-cli.adoc'
 
+  updateHeadersKwctlPath:
+    name: "Update kwctl CLI docs header target version"
+    kind: yaml
+    sourceid: devVersion
+    scmid: default
+    spec:
+      file: "updatecli/values.d/headers.yaml"
+      key: "$.files[0].path"
+      value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/pages/reference/kwctl-cli.adoc'
+
+  updateHeadersPolicyServerPath:
+    name: "Update policy-server CLI docs header target version"
+    kind: yaml
+    sourceid: devVersion
+    scmid: default
+    spec:
+      file: "updatecli/values.d/headers.yaml"
+      key: "$.files[1].path"
+      value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/pages/reference/policy-server-cli.adoc'
+
 actions:
   default:
     kind: "github/pullrequest"
