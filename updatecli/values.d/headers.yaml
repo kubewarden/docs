@@ -1,6 +1,6 @@
 ---
 files:
-  - path: "docs/admission-controller/version-1.37/modules/en/pages/reference/kwctl-cli.adoc"
+  - path: docs/admission-controller/version-1.37/modules/en/pages/reference/kwctl-cli.adoc
     sidebar_label: kwctl CLI Reference
     sidebar_position: 120
     title: kwctl CLI
