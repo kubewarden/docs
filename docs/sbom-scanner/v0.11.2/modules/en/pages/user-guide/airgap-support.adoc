@@ -13,7 +13,7 @@ To run the scans, {sboms-name} currently needs the following external sources:
 * Java Vulnerability Database
 * VEX Hub (optional)
 
-These external sources can be self-hosted in your private infrastucture to make the whole environment air-gapped.
+These external sources can be self-hosted in your private infrastructure to make the whole environment air-gapped.
 
 == Self-Hosting Vulnerability Databases
 
