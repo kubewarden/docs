@@ -31,6 +31,8 @@ sources:
           include::partial$variables.adoc[]
           = {{ $file.title }}
           :page-languages: [en, de, es, fr, ja, pt, zh]
+          :revdate: {{ now | date "2006-01-02" }}
+          :page-revdate: {revdate}
           :title: {{ $file.title }}
           :description: {{ $file.description }}
           :keywords: {{ $file.keywords }}
