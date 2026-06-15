@@ -1,3 +1,12 @@
+include::partial$variables.adoc[]
+= kwctl CLI
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:title: kwctl CLI
+:description: Explore the `kwctl` command-line tool to manage {admc-name} policies and perform tasks like loading policies
+:keywords: cli, reference, kwctl
+:doc-persona: kubewarden-operator
+:doc-type: reference
+:doc-topic: operator-manual
 // This file was converted from Markdown to AsciiDoc.
 
 include::partial$variables.adoc[]
