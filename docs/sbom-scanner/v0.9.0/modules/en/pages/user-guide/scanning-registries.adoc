@@ -3,7 +3,7 @@ include::partial$variables.adoc[]
 = Scanning Registries
 
 This guide explains how to configure and run scans on container
-registries using SBOMscanner.
+registries using {sboms-name}.
 
 It covers:
 
@@ -107,7 +107,7 @@ In some cases, you may work with registries that do not
 implement/exposes the `++_++catalog` endpoint (such as *Docker Hub*,
 *Amazon ECR*, or *ghcr.io*).
 
-To make SBOMscanner work with these registries, you can manually specify
+To make {sboms-name} work with these registries, you can manually specify
 the repositories you want to scan, instead of pulling the catalog.
 
 [NOTE]
@@ -146,7 +146,7 @@ In most cases you don’t want to scan all the platforms of the same image
 version. For this reason we created a filter mechanism to avoid unuseful
 scans and waste of time.
 
-To lighten the workload of SBOMscanner, you can specify which platforms
+To lighten the workload of {sboms-name}, you can specify which platforms
 you want to scan, instead of discovering them and consequently scan.
 
 Here’s an example of how to configure the registry to look only at the

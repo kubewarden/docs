@@ -52,7 +52,7 @@ Then, run the scan applying a
 https://github.com/alegrey91/sbomscanner/blob/main/examples/scanjob.yaml[`ScanJob`]
 configured to scan the desired registry.
 
-SBOMscanner will automatically detect the presence of `VEXHub` resources
+{sboms-name} will automatically detect the presence of `VEXHub` resources
 and will include them in the scan.
 
 Since `VEXHub` CRD is cluster-scoped, this means that you can use the
@@ -66,7 +66,7 @@ your cluster.
 If, for some reasons, you want to disable some of them, you can just
 patch their `spec.enabled` to `false`.
 
-This will let SBOMscanner exclude the `VEXHub` resource when scanning
+This will let {sboms-name} exclude the `VEXHub` resource when scanning
 the registries.
 
 Here’s the command to disable a `VEXHub` resource:

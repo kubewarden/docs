@@ -2,9 +2,9 @@ include::partial$variables.adoc[]
 
 = Air Gap Support
 
-SBOMscanner can be used in air-gapped environments.
+{sboms-name} can be used in air-gapped environments.
 
-To run the scans, SBOMscanner currently needs the following external
+To run the scans, {sboms-name} currently needs the following external
 sources:
 
 * Vulnerability Database
@@ -22,7 +22,7 @@ allowing you to host them in your own registry:
 * https://github.com/aquasecurity/trivy-db/pkgs/container/trivy-db[`trivy-db`]
 * https://github.com/aquasecurity/trivy-java-db/pkgs/container/trivy-java-db[`trivy-java-db`]
 
-Once mirrored in your own OCI registry, you can install SBOMscanner to
+Once mirrored in your own OCI registry, you can install {sboms-name} to
 point to them:
 
 [source,shell]
@@ -43,7 +43,7 @@ to the internal registries.
 All you need to do is to setup an HTTP server to provide the needed
 files for VEX.
 
-To configure a VEX Hub in SBOMscanner, create a `VEXHub` resource with
+To configure a VEX Hub in {sboms-name}, create a `VEXHub` resource with
 your local repository URL and apply it:
 
 [source,yaml]
