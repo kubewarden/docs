@@ -76,4 +76,4 @@ You need `node` v24. Or  thereabouts.
 * Edit documentation in the `docs` directory.
 * `make clean environment community-local`
 * `make preview`
-* Provide a ppull request.
+* Provide a pull request.
