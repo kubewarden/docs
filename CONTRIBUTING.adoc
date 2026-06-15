@@ -61,8 +61,8 @@ You can install in this way:
 \include::/{build-type}-specific/install.adoc[]
 ```
 
-is equally applicable for all project builds, provided they provide in their
-repository a directory named
+This is equally applicable for all project builds, provided they provide in
+their repository a directory named
 `docs/admission-controller/version-1.37/modules/en/pages/{build-type}-specific`
 containing an `install.adoc` file.
 
