@@ -4,7 +4,8 @@ Documentation for the Kubewarden community project.
 
 You need `node` v24 Or  thereabouts.
 
-* `git clone --recurse-submodules git@github.com/kubewarden/docs.git`
+* Fork your own copy of `git@github.com/kubewarden/docs.git`, if intdending to contribute.
+* `git clone --recurse-submodules git@github.com/<your-gh-handle>/docs.git`
 * `git submodule update`
 * Edit docs in the `docs` directory.
 * `make clean environment community-local`

@@ -61,12 +61,19 @@ You can install in this way:
 \include::/{build-type}-specific/install.adoc[]
 ```
 
+is equally applicable for all project builds, provided they provide in their
+repository a directory named
+`docs/admission-controller/version-1.37/modules/en/pages/{build-type}-specific`
+containing an `install.adoc` file.
+
 === Working locally to develop documentation
 
-You need `node` v24 Or  thereabouts.
+You need `node` v24. Or  thereabouts.
 
-* `git clone --recurse-submodules git@github.com/kubewarden/docs.git`
+* Fork your own copy of `git@github.com/kubewarden/docs.git`
+* `git clone --recurse-submodules git@github.com/<your-gh-handle>/docs.git`
 * `git submodule update`
-* Edit docs in the `docs` directory.
+* Edit documentation in the `docs` directory.
 * `make clean environment community-local`
 * `make preview`
+* Provide a ppull request.
