@@ -51,7 +51,7 @@ requiring more information have links to further explanation.
 | ✅
 | ✅
 
-| Policy language <<_writing_policies,[1]>>
+| Policy language <<#_writing_policies,[1]>>
 | CEL (Kyverno DSL deprecated)
 | CEL, Rego, Go, Rust,...
 

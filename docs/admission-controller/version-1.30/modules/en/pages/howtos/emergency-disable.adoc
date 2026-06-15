@@ -35,7 +35,7 @@ Here, the stack is deployed in the `kubewarden` Namespace.
 Next, delete all the `ValidatingWebhookConfigurations` and `MutatingWebhookConfigurations`
 created by {short-project-name}:
 
-[source,console]
+[source,console,subs="+attributes"]
 ----
 # Delete all the ValidatingWebhookConfiguration created by {short-project-name}
 kubectl delete validatingwebhookconfigurations \
