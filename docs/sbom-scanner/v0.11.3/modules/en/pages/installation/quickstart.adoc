@@ -1,12 +1,15 @@
 include::partial$variables.adoc[]
 
-= SBOMscanner Quick Start
+= {sboms-name} Quick Start
+:revdate: 2026-06-15
+:page-revdate: {revdate}
+:description: Quickly install {sboms-name} and run your first registry scan.
 
-Welcome to the SBOMscanner Quick Start!
+Welcome to the {sboms-name} Quick Start!
 
 This guide will walk you through the following steps:
 
-* Deploying the SBOMscanner stack in a Kubernetes cluster
+* Deploying the {sboms-name} stack in a Kubernetes cluster
 * Running an automated image scan using a `Registry` custom resource
 
 '''''
@@ -15,11 +18,8 @@ This guide will walk you through the following steps:
 
 Before deployment, you need to prepare the following:
 
-* A Kubernetes cluster (you can simply run a
-https://kind.sigs.k8s.io/[kind] cluster)
-* A
-https://kubernetes.io/docs/concepts/storage/storage-classes/#default-storageclass[default
-Storage Class] defined inside of the cluster
+* A Kubernetes cluster (you can simply run a https://kind.sigs.k8s.io/[kind] cluster)
+* A https://kubernetes.io/docs/concepts/storage/storage-classes/#default-storageclass[default Storage Class] defined inside of the cluster
 * `helm` installed locally
 * `kubectl` installed locally
 * `cert-manager` installed in the cluster
@@ -44,11 +44,10 @@ helm install cert-manager jetstack/cert-manager \
 
 [NOTE]
 ====
-For more information on configuring cert-manager, please visit the
-https://cert-manager.io/docs/installation/helm[cert-manager
-documentation]
+For more information on configuring cert-manager, please visit the https://cert-manager.io/docs/installation/helm[cert-manager documentation]
 ====
 
+'''''
 
 === Install CloudNativePG
 
@@ -65,17 +64,11 @@ helm install cnpg \
   cnpg/cloudnative-pg
 ----
 
-To customize the CloudNativePG installation, refer to
-link:helm-values.md#using-cloudnativepg-recommended[Using CloudNativePG
-(Recommended)] in the Helm values documentation. You can also bring your
-own PostgreSQL instance instead of using CloudNativePG. See
-link:helm-values.md#using-an-external-postgresql-instance[Using an
-External PostgreSQL Instance] for configuration details.
+To customize the CloudNativePG installation, refer to xref:installation/helm-values.adoc#using-cloudnativepg-recommended[Using CloudNativePG (Recommended)] in the Helm values documentation. You can also bring your own PostgreSQL instance instead of using CloudNativePG. See xref:installation/helm-values.adoc#using-an-external-postgresql-instance[Using an External PostgreSQL Instance] for configuration details.
 
-== Deploy SBOMscanner
+== Deploy {sboms-name}
 
-Follow these simple steps from your local machine to get SBOMscanner up
-and running:
+Follow these simple steps from your local machine to get {sboms-name} up and running:
 
 === Install the Helm chart
 
@@ -92,9 +85,7 @@ helm install sbomscanner kubewarden/sbomscanner \
 [TIP]
 ====
 
-By default, the installation of SBOMscanner is configured to be highly
-available. If you want to save on resources, you can reduce the number
-of replicas to the minimum:
+By default, the installation of {sboms-name} is configured to be highly available. If you want to save on resources, you can reduce the number of replicas to the minimum:
 
 [source,bash]
 ----
@@ -108,8 +99,7 @@ helm install sbomscanner kubewarden/sbomscanner \
   --wait
 ----
 
-This configuration is suitable for development environments where high
-availability is not required.
+This configuration is suitable for development environments where high availability is not required.
 ====
 
 === Verify the Deployment
@@ -139,21 +129,18 @@ sbomscanner           sbomscanner-worker-d9d68c5c-tlpgm             1/1     Runn
 
 === Summary
 
-At this point, your SBOMBastic deployment is up and running
-successfully. You’re now ready to begin scanning images and generating
-reports!
+At this point, your {sboms-name} deployment is up and running successfully. You're now ready to begin scanning images and generating reports!
 
 '''''
 
 == Run a Scan
 
-In this section, you’ll learn how to create a registry source and
-trigger an automated scan.
+In this section, you'll learn how to create a registry source and trigger an automated scan.
 
+[[prepare-a-registryyaml-file]]
 === Prepare a `registry.yaml` file
 
-Before running a scan, you need to define a `Registry` custom resource
-for SBOMscanner to fetch images.
+Before running a scan, you need to define a `Registry` custom resource for {sboms-name} to fetch images.
 
 [source,yaml]
 ----
@@ -168,6 +155,35 @@ spec:
     - name: kubewarden/sbomscanner/test-assets/golang
 ----
 
+==== Connecting to registries with custom CAs or insecure transport
+
+If you need to connect to a registry that uses a self-signed or private certificate authority, provide a PEM-encoded CA bundle via `spec.caBundle`:
+
+[source,yaml]
+----
+spec:
+  uri: my-registry.example.com
+  caBundle: |
+    -----BEGIN CERTIFICATE-----
+    <base64-encoded certificate>
+    -----END CERTIFICATE-----
+  repositories:
+    - name: my-org/my-image
+----
+
+For development or testing against a registry that uses an untrusted certificate, you can disable TLS verification by setting `spec.insecure` to `true`:
+
+[source,yaml]
+----
+spec:
+  uri: my-registry.example.com
+  insecure: true
+  repositories:
+    - name: my-org/my-image
+----
+
+Do not enable `insecure` in production environments, as it disables TLS certificate verification when connecting to the registry.
+
 === Create the Registry CR
 
 [source,bash]
@@ -175,9 +191,10 @@ spec:
 kubectl apply -f registry.yaml
 ----
 
+[[prepare-a-scan-jobyaml]]
 === Prepare a `scan-job.yaml`
 
-The `ScanJob` CR tells SBOMscanner which registry to scan.
+The `ScanJob` CR tells {sboms-name} which registry to scan.
 
 [source,yaml]
 ----
@@ -199,8 +216,7 @@ kubectl apply -f scanjob.yaml
 
 === Wait for Results
 
-Once the scan completes, check the generated SBOMs and vulnerability
-reports:
+Once the scan completes, check the generated SBOMs and vulnerability reports:
 
 [source,bash]
 ----
@@ -219,9 +235,6 @@ NAME                                                               CREATED AT
 
 === Summary
 
-You’ve successfully created a real-world Registry resource and triggered
-an automated scan.
+You've successfully created a real-world Registry resource and triggered an automated scan.
 
-You can jump to the link:../user-guide/querying-reports.md[Querying
-reports] guide to learn how to query and inspect the generated images,
-SBOMs, and vulnerability reports.
+You can jump to the xref:user-guide/querying-reports.adoc[Querying reports] guide to learn how to query and inspect the generated images, SBOMs, and vulnerability reports.

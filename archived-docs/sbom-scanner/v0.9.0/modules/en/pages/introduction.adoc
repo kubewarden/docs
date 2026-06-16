@@ -2,8 +2,8 @@ include::partial$variables.adoc[]
 
 :revdate: 2025-11-25
 :page-revdate: {revdate}
-:description: Introducing SBOM Scanner.
+:description: Introducing {sboms-name}.
 
 = Introduction
 
-SBOM Scanner is a vulnerability scanner.
+{sboms-name} is a vulnerability scanner.

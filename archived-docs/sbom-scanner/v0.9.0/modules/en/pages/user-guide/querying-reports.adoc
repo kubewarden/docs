@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Querying SBOM and VulnerabilityReport Resources
 
-In this guide, you’ll learn how to query SBOMscanner resources using
+In this guide, you’ll learn how to query {sboms-name} resources using
 metadata fields.
 
 We’ll walk through three major steps:

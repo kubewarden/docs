@@ -9,7 +9,7 @@ include::partial$variables.adoc[]
 *** xref:user-guide/querying-reports.adoc[]
 *** xref:user-guide/scanning-registries.adoc[]
 *** xref:user-guide/vex.adoc[]
-* Explanations
+// * Explanations
 * Howtos
 ** xref:installation/uninstall.adoc[]
 ** xref:installation/helm-values.adoc[]

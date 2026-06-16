@@ -62,9 +62,9 @@ script found in the sbomscanner repository]:
 
 The script collects the following information:
 
-* Logs from the pods of all SBOMscanner components (controller, workers,
+* Logs from the pods of all {sboms-name} components (controller, workers,
 storage, NATS).
-* Manifest of all SBOMscanner related resources (Registry, VEXHub,
+* Manifest of all {sboms-name} related resources (Registry, VEXHub,
 ScanJob, Image, VulnerabilityReport).
 
 The script prints the names of the manifests being collected at runtime.
