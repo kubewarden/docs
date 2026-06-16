@@ -1,0 +1,79 @@
+== Contributing to the Kubewarden project documentation
+
+=== Welcome
+
+Welcome to the documentation repository for the Kubewarden project
+
+There are two community project components documented here.
+
+. Admission Controller
++
+Admission Controller uses the `docs/admission-controller` directory for documentation.
+
+. SBOM Scanner
++
+SBOM Scanner uses the `docs/sbom-scanner` directory for documentation.
+
+=== Project naming in the documentation
+
+They should be referred to in the text by the asciidoc attributes defined for
+their names.
+
+We have:
+
+* `{admc-name}`, `{admc-short-name}` are defined for the Admission Controller.
+  Use `{admc-name}` for at least the first name mention on a page. Following
+  that {admc-short-name} can be used for subsequent mentions on the same page.
+* `{sbom-name}`, `{sbom-short-name}` are defined for the SBOM Scanner. Same
+  rules apply as for the Admission Controller.
+
+In practice, in this repository, there is no difference between the long and
+short names for building community docs. But there are downstream projects that
+have different naming conventions so it's worth paying attention to.
+
+=== Project specific conditional content.
+
+For content that is conditional on the documentation target being built.
+
+There will be content that is specific to particular projects. For example,
+installation instructions may be different for the Kubewarden Admission
+Controller and for the SUSE Security Admission controller. When building for
+the community documentation in this repository a AsciiDoc attribute
+`build-type` is defined to be `community`. 
+
+There will be a directory for each version in community docs, e.g.
+
+`docs/admission-controller/version-1.37/modules/en/pages/community-specific`
+
+containing, for example, `install.adoc` for community-specific installation.
+
+A directory also exists in the product-docs repo
+
+`docs/admission-controller/version-1.37/modules/en/pages/product-specific`
+
+containing equivalent product version installation instructions.
+
+Now, in the text, in the 1.37 version:
+
+```
+You can install in this way:
+
+\include::/{build-type}-specific/install.adoc[]
+```
+
+This is equally applicable for all project builds, provided they provide in
+their repository a directory named
+`docs/admission-controller/version-1.37/modules/en/pages/{build-type}-specific`
+containing an `install.adoc` file.
+
+=== Working locally to develop documentation
+
+You need `node` v24. Or  thereabouts.
+
+* Fork your own copy of `git@github.com/kubewarden/docs.git`
+* `git clone --recurse-submodules git@github.com/<your-gh-handle>/docs.git`
+* `git submodule update`
+* Edit documentation in the `docs` directory.
+* `make clean environment community-local`
+* `make preview`
+* Provide a pull request.
