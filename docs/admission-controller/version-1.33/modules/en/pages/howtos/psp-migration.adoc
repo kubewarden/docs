@@ -22,7 +22,7 @@ Kubernetes clusters.
 configuration. Each {short-project-name} policy definition functions as a different
 configuration section in the specification of a PSP. The mapping of PSP
 configuration fields to their respective {short-project-name} policies is in the
-<<_mapping_kubewarden_policies_to_psp_fields,mapping table>> below.
+<<_mapping_policies_to_psp_fields,mapping table>> below.
 
 With {short-project-name}, operators have granular control of policy configuration in
 their clusters.
@@ -488,6 +488,7 @@ Error from server: error when creating "STDIN": admission webhook "clusterwide-p
 
 ======
 
+[#_mapping_policies_to_psp_fields]
 == Mapping {short-project-name} policies to PSP fields
 
 This table maps PSP configuration fields to corresponding {short-project-name} policies.
