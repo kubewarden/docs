@@ -45,7 +45,7 @@ qualified URL that includes the repository, workflow file, and version tag:
 This ensures only artifacts produced by that exact workflow and release are accepted.
 ====
 
-[#container-images]
+[#_container_images]
 == Container images
 
 To verify the keyless-signed container images produced by the {admc-short-name} team,
@@ -118,6 +118,7 @@ slsactl download provenance ghcr.io/kubewarden/adm-controller/policy-server:v1.3
 slsactl download sbom ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
 ----
 
+[#_helm_charts]
 == Helm charts
 
 You can find {admc-short-name} Helm charts in our `https://` traditional
@@ -161,7 +162,7 @@ The following checks were performed on each of these signatures:
 You can then verify that the cert in the returned json contains the correct
 issuer, subject, and `github_workflow_repository` extensions.
 
-The chart attestations are pushed to the OCI registry as an artifact layer. See the xref:#container-images[container images] section on how to verify them.
+The chart attestations are pushed to the OCI registry as an artifact layer. See the xref:#_container_images[container images] section on how to verify them.
 
 {admc-short-name} charts ship `imagelist.txt` and (`policylist.txt` when relevant) inside
 of the chart. Hence, if you already verified the chart, you can use those lists
@@ -190,7 +191,7 @@ ghcr.io/kubewarden/adm-controller/audit-scanner:v1.36.0
 ghcr.io/rancher/kuberlr-kubectl:v8.0.0
 ----
 
-Now, for each image in that list you can verify their Sigstore signatures following the instructions from the xref:#container-images[previous section].
+Now, for each image in that list you can verify their Sigstore signatures following the instructions from the xref:#_container_images[previous section].
 
 == kwctl
 

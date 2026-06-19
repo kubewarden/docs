@@ -26,6 +26,7 @@ be a useful tool for debugging issues in your Kubewarden deployment and policies
 You use https://www.jaegertracing.io/[Jaeger] -- used to receive, store and visualize trace
 events.
 
+[#_install_jaeger]
 == Install Jaeger
 
 You use the https://github.com/jaegertracing/jaeger-operator[Jaeger Operator]

@@ -189,6 +189,7 @@ deleted PriorityClass remain unchanged, but following Pods that use the
 name of the deleted PriorityClass will not be created by Kubernetes.
 ====
 
+[#_policyserver_production_configuration]
 == `PolicyServer` production configuration
 
 `PolicyServers` are critical to the cluster. Reliability of them is important

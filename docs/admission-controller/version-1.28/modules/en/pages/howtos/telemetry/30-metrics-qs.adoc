@@ -21,6 +21,7 @@ You need it for this section to work correctly.
 You use https://prometheus.io/[Prometheus] to collect metrics exposed by the Policy
 Server.
 
+[#_install_prometheus]
 == Install Prometheus
 
 You use https://github.com/prometheus-operator/prometheus-operator[Prometheus Operator],

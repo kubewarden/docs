@@ -96,6 +96,7 @@ $ minikube addons enable ingress
 ----
 
 [#install-opentelemetry]
+[#_install_opentelemetry]
 == Install OpenTelemetry
 
 You use the https://github.com/open-telemetry/opentelemetry-operator[OpenTelemetry Operator]

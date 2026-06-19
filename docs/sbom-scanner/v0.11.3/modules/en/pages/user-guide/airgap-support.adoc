@@ -31,6 +31,7 @@ helm install sbomscanner ./chart \
     --set worker.trivyJavaDBRepository="yourlocalregistry.example/sbomscanner/trivy-java-db"
 ----
 
+[#self-hosting-vex-hub]
 == Self-Hosting VEX Hub
 
 To setup your own VEX Hub repository, please refer to this https://github.com/aquasecurity/trivy/blob/main/docs/docs/advanced/self-hosting.md#make-a-local-copy-1[guide].

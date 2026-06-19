@@ -54,6 +54,7 @@ It looks like:
 The `settings` key points to a free-form JSON document holds the policy
 specific settings. The previous chapter focused on policies and settings.
 
+[#an-example]
 == An example
 
 Given the following Kubernetes `AdmissionReview`:
