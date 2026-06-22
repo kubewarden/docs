@@ -103,7 +103,7 @@ The mission validates that the default `PolicyServer` is registered and ready.
 After completing the mission, you have a working {project-name} installation with
 the default PolicyServer. From here you can:
 
-* xref:/quick-start.adoc#defining-your-first-policy[Create your first policy]
+* xref:/quick-start.adoc#_example_enforce_your_first_policy[Create your first policy]
 * link:https://artifacthub.io/packages/search?kind=13[Explore the policy catalog]
 * Browse additional install missions for other CNCF projects in the
   link:https://console.kubestellar.io/missions[KubeStellar Console mission explorer]
