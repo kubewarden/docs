@@ -19,10 +19,10 @@ This document contains the help content for the `policy-server` command-line pro
 
 *Command Overview:*
 
-* <<policy-server,`policy-server`>>
-* <<policy-server-docs,`policy-server docs`>>
+* <<_policy_server,`policy-server`>>
+* <<_policy_server_docs,`policy-server docs`>>
 
-[#policy-server]
+[#_policy_server]
 == `policy-server`
 
 
@@ -91,7 +91,7 @@ Default value: `sigstore-data`
 
 
 
-[#policy-server-docs]
+[#_policy_server_docs]
 == `policy-server docs`
 
 Generates the AsciiDoc documentation for policy-server commands
@@ -101,6 +101,5 @@ Generates the AsciiDoc documentation for policy-server commands
 === *Options:*
 
 * `-o`, `--output <FILE>` — path where the documentation file will be stored
-
 
 

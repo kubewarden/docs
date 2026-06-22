@@ -188,7 +188,7 @@ spec:
           topologyKey: kubernetes.io/hostname
 ----
 
-[#security_considerations]
+[#_security_considerations]
 == Security considerations
 
 [WARNING]
