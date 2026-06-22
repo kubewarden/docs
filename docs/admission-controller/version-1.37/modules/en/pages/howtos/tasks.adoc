@@ -12,7 +12,7 @@ include::partial$variables.adoc[]
 :current-version: {page-origin-branch}
 
 This describes common tasks for after you
-xref:quick-start.adoc#installation[install {admc-name}] in your Kubernetes
+xref:quick-start.adoc#_installation[install {admc-name}] in your Kubernetes
 cluster.
 
 The separate tasks are in a logical ordering.

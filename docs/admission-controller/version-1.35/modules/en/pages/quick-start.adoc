@@ -65,7 +65,7 @@ names for the CRDs:
 ====
 
 
-[#installation]
+[#_installation]
 == Installation
 
 [IMPORTANT]
