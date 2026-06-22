@@ -80,9 +80,9 @@ You need `node` v24. Or  thereabouts.
 
 === Anchors
 
-It's important for the benefit of downstream documentation that have
-translations that we use explicit anchors for cross references. Auto generated
-anchors do not survive translation and break linking.
+It's important for the benefit of downstream documentation repositories, that
+have translations, that we use explicit anchors for cross references. Auto
+generated anchors do not survive translation and break linking.
 
 An example:
 
@@ -98,11 +98,11 @@ hendrerit.
 
 and referring to it by
 
-`xref:#_my_anchor[My Anchor]`
+`\xref:#_my_anchor[My Anchor]`
 
 or
 
-`<<#_my_anchor,My Anchor>>`
+`\<<#_my_anchor,My Anchor>>`
 
 The first form is preferred for readability and maintainability. The second form
 is more compact and is used in some places in the documentation.
