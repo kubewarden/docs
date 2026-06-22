@@ -26,6 +26,7 @@ To achieve this, you should create a Secret containing the private registry
 credentials. Then configure your PolicyServers' resources, and then your Helm
 chart to use it.
 
+[#_creating_the_secret]
 == Creating the Secret
 
 PolicyServers support the usual

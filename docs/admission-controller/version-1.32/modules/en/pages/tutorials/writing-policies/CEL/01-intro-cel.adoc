@@ -69,6 +69,7 @@ compiled and typed-checked for correctness when creating or updating the
 (Cluster)AdmissionPolicy. This means there's no need for custom builds of the
 `cel-policy`.
 
+[#_benefits_of_kubewardens_cel_policy_in_comparison_with_validatingadmissionpolicies]
 === Benefits of {short-project-name}'s `cel-policy` in comparison with ValidatingAdmissionPolicies
 
 The {short-project-name} `cel-policy`:

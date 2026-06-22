@@ -49,7 +49,7 @@ will show how to verify the different artifacts produced by the Kubewarden team
 and how to ensure the secure supply chain of the artifacts using SBOM and
 provenance files.
 
-[#container-images]
+[#_container_images]
 == Container images
 
 To verify the keyless-signed container images produced by the Kubewarden team,
@@ -112,6 +112,7 @@ audit-scanner-attestation-amd64-sbom-451fac2e52226302ff449bfe053b3831fd93409b4da
 
 Now that the files integrity is verified, you can inspect the SBOM and Provenance files.
 
+[#_helm_charts]
 == Helm charts
 
 You can find our Helm charts in our `https://` traditional Helm repository under
@@ -145,7 +146,7 @@ The following checks were performed on each of these signatures:
 You can then verify that the cert in the returned json contains the correct
 issuer, subject, and `github_workflow_repository` extensions.
 
-The chart attestations are pushed to the OCI registry as an artifact layer. See the xref:#container-images[container images] section on how to verify them.
+The chart attestations are pushed to the OCI registry as an artifact layer. See the xref:#_container_images[container images] section on how to verify them.
 
 Kubewarden charts ship `imagelist.txt` and (`policylist.txt` when relevant) inside
 of the chart. Hence, if you already verified the chart, you can use those lists
@@ -173,7 +174,7 @@ ghcr.io/kubewarden/policy-server:v0.3.1
 ghcr.io/kubewarden/kubectl:v1.21.4
 ----
 
-Now, for each image in that list you can verify their Sigstore signatures following the instructions from the xref:#container-images[previous section].
+Now, for each image in that list you can verify their Sigstore signatures following the instructions from the xref:#_container_images[previous section].
 
 == kwctl
 

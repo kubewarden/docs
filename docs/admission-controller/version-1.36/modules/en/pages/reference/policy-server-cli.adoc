@@ -22,7 +22,7 @@ This document contains the help content for the `policy-server` command-line pro
 * <<policy-server,`policy-server`>>
 * <<policy-server-docs,`policy-server docs`>>
 
-[[policy-server]]
+[#policy-server]
 == `policy-server`
 
 
@@ -91,7 +91,7 @@ Default value: `sigstore-data`
 
 
 
-[[policy-server-docs]]
+[#policy-server-docs]
 == `policy-server docs`
 
 Generates the AsciiDoc documentation for policy-server commands

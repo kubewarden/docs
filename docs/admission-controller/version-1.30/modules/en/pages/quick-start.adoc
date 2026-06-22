@@ -64,6 +64,7 @@ names for the CRDs:
 ====
 
 
+[#installation]
 == Installation
 
 [IMPORTANT]
@@ -366,6 +367,7 @@ Kubernetes 1.21.0
 
 The complete documentation of these Custom Resources is https://github.com/kubewarden/kubewarden-controller/blob/main/docs/crds/README.asciidoc[here] or on https://doc.crds.dev/github.com/kubewarden/kubewarden-controller[docs.crds.dev].
 
+[#_example_enforce_your_first_policy]
 == Example: Enforce your first policy
 
 We will use the https://github.com/kubewarden/pod-privileged-policy[`pod-privileged`] policy.

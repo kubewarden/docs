@@ -27,6 +27,7 @@ includes:
   their default values. This doesn't include the Grafana integration nor other
   plugins.
 
+[#_user_secrets]
 == User Secrets
 
 The backup process doesn't include user-created Secrets such as those used to

@@ -14,6 +14,7 @@ This guide will walk you through the following steps:
 
 '''''
 
+[#requirements]
 == Requirements
 
 Before deployment, you need to prepare the following:
@@ -137,7 +138,7 @@ At this point, your {sboms-name} deployment is up and running successfully. You'
 
 In this section, you'll learn how to create a registry source and trigger an automated scan.
 
-[[prepare-a-registryyaml-file]]
+[#prepare-a-registryyaml-file]
 === Prepare a `registry.yaml` file
 
 Before running a scan, you need to define a `Registry` custom resource for {sboms-name} to fetch images.
@@ -191,7 +192,7 @@ Do not enable `insecure` in production environments, as it disables TLS certific
 kubectl apply -f registry.yaml
 ----
 
-[[prepare-a-scan-jobyaml]]
+[#prepare-a-scan-jobyaml]
 === Prepare a `scan-job.yaml`
 
 The `ScanJob` CR tells {sboms-name} which registry to scan.

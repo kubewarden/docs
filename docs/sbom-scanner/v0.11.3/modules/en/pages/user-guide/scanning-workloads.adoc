@@ -112,7 +112,7 @@ a|Allow connections to registries without TLS verification.
 The `artifactsNamespace` field can only be changed when `enabled` is `false`. This prevents moving artifacts while scans are actively running.
 ====
 
-[[scanning-multiple-platforms]]
+[#scanning-multiple-platforms]
 === Scanning multiple platforms
 
 Many container images are published as multi-arch manifests that contain variants for different CPU architectures (e.g., `linux/amd64`, `linux/arm64`). By default, {sboms-name} scans all platforms available in the image manifest.
@@ -141,7 +141,7 @@ spec:
 
 When multiple platforms are specified, {sboms-name} produces separate `VulnerabilityReport` resources for each platform variant. The `WorkloadScanReport` summary deduplicates findings across platforms so the same CVE affecting the same package is not counted twice.
 
-[[disabling-workload-scanning]]
+[#disabling-workload-scanning]
 === Disabling workload scanning
 
 There are two levels of disabling the feature:
@@ -302,7 +302,7 @@ Managed resources are protected: external modifications are rejected before they
 
 You generally don't need to interact with managed `Registry` resources directly. They are an implementation detail of the WorkloadScan feature.
 
-[[multi-tenancy-setup]]
+[#multi-tenancy-setup]
 == Multi-tenancy setup
 
 When `artifactsNamespace` is set, all scan artifacts (`Registry`, `Image`, `SBOM`, `VulnerabilityReport`) are centralized in that namespace, while `WorkloadScanReport` resources are always created in the workload's namespace. This is the simplest setup: if the same image runs in multiple namespaces, it is scanned only once, and all reports reference the shared results.

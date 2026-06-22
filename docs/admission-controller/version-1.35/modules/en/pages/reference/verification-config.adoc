@@ -99,6 +99,7 @@ anyOf: # at least `anyOf.minimumMatches` are required to match
       urlPrefix: https://github.com/bob # <- it will be post-fixed with `/` for security reasons
 ----
 
+[#_signature_configuration_reference]
 == Signature configuration reference
 
 You can validate signature requirements contained in a file. Expand for an

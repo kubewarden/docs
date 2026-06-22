@@ -53,6 +53,7 @@ Go ahead and annotate the policy:
 $ kwctl annotate policy.wasm --metadata-path metadata.yaml --output-path annotated-policy.wasm
 ----
 
+[#_pushing_the_policy]
 == Pushing the policy
 
 Push your policy to an OCI registry:

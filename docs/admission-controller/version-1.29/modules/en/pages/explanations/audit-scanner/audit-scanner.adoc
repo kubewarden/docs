@@ -83,6 +83,7 @@ Also, policies in Kubewarden now support two optional annotations:
 See the policy authors
 xref:tutorials/writing-policies/index.adoc[documentation] for more information.
 
+[#_permissions_and_serviceaccounts]
 == Permissions and ServiceAccounts
 
 The audit scanner in Kubewarden requires specific Role Based Access Control

@@ -141,6 +141,7 @@ Kubernetes already ships with two PriorityClasses that are good candidates: `sys
 If you delete a PriorityClass, existing Pods that use the name of the deleted PriorityClass remain unchanged, but following Pods that use the name of the deleted PriorityClass will not be created by Kubernetes.
 ====
 
+[#_policyserver_production_configuration]
 == `PolicyServer` production configuration
 
 `PolicyServers` are critical to the cluster. Reliability of them is important as they process Admission Requests destined for the Kubernetes API via the Validating and Mutating Webhooks.
