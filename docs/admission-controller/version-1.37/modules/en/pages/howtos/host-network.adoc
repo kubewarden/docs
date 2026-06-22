@@ -45,7 +45,7 @@ namespace. Two pods that try to bind the same port on the same node conflict.
 
 *Increased attack surface.* Processes inside host-network pods can see all
 network interfaces of the host node, and webhook endpoints become reachable
-outside the cluster. See the <<security_considerations,Security considerations>>
+outside the cluster. See the <<#_security_considerations,Security considerations>>
 section below.
 
 == Custom port configuration
