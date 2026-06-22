@@ -113,7 +113,6 @@ Service.
 If you prefer not to install Traefik, the tracing guides also keep
 `kubectl port-forward` as a fallback to access Jaeger directly.
 
-[#install-opentelemetry]
 [#_install_opentelemetry]
 == Install OpenTelemetry
 
