@@ -7,6 +7,7 @@
 * <<#_project_specific_content, Project specific conditional content.>>
 * <<#_working_locally, Working locally to develop documentation>>
 * <<#_anchors, Anchors>>
+* <<#_new_releases, New releases>>
 
 [#_welcome]
 === Welcome
@@ -122,3 +123,20 @@ is more compact and is used in some places in the documentation.
 
 When creating anchors, use the following format: [#_my_anchor] as a
 preference.
+
+[#_new_releases]
+=== New releases
+
+Still developing, since the switch to Antora/AsciiDoc, so changes are expected.
+
+New releases are created by the script `scripts/new-release.sh` which creates a
+new version directory and copy the contents of the previous version into it. The
+script also updates the `antora.yml` file to reflect the new version. Normally
+this script will be invoked by GH actions.
+
+The highest numbered version directory in `docs/admission-controller` and
+`docs/sbom-scanner` is the prerelease/dev version as indicated in its
+`antora.yml` file. The next version is the current live version documentation.
+
+Changes for the next upcoming release should be documented in the prerelease/dev
+version.
