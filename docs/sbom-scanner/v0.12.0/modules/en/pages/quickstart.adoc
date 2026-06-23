@@ -8,9 +8,6 @@ This guide will walk you through the following steps:
 
 * Deploying the SBOMscanner stack in a Kubernetes cluster
 * Running an automated image scan using a `Registry` custom resource
-
-'''''
-
 == Requirements
 
 Before deployment, you need to prepare the following:
