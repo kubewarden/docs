@@ -1,0 +1,12 @@
+name: sbom-scanner
+title: SBOM Scanner
+version: '0.12.0'
+prerelease: -dev
+start_page: en:introduction.adoc
+asciidoc:
+  attributes:
+    sboms-name: SBOM Scanner
+    sboms-short-name: SBOM Scanner
+    build-type: product
+nav:
+  - modules/en/nav.adoc
