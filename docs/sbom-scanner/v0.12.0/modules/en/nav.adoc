@@ -1,0 +1,21 @@
+include::partial$variables.adoc[]
+
+* xref:introduction.adoc[]
+* xref:installation/quickstart.adoc[]
+* Tutorials
+** User guide
+*** xref:user-guide/scanning-registries.adoc[]
+*** xref:user-guide/scanning-workloads.adoc[]
+*** xref:user-guide/querying-reports.adoc[]
+*** xref:user-guide/airgap-support.adoc[]
+*** xref:user-guide/private-registries.adoc[]
+*** xref:user-guide/vex.adoc[]
+*** xref:user-guide/mcp-server.adoc[]
+// * Explanations
+* Howtos
+** xref:installation/uninstall.adoc[]
+** xref:installation/helm-values.adoc[]
+** xref:troubleshooting/collecting-logs.adoc[]
+** xref:troubleshooting/common-problems.adoc[]
+* Reference
+** xref:reference/crd-reference.adoc[]
