@@ -1,5 +1,14 @@
 == Contributing to the Kubewarden project documentation
 
+*Contents*
+
+* <<#_welcome, Welcome>>
+* <<#_project_naming, Project naming in the documentation>>
+* <<#_project_specific_content, Project specific conditional content.>>
+* <<#_working_locally, Working locally to develop documentation>>
+* <<#_anchors, Anchors>>
+
+[#_welcome]
 === Welcome
 
 Welcome to the documentation repository for the Kubewarden project
@@ -14,6 +23,7 @@ Admission Controller uses the `docs/admission-controller` directory for document
 +
 SBOM Scanner uses the `docs/sbom-scanner` directory for documentation.
 
+[#_project_naming]
 === Project naming in the documentation
 
 They should be referred to in the text by the asciidoc attributes defined for
@@ -31,6 +41,7 @@ In practice, in this repository, there is no difference between the long and
 short names for building community docs. But there are downstream projects that
 have different naming conventions so it's worth paying attention to.
 
+[#_project_specific_content]
 === Project specific conditional content.
 
 For content that is conditional on the documentation target being built.
@@ -39,7 +50,7 @@ There will be content that is specific to particular projects. For example,
 installation instructions may be different for the Kubewarden Admission
 Controller and for the SUSE Security Admission controller. When building for
 the community documentation in this repository a AsciiDoc attribute
-`build-type` is defined to be `community`. 
+`build-type` is defined to be `community`.
 
 There will be a directory for each version in community docs, e.g.
 
@@ -66,6 +77,7 @@ their repository a directory named
 `docs/admission-controller/version-1.37/modules/en/pages/{build-type}-specific`
 containing an `install.adoc` file.
 
+[#_working_locally]
 === Working locally to develop documentation
 
 You need `node` v24. Or  thereabouts.
@@ -77,3 +89,36 @@ You need `node` v24. Or  thereabouts.
 * `make clean environment community-local`
 * `make preview`
 * Provide a pull request.
+
+[#_anchors]
+=== Anchors
+
+It's important for the benefit of downstream documentation repositories, that
+have translations, that we use explicit anchors for cross references. Auto
+generated anchors do not survive translation and break linking.
+
+An example:
+
+[source, console]
+----
+[#_my_anchor]
+== My Anchor
+
+Ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit
+amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante
+hendrerit.
+----
+
+and referring to it by
+
+`\xref:#_my_anchor[My Anchor]`
+
+or
+
+`\<<#_my_anchor,My Anchor>>`
+
+The first form is preferred for readability and maintainability. The second form
+is more compact and is used in some places in the documentation.
+
+When creating anchors, use the following format: [#_my_anchor] as a
+preference.
