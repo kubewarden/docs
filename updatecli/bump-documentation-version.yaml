@@ -13,6 +13,7 @@ policies:
     config:
       - updatecli.d/antora.yaml
     values:
+      - values.d/scm.yaml
       - values.d/adm-controller.yaml
 
   # Update the destination paths in CLI reference docs values files so they
@@ -21,4 +22,5 @@ policies:
     config:
       - updatecli.d/update-cli-docs-version.yaml
     values:
+      - values.d/scm.yaml
       - values.d/adm-controller.yaml

@@ -13,4 +13,5 @@ policies:
     config:
       - updatecli.d/antora.yaml
     values:
+      - values.d/scm.yaml
       - values.d/sbomscanner.yaml
