@@ -139,9 +139,6 @@ sbomscanner           sbomscanner-worker-d9d68c5c-tlpgm             1/1     Runn
 At this point, your SBOMBastic deployment is up and running
 successfully. You’re now ready to begin scanning images and generating
 reports!
-
-'''''
-
 == Run a Scan
 
 In this section, you’ll learn how to create a registry source and
