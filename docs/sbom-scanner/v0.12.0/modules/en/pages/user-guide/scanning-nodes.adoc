@@ -14,8 +14,8 @@ to image-based scanners.
 The Node Scan feature closes this gap. It deploys a worker on every
 eligible node as a DaemonSet, scans the host filesystem, and produces a
 `NodeSBOM` and a `NodeVulnerabilityReport` per node. This gives you a
-comprehensive overview of node-level vulnerabilities, ensuring the
-safety of the infrastructure where your workloads reside.
+comprehensive overview of node-level vulnerabilities, helping secure
+the infrastructure where your workloads reside.
 
 === How it works
 
