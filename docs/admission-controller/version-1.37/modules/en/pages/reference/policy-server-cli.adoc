@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Policy Server CLI
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-15
+:revdate: 2026-06-24
 :page-revdate: {revdate}
 :title: Policy Server CLI
 :description: Explore the policy-server command-line help and options to customize and run the `policy-server` program.
@@ -15,10 +15,10 @@ This document contains the help content for the `policy-server` command-line pro
 
 *Command Overview:*
 
-* <<_policy_server,`policy-server`>>
-* <<_policy_server_docs,`policy-server docs`>>
+* <<policy-server,`policy-server`>>
+* <<policy-server-docs,`policy-server docs`>>
 
-[#_policy_server]
+[[policy-server]]
 == `policy-server`
 
 
@@ -87,7 +87,7 @@ Default value: `sigstore-data`
 
 
 
-[#_policy_server_docs]
+[[policy-server-docs]]
 == `policy-server docs`
 
 Generates documentation for policy-server commands. The output format is determined by the file extension: .md for Markdown, AsciiDoc otherwise
@@ -97,5 +97,6 @@ Generates documentation for policy-server commands. The output format is determi
 === *Options:*
 
 * `-o`, `--output <FILE>` — path where the documentation file will be stored
+
 
 
