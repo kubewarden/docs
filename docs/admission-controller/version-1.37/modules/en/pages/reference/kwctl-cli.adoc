@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = kwctl CLI
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-15
+:revdate: 2026-06-24
 :page-revdate: {revdate}
 :title: kwctl CLI
 :description: Explore the `kwctl` command-line tool to manage {admc-name} policies and perform tasks like loading policies
