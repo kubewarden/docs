@@ -152,15 +152,16 @@ The following resources are not adopted and are recreated:
 * `kubectl` with access to your cluster
 * `yq` v4 (https://github.com/mikefarah/yq[github.com/mikefarah/yq]) for the post-renderer
 * `jq` for detecting installed chart versions
-* The three legacy releases must be installed in your cluster
+* The three legacy releases must be installed in your cluster at appVersion `v1.36.0`
+* The unified `admission-controller` chart must be available at appVersion `v1.37.0`
 
 === Script phases
 
 The script runs five phases:
 
 . *Preflight*: checks that the required tools are available, connects to the
-  cluster, finds the three legacy releases, and warns if they are not at the
-  latest chart version.
+  cluster, finds the three legacy releases, and fails if any of them is not at
+  appVersion `v1.36.0`.
 . *Annotation injection*: creates a Helm 4 post-renderer plugin that wraps
   `yq`, then runs `helm upgrade --reuse-values --post-renderer` on each legacy
   release to write `helm.sh/resource-policy: keep` into the stored release
@@ -174,10 +175,12 @@ The script runs five phases:
   otherwise delete all {policy-server} resources. Kept resources stay live; the
   controller plumbing is removed.
 . *Unified chart install*: runs `helm install --take-ownership` as a fresh
-  release named `admission-controller`, with no name/fullname overrides. Helm
-  4's Server-Side Apply adopts the kept data/identity resources, updates their
-  ownership metadata, and removes the legacy keep annotations; the controller
-  plumbing is created fresh under the chart's natural names.
+  release named `admission-controller`, with no name/fullname overrides. When
+  the chart source is a Helm repo reference, the script resolves the chart
+  version whose appVersion is `v1.37.0` and pins the install to that version.
+  Helm 4's Server-Side Apply adopts the kept data/identity resources, updates
+  their ownership metadata, and removes the legacy keep annotations; the
+  controller plumbing is created fresh under the chart's natural names.
 . *Verification*: checks that CRDs are owned by the new release, RBAC and the
   `kubewarden-ca` Secret were adopted in place (UIDs did not change), the
   controller Deployment is running (located via its hardened label selector),
@@ -208,12 +211,12 @@ Dry run (no changes applied):
   --unified-chart kubewarden/admission-controller --dry-run
 ----
 
-Interactive mode (pauses before each destructive step):
+Non-interactive mode (disables confirmation prompts, suitable for CI or automation):
 
 [source,sh]
 ----
 ./kubewarden-unified-adm-controller-chart-migration.sh \
-  --unified-chart kubewarden/admission-controller --interactive
+  --unified-chart kubewarden/admission-controller --no-interactive
 ----
 
 Passing custom values to the unified chart:
@@ -256,8 +259,8 @@ Passing custom values to the unified chart:
 | `--values FILE` / `-f FILE`
 | Values file for the unified chart install (repeatable)
 
-| `--interactive`
-| Pause for confirmation before destructive steps
+| `--no-interactive`
+| Disable interactive confirmation prompts (interactive mode is on by default)
 
 | `--dry-run`
 | Show what would be done without making changes
