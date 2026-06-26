@@ -188,6 +188,9 @@ a values file or pass them with `--set "policyServer.permissions[0].apiGroup=...
 * `jq` for detecting installed chart versions
 * The three legacy helm charts releases must be installed in your cluster at appVersion `v1.36.0`
 * The unified `admission-controller` chart must be available at appVersion `v1.37.0`
+* The Helm repo serving the charts must already be registered locally before running the script.
+  The script never adds or modifies your Helm repo configuration.
+  If needed, run: `helm repo add kubewarden https://charts.kubewarden.io && helm repo update`
 
 === Script phases
 
@@ -196,6 +199,10 @@ The script runs five phases:
 . *Preflight*: checks that the required tools are available, connects to the
   cluster, finds the three legacy releases, and fails if any of them is not at
   appVersion `v1.36.0`.
+  When `--unified-chart` is in the `<alias>/<chart>` form, preflight also verifies
+  that the alias matches `--repo-name`, that the alias is already registered in the
+  local Helm repo list, and that the unified chart resolves successfully — all
+  before any destructive step.
 . *Annotation injection*: creates a Helm 4 post-renderer plugin that wraps
   `yq`, then runs `helm upgrade --reuse-values --post-renderer` on each legacy
   release to ensure a specific selection of resources they created
@@ -274,7 +281,7 @@ Passing custom values to the unified chart:
 | Flag | Description
 
 | `--unified-chart PATH_OR_NAME`
-| Required. Local tarball or Helm repo chart name
+| Required. Local tarball, unpacked chart directory, OCI reference (`oci://...`), or Helm repo chart (`<alias>/<chart>`). For the repo form, `<alias>` must equal `--repo-name` and be already registered locally
 
 | `--namespace NS`
 | Namespace of the {admc-short-name} installation (default: `kubewarden`)
@@ -283,10 +290,7 @@ Passing custom values to the unified chart:
 | Kubernetes context to use (default: current context)
 
 | `--repo-name NAME`
-| Helm repo name (default: `kubewarden`)
-
-| `--repo-url URL`
-| Helm repo URL (default: `https://charts.kubewarden.io`)
+| Name of a Helm repo already configured locally. When `--unified-chart` uses the `<alias>/<chart>` form, this must match its alias prefix (default: `kubewarden`)
 
 | `--timeout DURATION`
 | Timeout for Helm operations (default: `5m`)
