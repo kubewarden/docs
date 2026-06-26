@@ -1,0 +1,300 @@
+include::partial$variables.adoc[]
+
+= Migration from three-chart setup
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-06-26
+:page-revdate: {revdate}
+:description: Migrate from the legacy kubewarden-crds, kubewarden-controller, and kubewarden-defaults Helm charts to the unified admission-controller chart.
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["chart-migration"]
+:doc-type: ["howto"]
+:keywords: ["{admc-name}", "kubewarden", "helm", "chart", "migration", "upgrade", "kubewarden-crds", "kubewarden-controller", "kubewarden-defaults", "admission-controller"]
+:sidebar_label: Migration from three-chart setup
+:sidebar_position: 10
+:current-version: {page-origin-branch}
+
+If you are running the legacy three-chart setup (`kubewarden-crds`,
+`kubewarden-controller`, `kubewarden-defaults`), you have two ways to move to the
+single chart. The migration script
+(`kubewarden-unified-adm-controller-chart-migration.sh`) does it without
+admission downtime. Otherwise you can uninstall the old charts and reinstall the
+new one, which stops policy evaluation while you do it.
+
+== Manual reinstallation
+
+This is the simplest path, but policies stop being evaluated while it runs. You
+back up the policies and policy servers, uninstall the old {admc-short-name} stack,
+install the new chart, then reapply the backups.
+
+The steps are:
+
+. Back up your policies and policy servers:
++
+[source,sh]
+----
+FILTER='del(.items[].metadata.uid, .items[].metadata.resourceVersion, .items[].metadata.creationTimestamp, .items[].metadata.generation, .items[].metadata.managedFields, .items[].status)'
+
+kubectl get clusteradmissionpolicies -A -o yaml | yq "$FILTER" > clusteradmissionpolicies-backup.yaml
+kubectl get admissionpolicies -A -o yaml | yq "$FILTER" > admissionpolicies-backup.yaml
+kubectl get clusteradmissionpolicygroups -A -o yaml | yq "$FILTER" > clusteradmissionpolicygroups-backup.yaml
+kubectl get admissionpolicygroups -A -o yaml | yq "$FILTER" > admissionpolicygroups-backup.yaml
+kubectl get policyservers -A -o yaml | yq "$FILTER" > policyservers-backup.yaml
+----
+
+. Uninstall the old Helm charts:
++
+[source,sh]
+----
+helm uninstall kubewarden-defaults -n kubewarden
+helm uninstall kubewarden-controller -n kubewarden
+helm uninstall kubewarden-crds -n kubewarden
+----
+
+. Install the unified Helm chart:
++
+[source,sh]
+----
+helm install kubewarden kubewarden/admission-controller -n kubewarden
+----
++
+The new single Helm chart also merges the three values files into one, and your
+old values still apply. To get the same stack back, combine the values from the
+old three charts into one file and pass it to the install:
++
+[source,sh]
+----
+helm install kubewarden kubewarden/admission-controller -n kubewarden --values all-values.yaml
+----
+
+. Restore policies and policy servers:
++
+[source,sh]
+----
+kubectl apply -f policyservers-backup.yaml
+kubectl apply -f clusteradmissionpolicies-backup.yaml
+kubectl apply -f admissionpolicies-backup.yaml
+kubectl apply -f clusteradmissionpolicygroups-backup.yaml
+kubectl apply -f admissionpolicygroups-backup.yaml
+----
+
+Once the controller reconciles them, the stack is back to where it was.
+
+== Migration script
+
+The {admc-short-name} team ships a script that runs the whole migration to the unified
+chart with no downtime. Check the prerequisites below before you run it.
+
+If you can't meet one of the prerequisites, follow the "manual reinstallation"
+instructions for your own safety
+
+[WARNING]
+====
+The {admc-short-name} team test the migration path as much as possible. But it is
+still recommended to backup policies and policy server definitions just in
+case something unexpected happens. Therefore, it will be easier to restore to
+the previous state if necessary.
+====
+
+The migration runs a few Helm operations in order: it annotates the stored
+release manifests so the resources survive, uninstalls the legacy releases
+without running their cleanup hooks, then installs the unified chart so it adopts
+what is left. Order matters here. The annotations have to be in the stored
+manifest, not just on the live objects, or Helm ignores them, and the hooks have
+to be skipped or they delete your {policy-server} resources.
+
+The unified chart installs as a fresh release named `admission-controller`. Its
+stateless plumbing (Deployment, Services, ConfigMap, RBAC, webhook configs) is
+recreated under the chart's own names. The data and identity resources keep their
+fixed names and are adopted in place: the CRDs, the `kubewarden-ca` Secret, the
+`policy-server` RBAC, and the default {policy-server} with its recommended policies.
+Because the plumbing is recreated rather than adopted, there is no immutable
+selector to clash on and no `nameOverride` to carry around forever. A wrong step
+here can delete resources or break admission, so the script does every step and
+checks it.
+
+=== What survives the migration
+
+The following resources are adopted in place, with the same UIDs:
+
+* The five {admc-short-name} CRDs.
+* Your custom {policy-server} instances and policy CRs, along with their
+  `Validating`/`MutatingWebhookConfiguration` objects.
+* The `default` {policy-server} and recommended policy CRs (if enabled). The
+  unified chart's DefaultsApplier adopts them in place. The
+  `policy-server-default` Deployment is owned by the {policy-server} CR through
+  an owner reference, so as long as the CR survives, the Deployment stays up
+  and admission continues.
+* The `kubewarden-ca` Secret. The unified chart's webhook template looks it up
+  by name and reuses the existing CA data, so the policy-server pods that are
+  already running stay trusted by the webhook CA bundles. The CA is not rotated.
+
+=== What is recreated
+
+The following resources are not adopted and are recreated:
+
+* The controller's stateless plumbing, meaning its Deployment, Services, and
+  ConfigMap, is deleted with the legacy release and recreated by the unified
+  install under the chart's own names. The controller restarts briefly, but
+  policy enforcement on workloads keeps working because the running policy-server
+  pods serve it.
+* The controller's leaf certs `kubewarden-webhook-server-cert` and
+  `kubewarden-audit-scanner-client-cert` are regenerated from the preserved CA.
+  They are not kept because the webhook server cert's SAN is tied to the webhook
+  Service DNS name, and that name changes when the plumbing is recreated under
+  the chart's own names. A stale cert would only be valid for the old Service
+  name and would break the controller's admission webhooks. Since the CA itself
+  does not change, the regenerated certs keep the webhook caBundle valid and
+  trust is not disrupted.
+
+=== Prerequisites
+
+* Helm v4+ (needed for Server-Side Apply and post-renderer plugins)
+* `kubectl` with access to your cluster
+* `yq` v4 (https://github.com/mikefarah/yq[github.com/mikefarah/yq]) for the post-renderer
+* `jq` for detecting installed chart versions
+* The three legacy releases must be installed in your cluster
+
+=== Script phases
+
+The script runs five phases:
+
+. *Preflight*: checks that the required tools are available, connects to the
+  cluster, finds the three legacy releases, and warns if they are not at the
+  latest chart version.
+. *Annotation injection*: creates a Helm 4 post-renderer plugin that wraps
+  `yq`, then runs `helm upgrade --reuse-values --post-renderer` on each legacy
+  release to write `helm.sh/resource-policy: keep` into the stored release
+  manifests. For the `kubewarden-crds` and `kubewarden-defaults` releases this
+  keeps *all* rendered resources; for the `kubewarden-controller` release it
+  keeps *only the `kubewarden-ca` Secret*, so the controller's stateless
+  plumbing and its leaf certs are deleted (and later recreated/regenerated)
+  rather than adopted.
+. *Legacy uninstall*: runs `helm uninstall --no-hooks` in reverse order. The
+  `--no-hooks` flag skips the controller chart's pre-delete hook, which would
+  otherwise delete all {policy-server} resources. Kept resources stay live; the
+  controller plumbing is removed.
+. *Unified chart install*: runs `helm install --take-ownership` as a fresh
+  release named `admission-controller`, with no name/fullname overrides. Helm
+  4's Server-Side Apply adopts the kept data/identity resources, updates their
+  ownership metadata, and removes the legacy keep annotations; the controller
+  plumbing is created fresh under the chart's natural names.
+. *Verification*: checks that CRDs are owned by the new release, RBAC and the
+  `kubewarden-ca` Secret were adopted in place (UIDs did not change), the
+  controller Deployment is running (located via its hardened label selector),
+  and the DefaultsApplier has labeled the default {policy-server} and
+  recommended policies.
+
+=== Running the migration
+
+[source,sh]
+----
+./kubewarden-unified-adm-controller-chart-migration.sh \
+  --unified-chart kubewarden/admission-controller
+----
+
+Using a local tarball:
+
+[source,sh]
+----
+./kubewarden-unified-adm-controller-chart-migration.sh \
+  --unified-chart ./admission-controller-6.0.0.tgz
+----
+
+Dry run (no changes applied):
+
+[source,sh]
+----
+./kubewarden-unified-adm-controller-chart-migration.sh \
+  --unified-chart kubewarden/admission-controller --dry-run
+----
+
+Interactive mode (pauses before each destructive step):
+
+[source,sh]
+----
+./kubewarden-unified-adm-controller-chart-migration.sh \
+  --unified-chart kubewarden/admission-controller --interactive
+----
+
+Passing custom values to the unified chart:
+
+[source,sh]
+----
+./kubewarden-unified-adm-controller-chart-migration.sh \
+  --unified-chart kubewarden/admission-controller \
+  --set "image.tag=v2.0.0" \
+  --values ./my-custom-values.yaml
+----
+
+==== Available flags
+
+[cols="1,2"]
+|===
+| Flag | Description
+
+| `--unified-chart PATH_OR_NAME`
+| Required. Local tarball or Helm repo chart name
+
+| `--namespace NS`
+| Namespace of the {admc-short-name} installation (default: `kubewarden`)
+
+| `--kube-context CTX`
+| Kubernetes context to use (default: current context)
+
+| `--repo-name NAME`
+| Helm repo name (default: `kubewarden`)
+
+| `--repo-url URL`
+| Helm repo URL (default: `https://charts.kubewarden.io`)
+
+| `--timeout DURATION`
+| Timeout for Helm operations (default: `5m`)
+
+| `--set KEY=VALUE`
+| Set a value for the unified chart install (repeatable)
+
+| `--values FILE` / `-f FILE`
+| Values file for the unified chart install (repeatable)
+
+| `--interactive`
+| Pause for confirmation before destructive steps
+
+| `--dry-run`
+| Show what would be done without making changes
+
+| `--help`
+| Print usage information
+
+|===
+
+== Caveats
+
+*Plain release, no overrides.* The migrated release stores no `nameOverride` or
+`fullnameOverride`. The plumbing is recreated under the chart's own names instead
+of being adopted in place, so there is no immutable selector to preserve. The
+script builds the values file from `helm get values` on the three legacy releases
+(`kubewarden-crds`, `kubewarden-controller`, `kubewarden-defaults`) and strips
+any name or fullname overrides, so it carries only the configuration you set
+yourself. Later upgrades need nothing special: a plain
+`helm upgrade admission-controller ... --reuse-values` is enough. The release is
+named `admission-controller`, and so are its controller resources.
+
+*Controller gap.* Between the legacy uninstall and the new chart becoming
+ready, no controller is running. The surviving policy-server pods still serve
+the existing webhook configurations, so admission for active policies keeps
+working. Any policy and policy server CR you create during this window will
+return errors from the API server.
+
+*Settings drift.* The DefaultsApplier rewrites each recommended policy's spec to
+match the values you pass the unified chart. If you had changed `mode`,
+`settings`, or other fields on those policies, pass the same values with `--set`
+or `--values` so your configuration survives.
+
+*Renamed policies.* The unified chart's default policy names match the legacy
+defaults. If you renamed any through legacy values, pass the same `name`
+overrides with `--set` or `--values`. Otherwise the applier removes the
+old-named CRs after install.
+
+*Custom RBAC.* If you added extra permissions to `kubewarden-context-watcher` by
+hand, the unified chart overwrites them on install. Include those permissions in
+a values file or pass them with `--set "policyServer.permissions[0].apiGroup=..."`.
