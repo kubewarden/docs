@@ -13,18 +13,27 @@ include::partial$variables.adoc[]
 :sidebar_position: 10
 :current-version: {page-origin-branch}
 
+Starting from Kubewarden 1.37, a single helm chart is used to manage
+the stack.
+
 If you are running the legacy three-chart setup (`kubewarden-crds`,
-`kubewarden-controller`, `kubewarden-defaults`), you have two ways to move to the
-single chart. The migration script
-(`kubewarden-unified-adm-controller-chart-migration.sh`) does it without
-admission downtime. Otherwise you can uninstall the old charts and reinstall the
-new one, which stops policy evaluation while you do it.
+`kubewarden-controller`, `kubewarden-defaults`), you have upgrade paths:
+
+* Use the migration script (`kubewarden-unified-adm-controller-chart-migration.sh`):
+  this performs the migration without any downtime.
+* Follow the reinstallation instructions: cleaner approach, but involves a short
+  time during which your cluster won't be protected by policies.
 
 == Manual reinstallation
 
-This is the simplest path, but policies stop being evaluated while it runs. You
-back up the policies and policy servers, uninstall the old {admc-short-name} stack,
-install the new chart, then reapply the backups.
+This is the simplest approach. It consists of:
+
+1. Doing a backup of your policies
+2. Uninstall the old helm charts
+3. Install the new single helm chart
+4. Restore all your policies
+
+During step 2 and 4 your cluster won't be protected by any policy.
 
 The steps are:
 
@@ -85,7 +94,7 @@ The {admc-short-name} team ships a script that runs the whole migration to the u
 chart with no downtime. Check the prerequisites below before you run it.
 
 If you can't meet one of the prerequisites, follow the "manual reinstallation"
-instructions for your own safety
+instructions for your own safety.
 
 [WARNING]
 ====
@@ -98,9 +107,7 @@ the previous state if necessary.
 The migration runs a few Helm operations in order: it annotates the stored
 release manifests so the resources survive, uninstalls the legacy releases
 without running their cleanup hooks, then installs the unified chart so it adopts
-what is left. Order matters here. The annotations have to be in the stored
-manifest, not just on the live objects, or Helm ignores them, and the hooks have
-to be skipped or they delete your {policy-server} resources.
+what is left.
 
 The unified chart installs as a fresh release named `admission-controller`. Its
 stateless plumbing (Deployment, Services, ConfigMap, RBAC, webhook configs) is
@@ -119,32 +126,23 @@ The following resources are adopted in place, with the same UIDs:
 * The five {admc-short-name} CRDs.
 * Your custom {policy-server} instances and policy CRs, along with their
   `Validating`/`MutatingWebhookConfiguration` objects.
-* The `default` {policy-server} and recommended policy CRs (if enabled). The
-  unified chart's DefaultsApplier adopts them in place. The
-  `policy-server-default` Deployment is owned by the {policy-server} CR through
-  an owner reference, so as long as the CR survives, the Deployment stays up
-  and admission continues.
+* If enabled, the `default` {policy-server} and the recommended policies. The
+  deployment of the `default` {policy-server} is not going to be restarted by
+  the migration, since no change is done the `PolicyServer` that defines it.
 * The `kubewarden-ca` Secret. The unified chart's webhook template looks it up
   by name and reuses the existing CA data, so the policy-server pods that are
   already running stay trusted by the webhook CA bundles. The CA is not rotated.
 
 === What is recreated
 
-The following resources are not adopted and are recreated:
+The deployment running the actual controller and some of it ancillary
+resources (Service, ConfigMap, Secret) are recreated by the migration
+script.
 
-* The controller's stateless plumbing, meaning its Deployment, Services, and
-  ConfigMap, is deleted with the legacy release and recreated by the unified
-  install under the chart's own names. The controller restarts briefly, but
-  policy enforcement on workloads keeps working because the running policy-server
-  pods serve it.
-* The controller's leaf certs `kubewarden-webhook-server-cert` and
-  `kubewarden-audit-scanner-client-cert` are regenerated from the preserved CA.
-  They are not kept because the webhook server cert's SAN is tied to the webhook
-  Service DNS name, and that name changes when the plumbing is recreated under
-  the chart's own names. A stale cert would only be valid for the old Service
-  name and would break the controller's admission webhooks. Since the CA itself
-  does not change, the regenerated certs keep the webhook caBundle valid and
-  trust is not disrupted.
+As a result of that, during the upgrade phase no new policy nor {policy-server}
+can be created.
+Existing {policy-server} instances and policies continue to operate as usual,
+but cannot be edited.
 
 === Prerequisites
 
@@ -164,16 +162,12 @@ The script runs five phases:
   appVersion `v1.36.0`.
 . *Annotation injection*: creates a Helm 4 post-renderer plugin that wraps
   `yq`, then runs `helm upgrade --reuse-values --post-renderer` on each legacy
-  release to write `helm.sh/resource-policy: keep` into the stored release
-  manifests. For the `kubewarden-crds` and `kubewarden-defaults` releases this
-  keeps *all* rendered resources; for the `kubewarden-controller` release it
-  keeps *only the `kubewarden-ca` Secret*, so the controller's stateless
-  plumbing and its leaf certs are deleted (and later recreated/regenerated)
-  rather than adopted.
+  release to ensure a specific selection of resources they created
+  survive the uninstall phase.
 . *Legacy uninstall*: runs `helm uninstall --no-hooks` in reverse order. The
   `--no-hooks` flag skips the controller chart's pre-delete hook, which would
-  otherwise delete all {policy-server} resources. Kept resources stay live; the
-  controller plumbing is removed.
+  otherwise delete all {policy-server} resources. Kept resources stay live. The
+  controller and its ancillary resources are removed.
 . *Unified chart install*: runs `helm install --take-ownership` as a fresh
   release named `admission-controller`, with no name/fullname overrides. When
   the chart source is a Helm repo reference, the script resolves the chart
