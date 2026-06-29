@@ -26,9 +26,9 @@ If you are running the legacy three-chart setup (`kubewarden-crds`,
 
 [WARNING]
 ====
-It's important to remember that, as described at
+Remember that, as described at
 xref:/reference/upgrade-path.adoc[upgrade path documentation],  version jumping
-is not allowed. You must migration from {admc-short-name} v1.36 to v1.37
+isn't allowed. You must migrate from {admc-short-name} v1.36 to v1.37
 ====
 
 [#manual-reinstallation]
@@ -36,15 +36,15 @@ is not allowed. You must migration from {admc-short-name} v1.36 to v1.37
 
 This is the simplest approach. It consists of:
 
-1. Doing a backup of your policies
-2. Uninstall the old helm charts
-3. Install the new single helm chart
-4. Restore all your policies
+. Doing a backup of your policies
+. Uninstall the old helm charts
+. Install the new single helm chart
+. Restore all your policies
 
 After step #2 your cluster won't be protected. It will be
 protected again once all your policies are restored.
 
-You can then rely on Audit Scanner to find the non-compliant
+You can then use Audit Scanner to find the non-compliant
 resources that might have slipped into the cluster during this
 short window.
 
@@ -113,7 +113,7 @@ kubectl apply -f admissionpolicygroups-backup.yaml
 ----
 
 Now you just have to wait for the reconciliation of these resources to
-be done. You're cluster has been successfully migrated.
+finish. You're cluster has been successfully migrated.
 
 == Migration script
 
@@ -163,7 +163,7 @@ The following resources are adopted in place, with the same UIDs:
 
 === What is recreated
 
-The deployment running the actual controller and some of it ancillary
+The deployment running the actual controller and some of its ancillary
 resources (Service, ConfigMap, Secret) are recreated by the migration
 script.
 
@@ -194,14 +194,14 @@ return errors from the API server.
 
 ==== Renamed policies
 The unified chart's default policy names match the legacy
-defaults. If you renamed any through legacy values, pass the same `name`
+defaults. If you renamed any legacy values, pass the same `name`
 overrides with `--set` or `--values`. Otherwise the applier removes the
 old-named CRs after install.
 
 ==== Manual settings changes lost
-If you changed resources configuration by other means that is not Helm upgrade
-commands, you will lost your configuration. In such cases, you must ensure that
-your customizations will be defined in the values passed to the migration
+If you changed resources configuration by other means that are not Helm upgrade
+commands, you will lose your configuration. In such cases, you must ensure that
+your customizations are defined in the values passed to the migration
 script.
 
 === Prerequisites
@@ -250,7 +250,7 @@ The script runs five phases:
 
 [WARNING]
 ====
-If users face any issue during the migration using the script, they always can
+If users face any issue during the migration using the script, they can
 restore the environment using the <<manual-reinstallation, `manual
 reinstallation`>> instructions. Remember to backup your policies and policy
 server definition for such scenarios.
