@@ -3,26 +3,6 @@ pipelineid: "docs-update"
 # Source repository to watch for new releases (format: owner/repo)
 sourceRepository: "kubewarden/adm-controller"
 component: "admission-controller"
-scm:
-  # GitHub user associated to the commit message
-  user: "updatecli-bot"
-  # GitHub email associated to the commit message
-  email: ""
-  # GitHub repository owner where the pull request will be created
-  # If a variable "GITHUB_REPOSITORY" is set, it will be used instead
-  owner: "kubewarden"
-  # GitHub repository where the pull request will be created
-  # If a variable "GITHUB_REPOSITORY" is set, it will be used instead
-  repository: "docs"
-  # GitHub token used to create the pull request
-  # If a variable "GITHUB_TOKEN" is set, it will be used instead
-  token: ""
-  # GitHub username used to create the pull request
-  # If a variable "GITHUB_ACTOR" is set, it will be used instead
-  username: ""
-  # GitHub branch where the pull request will be created
-  # If a variable "GITHUB_REF_NAME" is set, it will be used instead
-  branch: "main"
 
 pr:
   title: "Update Kubewarden admission controller documentation version"
