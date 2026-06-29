@@ -23,10 +23,10 @@ the infrastructure where your workloads reside.
   (interval, node selector, skip patterns, platforms).
 . The controller creates a `NodeScanJob` for each matching node,
   either on a recurring schedule or on demand.
-. Each worker, running as a DaemonSet pod on the target node, receives
-  the scan request through NATS and scans the host filesystem.
-. The worker generates a `NodeSBOM` (in SPDX format) and a
-  `NodeVulnerabilityReport`, stored in the Storage API Extension Server.
+. On the nodes matching the node selector, the DaemonSet pod scans the
+  host filesystem.
+. The scan produces `NodeSBOM` (in SPDX format) and `NodeVulnerabilityReport`
+  resources.
 
 === Default behavior
 
