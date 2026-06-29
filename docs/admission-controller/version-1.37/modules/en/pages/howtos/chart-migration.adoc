@@ -17,12 +17,19 @@ Starting from Kubewarden 1.37, a single helm chart is used to manage
 the stack.
 
 If you are running the legacy three-chart setup (`kubewarden-crds`,
-`kubewarden-controller`, `kubewarden-defaults`), you have upgrade paths:
+`kubewarden-controller`, `kubewarden-defaults`), you have two possible upgrade paths:
 
 * Use the migration script (`kubewarden-unified-adm-controller-chart-migration.sh`):
   this performs the migration without any downtime.
 * Follow the reinstallation instructions: cleaner approach, but involves a short
   time during which your cluster won't be protected by policies.
+
+[WARNING]
+====
+It's important to remember that, as described at
+xref:/reference/upgrade-path.adoc[upgrade path documentation],  version jumping
+is not allowed. You must migration from {admc-short-name} v1.36 to v1.37
+====
 
 [#manual-reinstallation]
 == Manual reinstallation
@@ -34,9 +41,26 @@ This is the simplest approach. It consists of:
 3. Install the new single helm chart
 4. Restore all your policies
 
-During step 2 and 4 your cluster won't be protected by any policy.
+After step #2 your cluster won't be protected. It will be
+protected again once all your policies are restored.
 
-The steps are:
+You can then rely on Audit Scanner to find the non-compliant
+resources that might have slipped into the cluster during this
+short window.
+
+=== Prerequisites
+
+* Helm v3 or v4
+* `kubectl` with access to your cluster
+* `yq` v4 (https://github.com/mikefarah/yq[github.com/mikefarah/yq]) for filtering resources
+* The three legacy helm charts releases must be installed in your cluster at appVersion `v1.36.0`
+* The unified `admission-controller` chart must be available at appVersion `v1.37.0`
+
+
+[#reinstallation-steps]
+=== Reinstalling the Kubewarden admissions controller stack
+
+To migrate away from the 3 legacy Helm charts, the steps are:
 
 . Back up your policies and policy servers:
 +
@@ -67,9 +91,9 @@ helm uninstall kubewarden-crds -n kubewarden
 helm install kubewarden kubewarden/admission-controller -n kubewarden
 ----
 +
-The new single Helm chart also merges the three values files into one, and your
-old values still apply. To get the same stack back, combine the values from the
-old three charts into one file and pass it to the install:
+The new single Helm chart consolidates the three previous values files into one.
+Your existing configuration settings remain valid; simply combine the values from
+the three original files into a single file and provide it during installation:
 +
 [source,sh]
 ----
@@ -88,7 +112,8 @@ kubectl apply -f clusteradmissionpolicygroups-backup.yaml
 kubectl apply -f admissionpolicygroups-backup.yaml
 ----
 
-Once the controller reconciles them, the stack is back to where it was.
+Now you just have to wait for the reconciliation of these resources to
+be done. You're cluster has been successfully migrated.
 
 == Migration script
 
@@ -104,12 +129,16 @@ The {admc-short-name} team test the migration path as much as possible. But it i
 still recommended to backup policies and policy server definitions just in
 case something unexpected happens. Therefore, it will be easier to restore to
 the previous state if necessary.
+
+Follow the commands from the <<reinstallation-steps, `manual reinstallation section`>>
+to backup your resources.
+
 ====
 
 The migration runs a few Helm operations in order: it annotates the stored
 release manifests so the resources survive, uninstalls the legacy releases
 without running their cleanup hooks, then installs the unified chart so it adopts
-what is left.
+what was left behind by the old charts.
 
 The unified chart installs as a fresh release named `admission-controller`. Its
 stateless plumbing (Deployment, Services, ConfigMap, RBAC, webhook configs) is
@@ -163,22 +192,17 @@ the existing webhook configurations, so admission for active policies keeps
 working. Any policy and policy server CR you create during this window will
 return errors from the API server.
 
-==== Settings drift
-The DefaultsApplier rewrites each recommended policy's spec to
-match the values you pass the unified chart. If you had changed `mode`,
-`settings`, or other fields on those policies, pass the same values with `--set`
-or `--values` so your configuration survives.
-
 ==== Renamed policies
 The unified chart's default policy names match the legacy
 defaults. If you renamed any through legacy values, pass the same `name`
 overrides with `--set` or `--values`. Otherwise the applier removes the
 old-named CRs after install.
 
-==== Custom RBAC
-If you added extra permissions to `kubewarden-context-watcher` by
-hand, the unified chart overwrites them on install. Include those permissions in
-a values file or pass them with `--set "policyServer.permissions[0].apiGroup=..."`.
+==== Manual settings changes lost
+If you changed resources configuration by other means that is not Helm upgrade
+commands, you will lost your configuration. In such cases, you must ensure that
+your customizations will be defined in the values passed to the migration
+script.
 
 === Prerequisites
 
@@ -229,7 +253,7 @@ The script runs five phases:
 If users face any issue during the migration using the script, they always can
 restore the environment using the <<manual-reinstallation, `manual
 reinstallation`>> instructions. Remember to backup your policies and policy
-server definition for such scenarios
+server definition for such scenarios.
 ====
 
 === Running the migration
