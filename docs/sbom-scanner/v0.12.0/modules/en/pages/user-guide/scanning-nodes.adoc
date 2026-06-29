@@ -4,7 +4,7 @@ include::partial$variables.adoc[]
 
 == Overview
 
-{sbom-name} can scan container images through
+{sboms-name} can scan container images through
 xref:user-guide/scanning-registries.adoc[Registry configurations] and
 workload scanning, but the security posture of a cluster also depends on
 the nodes themselves. Nodes run the operating system, the container
@@ -31,7 +31,7 @@ the infrastructure where your workloads reside.
 === Default behavior
 
 The Node Scan reconcilers are enabled by default when installing
-{sbom-name} via the Helm chart. Node scanning becomes active once you
+{sboms-name} via the Helm chart. Node scanning becomes active once you
 create a `NodeScanConfiguration` resource. A sample configuration is
 available in the
 https://github.com/kubewarden/sbomscanner/blob/main/examples/nodescanconfiguration.yaml[examples folder].
@@ -159,7 +159,7 @@ files. Glob patterns such as `++**/++vendor/` are supported.
 
 === Scanning specific platforms
 
-By default, {sbom-name} scans all nodes regardless of their platform. In
+By default, {sboms-name} scans all nodes regardless of their platform. In
 clusters with mixed architectures, you can restrict scanning to specific
 OS/architecture combinations:
 
