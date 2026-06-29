@@ -6,6 +6,7 @@ include::partial$variables.adoc[]
 ** User guide
 *** xref:user-guide/scanning-registries.adoc[]
 *** xref:user-guide/scanning-workloads.adoc[]
+*** xref:user-guide/scanning-nodes.adoc[]
 *** xref:user-guide/querying-reports.adoc[]
 *** xref:user-guide/airgap-support.adoc[]
 *** xref:user-guide/private-registries.adoc[]
