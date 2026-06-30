@@ -41,6 +41,7 @@ ifeval::["{build-type}" == "community"]
 :admc-short-name: {admc-community-short-name}
 :admc-abbrev: {admc-community-abbrev}
 :intro-paragraph: {admc-name} is a xref:#_vendor_neutrality[vendor neutral], https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
+:project-security-team: {kw-community-project-name} team
 endif::[]
 
 ifeval::["{build-type}" == "product"]
@@ -51,6 +52,7 @@ ifeval::["{build-type}" == "product"]
 :product-project-name: SUSE Security
 :community-project-name: {kw-community-project-name}
 :intro-paragraph: {admc-name} is derived from a vendor neutral, https://cncf.io[CNCF] Sandbox project, called link:https://kubewarden.io[{community-project-name}], originally created by https://www.rancher.com/[SUSE Rancher]. The name {admc-name} may be shortened to {admc-short-name} or abbreviated as {admc-abbrev}. The name {community-project-name} refers to the open-source community project. The name {community-project-name} may also be used throughout this documentation in place of {admc-name}, {admc-short-name}, or {admc-abbrev}. This will be in references in source code or configuration examples.
+:project-security-team: {product-project-name} Team
 endif::[]
 
 // Glossary terms start
