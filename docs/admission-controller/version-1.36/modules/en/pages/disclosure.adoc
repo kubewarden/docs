@@ -4,7 +4,7 @@ include::partial$variables.adoc[]
 :page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-05-04
 :page-revdate: {revdate}
-:description: Investigative security researchers work with the {admc-name}'s team to identify vulnerabilities using responsible disclosure protocols.
+:description: Investigative security researchers work with the {project-security-team} to identify vulnerabilities using responsible disclosure protocols.
 :doc-persona: ["kubewarden-all"]
 :doc-topic: ["security", "disclosure"]
 :doc-type: ["explanation"]
@@ -13,12 +13,12 @@ include::partial$variables.adoc[]
 :sidebar_position: 80
 :current-version: {page-origin-branch}
 
-The {admc-name} team appreciates investigative work on security vulnerabilities
-carried out by well-intentioned, ethical security researchers. {admc-short-name}
-follows the practice of [responsible
-disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure) to best
-protect {admc-short-name}'s user base from the impact of security issues. On
-{admc-short-name}'s side, this means:
+The {project-security-team} appreciates investigative work on security
+vulnerabilities carried out by well-intentioned, ethical security researchers.
+{admc-name} follows the practice of
+https://en.wikipedia.org/wiki/Responsible_disclosure[responsible disclosure] to
+best protect {admc-short-name}'s user base from the impact of security issues.
+On {admc-short-name}'s side, this means:
 
 * {admc-short-name} responds to security incidents on priority.
 * {admc-short-name} releases fixes for issues as soon as is practical, prioritizing by risk.
@@ -40,18 +40,18 @@ You can also come talk in our
 https://kubernetes.slack.com/archives/C03L52JRAFM[slack-room] on the Kubernetes
 Slack server.
 
-On receipt the security team:
+On receipt the {project-security-team}:
 
 * Reviews the report, verifies the vulnerability and responds with confirmation
   and/or further information requests.
-* After addressing the reported security bug, {admc-short-name} notifies the
-  Researcher, who is then welcome to optionally disclose publicly.
-  
+* After addressing the reported security bug, the {project-security-team}
+  notifies the Researcher, who is then welcome to optionally disclose publicly.
+
 == What information to provide
 
-The information below must be provided in order for the report to be timely and
+You need to provide the information below for the report to be timely, and
 effectively analyzed. Reports that miss the required information might be
-considered AI generated spam or reviewed with a lower priority. 
+considered AI generated spam or reviewed with a lower priority.
 
 * Project name and version where the issue was observed. If the issue was
   observed on the source code, the link to the specific code in GitHub instead.
@@ -67,7 +67,6 @@ considered AI generated spam or reviewed with a lower priority.
 
 The more information you provide, the faster we will be able to reproduce the
 issue and address your concerns more effectively.
-  
 
 Please, refer to the https://github.com/kubewarden/community[community
 repository] to find more about the
