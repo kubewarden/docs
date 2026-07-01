@@ -141,6 +141,8 @@ If `nodeSelector` is omitted, all nodes in the cluster are scanned.
 The `skipPatterns` field accepts gitignore-style patterns to exclude
 paths from the filesystem scan. This is useful to reduce noise or avoid
 scanning sensitive or irrelevant paths.
+If unset, container-runtime directories are skipped by https://docs.kubewarden.io/sbom-scanner/0.12.0/en/reference/crd-reference.html#k8s-api-github-com-kubewarden-sbomscanner-api-v1alpha1-nodescanconfiguration[default].
+Set to an empty list to scan everything, including the paths above.of skip patterns is provided by default to avoid scanning container runtime directories.
 
 [source,yaml]
 ----
