@@ -41,7 +41,7 @@ Apply the resource with:
 kubectl apply -f examples/vexhub.yaml
 ----
 
-Then, run the scan applying a https://github.com/alegrey91/sbomscanner/blob/main/examples/scanjob.yaml[`ScanJob`] configured to scan the desired registry.
+Then, run the scan applying a https://github.com/kubewarden/sbomscanner/blob/main/examples/scanjob.yaml[`ScanJob`] configured to scan the desired registry.
 
 {sboms-name} will automatically detect the presence of `VEXHub` resources and will include them in the scan.
 
