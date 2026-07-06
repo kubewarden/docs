@@ -1,6 +1,9 @@
 include::partial$variables.adoc[]
 
 = Scanning Nodes
+:revdate: 2026-07-06
+:page-revdate: {revdate}
+:description: Configure node scanning and understand node vulnerability reports.
 
 == Overview
 
@@ -14,43 +17,37 @@ to image-based scanners.
 The Node Scan feature closes this gap. It deploys a worker on every
 eligible node as a DaemonSet, scans the host filesystem, and produces a
 `NodeSBOM` and a `NodeVulnerabilityReport` per node. This gives you a
-comprehensive overview of node-level vulnerabilities, helping secure
-the infrastructure where your workloads reside.
+comprehensive overview of node-level vulnerabilities, helping you secure
+the infrastructure your workloads run on.
 
-=== How it works
+Under the hood, {sboms-name} creates a `NodeScanJob` resource for each
+matching node, on the configured schedule or on demand. The worker pod
+on the node scans the host filesystem and produces a `NodeSBOM` (in SPDX
+format) and a `NodeVulnerabilityReport` for that node.
 
-. A `NodeScanConfiguration` resource defines the global scan settings
-  (interval, node selector, skip patterns, platforms).
-. The controller creates a `NodeScanJob` for each matching node,
-  either on a recurring schedule or on demand.
-. On the nodes matching the node selector, the DaemonSet pod scans the
-  host filesystem.
-. The scan produces `NodeSBOM` (in SPDX format) and `NodeVulnerabilityReport`
-  resources.
+=== Enabling Node Scan
 
-=== Default behavior
+Node scanning is inactive until you create a `NodeScanConfiguration`
+resource. Without it, no scans run and manually created `NodeScanJob`
+resources fail with the reason `NodeScanConfigurationMissing`.
 
-The Node Scan reconcilers are enabled by default when installing
-{sboms-name} via the Helm chart. Node scanning becomes active once you
-create a `NodeScanConfiguration` resource. A sample configuration is
-available in the
-https://github.com/kubewarden/sbomscanner/blob/main/examples/nodescanconfiguration.yaml[examples folder].
-
-== Configuration
-
-The `NodeScanConfiguration` is a cluster-scoped singleton resource named
-`default`. It is the single entry point for controlling the node
-scanning behavior. Only one instance is allowed.
-
-To activate node scanning after installation, apply the example
-configuration:
+To enable node scanning, apply the sample configuration from the
+https://github.com/kubewarden/sbomscanner/blob/main/examples/nodescanconfiguration.yaml[examples folder]:
 
 [source,bash]
 ----
 kubectl apply -f https://raw.githubusercontent.com/kubewarden/sbomscanner/main/examples/nodescanconfiguration.yaml
 ----
 
-Or create your own configuration:
+== Configuration
+
+The `NodeScanConfiguration` is a cluster-scoped singleton resource named
+`default`. It is the single entry point for controlling the node
+scanning behavior, and it is required: without this resource, no node is
+scanned, either on a schedule or on demand. Only one instance is
+allowed.
+
+Example configuration:
 
 [source,yaml]
 ----
@@ -59,7 +56,7 @@ kind: NodeScanConfiguration
 metadata:
   name: default
 spec:
-  scanInterval: 5m
+  scanInterval: 24h
   nodeSelector:
     matchExpressions:
       - key: kubernetes.io/hostname
@@ -80,6 +77,11 @@ spec:
 |===
 |Field |Description |Default
 
+|`enabled`
+|Enable or disable node scanning. See
+xref:#disabling-node-scanning[Disabling node scanning] for details.
+|`true`
+
 |`scanInterval`
 |How often nodes are scanned. If not specified, automatic scanning is
 disabled and you must create `NodeScanJob` resources manually.
@@ -96,7 +98,7 @@ Only nodes matching the selector are scanned.
 scan. Patterns ending with `/` are treated as directories, all others as
 files. Glob patterns like `++**/++vendor/` or `++*++.min.js` are
 supported.
-|-
+|Container runtime directories
 
 |`platforms`
 |Which OS/architecture combinations to scan. Each entry specifies an
@@ -141,8 +143,11 @@ If `nodeSelector` is omitted, all nodes in the cluster are scanned.
 The `skipPatterns` field accepts gitignore-style patterns to exclude
 paths from the filesystem scan. This is useful to reduce noise or avoid
 scanning sensitive or irrelevant paths.
-If unset, container-runtime directories are skipped by https://docs.kubewarden.io/sbom-scanner/0.12.0/en/reference/crd-reference.html#k8s-api-github-com-kubewarden-sbomscanner-api-v1alpha1-nodescanconfiguration[default].
-Set to an empty list to scan everything, including the paths above.of skip patterns is provided by default to avoid scanning container runtime directories.
+If unset, a default list of patterns is applied that excludes container
+runtime directories. See the
+xref:reference/crd-reference.adoc#k8s-api-github-com-kubewarden-sbomscanner-api-v1alpha1-nodescanconfiguration[CRD reference]
+for the default list. Set `skipPatterns` to an empty list to scan
+everything, including those directories.
 
 [source,yaml]
 ----
@@ -175,6 +180,7 @@ spec:
       os: "linux"
 ----
 
+[#running-a-scan-on-demand]
 == Running a scan on demand
 
 You can trigger a one-time scan by creating a `NodeScanJob` resource
@@ -214,6 +220,7 @@ kubectl annotate nodescanconfiguration default \
 
 The annotation is removed automatically after the scan jobs are created.
 
+[#monitoring-scan-progress]
 == Monitoring scan progress
 
 Check the status of node scan jobs:
@@ -412,3 +419,50 @@ with `kubectl get --field-selector`.
 |The OS and CPU architecture of the node, in `OS/ARCH` format.
 Example: `linux/amd64`.
 |===
+
+[#disabling-node-scanning]
+== Disabling node scanning
+
+There are two levels of disabling the feature:
+
+*Disabling at the configuration level* either sets `enabled: false` in
+the `NodeScanConfiguration` resource or deletes the resource entirely:
+
+[source,yaml]
+----
+apiVersion: sbomscanner.kubewarden.io/v1alpha1
+kind: NodeScanConfiguration
+metadata:
+  name: default
+spec:
+  enabled: false
+  # ...
+----
+
+In both cases, all `NodeScanJob` and `NodeSBOM` resources are deleted
+from the cluster. `NodeVulnerabilityReport` resources are owned by their
+`NodeSBOM` and are garbage collected with it. Scanning starts again when
+you set `enabled` back to `true` or recreate the configuration.
+
+*Disabling at the Helm chart level* prevents the reconcilers from
+starting entirely. No node-scan-related resources are watched or cached,
+which saves controller memory and avoids the extra load on the
+Kubernetes API. Use this when you don't need node scanning at all:
+
+[source,yaml]
+----
+controller:
+  nodeScan:
+    enabled: false
+----
+
+== Pod Security Admission
+
+To scan the host filesystem, the worker DaemonSet mounts the node root
+filesystem read-only through a `hostPath` volume, runs as root, and adds
+the `DAC_READ_SEARCH` capability so the scanner can traverse the entire
+filesystem. These settings are rejected by both the `restricted` and the
+`baseline`
+https://kubernetes.io/docs/concepts/security/pod-security-admission/[Pod Security Admission]
+profiles. When node scanning is enabled, the namespace where
+{sboms-name} is installed cannot enforce either profile.
