@@ -362,6 +362,18 @@ body {
   word-break: keep-all;
 }
 
+.doc .mermaid svg,
+.doc .mermaid svg text,
+.doc .mermaid svg tspan,
+.doc .mermaid .label,
+.doc .mermaid .label text,
+.doc .mermaid .nodeLabel,
+.doc .mermaid .edgeLabel,
+.doc .mermaid .cluster-label {
+  font-family: inherit !important;
+  font-weight: inherit;
+}
+
 /* Font for side toc
 .article-aside {
   font-family: 'Montserrat', sans-serif;

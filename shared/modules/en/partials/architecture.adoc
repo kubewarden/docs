@@ -1,24 +1,18 @@
 [mermaid]
 ....
-%%{
-  init: {
-    "flowchart": {
-      "htmlLabels": false,
-    }
-  }
-}%%
+%%{init: { "themeVariables": { "fontSize": "24px" } }}%%
 graph LR
     accTitle: Admission Controller architecture
     accDescr: A diagram showing the architecture of Admission Controller components.
-    subgraph " "
+    subgraph outer[" "]
       direction LR
-      subgraph " "
+      subgraph platform[" "]
         direction LR
           k8s(("Kubernetes"))
           registry[("OCI registry")]
         end
         subgraph kw["`**Kubewarden**`"]
-          controller("`**KW admission Controller**`")
+          controller("`**KW Admission Controller**`")
           subgraph policy-server["`**policy-server**`"]
             direction LR
             kw-policy-1{{"Policy 1"}}
@@ -36,4 +30,6 @@ graph LR
     k8s -. "sends admission\nrequests using" .-> webhooks
     webhooks -. "sent admission\nrequests from K8s" .-> policy-server
     audit-scanner -->|"sends audit\nadmission requests"| policy-server
+    class kw-policy-1,kw-policy-2,kw-policy-3 policy
+    class outer,platform,kw,policy-server container
 ....

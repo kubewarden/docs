@@ -1,6 +1,5 @@
 [mermaid]
 ....
-%%{init: "theme": "neutral"}%%
 flowchart LR;
   accTitle: Upgrade path support graph
   accDescr: A diagram showing recommended and supported upgrade paths for {short-project-name}.
@@ -8,7 +7,7 @@ flowchart LR;
   1.0.1-->1.0.2(1.0.2);
   1.0.2-->1.1.0(1.1.0);
   1.1.0-->1.1.2(1.1.2);
-  1.1.0-->1.1.1;
+  1.1.0-->1.1.1(1.1.1);
   1.1.1-->1.1.2;
   1.1.2-->|Not recommended|1.2.0(1.2.0);
   1.0.2-->|Not supported|1.2.0(1.2.0);
