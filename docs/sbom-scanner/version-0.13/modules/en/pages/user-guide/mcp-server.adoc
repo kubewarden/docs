@@ -273,6 +273,7 @@ spec:
     - Trigger and monitor scan jobs
     - Query vulnerability reports for container images
     - View workload scan reports
+    - View node scan results and monitor node scan jobs
     - Manage VEX hubs for vulnerability enrichment
 
     Key concepts:
@@ -280,23 +281,27 @@ spec:
     - A ScanJob triggers scanning of images in a registry (Scheduled -> InProgress -> Complete/Failed)
     - A VulnerabilityReport lists known CVEs affecting an image
     - A WorkloadScanReport aggregates vulnerability data at the workload (Deployment, StatefulSet, etc.) level
+    - A NodeScanConfiguration controls automatic scanning of cluster nodes; NodeScanJobs are created automatically per node, and NodeVulnerabilityReports list the CVEs found on each node
     - A VEXHub is a repository of VEX documents used to enrich vulnerability data
 
     IMPORTANT - Tool selection rules:
     - ALWAYS use get_image_vulnerability_summary when a user asks to list, show, or view vulnerabilities for an image.
     - ALWAYS use get_workload_vulnerability_summary when a user asks to list, show, or view vulnerabilities for a workload.
-    - NEVER use get_image_vulnerabilities or get_workload_vulnerabilities for listing vulnerabilities. Their responses are too large and will fail to render. Only use them if the user explicitly asks for raw or full CVE data.
+    - ALWAYS use get_node_vulnerability_summary when a user asks to list, show, or view vulnerabilities for a node.
+    - NEVER use get_image_vulnerabilities, get_workload_vulnerabilities, or get_node_vulnerabilities for listing vulnerabilities. Their responses are too large and will fail to render. Only use them if the user explicitly asks for raw or full CVE data.
     - When in doubt, default to the summary tools.
 
     Security posture and overview questions:
-    - list_images and list_workloads both return vulnerability severity counts and a total for each item.
-    - When a user asks about security posture, call list_workloads or list_images and present results sorted by total vulnerability count in a markdown table.
+    - list_images, list_workloads, and list_nodes all return vulnerability severity counts and a total for each item.
+    - When a user asks about security posture, call list_workloads, list_images, or list_nodes and present results sorted by total vulnerability count in a markdown table.
 
     Workflow:
     - Use list_images to browse scanned images with vulnerability counts
     - Use get_image_vulnerability_summary with name and namespace from list_images
     - Use list_workloads to browse scanned workloads with vulnerability counts
     - Use get_workload_vulnerability_summary with name and namespace from list_workloads
+    - Use list_nodes to browse scanned nodes with vulnerability counts
+    - Use get_node_vulnerability_summary with the node name from list_nodes
 ----
 
 [#_available-tools]
@@ -322,6 +327,12 @@ The MCP server exposes tools that let AI assistants interact with {sboms-name} r
 |`list_workloads` |List scanned workloads with vulnerability severity counts
 |`get_workload_vulnerability_summary` |Get per-container severity counts and top 10 CVEs for a workload
 |`get_workload_vulnerabilities` |Get the complete CVE list for all containers in a workload (large response)
+|`get_nodescan_configuration` |Get the cluster-scoped NodeScanConfiguration
+|`list_nodescanjobs` |List NodeScanJob resources (cluster-scoped) with status conditions
+|`get_nodescanjob` |Get a specific NodeScanJob by name
+|`list_nodes` |List scanned cluster nodes with vulnerability severity counts
+|`get_node_vulnerability_summary` |Get severity counts and top 10 CVEs for a node
+|`get_node_vulnerabilities` |Get the complete CVE list for a node (large response)
 |===
 
 [NOTE]
@@ -342,6 +353,7 @@ Prefer the `_summary` tools over the full `_vulnerabilities` tools. The summary 
 |`create_vexhub` |Create a new VEXHub for vulnerability enrichment
 |`update_vexhub` |Update an existing VEXHub
 |`delete_vexhub` |Delete a VEXHub (existing VEX annotations are preserved)
+|`create_nodescanjobs` |Create NodeScanJob resources (cluster-scoped)
 |===
 
 For details on the resources these tools manage, see xref:user-guide/scanning-registries.adoc[Scanning Registries], xref:user-guide/scanning-workloads.adoc[Scanning Workloads], and xref:user-guide/vex.adoc[VEX].
@@ -367,6 +379,15 @@ Once connected, you can interact with {sboms-name} using natural language. Below
 * "Provide an overview of the cluster's security posture."
 * "List the vulnerable workloads."
 * "Show the vulnerabilities found in the containers of the nginx deployment in the test namespace."
+
+=== Node security posture
+
+* "Display the configuration of the node scan feature."
+* "Is node scanning enabled?"
+* "List the vulnerable nodes."
+* "How is the scan of node worker-1 going?"
+* "Show the vulnerabilities found on node worker-1."
+* "Create a NodeScanJob for node worker-2."
 
 === Investigating CVEs
 
