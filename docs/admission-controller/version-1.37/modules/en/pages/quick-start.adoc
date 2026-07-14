@@ -488,67 +488,36 @@ not targeting a specific namespace.
 
 == Uninstall
 
-You can remove the resources created by uninstalling the `helm` charts as
-follows:
+Uninstall the Helm chart as follows:
 
 [subs="+attributes",console]
 ----
-helm uninstall --namespace kubewarden kubewarden-defaults
+helm uninstall --namespace kubewarden admission-controller
 ----
+
+Uninstalling the Helm chart removes:
+
+* The controller Deployment
+* Managed defaults such as the PolicyServer `default` and recommended policies
+* ConfigMaps, Secrets, Services, Deployments that make all PolicyServers be effective
+
+It does not remove:
+
+- CRDs (kept by `helm.sh/resource-policy: keep`)
+- User-managed PolicyServers and policies
+
+The user-managed custom resources are kept on purpose. Re-installing the chart
+deploys the controller, which reconciles them, and activates them back.
+
+To remove all user-managed custom resources and the CRDs do:
 
 [subs="+attributes",console]
 ----
-helm uninstall --namespace kubewarden kubewarden-controller
-----
-
-[subs="+attributes",console]
-----
-helm uninstall --namespace kubewarden kubewarden-crds
-----
-
-After removal of the `helm` charts remove the Kubernetes namespace used to
-deploy the {admc-short-name} stack:
-
-[subs="+attributes",console]
-----
-kubectl delete namespace kubewarden
-----
-
-[CAUTION]
-====
-
-{admc-short-name} contains a helm pre-delete hook that removes all
-`PolicyServer`s and `kubewarden-controller`s. Then the
-`kubewarden-controller` deletes all resources, so it's important that
-`kubewarden-controller` is running when helm uninstall executes.
-
-====
-
-
-{admc-short-name} deletes {validating-webhook-configuration}s and
-{mutating-webhook-configuration}s. Check this with:
-
-[subs="+attributes",console]
-----
-kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
-----
-
-[subs="+attributes",console]
-----
-kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
-----
-
-If these resources aren't automatically removed, remove them manually using the
-following command:
-
-[subs="+attributes",console]
-----
-kubectl delete -l "kubewarden" validatingwebhookconfigurations.admissionregistration.k8s.io
-----
-
-[subs="+attributes",console]
-----
-kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistration.k8s.io
+kubectl delete crd policyservers.policies.kubewarden.io
+kubectl delete crd clusteradmissionpolicies.policies.kubewarden.io
+kubectl delete crd admissionpolicies.policies.kubewarden.io
+kubectl delete crd clusteradmissionpolicygroups.policies.kubewarden.io
+kubectl delete crd admissionpolicygroups.policies.kubewarden.io
 ----
 
 == Wrapping up
