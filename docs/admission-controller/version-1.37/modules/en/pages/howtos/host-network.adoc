@@ -20,15 +20,15 @@ controller and all PolicyServer pods in *host network mode*.
 == Enabling host network mode
 
 Enable host network mode by setting the `hostNetwork` value when installing the
-`kubewarden-controller` Helm chart:
+`admission-controller` Helm chart:
 
 [source,console]
 ----
-helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller \
+helm install --wait -n kubewarden admission-controller kubewarden/admission-controller \
     --set hostNetwork=true
 ----
 
-This sets `hostNetwork: true` on both the *kubewarden-controller* Deployment
+This sets `hostNetwork: true` on both the *admission-controller* Deployment
 and on every *PolicyServer* Deployment managed by it. The controller also
 automatically sets `dnsPolicy: ClusterFirstWithHostNet` so that in-cluster DNS
 resolution keeps working.
@@ -99,31 +99,25 @@ anti-affinity rules:
 
 * Two PolicyServer replicas using the same ports could be scheduled on the same
   node, causing one to crash.
-* A PolicyServer pod and the kubewarden-controller could be scheduled on the
+* A PolicyServer pod and the admission-controller could be scheduled on the
   same node, conflicting on port `8081` because both use it for readiness
   probes by default.
 
 === Configuring anti-affinity via Helm charts
 
-The Kubewarden Helm charts provide values for setting affinity on different
+The {admc-short-name} Helm chart provide values for setting affinity on different
 components:
 
-*Controller chart (`kubewarden-controller`):*
-
 * `affinity` - Sets affinity rules on the controller Deployment.
-* `global.affinity` - Falls back to this if `affinity` isn't set. Also
+  * `global.affinity` - Falls back to this if `affinity` isn't set. Also
   propagates to the defaults chart.
-
-*Defaults chart (`kubewarden-defaults`):*
-
 * `policyServer.affinity` - Sets affinity on the default PolicyServer resource.
-* `global.affinity` - Falls back to this if `policyServer.affinity` isn't set.
+  * `global.affinity` - Falls back to this if `policyServer.affinity` isn't set.
 
 Example Helm values to spread all Kubewarden components across different nodes:
 
 [source,yaml]
 ----
-# kubewarden-controller values
 affinity:
   podAntiAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
@@ -135,11 +129,6 @@ affinity:
                 - policy-server
                 - kubewarden-controller
         topologyKey: kubernetes.io/hostname
-----
-
-[source,yaml]
-----
-# kubewarden-defaults values
 policyServer:
   affinity:
     podAntiAffinity:

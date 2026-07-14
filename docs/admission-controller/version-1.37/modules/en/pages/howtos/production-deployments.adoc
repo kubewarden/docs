@@ -33,7 +33,7 @@ https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinit
 and Anti-Affinity].
 
 Starting from version 1.15 of the {admc-short-name} stack, the
-{admc-short-name} Helm charts ship with two new values:
+{admc-short-name} Helm chart ships with two new values:
 
 * `.global.tolerations`
 * `.global.affinity`
@@ -131,20 +131,6 @@ In this example, the affinity rules will be applied to the controller
 deployment, audit scanner cronjob, and the default `PolicyServer` custom
 resource.
 
-The previous affinity configuration available in the `kubewarden-default`
-Helm chart, which was used to define the affinity configuration for the
-`PolicyServer` only, has been removed in favor of the global `affinity`
-value. This change simplifies the configuration process by providing
-a single approach to defining affinity and anti-affinity rules for all
-{admc-short-name} components.
-
-[WARNING]
-====
-The old `affinity` configuration in the `kubewarden-default` Helm chart has
-been removed. Users should now use the `.global.affinity` field to configure
-affinity and anti-affinity settings for the entire {admc-short-name} stack.
-====
-
 == Configuring priorityClasses
 
 By using priorityClasses, operators can enforce a scheduling priority
@@ -154,11 +140,7 @@ eviction and ensuring service reliability. For more information, refer to the
 https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/[Kubernetes
 documentation on Priorityclasses].
 
-Starting from version 1.25 of the {admc-short-name} stack, the
-{admc-short-name} Helm charts ship with a new value:
-
-* `.global.priorityClassName`
-
+This is available via the `.global.priorityClassName` value in the Helm chart.
 The priorityClass defined by name in this value is applied to the controller
 deployment pods, and the pods of the default `PolicyServer` custom resource.
 

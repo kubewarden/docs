@@ -57,11 +57,7 @@ Alternatively, open the mission directly at:
 [literal]
 https://console.kubestellar.io/missions/install-kubewarden
 
-== Installation steps
-
-The mission guides you through the following Helm chart installations in order:
-
-=== 1. Install CRDs
+== Install the Helm chart
 
 [subs="+attributes",console]
 ----
@@ -70,33 +66,12 @@ helm repo update kubewarden
 helm install --wait \
   -n kubewarden \
   --create-namespace \
-  kubewarden-crds kubewarden/kubewarden-crds
+  admission-controller kubewarden/admission-controller
 ----
 
 The mission validates that the {admc-short-name} CRDs are registered in the cluster
-before proceeding.
-
-=== 2. Install the controller
-
-[subs="+attributes",console]
-----
-helm install --wait \
-  -n kubewarden \
-  kubewarden-controller kubewarden/kubewarden-controller
-----
-
-The mission validates that the controller pod reaches `Running` status.
-
-=== 3. Install defaults
-
-[subs="+attributes",console]
-----
-helm install --wait \
-  -n kubewarden \
-  kubewarden-defaults kubewarden/kubewarden-defaults
-----
-
-The mission validates that the default `PolicyServer` is registered and ready.
+before proceeding, the controller pod reaches `Running` status, and the default
+`PolicyServer` is registered and ready.
 
 == What's next
 

@@ -192,7 +192,7 @@ The `ConfigMap` name is `api-server-mtls`. The Helm command to install the
 
 [source,console]
 ----
-helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller \
+helm install --wait -n kubewarden admission-controller kubewarden/admission-controller \
     --set mTLS.enable=true \
     --set mTLS.configMapName=api-server-mtls
 ----

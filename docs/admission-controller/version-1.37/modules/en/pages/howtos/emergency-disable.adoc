@@ -22,7 +22,7 @@ First, stop the {admc-short-name} controller. You do this by scaling its Deploym
 
 [source,console]
 ----
-kubectl scale deployment kubewarden-controller \
+kubectl scale deployment admission-controller \
   --replicas=0 \
   -n kubewarden
 ----
@@ -50,11 +50,11 @@ kubectl delete mutatingwebhookconfigurations \
 == Restore {admc-short-name}
 
 When the emergency is over, restore the {admc-short-name} stack by bringing back
-the {admc-short-name} controller:
+the {admc-short-name}:
 
 [source,console]
 ----
-kubectl scale deployment kubewarden-controller \
+kubectl scale deployment admission-controller \
   --replicas=1 \
   -n kubewarden
 ----

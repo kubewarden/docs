@@ -12,9 +12,9 @@ include::partial$variables.adoc[]
 :sidebar_label: Writing Policies
 :current-version: {page-origin-branch}
 
-This section introduces {admc-name} policies using traditional computing analogies.
+This section introduces the {admc-name} policies using traditional computing analogies.
 
-A {admc-short-name} policy is like a program that does one job.
+An {admc-short-name} policy is like a program that does one job.
 It receives input data, performs computation with that data and returns a result.
 
 The input data is Kubernetes admission requests.

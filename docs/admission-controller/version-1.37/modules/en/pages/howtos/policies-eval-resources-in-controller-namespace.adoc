@@ -40,7 +40,7 @@ To do this, upgrade your {admc-short-name} installation and set the
 ----
 helm upgrade -n kubewarden
   --set "alwaysAcceptAdmissionReviewsOnDeploymentsNamespace=false"
-  kubewarden-controller kubewarden/kubewarden-controller
+  kubewarden-controller kubewarden/admission-controller
 ----
 
 This change allows policy servers to evaluate resources from any namespace.

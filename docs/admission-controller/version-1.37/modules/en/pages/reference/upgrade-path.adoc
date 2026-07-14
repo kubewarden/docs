@@ -20,11 +20,7 @@ the "stack" version of all its components: the version follows the
 
 The {admc-short-name} components that follow the rules for the "stack" version are:
 
-* `kubewarden-crds` chart, in their appVersion field.
-
-* `kubewarden-controller` chart, in their appVersion field.
-
-* `kubewarden-defaults` chart, in their appVersion field.
+* `admission-controller` Helm chart, in their appVersion field.
 
 * `policy-server` image tag for manually deployed ones. The resource for the
   default one is already managed by the `kubewarden-defaults` chart.
@@ -33,11 +29,10 @@ The {admc-short-name} components that follow the rules for the "stack" version a
 
 == Stack version compatibility among components
 
-The `kubewarden-crds` chart, `kubewarden-controller` chart,
-`kubewarden-defaults` chart, any manually deployed `policy-server` image, and
-`kwctl` should run the same `MAJOR`.`MINOR`.`PATCH` version.
+The `admission-controller` Helm chart, any manually deployed `policy-server`
+image, and `kwctl` should run the same `MAJOR`.`MINOR`.`PATCH` version.
 
-Therefore, if the `kubewarden-controller` version running is `1.1.2`, the
+Therefore, if the `admission-controller` version running is `1.1.2`, the
 ``policy-server``s and `kwctl` version in use should be `1.1.2` as well.
 
 == Helm chart versions
@@ -67,10 +62,10 @@ include::latest@shared:en:partial$upg-path.adoc[]
 
 == Upgrade order
 
-{admc-short-name} users should upgrade the stack starting with the `kubewarden-crds`
-chart, then the `kubewarden-controller` chart. After that, upgrade the
-`policy-server` (via `kubewarden-defaults` chart or bumping the images of
-custom ones) and `kwctl`.
+{admc-short-name} users should upgrade the stack starting with the
+`kubewarden-controller` Helm chart. After that, upgrade the `policy-server`
+(via `admission-controller` Helm chart for the default one, or bumping the
+images of custom ones) and `kwctl`.
 
 == Downgrades
 

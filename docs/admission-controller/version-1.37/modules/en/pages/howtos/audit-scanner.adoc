@@ -40,15 +40,14 @@ The audit scanner component is available since {admc-short-name} `v1.7.0`.
 Therefore, make sure you are installing the Helm chart with app version
 `v1.7.0` or higher.
 
-. Install the `kubewarden-crds` Helm chart. The chart installs the needed
-`PolicyReport` CRDs by default.
-+
-[subs="+attributes",console]
-----
-helm install kubewarden-crds kubewarden/kubewarden-crds
-----
-+
+The `admission-controller` chart installs the needed `PolicyReport` CRDs by default.
 
+[NOTE]
+====
+The audit scanner is enabled by default. To disable it, set the
+`auditScanner.enable=false`.
+====
++
 [NOTE]
 ====
 With Kubewarden 1.33, the Audit Scanner feature saves the reports
@@ -61,42 +60,10 @@ by default, marked as deprecated, and will be removed in a future release.
 
 Users wishing to keep using the deprecated PolicyReports, that is, the
 behavior pre 1.33, need to:
-- Change the `kubewarden-crds` Helm chart value of
+- Change the Helm chart value of
   `.Values.install.installPolicyReportCRDs` to `true`.
-- Change the `kubewarden-controller` Helm chart value of
+- Change the Helm chart value of
   `.Values.auditScanner.reportCRDsKind` from `openreports` to `policyreport`.
-====
-+
-[CAUTION]
-====
-To store the results of policy reports, you need to have the PolicyReport
-Custom Resource Definitions (CRDs) available. If the necessary
-PolicyReport CRDs are already in the cluster, you can't install them
-using the kubewarden-crds chart. In that case, you can disable the
-installation of OpenReport CRDs by setting `installOpenReportCRDs` to
-`false` in the chart (or `installPolicyReportCRDs` to `false` if using the
-deprecated PolicyReports).
-This means that the Kubewarden stack won't manage those CRDs, and the
-responsibility is the administrators.
-
-See more information about the CRDs at the
-link:https://github.com/kubernetes-sigs/wg-policy-prototypes[policy work group repository].
-
-====
-
-
-. Install the `kubewarden-controller` Helm chart.
-+
-[subs="+attributes",console]
-----
-helm install kubewarden-controller kubewarden/kubewarden-controller
-----
-+
-
-[NOTE]
-====
-The audit scanner is enabled by default. To disable it, set the
-`auditScanner.enable=false`.
 ====
 +
 [NOTE]
@@ -104,6 +71,22 @@ The audit scanner is enabled by default. To disable it, set the
 If you want Audit Scanner to save its reports in PolicyReports CRDs (marked
 as deprecated) instead of the default OpenReports CRDs,
 set `auditScanner.reportCRDsKind="policyreport"`.
+====
++
+[CAUTION]
+====
+To store the results of policy reports, you need to have the PolicyReport
+Custom Resource Definitions (CRDs) available. If the necessary
+PolicyReport CRDs are already in the cluster, you can't install them
+using the `admission-controller` chart. In that case, you can disable the
+installation of OpenReport CRDs by setting `installOpenReportCRDs` to
+`false` in the chart (or `installPolicyReportCRDs` to `false` if using the
+deprecated PolicyReports).
+This means that the Kubewarden stack won't manage those CRDs, but the
+responsibility is on the administrators.
+
+See more information about the CRDs at the
+link:https://github.com/kubernetes-sigs/wg-policy-prototypes[policy work group repository].
 ====
 
 For more information about the installation of {admc-short-name} see the
@@ -120,11 +103,10 @@ Scanner.
 
 === Policy Reporter UI (optional)
 
-The `kubewarden-controller` chart comes with a subchart of the
+The `admission-controller` chart comes with a subchart of the
 https://kyverno.github.io/policy-reporter[Policy Reporter]. It's disabled by
 default, and enabled by setting `auditScanner.policyReporter=true`. The Policy
-Reporter subchart values are under the `policyReporter` key of the
-`kubewarden-controller` values.
+Reporter subchart values are under the `.Values.policyReporter` key.
 
 This installs only part of the Policy Reporter upstream chart, the UI, which
 provides a visualization of the PolicyReports and ClusterPolicyReports in a
@@ -132,9 +114,9 @@ cluster. See xref:explanations/audit-scanner/audit-scanner.adoc[Audit Scanner]
 for more information about the Policy Reporter UI.
 
 By default, the Policy Reporter UI is only exposed as a ClusterIP service with
-name `kubewarden-controller-ui` in the installation namespace of
+name `admission-controller-ui` in the installation namespace of
 
-`kubewarden-controller` chart was installed.
+`admission-controller` chart was installed.
 
 ==== Ingress
 
@@ -165,7 +147,7 @@ For a quick look or debugging, one can setup a port-forwarding to the service wi
 
 [subs="+attributes",console]
 ----
-kubectl port-forward service/kubewarden-controller-ui 8082:8080 -n kubewarden
+kubectl port-forward service/admission-controller-ui 8082:8080 -n kubewarden
 ----
 
 Which makes the Policy Reporter UI available at `\http://localhost:8082`.

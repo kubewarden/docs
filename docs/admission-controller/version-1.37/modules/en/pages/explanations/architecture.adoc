@@ -226,7 +226,7 @@ Deployment is ready to evaluate an
 https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#webhook-request-and-response[`AdmissionReview`].
 
 Once {admc-name} marks the `policy-server` deployment as 'uniquely
-reachable' or `Ready`, the `kubewarden-controller` makes the Kubernetes API
+reachable' or `Ready`, the `admission-controller` makes the Kubernetes API
 server aware of the new policy. This is by creating either a
 `MutatingWebhookConfiguration` or a `ValidatingWebhookConfiguration` object. In
 this context, 'uniquely reachable', means that all the PolicyServer instances
