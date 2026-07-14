@@ -10,6 +10,14 @@ include::partial$variables.adoc[]
 :keywords: ["{admc-name}", "kubewarden", "kubernetes", "rancher ui extension"]
 :current-version: {page-origin-branch}
 
+[WARNING]
+====
+
+This page is under construction. The install process may vary.
+
+====
+
+
 This section describes installing the {admc-name} UI as an extension
 of https://github.com/rancher/rancher[Rancher Manager].
 

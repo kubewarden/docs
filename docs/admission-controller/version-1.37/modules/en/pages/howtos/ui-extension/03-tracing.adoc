@@ -10,6 +10,13 @@ include::partial$variables.adoc[]
 :keywords: ["{admc-name}", "kubewarden", "kubernetes", "tracing"]
 :current-version: {page-origin-branch}
 
+[WARNING]
+====
+
+This page is under construction. The install process may vary.
+
+====
+
 Tracing allows collection of fine-grained details about policy evaluations.
 It's a useful tool for debugging issues in your {admc-name} deployment
 and policies.
