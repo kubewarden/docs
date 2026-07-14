@@ -134,7 +134,7 @@ that lists all needed artifacts.
 === Verifying with Hauler
 
 Hauler automatically verifies the artifacts on download. For more information,
-refer to xref:/howtos/airgap/03-hauler.adoc[our documentation].
+refer to xref:/howtos/airgap/02-hauler.adoc[our documentation].
 
 === Verifying manually
 
