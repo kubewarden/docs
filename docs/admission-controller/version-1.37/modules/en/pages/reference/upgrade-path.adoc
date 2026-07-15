@@ -86,7 +86,7 @@ include::latest@shared:en:partial$upg-path.adoc[]
 == Upgrade order
 
 {admc-short-name} users should upgrade the stack starting with the
-`kubewarden-controller` Helm chart. After that, upgrade the `policy-server`
+`admission-controller` Helm chart. After that, upgrade the `policy-server`
 (via `admission-controller` Helm chart for the default one, or bumping the
 images of custom ones) and `kwctl`.
 
