@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = kwctl CLI
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-07-13
+:revdate: 2026-07-15
 :page-revdate: {revdate}
 :title: kwctl CLI
 :description: Explore the `kwctl` command-line tool to manage {admc-name} policies and perform tasks like loading policies
@@ -38,7 +38,7 @@ This document contains the help content for the `kwctl` command-line program.
 * <<kwctl-scaffold-verification-config,`kwctl scaffold verification-config`>>
 * <<kwctl-verify,`kwctl verify`>>
 
-[[kwctl]]
+[#kwctl]
 == `kwctl`
 
 Tool to manage Kubewarden policies
@@ -71,7 +71,7 @@ Tool to manage Kubewarden policies
 
 
 
-[[kwctl-annotate]]
+[#kwctl-annotate]
 == `kwctl annotate`
 
 Add Kubewarden metadata to a WebAssembly module
@@ -90,7 +90,7 @@ Add Kubewarden metadata to a WebAssembly module
 
 
 
-[[kwctl-bench]]
+[#kwctl-bench]
 == `kwctl bench`
 
 Benchmarks a Kubewarden policy.
@@ -168,7 +168,7 @@ Default value: `false`
 
 
 
-[[kwctl-completions]]
+[#kwctl-completions]
 == `kwctl completions`
 
 Generate shell completions
@@ -184,7 +184,7 @@ Possible values: `bash`, `elvish`, `fish`, `powershell`, `zsh`
 
 
 
-[[kwctl-digest]]
+[#kwctl-digest]
 == `kwctl digest`
 
 Fetch digest from the OCI manifest of a policy
@@ -202,7 +202,7 @@ Fetch digest from the OCI manifest of a policy
 
 
 
-[[kwctl-docs]]
+[#kwctl-docs]
 == `kwctl docs`
 
 Generates documentation for kwctl commands. The output format is determined by the file extension: .md for Markdown, AsciiDoc otherwise
@@ -215,7 +215,7 @@ Generates documentation for kwctl commands. The output format is determined by t
 
 
 
-[[kwctl-info]]
+[#kwctl-info]
 == `kwctl info`
 
 Display system information
@@ -224,7 +224,7 @@ Display system information
 
 
 
-[[kwctl-inspect]]
+[#kwctl-inspect]
 == `kwctl inspect`
 
 Inspect Kubewarden policy
@@ -247,7 +247,7 @@ Possible values: `yaml`
 
 
 
-[[kwctl-load]]
+[#kwctl-load]
 == `kwctl load`
 
 load policies from a tar.gz file
@@ -260,7 +260,7 @@ load policies from a tar.gz file
 
 
 
-[[kwctl-policies]]
+[#kwctl-policies]
 == `kwctl policies`
 
 Lists all downloaded policies
@@ -269,7 +269,7 @@ Lists all downloaded policies
 
 
 
-[[kwctl-pull]]
+[#kwctl-pull]
 == `kwctl pull`
 
 Pulls a Kubewarden policy from a given URI
@@ -301,7 +301,7 @@ It respects standard proxy environment variables when downloading policies:
 
 
 
-[[kwctl-push]]
+[#kwctl-push]
 == `kwctl push`
 
 Pushes a Kubewarden policy to an OCI registry
@@ -337,7 +337,7 @@ Possible values: `text`, `json`
 
 
 
-[[kwctl-rm]]
+[#kwctl-rm]
 == `kwctl rm`
 
 Removes a Kubewarden policy from the store
@@ -350,7 +350,7 @@ Removes a Kubewarden policy from the store
 
 
 
-[[kwctl-run]]
+[#kwctl-run]
 == `kwctl run`
 
 Run one or more Kubewarden policies locally.
@@ -428,7 +428,7 @@ Default value: `false`
 
 
 
-[[kwctl-save]]
+[#kwctl-save]
 == `kwctl save`
 
 save policies to a tar.gz file
@@ -445,7 +445,7 @@ save policies to a tar.gz file
 
 
 
-[[kwctl-scaffold]]
+[#kwctl-scaffold]
 == `kwctl scaffold`
 
 Scaffold a Kubernetes resource or configuration file
@@ -462,7 +462,7 @@ Scaffold a Kubernetes resource or configuration file
 
 
 
-[[kwctl-scaffold-admission-request]]
+[#kwctl-scaffold-admission-request]
 == `kwctl scaffold admission-request`
 
 Scaffold an AdmissionRequest object
@@ -480,7 +480,7 @@ Possible values: `CREATE`
 
 
 
-[[kwctl-scaffold-artifacthub]]
+[#kwctl-scaffold-artifacthub]
 == `kwctl scaffold artifacthub`
 
 Output an artifacthub-pkg.yml file from a metadata.yml file
@@ -496,7 +496,7 @@ Output an artifacthub-pkg.yml file from a metadata.yml file
 
 
 
-[[kwctl-scaffold-manifest]]
+[#kwctl-scaffold-manifest]
 == `kwctl scaffold manifest`
 
 Output a Kubernetes resource manifest
@@ -530,7 +530,7 @@ Possible values: `ClusterAdmissionPolicy`, `AdmissionPolicy`
 
 
 
-[[kwctl-scaffold-vap]]
+[#kwctl-scaffold-vap]
 == `kwctl scaffold vap`
 
 Convert a Kubernetes `ValidatingAdmissionPolicy` into a Kubewarden `ClusterAdmissionPolicy`
@@ -547,7 +547,7 @@ Default value: `ghcr.io/kubewarden/policies/cel-policy:latest`
 
 
 
-[[kwctl-scaffold-verification-config]]
+[#kwctl-scaffold-verification-config]
 == `kwctl scaffold verification-config`
 
 Output a default Sigstore verification configuration file
@@ -556,7 +556,7 @@ Output a default Sigstore verification configuration file
 
 
 
-[[kwctl-verify]]
+[#kwctl-verify]
 == `kwctl verify`
 
 Verify a Kubewarden policy from a given URI using Sigstore
