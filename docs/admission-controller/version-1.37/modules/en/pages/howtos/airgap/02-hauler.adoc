@@ -60,17 +60,16 @@ hauler store save --filename kubewarden-resources.tar.zst
 ====
 
 {admc-short-name} container images support x86_64 and Arm architectures. Therefore,
-when you save the resource into the file, you can see warning messages like
-this:
+when you save the resource into the file, you may see warning messages like
+these:
 
-TODO
 [source,shell]
 ----
-2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/kyverno/policy-reporter:3.3.3]
-2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/kyverno/policy-reporter-ui:2.4.1]
+2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/kyverno/policy-reporter:3.8.1]
+2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/kyverno/policy-reporter-ui:2.6.1]
 2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/kubewarden/adm-controller/policy-server:v1.37.0]
 2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/kubewarden/adm-controller/audit-scanner:v1.37.0]
-2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/rancher/kuberlr-kubectl:v8.0.0]
+2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/rancher/kuberlr-kubectl:v8.1.1]
 2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/kubewarden/adm-controller/controller:v1.37.0]
 ----
 
@@ -195,7 +194,7 @@ kind: ClusterAdmissionPolicy
 metadata:
   name: privileged-pods
 spec:
-  module: registry://<REGISTRY.YOURDOMAIN.COM:PORT>/kubewarden/policies/pod-privileged:v0.2.2
+  module: registry://<REGISTRY.YOURDOMAIN.COM:PORT>/kubewarden/policies/pod-privileged:v1.0.11
   rules:
   - apiGroups: [""]
     apiVersions: ["v1"]
