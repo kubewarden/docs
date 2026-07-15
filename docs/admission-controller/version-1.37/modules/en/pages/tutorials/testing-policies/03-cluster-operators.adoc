@@ -284,7 +284,7 @@ You can write a series of tests and integrate their execution inside your existi
 
 The commands can be "wrapped" into a `bats` test:
 
-.A batstest
+.A bats test
 [%collapsible]
 ======
 

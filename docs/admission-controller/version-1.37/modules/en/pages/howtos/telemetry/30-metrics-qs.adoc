@@ -118,16 +118,6 @@ First, you should add the Helm repository that contains {admc-short-name}:
 helm repo add kubewarden https://charts.kubewarden.io
 ----
 
-Then you install the Custom Resource Definitions (CRDs) defined by
-{admc-short-name}:
-
-[subs="+attributes",console]
-----
-helm install --wait \
-  --namespace kubewarden --create-namespace \
-  kubewarden-crds kubewarden/kubewarden-crds
-----
-
 Now you can deploy the rest of the {admc-short-name} stack. The official
 Helm chart creates a PolicyServer named `default`.
 
@@ -152,14 +142,9 @@ helm install --wait \
   --namespace kubewarden \
   --create-namespace \
   --values kubewarden-values.yaml \
-  kubewarden-controller kubewarden/kubewarden-controller
-
-helm install --wait \
-  --namespace kubewarden \
-  --create-namespace \
-  kubewarden-defaults kubewarden/kubewarden-defaults \
   --set recommendedPolicies.enabled=True \
-  --set recommendedPolicies.defaultPolicyMode=monitor
+  --set recommendedPolicies.defaultPolicyMode=monitor \
+  admission-controller kubewarden/admission-controller
 ----
 
 This creates the `default` instance of `PolicyServer`:

@@ -118,23 +118,23 @@ slsactl download provenance ghcr.io/kubewarden/adm-controller/policy-server:v1.3
 slsactl download sbom ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
 ----
 
-[#_helm_charts]
-== Helm charts
+[#_helm_chart]
+== Helm chart
 
-You can find {admc-short-name} Helm charts in our `https://` traditional
+You can find the {admc-short-name} Helm chart in our `https://` traditional
 Helm repository under https://charts.kubewarden.io.
 
-The same Helm charts are signed via Sigstore's keyless signing, and pushed to an
+The same Helm chart is signed via Sigstore's keyless signing, and pushed to an
 OCI repository that holds both the Helm chart and its provenance attestation as OCI
 artifacts.
 
-The Helm charts are published alongside a https://hauler.dev[Hauler] manifest
+The Helm chart is published alongside a https://hauler.dev[Hauler] manifest
 that lists all needed artifacts.
 
 === Verifying with Hauler
 
 Hauler automatically verifies the artifacts on download. For more information,
-refer to xref:/howtos/airgap/03-hauler.adoc[our documentation].
+refer to xref:/howtos/airgap/02-hauler.adoc[our documentation].
 
 === Verifying manually
 
@@ -146,11 +146,11 @@ To verify a Helm chart, you need `cosign` installed. Then execute the following
 command, for example:
 
 ----
-cosign verify ghcr.io/kubewarden/charts/kubewarden-defaults:3.14.0 \
+cosign verify ghcr.io/kubewarden/charts/admission-controller:6.0.0 \
   --certificate-identity-regexp 'https://github.com/kubewarden/helm-charts/*' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
-Verification for ghcr.io/kubewarden/charts/kubewarden-defaults:3.14.0 --
+Verification for ghcr.io/kubewarden/charts/admission-controller:6.0.0 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
@@ -164,12 +164,8 @@ issuer, subject, and `github_workflow_repository` extensions.
 
 The chart attestations are pushed to the OCI registry as an artifact layer. See the xref:#_container_images[container images] section on how to verify them.
 
-{admc-short-name} charts ship `imagelist.txt` and (`policylist.txt` when relevant) inside
-of the chart. Hence, if you already verified the chart, you can use those lists
-to verify the consumed container images and policies.
-
 {admc-short-name} also follows the usual practices with regards to Helm charts. Hence, one
-can also find all the images in the Helm charts with a plugin such as
+can also find all the images in the Helm chart with a plugin such as
 https://github.com/cvila84/helm-image[helm-image], or with the following script:
 
 [subs="+attributes",bash]

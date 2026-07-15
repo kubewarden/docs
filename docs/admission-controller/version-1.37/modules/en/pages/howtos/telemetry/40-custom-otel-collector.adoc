@@ -312,19 +312,12 @@ Install the {admc-short-name} stack:
 [source,console]
 ----
 helm install --wait \
-  --namespace kubewarden --create-namespace \
-  kubewarden-crds kubewarden/kubewarden-crds
-helm install --wait \
   --namespace kubewarden \
   --create-namespace \
   --values values.yaml \
-  kubewarden-controller kubewarden/kubewarden-controller
-helm install --wait \
-  --namespace kubewarden \
-  --create-namespace \
-  kubewarden-defaults kubewarden/kubewarden-defaults \
   --set recommendedPolicies.enabled=True \
-  --set recommendedPolicies.defaultPolicyMode=monitor
+  --set recommendedPolicies.defaultPolicyMode=monitor \
+  admission-controller kubewarden/admission-controller
 ----
 
 Now everything is in place.

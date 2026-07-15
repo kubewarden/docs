@@ -481,7 +481,7 @@ spec:
 ----
 <1> `verificationConfig`
 
-If you deploy the default Policy Server using the `kubewarden-defaults` Helm
+If you deploy the default Policy Server using the `admission-controller` Helm
 chart then you configure this field by setting the `ConfigMap` name in the
 `policyServer.verificationConfig` value.
 

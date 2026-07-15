@@ -148,7 +148,7 @@ spec:
 
 == Configuring default PolicyServer via Helm
 
-The `kubewarden-defaults` Helm chart exposes
+The `admission-controller` Helm chart exposes
 `.Values.policyServer.namespacedPoliciesCapabilities` to configure the
 `default` PolicyServer. When unset, all host capabilities are allowed
 (backwards-compatible default).
@@ -158,7 +158,7 @@ capability access:
 
 [subs="+attributes",console]
 ----
-helm upgrade --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults \
+helm upgrade --wait -n kubewarden admission-controller kubewarden/admission-controller \
   --set 'policyServer.namespacedPoliciesCapabilities={}'
 ----
 
@@ -166,7 +166,7 @@ To allow only OCI and DNS capabilities:
 
 [subs="+attributes",console]
 ----
-helm upgrade --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults \
+helm upgrade --wait -n kubewarden admission-controller kubewarden/admission-controller \
   --set 'policyServer.namespacedPoliciesCapabilities={oci/*,net/v1/dns_lookup_host}'
 ----
 
@@ -324,7 +324,7 @@ exercising host capabilities:
 
 [subs="+attributes",console]
 ----
-helm upgrade --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults \
+helm upgrade --wait -n kubewarden admission-controller kubewarden/admission-controller \
   --set 'policyServer.namespacedPoliciesCapabilities={}'
 ----
 

@@ -15,9 +15,8 @@ These are a few example use cases for {admc-name}'s xref:/personas.adoc[personas
 
 == Case A: As a Kubernetes operator, I want to ensure my cluster is safe and compliant.
 
-I deploy {admc-name} and its default configuration with its
-`kubewarden-defaults` Helm chart, in the `kubewarden` Namespace. This deploys a
-default PolicyServer and recommended ClusterAdmissionPolicies in the
+I deploy {admc-name} Helm chart, in the `kubewarden` Namespace. This deploys a
+default PolicyServer. I enable the recommended ClusterAdmissionPolicies in the
 `kubewarden` namespace, solely under the control of the Kubernetes operator.
 
 As an operator, I can add more PolicyServers under a managed Namespace (such as
@@ -95,7 +94,7 @@ As a system integrator, I can reuse parts of {admc-short-name}. For example, the
 `policy-server`, to police resources, internal or external to the Kubernetes
 cluster via the xref:/howtos/raw-policies.adoc["raw policies"] feature.
 
-System integrators can choose to deploy the `kubewarden-controller` or manage
+System integrators can choose to deploy the `admission-controller` or manage
 the CRDs on their own. They can choose to deploy or scale the Audit Scanner as
 needed.
 

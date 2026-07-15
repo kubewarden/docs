@@ -83,12 +83,12 @@ spec:
   imagePullSecret: "secret-ghcr-docker"
 ----
 
-== Consuming the Secret in Helm charts
+== Consuming the Secret in the Helm chart
 
-When deployed from the `kubewarden-defaults` Helm chart, you can set the
-`policyServer.imagePullSecret` value to the Secret name. Then,
-the created default policy server is able to download policies from your
-private registry as well:
+For the PolicyServer `default`, which is managed by the `admission-controller`
+Helm chart, you can set the `policyServer.imagePullSecret` value to the Secret
+name. Then, the created default policy server is able to download policies from
+your private registry as well:
 
 [subs="+attributes",yaml]
 ----

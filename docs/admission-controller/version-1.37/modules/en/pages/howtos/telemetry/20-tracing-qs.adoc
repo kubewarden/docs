@@ -91,8 +91,6 @@ exposed by the `my-open-telemetry-query` Service in the `jaeger` Namespace.
 
 == Install {admc-short-name}
 
-Now you can proceed to the deployment of {admc-short-name} in the usual way.
-
 [NOTE]
 ====
 
@@ -101,28 +99,9 @@ installed it in a previous section of this documentation.
 
 ====
 
-As a first step, you add the Helm repository that contains
-{admc-short-name}:
-
-[subs="+attributes",console]
-----
-helm repo add kubewarden https://charts.kubewarden.io
-----
-
-Then you install the Custom Resource Definitions (CRDs) defined by
-{admc-short-name}:
-
-[subs="+attributes",console]
-----
-helm install --wait \
-  --namespace kubewarden \
-  --create-namespace \
-  kubewarden-crds kubewarden/kubewarden-crds
-----
-
-Now you can deploy the rest of the {admc-short-name} stack. The official
-`kubewarden-defaults` helm chart creates a PolicyServer named `default`. You
-want this PolicyServer instance to have tracing enabled.
+The official `admission-controller` helm
+chart creates a PolicyServer named `default`. You want this PolicyServer
+instance to have tracing enabled.
 
 To do that, you need to specify some extra values for the
 `kubewarden-controller` chart. You should create a `values.yaml` file with the
@@ -152,16 +131,14 @@ https://www.jaegertracing.io/docs/latest/kubernetes/[official documentation].
 
 ====
 
-Then you can proceed with the installation of the helm charts:
+Deploy the {admc-short-name} stack in the usual way:
 
 [subs="+attributes",console]
 ----
+helm repo add kubewarden https://charts.kubewarden.io
 helm install --wait --namespace kubewarden --create-namespace \
   --values values.yaml \
-  kubewarden-controller kubewarden/kubewarden-controller
-
-helm install --wait --namespace kubewarden --create-namespace \
-  kubewarden-defaults kubewarden/kubewarden-defaults
+  admission-controller kubewarden/admission-controller
 ----
 
 This creates the `default` instance of `PolicyServer`:
