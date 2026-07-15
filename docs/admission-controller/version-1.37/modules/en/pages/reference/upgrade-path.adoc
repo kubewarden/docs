@@ -27,6 +27,19 @@ The {admc-short-name} components that follow the rules for the "stack" version a
 
 * `kwctl` binary.
 
+[NOTE]
+====
+
+The {admc-short-name} was shipped as 3 Helm charts (`kubewarden-crds`,
+`kubewarden-controller`, `kubewarden-defaults`) until v1.36 inclusive.
+Please browse previous documentation versions for information on them.
+
+From v1.37 onwards, it is shipped as a unique Helm chart,
+`admission-controller`.
+
+====
+
+
 == Stack version compatibility among components
 
 The `admission-controller` Helm chart, any manually deployed `policy-server`
@@ -48,6 +61,16 @@ and `values.yaml`.
 When upgrading components, you can upgrade multiple `PATCH` stack versions in a
 single operation. However, the upgrade of multiple `MAJOR` or `MINOR` stack
 versions in a single upgrade is *not* supported.
+
+[NOTE]
+====
+
+The {admc-short-name} went over a migration, from v1.36 inclusive (3 Helm charts: `kubewarden-crds`,
+`kubewarden-controller`, `kubewarden-defaults`) to v1.37 onwards (1 Helm chart: `admission-controller`).
+
+Please see the xref:community-specific/howtos/chart-migration.adoc[migration how-to].
+
+====
 
 For example, you can upgrade components from version `1.1.10` to `1.1.nn` in a
 single upgrade. But the upgrade from `1.1.10` to `1.5.0` isn't supported. In
