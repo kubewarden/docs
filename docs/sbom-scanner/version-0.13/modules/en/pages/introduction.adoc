@@ -1,0 +1,8 @@
+include::partial$variables.adoc[]
+
+= Introduction
+:revdate: 2026-06-15
+:page-revdate: {revdate}
+:description: Introducing {sboms-name}.
+
+{sboms-short-name} is a vulnerability scanner for container images running in Kubernetes clusters.

@@ -1,0 +1,468 @@
+include::partial$variables.adoc[]
+
+= Scanning Nodes
+:revdate: 2026-07-06
+:page-revdate: {revdate}
+:description: Configure node scanning and understand node vulnerability reports.
+
+== Overview
+
+{sboms-name} can scan container images through
+xref:user-guide/scanning-registries.adoc[Registry configurations] and
+workload scanning, but the security posture of a cluster also depends on
+the nodes themselves. Nodes run the operating system, the container
+runtime, the kubelet, and other system-level packages that are invisible
+to image-based scanners.
+
+The Node Scan feature closes this gap. It deploys a worker on every
+eligible node as a DaemonSet, scans the host filesystem, and produces a
+`NodeSBOM` and a `NodeVulnerabilityReport` per node. This gives you a
+comprehensive overview of node-level vulnerabilities, helping you secure
+the infrastructure your workloads run on.
+
+Under the hood, {sboms-name} creates a `NodeScanJob` resource for each
+matching node, on the configured schedule or on demand. The worker pod
+on the node scans the host filesystem and produces a `NodeSBOM` (in SPDX
+format) and a `NodeVulnerabilityReport` for that node.
+
+=== Enabling Node Scan
+
+Node scanning is inactive until you create a `NodeScanConfiguration`
+resource. Without it, no scans run and manually created `NodeScanJob`
+resources fail with the reason `NodeScanConfigurationMissing`.
+
+To enable node scanning, apply the sample configuration from the
+https://github.com/kubewarden/sbomscanner/blob/main/examples/nodescanconfiguration.yaml[examples folder]:
+
+[source,bash]
+----
+kubectl apply -f https://raw.githubusercontent.com/kubewarden/sbomscanner/main/examples/nodescanconfiguration.yaml
+----
+
+== Configuration
+
+The `NodeScanConfiguration` is a cluster-scoped singleton resource named
+`default`. It is the single entry point for controlling the node
+scanning behavior, and it is required: without this resource, no node is
+scanned, either on a schedule or on demand. Only one instance is
+allowed.
+
+Example configuration:
+
+[source,yaml]
+----
+apiVersion: sbomscanner.kubewarden.io/v1alpha1
+kind: NodeScanConfiguration
+metadata:
+  name: default
+spec:
+  scanInterval: 24h
+  nodeSelector:
+    matchExpressions:
+      - key: kubernetes.io/hostname
+        operator: In
+        values:
+          - "node1"
+          - "node2"
+  skipPatterns:
+    - "/run/k3s/containerd/"
+  platforms:
+    - arch: "amd64"
+      os: "linux"
+----
+
+=== Fields
+
+[width="100%",cols="20%,60%,20%",options="header"]
+|===
+|Field |Description |Default
+
+|`enabled`
+|Enable or disable node scanning. See
+xref:#disabling-node-scanning[Disabling node scanning] for details.
+|`true`
+
+|`scanInterval`
+|How often nodes are scanned. If not specified, automatic scanning is
+disabled and you must create `NodeScanJob` resources manually.
+|-
+
+|`nodeSelector`
+|A standard
+https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors[Kubernetes label selector].
+Only nodes matching the selector are scanned.
+|All nodes
+
+|`skipPatterns`
+|Gitignore-style patterns for files and directories to exclude from the
+scan. Patterns ending with `/` are treated as directories, all others as
+files. Glob patterns like `++**/++vendor/` or `++*++.min.js` are
+supported.
+|Container runtime directories
+
+|`platforms`
+|Which OS/architecture combinations to scan. Each entry specifies an
+`arch` and `os` field.
+|All platforms
+|===
+
+=== Selecting which nodes to scan
+
+Use the `nodeSelector` field to restrict scanning to a subset of nodes.
+This is useful when some nodes do not have enough resources for scanning
+or when you only want to target specific node pools.
+
+Scan only nodes with a specific label:
+
+[source,yaml]
+----
+spec:
+  nodeSelector:
+    matchLabels:
+      node-role.kubernetes.io/worker: ""
+----
+
+Scan specific nodes by hostname:
+
+[source,yaml]
+----
+spec:
+  nodeSelector:
+    matchExpressions:
+      - key: kubernetes.io/hostname
+        operator: In
+        values:
+          - "worker-1"
+          - "worker-2"
+----
+
+If `nodeSelector` is omitted, all nodes in the cluster are scanned.
+
+=== Excluding files and directories
+
+The `skipPatterns` field accepts gitignore-style patterns to exclude
+paths from the filesystem scan. This is useful to reduce noise or avoid
+scanning sensitive or irrelevant paths.
+If unset, a default list of patterns is applied that excludes container
+runtime directories. See the
+xref:reference/crd-reference.adoc#k8s-api-github-com-kubewarden-sbomscanner-api-v1alpha1-nodescanconfiguration[CRD reference]
+for the default list. Set `skipPatterns` to an empty list to scan
+everything, including those directories.
+
+[source,yaml]
+----
+spec:
+  skipPatterns:
+    - "/run/k3s/containerd/"
+    - "/tmp/"
+    - ".git/"
+    - "node_modules/"
+    - "*.min.js"
+    - "package-lock.json"
+----
+
+Patterns ending with `/` match directories. All other patterns match
+files. Glob patterns such as `++**/++vendor/` are supported.
+
+=== Scanning specific platforms
+
+By default, {sboms-name} scans all nodes regardless of their platform. In
+clusters with mixed architectures, you can restrict scanning to specific
+OS/architecture combinations:
+
+[source,yaml]
+----
+spec:
+  platforms:
+    - arch: "amd64"
+      os: "linux"
+    - arch: "arm64"
+      os: "linux"
+----
+
+[#running-a-scan-on-demand]
+== Running a scan on demand
+
+You can trigger a one-time scan by creating a `NodeScanJob` resource
+manually. A `NodeScanConfiguration` must already exist in the cluster,
+since the job depends on its settings (skip patterns, platforms).
+
+[source,yaml]
+----
+apiVersion: sbomscanner.kubewarden.io/v1alpha1
+kind: NodeScanJob
+metadata:
+  name: scan-worker-1
+spec:
+  nodeName: worker-1
+----
+
+Apply the job:
+
+[source,bash]
+----
+kubectl apply -f nodescanjob.yaml
+----
+
+If another `NodeScanJob` is already in progress for the same node, the
+new job is marked as `Failed` with the reason `ScanAlreadyInProgress`.
+
+=== Triggering an immediate rescan
+
+To bypass the scan interval timer and trigger an immediate rescan of all
+matching nodes, annotate the `NodeScanConfiguration`:
+
+[source,bash]
+----
+kubectl annotate nodescanconfiguration default \
+  sbomscanner.kubewarden.io/node-rescan-requested=true
+----
+
+The annotation is removed automatically after the scan jobs are created.
+
+[#monitoring-scan-progress]
+== Monitoring scan progress
+
+Check the status of node scan jobs:
+
+[source,bash]
+----
+kubectl get nodescanjobs
+----
+
+Example output:
+
+[source,bash]
+----
+NAME              STATUS       REASON       AGE
+scan-worker-1     Complete     Complete     5m
+scan-worker-2     InProgress   InProgress   1m
+----
+
+Get detailed status of a specific job:
+
+[source,bash]
+----
+kubectl get nodescanjob scan-worker-1 -o yaml
+----
+
+Example status:
+
+[source,yaml]
+----
+status:
+  startTime: "2026-06-01T10:00:00Z"
+  completionTime: "2026-06-01T10:02:30Z"
+  conditions:
+    - type: Complete
+      status: "True"
+      reason: Complete
+      message: "NodeScanJob completed successfully"
+    - type: Failed
+      status: "False"
+      reason: Complete
+    - type: InProgress
+      status: "False"
+      reason: Complete
+    - type: Scheduled
+      status: "False"
+      reason: Complete
+----
+
+=== Status conditions
+
+Each `NodeScanJob` has status conditions that track the scan lifecycle:
+
+[width="100%",cols="20%,80%",options="header"]
+|===
+|Status |Meaning
+
+|`Scheduled`
+|The system has accepted the request and scheduled the scan.
+
+|`InProgress`
+|The scan is actively running on the node.
+
+|`Complete`
+|The scan finished successfully. The `NodeSBOM` and
+`NodeVulnerabilityReport` are available.
+
+|`Failed`
+|The scan encountered a terminal error. Check the condition's `reason`
+and `message` for details.
+|===
+
+Common failure reasons:
+
+[width="100%",cols="30%,70%",options="header"]
+|===
+|Reason |Description
+
+|`ScanAlreadyInProgress`
+|Another scan job is already running for the same node.
+
+|`NodeScanConfigurationMissing`
+|No `NodeScanConfiguration` resource exists in the cluster.
+
+|`NodeNotMatching`
+|The target node does not match the `nodeSelector` defined in the
+configuration.
+
+|`InternalError`
+|An unexpected error occurred during the scan.
+|===
+
+== Viewing results
+
+=== NodeSBOM
+
+Once a scan completes, a `NodeSBOM` resource is created containing the
+Software Bill of Materials in SPDX format.
+
+List node SBOMs:
+
+[source,bash]
+----
+kubectl get nodesboms
+----
+
+Query by node name:
+
+[source,bash]
+----
+kubectl get nodesboms --field-selector='nodeMetadata.name=worker-1'
+----
+
+Query by platform:
+
+[source,bash]
+----
+kubectl get nodesboms --field-selector='nodeMetadata.platform=linux/amd64'
+----
+
+View the full SBOM:
+
+[source,bash]
+----
+kubectl get nodesbom worker-node-1 -o yaml
+----
+
+Example output (truncated):
+
+[source,yaml]
+----
+apiVersion: storage.sbomscanner.kubewarden.io/v1alpha1
+kind: NodeSBOM
+metadata:
+  name: worker-node-1
+nodeMetadata:
+  name: worker-node-1
+  platform: linux/amd64
+spdx:
+  spdxVersion: SPDX-2.3
+  dataLicense: CC0-1.0
+  name: worker-node-1
+  packages:
+    - name: libc6
+      versionInfo: 2.39-0ubuntu8.3
+      primaryPackagePurpose: LIBRARY
+    - name: containerd
+      versionInfo: 1.7.24-0ubuntu1~24.04.1
+      primaryPackagePurpose: APPLICATION
+    - name: kubelet
+      versionInfo: 1.31.2-1.1
+      primaryPackagePurpose: APPLICATION
+----
+
+=== NodeVulnerabilityReport
+
+The vulnerability analysis results are stored in
+`NodeVulnerabilityReport` resources.
+
+List node vulnerability reports:
+
+[source,bash]
+----
+kubectl get nodevulnerabilityreports
+----
+
+Query by node name:
+
+[source,bash]
+----
+kubectl get nodevulnerabilityreports --field-selector='nodeMetadata.name=worker-1'
+----
+
+View the full report:
+
+[source,bash]
+----
+kubectl get nodevulnerabilityreport worker-node-1 -o yaml
+----
+
+=== Supported `nodeMetadata` fields
+
+`NodeSBOM` and `NodeVulnerabilityReport` resources share a common
+`nodeMetadata` field. These fields are useful when filtering resources
+with `kubectl get --field-selector`.
+
+[width="100%",cols="15%,10%,75%",options="header"]
+|===
+|Field |Type |Description
+
+|`name`
+|string
+|The name of the node in the cluster.
+
+|`platform`
+|string
+|The OS and CPU architecture of the node, in `OS/ARCH` format.
+Example: `linux/amd64`.
+|===
+
+[#disabling-node-scanning]
+== Disabling node scanning
+
+There are two levels of disabling the feature:
+
+*Disabling at the configuration level* either sets `enabled: false` in
+the `NodeScanConfiguration` resource or deletes the resource entirely:
+
+[source,yaml]
+----
+apiVersion: sbomscanner.kubewarden.io/v1alpha1
+kind: NodeScanConfiguration
+metadata:
+  name: default
+spec:
+  enabled: false
+  # ...
+----
+
+In both cases, all `NodeScanJob` and `NodeSBOM` resources are deleted
+from the cluster. `NodeVulnerabilityReport` resources are owned by their
+`NodeSBOM` and are garbage collected with it. Scanning starts again when
+you set `enabled` back to `true` or recreate the configuration.
+
+*Disabling at the Helm chart level* prevents the reconcilers from
+starting entirely. No node-scan-related resources are watched or cached,
+which saves controller memory and avoids the extra load on the
+Kubernetes API. Use this when you don't need node scanning at all:
+
+[source,yaml]
+----
+controller:
+  nodeScan:
+    enabled: false
+----
+
+== Pod Security Admission
+
+To scan the host filesystem, the worker DaemonSet mounts the node root
+filesystem read-only through a `hostPath` volume, runs as root, and adds
+the `DAC_READ_SEARCH` capability so the scanner can traverse the entire
+filesystem. These settings are rejected by both the `restricted` and the
+`baseline`
+https://kubernetes.io/docs/concepts/security/pod-security-admission/[Pod Security Admission]
+profiles. When node scanning is enabled, the namespace where
+{sboms-name} is installed cannot enforce either profile.
