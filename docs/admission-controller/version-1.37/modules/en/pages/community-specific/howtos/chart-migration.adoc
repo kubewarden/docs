@@ -97,7 +97,7 @@ helm uninstall kubewarden-crds -n kubewarden
 +
 [source,sh]
 ----
-helm install kubewarden kubewarden/admission-controller -n kubewarden
+helm install kubewarden kubewarden/admission-controller -n kubewarden --wait
 ----
 +
 The new single Helm chart consolidates the three previous values files into one.
@@ -106,7 +106,7 @@ values files during installation and Helm will merge them for you:
 +
 [source,sh]
 ----
-helm install kubewarden kubewarden/admission-controller -n kubewarden \
+helm install kubewarden kubewarden/admission-controller -n kubewarden --wait \
   --values kubewarden-controller-values.yaml \
   --values kubewarden-defaults-values.yaml \
   --values kubewarden-crds-values.yaml
