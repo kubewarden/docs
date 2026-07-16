@@ -101,13 +101,15 @@ helm install kubewarden kubewarden/admission-controller -n kubewarden
 ----
 +
 The new single Helm chart consolidates the three previous values files into one.
-Your existing configuration settings remain valid; simply combine the values from
-the three original files into a single file and provide it during installation:
+Your existing configuration settings remain valid; provide the three original
+values files during installation and Helm will merge them for you:
 +
 [source,sh]
 ----
-cat kubewarden-controller-values.yaml kubewarden-defaults-values.yaml kubewarden-crds-values.yaml > admission-controller-values.yaml
-helm install kubewarden kubewarden/admission-controller -n kubewarden --values admission-controller-values.yaml
+helm install kubewarden kubewarden/admission-controller -n kubewarden \
+  --values kubewarden-controller-values.yaml \
+  --values kubewarden-defaults-values.yaml \
+  --values kubewarden-crds-values.yaml
 ----
 
 . Restore policies and policy servers:
