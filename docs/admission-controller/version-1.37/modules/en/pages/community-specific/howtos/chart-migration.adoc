@@ -74,6 +74,16 @@ kubectl get admissionpolicygroups -A -o yaml | yq "$FILTER" > admissionpolicygro
 kubectl get policyservers -A -o yaml | yq "$FILTER" > policyservers-backup.yaml
 ----
 
+. Save the values of the three legacy Helm releases so you can reuse your
+configuration with the unified chart:
++
+[source,sh]
+----
+helm get values kubewarden-crds -n kubewarden -o yaml > kubewarden-crds-values.yaml
+helm get values kubewarden-controller -n kubewarden -o yaml > kubewarden-controller-values.yaml
+helm get values kubewarden-defaults -n kubewarden -o yaml > kubewarden-defaults-values.yaml
+----
+
 . Uninstall the old Helm charts:
 +
 [source,sh]
@@ -96,7 +106,7 @@ the three original files into a single file and provide it during installation:
 +
 [source,sh]
 ----
-cat kubewarden-controller-values.yml kubewarden-default-values.yaml kubewarden-crds-values.yaml > admission-controller-values.yaml
+cat kubewarden-controller-values.yaml kubewarden-defaults-values.yaml kubewarden-crds-values.yaml > admission-controller-values.yaml
 helm install kubewarden kubewarden/admission-controller -n kubewarden --values admission-controller-values.yaml
 ----
 
