@@ -111,6 +111,16 @@ helm install kubewarden kubewarden/admission-controller -n kubewarden \
   --values kubewarden-defaults-values.yaml \
   --values kubewarden-crds-values.yaml
 ----
++
+[NOTE]
+====
+When multiple `--values` files are provided, Helm merges them in order and the
+last file takes precedence for any overlapping keys. The three legacy charts
+share some fields, notably `global` and its children, which are normally
+identical across the charts. If any of these values were set differently by
+mistake, the value from the last file wins. Review the resulting configuration
+to make sure everything looks correct before proceeding.
+====
 
 . Restore policies and policy servers:
 +
