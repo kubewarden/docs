@@ -11,7 +11,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  updatecli:
+  admission-controller-docs-update:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
@@ -22,7 +22,23 @@ jobs:
         uses: updatecli/updatecli-action@cf942226b953240efac9ff60bf42df2b908c2fa0 # v2.83.0
 
       - name: Promote docs version and update CLI reference paths
-        run: "updatecli compose apply --experimental --file updatecli/bump-documentation-version.yaml"
+        run: "updatecli compose apply --file updatecli/bump-documentation-version.yaml"
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  sbomscanner-docs-update:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install Updatecli
+        uses: updatecli/updatecli-action@cf942226b953240efac9ff60bf42df2b908c2fa0 # v2.83.0
+
+      - name: Promote docs version and update CLI reference paths
+        run: "updatecli compose apply --file updatecli/sbomscanner-bump-documentation-version.yaml"
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

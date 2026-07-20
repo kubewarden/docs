@@ -100,7 +100,7 @@ case "$kw_component" in
     version_str="version-"
     ;;
   sbom-scanner)
-    version_str="v"
+    version_str="version-"
     ;;
   *)
     echo "Error: invalid component '$kw_component'. Expected one of: admission-controller sbom-scanner."

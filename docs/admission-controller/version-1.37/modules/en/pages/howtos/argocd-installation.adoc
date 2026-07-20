@@ -42,37 +42,19 @@ ignore:
 You do this by adding the `ignoreDifferences` field in the ArgoCD application:
 
 [subs="+attributes", yaml]
+[subs="+attributes", yaml]
 ----
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kubewarden-crds
+  name: admission-controller
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://charts.kubewarden.io
-    chart: kubewarden-crds
-    targetRevision: 1.13.0
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: kubewarden-system
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: kubewarden-controller
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: https://charts.kubewarden.io
-    chart: kubewarden-controller
-    targetRevision: 4.1.0
+    chart: admission-controller
+    targetRevision: 6.0.0
   destination:
     server: https://kubernetes.default.svc
     namespace: kubewarden-system
@@ -112,25 +94,6 @@ spec:
     kind: "ValidatingWebhookConfiguration"
     jqPathExpressions:
       - '.webhooks[]?.clientConfig.caBundle'
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: kubewarden-defaults
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: https://charts.kubewarden.io
-    chart: kubewarden-defaults
-    targetRevision: 2.8.0
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: kubewarden-system
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
 ----
 
 [NOTE]

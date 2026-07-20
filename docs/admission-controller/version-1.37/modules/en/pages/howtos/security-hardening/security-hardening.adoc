@@ -19,15 +19,14 @@ to secure {admc-short-name} itself.
 Please refer to the xref:/reference/threat-model.adoc[threat model] for more
 information.
 
-== `kubewarden-defaults` Helm chart
+== `admission-controller` Helm chart
 
 Operators can obtain a secure deployment by installing all the {admc-short-name} Helm
-charts. It's recommended to install the `kubewarden-defaults` Helm chart and
-enable its recommended policies with:
+charts. It's recommended to enable its recommended policies with:
 
 [source,console]
 ----
-helm install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults \
+helm install --wait -n kubewarden admission-controller kubewarden/admission-controller \
   --set recommendedPolicies.enabled=True \
   --set recommendedPolicies.defaultPolicyMode=protect
 ----
@@ -92,11 +91,12 @@ documentation] of Kubernetes' Pod Security Admission for more details.
 
 === SecurityContexts
 
-The `kubewarden-controller` Helm chart configures the SecurityContexts and
+The `admission-controller` Helm chart configures the SecurityContexts and
 exposes them in its `values.yaml`.
 
-The `kubewarden-defaults` Helm chart allows for configuring the default Policy
-Server `.spec.securityContexts` under `.Values.policyServer.securityContexts`.
+The `admission-controller` Helm chart also allows for configuring the default
+Policy Server `.spec.securityContexts` under
+`.Values.policyServer.securityContexts`.
 
 For Policy Servers managed by operators, you can configure them via their
 xref:/reference/CRDs.adoc#_policyserversecurity[`spec.securityContexts`].

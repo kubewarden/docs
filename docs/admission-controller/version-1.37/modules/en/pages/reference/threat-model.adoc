@@ -253,9 +253,10 @@ Admission controller uses restrictive policies to prevent privileged workloads.
 An attacker, who has rights to deploy hostPath volumes with workloads, creates a
 volume that allows for access to the admission controller pod's files.
 
-Deploy the `kubewarden-default` Helm chart and enable its recommended policies,
-which includes the `hostpaths-psp` policy. This policy is configured to reduce
-the shared hostPath volumes.
+==== Mitigation
+
+Enable the recommended policies, which includes the `hostpaths-psp` policy.
+This policy is configured to reduce the shared hostPath volumes.
 
 === Threat 17 - Attacker has privileged SSH access to cluster node running admission webhook
 
@@ -296,7 +297,7 @@ policies securing.
 For example, by:
 
 * using unsigned and malicious images for:
- ** {admc-short-name}-controller
+ ** admission-controller
  ** policy-server
  ** any of the {admc-short-name} dependencies
  ** any optional dependencies (Grafana, Prometheus, and others)

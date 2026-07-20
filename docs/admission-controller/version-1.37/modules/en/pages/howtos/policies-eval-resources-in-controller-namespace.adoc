@@ -2,6 +2,8 @@ include::partial$variables.adoc[]
 
 = Allowing evaluations in the Admission Controller namespace
 :page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-07-14
+:page-revdate: {revdate}
 :description: How to configure the Admission Controller to allow policy evaluation in its own namespace
 :keywords: ["policies", "ClusterAdmissionPolicies", "ClusterAdmissionPoliciesGroup", "configuration", "namespaces"]
 :doc-persona: ["kubewarden-operator"]
@@ -40,7 +42,7 @@ To do this, upgrade your {admc-short-name} installation and set the
 ----
 helm upgrade -n kubewarden
   --set "alwaysAcceptAdmissionReviewsOnDeploymentsNamespace=false"
-  kubewarden-controller kubewarden/kubewarden-controller
+  kubewarden-controller kubewarden/admission-controller
 ----
 
 This change allows policy servers to evaluate resources from any namespace.

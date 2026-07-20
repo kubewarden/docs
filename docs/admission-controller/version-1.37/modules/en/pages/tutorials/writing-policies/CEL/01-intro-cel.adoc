@@ -49,7 +49,7 @@ https://pkg.go.dev/github.com/google/cel-go[cel-go] interpreter, and also the
 different libraries listed above and available for CEL in Kubernetes from
 `apiextensions-apiserver`.
 
-In addition, `cel-policy` bundles a *{admc-short-name} CEL extension library* that exposes
+In addition, `cel-policy` bundles an *{admc-short-name} CEL extension library* that exposes
 {admc-short-name}'s https://github.com/kubewarden/cel-policy?tab=readme-ov-file#host-capabilities[host capabilities as native
 CEL]:
 

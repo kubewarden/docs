@@ -294,6 +294,12 @@ spec:
     Security posture and overview questions:
     - list_images, list_workloads, and list_nodes all return vulnerability severity counts and a total for each item.
     - When a user asks about security posture, call list_workloads, list_images, or list_nodes and present results sorted by total vulnerability count in a markdown table.
+    - NEVER use get_image_vulnerabilities or get_workload_vulnerabilities for listing vulnerabilities. Their responses are too large and will fail to render. Only use them if the user explicitly asks for raw or full CVE data.
+    - When in doubt, default to the summary tools.
+
+    Security posture and overview questions:
+    - list_images and list_workloads both return vulnerability severity counts and a total for each item.
+    - When a user asks about security posture, call list_workloads or list_images and present results sorted by total vulnerability count in a markdown table.
 
     Workflow:
     - Use list_images to browse scanned images with vulnerability counts

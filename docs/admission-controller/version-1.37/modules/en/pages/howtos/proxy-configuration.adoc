@@ -2,18 +2,21 @@ include::partial$variables.adoc[]
 
 = Proxy configuration
 :page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-07-14
+:page-revdate: {revdate}
 :description: Using proxies with {admc-name}.
 :keywords: ["{admc-name}", "kubewarden", "kubernetes", "proxy", "proxies"]
 :doc-persona: ["kubewarden-user", "kubewarden-operator", "kubewarden-distributor", "kubewarden-integrator"]
 :doc-type: ["howto"]
 :doc-topic: ["operator-manual", "proxy"]
 
-For both of `kwctl` and `policy-server` you can configure HTTP and HTTPS
+For both of `kwctl` and `policy-server` binaries you can configure HTTP and HTTPS
 proxies, as well as exempt domains from this proxy configuration.
 
 You can do this in two ways:
+
 * By setting the environment variables `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`
-  (and their lowercase counterparts) for either `kwctl` or `policy-server`.
+  (and their lowercase counterparts) for either `kwctl` or `policy-server` binaries.
   To configure a PolicyServer CR, set its `spec.env` array.
 * By providing a `sources.yaml` file via the `--sources-path` argument.
   A `sources.yaml` file has precedence over the environment variables.

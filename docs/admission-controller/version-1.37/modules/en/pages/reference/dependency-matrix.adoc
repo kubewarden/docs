@@ -49,7 +49,7 @@ Needed for specific features.
 
 | `kyverno/policy-reporter` chart
 | `≥ 2 < 4`
-| In `kubewarden-controller` chart as subchart
+| In `admission-controller` chart as subchart
 | Policy Reports UI
 |===
 
@@ -59,12 +59,12 @@ Needed for specific features.
 
 | (deprecated, removal scheduled) `policyreports.wgpolicyk8s.io` CRDs
 | `v1beta1`
-| In `kubewarden-defaults` chart or manually installed
+| In `admission-controller` chart or manually installed
 | Audit Scanner
 
 | `openreports.io` CRDs
 | `v1alpha2`
-| In `kubewarden-defaults` chart or manually installed
+| In `admission-controller` chart or manually installed
 | Audit Scanner
 |===
 

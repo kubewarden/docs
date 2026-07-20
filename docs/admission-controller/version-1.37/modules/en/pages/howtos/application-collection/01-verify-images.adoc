@@ -53,8 +53,8 @@ registries how-to] for Policy Servers to create a Docker Config Secret *in the
 PolicyServer namespace*. You do this by instantiating a Secret with the same
 contents as the previous `application-collection`.
 
-For PolicyServer `default`, installed with the `kubewarden-defaults` Helm chart
-under the `kubewarden` namespace, it would be:
+For PolicyServer `default` from the `admission-controller` Helm chart, it would
+be:
 
 [subs="+attributes",console]
 ----
@@ -66,14 +66,14 @@ $ kubectl create secret docker-registry application-collection-kw -n kubewarden 
 
 == Configure PolicyServers to use the new Secret
 
-If using the PolicyServer `default` from the `kubewarden-defaults` Helm chart,
+If using the PolicyServer `default` from the `admission-controller` Helm chart,
 configure it with the imagePullSecret `application-collection-kw`. This in the
 same namespace and is done by setting the following values for the chart:
 
 [subs="+attributes",console]
 ----
 $ helm upgrade -i --wait --namespace kubewarden \
-  --create-namespace kubewarden-defaults kubewarden/kubewarden-defaults \
+  --create-namespace admission-controller kubewarden/admission-controller \
   --reuse-values \
   --set policyServer.imagePullSecret=application-collection-kw
 ----

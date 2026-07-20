@@ -20,10 +20,10 @@ includes:
 - The default Rancher Namespace `cattle-kubewarden-system` (or
   `cattle-kubewarden-*`), and the default {admc-short-name} Namespace
   `kubewarden`.
-- {admc-short-name} needed resources are installed via the Helm charts.
+- {admc-short-name} needed resources are installed via the Helm chart.
 - {admc-short-name} CRDs, which get reconciled after restore by the
-  {admc-short-name} controller.
-- The `policy-reporter` subchart of the `kubewarden-controller` chart, for
+  {admc-short-name}.
+- The `policy-reporter` subchart of the `admission-controller` chart, for
   their default values. This doesn't include the Grafana integration nor other
   plugins.
 

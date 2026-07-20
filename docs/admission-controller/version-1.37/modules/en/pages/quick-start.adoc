@@ -101,14 +101,13 @@ helm repo add kubewarden https://charts.kubewarden.io
 helm repo update kubewarden
 ----
 
-Install the following Helm charts in the `kubewarden` namespace in your
-Kubernetes cluster:
+Install the `admission-controller` Helm chart in the `kubewarden` namespace in your
+Kubernetes cluster. This will:
 
-* `kubewarden-crds`, which registers the {cluster-admission-policy},
+* Register the {cluster-admission-policy},
   {admission-policy} and {policy-server} Custom Resource Definitions. Also, the
   {policy-report} Custom Resource Definitions used by the audit scanner.
-* `kubewarden-controller`, which installs the {admc-short-name} and the
-  audit scanner
+* Deploy the {admc-short-name} and the audit scanner
 +
 [NOTE]
 ====
@@ -118,23 +117,13 @@ installation xref:howtos/audit-scanner.adoc[documentation page].
 
 ====
 +
-* `kubewarden-defaults`, which creates a `PolicyServer` resource named
-  `default`. It can also install a set of recommended policies to secure your
+* Create a `PolicyServer` resource named
+  `default`. You can also install a set of recommended policies to secure your
   cluster by enforcing well known best practices.
 
 [subs="+attributes",console]
 ----
-helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
-----
-
-[subs="+attributes",console]
-----
-helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller
-----
-
-[subs="+attributes",console]
-----
-helm install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults
+helm install --wait -n kubewarden --create-namespace admission-controller kubewarden/admission-controller
 ----
 
 The default configuration values are sufficient for most deployments. The
@@ -143,7 +132,7 @@ options.
 
 == Main components
 
-{admc-short-name} has three main components which you interact with:
+The {admc-short-name} has three main components which you interact with:
 
 * The {policy-server}
 * The {cluster-admission-policy}
@@ -400,7 +389,7 @@ NAME              POLICY SERVER   MUTATING   STATUS
 privileged-pods   default         false      pending
 ----
 
-Once the new policy is ready, the `kubewarden-controller`
+Once the new policy is ready, the `admission-controller`
 registers a
 https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.33/#validatingwebhookconfiguration-v1-admissionregistration-k8s-io[ValidatingWebhookConfiguration]
 object to serve it.
@@ -488,67 +477,36 @@ not targeting a specific namespace.
 
 == Uninstall
 
-You can remove the resources created by uninstalling the `helm` charts as
-follows:
+Uninstall the Helm chart as follows:
 
 [subs="+attributes",console]
 ----
-helm uninstall --namespace kubewarden kubewarden-defaults
+helm uninstall --namespace kubewarden admission-controller
 ----
+
+Uninstalling the Helm chart removes:
+
+* The controller Deployment
+* Managed defaults such as the PolicyServer `default` and recommended policies
+* ConfigMaps, Secrets, Services, Deployments that make all PolicyServers be effective
+
+It does not remove:
+
+- CRDs (kept by `helm.sh/resource-policy: keep`)
+- User-managed PolicyServers and policies
+
+The user-managed custom resources are kept on purpose. Re-installing the chart
+deploys the controller, which reconciles them, and activates them back.
+
+To remove all user-managed custom resources and the CRDs do:
 
 [subs="+attributes",console]
 ----
-helm uninstall --namespace kubewarden kubewarden-controller
-----
-
-[subs="+attributes",console]
-----
-helm uninstall --namespace kubewarden kubewarden-crds
-----
-
-After removal of the `helm` charts remove the Kubernetes namespace used to
-deploy the {admc-short-name} stack:
-
-[subs="+attributes",console]
-----
-kubectl delete namespace kubewarden
-----
-
-[CAUTION]
-====
-
-{admc-short-name} contains a helm pre-delete hook that removes all
-`PolicyServer`s and `kubewarden-controller`s. Then the
-`kubewarden-controller` deletes all resources, so it's important that
-`kubewarden-controller` is running when helm uninstall executes.
-
-====
-
-
-{admc-short-name} deletes {validating-webhook-configuration}s and
-{mutating-webhook-configuration}s. Check this with:
-
-[subs="+attributes",console]
-----
-kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
-----
-
-[subs="+attributes",console]
-----
-kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
-----
-
-If these resources aren't automatically removed, remove them manually using the
-following command:
-
-[subs="+attributes",console]
-----
-kubectl delete -l "kubewarden" validatingwebhookconfigurations.admissionregistration.k8s.io
-----
-
-[subs="+attributes",console]
-----
-kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistration.k8s.io
+kubectl delete crd policyservers.policies.kubewarden.io
+kubectl delete crd clusteradmissionpolicies.policies.kubewarden.io
+kubectl delete crd admissionpolicies.policies.kubewarden.io
+kubectl delete crd clusteradmissionpolicygroups.policies.kubewarden.io
+kubectl delete crd admissionpolicygroups.policies.kubewarden.io
 ----
 
 == Wrapping up
@@ -559,13 +517,13 @@ configuration for the rest of the resources needed to run the policies.
 
 == What's next?
 
-Now, you are ready to deploy {admc-short-name}! Have a look at the policies on
+Now, you are ready to learn more about the {admc-short-name}! Have a look at the policies on
 https://artifacthub.io/packages/search?kind=13[artifacthub.io], on
 https://github.com/topics/kubewarden-policy[GitHub], or reuse existing Rego
 policies as shown in the xref:tutorials/writing-policies/rego/01-intro-rego.adoc[following
 chapters].
 
-.Full list of available policies on ArtifactHub
+.Small selection of available policies on ArtifactHub
 [%collapsible,subs="+macros"]
 ======
 

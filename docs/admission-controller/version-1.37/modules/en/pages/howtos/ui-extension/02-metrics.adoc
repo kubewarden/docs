@@ -10,6 +10,13 @@ include::partial$variables.adoc[]
 :keywords: ["{admc-name}", "kubewarden", "kubernetes", "user interface extension", "metrics", "monitoring"]
 :current-version: {page-origin-branch}
 
+[WARNING]
+====
+
+This page is under construction. The install process may vary.
+
+====
+
 Rancher has a Cluster Tool for monitoring that uses Grafana and
 Prometheus. You can use this tool, integrating it with {admc-name}, to
 view overall metrics for a Policy Server or metrics for a given policy.

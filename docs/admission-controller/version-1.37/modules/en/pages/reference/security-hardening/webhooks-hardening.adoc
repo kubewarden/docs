@@ -251,11 +251,11 @@ enable the following values:
 - Set `mTLS.configMapName` to the name of the `ConfigMap` that was previously created.
 +
 The `ConfigMap` name is `api-server-mtls`, so the Helm command to
-install the `kubewarden-controller` is:
+install the `admission-controller` is:
 +
 [source,console]
 ----
-helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller \
+helm install --wait -n kubewarden admission-controller kubewarden/admission-controller \
    --set mTLS.enable=true \
    --set mTLS.configMapName=api-server-mtls
 ----

@@ -28,10 +28,9 @@ by default, marked as deprecated, and will be removed in a future release.
 
 Users wishing to keep using the deprecated PolicyReports, that is, the
 behavior pre 1.33, need to:
-- Change the `kubewarden-crds` Helm chart value of
-  `.Values.install.installPolicyReportCRDs` to `true`.
-- Change the `kubewarden-controller` Helm chart value of
-  `.Values.auditScanner.reportCRDsKind` from `openreports` to `policyreport`.
+
+* Change `.Values.install.installPolicyReportCRDs` to `true`.
+* Change `.Values.auditScanner.reportCRDsKind` from `openreports` to `policyreport`.
 
 ====
 
