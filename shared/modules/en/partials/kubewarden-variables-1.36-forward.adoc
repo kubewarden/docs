@@ -42,6 +42,11 @@ ifeval::["{build-type}" == "community"]
 :admc-abbrev: {admc-community-abbrev}
 :intro-paragraph: {admc-name} is a xref:#_vendor_neutrality[vendor neutral], https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
 :project-security-team: {kw-community-project-name} team
+:admcontroller-name: admission-controller
+:default-policy-server-image: ghcr.io/kubewarden/adm-controller/policy-server
+:admc-chart-location: kubewarden/admission-controller
+:admc-namespace: kubewarden
+:admc-release: admission-controller
 endif::[]
 
 ifeval::["{build-type}" == "product"]
@@ -53,6 +58,11 @@ ifeval::["{build-type}" == "product"]
 :community-project-name: {kw-community-project-name}
 :intro-paragraph: {admc-name} is derived from a vendor neutral, https://cncf.io[CNCF] Sandbox project, called link:https://kubewarden.io[{community-project-name}], originally created by https://www.rancher.com/[SUSE Rancher]. The name {admc-name} may be shortened to {admc-short-name} or abbreviated as {admc-abbrev}. The name {community-project-name} refers to the open-source community project. The name {community-project-name} may also be used throughout this documentation in place of {admc-name}, {admc-short-name}, or {admc-abbrev}. This will be in references in source code or configuration examples.
 :project-security-team: {product-project-name} Team
+:admcontroller-name: suse-sec-adm-controller
+:default-policy-server-image: dp.apps.rancher.io/containers/kubewarden-policy-server
+:admc-chart-location: oci://dp.apps.rancher.io/charts/suse-security-admission-controller
+:admc-namespace: suse-sec-adm-controller
+:admc-release: suse-sec-adm-controller
 endif::[]
 
 // Glossary terms start
@@ -82,3 +92,5 @@ endif::[]
 :Wasmtime: xref:glossary.adoc#_wasmtime[Wasmtime]
 
 // Glossary terms end
+
+
