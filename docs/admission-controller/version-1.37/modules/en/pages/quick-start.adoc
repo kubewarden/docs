@@ -28,7 +28,7 @@ The {admc-name} stack comprises:
   `PolicyServer`. The {admc-short-name} `PolicyServer` loads and evaluates your
   administrator's policies.
 * One or more {admission-policy} resources: policies for a defined namespace.
-* A deployment of a `{admcontroller-name}`: this controller monitors the
+* A deployment of a `{admc-release}`: this controller monitors the
   {cluster-admission-policy} resources and interacts with the {admc-short-name}
   {policy-server} components.
 
@@ -81,7 +81,7 @@ The {admc-short-name} has three main components which you interact with:
 
 === `PolicyServer`
 
-The `{admcontroller-name}` manages a {admc-short-name} `PolicyServer`. You can
+The `{admc-release}` manages a {admc-short-name} `PolicyServer`. You can
 deploy multiple {policy-server}s in the same Kubernetes cluster.
 
 A `PolicyServer` validates incoming requests by executing {admc-short-name}
@@ -123,7 +123,7 @@ Overview of the attributes of the `PolicyServer` resource:
 | N
 | `serviceAccountName`
 | The name of the `ServiceAccount` to use for the `PolicyServer` deployment. If
-  there is no provided value, the default `ServiceAccount` from the installation namespace, of `{admcontroller-name}`, gets used.
+  there is no provided value, the default `ServiceAccount` from the installation namespace, of `{admc-release}`, gets used.
 
 | N
 | `env`
@@ -446,7 +446,7 @@ kubectl delete crd admissionpolicygroups.policies.kubewarden.io
 == Wrapping up
 
 {cluster-admission-policy} is the core resource that a cluster operator has to
-manage. The `{admcontroller-name}` module automatically takes care of the
+manage. The `{admc-release}` module automatically takes care of the
 configuration for the rest of the resources needed to run the policies.
 
 == What's next?
