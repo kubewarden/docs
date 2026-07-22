@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 
-= Migration from three-chart setup
+= v1.36 to v1.37 (manual)
 :page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-06-26
 :page-revdate: {revdate}
@@ -9,7 +9,7 @@ include::partial$variables.adoc[]
 :doc-topic: ["chart-migration"]
 :doc-type: ["howto"]
 :keywords: ["{admc-name}", "kubewarden", "helm", "chart", "migration", "upgrade", "kubewarden-crds", "kubewarden-controller", "kubewarden-defaults", "admission-controller"]
-:sidebar_label: Migration from three-chart setup
+:sidebar_label: Manual from v1.36 from to v1.37
 :sidebar_position: 10
 :current-version: {page-origin-branch}
 
