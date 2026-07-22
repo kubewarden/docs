@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Rancher UI extension quickstart
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-07-22
 :page-revdate: {revdate}
 :description: Learn how to install the {admc-name} UI as an extension of Rancher Manager with a step-by-step guide through the installation process.
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
@@ -30,7 +30,7 @@ scoped resource.
 [NOTE]
 ====
 
-For air-gapped installations, follow xref:howtos/airgap/02-install.adoc[these
+For air-gapped installations, follow xref:howtos/airgap/01-requirements.adoc[these
 steps].
 
 ====
