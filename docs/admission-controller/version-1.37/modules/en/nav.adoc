@@ -94,6 +94,8 @@ include::partial$variables.adoc[]
 *** xref:howtos/policy-servers/06-namespaced-policies-capabilities.adoc[Controlling host capabilities for namespaced policies]
 *** xref:howtos/policy-servers/07-host-capability-call-reference.adoc[Host capabilities call reference]
 ** xref:howtos/policy-groups.adoc[Policy groups]
+** Migrations
+*** xref:{build-type}-specific/howtos/migration/fleet-migration-1.37.adoc[]
 ** xref:howtos/psp-migration.adoc[PSP migration]
 ** xref:howtos/vap-migration.adoc[]
 ** xref:howtos/pod-security-admission-with-kubewarden.adoc[Pod Security Admission]
