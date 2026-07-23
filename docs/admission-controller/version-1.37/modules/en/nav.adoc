@@ -79,7 +79,7 @@ include::partial$variables.adoc[]
 *** xref:howtos/Rancher-Fleet.adoc[Rancher Fleet]
 *** xref:howtos/kubestellar-console.adoc[KubeStellar Console guided installation]
 ** Migrations
-*** xref:{build-type}-specific/howtos/chart-migration.adoc[]
+*** xref:{build-type}-specific/howtos/app136-to-app137-migration.adoc[]
 ifeval::["{build-type}" == "product"]
 *** xref:{build-type}-specific/howtos/appco-chart-migration.adoc[]
 *** xref:{build-type}-specific/howtos/community-chart-migration.adoc[]
