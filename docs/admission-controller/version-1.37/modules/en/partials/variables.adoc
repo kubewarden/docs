@@ -1,4 +1,7 @@
 // Include shared project global variables
 include::latest@shared:en:partial$kubewarden-variables-1.36-forward.adoc[]
 
-// global variables for this version below:
+:default-container-image-tag: v1.37.0
+// Fully-qualified policy server image reference. {default-policy-server-image}
+// comes from the shared file; {default-container-image-tag} is set above.
+:default-policy-server-image-tag: {default-policy-server-image}:{default-container-image-tag}
