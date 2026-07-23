@@ -42,7 +42,7 @@ legacy three charts:
 
 ==== Prerequisites
 
-* Back up your policies without commiting them to Fleet, as their
+* Back up your policies without committing them to Fleet, as their
   CRDs will be removed.
 * Concatenate the values of the three legacy charts to form the new
   values for the `admission-controller` chart. Only the `.global` values
