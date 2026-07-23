@@ -1,6 +1,5 @@
 include::partial$variables.adoc[]
 
-= Migration from three-chart setup
 :page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-06-26
 :page-revdate: {revdate}
@@ -12,6 +11,8 @@ include::partial$variables.adoc[]
 :sidebar_label: Migration from three-chart setup
 :sidebar_position: 10
 :current-version: {page-origin-branch}
+
+= {admc-community-name} 1.36 to 1.37
 
 Starting from Kubewarden 1.37, a single helm chart is used to manage
 the stack.
