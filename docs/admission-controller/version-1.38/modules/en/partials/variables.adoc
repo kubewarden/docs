@@ -1,0 +1,7 @@
+// Include shared project global variables
+include::latest@shared:en:partial$kubewarden-variables-1.36-forward.adoc[]
+// Include variables that have values that change under specific docs types
+include::partial${build-type}-specific/variables.adoc[]
+// Fully-qualified policy server image reference. {default-policy-server-image}
+// comes from the shared file; {default-container-image-tag} is set above.
+:default-policy-server-image-tag: {default-policy-server-image}:{default-container-image-tag}

@@ -1,0 +1,6 @@
+// This partial file contains variables that are relevant only for community 
+// version only
+
+// Default container image tag used in the documentation version. All the admission
+// controller container image has synced container tag
+:default-container-image-tag: v1.37.0

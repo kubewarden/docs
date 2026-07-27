@@ -1,0 +1,73 @@
+include::partial$variables.adoc[]
+= Managing {admc-name} with Rancher Fleet
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-05-04
+:page-revdate: {revdate}
+:description: Manage {admc-name} Helm chart using Rancher Fleet and Kubernetes Custom Resource Definitions (CRDs) to implement a GitOps approach.
+:doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
+:doc-topic: ["operator-manual", "rancher-fleet"]
+:doc-type: ["howto"]
+:keywords: ["{admc-name}","kubernetes", "kubewarden", "rancher fleet"]
+:sidebar_label: Rancher Fleet
+:sidebar_position: 130
+:current-version: {page-origin-branch}
+
+You can manage {admc-name} Helm chart,
+like other Helm charts, with https://fleet.rancher.io/[Rancher Fleet].
+Rancher Fleet uses Kubernetes CRDs
+to define a GitOps approach to managing Kubernetes clusters.
+It does this by defining https://fleet.rancher.io/concepts[Fleet Bundles].
+
+== Installing
+
+The {admc-short-name} chart is a standard chart. See the
+xref:/quick-start.adoc[Quickstart docs] for more information.
+
+== Removing
+
+Removing the {admc-short-name} chart will leave around the user-managed custom
+resources and CRDs. See the xref:/quick-start.adoc[Quickstart docs] for more
+information.
+
+{admc-short-name} Kubewarden uses a pre-delete helm hook job in
+`admission-controller` chart that deletes the controller, webhooks, resources
+that enable PolicyServers to process policies, default PolicyServer and
+recommended policies.
+
+Uninstalling CRDs automatically isn't normally supported by any tooling, and
+Rancher Fleet is no exception.
+
+To manually remove the CRDs and any remaining user-managed custom resources
+after removing the Fleet Bundle:
+
+* Remove the {admc-short-name} Bundle from your Fleet Git repository, or
+  delete it directly with `kubectl delete bundle`, and let Fleet reconcile the
+  removal of the Helm release from the target clusters.
+* Confirm the Helm release is uninstalled and the pre-delete hook completed,
+  by checking that the `kubewarden-controller` Deployment and webhooks are
+  gone from the targeted clusters.
+* Manually delete the remaining CRDs, which will also remove the user-managed
+  custom resources on each targeted cluster:
++
+[subs="+attributes",console]
+----
+kubectl delete crd policyservers.policies.kubewarden.io
+kubectl delete crd clusteradmissionpolicies.policies.kubewarden.io
+kubectl delete crd admissionpolicies.policies.kubewarden.io
+kubectl delete crd clusteradmissionpolicygroups.policies.kubewarden.io
+kubectl delete crd admissionpolicygroups.policies.kubewarden.io
+----
++
+[NOTE]
+====
+
+Because Fleet's `GitRepo`/`Bundle` resources target multiple clusters, you
+need to repeat this manual CRD cleanup on every downstream cluster where the
+Bundle deployed {admc-short-name}.
+
+====
+
+== Example
+
+For an example of Fleet bundle definitions see
+https://github.com/kubewarden/fleet-example[github.com/kubewarden/fleet-example].
