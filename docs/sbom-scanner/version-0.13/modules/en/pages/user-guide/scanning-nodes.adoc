@@ -164,6 +164,17 @@ spec:
 Patterns ending with `/` match directories. All other patterns match
 files. Glob patterns such as `++**/++vendor/` are supported.
 
+[NOTE]
+====
+When you set your own `skipPatterns` without including all of the default
+patterns, {sboms-name} emits an admission warning. The defaults exclude
+container-runtime state directories, and scanning those paths may cause
+the node scan to fail. To avoid this, include the default patterns in
+your own list. See the
+xref:reference/crd-reference.adoc#k8s-api-github-com-kubewarden-sbomscanner-api-v1alpha1-nodescanconfigurationspec[CRD reference]
+for the default list.
+====
+
 === Scanning specific platforms
 
 By default, {sboms-name} scans all nodes regardless of their platform. In
