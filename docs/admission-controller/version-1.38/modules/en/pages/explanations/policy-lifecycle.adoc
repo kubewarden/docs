@@ -1,0 +1,194 @@
+include::partial$variables.adoc[]
+= Policy lifecycle
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-05-19
+:page-revdate: {revdate}
+:description: Learn about creating the lifecycle of policies 
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["explanations", "policy", "lifecycle", "status", "policy-servers"]
+:doc-type: ["explanation"]
+:doctype: book
+:keywords: ["{admc-name}", "kubewarden", "policy", "lifecycle", "status"]
+:sidebar_label: Policy lifecycle
+:sidebar_position: 10
+:current-version: {page-origin-branch}
+
+Every Kubewarden policy (`AdmissionPolicy`, `ClusterAdmissionPolicy`, and their
+group variants) has a `status.policyStatus` field that reflects what the
+controller is doing with the policy at any given time.
+
+Understanding these statuses helps cluster operators diagnose why a
+policy is not yet enforcing, or why enforcement stopped after a change.
+
+== Statuses
+
+=== `+unscheduled+`
+
+The policy has no `+spec.policyServer+` set. The policy definition
+exists in the cluster but is completely dormant:
+
+* No `+PolicyServer+` is assigned
+* No webhook configuration is registered
+* No admission requests are forwarded to the policy
+* The policy is not audited by the audit scanner
+
+This is the initial state of a policy that has been created without a
+`+policyServer+` reference, or whose `+policyServer+` field has been
+cleared.
+
+=== `+scheduled+`
+
+A `+spec.policyServer+` name is set on the policy, but the referenced
+`+PolicyServer+` CR does not exist (or is being deleted). The policy is
+waiting for a `+PolicyServer+` with that name to become available:
+
+* No webhook configuration is registered
+* No admission requests are forwarded to the policy
+* The policy is not audited by the audit scanner
+
+This is also the state a policy transitions to when its `+PolicyServer+`
+is deleted. The policy definition is preserved in the cluster and will
+automatically recover to `+active+` once a `+PolicyServer+` with the
+same name is created again.
+
+[NOTE]
+====
+When a policy transitions to `+scheduled+` because its `+PolicyServer+`
+was deleted, the controller removes the policy’s webhook configuration
+(`+ValidatingWebhookConfiguration+` or
+`+MutatingWebhookConfiguration+`). This prevents orphaned webhooks from
+blocking admission requests while the `+PolicyServer+` is unavailable.
+====
+
+=== `+pending+`
+
+The referenced `+PolicyServer+` CR exists and was found, but the policy
+is not yet enforcing in its latest generation. If previous generations
+of the policy exist, they are being enforced meanwhile. This is a
+transient state that occurs during:
+
+* *Initial deployment*: the `+PolicyServer+` pods are starting up or not
+yet ready
+* *Rolling updates*: the `+PolicyServer+` deployment is being updated
+and the new replica set is not yet the only one serving requests
+* *Configuration updates*: the policy configuration has changed and the
+running `+PolicyServer+` pods have not yet loaded the new version
+
+In this state, the webhook configuration has not been created yet.
+Admission requests are not forwarded to the policy.
+
+The conditions on the policy object give more detail about why it is
+still pending:
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Condition |Meaning
+|`+PolicyUniquelyReachable=False+` |The latest replica set of the
+`+PolicyServer+` is not yet the only one handling requests (rolling
+update in progress)
+
+|`+PolicyServerConfigurationUpToDate=False+` |The running
+`+PolicyServer+` pods have not yet loaded the current policy
+configuration
+
+|`+PolicyActive=False+` |The webhook has not been created yet
+|===
+
+=== `+active+`
+
+The policy is fully operational:
+
+* The `+PolicyServer+` CR exists and its deployment is healthy
+* All pods are running the latest replica set with the latest
+configuration
+* The webhook configuration has been created and registered with the
+Kubernetes API server
+* Admission requests matching the policy’s rules are forwarded to the
+`+PolicyServer+` for evaluation
+
+The `+status.mode+` field indicates whether the policy is in `+protect+`
+mode (admission requests can be rejected) or `+monitor+` mode (requests
+are always allowed but decisions are logged).
+
+== State machine
+
+
+[mermaid]
+....
+stateDiagram-v2
+    [*] --> unscheduled : policy created
+
+    unscheduled --> scheduled : spec.policyServer set
+    scheduled --> unscheduled : spec.policyServer cleared
+
+    scheduled --> pending : PolicyServer CR created
+    pending --> scheduled : PolicyServer CR deleted\n(webhook removed)
+    active --> scheduled : PolicyServer CR deleted\n(webhook removed)
+
+    pending --> active : PolicyServer ready\n(pods healthy, webhook created)
+    active --> pending : PolicyServer updating\n(rolling update / config change)
+....
+
+== Conditions
+
+Alongside `+policyStatus+`, the policy’s `+status.conditions+` array
+provides finer-grained detail. The three condition types are:
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Condition type |What it signals
+|`+PolicyActive+` |`+True+` when the webhook has been successfully
+created and the policy is enforcing
+
+|`+PolicyUniquelyReachable+` |`+True+` when only the latest-generation
+`+PolicyServer+` pods are live (no old pods still serving)
+
+|`+PolicyServerConfigurationUpToDate+` |`+True+` when the ConfigMap
+version loaded by the running pods matches the current policy
+configuration
+|===
+
+All three conditions are `+True+` only when the policy is `+active+`.
+
+== PolicyServer deletion
+
+When a `+PolicyServer+` is deleted, the controller does not remove the
+`+PolicyServer+` CR immediately. Instead, it holds the CR’s finalizer
+until the webhook configurations of all bound policies have been cleaned
+up, to ensure no orphaned webhooks are left behind.
+
+The `+PolicyWebhooksCleanedUp+` condition on the `+PolicyServer+` tracks
+this:
+
+[width="100%",cols="34%,33%,33%",options="header",]
+|===
+|Condition |Status |Meaning
+|`+PolicyWebhooksCleanedUp+` |`+False+` |The PolicyServer is being
+deleted and is still waiting for bound policies’ webhook configurations
+to be removed. The `+message+` field lists the policy names whose
+webhooks are not yet gone.
+
+|`+PolicyWebhooksCleanedUp+` |`+True+` |All webhook configurations have
+been removed; the finalizer is released and the PolicyServer CR is
+garbage-collected.
+|===
+
+To inspect the condition:
+
+[source,shell]
+----
+kubectl get policyserver <name> \
+  -o jsonpath='{.status.conditions[?(@.type=="PolicyWebhooksCleanedUp")]}'
+----
+
+If a `+PolicyServer+` appears stuck with
+`+PolicyWebhooksCleanedUp=False+`, check:
+
+[arabic]
+. The policy controller logs for errors deleting the webhook
+configurations.
+. RBAC — the controller needs permission to delete
+`+ValidatingWebhookConfiguration+` and `+MutatingWebhookConfiguration+`
+cluster-scoped resources.
+. Whether the policies listed in the condition message still exist and
+have their own finalizers blocking deletion.
