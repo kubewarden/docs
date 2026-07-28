@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = v1.36 to v1.37 (Fleet)
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-07-21
+:revdate: 2026-07-28
 :page-revdate: {revdate}
 :description: Migrate with Fleet from v1.36 legacy Helm charts to the unified v1.37 chart.
 :doc-persona: ["kubewarden-operator"]
@@ -20,13 +20,13 @@ from the legacy three-chart setup in v1.36 (`kubewarden-crds`,
 
 There are two ways to migrate:
 
-* A *downtime migration*: reinstall the stack from scratch, with 
+* A *downtime migration*: reinstall the stack from scratch, with
   the cluster unprotected meanwhile.
 * A *no-downtime migration*: handing over the deployed resources from the
   legacy Helm releases to the new one. There is no policy enforcement gap nor
   data loss.
 
-=== Chart differences
+== Chart differences
 
 Starting from {admc-short-name} 1.37, a single Helm chart,
 `admission-controller` 6.0.0, manages the whole stack. Compared to the
@@ -40,7 +40,7 @@ legacy three charts:
 
 == Downtime migration
 
-==== Prerequisites
+=== Prerequisites
 
 * Back up your policies without committing them to Fleet, as their
   CRDs will be removed.
@@ -48,7 +48,7 @@ legacy three charts:
   values for the `admission-controller` chart. Only the `.global` values
   are repeated, make sure that there aren't any collisions between them.
 
-==== Migration
+=== Migration
 
 Remove the three legacy bundles from the git repository watched by
 Fleet, and once Fleet has uninstalled them, add a bundle for the
@@ -81,7 +81,7 @@ For a complete working example, see the
 https://github.com/kubewarden/fleet-example[kubewarden/fleet-example]
 repository, whose git history is structured following these steps.
 
-==== Prerequisites
+=== Prerequisites
 
 * We start with the three legacy charts must be at version {admc-short-name}
   *v1.36* before starting. As described in the
@@ -95,11 +95,11 @@ repository, whose git history is structured following these steps.
 * `kubectl` (and optionally `helm`) access to the downstream cluster, for
   verification and cleanup.
 
-=== Migration commits
+== Migration commits
 
 Create the following commits in your Fleet repository, in this order.
 
-==== Commit 0: legacy v1.36 bundles installed
+=== Commit 0: legacy v1.36 bundles installed
 
 `<commit-0-sha>` is the starting point. We have {admc-short-name} installed
 in v1.36 with your own values, and we pin our `GitRepo` per-commit instead
@@ -123,7 +123,7 @@ revision, silently ignoring it.
 Ensure only `spec.revision` is set.
 ====
 
-==== Commit 1: prepare for uninstall of the legacy v1.36 bundles
+=== Commit 1: prepare for uninstall of the legacy v1.36 bundles
 
 In this commit `<commit-1-sha>`:
 
@@ -154,7 +154,7 @@ on Deployments. Disabling the subchart makes the legacy release delete both
 Deployments now, so the new chart can recreate them fresh later. Both are
 stateless; this only pauses report collection during the migration window.
 
-==== Commit 2: remove the legacy bundles
+=== Commit 2: remove the legacy bundles
 
 In this commit `<commit-2-sha>`, delete the directories of the three legacy
 bundles from the repository. When deployed, Fleet leaves the three Helm
@@ -165,7 +165,7 @@ This is expected: `keepResources: true` skips `helm uninstall` entirely, and
 only the Helm release secrets (`sh.helm.release.v1.*`) remain, as inert
 bookkeeping. They are cleaned up after the migration.
 
-==== Commit 3: add the admission-controller bundle
+=== Commit 3: add the admission-controller bundle
 
 In this `<commit-3-sha>`:
 
@@ -201,12 +201,12 @@ helm:
 
 When deployed, the new release adopts the kept resources.
 
-==== Commit 4: admission-controller bundle without takeOwnership
+=== Commit 4: admission-controller bundle without takeOwnership
 
 In this `<commit-4-sha>`, remove the `takeOwnership` key from the
 `admission-controller` and unpin the `GitRepo`.
 
-=== Run the migration
+== Run the migration
 
 
 Move `spec.revision` forward, one commit at a time
@@ -220,7 +220,7 @@ kubectl get bundles -n fleet-local
 kubectl get gitrepos -n fleet-local
 ----
 
-=== Clean up
+== Clean up
 
 Once the `admission-controller` bundle is Ready, remove the leftovers
 from the legacy releases:
@@ -260,7 +260,7 @@ kubectl delete -n kubewarden \
 This is safe: the new controller is already running, and the webhook
 configurations were adopted and point at the new service.
 
-=== Verify
+== Verify
 
 [source,sh]
 ----
@@ -282,7 +282,7 @@ The PolicyServer and the recommended policies are no longer managed as Helm
 resources: the new chart ships them in the `kubewarden-defaults` ConfigMap,
 and the controller applies them at runtime.
 
-=== Troubleshooting
+== Troubleshooting
 
 Fleet retries failed bundles with a backoff. After fixing a problem, force
 an immediate retry with:
@@ -293,7 +293,7 @@ kubectl patch gitrepo -n fleet-local <gitrepo-name> --type=merge \
   -p '{"spec":{"forceSyncGeneration":1}}'
 ----
 
-==== Commit 3 fails with `spec.selector: field is immutable`
+=== Commit 3 fails with `spec.selector: field is immutable`
 
 ----
 Deployment.apps "policy-reporter" is invalid: spec.selector: field is immutable
@@ -309,7 +309,7 @@ recreates them:
 kubectl delete deployment policy-reporter policy-reporter-ui -n kubewarden
 ----
 
-==== Deployed content doesn't match the pinned revision
+=== Deployed content doesn't match the pinned revision
 
 If the bundles' contents track the branch HEAD even though
 `status.commit` shows the pinned SHA, both `spec.branch` and

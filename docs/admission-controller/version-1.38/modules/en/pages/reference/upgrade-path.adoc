@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Upgrade path
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-07-28
 :page-revdate: {revdate}
 :description: Upgrade your {admc-name} stack using supported versioning strategies and compatibility rules among its components.
 :doc-persona: ["kubewarden-operator"]
@@ -68,7 +68,8 @@ versions in a single upgrade is *not* supported.
 The {admc-short-name} went over a migration, from v1.36 inclusive (3 Helm charts: `kubewarden-crds`,
 `kubewarden-controller`, `kubewarden-defaults`) to v1.37 onwards (1 Helm chart: `admission-controller`).
 
-Please see the xref:community-specific/howtos/chart-migration.adoc[migration how-to].
+Please see the
+xref:/community-specific/howtos/migration/app136-to-app137-migration.adoc[migration how-to].
 
 ====
 
