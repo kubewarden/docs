@@ -64,7 +64,7 @@ ifeval::["{build-type}" == "product"]
 :project-security-team: {product-project-name} Team
 :admcontroller-name: suse-sec-adm-controller
 :default-oci-registry: dp.apps.rancher.io
-:default-oci-admcontroller-container-namespace: containers/
+:default-oci-admcontroller-container-namespace: containers
 :default-policy-server-image: {default-oci-registry}/{default-oci-admcontroller-container-namespace}/kubewarden-policy-server
 :admc-chart-location: oci://dp.apps.rancher.io/charts/suse-security-admission-controller
 :admc-namespace: suse-sec-adm-controller
@@ -98,5 +98,3 @@ endif::[]
 :Wasmtime: xref:glossary.adoc#_wasmtime[Wasmtime]
 
 // Glossary terms end
-
-
