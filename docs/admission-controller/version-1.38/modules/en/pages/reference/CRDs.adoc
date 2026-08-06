@@ -17,8 +17,8 @@ You can find the definitions for the {admc-name} Custom Resources on this page.
 
 ////
 API REFERENCE GOES BELOW.
-From a file generated in the kubewarden/adm-controller repo
-in docs/crds.
+Synced automatically from a file generated in the kubewarden/adm-controller
+repo in docs/crds. Do not edit partials/crd-reference.adoc by hand.
 ////
 
-include::latest@shared:en:partial$CRD-docs-for-docs-repo-v1.36-forward.adoc[]
+include::partial$crd-reference.adoc[]

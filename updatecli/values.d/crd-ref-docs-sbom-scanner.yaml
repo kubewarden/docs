@@ -1,0 +1,11 @@
+---
+files:
+  - dst: docs/sbom-scanner/version-0.13/modules/en/partials/crd-reference.adoc
+scm:
+  branch: "main"
+pr:
+  title: "Update Kubewarden SBOMscanner CRD reference documentation"
+  description: "Automatically sync the CRD reference documentation from the kubewarden/sbomscanner repository"
+  labels:
+    - "kind/chore"
+    - "area/documentation"
