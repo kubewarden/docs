@@ -31,6 +31,20 @@ The configuration has 2 root keys:
 * `anyOf`: You must satisfy at least `anyOf.minimumMatches` of all listed
   verification information to accept a container image as signed.
 
+[#_minimummatches_warning]
+[WARNING]
+====
+
+`anyOf.minimumMatches` counts satisfied *entries in the
+`anyOf.signatures` list*, not distinct signers. If two entries can both be
+satisfied by the same signer (for example, the same key or certificate
+matched by two rules), that one signer counts toward `minimumMatches` twice.
+A resource can pass verification with only one real signer even if
+`minimumMatches` is set higher. Write each entry so it maps to an actual,
+independent signer.
+
+====
+
 These two root keys accept an array of keys of type `kind`. A full list of
 accepted keys based on different use cases is below:
 
@@ -169,6 +183,13 @@ field is `1`.
 
 For signature validation, you need to meet all the signature's requirements
 from `allOf` *and* the minimum number from `anyOf`.
+
+[WARNING]
+====
+
+The previous xref:#_minimummatches_warning[warning] about `minimumMatches`
+applies here as well
+====
 
 === Public key validation
 
