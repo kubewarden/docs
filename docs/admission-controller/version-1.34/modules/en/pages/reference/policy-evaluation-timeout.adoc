@@ -72,7 +72,7 @@ timeout.
 Starting with {short-project-name} v1.29.0, every {short-project-name} Policy can set its own
 timeout value via its `spec.timeoutEvalSeconds` attribute. This is not to be
 confused with `spec.timeoutSeconds`, used for the Webhook timeout (see section
-[below](#comparison-with-kubernetes-dynamic-admission-controller-timeout)).
+<<_comparison_with_kubernetes_dynamic_admission_controller_timeout,below>>).
 
 The `spec.timeoutEvalSeconds` is fine-grained, allowing per-Policy tuning of
 their evaluation timeout.
@@ -160,6 +160,7 @@ spec:
       value: "3"
 ----
 
+[#_comparison_with_kubernetes_dynamic_admission_controller_timeout]
 == Comparison with Kubernetes Dynamic Admission Controller timeout
 
 {short-project-name} is a https://en.wikipedia.org/wiki/Webhook[webhook] implementation of the https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/[Kubernetes Dynamic Admission Controller].

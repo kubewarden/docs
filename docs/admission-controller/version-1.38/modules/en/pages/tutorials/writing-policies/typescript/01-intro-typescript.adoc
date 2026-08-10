@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Writing policies in TypeScript/JavaScript
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-14
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Learn how to write effective {admc-name} validation policies using TypeScript/JavaScript.
 :keywords: kubewarden, kubernetes, writing policies in TypeScript, writing policies in JavaScript

@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Testing for cluster operators
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-14
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Test cluster operator policies with kwctl using different configurations and validation request objects to validate policy settings.
 :doc-persona: ["kubewarden-policy-developer"]

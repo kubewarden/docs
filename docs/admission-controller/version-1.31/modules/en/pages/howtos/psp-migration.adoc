@@ -10,7 +10,7 @@ include::partial$variables.adoc[]
 :current-version: {page-origin-branch}
 
 = {title}
-:revdate: 2025-11-17
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 
 For Kubernetes ≥ v1.25.

@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Contributing to {admc-short-name} documentation
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Contribute to {admc-name} documentation through improvements to existing content, creation of new topics, and assistance with translation.
 :doc-persona: ["kubewarden-developer", "kubewarden-operator", "kubewarden-manager"]

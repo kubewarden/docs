@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Policy communication specification
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Discover how to effectively use the {admc-name} policies through a well-defined API enabling seamless interaction and communication.
 :doc-persona: ["kubewarden-policy-developer"]

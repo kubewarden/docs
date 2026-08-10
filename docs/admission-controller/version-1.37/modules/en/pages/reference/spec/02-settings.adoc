@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Policy settings
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Configure policy settings using {admc-name}'s for validation and serialization of policy data.
 :doc-persona: ["kubewarden-policy-developer"]

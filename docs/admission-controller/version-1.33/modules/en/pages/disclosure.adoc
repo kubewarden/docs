@@ -14,8 +14,7 @@ include::partial$variables.adoc[]
 
 The {project-name} team appreciates investigative work on security vulnerabilities
 carried out by well-intentioned, ethical security researchers. {short-project-name}
-follows the practice of [responsible
-disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure) to best
+follows the practice of https://en.wikipedia.org/wiki/Responsible_disclosure[responsible disclosure] to best
 protect {short-project-name}'s user base from the impact of security issues. On
 {short-project-name}'s side, this means:
 
@@ -31,7 +30,7 @@ GitHub]. This mechanism allows maintainers to communicate privately with you,
 and you don't need to encrypt your messages.
 
 Alternatively, you can disclose it responsibly by emailing
-xref:mailto:cncf-kubewarden-maintainers@lists.cncf.io.adoc[cncf-kubewarden-maintainers@lists.cncf.io]
+mailto:cncf-kubewarden-maintainers@lists.cncf.io[cncf-kubewarden-maintainers@lists.cncf.io]
 in an *unencrypted* message. Please don't discuss potential vulnerabilities in
 public without validating with us first.
 

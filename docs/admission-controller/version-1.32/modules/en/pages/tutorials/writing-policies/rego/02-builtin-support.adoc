@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Builtin support
 :description: Determine which built-in functions are available for WebAssembly modules and understand their implementation and use in Rego policy development.
-:revdate: 2025-11-25
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :doc-persona: ["kubewarden-policy-developer"]
 :doc-topic: ["writing-policies", "rego", "built-in-support"]

@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Defining policy settings
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Define and implement effective policy settings structures through {admc-name} policies in src/types.ts and src/index.ts files.
 :keywords: "{admc-name}", kubewarden, kubernetes, defining policy settings, TypeScript

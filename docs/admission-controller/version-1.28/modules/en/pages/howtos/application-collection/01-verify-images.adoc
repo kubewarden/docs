@@ -155,7 +155,7 @@ EOF
 
 To test it, deploy a Pod with a signed image from Application Collection:
 
- $ kubectl run nginx --image [dp.apps.rancher.io/containers/nginx:1.24.0](http://dp.apps.rancher.io/containers/nginx:1.24.0) --overrides='{"spec": {"imagePullSecrets":[{"name": "application-collection"}]}}'
+ $ kubectl run nginx --image dp.apps.rancher.io/containers/nginx:1.24.0 --overrides='{"spec": {"imagePullSecrets":[{"name": "application-collection"}]}}'
  pod/nginx created
 
 You can inspect the logs of your policy-server Pod to see that the verification

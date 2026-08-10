@@ -193,6 +193,7 @@ touch policy.wasm # opa creates the bundle with unix epoch timestamp, fix it
 There is more information on how to build Gatekeeper policies in our
 xref:/tutorials/writing-policies/rego/gatekeeper/03-build-and-run.adoc[tutorial].
 
+[#_rego_policy_code_and_opa_v1_0_0_compatibility]
 === Rego Policy code and OPA v1.0.0 compatibility
 
 With the release of OPA (Open Policy Agent)

@@ -2,7 +2,7 @@
 
 include::partial$variables.adoc[]
 = kwctl CLI
-:revdate: 2025-11-17
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :title: kwctl CLI
 :description: kwctl CLI reference documentation

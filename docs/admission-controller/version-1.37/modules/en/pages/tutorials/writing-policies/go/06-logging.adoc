@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Logging
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Configure logger initialization for structured logging in your policy using the oneLog project's Go SDK integration.
 :doc-persona: ["kubewarden-policy-developer"]

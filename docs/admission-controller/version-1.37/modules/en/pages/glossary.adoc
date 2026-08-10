@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Glossary
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Explore key resources and configurations related to {admc-name} policies in Kubernetes environments for more information.
 :doc-persona: ["kubewarden-all"]

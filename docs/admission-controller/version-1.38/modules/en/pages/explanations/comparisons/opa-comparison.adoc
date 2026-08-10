@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {admc-name} vs OPA Gatekeeper
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-14
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :page-aliases: explanations/opa-comparison.adoc
 :description: Compare OPA Gatekeeper and {admc-name} policy management for Kubernetes environments to determine the best approach for your use case.

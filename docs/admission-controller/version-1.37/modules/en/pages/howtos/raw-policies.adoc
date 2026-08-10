@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Raw policies
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-14
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Configure raw policies as a generic policy evaluation engine using {admc-name}.
 :doc-persona: ["kubewarden-distributor", "kubewarden-integrator", "kubewarden-operator", "kubewarden-policy-developer"]

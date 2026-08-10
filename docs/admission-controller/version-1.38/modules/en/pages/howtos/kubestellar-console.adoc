@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Installing {admc-name} with KubeStellar Console
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :sidebar_label: KubeStellar Console
 :sidebar_position: 150

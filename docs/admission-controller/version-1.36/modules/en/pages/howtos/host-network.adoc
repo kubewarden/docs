@@ -68,10 +68,10 @@ instance:
 `spec.webhookPort` and `spec.readinessProbePort` are the fields that directly
 help with host-port conflicts for two main reasons:
 
-1. *Running multiple PolicyServers on the same node.* By assigning different
+. *Running multiple PolicyServers on the same node.* By assigning different
    ports to each PolicyServer, you can schedule them on the same node without
    port conflicts.
-2. *Avoiding conflicts with other host services.* If another service on the
+. *Avoiding conflicts with other host services.* If another service on the
    node already uses a default port, you can change the PolicyServer port to
    avoid the collision.
 

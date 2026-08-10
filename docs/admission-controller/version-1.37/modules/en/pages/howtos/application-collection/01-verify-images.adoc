@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Verify Rancher Application Collection images
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Configure PolicyServers to authenticate with and pull images from Rancher Application Collection using a Docker Config Secret.
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
@@ -161,7 +161,7 @@ To test it, deploy a Pod with a signed image from Application Collection:
 
 [subs="+attributes",console]
 ----
-$ kubectl run nginx --image [dp.apps.rancher.io/containers/nginx:1.24.0](http://dp.apps.rancher.io/containers/nginx:1.24.0) --overrides='{"spec": {"imagePullSecrets":[{"name": "application-collection"}]}}'
+$ kubectl run nginx --image dp.apps.rancher.io/containers/nginx:1.24.0 --overrides='{"spec": {"imagePullSecrets":[{"name": "application-collection"}]}}'
  pod/nginx created
 ----
 

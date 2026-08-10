@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = What is {admc-name}?
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Learn about {admc-name}'s role in Kubernetes policy management, which includes enforcing compliance and optimizing resources.
 :doc-persona: ["kubewarden-all"]
@@ -93,6 +93,7 @@ https://github.com/opencontainers/artifacts[OCI artifacts].
 
 ifeval::["{build-type}" == "community"]
 
+[#_vendor_neutrality]
 == Vendor neutrality
 
 {admc-short-name} is a

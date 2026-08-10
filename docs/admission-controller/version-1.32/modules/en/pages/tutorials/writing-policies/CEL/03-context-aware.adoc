@@ -62,12 +62,11 @@ spec:
 ----
 
 Now, we need to write the CEL code that will fetch the existing Ingresses in
-the cluster. For that, we use the [{short-project-name} CEL extension
-library](https://github.com/kubewarden/cel-policy?tab=readme-ov-file#host-capabilities).
+the cluster. For that, we use the https://github.com/kubewarden/cel-policy?tab=readme-ov-file#host-capabilities[{short-project-name} CEL extension library].
 Particularly, the `kw.k8s` host capabilities, which allows us to query the
 cluster for GroupVersionKinds. You can see the available docs for the CEL
 functions
-[here](https://pkg.go.dev/github.com/kubewarden/cel-policy/internal/cel/library).
+https://pkg.go.dev/github.com/kubewarden/cel-policy/internal/cel/library[here].
 
 The library uses a builder pattern just as the upstream Kubernetes CEL
 extensions; calling a CEL function method returns a CEL object which on its own
