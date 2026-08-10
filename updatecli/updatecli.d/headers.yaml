@@ -24,6 +24,20 @@ scms:
 
 sources:
 # {{ range $index, $file := .files }}
+  # Read the ":revdate:" currently committed in the documentation repository so
+  # the header rebuilt below is byte identical when the CLI reference did not
+  # change. Otherwise every run would produce a revdate only diff and open a
+  # pointless pull request. The "revdate" target bumps the date afterwards, but
+  # only when the "commit" target really changed the file.
+  # Note: this source fails if the file has no ":revdate:" line.
+  currentRevdate{{ $index }}:
+    kind: file
+    scmid: target
+    spec:
+      file: {{ $file.path }}
+      matchpattern: '(?m)^:revdate: .*$'
+    transformers:
+      - trimprefix: ":revdate: "
   file{{ $index }}:
     kind: file
     transformers:
@@ -31,7 +45,7 @@ sources:
           include::partial$variables.adoc[]
           = {{ $file.title }}
           :page-languages: [en, de, es, fr, ja, pt, zh]
-          :revdate: {{ now | date "2006-01-02" }}
+          :revdate: {{ source (printf "currentRevdate%d" $index) }}
           :page-revdate: {revdate}
           :title: {{ $file.title }}
           :description: {{ $file.description }}
@@ -53,6 +67,19 @@ targets:
     spec:
       file: "{{ $file.path }}"
       forcecreate: true
+  # Bump the revision date only when the target above really changed the file.
+  revdate{{ $index }}:
+    name: "bumps the revdate of {{ $file.path }}"
+    kind: file
+    scmid: target
+    disablesourceinput: true
+    dependson:
+      - "target#commit{{ $index }}"
+    dependsonchange: true
+    spec:
+      file: "{{ $file.path }}"
+      matchpattern: '(?m)^:revdate: .*$'
+      replacepattern: ':revdate: {{ now | date "2006-01-02" }}'
 # {{ end }}
 
 actions:
