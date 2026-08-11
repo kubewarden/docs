@@ -93,6 +93,7 @@ https://github.com/opencontainers/artifacts[OCI artifacts].
 
 ifeval::["{build-type}" == "community"]
 
+[#_vendor_neutrality]
 == Vendor neutrality
 
 {admc-short-name} is a

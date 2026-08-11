@@ -7,7 +7,7 @@ include::partial$variables.adoc[]
 :doc-type: [reference]
 :doc-topic: [operator-manual, artifacts, registry, images]
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-14
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 
 = {title}

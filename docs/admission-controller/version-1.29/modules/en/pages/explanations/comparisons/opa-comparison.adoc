@@ -79,6 +79,7 @@ Both OPA Gatekeeper and Kubernetes can write validation and mutation policies.
 These policies can target any kind of Kubernetes resource, including Custom
 Resources.
 
+[#_writing_policies]
 == Writing policies
 
 You write OPA Gatekeeper policies using
@@ -117,6 +118,7 @@ xref:/tutorials/writing-policies/rego/01-intro-rego.adoc[here].
 ====
 
 
+[#_context_aware]
 == Context aware
 
 Sometimes a policy needs data about the current state of the cluster to make a
@@ -141,6 +143,7 @@ Each policy has access only to the resources that the Kubernetes administrator
 specifies. Attempting to read unauthorized data is immediately blocked and
 reported to the cluster administrators.
 
+[#_kubernetes_integration]
 == Kubernetes integration
 
 OPA Gatekeeper has a cluster wide Custom Resource, permitting policy
@@ -157,6 +160,7 @@ manage `AdmissionPolicy` resources, in the namespaces they can access.
 
 This allows Kubernetes administrators to delegate policy-related work.
 
+[#_policy_distribution]
 == Policy distribution
 
 OPA Gatekeeper and Kubewarden policies have policy source code (Rego for OPA
@@ -174,6 +178,7 @@ You can distribute Kubewarden policies among geographically distributed
 container registries using the traditional tools and processes adopted for
 container images.
 
+[#_cicd_integration]
 == CI/CD integration
 
 Both OPA Gatekeeper and Kubewarden are managed using GitOps methodologies.
@@ -220,6 +225,7 @@ operation modes:
 * `deny`: violation of a policy rejects the request
 * `warn`: violation of a policy doesn't cause rejection and is logged
 
+[#_deployment_mode]
 == Deployment mode
 
 The same server evaluates all the OPA Gatekeeper policies. Conversely,
@@ -244,6 +250,7 @@ This allows interesting scenarios like the following ones:
 * Deploy critical policies to a dedicated Policy Server pool.
 * Deploy the policies of a noisy tenant to a dedicated Policy Server pool.
 
+[#_background_checks]
 == Background checks
 
 As policies are added, removed, and reconfigured the resources already in the

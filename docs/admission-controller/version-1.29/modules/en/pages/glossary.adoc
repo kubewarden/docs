@@ -13,6 +13,7 @@ include::partial$variables.adoc[]
 
 == A
 
+[#_admissionpolicy]
 === AdmissionPolicy
 
 A namespace-wide resource. The policy processes only those requests targeting
@@ -20,23 +21,27 @@ the namespace in which the AdmissionPolicy is defined.
 
 == C
 
+[#_clusteradmissionpolicy]
 === ClusterAdmissionPolicy
 
 An <<_admissionpolicy,AdmissionPolicy>> which targets cluster-wide resources.
 
+[#_clusterreport]
 === ClusterPolicyReport
 
-A <<_policyreport,PolicyReport>> and a ClusterPolicyReport store results of
+A <<_report,PolicyReport>> and a ClusterPolicyReport store results of
 policy scans. Which one is used, depends on the scope of the resource.
 
 == K
 
+[#_kwctl]
 === kwctl
 
 A CLI tool to generate and test Kubernetes YAML files for policy deployment.
 
 == M
 
+[#_mutatingwebhookconfiguration]
 === MutatingWebhookConfiguration
 
 A
@@ -47,18 +52,20 @@ this is how a {short-project-name} controller informs Kubernetes where to find a
 
 == P
 
+[#_report]
 === PolicyReport
 
-A PolicyReport and a <<_clusterpolicyreport,ClusterPolicyReport>> store results of
+A PolicyReport and a <<_clusterreport,ClusterPolicyReport>> store results of
 policy scans. Which one is used depends on the scope of the resource.
 
-[#_policy_server]
+[#_policyserver]
 === PolicyServer
 
 A PolicyServer validates incoming requests by executing {short-project-name} policies against requests.
 
 == V
 
+[#_validatingwebhookconfiguration]
 === ValidatingWebhookConfiguration
 
 A
@@ -68,19 +75,23 @@ In other words, this is how {short-project-name} informs Kubernetes where to fin
 
 == W
 
+[#_wapc]
 === waPC
 
 WebAssembly Procedure Calls. https://wapc.io.
 
+[#_wasi]
 === WASI
 
 WebAssembly System Interface. https://wasi.dev.
 
+[#_wasm]
 === Wasm
 
 A binary instruction format for a stack-based virtual machine. Designed for web
 deployment. https://webassembly.org.
 
+[#_wasmtime]
 === Wasmtime
 
 A runtime for WebAssembly. https://wasmtime.dev.

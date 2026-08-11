@@ -39,6 +39,7 @@ key-value attributes are added to the metric to provide additional information.
 | <<_kubewarden_policy_evaluations_total,Baggage>>
 |===
 
+[#_kubewarden_policy_evaluations_total]
 ==== `kubewarden_policy_evaluations_total`
 
 ===== Baggage

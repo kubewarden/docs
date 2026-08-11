@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Creating a new validation policy
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Create a new validation policy to reject invalid hostnames in Pod objects through configuration of policy settings, tested with provided tools.
 :keywords: {admc-name}, kubewarden, kubernetes, writing policies in TypeScript, new validation policy

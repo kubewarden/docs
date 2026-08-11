@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Configuring the {admc-name} stack for production
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Configure tolerations and affinity rules for optimal scheduling and reliability within the {admc-name} stack in a Kubernetes cluster.
 :keywords: ["{admc-name}", kubewarden, kubernetes, policyservers, production, poddisruptionbudget, affinity, limits, tolerations, priorityclass]

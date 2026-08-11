@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Migrating Gatekeeper Policies to {admc-name}
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-14
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Configure a {admc-name} policy by migrating an existing Gatekeeper policy through two main steps: compiling Rego code into WebAssembly.
 :keywords: ["{admc-name}", kubewarden, gatekeeper]

@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Emergency disable
 :description: Learn how to disable the {project-name} in emergency situations, stopping and deleting related configurations, and then restore.
-:revdate: 2025-11-25
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :sidebar_label: Emergency disable
 :sidebar_position: 31

@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = OCI registry support for {admc-short-name}
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-14
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Distribute {admc-name} policies as OCI artifacts via regular Open Container Initiative (OCI) registries.
 :doc-persona: ["kubewarden-all"]

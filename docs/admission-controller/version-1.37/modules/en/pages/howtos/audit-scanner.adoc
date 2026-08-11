@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Audit Scanner
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Verify the compliance state of your clusters using the Audit Scanner feature within {admc-name}, to ensure their proper configuration.
 :doc-persona: ["kubewarden-operator", "kubewarden-distributor", "kubewarden-integrator"]
@@ -51,7 +51,7 @@ The audit scanner is enabled by default. To disable it, set the
 [NOTE]
 ====
 With Kubewarden 1.33, the Audit Scanner feature saves the reports
-into OpenReports CRDs from [openreports.io](https://openreports.io) by default.
+into OpenReports CRDs from https://openreports.io[openreports.io] by default.
 
 The
 link:https://htmlpreview.github.io/?https://github.com/kubernetes-sigs/wg-policy-prototypes/blob/045372e558b896695b2daae92e8c7a04d4d40282/policy-report/docs/index.html[PolicyReport]

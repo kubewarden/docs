@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Introduction to Open Policy Agent
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Learn how the Open Policy Agent uses the Rego language to write policies that evaluate and produce outputs for secure decision-making.
 :doc-persona: ["kubewarden-policy-developer"]

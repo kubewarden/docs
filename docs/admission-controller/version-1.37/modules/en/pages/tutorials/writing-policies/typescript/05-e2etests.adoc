@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = End-to-end testing
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Learn how to write and run comprehensive end-to-end tests for policy behavior using BATS and kwctl.
 :keywords: "{admc-name}", kubewarden, kubernetes, testing policies, typescript, e2e testing

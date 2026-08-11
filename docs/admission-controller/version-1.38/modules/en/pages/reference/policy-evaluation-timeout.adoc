@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Policy evaluation timeout protection
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-14
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Configure policy evaluation timeouts to ensure timely completion and prevent resource exhaustion with the Policy Server's built-in protection feature.
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
@@ -73,7 +73,7 @@ timeout.
 Starting with {admc-short-name} v1.29.0, every {admc-short-name} Policy can set its own
 timeout value via its `spec.timeoutEvalSeconds` attribute. This is not to be
 confused with `spec.timeoutSeconds`, used for the Webhook timeout (see section
-#comparison-with-kubernetes-dynamic-admission-controller-timeout[below]).
+<<_comparison_with_kubernetes_dynamic_admission_controller_timeout,below>>).
 
 The `spec.timeoutEvalSeconds` is fine-grained, allowing per-Policy tuning of
 their evaluation timeout.
@@ -161,6 +161,7 @@ spec:
       value: "3"
 ----
 
+[#_comparison_with_kubernetes_dynamic_admission_controller_timeout]
 == Comparison with Kubernetes Dynamic Admission Controller timeout
 
 {admc-short-name} is a https://en.wikipedia.org/wiki/Webhook[webhook] implementation of the https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/[Kubernetes Dynamic Admission Controller].

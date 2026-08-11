@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {admc-name} architecture
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-14
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Discover how {admc-name} uses core Kubernetes features to integrate seamlessly into your cluster.
 :doc-persona: ["kubewarden-all"]

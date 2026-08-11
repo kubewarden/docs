@@ -54,17 +54,17 @@ endif::[]
 
 :cluster-admission-policy: xref:glossary.adoc#_clusteradmissionpolicy[ClusterAdmissionPolicy]
 
-:cluster-policy-report: xref:glossary.adoc#_clusterpolicyreport[ClusterPolicyReport]
+:cluster-policy-report: xref:glossary.adoc#_clusterreport[ClusterPolicyReport]
 
 :kwctl: xref:glossary.adoc#_kwctl[kwctl]
 
 :mutating-webhook-configuration: xref:glossary.adoc#_mutatingwebhookconfiguration[MutatingWebhookConfiguration]
 
-:policy-report: xref:glossary.adoc#_policyreport[PolicyReport]
+:policy-report: xref:glossary.adoc#_report[PolicyReport]
 
 :policy-server: xref:glossary.adoc#_policyserver[PolicyServer]
 
-:validating-webhook-configuration: xref:glossary.adoc#_walidatingwebhookconfiguration[ValidatingWebhookConfiguration]
+:validating-webhook-configuration: xref:glossary.adoc#_validatingwebhookconfiguration[ValidatingWebhookConfiguration]
 
 :waPC: xref:glossary.adoc#_wapc[waPC]
 

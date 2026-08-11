@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Builtin support
-:revdate: 2025-11-17
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: The {project-name} provided support for executing wasm binaries.
 :doc-persona: ["kubewarden-policy-developer"]

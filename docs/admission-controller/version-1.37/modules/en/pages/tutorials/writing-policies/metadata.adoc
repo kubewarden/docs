@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Policy metadata
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Configure policy metadata in the metadata.yaml file to define policy settings, author information, and resource permissions.
 :doc-persona: ["kubewarden-policy-developer"]

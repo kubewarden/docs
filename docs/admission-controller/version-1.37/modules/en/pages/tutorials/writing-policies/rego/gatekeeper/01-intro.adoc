@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Gatekeeper support
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Access central gatekeeper policies and learn how to integrate them with Kubernetes admission controllers.
 :doc-persona: ["kubewarden-policy-developer"]

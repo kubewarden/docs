@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Metrics reference
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Explore cluster metrics and patterns with {admc-name}'s exposed platform metrics to inform decision-making processes.
 :doc-persona: ["kubewarden-user", "kubewarden-operator", "kubewarden-integrator"]
@@ -39,6 +39,7 @@ key-value attributes are added to the metric to provide additional information.
 | <<_kubewarden_policy_evaluations_total,Baggage>>
 |===
 
+[#_kubewarden_policy_evaluations_total]
 ==== `kubewarden_policy_evaluations_total`
 
 ===== Baggage

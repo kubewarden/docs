@@ -2,7 +2,7 @@
 
 include::partial$variables.adoc[]
 = kwctl CLI
-:revdate: 2026-03-18
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :title: kwctl CLI
 :description: Explore the `kwctl` command-line tool to manage {project-name} policies and perform tasks like loading policies.

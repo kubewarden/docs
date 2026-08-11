@@ -18,8 +18,8 @@ include::partial$variables.adoc[]
 
 This how-to explains how cluster operators can enforce that promise by:
 
-1. Restricting which host capabilities PolicyServers expose to namespaced policies.
-2. Controlling which PolicyServer a namespaced policy runs on, using the
+. Restricting which host capabilities PolicyServers expose to namespaced policies.
+. Controlling which PolicyServer a namespaced policy runs on, using the
    `ns-policyserver-mapper` policy.
 
 [WARNING]
@@ -189,11 +189,11 @@ The `ns-policyserver-mapper` policy is a mutating `ClusterAdmissionPolicy` that
 intercepts `CREATE` and `UPDATE` requests for `AdmissionPolicy` and
 `AdmissionPolicyGroup` resources. It:
 
-1. Reads the `admission.kubewarden.io/policy-server` label from the `Namespace`
+. Reads the `admission.kubewarden.io/policy-server` label from the `Namespace`
    in which the policy is being deployed.
-2. Mutates the policy's `spec.policyServer` field to the value of that label,
+. Mutates the policy's `spec.policyServer` field to the value of that label,
    overriding whatever the user specified.
-3. *Rejects* the request if the Namespace does not have the label, preventing
+. *Rejects* the request if the Namespace does not have the label, preventing
    policies from being silently scheduled on an unintended PolicyServer.
 
 === Labeling Namespaces

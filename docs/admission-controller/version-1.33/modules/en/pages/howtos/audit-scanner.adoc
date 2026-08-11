@@ -51,7 +51,7 @@ helm install kubewarden-crds kubewarden/kubewarden-crds
 [NOTE]
 ====
 With Kubewarden 1.33, the Audit Scanner feature saves the reports
-into OpenReports CRDs from [openreports.io](https://openreports.io) by default.
+into OpenReports CRDs from https://openreports.io[openreports.io] by default.
 
 The
 link:https://htmlpreview.github.io/?https://github.com/kubernetes-sigs/wg-policy-prototypes/blob/045372e558b896695b2daae92e8c7a04d4d40282/policy-report/docs/index.html[PolicyReport]

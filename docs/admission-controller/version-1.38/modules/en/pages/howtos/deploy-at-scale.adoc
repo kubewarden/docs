@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = {admc-name} in a Large-Scale Environment
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Configure {admc-name}s with {admc-name} to ensure high availability and performance in demanding large-scale environments.
 :keywords: [kubewarden, "{admc-name}", kubernetes, policyservers, production]

@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Writing {admc-name} policies
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: Develop admission controller policies by exposing well-defined functionalities via a specific API using any supported programming language.
 :doc-persona: ["kubewarden-policy-developer"]

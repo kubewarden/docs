@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Rancher UI extension quickstart
-:revdate: 2025-07-09
+:revdate: 2026-06-18
 :page-revdate: {revdate}
 :description: UI extension quickstart for {project-name}.
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
