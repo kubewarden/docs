@@ -406,19 +406,19 @@ You can use this `verification_config.yml` to create the `ConfigMap`.
 
 [subs="+attributes",console]
 ----
-$ kubectl create configmap my-signatures-configuration --from-file==verification_config.yaml
+$ kubectl create configmap -n {admc-namespace}  my-signatures-configuration --from-file=verification_config.yaml
 configmap/my-signatures-configuration created
 ----
 
 Then we can inspect with `get configmap`.
 
-.kubectl get configmap
+.kubectl get configmap -n {admc-namespace}
 [%collapsible]
 ======
 
 [subs="+attributes",console]
 ----
-$ kubectl get configmap -o yaml my-signatures-configuration
+$ kubectl get configmap -n {admc-namespace} -o yaml my-signatures-configuration
 apiVersion: v1
 data:
   verification-config: |+
@@ -465,7 +465,7 @@ metadata:
   finalizers:
     - kubewarden
 spec:
-  image: image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
+  image: {default-policy-server-image-tag}
   serviceAccountName: policy-server
   replicas: 1
 //highlight-next-l
