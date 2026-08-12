@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   cli-ref-docs:
-    name: Update CLI Reference Docs
+    name: Update Reference Docs
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:

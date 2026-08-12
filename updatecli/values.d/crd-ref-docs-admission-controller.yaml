@@ -1,4 +1,5 @@
 ---
+name: "Updates admission controller CRD reference documentation files"
 files:
   - dst: docs/admission-controller/version-1.38/modules/en/partials/crd-reference.adoc
 scm:

@@ -1,0 +1,13 @@
+---
+name: "Updates CLI reference documentation files"
+files:
+  - dst: docs/admission-controller/version-1.38/modules/en/partials/kwctl-cli-reference.adoc
+  - dst: docs/admission-controller/version-1.38/modules/en/partials/policy-server-cli-reference.adoc
+scm:
+  branch: "main"
+pr:
+  title: "Update CLI Reference Docs"
+  description: "Update all the CLI reference documentation"
+  labels:
+    - "kind/chore"
+    - "area/documentation"
