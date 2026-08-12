@@ -12,8 +12,6 @@ This guide will walk you through the following steps:
 * Deploying the {sboms-name} stack in a Kubernetes cluster
 * Running an automated image scan using a `Registry` custom resource
 
-'''''
-
 [#requirements]
 == Requirements
 
