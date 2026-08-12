@@ -14,6 +14,18 @@ include::partial$variables.adoc[]
 *** xref:user-guide/mcp-server.adoc[MCP Server]
 // * Explanations
 * Howtos
+** Using the UI extension
+*** xref:ui-extension/dashboard.adoc[Dashboard]
+*** xref:ui-extension/registry-list.adoc[Registry List]
+*** xref:ui-extension/registry-create-edit.adoc[Creating and Editing a Registry]
+*** xref:ui-extension/registry-detail.adoc[Registry Detail]
+*** xref:ui-extension/workload-scan-configuration.adoc[Workload Scan Configuration]
+*** xref:ui-extension/workload-scan-registries.adoc[Workload Scan Registries]
+*** xref:ui-extension/image-list.adoc[Image List]
+*** xref:ui-extension/image-detail.adoc[Image Detail]
+*** xref:ui-extension/cve-detail.adoc[CVE Detail]
+*** xref:ui-extension/workload-interaction.adoc[Workload Interaction]
+*** xref:ui-extension/vex-management.adoc[VEX Management]
 ** xref:installation/uninstall.adoc[Uninstall]
 ** xref:installation/helm-values.adoc[Helm Values]
 ** xref:troubleshooting/collecting-logs.adoc[Collecting Logs]

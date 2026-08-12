@@ -1,0 +1,70 @@
+include::partial$variables.adoc[]
+
+= Creating and Editing a Registry
+:revdate: 2026-08-12
+:page-revdate: {revdate}
+:description: Configure a registry for scanning from the {sboms-name} UI extension.
+
+The registry configuration form is used both to create a new registry and to edit an existing one.
+
+For the equivalent CRD-based workflow, see xref:user-guide/scanning-registries.adoc[].
+
+== Configuration fields
+
+Namespace::
+A registry is a namespaced resource, so you must choose the namespace it belongs to.
+
+Registry::
+A unique name for the registry.
+
+Description::
+A short description of the resource.
+
+Type::
+The registry type. OCI distribution is supported by default.
+
+URI::
+The URL of the registry.
+
+CA Cert Bundle::
+A certificate used to connect to a secured registry on an internal network. This is typically needed for an air-gapped registry.
+
+Allow insecure connections::
+Skips SSL/TLS verification. Use this only for testing against a trusted internal registry.
+
+Authentication::
+The secret holding the credentials used to authenticate against the registry.
+Select an existing secret from the dropdown, or follow the `Create secret` link to create a new one. See <<Creating a registry secret>>.
+
+Repositories to scan::
+The repositories to include in the scan. Add each one as a tag in the tag input box.
+
+Scan Interval::
+How often a scan runs. Set this to `Manual` if you don't want a periodic scan.
+
+Filter by Platform::
+Limits the scope of the scan. You can add several platform filters, each identified by an operating system, architecture, and variant.
+
+image::ui-registry-edit.png[Registry configuration form]
+
+== Creating a registry secret
+
+On the registry configuration page, use the link in the banner to create a new secret, or choose an existing secret from the dropdown.
+
+When you create a new secret, the link opens the secret page in a new browser tab, using the same {rancher-short-name} session. Create the secret from that page.
+
+. Select the `Registry` badge to create a registry secret.
++
+image::ui-registry-secret-1.png[Selecting the registry secret type]
+
+. Choose DockerHub and enter the username and password.
++
+image::ui-registry-secret-2.png[Entering registry credentials]
+
+. After you save the secret, it appears in the secret list.
++
+image::ui-registry-secret-3.png[The new secret in the secret list]
+
+. Return to the original tab and open the `Authentication` dropdown to select the secret you just created.
++
+image::ui-registry-save.png[Selecting the new secret and saving the registry]

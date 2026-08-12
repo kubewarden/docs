@@ -1,0 +1,118 @@
+include::partial$variables.adoc[]
+
+= Image Detail
+:revdate: 2026-08-12
+:page-revdate: {revdate}
+:description: Review image metadata, severity charts, and vulnerability lists in the {sboms-name} UI extension.
+
+The image detail page shows the metadata of a single image, together with the vulnerabilities found in it.
+
+== Registry image
+
+=== Metadata
+
+Vulnerabilities::
+The number of vulnerabilities found in the image.
+
+Repository::
+The repository the image belongs to.
+
+Registry::
+The registry the image belongs to.
+
+Architecture::
+The architecture the image was built for, such as `amd64` or `arm64`.
+
+Operating system::
+The operating system the image was built for, such as Linux or Windows.
+
+Created::
+The timestamp of when the image was created.
+
+Image ID::
+The SHA that identifies the image.
+
+Layers::
+The number of layers in the image.
+
+=== Charts
+
+Top 5 severe affecting vulnerabilities::
+A summary of the most severe vulnerabilities affecting the image.
+
+Severity distribution::
+The distribution of vulnerabilities by severity.
+Selecting a severity value also applies that value as a filter on the `Severity` column of the vulnerability table.
+
+=== Vulnerability list
+
+CVE ID::
+Links to the xref:ui-extension/cve-detail.adoc[CVE detail page].
+
+Score::
+The most severe score across all sources, shown in a badge coloured by severity. The CVSS version is shown as well.
+
+Package::
+The vulnerable package the CVE applies to.
+
+Fix available::
+Whether a fixed version is available for the CVE and, if so, the version number.
+
+Severity::
+The severity calculated by the backend.
+
+Exploitability::
+Whether the CVE is suppressed by VEX, for example `Affecting` or `Suppressed`. See xref:ui-extension/vex-management.adoc[].
+
+Package version::
+The version of the affected package.
+
+Package path::
+The absolute path of the package within the image.
+
+image::ui-image-detail.png[Registry image detail]
+
+=== Layer-based vulnerability list
+
+Layer::
+A summary of the command that created the layer.
+
+Vulnerabilities::
+Bars showing the number of vulnerabilities in the layer, by severity.
+
+Updated::
+The timestamp of when the layer was last updated.
+
+The sub-table is the same as the vulnerability list described above.
+
+image::ui-image-detail-grouped.png[Layer-based vulnerability list]
+
+== Workload image
+
+For an image used by a workload, the same vulnerability information is shown.
+
+image::ui-workload-image-detail-vulnerabilities.png[Workload image vulnerabilities]
+
+A `Workloads` tab lists the workloads referencing the image.
+
+Workload::
+The workload using the image. Links to the corresponding workload detail page.
+
+Type::
+The workload type, such as `CronJob`, `Deployment`, `DaemonSet`, `StatefulSet`, `Job`, or `ReplicaSet`.
+
+Namespace::
+The namespace the workload belongs to. Links to the corresponding namespace detail page.
+
+Images used::
+The number of images used by the workload.
+Links to the `Vulnerabilities` tab of the workload detail page, opening the `Images` sub-tab.
+
+Affecting CVEs::
+The number of CVEs affecting the workload.
+Links to the `Vulnerabilities` tab of the workload detail page, opening the `Affecting CVEs` sub-tab.
+
+Severity distribution::
+The number of vulnerabilities in the workload, distributed by severity.
+
+image::ui-workload-image-detail-workloads.png[Workload reference table]

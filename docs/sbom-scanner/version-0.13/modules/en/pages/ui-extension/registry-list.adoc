@@ -1,0 +1,61 @@
+include::partial$variables.adoc[]
+
+= Registry List
+:revdate: 2026-08-12
+:page-revdate: {revdate}
+:description: Review configured registries, start scans, and follow scan progress in the {sboms-name} UI extension.
+
+The registry configuration list shows every configured registry, with per-column filters.
+
+== List columns
+
+Registry::
+The registry name. Links to the xref:ui-extension/registry-detail.adoc[registry detail page].
+
+Namespace::
+The namespace the registry belongs to. Links to the namespace list page in {rancher-short-name}.
+
+Status::
+One of the following:
++
+--
+* `Pending` -- the registry is created but no scan has started.
+* `Scheduled` -- a scan has just been started and the backend hasn't yet reported `In process`.
+* `In process` -- the backend has reported `In process`, along with the images it detected.
+* `Complete` -- all detected images have been scanned and the backend has reported `Complete`.
+* `Failed` -- some or all of the detected images failed to scan and the backend has reported `Error`.
+--
+
+Progress::
+The percentage of the scan that's complete, calculated by dividing the number of scanned images by the number of detected images.
+Follow the percentage link to see the figures the percentage is calculated from.
+If the scan failed, an `Error` link is also shown; hover over it to see the error message.
+
+Previous scan::
+The status, progress, and errors of the previous scan.
+
+image::ui-registry-list.png[Registry list]
+
+== Scanning selected registries
+
+To scan several registries at once, select them in the table and choose `Start scan` above the table.
+To scan a single registry, choose `Start scan` from the row action menu.
+
+image::ui-registry-start-scan.png[Starting a registry scan]
+
+== Scan progress and status charts
+
+While a scan is running, progress and status charts are displayed above the table.
+The chart on the left shows the five most recent scans, and the chart on the right lets you review and filter by status.
+Selecting a status label in the chart applies the matching filter to the `Status` column.
+
+The charts refresh every 20 seconds.
+
+image::ui-registry-scan-in-progress.png[Registry scan in progress]
+
+== Completed scans
+
+When a scan finishes, the backend reports either a complete or a failed result, and the status badge is set accordingly.
+For a failed scan, hover over the `Error` link to see the error message.
+
+image::ui-registry-scan-complete.png[Completed registry scan]

@@ -1,0 +1,36 @@
+include::partial$variables.adoc[]
+
+= VEX Management
+:revdate: 2026-08-12
+:page-revdate: {revdate}
+:description: Manage VEX hubs and review suppressed CVEs in the {sboms-name} UI extension.
+
+VEX hubs let {sboms-name} suppress vulnerabilities that are known not to be exploitable.
+For background on VEX and the `VEXHub` resource, see xref:user-guide/vex.adoc[].
+
+== VEX hub list
+
+The list shows each VEX hub with its name, URL, and whether it's enabled.
+Toggle the enablement to apply or stop applying a hub.
+Deletion is enabled when the VEX hub is enabled.
+
+image::ui-vex-list.png[VEX hub list]
+
+== Creating and editing a VEX hub
+
+Create or edit a VEX hub by entering its name and URL.
+You can set the enablement before creating it.
+
+image::ui-vex-edit.png[Editing a VEX hub]
+
+== VEX hub detail
+
+The detail page shows the fields of the VEX hub.
+
+image::ui-vex-detail.png[VEX hub detail]
+
+== Suppressed CVEs
+
+When a VEX hub is applied, the scan results mark the affected vulnerabilities as `Suppressed`.
+
+image::ui-vex-suppressed-cves.png[Suppressed CVEs in the scan results]

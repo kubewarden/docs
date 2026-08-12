@@ -1,0 +1,36 @@
+include::partial$variables.adoc[]
+
+= Dashboard
+:revdate: 2026-08-12
+:page-revdate: {revdate}
+:description: Review {sboms-name} scanning statistics from the UI extension dashboard.
+
+The main menu entry for the {sboms-name} UI extension opens the dashboard.
+Use the registry filter to restrict the view to the scanning statistics of a single registry.
+
+== Initial view
+
+Before you configure a registry, the dashboard has no data to display.
+It shows a button that takes you to the registry configuration page, where you can create your first registry.
+
+image::ui-dashboard-empty.png[Empty dashboard]
+
+== Scanning statistics
+
+Once at least one scan has completed, the dashboard shows three statistics, from left to right:
+
+. How long ago the last scan ran.
+. How many images failed to scan.
+. How many errors occurred across the scan history.
+
+These figures are based on registry scan results only.
+Workload scan results aren't included in this panel.
+
+image::ui-dashboard.png[Dashboard with scanning statistics]
+
+[NOTE]
+====
+To review workload results, use the workload views described in
+xref:ui-extension/workload-scan-registries.adoc[] and
+xref:ui-extension/workload-interaction.adoc[].
+====

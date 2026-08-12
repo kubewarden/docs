@@ -1,0 +1,23 @@
+include::partial$variables.adoc[]
+
+= Registry Detail
+:revdate: 2026-08-12
+:page-revdate: {revdate}
+:description: Review registry metadata and scan history in the {sboms-name} UI extension.
+
+The registry detail page shows the metadata of a single registry, together with its scan history.
+
+== Metadata
+
+Namespace::
+Links to the namespace list page in {rancher-short-name}.
+
+Repositories::
+If the backend configuration includes a matching conditions expression, the tag is marked with a filter icon.
+Select the icon to view the YAML of the matched conditions, which you can also copy to the clipboard.
+
+== Scan history table
+
+The scan history table lists previous scans, ordered by their last updated timestamp in ascending order.
+
+image::ui-registry-detail.png[Registry detail]

@@ -1,0 +1,43 @@
+include::partial$variables.adoc[]
+
+= Workload Scan Configuration
+:revdate: 2026-08-12
+:page-revdate: {revdate}
+:description: Create and enable a workload scan configuration in the {sboms-name} UI extension.
+
+A workload scan configuration tells {sboms-name} which running workloads to scan and where to store the resulting artifacts.
+
+For the equivalent CRD-based workflow, see xref:user-guide/scanning-workloads.adoc[].
+
+== Creating a workload scan configuration
+
+The following fields are specific to a workload scan configuration.
+All other fields are the same as those for a registry, described in xref:ui-extension/registry-create-edit.adoc[].
+
+Artifacts namespace::
+The namespace where the managed `Registry`, `ScanJob`, `Image`, `SBOM`, and `VulnerabilityReport` resources are created.
+If this is omitted or empty, the managed artifacts are created in the workload's own namespace.
+
+Scan on registry change::
+Automatically scans for vulnerabilities whenever a new container image is detected in your running workloads.
+
+Namespace selectors::
+A standard Kubernetes label selector.
+Only workloads in namespaces matching the selector are scanned.
+If this is omitted, workloads in all namespaces are scanned.
+
+image::ui-workload-config-1.png[Workload scan configuration, part one]
+
+image::ui-workload-config-2.png[Workload scan configuration, part two]
+
+== Changing the artifacts namespace
+
+To change the artifacts namespace, you must first disable the configuration.
+
+image::ui-workload-config-3.png[Changing the artifacts namespace on a disabled configuration]
+
+== Enabling the configuration
+
+Once you enable the configuration, the workload scan is scheduled.
+
+image::ui-workload-config-4.png[Enabling the workload scan configuration]

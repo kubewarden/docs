@@ -1,0 +1,41 @@
+include::partial$variables.adoc[]
+
+= Workload Interaction
+:revdate: 2026-08-12
+:page-revdate: {revdate}
+:description: Move between image detail and workload detail pages using the {sboms-name} UI extension.
+
+The UI extension provides cross-application interaction between its image detail pages and the {rancher-short-name} workload detail pages.
+
+. Select a workload image in the image list page.
++
+image::ui-workload-interaction-1.png[Selecting a workload image]
+
+. The image detail page opens.
++
+image::ui-workload-interaction-2.png[Image detail page]
+
+. Select the `Workloads` tab to review the workload list.
++
+image::ui-workload-interaction-3.png[Workloads tab of the image detail page]
+
+. Select a workload link to go to the workload detail page in {rancher-short-name}.
+In the pod list, the UI extension adds a column showing the number of vulnerabilities as a stacked bar, broken down by severity.
++
+Hover over the bar to see a bar chart by severity.
+Select a severity link to open the `Vulnerabilities` tab with the `Affecting CVEs` sub-tab filtered by the selected severity.
+Alternatively, select `View all` to open the `Vulnerabilities` tab with the `Images` sub-tab, which is the default.
++
+image::ui-workload-interaction-4.png[Injected vulnerability column in the pod list]
+
+. In the `Images` sub-tab, the table is the same as the image list table, including the per-column filters.
+Select an `Image reference` to open the corresponding image detail page in the UI extension.
++
+image::ui-workload-interaction-5.png[Images sub-tab]
+
+. In the `Affecting CVEs` sub-tab, the table is the same as the vulnerability list table, including the per-column filters.
+Select a `CVE ID` to open the corresponding CVE detail page in the UI extension.
++
+image::ui-workload-interaction-6.png[Affecting CVEs sub-tab]
+
+From this page you can also export a vulnerability report, either as a full report or as a report limited to your current selection.

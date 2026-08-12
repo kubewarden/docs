@@ -1,0 +1,24 @@
+include::partial$variables.adoc[]
+
+= Workload Scan Registries
+:revdate: 2026-08-12
+:page-revdate: {revdate}
+:description: Review the virtual registries created by workload scans in the {sboms-name} UI extension.
+
+Images running in scanned workloads are also shown in the registry views.
+They're presented as virtual registries, so you can see which repositories the images belong to.
+
+== Workload registries in the registry list
+
+The registry list includes the virtual registries alongside the registries you configured yourself.
+They report scan progress and status in the same way.
+
+image::ui-workload-scan-in-progress.png[Workload scan in progress in the registry list]
+
+image::ui-workload-scan-complete.png[Completed workload scan in the registry list]
+
+== Workload registry detail
+
+The detail page for a virtual registry shows the metadata and scan history of the registry the workload scan relates to.
+
+image::ui-workload-scan-detail.png[Workload scan registry detail]
