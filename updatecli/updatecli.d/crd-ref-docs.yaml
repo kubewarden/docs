@@ -1,0 +1,62 @@
+# Helpers
+# {{ $GitHubUser := env ""}}
+# {{ $GitHubRepositoryList := env "GITHUB_REPOSITORY" | split "/"}}
+# {{ $GitHubPAT := env "GITHUB_TOKEN"}}
+# {{ $GitHubUsername := env "GITHUB_ACTOR"}}
+
+name: Updates CRD reference documentation files
+
+scms:
+  target:
+    kind: "github"
+    spec:
+      # Priority set to the environment variable
+      user: "{{ default $GitHubUser .scm.user}}"
+      owner: "{{ default $GitHubRepositoryList._0 .scm.owner }}"
+      repository: "{{ default $GitHubRepositoryList._1 .scm.repository}}"
+      token: "{{ default $GitHubPAT .scm.token }}"
+      username: "{{ default $GitHubUsername .scm.username }}"
+      branch: "{{ .scm.branch }}"
+      commitusingapi: true
+      commitmessage:
+        hidecredit: true
+        footers: "Signed-off-by: Kubewarden bot <cncf-kubewarden-maintainers@lists.cncf.io>"
+
+sources:
+# {{ range $index, $file := .files }}
+  file{{ $index }}:
+    kind: file
+    spec:
+      file: {{ $file.dst }}
+# {{ end }}
+
+targets:
+# {{ range $index, $file := .files }}
+  commit{{ $index }}:
+    name: "updates {{ $file.dst }} file"
+    kind: file
+    scmid: target
+    sourceid: file{{ $index }}
+    spec:
+      file: "{{ $file.dst }}"
+      forcecreate: true
+# {{ end }}
+
+actions:
+  default:
+    kind: "github/pullrequest"
+    scmid: "target"
+    spec:
+      automerge: false
+# {{ if .pr.title }}
+      title: {{ .pr.title }}
+# {{ end }}
+# {{ if .pr.description }}
+      description: {{ .pr.description }}
+# {{ end }}
+# {{ if .pr.labels }}
+      labels:
+# {{ range .pr.labels }}
+        - "{{ . }}"
+# {{ end }}
+# {{ end }}

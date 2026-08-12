@@ -1,0 +1,11 @@
+---
+files:
+  - dst: docs/admission-controller/version-1.38/modules/en/partials/crd-reference.adoc
+scm:
+  branch: "main"
+pr:
+  title: "Update Kubewarden admission controller CRD reference documentation"
+  description: "Automatically sync the CRD reference documentation from the kubewarden/adm-controller repository"
+  labels:
+    - "kind/chore"
+    - "area/documentation"

@@ -1,0 +1,11 @@
+---
+# Values.yaml contains settings that be used from Updatecli manifest.
+scm:
+  enabled: false
+
+files:
+  - src: "docs/crds/CRD-docs-for-docs-repo.adoc"
+    dst: docs/admission-controller/version-1.38/modules/en/partials/crd-reference.adoc
+src:
+  branch: "main"
+  url: "https://github.com/kubewarden/adm-controller.git"
