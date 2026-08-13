@@ -1,4 +1,6 @@
 = Kubewarden
+:revdate: 2026-08-13
+:page-revdate: {revdate}
 
 Welcome to the Kubewarden project.
 
