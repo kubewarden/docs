@@ -7,6 +7,6 @@ asciidoc:
   attributes:
     sboms-name: SBOM Scanner
     sboms-short-name: SBOM Scanner
-    build-type: product
+    build-type: community
 nav:
   - modules/en/nav.adoc
