@@ -14,6 +14,9 @@ include::partial$variables.adoc[]
 *** xref:user-guide/mcp-server.adoc[MCP Server]
 // * Explanations
 * Howtos
+ifeval::["{build-type}" == "product"]
+include::partial$product-specific/ui-extension-nav.adoc[]
+endif::[]
 ** xref:installation/uninstall.adoc[Uninstall]
 ** xref:installation/helm-values.adoc[Helm Values]
 ** xref:troubleshooting/collecting-logs.adoc[Collecting Logs]
