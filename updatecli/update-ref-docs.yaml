@@ -7,11 +7,11 @@ policies:
     policy: ghcr.io/updatecli/policies/file:0.2.1
     values:
       - values.d/update-policy-server-cli-ref-docs.yaml
-  - name: Add header to the CLI reference documentation
+  - name: Commit CLI reference documentation
     config:
-      - updatecli.d/headers.yaml
+      - updatecli.d/commit-ref-docs.yaml
     values:
-      - values.d/headers.yaml
+      - values.d/cli-ref-docs.yaml
   - name: Copy admission controller CRD reference documentation files
     policy: ghcr.io/updatecli/policies/file:0.2.1
     values:
@@ -22,11 +22,11 @@ policies:
       - values.d/update-sbom-scanner-crd-ref-docs.yaml
   - name: Commit admission controller CRD reference documentation
     config:
-      - updatecli.d/crd-ref-docs.yaml
+      - updatecli.d/commit-ref-docs.yaml
     values:
       - values.d/crd-ref-docs-admission-controller.yaml
   - name: Commit SBOMscanner CRD reference documentation
     config:
-      - updatecli.d/crd-ref-docs.yaml
+      - updatecli.d/commit-ref-docs.yaml
     values:
       - values.d/crd-ref-docs-sbom-scanner.yaml

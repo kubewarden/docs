@@ -56,45 +56,45 @@ sources:
         echo "${MAJOR}.${NEXT_MINOR}"
 
 targets:
-  updateKwctlValuesFile:
-    name: "Update kwctl CLI docs target version"
+  updateKwctlCopyValuesFile:
+    name: "Update kwctl CLI docs copy target version"
     kind: yaml
     sourceid: devVersion
     scmid: default
     spec:
       file: "updatecli/values.d/update-kwctl-cli-ref-docs.yaml"
       key: "$.files[0].dst"
-      value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/pages/reference/kwctl-cli.adoc'
+      value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/partials/kwctl-cli-reference.adoc'
 
-  updatePolicyServerValuesFile:
-    name: "Update policy-server CLI docs target version"
+  updatePolicyServerCopyValuesFile:
+    name: "Update policy-server CLI docs copy target version"
     kind: yaml
     sourceid: devVersion
     scmid: default
     spec:
       file: "updatecli/values.d/update-policy-server-cli-ref-docs.yaml"
       key: "$.files[0].dst"
-      value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/pages/reference/policy-server-cli.adoc'
+      value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/partials/policy-server-cli-reference.adoc'
 
-  updateHeadersKwctlPath:
-    name: "Update kwctl CLI docs header target version"
+  updateCliCommitKwctlPath:
+    name: "Update kwctl CLI docs commit target version"
     kind: yaml
     sourceid: devVersion
     scmid: default
     spec:
-      file: "updatecli/values.d/headers.yaml"
-      key: "$.files[0].path"
-      value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/pages/reference/kwctl-cli.adoc'
+      file: "updatecli/values.d/cli-ref-docs.yaml"
+      key: "$.files[0].dst"
+      value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/partials/kwctl-cli-reference.adoc'
 
-  updateHeadersPolicyServerPath:
-    name: "Update policy-server CLI docs header target version"
+  updateCliCommitPolicyServerPath:
+    name: "Update policy-server CLI docs commit target version"
     kind: yaml
     sourceid: devVersion
     scmid: default
     spec:
-      file: "updatecli/values.d/headers.yaml"
-      key: "$.files[1].path"
-      value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/pages/reference/policy-server-cli.adoc'
+      file: "updatecli/values.d/cli-ref-docs.yaml"
+      key: "$.files[1].dst"
+      value: 'docs/admission-controller/version-{{ source "devVersion" }}/modules/en/partials/policy-server-cli-reference.adoc'
 
 actions:
   default:

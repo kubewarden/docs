@@ -1,4 +1,5 @@
 ---
+name: "Updates SBOMscanner CRD reference documentation files"
 files:
   - dst: docs/sbom-scanner/version-0.13/modules/en/partials/crd-reference.adoc
 scm:

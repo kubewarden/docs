@@ -4,7 +4,7 @@
 # {{ $GitHubPAT := env "GITHUB_TOKEN"}}
 # {{ $GitHubUsername := env "GITHUB_ACTOR"}}
 
-name: Updates CRD reference documentation files
+name: "{{ .name }}"
 
 scms:
   target:
