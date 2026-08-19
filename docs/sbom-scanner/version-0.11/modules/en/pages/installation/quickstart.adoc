@@ -236,4 +236,4 @@ NAME                                                               CREATED AT
 
 You've successfully created a real-world Registry resource and triggered an automated scan.
 
-You can jump to the xref:user-guide/querying-reports.adoc[Querying reports] guide to learn how to query and inspect the generated images, SBOMs, and vulnerability reports.
+You can jump to the xref:/user-guide/querying-reports.adoc[Querying reports] guide to learn how to query and inspect the generated images, SBOMs, and vulnerability reports.
