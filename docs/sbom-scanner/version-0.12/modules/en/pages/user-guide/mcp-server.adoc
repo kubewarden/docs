@@ -128,7 +128,7 @@ To reach the MCP server from your local machine, forward the in-cluster Service:
 kubectl port-forward -n sbomscanner svc/sbomscanner-mcp 8222:8222
 ----
 
-The MCP endpoint is then available at `https://localhost:8222/mcp` (or `http://localhost:8222/mcp` if TLS is disabled).
+The MCP endpoint is then available at `\https://localhost:8222/mcp` (or `\http://localhost:8222/mcp` if TLS is disabled).
 
 [NOTE]
 ====
