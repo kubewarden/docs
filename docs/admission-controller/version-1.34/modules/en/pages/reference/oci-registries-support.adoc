@@ -43,7 +43,7 @@ correct any registry inaccuracies by using the
 * https://azure.microsoft.com/en-us/products/container-registry/[Azure Container Registry]. See https://learn.microsoft.com/en-us/azure/container-registry/container-registry-oci-artifacts[here].
 * https://hub.docker.com/[Docker Hub]. See https://docs.docker.com/docker-hub/oci-artifacts/[here].
 * https://cloud.ibm.com/docs/Registry[IBM Cloud Container Registry]. See https://cloud.ibm.com/docs/Registry?topic=Registry-registry_helm_charts[here].
-* https://jfrog.com/artifactory/[JFrog Artifactory]. See https://jfrog.com/help/r/jfrog-artifactory-documentation/docker-registry[here].
+* https://jfrog.com/artifactory/[JFrog Artifactory]. See https://docs.jfrog.com/artifactory/docs/oci-repositories[here].
 
 == Tools that work with OCI registries
 
