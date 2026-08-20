@@ -11,6 +11,7 @@ include::partial$variables.adoc[]
 *** xref:user-guide/airgap-support.adoc[Airgap Support]
 *** xref:user-guide/private-registries.adoc[Private Registries]
 *** xref:user-guide/vex.adoc[VEX Support]
+*** xref:user-guide/enrichment-vulnerability-database.adoc[Enrichment Vulnerability Database]
 *** xref:user-guide/mcp-server.adoc[MCP Server]
 // * Explanations
 * Howtos
