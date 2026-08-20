@@ -1,0 +1,21 @@
+include::partial$variables.adoc[]
+
+= CRD Reference
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-08-20
+:page-revdate: {revdate}
+:title: CRD Reference
+:description: API reference for {sboms-name} Custom Resource Definitions.
+:keywords: ["{sboms-name}", "kubewarden", "kubernetes", "custom resource definitions", "crd"]
+:doc-persona: ["kubewarden-operator"]
+:doc-type: ["reference"]
+:doc-topic: ["operator-manual", "crd"]
+:doctype: book
+
+////
+API REFERENCE GOES BELOW.
+Synced automatically from a file generated in the kubewarden/sbomscanner
+repo in docs/crds. Do not edit partials/crd-reference.adoc by hand.
+////
+
+include::partial$crd-reference.adoc[]
