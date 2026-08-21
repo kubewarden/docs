@@ -211,3 +211,27 @@ controller:
 ----
 
 Set this to `false` to skip seeding the defaults — for example in air-gapped environments where the public repositories are not reachable. See xref:user-guide/airgap-support.adoc#self-hosting-vex-hub[Air Gap Support] for details on configuring a self-hosted VEX Hub.
+
+[#_opentelemetry]
+== OpenTelemetry
+
+Three values configure the telemetry export.
+Telemetry export is off when `otel.endpoint` is empty.
+
+[source,yaml]
+----
+otel:
+  endpoint: "https://otel-collector.telemetry.svc.cluster.local:4317"
+  caSecretName: "sbomscanner-otel-client"
+  clientCertificateSecretName: "sbomscanner-otel-client"
+----
+
+* `otel.endpoint` is the OTLP/gRPC endpoint that receives the telemetry.
+  Using a `https://` URL makes the components connect with TLS.
+* `otel.caSecretName` names a secret with a `ca.crt` key.
+  The components use this CA certificate to verify the server's endpoint certificate.
+* `otel.clientCertificateSecretName` names a secret with `tls.crt` and `tls.key` keys.
+  The components use this certificate to authenticate to the endpoint (mTLS).
+
+Both secrets must exist in the namespace where {sboms-name} is installed.
+See xref:user-guide/opentelemetry.adoc[OpenTelemetry] for the full setup and xref:reference/opentelemetry-reference.adoc[OpenTelemetry Reference] for the exported traces and metrics.
