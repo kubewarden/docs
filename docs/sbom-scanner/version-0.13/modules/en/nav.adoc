@@ -12,6 +12,7 @@ include::partial$variables.adoc[]
 *** xref:user-guide/private-registries.adoc[Private Registries]
 *** xref:user-guide/vex.adoc[VEX Support]
 *** xref:user-guide/mcp-server.adoc[MCP Server]
+*** xref:user-guide/opentelemetry.adoc[OpenTelemetry]
 // * Explanations
 * Howtos
 ifeval::["{build-type}" == "product"]
@@ -23,3 +24,4 @@ endif::[]
 ** xref:troubleshooting/common-problems.adoc[Common Problems]
 * Reference
 ** xref:reference/crd-reference.adoc[CRD Reference]
+** xref:reference/opentelemetry-reference.adoc[OpenTelemetry Reference]
