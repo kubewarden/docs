@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Scanning Registries
-:revdate: 2026-06-15
+:revdate: 2026-09-01
 :page-revdate: {revdate}
 :description: Define registries, run scans, and review {sboms-name} results.
 
@@ -106,7 +106,8 @@ The `ScanJob` must be created in the same namespace as its referenced `Registry`
 
 By default a `ScanJob` scans every repository (and every `matchCondition`) declared on the referenced `Registry`. You can narrow the scan to a subset by setting `spec.repositories` on the `ScanJob`.
 
-Each entry references a repository by name and may optionally restrict the scan to a subset of the repository's `matchConditions`.
+Each entry references a repository by name. It can restrict the scan to a
+subset of the repository `matchConditions`.
 
 Example: scan only one repository, all of its `matchConditions`:
 
@@ -141,19 +142,26 @@ spec:
         - latest tag
 ----
 
-Each entry under `spec.repositories` must reference a repository declared on the `Registry`, and each name listed under `matchConditions` must reference an existing `matchCondition` on that repository. The `ScanJob` controller validates these references when reconciling the job and marks it as failed if any of them does not exist.
+Each `spec.repositories` entry must reference a repository on the `Registry`.
+Each `matchConditions` name must reference a condition on that repository. The
+`ScanJob` controller validates these references. It marks the job as failed if
+a reference does not exist.
 
 [NOTE]
 ====
-When `spec.repositories` is set, the obsolete-image cleanup is skipped for the entire `ScanJob`. Images that are no longer present in the registry are not deleted from the cluster while a targeted scan runs; they are reconciled the next time a non-targeted `ScanJob` (scheduled or on-demand) runs against the same `Registry`.
+When `spec.repositories` is set, obsolete-image cleanup is skipped for the
+entire `ScanJob`. Images absent from the registry remain in the cluster during
+a targeted scan. A later non-targeted `ScanJob` reconciles them.
 ====
 
 [_#configuring-registry-without-catalog]
 == 4. Configuring registry without catalog
 
-In some cases, you may work with registries that do not implement/exposes the `_catalog` endpoint (such as *Docker Hub*, *Amazon ECR*, or *ghcr.io*).
+Some registries do not implement or expose the `_catalog` endpoint. Examples
+include *Docker Hub*, *Amazon ECR*, and *ghcr.io*.
 
-To make {sboms-name} work with these registries, you can manually specify the repositories you want to scan, instead of pulling the catalog.
+To scan these registries, specify the repositories instead of pulling the
+catalog.
 
 [NOTE]
 ====
@@ -176,7 +184,7 @@ spec:
     - name: kubewarden/sbomscanner/test-assets/golang
 ----
 
-Here's a list of registries that do NOT support `_catalog` (or intentionally disable it):
+These registries do not support `_catalog`:
 
 * Amazon ECR
 * Google Container Registry (GCR)
@@ -185,11 +193,12 @@ Here's a list of registries that do NOT support `_catalog` (or intentionally dis
 [#_filtering-by-platforms]
 == 5. Filtering By Platforms
 
-In most cases you don't want to scan all the platforms of the same image version. For this reason we created a filter mechanism to avoid unuseful scans and waste of time.
+Usually, you do not need to scan all platforms for an image version. The
+platform filter prevents unnecessary scans.
 
-To lighten the workload of {sboms-name}, you can specify which platforms you want to scan, instead of discovering them and consequently scan.
+To reduce the {sboms-name} workload, specify the platforms to scan.
 
-Here's an example of how to configure the registry to look only at the `linux/amd64` platform.
+This example configures the registry for the `linux/amd64` platform only.
 
 [source,yaml]
 ----
@@ -205,7 +214,7 @@ spec:
       os: "linux"
 ----
 
-To configure multiple platforms, you can list them this way:
+To configure multiple platforms, list them as follows:
 
 [source,yaml]
 ----
@@ -226,9 +235,12 @@ spec:
 [#_filtering-by-tags]
 == 6. Filtering By Tags
 
-You can filter image tags using https://kubernetes.io/docs/reference/using-api/cel/[CEL] expressions in the `matchConditions` field under `repositories`. This lets you use regex patterns, semantic versioning comparisons, or string operations (like substring matching or contains checks) to select which tags to scan. This filtering capability helps reduce the number of scanned images and lowers the load on the system.
+Use https://kubernetes.io/docs/reference/using-api/cel/[CEL] expressions in
+`repositories.matchConditions` to filter image tags. Expressions can use
+regular expressions, version comparisons, and string operations. This reduces
+the number of scanned images and system load.
 
-Let's see an example:
+This is an example:
 
 [source,yaml]
 ----
@@ -246,11 +258,14 @@ spec:
           expression: "tag.endsWith('-prod')"
 ----
 
-This example shows how to filter for images with a tag ending with `-prod`, helpful to scan only for images being deployed in a production environment.
+This example filters images with tags that end in `-prod`. Use this filter for
+images deployed in a production environment.
 
-Another helpful example is to avoid scanning for release candidate images, which are typically tagged as `<version>-rc<rc_version_number>`, by using the following expression: `!tag.matches('-rc*')`.
+Use `!tag.matches('-rc*')` to prevent scans of release-candidate images.
+These images usually have the tag `<version>-rc<rc_version_number>`.
 
-It's important to mention that multiple expressions can be defined under the `matchConditions` field. This will help the user to define complex filters, splitting them into shorter expressions:
+You can define multiple expressions in `matchConditions`. Use multiple
+expressions to split complex filters:
 
 [source,yaml]
 ----
@@ -270,7 +285,7 @@ spec:
           expression: "semver(tag, true).isGreaterThan(semver('v1.1.0', true))"
 ----
 
-This way the user can scan only for a defined range of image versions (from `v1.0.0` to `v1.1.0`).
+These expressions scan a range of image versions from `v1.0.0` to `v1.1.0`.
 
 By default, all conditions must pass for a tag to be included (AND logic).
 
@@ -305,11 +320,12 @@ This configuration scans tags that are either `latest`, end with `-prod`, or end
 
 The Common Expression Language (https://github.com/google/cel-go[CEL]) is used in the Kubernetes API to declare validation rules, policy rules, and other constraints or conditions.
 
-It is widely used in https://kubernetes.io/docs/reference/using-api/cel/[Kubernetes], making CEL a convenient alternative to out-of-process mechanisms, such as webhooks, for many extensibility use cases.
+https://kubernetes.io/docs/reference/using-api/cel/[Kubernetes] uses CEL
+widely. CEL is an alternative to out-of-process mechanisms, such as webhooks.
 
-For further information about the CEL specification, please take a look to this repository: https://github.com/google/cel-spec
+For CEL details, see https://github.com/google/cel-spec.
 
-Here's the most common CEL expressions that can be used for tag filtering:
+These CEL expressions are common for tag filtering:
 
 ==== String and Regex
 

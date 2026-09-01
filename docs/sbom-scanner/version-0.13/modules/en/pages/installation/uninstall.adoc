@@ -1,18 +1,19 @@
 include::partial$variables.adoc[]
 
 = {sboms-name} Uninstall
-:revdate: 2026-06-15
+:revdate: 2026-09-01
 :page-revdate: {revdate}
 :description: Uninstall {sboms-name} and remove its Kubernetes resources.
 
-You can remove the resources created by uninstalling the `helm` chart as follows:
+Remove the resources that the `helm` chart created:
 
 [source,bash]
 ----
 helm uninstall --namespace sbomscanner sbomscanner
 ----
 
-Then remove the following Custom Resource Definitions, this will also delete all the resources of these types declared inside of the cluster:
+Then remove these Custom Resource Definitions. This action also deletes
+resources of these types from the cluster:
 
 [source,bash]
 ----

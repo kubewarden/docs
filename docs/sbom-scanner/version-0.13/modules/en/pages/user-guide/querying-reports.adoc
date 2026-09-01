@@ -1,13 +1,14 @@
 include::partial$variables.adoc[]
 
 = Querying SBOM and VulnerabilityReport Resources
-:revdate: 2026-06-15
+:revdate: 2026-09-01
 :page-revdate: {revdate}
 :description: Query {sboms-name} images, SBOMs, and vulnerability reports.
 
-In this guide, you'll learn how to query {sboms-name} resources using metadata fields.
+This guide explains how to query {sboms-name} resources with metadata
+fields.
 
-We'll walk through three major steps:
+This guide has three steps:
 
 [arabic]
 . Understand the supported query fields
@@ -36,7 +37,7 @@ These fields are available on both `SBOM` and `VulnerabilityReport` resources an
 
 == Query Examples
 
-Now that you know the available fields, let's walk through a few practical examples.
+These examples show how to use the available fields.
 
 === Example: Get all vulnerability reports from a specific repository and platform
 
@@ -58,7 +59,8 @@ dfe56d8371e7df15a3dde25c33a78b84b79766de2ab5a5897032019c878b5932   2025-06-23T04
 
 === Example: Get SBOMs from the same repository with a specific tag and platform
 
-If you're looking for the all SBOMs of images tagged `1.12-alpine` and built for `amd64`, you can run:
+To list SBOMs for images tagged `1.12-alpine` and built for `amd64`, run
+this command:
 
 [source,bash]
 ----

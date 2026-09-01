@@ -1,11 +1,11 @@
 include::partial$variables.adoc[]
 
 = Air Gap Support
-:revdate: 2026-06-15
+:revdate: 2026-09-01
 :page-revdate: {revdate}
 :description: Run {sboms-name} in air-gapped environments with mirrored dependencies.
 
-{sboms-name} can be used in air-gapped environments.
+You can use {sboms-name} in air-gapped environments.
 
 To run the scans, {sboms-name} currently needs the following external sources:
 
@@ -17,12 +17,14 @@ These external sources can be self-hosted in your private infrastructure to make
 
 == Self-Hosting Vulnerability Databases
 
-The following Vulnerability Databases are packaged as OCI images, allowing you to host them in your own registry:
+The following Vulnerability Databases are OCI images. You can host them in
+your registry:
 
 * https://github.com/aquasecurity/trivy-db/pkgs/container/trivy-db[`trivy-db`]
 * https://github.com/aquasecurity/trivy-java-db/pkgs/container/trivy-java-db[`trivy-java-db`]
 
-Once mirrored in your own OCI registry, you can install {sboms-name} to point to them:
+After you mirror the databases in your OCI registry, install {sboms-name}
+with these values:
 
 [source,shell]
 ----
@@ -34,11 +36,12 @@ helm install sbomscanner ./chart \
 [#self-hosting-vex-hub]
 == Self-Hosting VEX Hub
 
-To setup your own VEX Hub repository, please refer to this https://github.com/aquasecurity/trivy/blob/main/docs/docs/advanced/self-hosting.md#make-a-local-copy-1[guide].
+To configure a VEX Hub repository, see this https://github.com/aquasecurity/trivy/blob/main/docs/docs/advanced/self-hosting.md#make-a-local-copy-1[guide].
 
-Change the `repository_url` (if any) within the VEX files, to point to the internal registries.
+Change `repository_url` in each applicable VEX file to point to an internal
+registry.
 
-All you need to do is to setup an HTTP server to provide the needed files for VEX.
+Configure an HTTP server that provides the VEX files.
 
 By default, {sboms-name} seeds two `VEXHub` resources pointing to the public `github.com/rancher/vexhub` and `github.com/aquasecurity/vexhub` repositories, which are unreachable in an air-gapped environment. Disable this seeding at install time by setting `controller.defaultVEXHubResources` to `false`:
 

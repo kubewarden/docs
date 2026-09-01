@@ -1,16 +1,16 @@
 include::partial$variables.adoc[]
 
 = Helm Values Configuration
-:revdate: 2026-06-15
+:revdate: 2026-09-01
 :page-revdate: {revdate}
 :description: Configure {sboms-name} Helm chart values for deployment and storage.
 
 This document describes the available configuration options for the {sboms-name} Helm chart.
 
-You can customize these values in two ways:
+Configure these values in one of these ways:
 
 [arabic]
-. Create a custom values file (e.g., `my-values.yaml`) with your overrides and pass it to Helm:
+. Create a values file, for example `my-values.yaml`. Add your overrides and pass the file to Helm:
 
 [source,bash]
 ----
@@ -29,7 +29,8 @@ For more details on customizing Helm charts, see the https://helm.sh/docs/intro/
 
 == Log Levels
 
-You can configure the log level for each {sboms-name} component to control the verbosity of the logs.
+Configure the log level for each {sboms-name} component. The log level
+controls log detail.
 
 [source,yaml]
 ----
@@ -47,7 +48,8 @@ Available log levels are: `debug`, `info`, `warn`, `error`.
 
 == Resource Limits and Requests
 
-Each component has default resource limits and requests that you can customize based on your cluster's capacity and workload requirements.
+Each component has default resource limits and requests. Configure these
+values for your cluster capacity and workload requirements.
 
 === Controller
 
@@ -122,8 +124,8 @@ storage:
 *Configuration options:*
 
 * `instances`: Number of PostgreSQL replicas (default: 3)
-* `imageName`: Full image reference for the PostgreSQL container (e.g. `my-registry.example.com/postgresql:18.1`). Useful for air-gapped environments where the default CNPG operand image is not reachable. If empty, CNPG uses its default operand image.
-* `storage.size`: Size of the persistent volume. You can increase this value later, and changes will be automatically applied to existing PVCs. Size cannot be decreased. See the https://cloudnative-pg.io/documentation/current/storage/#volume-expansion[CNPG documentation] for more details.
+* `imageName`: Full image reference for the PostgreSQL container, for example `my-registry.example.com/postgresql:18.1`. Use this value when the default CNPG operand image is unavailable. If empty, CNPG uses its default operand image.
+* `storage.size`: Size of the persistent volume. You can increase this value later. CNPG applies the change to existing PVCs. You cannot decrease this value. See the https://cloudnative-pg.io/documentation/current/storage/#volume-expansion[CNPG documentation].
 * `storage.resizeInUseVolumes`: Automatically resize PVCs (default: true)
 * `storage.storageClass`: Specify a storage class. If empty, uses the cluster's default storage class.
 * `storage.pvcTemplate`: Custom PVC template if you need advanced configuration
@@ -198,11 +200,17 @@ storage:
     caSecretName: "my-postgres-ca"
 ----
 
-*Please note:* When using an external PostgreSQL instance, make sure the database is already created and accessible from your Kubernetes cluster.
+When you use an external PostgreSQL instance, make sure that the database
+exists and is accessible from your Kubernetes cluster.
 
 == Default VEXHub Resources
 
-On chart install, {sboms-name} seeds two `VEXHub` resources pointing to the public `github.com/rancher/vexhub` and `github.com/aquasecurity/vexhub` repositories. They are created via a `post-install` hook and are not tracked by the Helm release, so you can freely modify, disable, or delete them afterwards without Helm reverting your changes on subsequent upgrades.
+When you install the chart, {sboms-name} seeds two `VEXHub` resources.
+They point to the public `github.com/rancher/vexhub` and
+`github.com/aquasecurity/vexhub` repositories. A `post-install` hook
+creates these resources. Helm does not track them. You can modify,
+disable, or delete them. Helm does not revert these changes during
+upgrades.
 
 [source,yaml]
 ----
@@ -210,7 +218,9 @@ controller:
   defaultVEXHubResources: true
 ----
 
-Set this to `false` to skip seeding the defaults — for example in air-gapped environments where the public repositories are not reachable. See xref:user-guide/airgap-support.adoc#self-hosting-vex-hub[Air Gap Support] for details on configuring a self-hosted VEX Hub.
+Set this to `false` to prevent default-resource seeding. Use this setting
+in air-gapped environments. See xref:user-guide/airgap-support.adoc#self-hosting-vex-hub[Air Gap Support]
+to configure a self-hosted VEX Hub.
 
 [#_opentelemetry]
 == OpenTelemetry
