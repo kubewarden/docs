@@ -573,3 +573,6 @@ It respects standard proxy environment variables when downloading policies:
 * `-a`, `--verification-annotation <KEY=VALUE>` — Annotation in key=value format. Can be repeated multiple times
 * `--verification-config-path <PATH>` — YAML file holding verification config information (signatures, public keys...)
 * `-k`, `--verification-key <PATH>` — Path to key used to verify the policy. Can be repeated multiple times
+
+
+
