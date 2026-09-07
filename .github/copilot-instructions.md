@@ -98,8 +98,7 @@ xref:howtos/policy-management.adoc[]
 
 ### Version management
 
-- **`admission-controller`** versions: directories named `version-X.Y`
-- **`sbom-scanner`** versions: directories named `vX.Y.Z`
+- **`admission-controller`** and  **`sbom-scanner`** versions: directories named `version-X.Y`
 - Prerelease (dev) versions have `prerelease: -dev` in `antora.yml`
 - The current latest release has `display: 'X.Y-latest'` in `antora.yml`; the previous latest loses the `display:` line
 
