@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Upgrade path
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-07-28
+:revdate: 2026-09-10
 :page-revdate: {revdate}
 :description: Upgrade your {admc-name} stack using supported versioning strategies and compatibility rules among its components.
 :doc-persona: ["kubewarden-operator"]
@@ -83,6 +83,28 @@ the two `MAJOR` versions.
 
 .Example upgrade path support graph
 include::latest@shared:en:partial$upg-path.adoc[]
+
+== Breaking and important changes between versions
+
+This section records breaking changes and other important changes that
+you must review before you upgrade to a specific version.
+
+=== v1.37 to v1.38
+
+* Namespaced policies (`AdmissionPolicy` and `AdmissionPolicyGroup`) can
+  target only the resources that part of an allow list. The Helm
+  value `namespacedPoliciesAllowedResources` sets this list. After the
+  upgrade, a policy that targets a resource that is not in the default
+  allow list gets the `rejected` status. The controller also removes the
+  webhook of this policy. See
+  xref:/howtos/security-hardening/security-hardening.adoc#_namespaced_policy_allowed_resources[Namespaced
+  policy allowed resources].
+
+* The `policy-server` applies a default memory limit of 256 MiB to the linear
+  memory of each policy. If a policy needs more memory, increase the limit the
+  `KUBEWARDEN_POLICY_MEMORY_LIMIT` environment variable. See
+  xref:/reference/policy-evaluation-timeout.adoc#_policy_memory_limit[Policy
+  memory limit].
 
 == Upgrade order
 

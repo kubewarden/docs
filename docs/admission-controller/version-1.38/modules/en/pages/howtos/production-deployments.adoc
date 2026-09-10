@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Configuring the {admc-name} stack for production
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-09-10
 :page-revdate: {revdate}
 :description: Configure tolerations and affinity rules for optimal scheduling and reliability within the {admc-name} stack in a Kubernetes cluster.
 :keywords: ["{admc-name}", kubewarden, kubernetes, policyservers, production, poddisruptionbudget, affinity, limits, tolerations, priorityclass]
@@ -365,6 +365,18 @@ spec:
     cpu: 500m
     memory: 1Gi
 ----
+
+[NOTE]
+====
+The `memory` limit in this example applies to the full `PolicyServer`
+Pod. This limit is different from the policy memory limit, which has a
+default value of 256 MiB. See
+xref:/reference/policy-evaluation-timeout.adoc#_policy_memory_limit[Policy
+memory limit].
+
+The Pod `memory` limit must be sufficient for all the policies that run
+on the `PolicyServer`, at the expected number of concurrent evaluations.
+====
 
 === PriorityClasses
 
