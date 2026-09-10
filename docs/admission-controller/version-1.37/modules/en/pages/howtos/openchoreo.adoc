@@ -24,12 +24,9 @@ unchanged and there are no OpenChoreo-specific policies to write.
 
 == Prerequisites
 
-* An OpenChoreo installation with a data plane cluster
+* An OpenChoreo 1.2.x installation with a data plane cluster
 * `kubectl` configured against the data plane cluster
 * link:https://helm.sh/[Helm] v3
-
-This guide was verified with OpenChoreo 1.2.x and {admc-short-name} 1.37.x
-(chart `admission-controller` 6.x).
 
 == Install {admc-short-name} on the data plane
 
