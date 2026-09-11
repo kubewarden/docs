@@ -140,3 +140,9 @@ The highest numbered version directory in `docs/admission-controller` and
 
 Changes for the next upcoming release should be documented in the prerelease/dev
 version.
+
+=== Skills
+
+The file `skills-lock.json` is maintained by `npx skills`. Used for:
+
+* ASD-STE100

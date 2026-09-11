@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Collecting logs for debugging
-:revdate: 2026-09-01
+:revdate: 2026-09-11
 :page-revdate: {revdate}
 :description: Collect {sboms-name} logs and support bundles for troubleshooting.
 
@@ -74,10 +74,11 @@ namespace:
 
 [WARNING]
 ====
-Review the bundle contents before you share it. The bundle can contain
-sensitive data. Pod logs include container registry names and URIs. The
-bundle can also include Helm values and manifests. These files can contain
-credentials.
+The bundle can contain sensitive data. Pod logs include container registry names
+and URIs. By default the bundle also includes the rendered Helm values and
+manifest. These can contain credentials depending on how the chart was
+configured. For example image pull secrets, registry auth, or any value passed
+via `--set`. Review the bundle contents before sharing.
 ====
 
 Using https://github.com/kubewarden/sbomscanner/blob/main/hack/sbomscanner-debug.sh[the script found in the sbomscanner repository]:
@@ -100,7 +101,7 @@ By default the script collects:
 |Flag |Purpose
 |`--namespace <ns>` |Force a specific install namespace (otherwise auto-discovered)
 |`--cnpg-namespace <ns>` |Also collect logs from the CNPG operator in that namespace (e.g. `cnpg-system`)
-|`--manifests` |Collect all {sboms-name} custom resources and CNPG custom resources. Also collect events and `kubectl describe` output for each pod in the installation namespace.
+|`--manifests` |Also dump every {sboms-name} CR (cluster-scoped `VEXHub` and `WorkloadScanConfiguration`; namespaced `Registry`, `ScanJob`, `Image`, `VulnerabilityReport`, `WorkloadScanReport` collected cluster-wide), plus CNPG `Cluster`/`Pooler`/`Backup`/`ScheduledBackup` CRs, events and `kubectl describe` for every pod in the install namespace
 |`--output-dir <dir>` |Write the bundle to `<dir>` instead of the current directory
 |`--compress-results` |Tar+gzip the bundle into a single `.tar.gz`
 |===

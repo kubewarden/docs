@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Scanning Workloads
-:revdate: 2026-09-01
+:revdate: 2026-09-11
 :page-revdate: {revdate}
 :description: Configure workload scanning and understand workload vulnerability reports.
 
@@ -31,12 +31,21 @@ vulnerability findings for all workload containers.
 * CronJobs (resolved from Job → CronJob)
 * Pods with no controller owner
 
-Other controller kinds that own a pod are also supported. {sboms-name} reports
-them under their own kind. This includes mirror pods owned by a `Node` and pods
-owned by a https://github.com/rancher/k3k/blob/main/docs/crds/crds.md#cluster[`Cluster`]
-resource. It also includes pods owned by a https://cloudnative-pg.io/docs/devel/cloudnative-pg.v1#cluster[`Cluster`]
-resource. The `WorkloadScanReport` uses the owner resource name. Only the
-ReplicaSet → Deployment and Job → CronJob chains are followed.
+Other controller kinds that own a pod are also supported and reported under
+their own kind. For example:
+
+* mirror (static) pods owned by a `Node`, pods owned by a
+  https://github.com/rancher/k3k/blob/main/docs/crds/crds.md#cluster[`Cluster`]
+  resource from https://github.com/rancher/k3k[k3k]
+* pods owned by a
+  https://cloudnative-pg.io/docs/devel/cloudnative-pg.v1#cluster[`Cluster`]
+  resource from https://cloudnative-pg.io/documentation/[CloudNativePG].
+
+All produce a `WorkloadScanReport` named after that owning resource (for
+example, `node-<uid>` or `cluster-<uid>`) rather than being collapsed into a
+`Pod` report. Only the ReplicaSet → Deployment and Job → CronJob chains are
+walked up; every other owner kind is used as-is.
+
 
 === Default behavior
 

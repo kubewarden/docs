@@ -31,7 +31,7 @@ This is an [Antora](https://antora.org) multi-component documentation site writt
 |---|---|---|
 | `kubewarden` | `docs/kw/version-*` | Site landing / umbrella component |
 | `admission-controller` | `docs/admission-controller/version-*` | Main product docs, versioned `version-X.Y` |
-| `sbom-scanner` | `docs/sbom-scanner/v*` | SBOM scanner docs, versioned `vX.Y.Z` |
+| `sbom-scanner` | `docs/sbom-scanner/v*` | SBOM scanner docs, versioned `version-X.Y` |
 | `shared` | `shared/` | Shared partials and variables; no pages |
 
 **Playbooks**:
@@ -99,7 +99,7 @@ xref:howtos/policy-management.adoc[]
 ### Version management
 
 - **`admission-controller`** versions: directories named `version-X.Y`
-- **`sbom-scanner`** versions: directories named `vX.Y.Z`
+- **`sbom-scanner`** versions: directories named `version-X.Y`
 - Prerelease (dev) versions have `prerelease: -dev` in `antora.yml`
 - The current latest release has `display: 'X.Y-latest'` in `antora.yml`; the previous latest loses the `display:` line
 
@@ -123,3 +123,7 @@ typos .
 - **Spell check**: `typos` via `crate-ci/typos` GitHub Action
 - **Shell scripts**: `shellcheck scripts/*.sh`
 - **Build validation**: `make community-local` on every PR
+
+### ASD-STE100
+
+When you write or edit .adoc content, use the simple-english skill in pragmatic mode.
