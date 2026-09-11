@@ -1,0 +1,141 @@
+include::partial$variables.adoc[]
+
+= Using {admc-name} with OpenChoreo
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-09-09
+:page-revdate: {revdate}
+:sidebar_label: OpenChoreo
+:sidebar_position: 160
+:description: How to enforce {admc-name} policies on workloads deployed by OpenChoreo.
+:doc-persona: [kubewarden-operator, kubewarden-integrator]
+:doc-type: [howto]
+:doc-topic: [openchoreo-integration]
+:keywords: ["{admc-name}", kubernetes, openchoreo, platform engineering, admission policy]
+
+link:https://openchoreo.dev[OpenChoreo] is an internal developer platform built
+on Kubernetes. Its control plane turns component abstractions into ordinary
+Kubernetes manifests and applies them to a separate data plane cluster.
+
+{admc-name} runs in that data plane and validates those manifests as it would
+any others. By the time a resource reaches admission nothing about it is
+specific to OpenChoreo, so policies from
+link:https://artifacthub.io/packages/search?kind=13[Artifact Hub] work
+unchanged and there are no OpenChoreo-specific policies to write.
+
+== Prerequisites
+
+* An OpenChoreo 1.2.x installation with a data plane cluster
+* `kubectl` configured against the data plane cluster
+* link:https://helm.sh/[Helm] v3
+
+== Install {admc-short-name} on the data plane
+
+Install into the cluster running the OpenChoreo *data plane*, not the control
+plane.
+
+[source,console]
+----
+helm repo add kubewarden https://charts.kubewarden.io
+helm repo update kubewarden
+
+helm upgrade --install kubewarden kubewarden/admission-controller \
+  --namespace kubewarden --create-namespace \
+  --wait
+----
+
+Confirm the policy server is running before creating policies:
+
+[source,console]
+----
+kubectl get policyservers
+kubectl get pods -n kubewarden
+----
+
+== Scope policies to OpenChoreo namespaces
+
+[WARNING]
+====
+A `ClusterAdmissionPolicy` applies to the whole cluster unless you scope it.
+The data plane also runs OpenChoreo's own components, and in a single-cluster
+quick start it runs the control plane there too. An unscoped, restrictive
+policy governs all of them and can stop OpenChoreo from working.
+====
+
+For each project and environment, OpenChoreo creates a
+link:https://openchoreo.dev/docs/concepts/runtime-model/#cell-architecture[cell namespace]
+in the data plane and labels it:
+
+[cols="1,1"]
+|===
+| Label | Value
+
+| `openchoreo.dev/managed-by`
+| `renderedrelease-controller`
+
+| `openchoreo.dev/namespace`
+| Namespace the project belongs to
+
+| `openchoreo.dev/project`
+| Project name
+
+| `openchoreo.dev/environment`
+| Environment name
+|===
+
+Select those namespaces with `matchExpressions`. Keep
+`openchoreo.dev/managed-by` in every selector, so a policy only reaches
+namespaces OpenChoreo created:
+
+[source,yaml]
+----
+namespaceSelector:
+  matchExpressions:
+    - key: openchoreo.dev/managed-by
+      operator: In
+      values: ["renderedrelease-controller"]
+    - key: openchoreo.dev/environment
+      operator: In
+      values: ["production"]
+----
+
+Dropping the second expression widens the policy to every OpenChoreo cell
+namespace; adding `openchoreo.dev/namespace` and `openchoreo.dev/project`
+narrows it to a single project.
+
+== Promote a policy with the project
+
+A `ClusterAdmissionPolicy` is applied directly by a platform engineer and takes
+effect immediately. A namespaced `AdmissionPolicy` declared inside an OpenChoreo
+`ProjectType` is delivered instead to the cell namespaces of every project built
+on that type, and is promoted between environments along with the project rather
+than applied to each one separately.
+
+Use cluster-wide policies for guardrails that must hold everywhere, and
+ProjectType policies for a baseline that belongs to the project definition.
+
+== Where results appear
+
+A policy in `protect` mode fails the apply, and the reason reaches the
+OpenChoreo component's `ReleaseBinding` and its *Deploy* tab in the portal:
+
+[literal]
+----
+admission webhook "clusterwide-openchoreo-no-latest-tag.kubewarden.admission"
+denied the request: not allowed, reported errors: tags not allowed: latest
+----
+
+The rejected resource keeps its previous version, so a blocked deployment does
+not take a running workload down.
+
+A policy in `monitor` mode does not reach OpenChoreo, because the apply
+succeeds. Those violations appear in the
+xref:howtos/audit-scanner.adoc[audit scanner] reports on the data plane.
+
+== Full guide
+
+The OpenChoreo project maintains this integration, including ready-made
+policies, custom label scoping and a sample ProjectType carrying a baseline
+policy:
+
+* link:https://github.com/openchoreo/community-modules/tree/main/security-kubewarden[The security-kubewarden module]
+* link:https://openchoreo.dev/ecosystem/kubewarden/[OpenChoreo ecosystem: Kubewarden]
