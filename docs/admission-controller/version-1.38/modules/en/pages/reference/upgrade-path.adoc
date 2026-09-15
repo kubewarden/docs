@@ -92,7 +92,7 @@ you must review before you upgrade to a specific version.
 === v1.37 to v1.38
 
 * Namespaced policies (`AdmissionPolicy` and `AdmissionPolicyGroup`) can
-  target only the resources that part of an allow list. The Helm
+  target only the resources that are part of an allow list. The Helm
   value `namespacedPoliciesAllowedResources` sets this list. After the
   upgrade, a policy that targets a resource that is not in the default
   allow list gets the `rejected` status. The controller also removes the
