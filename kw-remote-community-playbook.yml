@@ -8,7 +8,12 @@ content:
   sources:
     - url: https://github.com/kubewarden/docs.git
       branches: [main]
-      start_paths: [shared, docs/kw/version-*, docs/admission-controller/version-*, docs/sbom-scanner/v*]
+      start_paths: [
+        shared, docs/kw/version-*,
+        docs/admission-controller/version-*,
+        docs/sbom-scanner/version-*,
+        docs/runtime-enforcer/version-*
+      ]
 
 ui:
   bundle:
@@ -20,7 +25,6 @@ asciidoc:
   attributes:
     kw-build-community: true
     build-type: community
-    ga-build: true
     page-pagination: ''
     tabs-sync-option: ''
   extensions:

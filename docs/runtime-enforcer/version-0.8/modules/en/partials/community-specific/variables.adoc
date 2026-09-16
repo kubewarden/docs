@@ -1,0 +1,1 @@
+// Here goes version specific, product-specific shared attributes and content

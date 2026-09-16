@@ -1,0 +1,7 @@
+name: runtime-enforcer
+title: Runtime Enforcer
+version: "0.8"
+display: "0.8-latest"
+start_page: en:introduction.adoc
+nav:
+  - modules/en/nav.adoc

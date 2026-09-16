@@ -1,0 +1,5 @@
+:rte-name: Kubewarden Runtime Enforcer
+:rte-short-name: Runtime Enforcer
+:rte-abbrev: RTE
+
+:runtime-enforcer-helm-chart: https://github.com/kubewarden/helm-charts/tree/main/charts/runtime-enforcer

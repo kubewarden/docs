@@ -1,0 +1,45 @@
+include::partial$variables.adoc[]
+
+= {rte-name} Learning Mode Configuration
+:revdate: 2026-09-16
+:page-revdate: {revdate}
+
+== Overview
+
+You can configure runtime-enforcer to operate in learning mode, allowing it
+to observe process executions in your workloads and learn the executable paths
+that run. Then, it creates or update a `WorkloadPolicyProposal` in the
+workload namespace with the list of observed executables.
+
+== Configuration Options
+By default, {rte-name} starts in *learning* mode for **all namespaces**:
+
+[source,yaml]
+----
+learning:
+  namespaceSelector:
+    matchExpressions:
+      - key: kubernetes.io/metadata.name
+        operator: Exists
+----
+
+You can adjust this behaviour at install/upgrade time:
+
+- Disable behaviour learning entirely. Enforcement defined by `WorkloadPolicy`
+  continues to work, but no new `WorkloadPolicyProposal` is generated:
++
+[source,bash]
+----
+helm upgrade --install runtime-enforcer runtime-enforcer/runtime-enforcer \
+  --namespace runtime-enforcer \
+  --set-json 'learning.namespaceSelector={}'
+----
+
+- Restrict learning to specific namespaces using a namespaceSelector:
++
+[source,bash]
+----
+helm upgrade --install runtime-enforcer runtime-enforcer/runtime-enforcer \
+  --namespace runtime-enforcer \
+  --set-json 'learning.namespaceSelector={"matchLabels":{"env":"prod"}}'
+----
