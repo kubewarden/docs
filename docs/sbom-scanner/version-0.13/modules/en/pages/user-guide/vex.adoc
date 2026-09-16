@@ -1,13 +1,14 @@
 include::partial$variables.adoc[]
 
 = VEX Support
-:revdate: 2026-06-15
+:revdate: 2026-09-01
 :page-revdate: {revdate}
 :description: Use VEX hubs to enrich {sboms-name} vulnerability findings.
 
-VEX is a format used to convey information about the exploitability of vulnerabilities in software products and share them with scanning tools.
+VEX communicates vulnerability exploitability information. Software
+projects can share VEX documents with scanning tools.
 
-The use of this format can sensitively reduce the number of vulnerabilities in the final vulnerability report, which is more often full of false positives entries.
+VEX can reduce false-positive vulnerability findings in the final report.
 
 If you want to know more about VEX, take a look https://github.com/openvex/spec[here].
 
@@ -19,9 +20,9 @@ If you want to know more about VEX Hub, take a look https://github.com/aquasecur
 
 == Getting Started
 
-In order to scan `Registries` using VEX, you just have to create (one, or more) `VEXHub` resources.
+To scan `Registries` with VEX, create one or more `VEXHub` resources.
 
-Here's an example of `VEXHub` resource (you can find it under https://github.com/kubewarden/sbomscanner/blob/main/examples/vexhub.yaml[`examples/vexhub.yaml`]:
+This is a `VEXHub` resource example. See https://github.com/kubewarden/sbomscanner/blob/main/examples/vexhub.yaml[`examples/vexhub.yaml`].
 
 [source,yaml]
 ----
@@ -41,17 +42,19 @@ Apply the resource with:
 kubectl apply -f examples/vexhub.yaml
 ----
 
-Then, run the scan applying a https://github.com/kubewarden/sbomscanner/blob/main/examples/scanjob.yaml[`ScanJob`] configured to scan the desired registry.
+Apply a https://github.com/kubewarden/sbomscanner/blob/main/examples/scanjob.yaml[`ScanJob`] that scans the target registry.
 
-{sboms-name} will automatically detect the presence of `VEXHub` resources and will include them in the scan.
+{sboms-name} automatically detects `VEXHub` resources and includes them in
+the scan.
 
-Since `VEXHub` CRD is cluster-scoped, this means that you can use the same configuration across multiple registries.
+The `VEXHub` custom resource is cluster-scoped. You can use the same
+configuration for multiple registries.
 
 === Managing Multiple VEX Hub Repositories
 
 You can configure an arbitrary number of `VEXHub` repositories within your cluster.
 
-If, for some reasons, you want to disable some of them, you can just patch their `spec.enabled` to `false`.
+To disable a VEX Hub, set `spec.enabled` to `false`.
 
 This will let {sboms-name} exclude the `VEXHub` resource when scanning the registries.
 

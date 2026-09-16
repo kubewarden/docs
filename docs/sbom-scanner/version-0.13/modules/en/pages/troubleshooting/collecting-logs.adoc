@@ -1,13 +1,13 @@
 include::partial$variables.adoc[]
 
 = Collecting logs for debugging
-:revdate: 2026-06-15
+:revdate: 2026-09-11
 :page-revdate: {revdate}
 :description: Collect {sboms-name} logs and support bundles for troubleshooting.
 
 == Install dependencies
 
-Please follow the instructions in the xref:quickstart.adoc[quickstart guide] to ensure you have the necessary dependencies installed.
+Install the dependencies in the xref:quickstart.adoc[quickstart guide].
 
 The `sbomscanner-debug.sh` script additionally requires:
 
@@ -62,7 +62,8 @@ Example output:
 ✅ Verification passed.
 ----
 
-If your release lives in a non-standard namespace and discovery fails, you can still pin it explicitly:
+If discovery fails for a release in a non-standard namespace, specify the
+namespace:
 
 [source,bash]
 ----
@@ -73,7 +74,11 @@ If your release lives in a non-standard namespace and discovery fails, you can s
 
 [WARNING]
 ====
-⚠️ The bundle may contain sensitive data. Pod logs include container registry names and URIs, and by default the bundle also includes the rendered Helm values and manifest, which can contain credentials depending on how the chart was configured (for example image pull secrets, registry auth, or any value passed via `--set`). Review the bundle contents before sharing.
+The bundle can contain sensitive data. Pod logs include container registry names
+and URIs. By default the bundle also includes the rendered Helm values and
+manifest. These can contain credentials depending on how the chart was
+configured. For example image pull secrets, registry auth, or any value passed
+via `--set`. Review the bundle contents before sharing.
 ====
 
 Using https://github.com/kubewarden/sbomscanner/blob/main/hack/sbomscanner-debug.sh[the script found in the sbomscanner repository]:

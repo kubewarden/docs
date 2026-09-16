@@ -1,17 +1,23 @@
 include::partial$variables.adoc[]
 
 = Scanning Workloads
-:revdate: 2026-06-15
+:revdate: 2026-09-11
 :page-revdate: {revdate}
 :description: Configure workload scanning and understand workload vulnerability reports.
 
 == Overview
 
-{sboms-name} can scan container registries based on explicit xref:user-guide/scanning-registries.adoc[Registry configurations], but often what you really want to know is: which vulnerabilities affect the workloads actually running in my cluster right now?
+{sboms-name} can scan container registries with explicit xref:user-guide/scanning-registries.adoc[Registry configurations]. The important question is which vulnerabilities affect workloads in the cluster.
 
-A registry might contain thousands of images, but only a fraction of those are deployed at any given time. The WorkloadScan feature closes this gap. It watches running workloads, discovers the container images they use, sets up the scanning infrastructure automatically, and produces per-workload vulnerability reports that answer the question "what needs to be fixed in this Deployment?".
+A registry can contain thousands of images. Only some of these images are
+deployed. The WorkloadScan feature watches running workloads. It finds the
+container images that they use. It configures scans and produces vulnerability
+reports for each workload.
 
-Under the hood, {sboms-name} creates managed `Registry` resources for each discovered registry host, scoped to only the image tags that are actually in use. It then produces a `WorkloadScanReport` for each workload. The report aggregates vulnerability findings across all containers in the workload, giving you a single place to check the security posture of a Deployment, StatefulSet, or any other workload type.
+Internally, {sboms-name} creates managed `Registry` resources for each
+discovered registry host. These resources contain only image tags in use. It
+then produces a `WorkloadScanReport` for each workload. The report aggregates
+vulnerability findings for all workload containers.
 
 === Supported workload types
 
@@ -25,11 +31,28 @@ Under the hood, {sboms-name} creates managed `Registry` resources for each disco
 * CronJobs (resolved from Job → CronJob)
 * Pods with no controller owner
 
-Any other controller kind that owns a pod is also supported and reported under its own kind. For example, mirror (static) pods owned by a `Node`, pods owned by a https://github.com/rancher/k3k/blob/main/docs/crds/crds.md#cluster[`Cluster`] resource from https://github.com/rancher/k3k[k3k], or pods owned by a https://cloudnative-pg.io/docs/devel/cloudnative-pg.v1#cluster[`Cluster`] resource from https://cloudnative-pg.io/documentation/[CloudNativePG], all produce a `WorkloadScanReport` named after that owning resource (e.g. `node-<uid>` or `cluster-<uid>`) rather than being collapsed into a `Pod` report. Only the ReplicaSet → Deployment and Job → CronJob chains are walked up; every other owner kind is used as-is.
+Other controller kinds that own a pod are also supported and reported under
+their own kind. For example:
+
+* mirror (static) pods owned by a `Node`, pods owned by a
+  https://github.com/rancher/k3k/blob/main/docs/crds/crds.md#cluster[`Cluster`]
+  resource from https://github.com/rancher/k3k[k3k]
+* pods owned by a
+  https://cloudnative-pg.io/docs/devel/cloudnative-pg.v1#cluster[`Cluster`]
+  resource from https://cloudnative-pg.io/documentation/[CloudNativePG].
+
+All produce a `WorkloadScanReport` named after that owning resource (for
+example, `node-<uid>` or `cluster-<uid>`) rather than being collapsed into a
+`Pod` report. Only the ReplicaSet → Deployment and Job → CronJob chains are
+walked up; every other owner kind is used as-is.
+
 
 === Default behavior
 
-The WorkloadScan reconcilers are enabled by default when installing {sboms-name} via the Helm chart. Workload scanning becomes active once you create a `WorkloadScanConfiguration` resource. A sample configuration is available in the https://github.com/kubewarden/sbomscanner/blob/main/examples/workloadscanconfiguration.yaml[examples folder].
+When you install {sboms-name} with the Helm chart, WorkloadScan reconcilers are
+enabled by default. Workload scanning becomes active after you create a
+`WorkloadScanConfiguration` resource. A sample configuration is in the
+https://github.com/kubewarden/sbomscanner/blob/main/examples/workloadscanconfiguration.yaml[examples folder].
 
 == Configuration
 
@@ -75,7 +98,7 @@ a|Enable or disable workload scanning. See xref:#disabling-workload-scanning[Dis
 |`true`
 
 |`artifactsNamespace`
-a|Namespace where managed `Registry`, `ScanJob`, `Image`, `SBOM`, and `VulnerabilityReport` resources are created. `WorkloadScanReport` resources are always created in the workload's namespace regardless of this setting. If omitted or empty, managed artifacts are created in the workload's namespace. See xref:#multi-tenancy-setup[Multi-tenancy setup] for details.
+a|Namespace for managed `Registry`, `ScanJob`, `Image`, `SBOM`, and `VulnerabilityReport` resources. `WorkloadScanReport` resources are always in the workload namespace. If this field is empty, all managed resources use the workload namespace. See xref:#multi-tenancy-setup[Multi-tenancy setup].
 |Workload's namespace (when omitted/empty)
 
 |`scanOnChange`
@@ -83,7 +106,7 @@ a|Trigger a scan when a managed `Registry` resource is created or updated.
 |`true`
 
 |`scanInterval`
-a|How often discovered registries are rescanned. The vulnerability database is continuously updated, so periodic rescans ensure reports reflect the latest findings even if the workload hasn't changed.
+a|Frequency of scans for discovered registries. The vulnerability database updates continuously. Periodic scans keep reports current when the workload does not change.
 |-
 
 |`platforms`
@@ -109,15 +132,20 @@ a|Allow connections to registries without TLS verification.
 
 [NOTE]
 ====
-The `artifactsNamespace` field can only be changed when `enabled` is `false`. This prevents moving artifacts while scans are actively running.
+Set `enabled` to `false` before you change `artifactsNamespace`. This prevents
+artifact moves during active scans.
 ====
 
 [#scanning-multiple-platforms]
 === Scanning multiple platforms
 
-Many container images are published as multi-arch manifests that contain variants for different CPU architectures (e.g., `linux/amd64`, `linux/arm64`). By default, {sboms-name} scans all platforms available in the image manifest.
+Many container images use multi-architecture manifests. These manifests contain
+variants for CPU architectures, for example `linux/amd64` and `linux/arm64`.
+By default, {sboms-name} scans all platforms in the image manifest.
 
-In clusters that only run nodes of a specific architecture, scanning all platforms produces reports for architectures that are not actually deployed, which adds unnecessary scanning time and storage. The `platforms` field lets you restrict scanning to only the architectures your cluster runs:
+In clusters with one node architecture, scans of all platforms create reports
+for undeployed architectures. This increases scan time and storage. Use the
+`platforms` field to restrict scans to cluster architectures:
 
 [source,yaml]
 ----
@@ -146,9 +174,15 @@ When multiple platforms are specified, {sboms-name} produces separate `Vulnerabi
 
 There are two levels of disabling the feature:
 
-*Disabling at the configuration level* either sets `enabled: false` in the `WorkloadScanConfiguration` resource or deletes the resource entirely. When `enabled` is `false`, the reconcilers remain running but stop processing workloads. This is useful when you want to temporarily pause scanning without removing the entire configuration, or when you need to change the `artifactsNamespace` field (which requires `enabled` to be `false`). Deleting the `WorkloadScanConfiguration` resource also disables scanning and causes all managed resources to be cleaned up.
+*Disabling at the configuration level* sets `enabled: false` or deletes the
+`WorkloadScanConfiguration` resource. When `enabled` is `false`, reconcilers
+remain running but do not process workloads. Use this setting to pause scans or
+change `artifactsNamespace`. Deleting the configuration also disables scanning
+and removes managed resources.
 
-*Disabling at the Helm chart level* prevents the reconcilers from starting entirely. No workload-scan-related resources are watched and no CPU or memory overhead is incurred. Use this when you don't need workload scanning at all:
+*Disabling at the Helm chart level* prevents the reconcilers from starting. No
+workload-scan resources are watched. This eliminates CPU and memory overhead.
+Use this setting when you do not need workload scanning:
 
 [source,yaml]
 ----
@@ -157,7 +191,8 @@ controller:
     enabled: false
 ----
 
-This is particularly useful for clusters where scanning is handled through explicit `Registry` configurations and the workload-oriented perspective is not needed, or in resource-constrained environments where the additional controllers would consume resources without providing value.
+Use this setting when explicit `Registry` configurations handle scanning. It is
+also useful when additional controllers use too many resources.
 
 == Enabling scanning for a namespace
 
@@ -177,7 +212,7 @@ Create a workload in that namespace:
 kubectl create deployment nginx --image=nginx:1.25 -n prod
 ----
 
-{sboms-name} will automatically:
+{sboms-name} automatically does these actions:
 
 [arabic]
 . Detect the container images used by the Deployment's pods
@@ -185,7 +220,10 @@ kubectl create deployment nginx --image=nginx:1.25 -n prod
 . Trigger a scan of that image (because `scanOnChange` is `true` by default)
 . Create a `WorkloadScanReport` in the `prod` namespace for the Deployment
 
-If you later remove the label from the namespace, {sboms-name} cleans up all managed resources for that namespace: the namespace's entries are removed from managed `Registry` resources, and `WorkloadScanReport` resources are deleted. Similarly, when a workload is deleted or scaled to zero, its report is removed.
+If you remove the namespace label, {sboms-name} removes managed resources for
+that namespace. It removes namespace entries from managed `Registry` resources.
+It also deletes `WorkloadScanReport` resources. When a workload is deleted or
+scaled to zero, {sboms-name} removes its report.
 
 == Understanding WorkloadScanReport
 
@@ -298,16 +336,24 @@ Each container in the report has a `scanStatus` that tracks the progress of its 
 
 {sboms-name} creates and manages `Registry` resources behind the scenes to drive scanning. These resources are labeled with `sbomscanner.kubewarden.io/workloadscan: "true"` and `app.kubernetes.io/managed-by: sbomscanner`.
 
-Managed resources are protected: external modifications are rejected before they reach the cluster. Validating webhooks block unauthorized changes to managed `Registry` resources, and an admission plugin on the storage API extension server blocks unauthorized changes to managed `WorkloadScanReport` resources. Only the {sboms-name} controller service account is authorized to modify them.
+Managed resources are protected from external changes. Validating webhooks
+block changes to managed `Registry` resources. A storage API admission plugin
+blocks changes to managed `WorkloadScanReport` resources. Only the
+{sboms-name} controller service account can modify them.
 
-You generally don't need to interact with managed `Registry` resources directly. They are an implementation detail of the WorkloadScan feature.
+You do not usually need to interact directly with managed `Registry` resources.
+They are part of the WorkloadScan feature implementation.
 
 [#multi-tenancy-setup]
 == Multi-tenancy setup
 
-When `artifactsNamespace` is set, all scan artifacts (`Registry`, `Image`, `SBOM`, `VulnerabilityReport`) are centralized in that namespace, while `WorkloadScanReport` resources are always created in the workload's namespace. This is the simplest setup: if the same image runs in multiple namespaces, it is scanned only once, and all reports reference the shared results.
+When `artifactsNamespace` is set, scan artifacts are stored in that namespace.
+These artifacts include `Registry`, `Image`, `SBOM`, and `VulnerabilityReport`
+resources. `WorkloadScanReport` resources always use the workload namespace. If
+the same image runs in several namespaces, {sboms-name} scans it once.
 
-For multi-tenant clusters where teams should not have cross-namespace visibility into scan data, omit the `artifactsNamespace` field:
+For multi-tenant clusters without cross-namespace scan-data access, omit
+`artifactsNamespace`:
 
 [source,yaml]
 ----
@@ -321,9 +367,15 @@ spec:
       sbomscanner.kubewarden.io/workloadscan: "true"
 ----
 
-Without `artifactsNamespace`, {sboms-name} creates all resources in the workload's own namespace. Each namespace gets its own `Registry`, `Image`, `SBOM`, `VulnerabilityReport`, and `WorkloadScanReport` resources. This provides full namespace-level isolation: teams only see scan data related to their own workloads and standard Kubernetes RBAC controls access to all resources.
+Without `artifactsNamespace`, {sboms-name} creates resources in the workload
+namespace. Each namespace gets its own `Registry`, `Image`, `SBOM`,
+`VulnerabilityReport`, and `WorkloadScanReport` resources. Teams see scan data
+for their workloads only. Standard Kubernetes RBAC controls resource access.
 
-The trade-off is duplication. If the same image (e.g., `nginx:1.25`) runs in multiple namespaces, it is scanned independently in each one, producing separate `Image`, `SBOM`, and `VulnerabilityReport` resources per namespace. This means more scanning work and more storage, but guarantees that no data leaks across namespace boundaries.
+This configuration duplicates data. If `nginx:1.25` runs in several
+namespaces, each namespace scans it independently. Each namespace has separate
+`Image`, `SBOM`, and `VulnerabilityReport` resources. This configuration uses
+more scan resources and storage. It prevents data access across namespaces.
 
 [cols="<,<,<,<",options="header",]
 |===
@@ -332,4 +384,6 @@ The trade-off is duplication. If the same image (e.g., `nginx:1.25`) runs in mul
 |Without `artifactsNamespace` |Workload namespace |Full namespace isolation |Images shared across namespaces are scanned and stored independently
 |===
 
-Choose the setup that best fits your cluster's tenancy model. For single-tenant clusters or clusters with a dedicated security team reviewing all findings, the default centralized setup is simpler and avoids redundant work. For multi-tenant clusters where teams should not have cross-namespace visibility into scan data, omit `artifactsNamespace`.
+Use the centralized setup for single-tenant clusters. It also suits clusters
+with a dedicated security team. For multi-tenant clusters without
+cross-namespace scan-data access, omit `artifactsNamespace`.
