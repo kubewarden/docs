@@ -58,9 +58,14 @@ Example output:
 
 == StatefulSets ==
   ✅ statefulset 'sbomscanner-nats' running, all pods ready.
+
+== DaemonSets ==
+  ✅ daemonset 'sbomscanner-worker-node' running, all pods ready.
 ────────────────────────────────────────────────────────────────────
 ✅ Verification passed.
 ----
+
+The `DaemonSets` section is skipped when node scanning is disabled in the chart (`controller.nodeScan.enabled=false`).
 
 If your release lives in a non-standard namespace and discovery fails, you can still pin it explicitly:
 
@@ -85,7 +90,7 @@ Using https://github.com/kubewarden/sbomscanner/blob/main/hack/sbomscanner-debug
 
 By default the script collects:
 
-* Logs from the pods of all {sboms-name} components (controller, workers, storage, NATS), including init containers and previous-container logs for crash-looped pods.
+* Logs from the pods of all {sboms-name} components (controller, workers, node workers, storage, NATS), including init containers and previous-container logs for crash-looped pods.
 * Logs from the CloudNativePG cluster pods running in the {sboms-name} namespace.
 * Helm release metadata (`values`, rendered `manifest`, history).
 
@@ -96,7 +101,7 @@ By default the script collects:
 |Flag |Purpose
 |`--namespace <ns>` |Force a specific install namespace (otherwise auto-discovered)
 |`--cnpg-namespace <ns>` |Also collect logs from the CNPG operator in that namespace (e.g. `cnpg-system`)
-|`--manifests` |Also dump every {sboms-name} CR (cluster-scoped `VEXHub` and `WorkloadScanConfiguration`; namespaced `Registry`, `ScanJob`, `Image`, `VulnerabilityReport`, `WorkloadScanReport` collected cluster-wide), plus CNPG `Cluster`/`Pooler`/`Backup`/`ScheduledBackup` CRs, events and `kubectl describe` for every pod in the install namespace
+|`--manifests` |Also dump every {sboms-name} CR (cluster-scoped `VEXHub`, `WorkloadScanConfiguration`, `NodeScanConfiguration`, `NodeScanJob`, `NodeSBOM` and `NodeVulnerabilityReport`; namespaced `Registry`, `ScanJob`, `Image`, `VulnerabilityReport`, `WorkloadScanReport` collected cluster-wide), plus CNPG `Cluster`/`Pooler`/`Backup`/`ScheduledBackup` CRs, events and `kubectl describe` for every pod in the install namespace
 |`--output-dir <dir>` |Write the bundle to `<dir>` instead of the current directory
 |`--compress-results` |Tar+gzip the bundle into a single `.tar.gz`
 |===
