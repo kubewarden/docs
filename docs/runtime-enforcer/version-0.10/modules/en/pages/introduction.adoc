@@ -1,0 +1,40 @@
+include::partial$variables.adoc[]
+
+= {rte-name}
+:revdate: 2026-09-17
+:page-revdate: {revdate}
+:description: {rte-name} uses eBPF to monitor and enforce process-execution security policies for Kubernetes workloads.
+
+{rte-name} is a Kubernetes security tool that uses eBPF (Extended Berkeley
+Packet Filter) to observe process executions in your workloads and to enforce
+allow-list based security policies at the kernel level.
+
+It operates in three phases:
+
+* *Learn* -- observe process executions and generate a `WorkloadPolicyProposal`
+  per workload.
+* *Monitor* -- report violations of an approved `WorkloadPolicy` without
+  blocking them.
+* *Protect* -- block executions that violate the policy allow-list.
+
+== Getting started
+
+* xref:installation/quickstart.adoc[] -- deploy {rte-short-name} and walk
+  through the learn/monitor/protect workflow.
+* xref:compatibility.adoc[] -- kernel, architecture and platform requirements.
+* xref:phases.adoc[] -- understand the learn, monitor and protect phases in
+  detail.
+
+== Documentation map
+
+* *Installation*: xref:installation/quickstart.adoc[Quick Start],
+  xref:installation/uninstall.adoc[Uninstall]
+* *Concepts & operations*: xref:phases.adoc[Phases],
+  xref:learning_mode_configuration.adoc[Learning Mode Configuration],
+  xref:known_limitations.adoc[Known Limitations],
+  xref:troubleshooting.adoc[Troubleshooting]
+* *Reference*: xref:crd.adoc[CRD API Reference],
+  xref:kubectl_plugin.adoc[kubectl Plugin],
+  xref:resource-consumption.adoc[Resource Consumption]
+* *Development*: xref:build.adoc[Build Requirements],
+  xref:setup-development-env.adoc[Development Environment]

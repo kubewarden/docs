@@ -9,7 +9,8 @@ content:
     - url: https://github.com/kubewarden/docs.git
       branches: [main]
       start_paths: [
-        shared, docs/kw/version-*,
+        shared,
+        docs/kw/version-*,
         docs/admission-controller/version-*,
         docs/sbom-scanner/version-*,
         docs/runtime-enforcer/version-*

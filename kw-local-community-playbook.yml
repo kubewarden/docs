@@ -9,7 +9,8 @@ content:
     - url: ./
       branches: HEAD
       start_paths: [
-        shared, docs/kw/version-*,
+        shared,
+        docs/kw/version-*,
         docs/admission-controller/version-*,
         docs/sbom-scanner/version-*,
         docs/runtime-enforcer/version-*
