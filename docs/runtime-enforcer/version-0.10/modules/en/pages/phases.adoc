@@ -4,7 +4,7 @@ include::partial$variables.adoc[]
 :revdate: 2026-09-17
 :page-revdate: {revdate}
 
-This document explains the three *phases* of runtime-enforcer and how to move
+This document explains the three *phases* of {rte-name} and how to move
 between them.
 
 == Learn phase
@@ -12,7 +12,7 @@ between them.
 === What happens during this phase
 
 * *Processes aren't blocked.*
-* Runtime-enforcer observes process executions in your workloads and learns the
+* {rte-short-name} observes process executions in your workloads and learns the
   executable paths that run.
 * For each learned executable, runtime-enforcer creates or updates a
   `WorkloadPolicyProposal` in the workload namespace and adds the executable
@@ -110,7 +110,7 @@ is prohibited.
 
 [WARNING]
 ====
-By default in the runtime-enforcer Helm chart, pods that reference a
+By default in the {rte-short-name} Helm chart, pods that reference a
 non-existing policy through the `security.rancher.io/policy` label are
 prevented from running. This ensures that when a pod starts, it has all
 protections ready. Workloads and pods without the `security.rancher.io/policy`
@@ -130,7 +130,7 @@ To enable fail-open behavior, set `agent.nriFailopen=true`.
 * *Used/updated*: `WorkloadPolicy`
 ** `.spec.mode` controls whether violations are blocked (`protect`) or allowed
    (`monitor`).
-** If a policy is still in use by running workloads, runtime-enforcer will
+** If a policy is still in use by running workloads, {rte-short-name} will
    prevent it from being deleted until it is no longer referenced.
 
 [#protect-phase]

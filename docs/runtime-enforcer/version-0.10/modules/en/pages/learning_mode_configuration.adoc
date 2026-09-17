@@ -6,7 +6,7 @@ include::partial$variables.adoc[]
 
 == Overview
 
-You can configure runtime-enforcer to operate in learning mode, allowing it
+You can configure {rte-name} to operate in learning mode, allowing it
 to observe process executions in your workloads and learn the executable paths
 that run. Then, it creates or update a `WorkloadPolicyProposal` in the
 workload namespace with the list of observed executables.

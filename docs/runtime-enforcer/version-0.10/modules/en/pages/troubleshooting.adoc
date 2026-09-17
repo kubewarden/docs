@@ -4,7 +4,7 @@ include::partial$variables.adoc[]
 :revdate: 2026-09-17
 :page-revdate: {revdate}
 
-This document provides guidance for diagnosing issues with runtime-enforcer.
+This document provides guidance for diagnosing issues with {rte-name}.
 
 == Enable verbose logs
 
@@ -138,7 +138,7 @@ Use the `--all-namespaces` flag to include policies from every namespace, and
 == Debugger
 
 The debugger is an optional Kubernetes Deployment that helps diagnose issues
-between the runtime-enforcer agents and the actual state of the Kubernetes
+between the {rte-short-name} agents and the actual state of the Kubernetes
 cluster.
 
 At the moment, it supports only a few basic operations listed below.
@@ -183,7 +183,7 @@ detached from the container runtime. This can cause the agent to repeatedly
 retry connecting to the NRI plugin, resulting in the agent not coming up as
 expected.
 
-When this happens, you will see the runtime-enforcer agent crashing with the
+When this happens, you will see the {rte-short-name} agent crashing with the
 following information in its logs:
 
 ----
@@ -257,7 +257,7 @@ The *required plugins* feature is available since *containerd 2.2* and *CRI-O
 
 ==== Workloads
 
-For workloads that you want to ensure have runtime-enforcer protection present,
+For workloads that you want to ensure have {rte-short-name} protection present,
 add the `required-plugins.noderesource.dev` annotation to its pod spec:
 
 [source,yaml]
