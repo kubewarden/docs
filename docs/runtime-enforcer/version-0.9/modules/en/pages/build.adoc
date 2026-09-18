@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 
+[#_build-system-dependencies]
 == Build System Dependencies
 
 On SLES/openSUSE:
