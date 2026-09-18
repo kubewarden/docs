@@ -82,6 +82,7 @@ ls /sys/kernel/btf/vmlinux
 grep CONFIG_BPF <your kernel config>
 ----
 
+ifeval::["{build-type}" == "product"]
 == Rancher Integration
 
 [cols="2,2,6"]
@@ -104,6 +105,7 @@ grep CONFIG_BPF <your kernel config>
 |Expected
 |Should work but not yet verified
 |===
+endif::[]
 
 == Support
 
