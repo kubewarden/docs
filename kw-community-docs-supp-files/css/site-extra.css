@@ -56,12 +56,12 @@ a:hover { color: var(--accent-color); }
 #search-input::placeholder { color: var(--text-muted); opacity: 1; }
 #search-input:focus { border-color: var(--accent-color); }
 
-/* Sidebar: component picker sits above the navigation tree. */
+/* Sidebar: component picker stays at the bottom and opens upward. */
 .body { min-height: calc(100vh - var(--header-height)); }
 .nav-container { width: var(--sidebar-width); color: var(--text-body); font-size: .9rem; }
 .nav { background: var(--page-bg); border-right: 1px solid var(--border); box-shadow: none; }
 .nav .panels { position: relative; }
-.nav-panel-menu { height: 100%; padding-top: 6rem; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+.nav-panel-menu { height: calc(100% - 6rem); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
 .nav-menu { padding: .75rem 1.25rem 2rem 1.75rem; line-height: 1.5; }
 .nav-menu h3.title { color: var(--text); font-weight: 700; padding: .25rem 0 .75rem; font-size: .85rem; }
 .nav-menu a { color: var(--text-body); }
@@ -72,14 +72,15 @@ a:hover { color: var(--accent-color); }
 .is-current-page > .nav-link, .is-current-page > .nav-text { background: var(--surface-tint); color: var(--accent-color); font-weight: 650; }
 .nav-item-toggle { height: 1.6rem; width: 1.6rem; margin-left: -1.6rem; background: none; color: var(--text-muted); }
 .nav-item-toggle::before { content: ''; display: block; width: .4rem; height: .4rem; border-right: 1.5px solid currentColor; border-top: 1.5px solid currentColor; transform: rotate(45deg); margin: auto; }
-.nav-panel-explore, .nav-panel-explore:not(:first-child) { top: 0; bottom: auto; max-height: 75%; background: var(--surface); border-bottom: 1px solid var(--border); }
+.nav-panel-explore, .nav-panel-explore:not(:first-child) { top: auto; bottom: 0; max-height: 75%; flex-direction: column-reverse; background: var(--surface); border-top: 1px solid var(--border); }
 .nav-panel-explore .context { width: 100%; height: 6rem; padding: 1rem; gap: .6rem; background: var(--page-bg); color: var(--text); box-shadow: none; border: 0; text-align: left; font-size: .85rem; line-height: 1.3; }
 .context-copy { display: flex; flex-direction: column; gap: .35rem; }
 .context-label { font-size: .7rem; font-weight: 600; color: var(--text-muted); letter-spacing: .06em; text-transform: uppercase; }
 .context .title { font-weight: 650; }
 .nav-panel-explore .context .version { color: var(--accent-color); margin-left: auto; flex-shrink: 0; }
-.nav-panel-explore .context .version::after { background: none; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); width: .4rem; height: .4rem; margin: -.25rem .25rem 0 .6rem; }
-.nav-panel-explore .components { background: var(--surface); padding: 1rem; box-shadow: none; border-top: 1px solid var(--border); }
+.nav-panel-explore .context .version::after { background: none; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(225deg); width: .4rem; height: .4rem; margin: .25rem .25rem 0 .6rem; }
+.nav-panel-explore.is-active .context .version::after { transform: rotate(45deg); margin-top: -.25rem; }
+.nav-panel-explore .components { min-height: 0; background: var(--surface); padding: 1rem; box-shadow: none; border-bottom: 1px solid var(--border); }
 .nav-panel-explore .component .title { color: var(--text); font-size: .85rem; }
 .nav-panel-explore .component + .component { border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1rem; }
 .nav-panel-explore .versions { margin: .25rem 0 0; gap: .35rem; }
