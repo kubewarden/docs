@@ -1,0 +1,1057 @@
+include::partial$variables.adoc[]
+
+= {ne-name} Quick Start
+:revdate: 2026-09-18
+:page-revdate: {revdate}
+
+Welcome to the {ne-name} Quick Start.
+
+This guide walks you through the following steps:
+
+* Preparing a cluster with one of the supported data-plane providers: Istio ambient, Calico or Cilium.
+* Deploying {ne-short-name} with `helm`.
+* Deploying a simple workload and inspecting the `WorkloadNetworkPolicyProposal` resources that {ne-short-name} learns from the observed traffic.
+* Promoting those proposals into `WorkloadNetworkPolicy` resources in `monitor` mode and observing violations without blocking traffic.
+* Switching the policies to `protect` mode and seeing enforcement in action.
+* Acknowledging a violation you consider expected.
+
+'''
+
+== Prerequisites
+
+Before you start, you need:
+
+* A Kubernetes cluster you can throw away, for example a link:https://kind.sigs.k8s.io/[kind] cluster.
+  This guide creates one for you.
+* `kubectl`, `helm` and `curl` installed locally.
+* `cert-manager` and `cert-manager-csi-driver` in the cluster.
+  They are used to issue the TLS material of the bundled OpenTelemetry collector.
+
+[NOTE]
+====
+This page documents the chart in this repository (`charts/network-enforcer`), which is published as
+chart version `0.2.0` and later.
+Every `--set` flag used here exists in `charts/network-enforcer/values.yaml`.
+====
+
+== Choose your provider
+
+{ne-short-name} does not observe traffic on its own: it consumes flow information from the data plane
+already running in your cluster, and it enforces policies with the native policy API of that data plane.
+Pick one provider and follow only its section.
+
+[cols="1,1,2,2,1"]
+|===
+| Provider | `controller.provider.name` | Learning source | Enforced with | Generated policy backend
+
+| Istio ambient
+| `istio` (default)
+| `ztunnel` access logs, tailed by the `istio-fluent-bit` DaemonSet and pushed to the controller over OTLP
+| Istio `AuthorizationPolicy`
+| `backend: istio`
+
+| Calico
+| `calico`
+| Calico Goldmane flow API over mTLS (`goldmane.calico-system.svc:7443`)
+| Kubernetes `NetworkPolicy`
+| `backend: kubernetes`
+
+| Cilium
+| `cilium`
+| Hubble Relay gRPC API (`hubble-relay.kube-system.svc:80`)
+| Kubernetes `NetworkPolicy`
+| `backend: kubernetes`
+|===
+
+The provider also decides the endpoint the controller connects to.
+When `controller.provider.endpoint` is empty, the chart uses the per-provider default listed above
+(for `istio` the value is the local OTLP port, `4317`).
+
+=== Option 1: Istio ambient
+
+The Istio ambient path keeps the cluster CNI in place and layers the ambient data plane on top of it,
+so a plain kind cluster with its default CNI is enough:
+
+[source,bash]
+----
+kind create cluster --name network-enforcer
+----
+
+Download `istioctl` and install the ambient profile:
+
+[source,bash]
+----
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.30.3 sh -
+
+./istio-1.30.3/bin/istioctl install --set profile=ambient \
+  --set values.cni.ambient.ipv6=false \
+  --set values.pilot.env.AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY=true \
+  --set values.ztunnel.env.AUTHZ_POLICY_INFO_LOGGING=true \
+  --set values.ztunnel.logAsJson=true \
+  --skip-confirmation
+----
+
+These `--set` flags are not optional for {ne-short-name}:
+
+* `AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY` lets `ztunnel` evaluate the dry-run `AuthorizationPolicy`
+  that `monitor` mode installs, without blocking traffic.
+* `AUTHZ_POLICY_INFO_LOGGING` makes `ztunnel` log the policy decision of every connection.
+* `logAsJson` makes `ztunnel` emit JSON access logs, which is the format the `istio-fluent-bit` pipeline
+  shipped with the chart parses.
+
+The `values.cni.ambient.ipv6=false` flag is not required by {ne-short-name}, but `istio-cni` programs
+IPv6 redirection rules by default and fails on IPv4-only nodes, which is what a default kind cluster
+gives you.
+Drop the flag if your cluster is dual-stack.
+
+Finally, enroll the namespaces you want to observe in the mesh.
+Do this *before* creating the workloads: `istio-cni` decides at pod creation time whether a pod's traffic
+is redirected to the node `ztunnel`.
+
+[source,bash]
+----
+kubectl label namespace default istio.io/dataplane-mode=ambient
+----
+
+[IMPORTANT]
+====
+Istio ambient authorization is L4 and identity based, which has three consequences for this guide:
+
+* Only TCP traffic is observed and enforced; UDP does not go through `ztunnel`.
+* Rules are written in terms of SPIFFE principals, so every workload should have its own
+  `ServiceAccount` — otherwise all workloads sharing the default service account share one identity.
+* Authorization is enforced on the receiving side, so {ne-short-name} only learns *ingress* proposals.
+====
+
+=== Option 2: Calico
+
+Calico is the cluster CNI, so create a kind cluster with the default CNI disabled:
+
+[source,bash]
+----
+curl -sSL https://raw.githubusercontent.com/kubewarden/network-enforcer/main/docs/yaml/kind_cluster.yaml \
+  | kind create cluster --name network-enforcer --config=-
+----
+
+Then install Calico. If you cloned this repository, run the helper script:
+
+[source,bash]
+----
+./hack/setup-calico.sh
+----
+
+Otherwise, run it straight from the repository:
+
+[source,bash]
+----
+curl -sSL https://raw.githubusercontent.com/kubewarden/network-enforcer/main/hack/setup-calico.sh | bash
+----
+
+The script installs the Calico CRDs and the Tigera operator with `goldmane.enabled=true`, waits for the
+Goldmane deployment, and then creates the `net-enf-goldmane-client-certs` Secret that {ne-short-name}
+uses as a client certificate when it scrapes flows from Goldmane.
+
+[IMPORTANT]
+====
+Run the script *before* installing the {ne-short-name} chart.
+The controller Deployment mounts `net-enf-goldmane-client-certs` from its own namespace, so the Secret —
+and therefore the `network-enforcer` namespace — must already exist.
+The script creates both for you; set `NETWORK_ENFORCER_NAMESPACE` if you install the chart somewhere
+other than `network-enforcer`.
+====
+
+=== Option 3: Cilium
+
+Cilium is the cluster CNI, so create a kind cluster with the default CNI disabled:
+
+[source,bash]
+----
+curl -sSL https://raw.githubusercontent.com/kubewarden/network-enforcer/main/docs/yaml/kind_cluster.yaml \
+  | kind create cluster --name network-enforcer --config=-
+----
+
+Then install Cilium. If you cloned this repository, run the helper script:
+
+[source,bash]
+----
+./hack/setup-cilium.sh
+----
+
+Otherwise, run it straight from the repository:
+
+[source,bash]
+----
+curl -sSL https://raw.githubusercontent.com/kubewarden/network-enforcer/main/hack/setup-cilium.sh | bash
+----
+
+The script installs Cilium with the settings {ne-short-name} needs, and waits for the agent, the
+operator and Hubble Relay to be ready:
+
+* `hubble.enabled=true` and `hubble.relay.enabled=true`, because the controller reads flows from the
+  Hubble Relay gRPC API.
+* `hubble.relay.tls.server.enabled=false`, because the controller currently talks to
+  `hubble-relay.kube-system.svc:80` in plaintext.
+* `policyDenyResponse=icmp`, so denied egress traffic is answered with an ICMP error instead of being
+  silently dropped.
+
+Use `CILIUM_VERSION` to pick a different Cilium version, for example
+`CILIUM_VERSION=1.19.7 ./hack/setup-cilium.sh`.
+
+== Install cert-manager and cert-manager-csi-driver
+
+The bundled OpenTelemetry collector terminates TLS with a certificate provisioned by
+`cert-manager-csi-driver`, so both components must be installed before the chart:
+
+[source,bash]
+----
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --set crds.enabled=true \
+  --wait
+
+helm install cert-manager-csi-driver jetstack/cert-manager-csi-driver \
+  --namespace cert-manager \
+  --wait
+----
+
+[NOTE]
+====
+For more information on configuring cert-manager, see the
+link:https://cert-manager.io/docs/installation/helm[cert-manager documentation].
+
+If you do not want to install cert-manager, you can deploy the chart with
+`--set telemetry.collectorStrategy=none`.
+{ne-short-name} then keeps working — learning, monitor and protect are unaffected — but violations are
+no longer exported as OpenTelemetry logs.
+====
+
+== Install the {ne-short-name} chart
+
+[source,bash]
+----
+helm repo add kubewarden https://charts.kubewarden.io
+helm repo update
+----
+
+Install the chart with the provider you prepared above (`istio`, `calico` or `cilium`):
+
+[source,bash]
+----
+helm install network-enforcer kubewarden/network-enforcer \
+  --namespace network-enforcer \
+  --create-namespace \
+  --set controller.provider.name=istio \
+  --set controller.wnpStatusUpdateInterval=3s \
+  --wait
+----
+
+`controller.wnpStatusUpdateInterval` is the interval at which the controller refreshes the violations in
+the status of every `WorkloadNetworkPolicy`.
+It is lowered from its default (`30s`) to make this demo responsive; in production you rarely need to
+change it.
+
+[NOTE]
+====
+If you cloned the repository you can install the very same chart from your checkout with
+`helm install network-enforcer ./charts/network-enforcer ...`.
+====
+
+== Verify the deployment
+
+[source,bash]
+----
+kubectl get pods -n network-enforcer
+----
+
+With the `istio` provider, the release runs the controller, the OpenTelemetry collector and the
+`istio-fluent-bit` DaemonSet that ships `ztunnel` access logs to the controller:
+
+[source,bash]
+----
+NAME                                                   READY   STATUS    RESTARTS   AGE
+network-enforcer-controller-manager-6b5c5f86b4-m7frg   1/1     Running   0          3m30s
+network-enforcer-istio-fluent-bit-hrk4x                1/1     Running   0          3m30s
+network-enforcer-otel-collector-b9554b8c6-95xr7        1/1     Running   0          3m30s
+----
+
+With `calico` or `cilium` there is no `istio-fluent-bit`, because the controller scrapes the provider API
+directly:
+
+[source,bash]
+----
+NAME                                                   READY   STATUS    RESTARTS   AGE
+network-enforcer-controller-manager-585c57cc67-s7rw7   1/1     Running   0          4m30s
+network-enforcer-otel-collector-b9554b8c6-8hhff        1/1     Running   0          4m30s
+----
+
+{ne-short-name} is now running and ready to learn.
+
+== Learn: generate WorkloadNetworkPolicyProposal resources
+
+{ne-short-name} observes the connections in the cluster and, for each endpoint of a connection, creates
+a `WorkloadNetworkPolicyProposal` (short name `wnpp`) describing the traffic it saw.
+A proposal is named after the workload and the traffic direction it covers:
+`<workload-kind>-<workload-name>-<direction>`.
+
+Nothing is enforced at this stage: a proposal is only a suggestion.
+
+=== Deploy a simple application
+
+The sample application is a client, an echo server and a Service.
+The server listens on TCP `18080`, on TCP `18082` and on UDP `18081`; the Service exposes TCP `18080`,
+TCP `18082` and UDP `18083`.
+Only the traffic you actually generate is learned, which is what lets you produce a violation later.
+
+[source,bash]
+----
+kubectl apply -f https://raw.githubusercontent.com/kubewarden/network-enforcer/main/docs/yaml/simple_application.yaml
+kubectl wait --for=condition=Ready pod -l app=http-server --timeout=300s
+kubectl wait --for=condition=Ready pod -l app=http-client --timeout=300s
+----
+
+[NOTE]
+====
+On the Istio ambient path, make sure the namespace carries the
+`istio.io/dataplane-mode=ambient` label before this step, otherwise the workloads are created outside
+the mesh and no traffic is observed.
+====
+
+=== Generate some traffic
+
+[source,bash]
+----
+kubectl exec deployments/http-client -- sh -c 'printf tcp-payload | nc -w 2 http-service 18080'
+----
+
+The command echoes back `tcp-payload`: the connection is allowed, and it is now the traffic
+{ne-short-name} learns from.
+
+=== Proposals on the Istio provider
+
+Istio ambient enforces authorization on the receiving side, so a single ingress proposal is created for
+the server:
+
+[source,bash]
+----
+kubectl get wnpp
+----
+
+[source,bash]
+----
+NAME                             AGE
+deployment-http-server-ingress   14s
+----
+
+[source,bash]
+----
+kubectl get wnpp deployment-http-server-ingress -o yaml
+----
+
+[source,yaml]
+----
+apiVersion: networkenforcer.kubewarden.io/v1alpha1
+kind: WorkloadNetworkPolicyProposal
+metadata:
+  creationTimestamp: "2026-09-01T09:19:12Z"
+  generation: 1
+  name: deployment-http-server-ingress
+  namespace: default
+  resourceVersion: "1462"
+  uid: f8ed421f-ec9e-4e8e-874b-097500a570df
+spec:
+  backend: istio
+  istio:
+    rules:
+    - from:
+      - source:
+          principals:
+          - cluster.local/ns/default/sa/http-client-sa
+      to:
+      - operation:
+          ports:
+          - "18080"
+    selector:
+      matchLabels:
+        app: http-server
+----
+
+The proposal carries `backend: istio` and a constrained Istio policy: the client is identified by its
+SPIFFE principal (`cluster.local/ns/default/sa/http-client-sa`, derived from its `ServiceAccount`) and
+allowed to reach port `18080` of the pods selected by `app: http-server`.
+
+=== Proposals on the Calico and Cilium providers
+
+Both providers report full flows, so {ne-short-name} creates an egress proposal for the client and an
+ingress proposal for the server.
+Learning is cluster-wide, so you also see proposals for the workloads that talk to each other in the
+system namespaces.
+The listing below is from a Calico cluster.
+On Cilium, the system names differ (`hubble-relay`, `cilium-operator`, …), but the two `default`
+proposals are the same:
+
+[source,bash]
+----
+kubectl get wnpp -A
+----
+
+[source,bash]
+----
+NAMESPACE          NAME                                                    AGE
+calico-system      deployment-goldmane-ingress                             99s
+default            deployment-http-client-egress                           54s
+default            deployment-http-server-ingress                          54s
+kube-system        deployment-coredns-ingress                              99s
+network-enforcer   deployment-network-enforcer-controller-manager-egress   99s
+----
+
+[source,bash]
+----
+kubectl get wnpp deployment-http-client-egress deployment-http-server-ingress -o yaml
+----
+
+[source,yaml]
+----
+apiVersion: v1
+items:
+- apiVersion: networkenforcer.kubewarden.io/v1alpha1
+  kind: WorkloadNetworkPolicyProposal
+  metadata:
+    creationTimestamp: "2026-09-01T09:25:45Z"
+    generation: 2
+    name: deployment-http-client-egress
+    namespace: default
+    resourceVersion: "1755"
+    uid: db599333-5945-45c0-927e-7290250bd631
+  spec:
+    backend: kubernetes
+    kubernetes:
+      egress:
+      - ports:
+        - port: 18080
+          protocol: TCP
+        to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: default
+          podSelector:
+            matchLabels:
+              app: http-server
+      - ports:
+        - port: 53
+          protocol: UDP
+        to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      podSelector:
+        matchLabels:
+          app: http-client
+      policyTypes:
+      - Egress
+- apiVersion: networkenforcer.kubewarden.io/v1alpha1
+  kind: WorkloadNetworkPolicyProposal
+  metadata:
+    creationTimestamp: "2026-09-01T09:25:45Z"
+    generation: 1
+    name: deployment-http-server-ingress
+    namespace: default
+    resourceVersion: "1754"
+    uid: 12d6fc70-f49a-4eb8-876b-406ee4b6ae41
+  spec:
+    backend: kubernetes
+    kubernetes:
+      ingress:
+      - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: default
+          podSelector:
+            matchLabels:
+              app: http-client
+        ports:
+        - port: 18080
+          protocol: TCP
+      podSelector:
+        matchLabels:
+          app: http-server
+      policyTypes:
+      - Ingress
+kind: List
+metadata:
+  resourceVersion: ""
+----
+
+Here `spec.kubernetes` is a standard `networking.k8s.io/v1` `NetworkPolicySpec`: the client is allowed to
+reach the server on TCP `18080` and CoreDNS on UDP `53`, and the server is allowed to receive traffic
+from the client on TCP `18080`.
+
+== Monitor: promote proposals into WorkloadNetworkPolicy resources
+
+To turn a proposal into a policy, label it with `networkenforcer.kubewarden.io/promote`.
+Use `monitor` for a passive policy, or `protect` to enforce it straight away.
+
+On the Istio provider:
+
+[source,bash]
+----
+kubectl label wnpp deployment-http-server-ingress networkenforcer.kubewarden.io/promote=monitor
+----
+
+On the Calico and Cilium providers:
+
+[source,bash]
+----
+kubectl label wnpp deployment-http-client-egress deployment-http-server-ingress networkenforcer.kubewarden.io/promote=monitor
+----
+
+[NOTE]
+====
+The chart installs a `ValidatingAdmissionPolicy` that rejects any other value:
+
+[source,bash]
+----
+$ kubectl label wnpp deployment-http-server-ingress networkenforcer.kubewarden.io/promote=audit
+The workloadnetworkpolicyproposals "deployment-http-server-ingress" is invalid: : ValidatingAdmissionPolicy 'network-enforcer-wnpp-promote-label' with binding 'network-enforcer-wnpp-promote-label-binding' denied request: networkenforcer.kubewarden.io/promote must be "monitor" or "protect"
+----
+====
+
+After a few seconds a `WorkloadNetworkPolicy` (short name `wnp`) exists for every promoted proposal:
+
+[source,bash]
+----
+kubectl get wnp
+----
+
+[source,bash]
+----
+NAME                             MODE      ACTIVE VIOLATIONS   AGE
+deployment-http-server-ingress   monitor   0                   8s
+----
+
+The promoted proposals are gone: once a policy exists, the proposal has served its purpose and the
+controller deletes it.
+
+[source,bash]
+----
+$ kubectl get wnpp
+No resources found in default namespace.
+----
+
+The policy carries the same backend payload as the proposal, plus `spec.mode` and a status:
+
+[source,bash]
+----
+kubectl get wnp deployment-http-server-ingress -o yaml
+----
+
+[source,yaml]
+----
+apiVersion: networkenforcer.kubewarden.io/v1alpha1
+kind: WorkloadNetworkPolicy
+metadata:
+  creationTimestamp: "2026-09-01T09:19:38Z"
+  generation: 1
+  labels:
+    networkenforcer.kubewarden.io/promoted-from: deployment-http-server-ingress
+  name: deployment-http-server-ingress
+  namespace: default
+  resourceVersion: "1549"
+  uid: fedfe10f-d9b3-4255-9a51-fd8e41fc1e48
+spec:
+  backend: istio
+  istio:
+    rules:
+    - from:
+      - source:
+          principals:
+          - cluster.local/ns/default/sa/http-client-sa
+      to:
+      - operation:
+          ports:
+          - "18080"
+    selector:
+      matchLabels:
+        app: http-server
+  mode: monitor
+status:
+  activeViolationCount: 0
+  observedGeneration: 1
+  violationCount: 0
+----
+
+=== What monitor mode installs
+
+`monitor` is a passive mode: violations are reported in the policy status, but nothing is blocked.
+
+On the Istio provider, the controller creates a dry-run `AuthorizationPolicy` owned by the
+`WorkloadNetworkPolicy`:
+
+[source,bash]
+----
+kubectl get authorizationpolicy deployment-http-server-ingress -o yaml
+----
+
+[source,yaml]
+----
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  annotations:
+    istio.io/dry-run: "true"
+  creationTimestamp: "2026-09-01T09:19:38Z"
+  generation: 1
+  name: deployment-http-server-ingress
+  namespace: default
+  ownerReferences:
+  - apiVersion: networkenforcer.kubewarden.io/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: WorkloadNetworkPolicy
+    name: deployment-http-server-ingress
+    uid: fedfe10f-d9b3-4255-9a51-fd8e41fc1e48
+  resourceVersion: "1544"
+  uid: d69ddbc8-521d-4c5e-a72c-5d6d5f95422b
+spec:
+  rules:
+  - from:
+    - source:
+        principals:
+        - cluster.local/ns/default/sa/http-client-sa
+    to:
+    - operation:
+        ports:
+        - "18080"
+  selector:
+    matchLabels:
+      app: http-server
+status:
+  conditions:
+  - lastTransitionTime: "2026-09-01T09:19:38.852356610Z"
+    message: attached to ztunnel
+    observedGeneration: "1"
+    reason: Accepted
+    status: "True"
+    type: ZtunnelAccepted
+----
+
+On the Calico and Cilium providers, monitor mode installs nothing at all: the controller compares the
+flows reported by the provider against the policy and only records violations.
+
+[source,bash]
+----
+$ kubectl get networkpolicy
+No resources found
+----
+
+=== Observe a violation
+
+Send traffic the policy does not allow.
+
+On the Istio provider, use TCP port `18082`, which the server echoes on but which is not part of the
+learned policy:
+
+[source,bash]
+----
+kubectl exec deployments/http-client -- sh -c 'printf tcp-payload | nc -w 2 http-service 18082'
+----
+
+On the Calico and Cilium providers you can use the UDP service port instead:
+
+[source,bash]
+----
+kubectl exec deployments/http-client -- sh -c 'printf udp-payload | nc -u -w 2 http-service 18083'
+----
+
+The payload is still echoed back — monitor mode does not block — but the violation shows up in the
+policy status:
+
+[source,bash]
+----
+kubectl get wnp
+----
+
+[source,bash]
+----
+NAME                             MODE      ACTIVE VIOLATIONS   AGE
+deployment-http-server-ingress   monitor   1                   29s
+----
+
+On the Istio provider the record is identity based and has no port, because `ztunnel` reports the policy
+decision for the connection:
+
+[source,bash]
+----
+kubectl get wnp deployment-http-server-ingress -o yaml
+----
+
+[source,yaml]
+----
+status:
+  activeViolationCount: 1
+  observedGeneration: 1
+  violationCount: 1
+  violations:
+  - action: monitor
+    denyingPolicyName: deployment-http-server-ingress
+    denyingPolicyNamespace: default
+    dest:
+      identity: cluster.local/ns/default/sa/http-server-sa
+      namespace: default
+      ownerKind: Deployment
+      ownerName: http-server
+      selector: {}
+    id: 0
+    protocol: TCP
+    source:
+      identity: cluster.local/ns/default/sa/http-client-sa
+      namespace: default
+      ownerKind: Deployment
+      ownerName: http-client
+      selector: {}
+    timestamp: "2026-09-01T09:19:53Z"
+----
+
+On the Calico and Cilium providers the record carries the destination port of the dropped flow — note
+that it is the *container* port (`18081`), not the Service port (`18083`) — and the workload selectors:
+
+[source,bash]
+----
+kubectl get wnp deployment-http-client-egress -o yaml
+----
+
+[source,yaml]
+----
+status:
+  activeViolationCount: 1
+  observedGeneration: 1
+  violationCount: 1
+  violations:
+  - action: monitor
+    denyingPolicyName: deployment-http-client-egress
+    denyingPolicyNamespace: default
+    dest:
+      namespace: default
+      ownerKind: Deployment
+      ownerName: http-server
+      selector:
+        matchLabels:
+          app: http-server
+    dstPort: 18081
+    id: 0
+    protocol: UDP
+    source:
+      namespace: default
+      ownerKind: Deployment
+      ownerName: http-client
+      selector:
+        matchLabels:
+          app: http-client
+    timestamp: "2026-09-01T09:27:30Z"
+----
+
+With Calico and Cilium the same flow is reported twice, once per side: the client egress policy and the
+server ingress policy each record a violation.
+
+== Protect: enforce the policy
+
+When you are confident the policy describes the traffic you want, switch it to `protect`.
+From that point on, traffic that violates it is blocked.
+
+[source,bash]
+----
+kubectl patch wnp deployment-http-server-ingress \
+  --type='json' -p='[{"op":"replace","path":"/spec/mode","value":"protect"}]'
+----
+
+On the Calico and Cilium providers, patch both policies:
+
+[source,bash]
+----
+kubectl patch wnp deployment-http-client-egress deployment-http-server-ingress \
+  --type='json' -p='[{"op":"replace","path":"/spec/mode","value":"protect"}]'
+----
+
+What changes in the data plane depends on the provider.
+
+On the Istio provider the `AuthorizationPolicy` loses its `istio.io/dry-run` annotation and starts being
+enforced by `ztunnel`:
+
+[source,bash]
+----
+kubectl get authorizationpolicy deployment-http-server-ingress -o yaml
+----
+
+[source,yaml]
+----
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  creationTimestamp: "2026-09-01T09:19:38Z"
+  generation: 1
+  name: deployment-http-server-ingress
+  namespace: default
+  ownerReferences:
+  - apiVersion: networkenforcer.kubewarden.io/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: WorkloadNetworkPolicy
+    name: deployment-http-server-ingress
+    uid: fedfe10f-d9b3-4255-9a51-fd8e41fc1e48
+  resourceVersion: "1729"
+  uid: d69ddbc8-521d-4c5e-a72c-5d6d5f95422b
+spec:
+  rules:
+  - from:
+    - source:
+        principals:
+        - cluster.local/ns/default/sa/http-client-sa
+    to:
+    - operation:
+        ports:
+        - "18080"
+  selector:
+    matchLabels:
+      app: http-server
+status:
+  conditions:
+  - lastTransitionTime: "2026-09-01T09:19:38.852356610Z"
+    message: attached to ztunnel
+    observedGeneration: "1"
+    reason: Accepted
+    status: "True"
+    type: ZtunnelAccepted
+----
+
+On the Calico and Cilium providers the controller now creates a real Kubernetes `NetworkPolicy` per
+policy, owned by the `WorkloadNetworkPolicy`:
+
+[source,bash]
+----
+$ kubectl get networkpolicy
+NAME                             POD-SELECTOR      AGE
+deployment-http-client-egress    app=http-client   8s
+deployment-http-server-ingress   app=http-server   8s
+----
+
+[source,bash]
+----
+kubectl get networkpolicy deployment-http-client-egress -o yaml
+----
+
+[source,yaml]
+----
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  creationTimestamp: "2026-09-01T09:27:56Z"
+  generation: 1
+  name: deployment-http-client-egress
+  namespace: default
+  ownerReferences:
+  - apiVersion: networkenforcer.kubewarden.io/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: WorkloadNetworkPolicy
+    name: deployment-http-client-egress
+    uid: 2d693630-6634-4248-9ac6-724bc8460808
+  resourceVersion: "2089"
+  uid: 35ae13c0-b651-417f-a80c-0eb074fc4d8b
+spec:
+  egress:
+  - ports:
+    - port: 18080
+      protocol: TCP
+    to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: default
+      podSelector:
+        matchLabels:
+          app: http-server
+  - ports:
+    - port: 53
+      protocol: UDP
+    to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+  podSelector:
+    matchLabels:
+      app: http-client
+  policyTypes:
+  - Egress
+----
+
+Allowed traffic keeps working:
+
+[source,bash]
+----
+$ kubectl exec deployments/http-client -- sh -c 'printf tcp-payload | nc -w 2 http-service 18080'
+tcp-payload
+----
+
+Violating traffic is now dropped: the payload is not echoed back anymore.
+
+[source,bash]
+----
+# Istio provider
+kubectl exec deployments/http-client -- sh -c 'printf tcp-payload | nc -w 2 http-service 18082'
+
+# Calico and Cilium providers
+kubectl exec deployments/http-client -- sh -c 'printf udp-payload | nc -u -w 2 http-service 18083'
+----
+
+The status keeps the old `monitor` record and adds a new one with `action: protect`:
+
+[source,bash]
+----
+kubectl get wnp deployment-http-server-ingress -o yaml
+----
+
+[source,yaml]
+----
+status:
+  activeViolationCount: 2
+  observedGeneration: 2
+  violationCount: 2
+  violations:
+  - action: protect
+    denyingPolicyName: deployment-http-server-ingress
+    denyingPolicyNamespace: default
+    dest:
+      identity: cluster.local/ns/default/sa/http-server-sa
+      namespace: default
+      ownerKind: Deployment
+      ownerName: http-server
+      selector: {}
+    id: 1
+    protocol: TCP
+    source:
+      identity: cluster.local/ns/default/sa/http-client-sa
+      namespace: default
+      ownerKind: Deployment
+      ownerName: http-client
+      selector: {}
+    timestamp: "2026-09-01T09:20:56Z"
+  - action: monitor
+    denyingPolicyName: deployment-http-server-ingress
+    denyingPolicyNamespace: default
+    dest:
+      identity: cluster.local/ns/default/sa/http-server-sa
+      namespace: default
+      ownerKind: Deployment
+      ownerName: http-server
+      selector: {}
+    id: 0
+    protocol: TCP
+    source:
+      identity: cluster.local/ns/default/sa/http-client-sa
+      namespace: default
+      ownerKind: Deployment
+      ownerName: http-client
+      selector: {}
+    timestamp: "2026-09-01T09:19:53Z"
+----
+
+[NOTE]
+====
+On the Calico and Cilium providers only the *egress* policy records new violations in protect mode:
+the traffic is dropped at the source, so it never reaches the destination and the ingress policy is
+never violated again.
+====
+
+== Acknowledge a violation
+
+A violation you consider expected can be acknowledged by annotating the policy with
+`networkenforcer.kubewarden.io/acknowledge-<id>`, where `<id>` is the `id` of the violation record and the value is
+the reason:
+
+[source,bash]
+----
+kubectl annotate wnp deployment-http-server-ingress \
+  'networkenforcer.kubewarden.io/acknowledge-0=known scanner probe'
+----
+
+The record moves from `status.violations` to `status.acknowledgedViolations`, `activeViolationCount`
+drops accordingly, and the annotation is consumed (the controller removes it once processed):
+
+[source,bash]
+----
+$ kubectl get wnp
+NAME                             MODE      ACTIVE VIOLATIONS   AGE
+deployment-http-server-ingress   protect   1                   102s
+----
+
+[source,yaml]
+----
+status:
+  acknowledgedViolations:
+  - acknowledgedAt: "2026-09-01T09:21:13Z"
+    reason: known scanner probe
+    violation:
+      action: monitor
+      denyingPolicyName: deployment-http-server-ingress
+      denyingPolicyNamespace: default
+      dest:
+        identity: cluster.local/ns/default/sa/http-server-sa
+        namespace: default
+        ownerKind: Deployment
+        ownerName: http-server
+        selector: {}
+      id: 0
+      protocol: TCP
+      source:
+        identity: cluster.local/ns/default/sa/http-client-sa
+        namespace: default
+        ownerKind: Deployment
+        ownerName: http-client
+        selector: {}
+      timestamp: "2026-09-01T09:19:53Z"
+  activeViolationCount: 1
+  observedGeneration: 2
+  violationCount: 2
+----
+
+`violationCount` is not decremented: it counts every violation ever observed for the policy, while
+`activeViolationCount` only counts the records still listed in `status.violations`.
+
+== Where violations are exported
+
+Besides the policy status, every violation is emitted as an OpenTelemetry log record to the collector
+deployed with the chart (`telemetry.collectorStrategy=default`).
+Tail the collector to see them:
+
+[source,bash]
+----
+kubectl logs -n network-enforcer deploy/network-enforcer-otel-collector --tail=20
+----
+
+[source,bash]
+----
+ResourceLog #0 [https://opentelemetry.io/schemas/1.41.0] service.name=unknown_service:controller telemetry.sdk.language=go telemetry.sdk.name=opentelemetry telemetry.sdk.version=1.44.0
+ScopeLog #0 network-enforcer
+ enforcement.provider=istio action=monitor source.workload.name=http-client source.workload.namespace=default source.workload.kind=Deployment source.workload.identity=cluster.local/ns/default/sa/http-client-sa destination.workload.name=http-server destination.workload.namespace=default destination.workload.kind=Deployment destination.workload.identity=cluster.local/ns/default/sa/http-server-sa network.transport=TCP policy.ref.namespace=default policy.ref.name=deployment-http-server-ingress destination.port=0
+----
+
+To send the signals to your own collector instead, set `telemetry.collectorStrategy=external` and
+configure `telemetry.externalCollector.*`.
+
+== Clean up
+
+Delete the throwaway cluster:
+
+[source,bash]
+----
+kind delete cluster --name network-enforcer
+----
+

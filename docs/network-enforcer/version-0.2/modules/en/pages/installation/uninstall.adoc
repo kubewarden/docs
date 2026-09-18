@@ -1,0 +1,162 @@
+include::partial$variables.adoc[]
+
+= {ne-name} Uninstall
+:revdate: 2026-09-18
+:page-revdate: {revdate}
+
+The commands below assume the Quick Start defaults: Helm release
+`network-enforcer` in namespace `network-enforcer`.
+Substitute the names from `helm list -A` if you installed elsewhere.
+
+== Optional: set mode back to monitor
+
+[NOTE]
+====
+Do this while the controller is still running, before `helm uninstall`.
+====
+
+Deleting the CRDs is enough to remove generated policies; `helm uninstall`
+does that for you.
+Use this only if you want to drop `protect` without waiting on garbage
+collection.
+
+On Calico and Cilium the reconciler deletes the `NetworkPolicy`.
+On Istio it keeps the `AuthorizationPolicy` and sets `istio.io/dry-run=true`:
+
+[source,bash]
+----
+kubectl get wnp -A --no-headers -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name |
+while read -r ns name; do
+  kubectl patch wnp "$name" -n "$ns" --type=json \
+    -p='[{"op":"replace","path":"/spec/mode","value":"monitor"}]'
+done
+----
+
+== Uninstall the Helm chart
+
+You can remove {ne-short-name} by uninstalling the Helm chart:
+
+[source,bash]
+----
+helm uninstall network-enforcer --namespace network-enforcer
+----
+
+That removes everything the chart installs, including the two CRDs.
+Because the CRDs are gone, every `WorkloadNetworkPolicy` and
+`WorkloadNetworkPolicyProposal` is deleted with them.
+Generated `NetworkPolicy` and `AuthorizationPolicy` objects are owned by
+the WNP (`controller: true`), so they will be deleted by Kubernetes GC.
+
+[WARNING]
+====
+`helm uninstall` does not delete the `network-enforcer` namespace.
+====
+
+== Delete the CRDs
+
+`helm uninstall` already removes the CRDs.
+If they are still present, delete them manually:
+
+[WARNING]
+====
+Deleting a CRD deletes **every** custom resource of that type in the cluster,
+in every namespace.
+Only run this when you intend to remove {ne-short-name} entirely.
+====
+
+[source,bash]
+----
+kubectl delete crd workloadnetworkpolicies.networkenforcer.kubewarden.io
+kubectl delete crd workloadnetworkpolicyproposals.networkenforcer.kubewarden.io
+----
+
+== Delete the namespace
+
+[source,bash]
+----
+kubectl delete ns network-enforcer
+----
+
+== Optional: cert-manager
+
+If you installed `cert-manager` and `cert-manager-csi-driver` only for
+{ne-short-name}, remove them too.
+Uninstall the CSI driver first:
+
+[source,bash]
+----
+helm uninstall cert-manager-csi-driver --namespace cert-manager
+helm uninstall cert-manager --namespace cert-manager
+kubectl delete ns cert-manager
+----
+
+Skip this section if other workloads in the cluster still need cert-manager.
+
+== Optional: provider-side cleanup
+
+These settings belong to the data-plane provider, not to the {ne-short-name}
+chart.
+Revert them only if you applied them for {ne-short-name} and no longer need
+them.
+Do **not** uninstall Istio, Calico, or Cilium unless you also intend to remove
+that provider from the cluster.
+
+=== Istio ambient labels
+
+The Quick Start labels application namespaces so `istio-cni` redirects pod
+traffic to `ztunnel`.
+Remove the namespace from the ambient data plane:
+
+[source,bash]
+----
+kubectl label namespace default istio.io/dataplane-mode-
+----
+
+Pods already running in ambient mode keep that dataplane until they are
+recreated.
+The `AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY`, `AUTHZ_POLICY_INFO_LOGGING`,
+and `logAsJson` flags on istiod and ztunnel can stay; they do not enforce
+traffic once the generated `AuthorizationPolicy` objects are gone.
+
+=== Cilium Hubble settings
+
+The Quick Start enables Hubble and Hubble Relay (`hubble.enabled=true`,
+`hubble.relay.enabled=true`, `hubble.relay.tls.server.enabled=false`) and sets
+`policyDenyResponse=icmp` so denied egress returns an ICMP error.
+If you enabled those only for {ne-short-name}, restore the values you want on
+the Cilium Helm release.
+Leave Hubble in place if you use it for anything else.
+
+=== Calico Goldmane settings
+
+The Quick Start installs the Tigera operator with `goldmane.enabled=true`.
+If you enabled Goldmane only for {ne-short-name}, disable it on the Calico
+Helm release.
+Leave it enabled if other tools still scrape Goldmane.
+The Secret `net-enf-goldmane-client-certs` is removed when the
+`network-enforcer` namespace is deleted; Calico's own
+`goldmane-ca-bundle` ConfigMap and `goldmane-key-pair` Secret in `calico-system`
+are not {ne-short-name} objects.
+
+[#verify]
+== Verify nothing {ne-short-name} owned remains
+
+After the steps above, these commands should all be empty or report `NotFound`.
+
+[source,bash]
+----
+helm list -A | grep network-enforcer || true
+
+kubectl get crd | grep networkenforcer.kubewarden.io || true
+
+kubectl get validatingadmissionpolicy,validatingadmissionpolicybinding \
+  -l app.kubernetes.io/name=network-enforcer
+
+kubectl get clusterrole,clusterrolebinding \
+  -l app.kubernetes.io/name=network-enforcer
+
+kubectl get ns network-enforcer
+
+kubectl get networkpolicy -A -o yaml | grep -E 'kind: WorkloadNetworkPolicy' || true
+kubectl get authorizationpolicy -A -o yaml 2>/dev/null | grep -E 'kind: WorkloadNetworkPolicy' || true
+----

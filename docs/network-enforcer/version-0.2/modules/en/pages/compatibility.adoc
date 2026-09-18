@@ -1,0 +1,119 @@
+include::partial$variables.adoc[]
+
+= Compatibility
+:revdate: 2026-09-18
+:page-revdate: {revdate}
+
+== Overview
+
+{ne-name} observes cluster traffic, proposes workload network policies, and enforces them in Kubernetes. It supports Istio ambient, Calico, and Cilium as providers.
+
+== Quick Reference
+
+[cols="2,3,5"]
+|===
+|Component |Requirement |Notes
+
+|*Provider*
+|`istio`, `cilium`, or `calico`
+|Chart enum in `charts/network-enforcer/values.yaml` (`controller.provider.name`). Helm fails on any other value.
+
+|*Architecture*
+|x86_64, aarch64
+|Fully supported.
+
+|*Kubernetes*
+|1.30+
+|The promote-label guard is a `ValidatingAdmissionPolicy` (`admissionregistration.k8s.io/v1`). Before 1.30 the guard cannot be applied.
+
+|*cert-manager*
+|Required for the default chart install
+|Together with `cert-manager-csi-driver`, so mTLS certificates are mounted directly into pods.
+
+|*Linux distribution*
+|To be determined
+|
+|===
+
+== Provider Matrix
+
+`controller.provider.name` is required and must be one of `istio`, `cilium`, `calico`. Defaults to `istio`.
+
+[cols="1,2,3,3"]
+|===
+|Provider |Minimum validated version |Transport and default endpoint |Policy backend
+
+|*Istio (ambient)*
+|1.30.3
+|OTLP gRPC to the controller. Default listen port `4317`.
+|`spec.backend: istio` (Istio `AuthorizationPolicy`). +
+ztunnel access logs via fluent-bit.
+
+|*Calico*
+|v3.32.1
+|gRPC to `goldmane.calico-system.svc:7443`
+|`spec.backend: kubernetes` (Kubernetes `NetworkPolicy`). +
+Goldmane flow stream.
+
+|*Cilium*
+|1.20.0
+|gRPC to `hubble-relay.kube-system.svc:80`
+|`spec.backend: kubernetes` (Kubernetes `NetworkPolicy`). +
+Hubble Relay flow stream.
+|===
+
+=== Istio ambient install flags
+
+Monitor and protect depend on ztunnel emitting JSON authorization logs that fluent-bit can parse:
+
+* istiod: `profile=ambient` and `pilot.env.AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY=true`
+* ztunnel: `env.AUTHZ_POLICY_INFO_LOGGING=true` and `logAsJson=true`
+
+=== Calico Goldmane client Secret
+
+The chart mounts the Secret net-enf-goldmane-client-certs when controller.provider.name=calico, but does not create it. Before installing, copy Goldmane's CA bundle and key pair into the {ne-short-name} release namespace under that exact name (see hack/setup-calico.sh).
+
+== Capability Matrix
+
+[cols="1,2,1,1"]
+|===
+|Provider |Learning |Monitor |Protect
+
+|*Istio (ambient)*
+|TCP, ingress only
+|Yes
+|Yes
+
+|*Calico*
+|TCP and UDP, ingress and egress
+|Yes
+|Yes
+
+|*Cilium*
+|TCP and UDP, ingress and egress
+|Yes
+|Yes
+|===
+
+== Rancher Integration
+
+[cols="2,2,6"]
+|===
+|Rancher Version |Status |Notes
+
+|*2.9.x*
+|✓ Supported
+|Minimum supported version
+
+|*2.10.x - 2.12.x*
+|✓ Supported
+|Fully tested
+
+|*2.13.x - 2.15.x*
+|Expected
+|Should work but not yet verified
+|===
+
+== Support
+
+Hit a compatibility issue not covered here? Open an https://github.com/kubewarden/network-enforcer/issues[issue] with your provider, versions, and cluster details.

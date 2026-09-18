@@ -1,0 +1,111 @@
+include::partial$variables.adoc[]
+
+= Known limitations
+:revdate: 2026-09-18
+:page-revdate: {revdate}
+
+This document tracks the current, known limitations of {ne-name}.
+Some are explicit design decisions, and some are constraints inherited from
+the data-plane provider (Istio ambient, Calico, or Cilium) or from Kubernetes.
+The goal is to help you understand the limitations and make informed decisions
+about your network-enforcer deployment.
+
+== Egress outside the cluster is not learned
+
+Learning only records traffic between cluster workloads. Flows to destinations
+outside the cluster are dropped.
+
+* *Impact*: external egress traffic does not produce proposal rules.
+
+== Protocol coverage
+
+Istio supports TCP only. Calico and Cilium support TCP and UDP.
+Other protocols, including SCTP and ICMP, are not learned.
+
+* *Impact*: unsupported protocols do not appear in proposals.
+
+== Istio learns and enforces ingress only
+
+Istio ambient L4 authorization is enforced on the destination ztunnel,
+inbound, and TCP only. Learning therefore creates only an *ingress*
+proposal on the destination workload. There is no egress
+`WorkloadNetworkPolicy` on the Istio path, and UDP is never learned or
+enforced.
+
+* *Impact*: Istio-backed protect mode never blocks egress at the source.
+
+== Host-network workloads are not supported
+
+network-enforcer does not learn or enforce policies for pods with
+`hostNetwork: true`. Those pods are not presented as normal workload
+endpoints. Therefore, Kubernetes `NetworkPolicy` (Calico and Cilium)
+and Istio `AuthorizationPolicy` do not cover them the way they cover
+cluster-networked pods.
+
+* *Impact*: host-network traffic does not produce a useful allow list, and
+  violations from those pods may be missing or attributed to a raw IP. Keep
+  application workloads off the host network if you want network-enforcer to
+  cover them.
+
+== Short-lived pods can miss learning and violation records
+
+Scrapers resolve a flow to a workload by looking up the live Pod.
+If the Pod is gone before that lookup finishes, the flow is skipped.
+The same gap applies to monitor and protect: the OpenTelemetry log may still
+be emitted, but associating it with a `WorkloadNetworkPolicy` can fail.
+
+Protect-mode enforcement remains effective while the pod exists. A failed lookup
+affects learning and violation reporting, not enforcement by an existing policy.
+
+* *Impact*: short-lived Pods can leave thin or empty proposals, and their denies
+  may never show up on `WorkloadNetworkPolicy` status.
+
+== Learning starts when the controller starts
+
+network-enforcer does not reconstruct pre-existing traffic.
+It only records flows seen after the controller is running, so long-lived
+idle workloads yield thin or empty proposals until you generate traffic
+or restart them.
+
+* *Impact*: installing network-enforcer onto an already-running cluster does
+  not produce a complete historical allow list. Generate the traffic you care
+  about (or restart those workloads) while the controller is up if you want
+  complete proposals.
+
+== Kubernetes 1.30 or later is required
+
+network-enforcer uses Kubernetes Validating Admission Policy (VAP) to enforce
+admission-time protections on `WorkloadNetworkPolicyProposal` objects
+(for example, rejecting `networkenforcer.kubewarden.io/promote` unless the
+value is `monitor` or `protect`, and preventing existing `ownerReferences`
+from being removed or rewritten).
+
+VAP is only available as `admissionregistration.k8s.io/v1` starting in
+Kubernetes 1.30. Earlier Kubernetes versions exposed it as
+`admissionregistration.k8s.io/v1beta1`, but network-enforcer does not
+support that API. This is a design decision.
+
+* *Impact*: network-enforcer is not compatible with Kubernetes versions
+  before 1.30.
+
+== `spec.backend` is immutable
+
+`spec.backend` is `istio` or `kubernetes` and cannot be changed in place.
+There is no migration path that converts an Istio-backed proposal or
+policy into a Kubernetes-backed one, or vice versa.
+
+* *Impact*: switching between Istio and a Kubernetes backend requires deleting
+  the old objects and relearning them.
+
+== Violation status is capped at 100 records
+
+`WorkloadNetworkPolicy` status keeps at most *100* active records in
+`status.violations` and *100* in `status.acknowledgedViolations`.
+Oldest entries are dropped when the cap is reached.
+
+There is no corresponding cap on the number of peers or ports written
+into a `WorkloadNetworkPolicyProposal`.
+
+* *Impact*: a noisy workload can lose older violation records from status
+  while `status.violationCount` keeps growing. Use OpenTelemetry export if
+  you need a longer history.
