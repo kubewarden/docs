@@ -1,0 +1,74 @@
+/* Opt-in community landing page. Content remains ordinary AsciiDoc. */
+.kw-landing aside.toc { display: none; }
+.kw-landing .doc { max-width: 76rem; width: 100%; padding: 2.5rem 3rem 3rem; }
+.kw-landing .landing-hero {
+  margin: 0;
+  padding: 2.75rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: radial-gradient(ellipse at top right, var(--surface-tint), transparent 75%), var(--surface);
+}
+.kw-landing .landing-hero .paragraph { margin: 0; }
+.kw-landing .landing-eyebrow { color: var(--text-muted); font-size: .8rem; font-weight: 650; letter-spacing: .09em; text-transform: uppercase; }
+.kw-landing .landing-hero h1 { margin: 1rem 0 .25rem; font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 750; letter-spacing: -.04em; line-height: 1.12; }
+.kw-landing .landing-tagline { color: var(--accent-color); font-size: clamp(1.6rem, 3vw, 2.5rem); font-weight: 650; letter-spacing: -.03em; line-height: 1.25; }
+.kw-landing .landing-hero .paragraph:last-child { margin-top: 1.4rem; max-width: 38rem; color: var(--text-body); font-size: 1.05rem; line-height: 1.7; }
+.kw-landing .doc .component-grid { margin-top: 2.5rem; }
+.kw-landing .doc .component-grid > h2 { margin: 0 0 .5rem; font-size: 1.6rem; }
+.kw-landing .component-grid > .sectionbody { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+.kw-landing .component-grid > .sectionbody > .paragraph { grid-column: 1 / -1; margin: 0 0 .25rem; color: var(--text-muted); }
+.kw-landing .component-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem;
+  border: 1px solid var(--border);
+  border-radius: .8rem;
+  background: var(--surface);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.kw-landing .component-card:hover, .kw-landing .component-card:focus-within { border-color: var(--accent-color); box-shadow: 0 4px 16px #00000008; }
+.kw-landing .doc .component-card h3 { margin: 0; font-size: 1.25rem; letter-spacing: -.02em; }
+.kw-landing .component-card h3::before {
+  content: '';
+  display: block;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-bottom: 1.2rem;
+  background: var(--accent-color);
+  mask: var(--component-icon) center / contain no-repeat;
+}
+.kw-landing .admission-card { --component-icon: url('../img/component-admission.svg'); }
+.kw-landing .sbom-card { --component-icon: url('../img/component-sbom.svg'); }
+.kw-landing .runtime-card { --component-icon: url('../img/component-runtime.svg'); }
+.kw-landing .network-card { --component-icon: url('../img/component-network.svg'); }
+.kw-landing .component-card > .paragraph { margin: .75rem 0 1.5rem; line-height: 1.6; }
+.kw-landing .component-card .card-links { margin-top: auto; }
+.kw-landing .card-links ul, .kw-landing .community-links ul { display: flex; flex-wrap: wrap; gap: .6rem 1.25rem; list-style: none; padding: 0; }
+.kw-landing .doc .card-links li, .kw-landing .doc .community-links li { margin: 0; }
+.kw-landing .card-links a, .kw-landing .community-links a { display: inline-block; padding: .3rem 0; font-size: .9rem; font-weight: 650; text-decoration: none; }
+.kw-landing .card-links a:hover, .kw-landing .community-links a:hover { text-decoration: underline; }
+.kw-landing .card-links li:first-child a::after { content: ' →'; }
+.kw-landing .network-card .card-links li:first-child a::after { content: ' ↗'; }
+.kw-landing .card-links li + li a { color: var(--text-muted); }
+.kw-landing .doc .landing-community { margin-top: 2rem; padding: 1.75rem 2rem; border: 1px solid var(--border); border-radius: .8rem; background: var(--surface-muted); }
+.kw-landing .doc .landing-community h2 { margin: 0; font-size: 1.3rem; }
+.kw-landing .landing-community .paragraph { margin-top: .5rem; }
+.kw-landing .community-links { margin-top: .75rem; }
+@media (max-width: 1200px) {
+  .kw-landing .doc { padding: 2rem; }
+  .kw-landing .landing-hero { padding: 2rem; }
+}
+@media (max-width: 600px) {
+  .kw-landing .doc { padding: 1.25rem 1rem 2rem; }
+  .kw-landing .landing-hero { padding: 1.5rem; }
+  .kw-landing .component-grid > .sectionbody { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .kw-landing .component-card { padding: 1.5rem; }
+  .kw-landing .doc .landing-community { padding: 1.5rem; }
+}
+@media print {
+  .kw-landing .doc { padding: 0; }
+  .kw-landing .landing-hero { padding: 1rem; background: none; }
+  .kw-landing .component-card { break-inside: avoid; }
+  .kw-landing .component-card h3::before { display: none; }
+}

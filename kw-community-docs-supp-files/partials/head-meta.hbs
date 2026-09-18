@@ -5,6 +5,9 @@
 <link rel="stylesheet" href="{{uiRootPath}}/css/theme.css">
 <link rel="stylesheet" href="{{uiRootPath}}/css/site-extra.css">
 <link rel="stylesheet" href="{{uiRootPath}}/css/search.css">
+{{#if (eq page.attributes.role 'kw-landing')}}
+<link rel="stylesheet" href="{{uiRootPath}}/css/landing.css">
+{{/if}}
 
 {{#with (resolvePage page.relativeSrcPath model=false)}}
 {{#if (eq (lookup asciidoc.attributes 'ga-build') true)}}

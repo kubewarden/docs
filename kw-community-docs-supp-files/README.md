@@ -10,6 +10,9 @@ branch of `rancher/product-docs-ui` with `snapshot: true`.
   layout dimensions. Its palette roles match `kubewarden.io/assets/sass/_theme.scss`.
 - `css/site-extra.css` styles Antora's layout and AsciiDoc elements.
 - `css/search.css` styles the Lunr search results.
+- `css/landing.css` styles the hero, component cards, and community section.
+  The `page-role: kw-landing` attribute enables this presentation and removes
+  the article title and pagination. The page supplies its own heading.
 - `js/theme.js` applies the saved or system theme before the community CSS loads.
   It uses the website's `kubewarden-theme` storage key. Each origin stores its own
   preference. Storage failures do not prevent theme changes.
@@ -56,3 +59,6 @@ Both files are unmodified and use SIL Open Font License 1.1, included in
 `fonts/SUSE-OFL.txt`. They match the files in the website repository.
 The dark logo changes only the wordmark fill of `img/logo-kubewarden.svg`, from
 `#344845` to `#F3F1F5`, as on the website.
+
+The four `img/component-*.svg` icons match the website's Lucide component icons.
+They use the ISC license in `img/LUCIDE-LICENSE.txt`.

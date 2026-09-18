@@ -1,5 +1,8 @@
-* xref:introduction.adoc[Introduction]
+include::partial$variables.adoc[]
+
+* xref:introduction.adoc[Overview]
 * Components
-** xref:latest@admission-controller:en:introduction.adoc[Kubewarden Admission Controller]
-** xref:latest@sbom-scanner:en:introduction.adoc[Kubewarden SBOMScanner]
-** xref:latest@runtime-enforcer:en:introduction.adoc[Kubewarden Runtime Enforcer]
+** xref:latest@admission-controller:en:introduction.adoc[{admc-short-name}]
+** xref:latest@sbom-scanner:en:introduction.adoc[{sboms-short-name}]
+** xref:latest@runtime-enforcer:en:introduction.adoc[{rte-short-name}]
+** https://www.kubewarden.io/component/network-enforcer/[{ne-short-name}]
