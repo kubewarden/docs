@@ -10,6 +10,7 @@ Acknowledge a WorkloadPolicy violation
 runtime-enforcer policy ack POLICY_NAME <violation-id> [--reason <reason>] [flags]
 ....
 
+[#_options]
 == Options
 
 ....
@@ -18,6 +19,7 @@ runtime-enforcer policy ack POLICY_NAME <violation-id> [--reason <reason>] [flag
       --reason string   Reason for acknowledging the violation. If omitted, you will be prompted
 ....
 
+[#_options-inherited-from-parent-commands]
 == Options inherited from parent commands
 
 ....
@@ -42,6 +44,7 @@ runtime-enforcer policy ack POLICY_NAME <violation-id> [--reason <reason>] [flag
       --user string                    The name of the kubeconfig user to use
 ....
 
+[#_see-also]
 == SEE ALSO
 
 * xref:kubectl-plugin/runtime-enforcer_policy.adoc[runtime-enforcer policy] - Manage WorkloadPolicy

@@ -6,12 +6,14 @@ include::partial$variables.adoc[]
 
 Runtime enforcer supports Tilt to run development environment in your local.
 
+[#_pre-requisite]
 == Pre-requisite
 
 * On a supported Linux host to run a local kubernetes cluster, install a one
   node kubernetes cluster.
 * Setup golang development environments.
 
+[#_steps]
 == Steps
 
 . Clone the repository: `git clone
@@ -31,8 +33,10 @@ You can use this command to list the policy proposals:
 kubectl get workloadpolicyproposals.security.rancher.io -A
 ----
 
+[#_optional]
 == Optional
 
+[#_golangci-lint]
 === golangci-lint
 
 You may want to install a pre-commit hook for golangci-lint, so you can fix
@@ -63,11 +67,13 @@ pre-commit install --install-hooks --hook-type pre-commit --overwrite
 pre-commit uninstall --hook-type pre-commit
 ----
 
+[#_verified-environment]
 == Verified environment
 
 * https://kind.sigs.k8s.io/[Kind] v1.32.2
 * Ubuntu 22.04.5 LTS with 6.8.0-52-generic kernel.
 
+[#_run-bpfvalidator-on-our-ebpf-instrumentation]
 == Run bpfvalidator on our ebpf instrumentation
 
 Install bpfvalidator on your machine downloading it from

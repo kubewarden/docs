@@ -16,6 +16,7 @@ This guide walks you through the following steps:
   and observing the alert.
 * Switching the WorkloadPolicy to protect mode and seeing enforcement in action.
 
+[#_prerequisites]
 == Prerequisites
 
 Before deployment, you need to prepare the following:
@@ -32,6 +33,7 @@ Please check your environment satisfies the minimum
 xref:../compatibility.adoc[runtime enforcer requirements].
 ====
 
+[#_install-cert-manager-and-cert-manager-csi-driver]
 === Install cert-manager and cert-manager-csi-driver
 
 To install cert-manager, run the following commands:
@@ -67,10 +69,12 @@ helm install cert-manager-csi-driver jetstack/cert-manager-csi-driver \
 	--wait
 ----
 
+[#_deploy-rte-short-name]
 == Deploy {rte-short-name}
 
 Follow these simple steps from your local machine to get {rte-short-name} up and running:
 
+[#_install-the-helm-chart]
 === Install the Helm chart
 
 {rte-short-name} ships with a standalone OTEL collector Deployment that handles violation metrics and events forwarding.
@@ -86,6 +90,7 @@ helm install runtime-enforcer runtime-enforcer/runtime-enforcer \
   --wait
 ----
 
+[#_verify-the-deployment]
 === Verify the Deployment
 
 After installation, ensure all pods are running:
@@ -110,6 +115,7 @@ The OTEL collector runs as a standalone Deployment (one replica per cluster)
 rather than as a sidecar in each agent pod.
 ====
 
+[#_verify-violation-metrics]
 === Verify violation metrics
 
 The OTEL collector Deployment exposes Prometheus metrics on port 9090. To
@@ -127,11 +133,13 @@ Once violations occur, you will see a counter like:
 runtime_enforcer_violations_total{action="monitor",k8s_namespace_name="default",node_name="node-1",policy_name="deploy-opensuse-deployment"} 1
 ----
 
+[#_summary]
 === Summary
 
 At this point, {rte-short-name} is up and running. You're now ready to write
 some policies.
 
+[#_workloadpolicyproposal-generation]
 == WorkloadPolicyProposal generation
 
 When {rte-short-name} starts, it observes newly started processes on the node.
@@ -139,6 +147,7 @@ For each Kubernetes workload, it generates a `WorkloadPolicyProposal` containing
 the list of observed executables. Executables that ran before the agent started
 won't be visible in the proposal.
 
+[#_deploy-a-simple-application]
 === Deploy a simple application
 
 Let's create a fresh new openSUSE Deployment.
@@ -176,6 +185,7 @@ EOF
 kubectl wait --for=condition=Ready pod -l app=opensuse-deployment --timeout=300s
 ----
 
+[#_proposal-generation]
 === Proposal generation
 
 After a few seconds, you should see a new `WorkloadPolicyProposal` resource
@@ -227,6 +237,7 @@ Notes on this proposal:
   Deployment so that when the workload is deleted, the proposal can be cleaned
   up automatically.
 
+[#_workloadpolicy-monitor-mode]
 == WorkloadPolicy (monitor mode)
 
 This proposal looks reasonable for the Deployment, so the next step is
@@ -287,8 +298,8 @@ See the `protect` mode section for details.
 ====
 Container enforcement is scoped by container name in `.spec.rulesByContainer`.
 If an additional container is added to an already protected Pod, it is
-intentionally left unenforced. See xref:../phases.adoc#monitor-phase[Monitor
-phase] and xref:../phases.adoc#protect-phase[Protect phase] for details.
+intentionally left unenforced. See xref:../phases.adoc#_monitor-phase[Monitor
+phase] and xref:../phases.adoc#_protect-phase[Protect phase] for details.
 ====
 
 Converting a proposal into a policy isn't enough to apply it to a workload: the
@@ -389,6 +400,7 @@ WorkloadPolicy status. No external observability stack is required to view
 violations.
 ====
 
+[#_add-a-binary-to-the-allowed-list]
 == Add a binary to the allowed list
 
 Now suppose `ps` is an allowed binary and you want to add it to the allowed
@@ -435,6 +447,7 @@ status:
 - `violationCount` is still 1 since it is a historical count
 - `activeViolationCount` is now 0 since the violation has been cleared.
 
+[#_workloadpolicy-protect-mode]
 == WorkloadPolicy (protect mode)
 
 Once confident in the policy and wanting to enforce it, change the mode to
@@ -501,6 +514,7 @@ status:
     workloadName: opensuse-deployment
 ----
 
+[#_acknowledge-a-violation]
 == Acknowledge a violation
 
 Assume the `cat` violation was due to a debugging session and now it needs to be marked as resolved. You can add an acknowledgment for this violation; the most
@@ -537,8 +551,10 @@ status:
 The active violation is no longer listed. Instead, it appears under
 `acknowledgedViolations`.
 
+[#_advanced-configuration]
 == Advanced Configuration
 
+[#_use-an-external-collector]
 === Use an external collector
 
 If you already have an OTEL collector deployed in your cluster, you can use the

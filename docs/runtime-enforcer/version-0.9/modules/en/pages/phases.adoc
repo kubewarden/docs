@@ -7,8 +7,10 @@ include::partial$variables.adoc[]
 This document explains the three *phases* of runtime-enforcer and how to move
 between them.
 
+[#_learn-phase]
 == Learn phase
 
+[#_what-happens-during-this-phase]
 === What happens during this phase
 
 * *Processes aren't blocked.*
@@ -35,6 +37,7 @@ This means:
 Operationally, if you want complete proposals, enable learning first and then
 *(re)start* the workloads you want to learn.
 
+[#_how-to-enter-and-leave-the-learn-phase]
 === How to enter and leave the `Learn` phase
 
 * *Enter*
@@ -63,6 +66,7 @@ If you create a `WorkloadPolicy` manually without that promotion relationship
 delete the `WorkloadPolicyProposal` manually.
 ====
 
+[#_crds-created-updated-during-this-phase]
 === CRDs created/updated during this phase
 
 * *Created/updated*: `WorkloadPolicyProposal` (`security.rancher.io/v1alpha1`)
@@ -71,9 +75,10 @@ delete the `WorkloadPolicyProposal` manually.
 ** The proposal is linked back to the owning workload via `ownerReferences`. If
    the owning workload is deleted, so is the proposal.
 
-[#monitor-phase]
+[#_monitor-phase]
 == Monitor phase
 
+[#_monitor-phase-what-happens-during-this-phase]
 === What happens during this phase
 
 * *Processes aren't blocked.*
@@ -91,6 +96,7 @@ intentionally leaves that container unenforced so debug and initialization
 workflows can still run.
 ====
 
+[#_how-to-enter-and-leave-the-phase]
 === How to enter and leave the phase
 
 * *Enter*
@@ -125,6 +131,7 @@ To enable fail-open behavior, set `agent.nriFailopen=true`.
    `WorkloadPolicy`, then delete the existing `WorkloadPolicyProposal`, or set
    remove the `security.rancher.io/promote` label from the proposal to resume learning.
 
+[#_monitor-phase-crds-created-updated-during-this-phase]
 === CRDs created/updated during this phase
 
 * *Used/updated*: `WorkloadPolicy`
@@ -133,9 +140,10 @@ To enable fail-open behavior, set `agent.nriFailopen=true`.
 ** If a policy is still in use by running workloads, runtime-enforcer will
    prevent it from being deleted until it is no longer referenced.
 
-[#protect-phase]
+[#_protect-phase]
 == Protect phase
 
+[#_protect-phase-what-happens-during-this-phase]
 === What happens during this phase
 
 * *Processes are blocked* when they violate the allow-list.
@@ -154,6 +162,7 @@ protected pod without a matching per-container rule remain intentionally
 unenforced.
 ====
 
+[#_protect-phase-how-to-enter-and-leave-the-phase]
 === How to enter and leave the phase
 
 * *Enter*
@@ -171,11 +180,13 @@ unenforced.
    `WorkloadPolicy`, then delete the existing `WorkloadPolicyProposal`, or set
    remove the `security.rancher.io/promote` label from the proposal to resume learning.
 
+[#_protect-phase-crds-created-updated-during-this-phase]
 === CRDs created/updated during this phase
 
 * *Used/updated*: `WorkloadPolicy` (same CRD as monitor; only `.spec.mode`
   changes).
 
+[#_quick-mapping-to-crds]
 == Quick mapping to CRDs
 
 * *Learn phase*: the system observes process executions and creates/updates

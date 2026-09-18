@@ -10,6 +10,7 @@ components (kernel/eBPF, Kubernetes, container runtimes). The goal is to help
 you understand the limitations and make informed decisions about your
 {rte-short-name} deployment.
 
+[#_learning-cap-100-allowed-executables-per-proposal]
 == Learning cap: 100 allowed executables per proposal
 
 During *learning*, {rte-short-name} writes observed executable paths into a
@@ -24,6 +25,7 @@ across all containers in `rulesByContainer`). This is a design decision.
   automatically. In that case you may need to curate and trim the list or manage
   policy contents manually.
 
+[#_in-some-scenarios-the-full-workload-name-is-not-extracted]
 == In some scenarios the full workload name is not extracted
 
 With NRI, {rte-short-name} derives the workload name from the pod name format
@@ -43,6 +45,7 @@ best-effort workload name and won't be able to extract the full workload name.
   `WorkloadPolicyProposal` resource name, the proposal may be created under an
   unexpected name, which can make it look like learning didn't happen.
 
+[#_static-pods-api-server-pod-uid-can-t-be-resolved-via-nri]
 == Static pods: API-server Pod UID can't be resolved via NRI
 
 For Kubernetes
@@ -57,6 +60,7 @@ Pod UID for static pods, and instead relies on the UID available via NRI.
   objects, the Pod UID may not match what you see on the Pod object returned by
   the Kubernetes API for static pods.
 
+[#_vap-based-protections-aren-t-applied-prior-to-kubernetes-1-30]
 == VAP-based protections aren't applied prior to Kubernetes 1.30
 
 {rte-short-name} uses Kubernetes Validating Admission Policy (VAP) to enforce
@@ -73,6 +77,7 @@ This is a design decision.
 
 * *Impact*: on Kubernetes 1.29 and earlier, changes that should be blocked by VAP (such as mutating `security.rancher.io/policy` on existing Pods) may be allowed.
 
+[#_nri-may-not-be-enabled-by-default-for-containerd-prior-to-v2-0]
 == NRI may not be enabled by default for containerd prior to v2.0
 
 {rte-short-name} requires NRI to be enabled in the container runtime. On
@@ -84,6 +89,7 @@ distribution.
   resolve container identity correctly and may fail to operate as expected. You
   have to enable NRI manually.
 
+[#_replicaset-isn-t-supported-as-a-workload-for-learning]
 == ReplicaSet isn't supported as a workload for learning
 
 {rte-short-name} doesn't currently learn policies with `ReplicaSet` as the
@@ -102,6 +108,7 @@ As a result, pods created by standalone `ReplicaSet` may be treated as plain
   you expect. Please use other workload types (for example, `Deployment`,
   `DaemonSet`) when you want reliable workload attribution and policy learning.
 
+[#_arm64-kernels-prior-to-6-4-are-not-supported]
 == arm64: kernels prior to 6.4 are not supported
 
 On arm64/aarch64, {rte-short-name} requires a Linux kernel version *>= 6.4*.
@@ -109,6 +116,7 @@ On arm64/aarch64, {rte-short-name} requires a Linux kernel version *>= 6.4*.
 * *Impact*: on older arm64 kernels, {rte-short-name} may fail to load eBPF
   programs or may not function correctly.
 
+[#_cri-dockerd-is-not-supported]
 == cri-dockerd is not supported
 
 {rte-short-name} doesn't support running Kubernetes with Docker via

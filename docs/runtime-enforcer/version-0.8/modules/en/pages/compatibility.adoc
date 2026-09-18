@@ -4,12 +4,14 @@ include::partial$variables.adoc[]
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 
+[#_overview]
 == Overview
 
 {rte-name} uses eBPF (Extended Berkeley Packet Filter) to monitor and
 enforce security policies at the kernel level in Kubernetes. You need modern
 eBPF features, so your kernel version and configuration matter.
 
+[#_quick-reference]
 == Quick Reference
 
 [cols="2,3,5"]
@@ -41,6 +43,7 @@ eBPF features, so your kernel version and configuration matter.
 |
 |===
 
+[#_required-kernel-configuration]
 == Required Kernel Configuration
 
 Your kernel needs these configuration options:
@@ -69,6 +72,7 @@ CONFIG_CGROUP_BPF=y
 CONFIG_MEMCG=y
 ----
 
+[#_verifying-kernel-configuration]
 === Verifying Kernel Configuration
 
 Check if your kernel has what you need:
@@ -82,6 +86,7 @@ ls /sys/kernel/btf/vmlinux
 grep CONFIG_BPF <your kernel config>
 ----
 
+[#_rancher-integration]
 == Rancher Integration
 
 [cols="2,2,6"]
@@ -105,6 +110,7 @@ grep CONFIG_BPF <your kernel config>
 |Should work but not yet verified
 |===
 
+[#_support]
 == Support
 
 Hit a compatibility issue not covered here? Open an link:https://github.com/rancher-sandbox/runtime-enforcer/issues[issue] with your environment details.

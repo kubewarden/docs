@@ -6,12 +6,14 @@ include::partial$variables.adoc[]
 
 Manage WorkloadPolicy
 
+[#_options]
 == Options
 
 ....
   -h, --help   help for policy
 ....
 
+[#_options-inherited-from-parent-commands]
 == Options inherited from parent commands
 
 ....
@@ -36,6 +38,7 @@ Manage WorkloadPolicy
       --user string                    The name of the kubeconfig user to use
 ....
 
+[#_see-also]
 == SEE ALSO
 
 * xref:kubectl-plugin/runtime-enforcer.adoc[runtime-enforcer] -
