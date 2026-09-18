@@ -17,6 +17,7 @@ This guide walks you through the following steps:
 
 '''
 
+[#_prerequisites]
 == Prerequisites
 
 Before you start, you need:
@@ -34,6 +35,7 @@ chart version `0.2.0` and later.
 Every `--set` flag used here exists in `charts/network-enforcer/values.yaml`.
 ====
 
+[#_choose-your-provider]
 == Choose your provider
 
 {ne-short-name} does not observe traffic on its own: it consumes flow information from the data plane
@@ -67,6 +69,7 @@ The provider also decides the endpoint the controller connects to.
 When `controller.provider.endpoint` is empty, the chart uses the per-provider default listed above
 (for `istio` the value is the local OTLP port, `4317`).
 
+[#_option-1-istio-ambient]
 === Option 1: Istio ambient
 
 The Istio ambient path keeps the cluster CNI in place and layers the ambient data plane on top of it,
@@ -123,6 +126,7 @@ Istio ambient authorization is L4 and identity based, which has three consequenc
 * Authorization is enforced on the receiving side, so {ne-short-name} only learns *ingress* proposals.
 ====
 
+[#_option-2-calico]
 === Option 2: Calico
 
 Calico is the cluster CNI, so create a kind cluster with the default CNI disabled:
@@ -160,6 +164,7 @@ The script creates both for you; set `NETWORK_ENFORCER_NAMESPACE` if you install
 other than `network-enforcer`.
 ====
 
+[#_option-3-cilium]
 === Option 3: Cilium
 
 Cilium is the cluster CNI, so create a kind cluster with the default CNI disabled:
@@ -197,6 +202,7 @@ operator and Hubble Relay to be ready:
 Use `CILIUM_VERSION` to pick a different Cilium version, for example
 `CILIUM_VERSION=1.19.7 ./hack/setup-cilium.sh`.
 
+[#_install-cert-manager-and-cert-manager-csi-driver]
 == Install cert-manager and cert-manager-csi-driver
 
 The bundled OpenTelemetry collector terminates TLS with a certificate provisioned by
@@ -229,6 +235,7 @@ If you do not want to install cert-manager, you can deploy the chart with
 no longer exported as OpenTelemetry logs.
 ====
 
+[#_install-the-network-enforcer-chart]
 == Install the {ne-short-name} chart
 
 [source,bash]
@@ -260,6 +267,7 @@ If you cloned the repository you can install the very same chart from your check
 `helm install network-enforcer ./charts/network-enforcer ...`.
 ====
 
+[#_verify-the-deployment]
 == Verify the deployment
 
 [source,bash]
@@ -290,6 +298,7 @@ network-enforcer-otel-collector-b9554b8c6-8hhff        1/1     Running   0      
 
 {ne-short-name} is now running and ready to learn.
 
+[#_learn-generate-workloadnetworkpolicyproposal-resources]
 == Learn: generate WorkloadNetworkPolicyProposal resources
 
 {ne-short-name} observes the connections in the cluster and, for each endpoint of a connection, creates
@@ -299,6 +308,7 @@ A proposal is named after the workload and the traffic direction it covers:
 
 Nothing is enforced at this stage: a proposal is only a suggestion.
 
+[#_deploy-a-simple-application]
 === Deploy a simple application
 
 The sample application is a client, an echo server and a Service.
@@ -320,6 +330,7 @@ On the Istio ambient path, make sure the namespace carries the
 the mesh and no traffic is observed.
 ====
 
+[#_generate-some-traffic]
 === Generate some traffic
 
 [source,bash]
@@ -330,6 +341,7 @@ kubectl exec deployments/http-client -- sh -c 'printf tcp-payload | nc -w 2 http
 The command echoes back `tcp-payload`: the connection is allowed, and it is now the traffic
 {ne-short-name} learns from.
 
+[#_proposals-on-the-istio-provider]
 === Proposals on the Istio provider
 
 Istio ambient enforces authorization on the receiving side, so a single ingress proposal is created for
@@ -383,6 +395,7 @@ The proposal carries `backend: istio` and a constrained Istio policy: the client
 SPIFFE principal (`cluster.local/ns/default/sa/http-client-sa`, derived from its `ServiceAccount`) and
 allowed to reach port `18080` of the pods selected by `app: http-server`.
 
+[#_proposals-on-the-calico-and-cilium-providers]
 === Proposals on the Calico and Cilium providers
 
 Both providers report full flows, so {ne-short-name} creates an egress proposal for the client and an
@@ -492,6 +505,7 @@ Here `spec.kubernetes` is a standard `networking.k8s.io/v1` `NetworkPolicySpec`:
 reach the server on TCP `18080` and CoreDNS on UDP `53`, and the server is allowed to receive traffic
 from the client on TCP `18080`.
 
+[#_monitor-promote-proposals-into-workloadnetworkpolicy-resources]
 == Monitor: promote proposals into WorkloadNetworkPolicy resources
 
 To turn a proposal into a policy, label it with `networkenforcer.kubewarden.io/promote`.
@@ -586,6 +600,7 @@ status:
   violationCount: 0
 ----
 
+[#_what-monitor-mode-installs]
 === What monitor mode installs
 
 `monitor` is a passive mode: violations are reported in the policy status, but nothing is blocked.
@@ -650,6 +665,7 @@ $ kubectl get networkpolicy
 No resources found
 ----
 
+[#_observe-a-violation]
 === Observe a violation
 
 Send traffic the policy does not allow.
@@ -759,6 +775,7 @@ status:
 With Calico and Cilium the same flow is reported twice, once per side: the client egress policy and the
 server ingress policy each record a violation.
 
+[#_protect-enforce-the-policy]
 == Protect: enforce the policy
 
 When you are confident the policy describes the traffic you want, switch it to `protect`.
@@ -970,6 +987,7 @@ the traffic is dropped at the source, so it never reaches the destination and th
 never violated again.
 ====
 
+[#_acknowledge-a-violation]
 == Acknowledge a violation
 
 A violation you consider expected can be acknowledged by annotating the policy with
@@ -1025,6 +1043,7 @@ status:
 `violationCount` is not decremented: it counts every violation ever observed for the policy, while
 `activeViolationCount` only counts the records still listed in `status.violations`.
 
+[#_where-violations-are-exported]
 == Where violations are exported
 
 Besides the policy status, every violation is emitted as an OpenTelemetry log record to the collector
@@ -1046,6 +1065,7 @@ ScopeLog #0 network-enforcer
 To send the signals to your own collector instead, set `telemetry.collectorStrategy=external` and
 configure `telemetry.externalCollector.*`.
 
+[#_clean-up]
 == Clean up
 
 Delete the throwaway cluster:

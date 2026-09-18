@@ -10,6 +10,7 @@ the data-plane provider (Istio ambient, Calico, or Cilium) or from Kubernetes.
 The goal is to help you understand the limitations and make informed decisions
 about your network-enforcer deployment.
 
+[#_egress-outside-the-cluster-is-not-learned]
 == Egress outside the cluster is not learned
 
 Learning only records traffic between cluster workloads. Flows to destinations
@@ -17,6 +18,7 @@ outside the cluster are dropped.
 
 * *Impact*: external egress traffic does not produce proposal rules.
 
+[#_protocol-coverage]
 == Protocol coverage
 
 Istio supports TCP only. Calico and Cilium support TCP and UDP.
@@ -24,6 +26,7 @@ Other protocols, including SCTP and ICMP, are not learned.
 
 * *Impact*: unsupported protocols do not appear in proposals.
 
+[#_istio-learns-and-enforces-ingress-only]
 == Istio learns and enforces ingress only
 
 Istio ambient L4 authorization is enforced on the destination ztunnel,
@@ -34,6 +37,7 @@ enforced.
 
 * *Impact*: Istio-backed protect mode never blocks egress at the source.
 
+[#_host-network-workloads-are-not-supported]
 == Host-network workloads are not supported
 
 network-enforcer does not learn or enforce policies for pods with
@@ -47,6 +51,7 @@ cluster-networked pods.
   application workloads off the host network if you want network-enforcer to
   cover them.
 
+[#_short-lived-pods-can-miss-learning-and-violation-records]
 == Short-lived pods can miss learning and violation records
 
 Scrapers resolve a flow to a workload by looking up the live Pod.
@@ -60,6 +65,7 @@ affects learning and violation reporting, not enforcement by an existing policy.
 * *Impact*: short-lived Pods can leave thin or empty proposals, and their denies
   may never show up on `WorkloadNetworkPolicy` status.
 
+[#_learning-starts-when-the-controller-starts]
 == Learning starts when the controller starts
 
 network-enforcer does not reconstruct pre-existing traffic.
@@ -72,6 +78,7 @@ or restart them.
   about (or restart those workloads) while the controller is up if you want
   complete proposals.
 
+[#_kubernetes-1-30-or-later-is-required]
 == Kubernetes 1.30 or later is required
 
 network-enforcer uses Kubernetes Validating Admission Policy (VAP) to enforce
@@ -88,6 +95,7 @@ support that API. This is a design decision.
 * *Impact*: network-enforcer is not compatible with Kubernetes versions
   before 1.30.
 
+[#_spec-backend-is-immutable]
 == `spec.backend` is immutable
 
 `spec.backend` is `istio` or `kubernetes` and cannot be changed in place.
@@ -97,6 +105,7 @@ policy into a Kubernetes-backed one, or vice versa.
 * *Impact*: switching between Istio and a Kubernetes backend requires deleting
   the old objects and relearning them.
 
+[#_violation-status-is-capped-at-100-records]
 == Violation status is capped at 100 records
 
 `WorkloadNetworkPolicy` status keeps at most *100* active records in

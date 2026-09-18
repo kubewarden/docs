@@ -6,6 +6,7 @@ include::partial$variables.adoc[]
 
 {ne-name} uses Tilt for local development.
 
+[#_prerequisites]
 == Prerequisites
 
 * On a supported Linux host to run a local kubernetes cluster.
@@ -13,6 +14,7 @@ include::partial$variables.adoc[]
 * https://www.docker.com/[Docker]
 * A C compiler (`gcc` or equivalent).
 
+[#_steps]
 == Steps
 
 . Clone the repository:
@@ -51,6 +53,7 @@ kubectl get workloadnetworkpolicyproposals.networkenforcer.kubewarden.io -A
 make delete-dev-cluster
 ----
 
+[#_tests]
 == Tests
 
 [source,bash]
@@ -74,8 +77,10 @@ Helm chart unit tests live under `charts/network-enforcer/tests/`. Install the h
 make helm-unit-test
 ----
 
+[#_optional]
 == Optional
 
+[#_golangci-lint]
 === golangci-lint
 
 You may want to install a pre-commit hook for golangci-lint, so you can fix linter issues locally.
@@ -101,6 +106,7 @@ pre-commit install --install-hooks --hook-type pre-commit --overwrite
 pre-commit uninstall --hook-type pre-commit
 ----
 
+[#_code-generation]
 === Code generation
 
 After editing `*_types.go` or kubebuilder markers:
@@ -127,6 +133,7 @@ make generate-calico-goldmane-proto GOLDMANE_VERSION=v3.32.1
 
 That downloads `goldmane/proto/api.proto` from the Calico repo into `internal/scraper/goldmane/` and runs `protoc`. Override `GOLDMANE_VERSION` only when bumping Calico.
 
+[#_verified-environment]
 == Verified environment
 
 * Go 1.27.1

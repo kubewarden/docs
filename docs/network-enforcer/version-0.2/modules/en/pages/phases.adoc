@@ -6,9 +6,10 @@ include::partial$variables.adoc[]
 
 This document explains the three *phases* of {ne-short-name} and how to move between them.
 
-[#learn-phase]
+[#_learn-phase]
 == Learn phase
 
+[#_learn-phase-what-happens-during-this-phase]
 === What happens during this phase
 
 * *Traffic is not blocked.*
@@ -27,43 +28,48 @@ That means:
 
 Operationally, if you want complete proposals, install network-enforcer first and then *(re)start* the workloads you want to learn, or generate the traffic you care about while the controller is running.
 
+[#_how-to-enter-and-leave-the-learn-phase]
 === How to enter and leave the `Learn` phase
 
 * *Enter*
-** Deploy the controller with a provider (`controller.provider.name`: `istio`, `calico`, or `cilium`). See <<backend-selection>>.
+** Deploy the controller with a provider (`controller.provider.name`: `istio`, `calico`, or `cilium`). See <<_backend-selection>>.
 ** No per-workload configuration is required. Proposals are created as flows are observed.
 * *Leave*
-** Promote the proposal. See <<transitions>>.
+** Promote the proposal. See <<_transitions>>.
 ** Promotion creates a `WorkloadNetworkPolicy` (in `monitor` or `protect` mode, depending on the label value) and then deletes the proposal.
 
+[#_learn-phase-crds-created-updated-during-this-phase]
 === CRDs created/updated during this phase
 
 * *Created/updated*: `WorkloadNetworkPolicyProposal`
 ** Name format is `<kind>-<name>-<ingress|egress>`, where `<kind>` is the owning workload kind lowercased (`deployment`, `statefulset`, `daemonset`), `<name>` is the owning workload name as-is, and the direction suffix is lowercase. Examples: `deployment-http-client-egress`, `deployment-http-server-ingress`.
 ** Istio produces only the ingress name (`…-ingress`) for each destination workload. There is one proposal per workload *and* direction for the Kubernetes backend.
 
-[#monitor-phase]
+[#_monitor-phase]
 == Monitor phase
 
+[#_monitor-phase-what-happens-during-this-phase]
 === What happens during this phase
 
 * *Traffic is not blocked.*
 * When an observed flow is *not allowed* by the `WorkloadNetworkPolicy`:
 ** the flow still goes through
 ** a *violation* is recorded on the policy status with `action: monitor`
-** the same event is also exported as an OpenTelemetry log (see <<otlp-events>>)
+** the same event is also exported as an OpenTelemetry log (see <<_otlp-events>>)
 
 NOTE: Monitor evaluation is best-effort. The Istio backend relies on ztunnel dry-run logs, which cover inbound TCP connections through the mesh; UDP and traffic that never hits ztunnel are not observed. The Kubernetes backend reuses the same observed flows that drive learning: if a flow is never seen by the scraper, it is never reported as a violation.
 
+[#_monitor-phase-how-to-enter-and-leave-the-phase]
 === How to enter and leave the phase
 
 * *Enter*
-** Promote a `WorkloadNetworkPolicyProposal` with `networkenforcer.kubewarden.io/promote=monitor` (see <<transitions>>), or create a `WorkloadNetworkPolicy` whose `.spec.mode` is `monitor`.
+** Promote a `WorkloadNetworkPolicyProposal` with `networkenforcer.kubewarden.io/promote=monitor` (see <<_transitions>>), or create a `WorkloadNetworkPolicy` whose `.spec.mode` is `monitor`.
 ** Ensure `.spec.mode: monitor` and that the backend-specific rules are populated (`spec.istio` or `spec.kubernetes`).
 * *Leave*
 ** *Monitor → Protect*: patch the `WorkloadNetworkPolicy` and set `.spec.mode: protect`.
-** *Monitor → Learn*: delete the `WorkloadNetworkPolicy`. Learning resumes on the next observed flow. See <<transitions>>.
+** *Monitor → Learn*: delete the `WorkloadNetworkPolicy`. Learning resumes on the next observed flow. See <<_transitions>>.
 
+[#_monitor-phase-crds-created-updated-during-this-phase]
 === CRDs created/updated during this phase
 
 * *Used/updated*: `WorkloadNetworkPolicy`
@@ -74,15 +80,16 @@ NOTE: Monitor evaluation is best-effort. The Istio backend relies on ztunnel dry
 *** `status.violations`: the most recent active records, capped at *100*. Oldest entries are dropped when the cap is reached.
 *** `status.acknowledgedViolations`: the most recent acknowledged records, also capped at *100*.
 
-[#protect-phase]
+[#_protect-phase]
 == Protect phase
 
+[#_protect-phase-what-happens-during-this-phase]
 === What happens during this phase
 
 * *Traffic is blocked* when it violates the allow-list.
 * On a denied flow:
 ** a *violation* is recorded on the policy status with `action: protect`
-** the same event is also exported as an OpenTelemetry log (see <<otlp-events>>)
+** the same event is also exported as an OpenTelemetry log (see <<_otlp-events>>)
 ** the connection fails (timeout, reset, or "connection refused", depending on the CNI or mesh)
 ** depending on what was blocked this can cause application errors, crash loops, or failed jobs
 
@@ -95,14 +102,16 @@ Both rendered objects are owned by the `WorkloadNetworkPolicy` (`ownerReferences
 
 WARNING: The Istio backend learns and enforces only on the destination (ingress), so there is no source-versus-destination split. Kubernetes NetworkPolicy is directional and is applied independently on each endpoint. An egress deny is enforced *at the source*. The packet never arrives, so the destination's *ingress* policy records nothing. That is why, after you switch both Kubernetes policies to protect, a violating flow shows up only on the source (egress) `WorkloadNetworkPolicy`.
 
+[#_protect-phase-how-to-enter-and-leave-the-phase]
 === How to enter and leave the phase
 
 * *Enter*
 ** Promote a proposal with `networkenforcer.kubewarden.io/promote=protect`, or patch an existing `WorkloadNetworkPolicy` and set `.spec.mode: protect`.
 * *Leave*
 ** *Protect → Monitor*: update the `WorkloadNetworkPolicy` and set `.spec.mode: monitor`.
-** *Protect → Learn*: delete the `WorkloadNetworkPolicy`. Learning resumes on the next observed flow. See <<transitions>>.
+** *Protect → Learn*: delete the `WorkloadNetworkPolicy`. Learning resumes on the next observed flow. See <<_transitions>>.
 
+[#_protect-phase-crds-created-updated-during-this-phase]
 === CRDs created/updated during this phase
 
 * *Used/updated*: `WorkloadNetworkPolicy` (same CRD as monitor; only `.spec.mode` changes).
@@ -110,7 +119,7 @@ WARNING: The Istio backend learns and enforces only on the destination (ingress)
 ** Istio backend: `AuthorizationPolicy` (`security.istio.io/v1`)
 ** Kubernetes backend: `NetworkPolicy` (`networking.k8s.io/v1`)
 
-[#transitions]
+[#_transitions]
 == Transitions
 
 Promotion is explicit. Network-enforcer does not turn a proposal into a policy until you ask.
@@ -127,7 +136,7 @@ Promotion is explicit. Network-enforcer does not turn a proposal into a policy u
 * *ValidatingAdmissionPolicy*
 ** The Helm chart installs a cluster-scoped `ValidatingAdmissionPolicy` (and binding) that rejects `WorkloadNetworkPolicyProposal` CREATE/UPDATE when `networkenforcer.kubewarden.io/promote` is present and is set to anything other than `monitor` or `protect`. The check runs only when the label is set; proposals without the label are admitted as usual.
 
-[#backend-selection]
+[#_backend-selection]
 == Backend selection
 
 `controller.provider.name` selects both the scraper that feeds learning and the `spec.backend` written onto generated objects:
@@ -153,7 +162,7 @@ Promotion is explicit. Network-enforcer does not turn a proposal into a policy u
 
 Exactly one of `spec.istio` or `spec.kubernetes` must be populated, matching `spec.backend`.
 
-[#otlp-events]
+[#_otlp-events]
 == Where OTLP events go
 
 Violations always land on `WorkloadNetworkPolicy` status (`status.violations`).
@@ -169,6 +178,7 @@ Event names:
 * `policy_violation_observed` — emitted for each monitor or protect violation, with `action=monitor` or `action=protect`.
 * `policy_violation_acknowledged` — emitted after a `networkenforcer.kubewarden.io/acknowledge-<id>` annotation is applied and the status patch succeeds.
 
+[#_quick-mapping-to-crds]
 == Quick mapping to CRDs
 
 [cols="1,2,3"]

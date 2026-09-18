@@ -12,7 +12,7 @@ the CRD alone.
 Examples below assume the quickstart release name `network-enforcer` in namespace
 `network-enforcer`. Adjust names if you installed differently.
 
-[#enable-verbose-logs]
+[#_enable-verbose-logs]
 == Enable verbose logs
 
 To enable more verbose logs via Helm:
@@ -36,9 +36,10 @@ kubectl logs -n network-enforcer \
   -l app.kubernetes.io/component=controller -c manager -f
 ----
 
-[#no-proposals]
+[#_no-proposals]
 == No proposals are being created
 
+[#_common-checks]
 === Common checks
 
 * Controller pod is `Running`.
@@ -50,6 +51,7 @@ kubectl logs -n network-enforcer \
   reconstruct historical flows; restart workloads or generate traffic while
   {ne-short-name} is running.
 
+[#_istio]
 === Istio
 
 . Namespace labeled `istio.io/dataplane-mode=ambient` before the pods were
@@ -77,6 +79,7 @@ Do not confuse the Istio ingestion port (`<fullname>-istio-otlp:4317`) with the
 violation-export collector (`<fullname>-otel-collector:4317`). They are separate
 OTLP hops.
 
+[#_calico]
 === Calico
 
 . Goldmane is enabled in the Tigera `Installation` (`goldmane.enabled=true`).
@@ -91,6 +94,7 @@ kubectl get secret -n network-enforcer net-enf-goldmane-client-certs
 kubectl get deploy -n calico-system -l k8s-app=goldmane
 ----
 
+[#_cilium]
 === Cilium
 
 . Hubble and Hubble Relay are enabled
@@ -104,13 +108,15 @@ kubectl get svc -n kube-system hubble-relay
 kubectl get pods -n kube-system -l k8s-app=hubble-relay
 ----
 
-[#flow-dumper]
+[#_flow-dumper]
 == Flow dumper
 
 The flow dumper is an optional debug tool, disabled by default.
 
+[#_features]
 === Features
 
+[#_dump-ingested-flows]
 ==== Dump ingested flows
 
 Each scraper (Istio OTLP logs, Goldmane, Hubble) writes marshaled records into
@@ -124,6 +130,7 @@ newline-delimited JSON (`application/jsonl`).
 `GET /flow` is destructive: each request drains the buffer (newest records
 first). If nobody is reading, the buffer silently drops when full.
 
+[#_enable]
 === Enable
 
 [source,bash]
@@ -160,6 +167,7 @@ The chart creates Service `<fullname>-flow-dumper`
 NOTE: Enabling the dumper restarts the controller (new args, container port,
 and Service).
 
+[#_worked-example]
 === Worked example
 
 [source,bash]
@@ -178,12 +186,13 @@ curl -sS http://127.0.0.1:9080/flow
 You should see one JSON object per line. A second immediate `curl` often
 returns empty until more flows arrive.
 
-[#violation-pipeline]
+[#_violation-pipeline]
 == Violation pipeline debugging
 
 Violations land on `WorkloadNetworkPolicy` status and, when telemetry is
 enabled, are also exported as OpenTelemetry logs.
 
+[#_tail-the-opentelemetry-collector]
 === Tail the OpenTelemetry collector
 
 With `telemetry.collectorStrategy=default`, the release deploys
@@ -214,6 +223,7 @@ Look for `policy_violation_observed` and `policy_violation_acknowledged`.
 With `telemetry.collectorStrategy=none` or `external`, this in-cluster
 collector is not deployed. Status still records violations when export is off.
 
+[#_scrape-prometheus-metrics-on-9090]
 === Scrape Prometheus metrics on `:9090`
 
 The collector exposes Prometheus metrics on port
@@ -233,6 +243,7 @@ expected when the default collector is not installed.
 The controller's own metrics bind is HTTPS `:8443` with auth; that is a
 different endpoint.
 
+[#_wnpstatusupdateinterval-latency]
 === `wnpStatusUpdateInterval` latency
 
 `controller.wnpStatusUpdateInterval` (default `30s`) is how often the
@@ -245,9 +256,10 @@ least one interval (and prefer watching with `kubectl get wnp -w` or a second
 The quickstart lowers this to `3s` only to make demos responsive; production
 rarely needs to change the default.
 
-[#understand-status-fields]
+[#_understand-status-fields]
 == Understand status fields
 
+[#_workloadnetworkpolicy-status]
 === `WorkloadNetworkPolicy.status`
 
 [cols="2,3"]
@@ -281,6 +293,7 @@ kubectl get wnp <name> -n <namespace> -o yaml
 kubectl describe wnp <name> -n <namespace>
 ----
 
+[#_workloadnetworkpolicyproposal-status-conditions]
 === `WorkloadNetworkPolicyProposal.status.conditions`
 
 The CRD defines `status.conditions`, but the controller does not write them
@@ -300,13 +313,14 @@ kubectl get wnpp,wnp -n <namespace>
 kubectl get wnpp <name> -n <namespace> -o yaml
 ----
 
-[#enforcement-mismatch]
+[#_enforcement-mismatch]
 == Enforcement mismatch
 
 Inspect the native object the reconciler creates for the `WorkloadNetworkPolicy`
 (an Istio `AuthorizationPolicy`, or a Kubernetes `NetworkPolicy` on Calico and Cilium),
 then check other policies in the same namespace that may also allow or deny the traffic.
 
+[#_traffic-still-flows]
 === Traffic still flows
 
 . Check the policy's `spec.mode`, monitor mode never blocks traffic.
@@ -331,6 +345,7 @@ kubectl get networkpolicy <wnp-name> -n <namespace> -o yaml
   Rename or delete the conflicting object manually.
 . Confirm the selector on the generated policy matches the workload pods.
 
+[#_everything-is-blocked]
 === Everything is blocked
 
 . Pre-existing Kubernetes `NetworkPolicy` objects in the namespace AND with
@@ -342,7 +357,7 @@ kubectl get networkpolicy <wnp-name> -n <namespace> -o yaml
 . On Istio, a namespace that is not ambient-enrolled will not apply ztunnel
   authorization the way the quickstart expects.
 
-[#cel-rejection]
+[#_cel-rejection]
 == CEL rejection messages
 
 API server validation on `PolicyBackendSpec` emits these messages:
@@ -363,6 +378,7 @@ istio.selector cannot be empty: it must define at least one matchLabel or matchE
 backend is immutable
 ----
 
+[#_related-admission-error]
 === Related admission error
 
 The chart also installs a `ValidatingAdmissionPolicy` that rejects an invalid

@@ -8,6 +8,7 @@ The commands below assume the Quick Start defaults: Helm release
 `network-enforcer` in namespace `network-enforcer`.
 Substitute the names from `helm list -A` if you installed elsewhere.
 
+[#_optional-set-mode-back-to-monitor]
 == Optional: set mode back to monitor
 
 [NOTE]
@@ -32,6 +33,7 @@ while read -r ns name; do
 done
 ----
 
+[#_uninstall-the-helm-chart]
 == Uninstall the Helm chart
 
 You can remove {ne-short-name} by uninstalling the Helm chart:
@@ -52,6 +54,7 @@ the WNP (`controller: true`), so they will be deleted by Kubernetes GC.
 `helm uninstall` does not delete the `network-enforcer` namespace.
 ====
 
+[#_delete-the-crds]
 == Delete the CRDs
 
 `helm uninstall` already removes the CRDs.
@@ -70,6 +73,7 @@ kubectl delete crd workloadnetworkpolicies.networkenforcer.kubewarden.io
 kubectl delete crd workloadnetworkpolicyproposals.networkenforcer.kubewarden.io
 ----
 
+[#_delete-the-namespace]
 == Delete the namespace
 
 [source,bash]
@@ -77,6 +81,7 @@ kubectl delete crd workloadnetworkpolicyproposals.networkenforcer.kubewarden.io
 kubectl delete ns network-enforcer
 ----
 
+[#_optional-cert-manager]
 == Optional: cert-manager
 
 If you installed `cert-manager` and `cert-manager-csi-driver` only for
@@ -92,6 +97,7 @@ kubectl delete ns cert-manager
 
 Skip this section if other workloads in the cluster still need cert-manager.
 
+[#_optional-provider-side-cleanup]
 == Optional: provider-side cleanup
 
 These settings belong to the data-plane provider, not to the {ne-short-name}
@@ -101,6 +107,7 @@ them.
 Do **not** uninstall Istio, Calico, or Cilium unless you also intend to remove
 that provider from the cluster.
 
+[#_istio-ambient-labels]
 === Istio ambient labels
 
 The Quick Start labels application namespaces so `istio-cni` redirects pod
@@ -118,6 +125,7 @@ The `AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY`, `AUTHZ_POLICY_INFO_LOGGING`,
 and `logAsJson` flags on istiod and ztunnel can stay; they do not enforce
 traffic once the generated `AuthorizationPolicy` objects are gone.
 
+[#_cilium-hubble-settings]
 === Cilium Hubble settings
 
 The Quick Start enables Hubble and Hubble Relay (`hubble.enabled=true`,
@@ -127,6 +135,7 @@ If you enabled those only for {ne-short-name}, restore the values you want on
 the Cilium Helm release.
 Leave Hubble in place if you use it for anything else.
 
+[#_calico-goldmane-settings]
 === Calico Goldmane settings
 
 The Quick Start installs the Tigera operator with `goldmane.enabled=true`.
@@ -138,7 +147,7 @@ The Secret `net-enf-goldmane-client-certs` is removed when the
 `goldmane-ca-bundle` ConfigMap and `goldmane-key-pair` Secret in `calico-system`
 are not {ne-short-name} objects.
 
-[#verify]
+[#_verify]
 == Verify nothing {ne-short-name} owned remains
 
 After the steps above, these commands should all be empty or report `NotFound`.

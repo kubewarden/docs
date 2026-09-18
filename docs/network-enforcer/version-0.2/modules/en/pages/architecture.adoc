@@ -8,6 +8,7 @@ include::partial$variables.adoc[]
 workloads, derives an allow list from what it sees, and (when a user opts in) projects
 that allow list into a native policy on a pluggable backend (Istio, Calico, or Cilium).
 
+[#_overview]
 == Overview
 
 The Helm chart deploys a controller and, by default, an OpenTelemetry collector.
@@ -42,6 +43,7 @@ There are two OpenTelemetry paths. Do not conflate them:
   or external collector. That stream is telemetry about policies, not the flow
   source.
 
+[#_diagram]
 == Diagram
 
 ```
@@ -81,11 +83,13 @@ There are two OpenTelemetry paths. Do not conflate them:
               Calico / Cilium: Kubernetes NetworkPolicy
 ```
 
+[#_component-responsibilities]
 == Component responsibilities
 
 The controller is a single Deployment. One manager process runs the pieces below.
 Leader election is on in the chart (`--leader-elect`). Run a single replica.
 
+[#_provider-scraper]
 === Provider scraper
 
 Registered as a `manager.Runnable`. Exactly one scraper runs, selected by
@@ -98,35 +102,42 @@ Registered as a `manager.Runnable`. Exactly one scraper runs, selected by
 It enqueues learning events and violation observations. It does not write
 Kubernetes objects.
 
+[#_learning-reconciler]
 === Learning reconciler
 
 Turns observed flows into `WorkloadNetworkPolicyProposal` resources (create and
 update). When a `WorkloadNetworkPolicy` already exists for that workload and
 direction, it does not recreate the proposal.
 
+[#_proposal-reconciler]
 === Proposal reconciler
 
 Watches the `networkenforcer.kubewarden.io/promote` label. On `monitor` or
 `protect`, it copies the proposal spec onto a `WorkloadNetworkPolicy` of the
 same name and namespace, then deletes the proposal.
 
+[#_policy-reconciler]
 === Policy reconciler
 
 Keeps the native policy object in sync with each `WorkloadNetworkPolicy`:
 Istio `AuthorizationPolicy`, or Kubernetes `NetworkPolicy` for Calico and Cilium.
 
+[#_status-sync]
 === Status sync
 
 Writes violation records onto `WorkloadNetworkPolicy` status on a timer
 (`controller.wnpStatusUpdateInterval`, default `30s`).
 
+[#_otlp-log-exporter]
 === OTLP log exporter
 
 Optional. When telemetry is enabled, exports `policy_violation_observed` and
 `policy_violation_acknowledged` to the default or external collector.
 
+[#_telemetry-ingestion]
 == Telemetry ingestion
 
+[#_istio-ztunnel-to-fluent-bit-to-otlp]
 === Istio: ztunnel to fluent-bit to OTLP
 
 ztunnel on each node writes JSON access and authorization logs. The ambient
@@ -145,6 +156,7 @@ destination workload. UDP never goes through ztunnel.
 The same log stream supplies monitor and protect signals: dry-run
 `AuthorizationPolicy` matches in monitor, and policy rejections in protect.
 
+[#_calico-goldmane-grpc]
 === Calico: Goldmane gRPC
 
 The Calico scraper opens a streaming gRPC client to `goldmane.calico-system.svc:7443`
@@ -156,6 +168,7 @@ namespace before install (see `hack/setup-calico.sh`).
 Goldmane reports full flows, so learning updates two proposals per
 connection: egress on the source and ingress on the destination.
 
+[#_cilium-hubble-relay]
 === Cilium: Hubble Relay
 
 The Cilium scraper follows Hubble Relay's `GetFlows` RPC at
@@ -168,6 +181,7 @@ NOTE: Monitor evaluation is best-effort. Istio only sees inbound TCP that hits
 ztunnel; Calico and Cilium only report a violation for a flow the scraper
 actually observed.
 
+[#_opentelemetry-collector]
 == OpenTelemetry collector
 
 The default collector is not the flow source. When
@@ -192,6 +206,7 @@ Event names:
   `networkenforcer.kubewarden.io/acknowledge-<id>` is applied and the status
   patch succeeds.
 
+[#_custom-resources]
 == Custom resources
 
 Two namespaced CRDs in group `networkenforcer.kubewarden.io/v1alpha1`:
@@ -235,6 +250,7 @@ Promotion is a label on the proposal, not a spec field:
   the proposal.
 * The chart installs a `ValidatingAdmissionPolicy` that rejects any other promote value.
 
+[#_generated-policy-objects]
 == Generated policy objects
 
 The policy reconciler keeps a native object in sync with each `WorkloadNetworkPolicy`.
@@ -261,8 +277,10 @@ pointing at it. Deleting the `WorkloadNetworkPolicy` garbage-collects the native
   `NetworkPolicy`.
 |===
 
+[#_cert-manager-trust]
 == cert-manager trust
 
+[#_default-collector]
 === Default collector
 
 `telemetry.collectorStrategy=default` requires cert-manager and
@@ -297,6 +315,7 @@ CSI volume on otel-collector                    |
         +-------- TLS on :4317 -----------------+
 ```
 
+[#_external-collector]
 === External collector
 
 `telemetry.collectorStrategy=external` can stay insecure, use a CA Secret to
@@ -304,6 +323,7 @@ verify the remote collector, and optionally present a client certificate
 (`telemetry.externalCollector.otelCollectorClientCertificateSecret`). That last
 option is mutual TLS.
 
+[#_calico-goldmane]
 === Calico Goldmane
 
 Goldmane mTLS is independent of the collector chain. The controller mounts

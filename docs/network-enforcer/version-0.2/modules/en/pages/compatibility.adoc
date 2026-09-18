@@ -4,10 +4,12 @@ include::partial$variables.adoc[]
 :revdate: 2026-09-18
 :page-revdate: {revdate}
 
+[#_overview]
 == Overview
 
 {ne-name} observes cluster traffic, proposes workload network policies, and enforces them in Kubernetes. It supports Istio ambient, Calico, and Cilium as providers.
 
+[#_quick-reference]
 == Quick Reference
 
 [cols="2,3,5"]
@@ -35,6 +37,7 @@ include::partial$variables.adoc[]
 |
 |===
 
+[#_provider-matrix]
 == Provider Matrix
 
 `controller.provider.name` is required and must be one of `istio`, `cilium`, `calico`. Defaults to `istio`.
@@ -62,6 +65,7 @@ Goldmane flow stream.
 Hubble Relay flow stream.
 |===
 
+[#_istio-ambient-install-flags]
 === Istio ambient install flags
 
 Monitor and protect depend on ztunnel emitting JSON authorization logs that fluent-bit can parse:
@@ -69,10 +73,12 @@ Monitor and protect depend on ztunnel emitting JSON authorization logs that flue
 * istiod: `profile=ambient` and `pilot.env.AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY=true`
 * ztunnel: `env.AUTHZ_POLICY_INFO_LOGGING=true` and `logAsJson=true`
 
+[#_calico-goldmane-client-secret]
 === Calico Goldmane client Secret
 
 The chart mounts the Secret net-enf-goldmane-client-certs when controller.provider.name=calico, but does not create it. Before installing, copy Goldmane's CA bundle and key pair into the {ne-short-name} release namespace under that exact name (see hack/setup-calico.sh).
 
+[#_capability-matrix]
 == Capability Matrix
 
 [cols="1,2,1,1"]
@@ -96,6 +102,7 @@ The chart mounts the Secret net-enf-goldmane-client-certs when controller.provid
 |===
 
 ifeval::["{build-type}" == "product"]
+[#_rancher-integration]
 == Rancher Integration
 
 [cols="2,2,6"]
@@ -116,6 +123,7 @@ ifeval::["{build-type}" == "product"]
 |===
 endif:[]
 
+[#_support]
 == Support
 
 Hit a compatibility issue not covered here? Open an https://github.com/kubewarden/network-enforcer/issues[issue] with your provider, versions, and cluster details.

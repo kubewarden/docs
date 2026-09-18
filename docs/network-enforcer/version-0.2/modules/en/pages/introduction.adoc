@@ -18,6 +18,7 @@ It operates in three phases:
   without blocking them.
 * *Protect* -- block traffic that violates the policy allow-list.
 
+[#_getting-started]
 == Getting started
 
 * xref:installation/quickstart.adoc[] -- deploy {ne-short-name} and walk
@@ -26,6 +27,7 @@ It operates in three phases:
 * xref:phases.adoc[] -- understand the learn, monitor and protect phases in
   detail.
 
+[#_documentation-map]
 == Documentation map
 
 * *Installation*: xref:installation/quickstart.adoc[Quick Start],
