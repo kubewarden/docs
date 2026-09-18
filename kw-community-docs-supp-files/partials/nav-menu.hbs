@@ -1,11 +1,17 @@
 {{#with page.navigation}}
 <div class="nav-panel-menu is-active" data-panel="menu" data-component-name="{{@root.page.component.name}}">
   <nav class="nav-menu">
-    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <button type="button" class="nav-menu-toggle" aria-label="Expand all navigation sections" title="Expand all navigation sections" style="display: none">
+      {{!-- Lucide unfold-vertical and fold-vertical; ISC license in img/LUCIDE-LICENSE.txt. --}}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 22v-6M12 8V2M4 12H2M10 12H8M16 12h-2M22 12h-2"/>
+        <path class="nav-unfold-icon" d="m15 19-3 3-3-3m6-14-3-3-3 3"/>
+        <path class="nav-fold-icon" d="m15 19-3-3-3 3m6-14-3 3-3-3"/>
+      </svg>
+    </button>
     {{#with @root.page.componentVersion}}
     <h3 class="title"><a href="{{{relativize ./url}}}">{{./title}}</a></h3>
     {{/with}}
-{{!-- {{> nav-tree navigation=(navfilter this @root.page.module)}} --}}
 {{> nav-tree navigation=this}}
   </nav>
 </div>
