@@ -91,7 +91,10 @@ a:hover { color: var(--accent-color); }
 .toolbar { top: var(--header-height); height: var(--toolbar-height); padding: 0 1rem; background: var(--page-bg); color: var(--text-muted); box-shadow: none; border-bottom: 1px solid var(--border); font-size: .8rem; }
 .toolbar a, .toolbar .edit-this-page a { color: var(--text-muted); }
 .toolbar a:hover { color: var(--accent-color); }
-.home-link, .nav-toggle { filter: var(--icon-filter); }
+.nav-toggle { filter: var(--icon-filter); }
+.toolbar .home-link { display: grid; place-items: center; flex-shrink: 0; width: 2rem; height: 2rem; margin: .25rem; border-radius: .3rem; background: none; }
+.toolbar .home-link svg { width: 1.15rem; height: 1.15rem; }
+.toolbar .home-link:hover, .toolbar .home-link.is-current { background: none; color: var(--accent-color); }
 .breadcrumbs li::after { color: var(--text-muted); }
 .page-versions .version-menu-toggle { color: var(--text-body); }
 .page-versions .version-menu-toggle::after { filter: var(--icon-filter); }
