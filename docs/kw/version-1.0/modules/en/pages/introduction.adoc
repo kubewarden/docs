@@ -1,5 +1,5 @@
 = Kubewarden
-:revdate: 2026-09-17
+:revdate: 2026-09-18
 :page-revdate: {revdate}
 
 Welcome to the Kubewarden project.
@@ -10,6 +10,7 @@ the Kubewarden project comprises these components:
 * xref:latest@admission-controller:en:introduction.adoc[Kubewarden Admission Controller]
 * xref:latest@sbom-scanner:en:introduction.adoc[Kubewarden SBOMScanner]
 * xref:latest@runtime-enforcer:en:introduction.adoc[Kubewarden Runtime Enforcer]
+* xref:latest@network-enforcer:en:introduction.adoc[Kubewarden Network Enforcer]
 
 Before that the Kubewarden project was a single component, the Kubewarden
 Admission Controller, known as Kubewarden.

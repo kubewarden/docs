@@ -1,0 +1,141 @@
+include::partial$variables.adoc[]
+
+= Setup development environment
+:revdate: 2026-09-18
+:page-revdate: {revdate}
+
+{ne-name} uses Tilt for local development.
+
+[#_prerequisites]
+== Prerequisites
+
+* On a supported Linux host to run a local kubernetes cluster.
+* Setup golang development environments.
+* https://www.docker.com/[Docker]
+* A C compiler (`gcc` or equivalent).
+
+[#_steps]
+== Steps
+
+. Clone the repository:
++
+[source,bash]
+----
+git clone https://github.com/kubewarden/network-enforcer.git
+cd network-enforcer
+----
+. Install https://kubernetes.io/docs/reference/kubectl/[kubectl], https://helm.sh/[helm], https://kind.sigs.k8s.io/[kind], and https://docs.tilt.dev/install.html[tilt].
+. Copy Tilt settings:
++
+[source,bash]
+----
+cp tilt-settings.yaml.example tilt-settings.yaml
+----
+. Create a kind cluster with a provider and start Tilt. `E2E_PROVIDER` is `istio`, `calico`, or `cilium`:
++
+[source,bash]
+----
+make setup-dev-cluster E2E_PROVIDER=istio
+----
++
+This creates a kind cluster named `kind`, installs the provider and cert-manager, then runs `tilt up`. Tilt's UI is typically http://localhost:10350[].
+. Check that the controller is up:
++
+[source,bash]
+----
+kubectl get pods -n network-enforcer
+kubectl get workloadnetworkpolicyproposals.networkenforcer.kubewarden.io -A
+----
+. When you are done, stop Tilt (`Ctrl-C`) and delete the cluster:
++
+[source,bash]
+----
+make delete-dev-cluster
+----
+
+[#_tests]
+== Tests
+
+[source,bash]
+----
+make test
+----
+
+That runs envtest unit tests (everything except `./test/e2e`).
+
+E2E tests need a dedicated kind cluster (`istio`, `calico`, or `cilium`), not a shared or production cluster:
+
+[source,bash]
+----
+make test-e2e E2E_PROVIDER=istio
+----
+
+Helm chart unit tests live under `charts/network-enforcer/tests/`. Install the https://github.com/helm-unittest/helm-unittest[helm-unittest] plugin if you want to run them:
+
+[source,bash]
+----
+make helm-unit-test
+----
+
+[#_optional]
+== Optional
+
+[#_golangci-lint]
+=== golangci-lint
+
+You may want to install a pre-commit hook for golangci-lint, so you can fix linter issues locally.
+
+. Install golangci-lint, e.g. `go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2` (the version pinned in the Makefile). `make lint-fix` also downloads that binary into `bin/`.
+. Install pre-commit hooks. You can also use tools like https://typicode.github.io/husky/[husky] or https://pre-commit.com/[pre-commit].
+
+[source,bash]
+----
+cat << EOF > .git/hooks/pre-commit
+#!/bin/sh
+golangci-lint run
+EOF
+chmod +x .git/hooks/pre-commit
+----
+
+If you are using https://pre-commit.com/[pre-commit], install the hooks defined in `.pre-commit-config.yaml`:
+
+[source,bash]
+----
+pre-commit install --install-hooks --hook-type pre-commit --overwrite
+# if you want to disable the hook
+pre-commit uninstall --hook-type pre-commit
+----
+
+[#_code-generation]
+=== Code generation
+
+After editing `*_types.go` or kubebuilder markers:
+
+[source,bash]
+----
+make generate
+----
+
+That also regenerates `docs/crd.adoc` from the API types. To
+regenerate only the CRD reference:
+
+[source,bash]
+----
+make generate-crd-docs
+----
+
+When Calico Goldmane's gRPC API changes, regenerate the vendored proto and Go stubs. `protoc` must be on your PATH. Default `GOLDMANE_VERSION` is `v3.32.1` (same Calico version as e2e):
+
+[source,bash]
+----
+make generate-calico-goldmane-proto GOLDMANE_VERSION=v3.32.1
+----
+
+That downloads `goldmane/proto/api.proto` from the Calico repo into `internal/scraper/goldmane/` and runs `protoc`. Override `GOLDMANE_VERSION` only when bumping Calico.
+
+[#_verified-environment]
+== Verified environment
+
+* Go 1.27.1
+* https://kind.sigs.k8s.io/[kind] 0.30.0
+* Providers installed by `setup-dev-cluster`: Istio ambient *1.30.3*, Calico *v3.32.1*, Cilium *1.20.0*

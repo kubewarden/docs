@@ -1,0 +1,7 @@
+name: network-enforcer
+title: Network Enforcer
+version: "0.2"
+display: "0.2-latest"
+start_page: en:introduction.adoc
+nav:
+  - modules/en/nav.adoc

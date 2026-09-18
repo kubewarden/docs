@@ -1,0 +1,389 @@
+include::partial$variables.adoc[]
+
+= Troubleshooting
+:revdate: 2026-09-18
+:page-revdate: {revdate}
+
+This document helps diagnose common {ne-name} failures.
+Failure modes are provider-specific: whether Goldmane is up, whether Hubble Relay
+is reachable, or whether a namespace is ambient-enrolled, cannot be inferred from
+the CRD alone.
+
+Examples below assume the quickstart release name `network-enforcer` in namespace
+`network-enforcer`. Adjust names if you installed differently.
+
+[#_enable-verbose-logs]
+== Enable verbose logs
+
+To enable more verbose logs via Helm:
+
+[source,bash]
+----
+helm upgrade network-enforcer <chart> \
+  --namespace network-enforcer \
+  --set controller.logLevel=debug \
+  --reuse-values
+----
+
+`controller.logLevel` accepts `debug`, `info`, `warn`, or `error`.
+The chart passes the value as `--log-level` on the controller.
+
+Then follow the controller logs:
+
+[source,bash]
+----
+kubectl logs -n network-enforcer \
+  -l app.kubernetes.io/component=controller -c manager -f
+----
+
+[#_no-proposals]
+== No proposals are being created
+
+[#_common-checks]
+=== Common checks
+
+* Controller pod is `Running`.
+* `controller.provider.name` matches the data plane in the cluster (`istio`,
+  `calico`, or `cilium`).
+* Workloads are a supported owner kind: `Deployment`, `StatefulSet`, or
+  `DaemonSet`.
+* Traffic happened after the controller started. Learning does not
+  reconstruct historical flows; restart workloads or generate traffic while
+  {ne-short-name} is running.
+
+[#_istio]
+=== Istio
+
+. Namespace labeled `istio.io/dataplane-mode=ambient` before the pods were
+  created. `istio-cni` decides redirection at pod creation time; labeling later
+  does not enroll existing pods.
+. ztunnel and istiod flags required for usable access logs:
+  * ztunnel: `AUTHZ_POLICY_INFO_LOGGING=true` and `logAsJson=true`
+  * istiod: `AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY=true`
+  (also required for monitor-mode dry-run evaluation)
+. DaemonSet `<fullname>-istio-fluent-bit` is running. It tails
+  `/var/log/containers/*ztunnel*.log` and ships OTLP/gRPC to the controller
+  Service `<fullname>-istio-otlp` on port `4317`.
+. Confirm fluent-bit pods and the OTLP Service:
++
+[source,bash]
+----
+kubectl get ds,pods -n network-enforcer -l app.kubernetes.io/component=istio-fluent-bit
+kubectl get svc -n network-enforcer network-enforcer-istio-otlp
+----
+
+NOTE: UDP never goes through ztunnel, so it never produces proposals.
+Istio learning creates *ingress* proposals on the destination only.
+
+Do not confuse the Istio ingestion port (`<fullname>-istio-otlp:4317`) with the
+violation-export collector (`<fullname>-otel-collector:4317`). They are separate
+OTLP hops.
+
+[#_calico]
+=== Calico
+
+. Goldmane is enabled in the Tigera `Installation` (`goldmane.enabled=true`).
+. Secret `net-enf-goldmane-client-certs` exists in the {ne-short-name}
+  namespace. The chart mounts that Secret.
+. Default endpoint `goldmane.calico-system.svc:7443` is reachable from the
+  controller (override with `controller.provider.endpoint`).
++
+[source,bash]
+----
+kubectl get secret -n network-enforcer net-enf-goldmane-client-certs
+kubectl get deploy -n calico-system -l k8s-app=goldmane
+----
+
+[#_cilium]
+=== Cilium
+
+. Hubble and Hubble Relay are enabled
+  (`hubble.enabled=true`, `hubble.relay.enabled=true`).
+. Default endpoint `hubble-relay.kube-system.svc:80` is reachable
+  (override with `controller.provider.endpoint`).
++
+[source,bash]
+----
+kubectl get svc -n kube-system hubble-relay
+kubectl get pods -n kube-system -l k8s-app=hubble-relay
+----
+
+[#_flow-dumper]
+== Flow dumper
+
+The flow dumper is an optional debug tool, disabled by default.
+
+[#_features]
+=== Features
+
+[#_dump-ingested-flows]
+==== Dump ingested flows
+
+Each scraper (Istio OTLP logs, Goldmane, Hubble) writes marshaled records into
+an in-memory ring buffer. `GET /flow` drains that buffer and returns
+newline-delimited JSON (`application/jsonl`).
+
+* Empty body: nothing has been ingested since the last drain.
+* JSONL lines: ingestion is alive; inspect the payload for identity, ports, and
+  direction.
+
+`GET /flow` is destructive: each request drains the buffer (newest records
+first). If nobody is reading, the buffer silently drops when full.
+
+[#_enable]
+=== Enable
+
+[source,bash]
+----
+helm upgrade network-enforcer <chart> \
+  --namespace network-enforcer \
+  --set controller.flowDumper.enabled=true \
+  --reuse-values
+----
+
+Helm values:
+
+[cols="2,1,3"]
+|===
+| Value | Default | Role
+
+| `controller.flowDumper.enabled`
+| `false`
+| Turns the HTTP dumper on and creates the Service.
+
+| `controller.flowDumper.port`
+| `9080`
+| Container and Service port.
+
+| `controller.flowDumper.bufferSize`
+| `10000`
+| In-memory ring buffer capacity.
+|===
+
+The chart creates Service `<fullname>-flow-dumper`
+(`network-enforcer-flow-dumper` with the quickstart release name), type
+`NodePort` (node port `30080`), selecting the controller pods.
+
+NOTE: Enabling the dumper restarts the controller (new args, container port,
+and Service).
+
+[#_worked-example]
+=== Worked example
+
+[source,bash]
+----
+kubectl -n network-enforcer port-forward \
+  svc/network-enforcer-flow-dumper 9080:9080
+----
+
+Generate traffic against the workloads you expect to learn, then:
+
+[source,bash]
+----
+curl -sS http://127.0.0.1:9080/flow
+----
+
+You should see one JSON object per line. A second immediate `curl` often
+returns empty until more flows arrive.
+
+[#_violation-pipeline]
+== Violation pipeline debugging
+
+Violations land on `WorkloadNetworkPolicy` status and, when telemetry is
+enabled, are also exported as OpenTelemetry logs.
+
+[#_tail-the-opentelemetry-collector]
+=== Tail the OpenTelemetry collector
+
+With `telemetry.collectorStrategy=default`, the release deploys
+`<fullname>-otel-collector`. Its logs pipeline uses the debug exporter
+(default verbosity `normal`).
+
+For richer dumps while troubleshooting, set the exporter to `detailed` by
+editing the collector ConfigMap, then restart the collector pod:
+
+[source,bash]
+----
+kubectl -n network-enforcer edit configmap network-enforcer-otel-collector
+# under exporters.debug, set: verbosity: detailed
+
+kubectl -n network-enforcer rollout restart deploy/network-enforcer-otel-collector
+----
+
+Then follow the collector logs:
+
+[source,bash]
+----
+kubectl logs -n network-enforcer \
+  -l app.kubernetes.io/component=otel-collector -f
+----
+
+Look for `policy_violation_observed` and `policy_violation_acknowledged`.
+
+With `telemetry.collectorStrategy=none` or `external`, this in-cluster
+collector is not deployed. Status still records violations when export is off.
+
+[#_scrape-prometheus-metrics-on-9090]
+=== Scrape Prometheus metrics on `:9090`
+
+The collector exposes Prometheus metrics on port
+`9090`. Port-forward the collector Service and scrape:
+
+[source,bash]
+----
+kubectl -n network-enforcer port-forward \
+  svc/network-enforcer-otel-collector 9090:9090
+
+curl -sS http://127.0.0.1:9090/metrics | grep network_enforcer_policy_denies
+----
+
+The count connector feeds `network_enforcer_policy_denies`. Empty metrics are
+expected when the default collector is not installed.
+
+The controller's own metrics bind is HTTPS `:8443` with auth; that is a
+different endpoint.
+
+[#_wnpstatusupdateinterval-latency]
+=== `wnpStatusUpdateInterval` latency
+
+`controller.wnpStatusUpdateInterval` (default `30s`) is how often the
+controller drains buffered violation observations into
+`WorkloadNetworkPolicy` status. Status is not patched per flow.
+
+If a violation you just caused is missing from `status.violations`, wait at
+least one interval (and prefer watching with `kubectl get wnp -w` or a second
+`kubectl get` after ~30s) before reporting it as lost.
+The quickstart lowers this to `3s` only to make demos responsive; production
+rarely needs to change the default.
+
+[#_understand-status-fields]
+== Understand status fields
+
+[#_workloadnetworkpolicy-status]
+=== `WorkloadNetworkPolicy.status`
+
+[cols="2,3"]
+|===
+| Field | Meaning
+
+| `status.observedGeneration`
+| Last generation the status sync observed.
+
+| `status.violationCount`
+| Count of violation records for this policy, including trimmed or
+  cleared entries. May be temporarily outdated until the next status sync.
+
+| `status.activeViolationCount`
+| Number of currently active (non-cleared, non-acknowledged) records.
+
+| `status.violations`
+| Most recent active records (cap 100).
+
+| `status.acknowledgedViolations`
+| Most recent acknowledged records (cap 100).
+|===
+
+Acknowledge an expected violation by annotating the policy with
+`networkenforcer.kubewarden.io/acknowledge-<id>`, where `<id>` is the record
+`id`.
+
+[source,bash]
+----
+kubectl get wnp <name> -n <namespace> -o yaml
+kubectl describe wnp <name> -n <namespace>
+----
+
+[#_workloadnetworkpolicyproposal-status-conditions]
+=== `WorkloadNetworkPolicyProposal.status.conditions`
+
+The CRD defines `status.conditions`, but the controller does not write them
+today. An empty or absent conditions list is normal.
+
+Promotion is label-driven, not condition-driven:
+
+* Set `networkenforcer.kubewarden.io/promote=monitor` or `protect` on the
+  proposal.
+* The proposal reconciler creates a same-named `WorkloadNetworkPolicy`, sets
+  `networkenforcer.kubewarden.io/promoted-from: <proposal-name>`, and deletes
+  the proposal.
+
+[source,bash]
+----
+kubectl get wnpp,wnp -n <namespace>
+kubectl get wnpp <name> -n <namespace> -o yaml
+----
+
+[#_enforcement-mismatch]
+== Enforcement mismatch
+
+Inspect the native object the reconciler creates for the `WorkloadNetworkPolicy`
+(an Istio `AuthorizationPolicy`, or a Kubernetes `NetworkPolicy` on Calico and Cilium),
+then check other policies in the same namespace that may also allow or deny the traffic.
+
+[#_traffic-still-flows]
+=== Traffic still flows
+
+. Check the policy's `spec.mode`, monitor mode never blocks traffic.
+  * Istio: the controller still creates an `AuthorizationPolicy` annotated
+    `istio.io/dry-run=true`.
+  * Calico / Cilium: the controller will not create `NetworkPolicy` in monitor
+    mode. If you switch back from protect, it will delete the `NetworkPolicy`.
+. In protect mode, check that the native object exists and is owned by the
+  `WorkloadNetworkPolicy`:
++
+[source,bash]
+----
+# Istio
+kubectl get authorizationpolicy <wnp-name> -n <namespace> -o yaml
+
+# Calico / Cilium
+kubectl get networkpolicy <wnp-name> -n <namespace> -o yaml
+----
+. If a same-named `NetworkPolicy` or `AuthorizationPolicy` already existed and
+  is not controlled by the WNP, the reconciler refuses to adopt it and logs
+  `refusing to manage existing … not controlled by a WorkloadNetworkPolicy`.
+  Rename or delete the conflicting object manually.
+. Confirm the selector on the generated policy matches the workload pods.
+
+[#_everything-is-blocked]
+=== Everything is blocked
+
+. Pre-existing Kubernetes `NetworkPolicy` objects in the namespace AND with
+  {ne-short-name}'s policy. A broad default-deny plus a narrow learned allow
+  list will drop unexpected peers.
+. Extra Istio DENY (or restrictive ALLOW) `AuthorizationPolicy` objects.
+. The learned allow list is too narrow because learning only saw traffic after
+  install. Generate the missing flows in learn/monitor, or widen the policy.
+. On Istio, a namespace that is not ambient-enrolled will not apply ztunnel
+  authorization the way the quickstart expects.
+
+[#_cel-rejection]
+== CEL rejection messages
+
+API server validation on `PolicyBackendSpec` emits these messages:
+
+----
+backend must match exactly one populated backend spec
+----
+
+----
+kubernetes.podSelector cannot be empty: it must define at least one between matchLabel or matchExpression
+----
+
+----
+istio.selector cannot be empty: it must define at least one matchLabel or matchExpression
+----
+
+----
+backend is immutable
+----
+
+[#_related-admission-error]
+=== Related admission error
+
+The chart also installs a `ValidatingAdmissionPolicy` that rejects an invalid
+promote label:
+
+----
+networkenforcer.kubewarden.io/promote must be "monitor" or "protect"
+----

@@ -1,0 +1,40 @@
+include::partial$variables.adoc[]
+
+= {ne-name}
+:revdate: 2026-09-18
+:page-revdate: {revdate}
+:description: {ne-name} watches east-west Kubernetes traffic, learns an allow list per workload, and enforces it on Istio ambient, Calico, or Cilium.
+
+{ne-name} is a Kubernetes operator that observes east-west traffic between
+workloads, derives an allow list from what it sees, and, when you opt in,
+projects that allow list into a native policy on a pluggable backend (Istio
+ambient, Calico, or Cilium).
+
+It operates in three phases:
+
+* *Learn* -- observe traffic and generate a `WorkloadNetworkPolicyProposal`
+  per workload and direction.
+* *Monitor* -- report violations of an approved `WorkloadNetworkPolicy`
+  without blocking them.
+* *Protect* -- block traffic that violates the policy allow-list.
+
+[#_getting-started]
+== Getting started
+
+* xref:installation/quickstart.adoc[] -- deploy {ne-short-name} and walk
+  through the learn/monitor/protect workflow.
+* xref:compatibility.adoc[] -- provider and platform requirements.
+* xref:phases.adoc[] -- understand the learn, monitor and protect phases in
+  detail.
+
+[#_documentation-map]
+== Documentation map
+
+* *Installation*: xref:installation/quickstart.adoc[Quick Start],
+  xref:installation/uninstall.adoc[Uninstall]
+* *Concepts & operations*: xref:phases.adoc[Phases],
+  xref:architecture.adoc[Architecture], xref:compatibility.adoc[Compatibility],
+  xref:known_limitations.adoc[Known Limitations],
+  xref:troubleshooting.adoc[Troubleshooting]
+* *Reference*: xref:crd.adoc[CRD API Reference]
+* *Development*: xref:setup-development-env.adoc[Development Environment]
