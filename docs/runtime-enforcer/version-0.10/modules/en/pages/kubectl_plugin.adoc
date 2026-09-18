@@ -7,9 +7,10 @@ include::partial$variables.adoc[]
 The `kubectl runtime-enforcer` plugin wraps common operations for
 `WorkloadPolicyProposal` and `WorkloadPolicy` CRDs.
 
-[#install]
+[#_install]
 == Installation
 
+[#_download-a-pre-built-binary]
 === Download a pre-built binary
 
 Pre-built binaries for `linux/amd64`, `linux/arm64`, `darwin/amd64`, and
@@ -33,6 +34,7 @@ Verify checksums with the `.sha256` file published next to the binary.
 sha256sum --check kubectl-runtime_enforcer-linux-amd64.sha256
 ----
 
+[#_build-from-source]
 === Build from source
 
 From the repository root:
@@ -45,6 +47,7 @@ make kubectl-plugin          # output: bin/kubectl-runtime_enforcer
 make kubectl-plugin-cross    # output: bin/kubectl-plugin/kubectl-runtime_enforcer-<os>-<arch>
 ----
 
+[#_verify]
 === Verify
 
 [source,bash]
@@ -53,6 +56,7 @@ make kubectl-plugin-cross    # output: bin/kubectl-plugin/kubectl-runtime_enforc
 - `kubectl runtime-enforcer -v/--version` — print version
 ----
 
+[#_enable-auto-completion]
 === Enable auto-completion
 
 To enable auto-completion, make sure that you enable the auto-completion of
@@ -69,6 +73,7 @@ chmod +x kubectl_complete-runtime_enforcer
 sudo mv kubectl_complete-runtime_enforcer /usr/local/bin/
 ----
 
+[#_promote-a-proposal]
 === Promote a proposal
 
 Promoting a `WorkloadPolicyProposal` sets the
@@ -85,6 +90,7 @@ kubectl runtime-enforcer proposal promote <PROPOSAL_NAME> -n <namespace> --mode 
 Use `kubectl runtime-enforcer proposal promote --dry-run` to validate without
 persisting.
 
+[#_switch-monitor-protect]
 === Switch monitor ↔ protect
 
 *Plugin:*
@@ -99,6 +105,7 @@ kubectl runtime-enforcer policy monitor <POLICY_NAME> -n <namespace>
 
 Use `--dry-run` on `policy protect` and `policy monitor` to preview.
 
+[#_allowing-denying-executables]
 === Allowing/denying executables
 
 To limit or expand allowed executables, add or remove executable paths on a
@@ -112,6 +119,7 @@ kubectl runtime-enforcer policy exec allow <POLICY> <container> <executable-path
 kubectl runtime-enforcer policy exec deny  <POLICY> <container> <executable-path> [<executable-path>...]
 ----
 
+[#_show-protection-mappings]
 === Show protection mappings
 
 Lists workloads and how they map to policies (table or JSON).

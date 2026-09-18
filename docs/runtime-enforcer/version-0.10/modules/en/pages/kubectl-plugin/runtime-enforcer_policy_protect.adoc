@@ -10,6 +10,7 @@ Set WorkloadPolicy mode to protect
 runtime-enforcer policy protect POLICY_NAME [flags]
 ....
 
+[#_options]
 == Options
 
 ....
@@ -17,6 +18,7 @@ runtime-enforcer policy protect POLICY_NAME [flags]
   -h, --help      help for protect
 ....
 
+[#_options-inherited-from-parent-commands]
 == Options inherited from parent commands
 
 ....
@@ -41,6 +43,7 @@ runtime-enforcer policy protect POLICY_NAME [flags]
       --user string                    The name of the kubeconfig user to use
 ....
 
+[#_see-also]
 == SEE ALSO
 
 * xref:kubectl-plugin/runtime-enforcer_policy.adoc[runtime-enforcer policy] - Manage WorkloadPolicy

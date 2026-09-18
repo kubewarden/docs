@@ -10,6 +10,7 @@ List workloads to WorkloadPolicy protection mapping
 runtime-enforcer policy show protection [flags]
 ....
 
+[#_options]
 == Options
 
 ....
@@ -18,6 +19,7 @@ runtime-enforcer policy show protection [flags]
   -o, --output string    Output format. One of: table|json (default "table")
 ....
 
+[#_options-inherited-from-parent-commands]
 == Options inherited from parent commands
 
 ....
@@ -42,6 +44,7 @@ runtime-enforcer policy show protection [flags]
       --user string                    The name of the kubeconfig user to use
 ....
 
+[#_see-also]
 == SEE ALSO
 
 * xref:kubectl-plugin/runtime-enforcer_policy_show.adoc[runtime-enforcer policy show] - Show WorkloadPolicy information

@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 
+[#_synopsis]
 == Synopsis
 
 Kubernetes plugin for SUSE Security Runtime Enforcer
@@ -12,6 +13,7 @@ Kubernetes plugin for SUSE Security Runtime Enforcer
 runtime-enforcer [flags]
 ....
 
+[#_options]
 == Options
 
 ....
@@ -37,6 +39,7 @@ runtime-enforcer [flags]
       --user string                    The name of the kubeconfig user to use
 ....
 
+[#_see-also]
 == SEE ALSO
 
 * xref:kubectl-plugin/runtime-enforcer_policy.adoc[runtime-enforcer policy] - Manage WorkloadPolicy

@@ -6,6 +6,7 @@ include::partial$variables.adoc[]
 
 Promote WorkloadPolicyProposal to WorkloadPolicy
 
+[#_synopsis]
 == Synopsis
 
 Promote WorkloadPolicyProposal to WorkloadPolicy. This will trigger the creation of a WorkloadPolicy.
@@ -14,6 +15,7 @@ Promote WorkloadPolicyProposal to WorkloadPolicy. This will trigger the creation
 runtime-enforcer proposal promote PROPOSAL_NAME [flags]
 ....
 
+[#_options]
 == Options
 
 ....
@@ -22,6 +24,7 @@ runtime-enforcer proposal promote PROPOSAL_NAME [flags]
       --mode string   Policy mode for the promoted WorkloadPolicy (monitor or protect) (default "monitor")
 ....
 
+[#_options-inherited-from-parent-commands]
 == Options inherited from parent commands
 
 ....
@@ -46,6 +49,7 @@ runtime-enforcer proposal promote PROPOSAL_NAME [flags]
       --user string                    The name of the kubeconfig user to use
 ....
 
+[#_see-also]
 == SEE ALSO
 
 * xref:kubectl-plugin/runtime-enforcer_proposal.adoc[runtime-enforcer proposal] - Manage WorkloadPolicyProposal
