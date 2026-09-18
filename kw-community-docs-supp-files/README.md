@@ -67,4 +67,5 @@ The community footer matches the website's branding, social links, and legal tex
 The `currentyear` helper supplies the copyright year at build time.
 The social marks in `img/footer-social.svg` come from Simple Icons (CC0 1.0), as on the website.
 The Rancher and CNCF logo variants are copies of the website assets.
-The community template shows these logos only on pages with `page-role: kw-landing`.
+Pages with `page-role: kw-landing` show large logos above the footer.
+Other pages show compact logos inside the footer, with the same light and dark variants.

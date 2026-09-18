@@ -15,13 +15,31 @@
         <a href="https://x.com/kubewarden" target="_blank" rel="noopener" aria-label="X (opens in new tab)"><svg aria-hidden="true" viewBox="0 0 24 24"><use href="{{uiRootPath}}/img/footer-social.svg#x"></use></svg></a>
       </nav>
     </div>
-    <div class="footer-bottom">
+    <div class="footer-bottom{{#unless (eq page.attributes.role 'kw-landing')}} footer-bottom--partners{{/unless}}">
       <p>
         &copy; {{currentyear}} Kubewarden Project Authors. All rights reserved.
         The Linux Foundation has registered trademarks and uses trademarks.
         For a list of trademarks of The Linux Foundation, please see our
         <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.
       </p>
+      {{#unless (eq page.attributes.role 'kw-landing')}}
+      <div class="footer-partners" role="group" aria-label="Project origins and affiliation">
+        <div class="footer-partner">
+          <p>Originally developed by</p>
+          <a href="https://www.rancher.com/">
+            <img src="{{uiRootPath}}/img/rancher-suse-logo-horizontal-color.svg" alt="Rancher by SUSE" class="logo-light" loading="lazy">
+            <img src="{{uiRootPath}}/img/rancher-suse-logo-horizontal-white.svg" alt="Rancher by SUSE" class="logo-dark" loading="lazy">
+          </a>
+        </div>
+        <div class="footer-partner">
+          <p>CNCF Sandbox Project</p>
+          <a href="https://www.cncf.io/">
+            <img src="{{uiRootPath}}/img/cncf-color.png" alt="Cloud Native Computing Foundation" class="logo-light" loading="lazy">
+            <img src="{{uiRootPath}}/img/cncf-color-whitetext.svg" alt="Cloud Native Computing Foundation" class="logo-dark" loading="lazy">
+          </a>
+        </div>
+      </div>
+      {{/unless}}
       <nav class="footer-legal" aria-label="Legal">
         <a href="https://www.linuxfoundation.org/legal/privacy-policy" target="_blank" rel="noopener">Privacy<span class="sr-only"> (opens in new tab)</span></a>
         <a href="https://www.linuxfoundation.org/legal/terms" target="_blank" rel="noopener">Terms<span class="sr-only"> (opens in new tab)</span></a>
