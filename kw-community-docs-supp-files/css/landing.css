@@ -55,6 +55,10 @@
 .kw-landing .doc .landing-community h2 { margin: 0; font-size: 1.3rem; }
 .kw-landing .landing-community .paragraph { margin-top: .5rem; }
 .kw-landing .community-links { margin-top: .75rem; }
+.kw-landing .landing-partners { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.875rem; padding: 3.75rem 0 1rem; text-align: center; }
+.kw-landing .partner-label { color: var(--text-body); font-size: 1.1rem; line-height: 1.6; margin: 0 0 1.25rem; }
+.kw-landing .partner > a { display: flex; align-items: center; justify-content: center; min-height: 5rem; border-radius: .3rem; }
+.kw-landing .partner-logo { width: 100%; max-width: 260px; height: auto; }
 @media (max-width: 1200px) {
   .kw-landing .doc { padding: 2rem; }
   .kw-landing .landing-hero { padding: 2rem; }
@@ -65,6 +69,7 @@
   .kw-landing .component-grid > .sectionbody { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
   .kw-landing .component-card { padding: 1.5rem; }
   .kw-landing .doc .landing-community { padding: 1.5rem; }
+  .kw-landing .landing-partners { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; padding-top: 2.5rem; }
 }
 @media print {
   .kw-landing .doc { padding: 0; }

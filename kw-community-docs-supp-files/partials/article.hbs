@@ -23,6 +23,9 @@
 {{/with}}
 {{/unless}}
 {{{page.contents}}}
+{{#if (eq page.attributes.role 'kw-landing')}}
+{{> landing-partners}}
+{{/if}}
 {{#unless (eq page.attributes.role 'kw-landing')}}
 {{> pagination}}
 {{/unless}}

@@ -62,3 +62,9 @@ The dark logo changes only the wordmark fill of `img/logo-kubewarden.svg`, from
 
 The four `img/component-*.svg` icons match the website's Lucide component icons.
 They use the ISC license in `img/LUCIDE-LICENSE.txt`.
+
+The community footer matches the website's branding, social links, and legal text.
+The `currentyear` helper supplies the copyright year at build time.
+The social marks in `img/footer-social.svg` come from Simple Icons (CC0 1.0), as on the website.
+The Rancher and CNCF logo variants are copies of the website assets.
+The community template shows these logos only on pages with `page-role: kw-landing`.
