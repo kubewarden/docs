@@ -95,6 +95,7 @@ The chart mounts the Secret net-enf-goldmane-client-certs when controller.provid
 |Yes
 |===
 
+ifeval::["{build-type}" == "product"]
 == Rancher Integration
 
 [cols="2,2,6"]
@@ -113,6 +114,7 @@ The chart mounts the Secret net-enf-goldmane-client-certs when controller.provid
 |Expected
 |Should work but not yet verified
 |===
+endif:[]
 
 == Support
 
