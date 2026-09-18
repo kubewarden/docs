@@ -12,6 +12,17 @@
   const navToggle = document.querySelector('.nav-toggle');
   watchState(drawer, navToggle);
   document.querySelectorAll('.nav-item-toggle').forEach(button => watchState(button.parentElement, button));
+  const menuToggle = document.querySelector('.nav-menu-toggle');
+  if (menuToggle) {
+    const updateMenuAction = () => {
+      const action = menuToggle.classList.contains('is-active') ? 'Collapse' : 'Expand';
+      const label = `${action} all navigation sections`;
+      menuToggle.setAttribute('aria-label', label);
+      menuToggle.title = label;
+    };
+    updateMenuAction();
+    new MutationObserver(updateMenuAction).observe(menuToggle, { attributes: true, attributeFilter: ['class'] });
+  }
   document.querySelector('.is-current-page > .nav-link')?.setAttribute('aria-current', 'page');
   document.querySelector('.skip-link')?.addEventListener('click', () => {
     document.getElementById('main-content')?.focus({ preventScroll: true });

@@ -63,6 +63,12 @@ a:hover { color: var(--accent-color); }
 .nav .panels { position: relative; }
 .nav-panel-menu { height: calc(100% - 6rem); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
 .nav-menu { padding: .75rem 1.25rem 2rem 1.75rem; line-height: 1.5; }
+.nav-menu-toggle, .nav-menu-toggle.is-active { background: var(--page-bg); color: var(--text-muted); opacity: 1; visibility: visible; width: 2rem; height: 2rem; margin: 0 -.5rem .25rem .5rem; padding: .35rem; top: .75rem; border: 1px solid var(--border); border-radius: .35rem; }
+.nav-menu-toggle svg { display: block; width: 100%; height: 100%; }
+.nav-menu-toggle:hover { background: var(--surface-muted); color: var(--accent-color); border-color: var(--accent-color); }
+.nav-menu-toggle:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 3px; }
+.nav-menu-toggle .nav-fold-icon, .nav-menu-toggle.is-active .nav-unfold-icon { display: none; }
+.nav-menu-toggle.is-active .nav-fold-icon { display: inline; }
 .nav-menu h3.title { color: var(--text); font-weight: 700; padding: .25rem 0 .75rem; font-size: .85rem; }
 .nav-menu a { color: var(--text-body); }
 .nav-item { margin-top: .35rem; }
