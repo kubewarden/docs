@@ -1,0 +1,110 @@
+include::partial$variables.adoc[]
+
+= Compatibility
+:revdate: 2026-09-17
+:page-revdate: {revdate}
+
+== Overview
+
+{rte-name} uses eBPF (Extended Berkeley Packet Filter) to monitor and
+enforce security policies at the kernel level in Kubernetes. You need modern
+eBPF features, so your kernel version and configuration matter.
+
+== Quick Reference
+
+[cols="2,3,5"]
+|===
+|Component |Version/Requirement |Notes
+
+|*Minimum Kernel*
+|5.8 (x86_64), 6.4 (aarch64)
+|Limitation: max binary path length in policies is 512 characters. Starting from kernel 5.11, this limitation no longer applies, paths can be up to 4096 characters.
+
+|*Architecture*
+|x86_64, aarch64
+|Fully supported
+
+|*Cgroup*
+|v1 or v2
+|Either version supported
+
+|*Container Runtime*
+|CRI-O or containerd with NRI enabled.
+|
+
+|*Kubernetes*
+|To be determined
+|
+
+|*Linux distribution*
+|To be determined
+|
+|===
+
+== Required Kernel Configuration
+
+Your kernel needs these configuration options:
+
+[source,conf]
+----
+# Core BPF Support
+CONFIG_BPF=y
+CONFIG_BPF_SYSCALL=y
+CONFIG_HAVE_EBPF_JIT=y
+
+# BTF (BPF Type Format) - REQUIRED
+CONFIG_DEBUG_INFO_BTF=y
+CONFIG_DEBUG_INFO=y
+
+# Function Tracing
+CONFIG_FTRACE=y
+CONFIG_DYNAMIC_FTRACE=y
+CONFIG_FUNCTION_TRACER=y
+
+CONFIG_SECURITY=y
+
+# Cgroup support
+CONFIG_CGROUPS=y
+CONFIG_CGROUP_BPF=y
+CONFIG_MEMCG=y
+----
+
+=== Verifying Kernel Configuration
+
+Check if your kernel has what you need:
+
+[source,bash]
+----
+# Check if BTF is available
+ls /sys/kernel/btf/vmlinux
+
+# Verify BPF syscall support
+grep CONFIG_BPF <your kernel config>
+----
+
+== Rancher Integration
+
+[cols="2,2,6"]
+|===
+|Rancher Version |Status |Notes
+
+|*2.6.x*
+|✓ Supported
+|Minimum supported version
+
+|*2.7.x - 2.11.x*
+|✓ Supported
+|Fully tested
+
+|*2.12.x*
+|✓ Supported
+|Latest tested version (up to 2.12.100)
+
+|*2.13.x+*
+|Expected
+|Should work but not yet verified
+|===
+
+== Support
+
+Hit a compatibility issue not covered here? Open an link:https://github.com/rancher-sandbox/runtime-enforcer/issues[issue] with your environment details.

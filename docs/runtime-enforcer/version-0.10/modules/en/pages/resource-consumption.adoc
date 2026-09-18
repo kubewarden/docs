@@ -1,0 +1,171 @@
+include::partial$variables.adoc[]
+
+= {rte-name} Resource Consumption
+:revdate: 2026-09-17
+:page-revdate: {revdate}
+
+The {rte-name} contains two main components. `controller` handles the
+interaction with the Kubernetes API server, and `agent` handles the behavior
+learning and low-level policy enforcement.
+
+Given that these two components have different responsibilities, this document
+provides a high-level guide on how to configure these two components' resource
+utilization, especially in a large cluster.
+
+== Sizing recommendation
+
+We recommend explicitly configuring resource limits to match your cluster size.
+To do this, add the desired values as shown below in your helm chart overrides.
+
+....
+controller:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 500m
+      memory: 256Mi
+agent:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 500m
+      memory: 256Mi
+....
+
+[NOTE]
+====
+By default, the Runtime Enforcer helm charts deploy these components as
+`Guaranteed` QoS by specifying the same value in both `requests` and `limits`.
+Please refer to
+https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#pod-selection-for-kubelet-eviction[Kubernetes
+Docs] if you want to set different values for `requests` and `limits`.
+====
+
+There are a few factors to consider when sizing:
+
+. The maximum pods per node
+. The total number of workloads, e.g., the total number of `Deployments`,
+  `DaemonSets`, and `Pods`.
+. The number of Runtime Enforcer custom resources, e.g., `WorkloadPolicies`.
+. The number of allowed rules per policy. (In the recommendation below, we
+  assume there are 10 rules per policy on average.)
+
+Additionally, Runtime Enforcer agent/controller pods need extra resources to
+handle security events and behavior learning. They also have to handle bursts
+during policy and workload reconciliation.
+
+Based on these and the benchmark results, this is our recommendation. Please
+consider this as a starting point for your optimization instead of the final
+configuration, since every cluster could vary.
+
+=== Agent
+
+[cols=",,",options="header",]
+|===
+|++#++Workload {plus} ++#++WorkloadPolicies |Agent CPU Request/Limit (m) |Agent Memory Request/Limit (Mi)
+|++<++2000 (small) |250 |256
+|2000~4000 (medium) |250 |512
+|++>++4000 (large) |250 or more |768 or more
+|===
+
+=== Controller
+
+[cols=",,",options="header",]
+|===
+|++#++Workload {plus} ++#++WorkloadPolicies |Controller CPU Request/Limit (m) |Controller Memory Request/Limit (Mi)
+|++<++2000 (small) |250 |256
+|2000~4000 (medium) |250 |512
+|++>++4000 (large) |250 or more |768 or more
+|===
+
+[[benchmark-results-v060]]
+== Benchmark Results v0.6.0
+
+In each test, CPU and memory utilization is collected from
+https://github.com/kubernetes-sigs/metrics-server[Kubernetes Metrics Server] for
+nodes and agent/controller pods. The throughput of execve calls is collected
+using https://github.com/torvalds/linux/blob/master/tools/perf/perf.c[Linux
+perf].
+
+[NOTE]
+====
+Depending on the timing when the metrics are collected, there could be
+variance in the numbers, especially in CPU utilization.
+====
+
+=== Environment
+
+[cols=",",options="header",]
+|===
+|Field |Value
+|Enforcer chart |runtime-enforcer-0.1.7
+|Agent version |v0.6.0
+|Agent image |ghcr.io/rancher-sandbox/runtime-enforcer/agent:latest
+|Kubernetes |v1.35.3-gke.1389000
+|Kernel |6.8.0-1049-gke
+|OS image |Ubuntu 24.04.4 LTS
+|Container runtime |containerd://2.1.5
+|Sampled node |gke-sam-scaling-test-clu-default-pool-fb7c7e8e-l1t5
+|Node CPU capacity |4
+|Node memory capacity |16374232Ki (~16Gi)
+|Measurement timestamp |2026-05-11T17:43:48Z
+|Benchmark script |hack/bench/bench.py
+|===
+
+=== Baseline
+
+The baseline is collected without any Runtime Enforcer components.
+
+[cols=",,,",options="header",]
+|===
+|Pod count |Node CPU avg (m) |Node Memory avg (Mi) |NoPolicy execve throughput (ops/sec)
+|0 |95 |1187 |674
+|10 |84 |1172 |675
+|50 |79 |1171 |639
+|100 |86 |1182 |638
+|===
+
+=== Scaling per pod
+
+In this part, pods associated with a single policy are created on the sampled
+node.
+
+[cols=",,,,,,,,,",options="header",]
+|===
+|Pod count |Node CPU avg (m) |Node Memory avg (Mi) |Agent CPU avg (m) |Agent Memory avg (Mi) |Controller CPU avg (m) |Controller Memory avg (Mi) |NoPolicy execve throughput (ops/sec) |Monitor execve throughput (ops/sec) |Protect execve throughput (ops/sec)
+|0 |90 |1210 |2 |94 |3 |21 |636 |674 |659
+|10 |88 |1216 |2 |98 |3 |24 |635 |663 |659
+|50 |96 |1221 |2 |98 |3 |25 |613 |658 |616
+|100 |90 |1209 |2 |101 |3 |29 |613 |625 |654
+|===
+
+=== Policy Scaling
+
+In this part, each pod is associated with its own policy on the sampled node.
+
+[cols=",,,,,,,,,",options="header",]
+|===
+|Pod count |Node CPU avg (m) |Node Memory avg (Mi) |Agent CPU avg (m) |Agent Memory avg (Mi) |Controller CPU avg (m) |Controller Memory avg (Mi) |NoPolicy execve throughput (ops/sec) |Monitor execve throughput (ops/sec) |Protect execve throughput (ops/sec)
+|1 |85 |1223 |3 |103 |5 |31 |630 |680 |679
+|10 |89 |1229 |2 |104 |3 |25 |625 |665 |674
+|30 |88 |1212 |2 |104 |3 |29 |617 |611 |641
+|50 |90 |1222 |2 |104 |3 |32 |615 |655 |631
+|===
+
+=== Controller Resource Utilization
+
+Unlike the per-node tests above, the metrics here were collected across all pods
+distributed on a 15-node GKE cluster. Each running pod is associated with its
+own policy without a node selector applied.
+
+[cols=",,,",options="header",]
+|===
+|Pod count |Policy Count |Controller CPU (m) |Controller Memory (Mi)
+|100 |100 |8 |47
+|400 |400 |22 |60
+|1000 |1000 |49 |94
+|===

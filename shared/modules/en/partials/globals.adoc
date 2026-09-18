@@ -1,0 +1,5 @@
+// Here are global attributes for the Kubewarden project.
+
+// Pull in the community specific global attributes.
+
+include::{build-type}-specific/globals.adoc[]

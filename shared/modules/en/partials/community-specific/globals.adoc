@@ -1,0 +1,26 @@
+// Community specific global attributes. In scope for all sub-projects of
+// Kubewarden.
+
+:admc-name: Kubewarden Admission Controller
+:admc-short-name: Admission Controller
+:admc-abbrev: ADMC
+
+:co-name: Kubewarden Compliance Operator
+:co-short-name: Compliance Operator
+:co-abbrev: CO
+
+:ne-name: Kubewarden Network Enforcer
+:ne-short-name: Network Enforcer
+:ne-abbrev: NE
+
+:rte-name: Kubewarden Runtime Enforcer
+:rte-short-name: Runtime Enforcer
+:rte-abbrev: RTE
+
+:sboms-name: Kubewarden SBOM Scanner
+:sboms-short-name: SBOM Scanner
+:sboms-abbrev: SBOMS
+
+:waf-name: Kubewarden Web Application Firewall
+:waf-short-name: Web Application Firewall
+:waf-abbrev: WAF

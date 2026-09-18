@@ -8,7 +8,13 @@ content:
   sources:
     - url: ./
       branches: HEAD
-      start_paths: [shared, docs/kw/version-*, docs/admission-controller/version-*, docs/sbom-scanner/v*]
+      start_paths: [
+        shared,
+        docs/kw/version-*,
+        docs/admission-controller/version-*,
+        docs/sbom-scanner/version-*,
+        docs/runtime-enforcer/version-*
+      ]
 
 ui:
   bundle:

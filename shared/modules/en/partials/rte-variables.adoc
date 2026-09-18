@@ -1,0 +1,3 @@
+// Global attributes for runtime enforcer.
+
+include::globals.adoc[]

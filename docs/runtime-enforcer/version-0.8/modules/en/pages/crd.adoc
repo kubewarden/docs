@@ -1,0 +1,259 @@
+include::partial$variables.adoc[]
+
+// Generated documentation. Please do not edit.
+= CRD API Reference
+:revdate: 2026-09-16
+:page-revdate: {revdate}
+:anchor_prefix: k8s-api
+:p: runtime-enforcer
+
+[id="{p}-api-reference"]
+== API Reference
+
+.Packages
+- xref:{anchor_prefix}-security-rancher-io-v1alpha1[$$security.rancher.io/v1alpha1$$]
+
+[id="{anchor_prefix}-security-rancher-io-v1alpha1"]
+=== security.rancher.io/v1alpha1
+
+Package v1alpha1 contains API Schema definitions for the security v1alpha1 API group.
+
+.Resource Types
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicy[$$WorkloadPolicy$$]
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicylist[$$WorkloadPolicyList$$]
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyproposal[$$WorkloadPolicyProposal$$]
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyproposallist[$$WorkloadPolicyProposalList$$]
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-nodeissue"]
+==== NodeIssue
+
+NodeIssue represents an issue with a node.
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicystatus[$$WorkloadPolicyStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`code`* __xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-nodeissuecode[$$NodeIssueCode$$]__ | code is the issue code. + |  | 
+| *`message`* __string__ | message is a human-readable description of the issue. + |  | 
+|===
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-nodeissuecode"]
+==== NodeIssueCode
+
+_Underlying type:_ _string_
+
+NodeIssueCode represents the code for a node issue.
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-nodeissue[$$NodeIssue$$]
+****
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-phase"]
+==== Phase
+
+_Underlying type:_ _string_
+
+Phase represents the current phase of the workload policy.
+Possible values are:
+- "Transitioning": the policy is in the process of changing its enforcement mode.
+- "Failed": the policy deployment has failed.
+- "Ready": the policy is ready and actively enforced.
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicystatus[$$WorkloadPolicyStatus$$]
+****
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-violationrecord"]
+==== ViolationRecord
+
+ViolationRecord holds the details of a single policy violation.
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicystatus[$$WorkloadPolicyStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`timestamp`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | timestamp is when the violation occurred. + |  | 
+| *`podName`* __string__ | podName is the name of the pod where the violation occurred. + |  | 
+| *`containerName`* __string__ | containerName is the container where the unauthorized executable ran. + |  | 
+| *`executablePath`* __string__ | executablePath is the path of the unauthorized executable. + |  | 
+| *`nodeName`* __string__ | nodeName is the node where the violation occurred. + |  | 
+| *`action`* __string__ | action is the enforcement action taken (monitor or protect). + |  | 
+|===
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicy"]
+==== WorkloadPolicy
+
+WorkloadPolicy is the Schema for the workloadpolicies API.
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicylist[$$WorkloadPolicyList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `security.rancher.io/v1alpha1` | |
+| *`kind`* __string__ | `WorkloadPolicy` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyspec[$$WorkloadPolicySpec$$]__ |  |  | 
+| *`status`* __xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicystatus[$$WorkloadPolicyStatus$$]__ |  |  | 
+|===
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyexecutables"]
+==== WorkloadPolicyExecutables
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyrules[$$WorkloadPolicyRules$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`allowed`* __string array__ | allowed defines a list of executables that are allowed to run + |  | items:Pattern: ^/.*$ +
+
+|===
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicylist"]
+==== WorkloadPolicyList
+
+WorkloadPolicyList contains a list of WorkloadPolicy.
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `security.rancher.io/v1alpha1` | |
+| *`kind`* __string__ | `WorkloadPolicyList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicy[$$WorkloadPolicy$$] array__ |  |  | 
+|===
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyproposal"]
+==== WorkloadPolicyProposal
+
+WorkloadPolicyProposal is the Schema for the workloadpolicyproposals API.
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyproposallist[$$WorkloadPolicyProposalList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `security.rancher.io/v1alpha1` | |
+| *`kind`* __string__ | `WorkloadPolicyProposal` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyproposalspec[$$WorkloadPolicyProposalSpec$$]__ |  |  | 
+|===
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyproposallist"]
+==== WorkloadPolicyProposalList
+
+WorkloadPolicyProposalList contains a list of WorkloadPolicyProposal.
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `security.rancher.io/v1alpha1` | |
+| *`kind`* __string__ | `WorkloadPolicyProposalList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyproposal[$$WorkloadPolicyProposal$$] array__ |  |  | 
+|===
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyproposalspec"]
+==== WorkloadPolicyProposalSpec
+
+WorkloadPolicyProposalSpec defines the desired state of WorkloadPolicyProposal.
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyproposal[$$WorkloadPolicyProposal$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`rulesByContainer`* __object (keys:string, values:xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyrules[$$WorkloadPolicyRules$$])__ | rulesByContainer specifies for each container the list of rules to apply. + |  | 
+|===
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyrules"]
+==== WorkloadPolicyRules
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyproposalspec[$$WorkloadPolicyProposalSpec$$]
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyspec[$$WorkloadPolicySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`executables`* __xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyexecutables[$$WorkloadPolicyExecutables$$]__ | executables defines a security policy for executables. + |  | 
+|===
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyspec"]
+==== WorkloadPolicySpec
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicy[$$WorkloadPolicy$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`mode`* __string__ | mode defines the execution mode of this policy. Can be set to +
+either "protect" or "monitor". In "protect" mode, the policy +
+blocks and reports violations, while in "monitor" mode, +
+it only reports violations. + |  | Enum: [monitor protect] +
+Required: \{} +
+
+| *`rulesByContainer`* __object (keys:string, values:xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicyrules[$$WorkloadPolicyRules$$])__ | rulesByContainer specifies for each container the list of rules to apply. + |  | 
+|===
+
+[id="{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicystatus"]
+==== WorkloadPolicyStatus
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-workloadpolicy[$$WorkloadPolicy$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`observedGeneration`* __integer__ |  |  | 
+| *`nodesWithIssues`* __object (keys:string, values:xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-nodeissue[$$NodeIssue$$])__ | nodesWithIssues contains the status of each node with issues. + |  | 
+| *`totalNodes`* __integer__ | totalNodes is the total number of nodes the policy is applied to. + |  | 
+| *`successfulNodes`* __integer__ | successfulNodes is the number of nodes where the policy is successfully enforced. + |  | 
+| *`failedNodes`* __integer__ | failedNodes is the number of nodes where the policy enforcement failed. + |  | 
+| *`transitioningNodes`* __integer__ | transitioningNodes is the number of nodes where the policy is transitioning mode. + |  | 
+| *`nodesTransitioning`* __string array__ | nodesTransitioning contains the names of the nodes that are transitioning. + |  | 
+| *`phase`* __xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-phase[$$Phase$$]__ | phase indicates the current phase of the workload policy. + |  | 
+| *`violationCount`* __integer__ | violationCount is the total number of violation records, +
+including those no longer retained in violations. +
+
+Note: This value is maintained by the reconciler and reflects +
+its best-effort view of the system. It is not guaranteed to be +
+strongly consistent and may be temporarily outdated depending on +
+reconciliation. + |  | 
+| *`violations`* __xref:{anchor_prefix}-github-com-rancher-sandbox-runtime-enforcer-api-v1alpha1-violationrecord[$$ViolationRecord$$] array__ | violations is the list of the most recent violation records (max MaxViolationRecords). +
+Oldest entries are dropped when the limit is reached. + |  | 
+|===
+

@@ -1,0 +1,3 @@
+// Here goes version specific, community-specific shared attributes and content
+
+:runtime-enforcer-helm-chart: https://github.com/kubewarden/helm-charts/tree/main/charts/runtime-enforcer
