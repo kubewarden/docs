@@ -1,0 +1,134 @@
+/* Palette roles match kubewarden.io/assets/sass/_theme.scss. */
+@font-face {
+  font-family: SUSE;
+  src: url('../fonts/suse-v2.001-normal.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: SUSE;
+  src: url('../fonts/suse-v2.001-italic.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+  --font-sans: SUSE, system-ui, sans-serif;
+  --font-mono: ui-monospace, 'DejaVu Sans Mono', monospace;
+  --brand-color: #bc2a46;
+  --accent-color: #bc2a46;
+  --page-bg: #fff;
+  --surface: #fff;
+  --surface-muted: #f6f7f9;
+  --surface-tint: #fdf1f4;
+  --text: #0f0f0f;
+  --text-body: #4a4a4a;
+  --text-muted: #626977;
+  --border: #e5e7ec;
+  --border-strong: #c9ccd3;
+  --success-bg: #e3f3ea;
+  --success-text: #1b7743;
+  --warning-bg: #fdf0e3;
+  --warning-text: #945209;
+  --info-bg: #eef4fb;
+  --info-text: #2f6fb0;
+  --code-bg: #1a1a1f;
+  --code-text: #f8f8f2;
+  --code-border: #42404c;
+  --code-comment: #aaaab5;
+  --code-key: #ff8fbc;
+  --code-function: #8edce6;
+  --code-string: #b5e681;
+  --logo-light-display: inline;
+  --logo-dark-display: none;
+  --icon-filter: none;
+  --header-height: 4.5rem;
+  --toolbar-height: 3rem;
+  --sidebar-width: 17rem;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --accent-color: #ed6a82;
+  --page-bg: #141418;
+  --surface: #1d1d24;
+  --surface-muted: #25252f;
+  --surface-tint: #2c1d27;
+  --text: #f3f1f5;
+  --text-body: #d0cbd4;
+  --text-muted: #b3adbd;
+  --border: #42404c;
+  --border-strong: #65616f;
+  --success-bg: #19382b;
+  --success-text: #8fdfb0;
+  --warning-bg: #3b2b1c;
+  --warning-text: #ffc78e;
+  --info-bg: #1d3045;
+  --info-text: #a5ceff;
+  --logo-light-display: none;
+  --logo-dark-display: inline;
+  --icon-filter: invert(1);
+}
+
+/* Follow the OS even when JavaScript is disabled. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --accent-color: #ed6a82;
+    --page-bg: #141418;
+    --surface: #1d1d24;
+    --surface-muted: #25252f;
+    --surface-tint: #2c1d27;
+    --text: #f3f1f5;
+    --text-body: #d0cbd4;
+    --text-muted: #b3adbd;
+    --border: #42404c;
+    --border-strong: #65616f;
+    --success-bg: #19382b;
+    --success-text: #8fdfb0;
+    --warning-bg: #3b2b1c;
+    --warning-text: #ffc78e;
+    --info-bg: #1d3045;
+    --info-text: #a5ceff;
+    --logo-light-display: none;
+    --logo-dark-display: inline;
+    --icon-filter: invert(1);
+  }
+}
+
+@media (max-width: 1023.5px) {
+  :root { --header-height: 8rem; }
+}
+
+@media print {
+  :root, :root[data-theme], :root:not([data-theme]) {
+    color-scheme: light;
+    --page-bg: #fff;
+    --surface: #fff;
+    --surface-muted: #f6f7f9;
+    --surface-tint: #fdf1f4;
+    --text: #0f0f0f;
+    --text-body: #4a4a4a;
+    --text-muted: #626977;
+    --accent-color: #bc2a46;
+    --border: #e5e7ec;
+    --border-strong: #c9ccd3;
+    --info-bg: #eef4fb;
+    --info-text: #2f6fb0;
+    --success-bg: #e3f3ea;
+    --success-text: #1b7743;
+    --warning-bg: #fdf0e3;
+    --warning-text: #945209;
+    --code-bg: #f6f7f9;
+    --code-text: #0f0f0f;
+    --code-comment: #626977;
+    --code-key: #bc2a46;
+    --code-function: #2f6fb0;
+    --code-string: #1b7743;
+    --logo-light-display: inline;
+    --logo-dark-display: none;
+  }
+}

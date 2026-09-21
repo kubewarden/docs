@@ -1,28 +1,44 @@
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.6/dist/mermaid.esm.min.mjs';
 
-mermaid.initialize({
-  startOnLoad: true,
-  theme: 'base',
-  themeVariables: {
-    primaryColor: '#83e1be',
-    edgeLabelBackground: '#ffefe9',
-  },
-  themeCSS: `
-    .policy > polygon.label-container { fill: #ffefe9; }
-    .cluster.container > rect { fill: #eafaf8; }
-    .edgeLabel rect,
-    .edgeLabel .labelBkg {
-      fill: #ffefe9 !important;
-      opacity: 1 !important;
-      stroke: #4b5563 !important;
-      stroke-width: 1px !important;
-      vector-effect: non-scaling-stroke;
-      transform-box: fill-box;
-      transform-origin: center;
-      transform: scale(1.08, 1.18);
+const diagrams = [...document.querySelectorAll('.mermaid')].map(element => ({ element, source: element.textContent }));
+let pending = Promise.resolve();
+function render() {
+  // Serialize renders so rapid theme changes cannot mix Mermaid configurations.
+  pending = pending.then(async () => {
+    const style = getComputedStyle(document.documentElement);
+    const color = name => style.getPropertyValue(name).trim();
+    const dark = document.documentElement.dataset.theme === 'dark';
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: {
+        darkMode: dark,
+        fontFamily: 'SUSE, system-ui, sans-serif',
+        primaryColor: color('--surface-tint'),
+        primaryTextColor: color('--text'),
+        primaryBorderColor: color('--accent-color'),
+        secondaryColor: color('--surface-muted'),
+        tertiaryColor: color('--surface'),
+        lineColor: color('--text-muted'),
+        textColor: color('--text'),
+        mainBkg: color('--surface-tint'),
+        nodeBorder: color('--accent-color'),
+        clusterBkg: color('--surface-muted'),
+        clusterBorder: color('--border-strong'),
+        edgeLabelBackground: color('--surface'),
+      },
+      themeCSS: `.policy > polygon.label-container { fill: ${color('--surface-tint')}; }
+        .cluster.container > rect { fill: ${color('--surface-muted')}; }`,
+      flowchart: { htmlLabels: false },
+    });
+    for (const { element, source } of diagrams) {
+      element.removeAttribute('data-processed');
+      element.textContent = source;
     }
-  `,
-  flowchart: {
-    htmlLabels: false,
-  },
-});
+    await mermaid.run({ nodes: diagrams.map(({ element }) => element) });
+  }).catch(error => console.error('Could not render documentation diagram', error));
+}
+if (diagrams.length) {
+  render();
+  window.addEventListener('kubewarden-theme-change', render);
+}

@@ -1,0 +1,4 @@
+include::latest@shared:en:partial$kubewarden-variables-1.36-forward.adoc[]
+
+// Shared component names for the documentation overview.
+include::latest@shared:en:partial$globals.adoc[]

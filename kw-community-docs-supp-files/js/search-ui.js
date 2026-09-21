@@ -422,13 +422,10 @@
         },
       })
     );
-    searchInput.addEventListener(
-      'keydown',
-      debounce(function (e) {
-        if (e.key === 'Escape' || e.key === 'Esc') return clearSearchResults(true)
-        executeSearch(index);
-      }, 100)
-    );
+    searchInput.addEventListener('input', debounce(() => executeSearch(index), 100));
+    searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' || e.key === 'Esc') clearSearchResults(true);
+    });
     searchInput.addEventListener('click', confineEvent);
     searchResultContainer.addEventListener('click', confineEvent);
     if (facetFilterInput) {

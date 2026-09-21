@@ -1,61 +1,37 @@
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="header">
-  <nav class="navbar">
+  <nav class="navbar" aria-label="Main navigation">
     <div class="navbar-brand">
-      <div class="navbar-item">
-        <a class=" navbar-logo" href="{{{siteRootPath}}}" aria-label="Kubewarden Documentation Home"><img class="logo"
-            src="{{uiRootPath}}/img/logo-kubewarden.svg" alt="Kubewarden logo"/></a>
-      </div>
-      {{#if env.SITE_SEARCH_PROVIDER}}
-      <div class="navbar-item search hide-for-print">
-        <div id="search-field" class="field">
-          <label class="visual-search-label" for="search-input">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-          <input label="Search" aria-label="Search" id="search-input" type="text" placeholder="Search the docs" {{#if page.home}} autofocus{{/if}}>
-          <label class="filter checkbox" style="display: none">
-            <input type="checkbox" data-facet-filter="component:{{page.component.name}}"> Only this project
-          </label>
-        </div>
-      </div>
-      {{/if}}
-      <button class="navbar-burger" data-target="topbar-nav">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+      <a class="navbar-logo" href="https://www.kubewarden.io/" aria-label="Kubewarden website">
+        <img class="logo logo-light" src="{{uiRootPath}}/img/logo-kubewarden.svg" alt="Kubewarden" width="170" height="40">
+        <img class="logo logo-dark" src="{{uiRootPath}}/img/logo-kubewarden-dark.svg" alt="Kubewarden" width="170" height="40">
+      </a>
+      <a class="docs-label" href="{{{siteRootPath}}}">Docs</a>
     </div>
+    {{#if env.SITE_SEARCH_PROVIDER}}
+    <div class="search">
+      <div id="search-field" class="field">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
+        <input aria-label="Search documentation" id="search-input" type="search" placeholder="Search documentation…" autocomplete="off">
+      </div>
+    </div>
+    {{/if}}
     <div id="topbar-nav" class="navbar-menu">
       <div class="navbar-end">
-        <div class="navbar-item has-dropdown is-hoverable">
-          <div class="navbar-link">
-            GitHub
-          </div>
-          <div class="navbar-dropdown">
-            {{#with page.origin}}
-            <a class="navbar-item" href="{{./webUrl}}" target="_blank"><i class="fab fa-github"></i>&nbsp;{{@root.page.origin.descriptor.title}} documentation</a>
-            <a class="navbar-item" href="{{./webUrl}}/issues" target="_blank"><i class="fab fa-github"></i>&nbsp;Documentation issues</a>
-            <a class="navbar-item" href="https://github.com/kubewarden/community/blob/main/CONTRIBUTING.md" target="_blank"><i class="fas fa-user-edit"></i>&nbsp;Contribute</a>
-            {{/with}}
-          </div>
-        </div>
-        <div class="navbar-item has-dropdown is-hoverable">
-          <div class="navbar-link">
-            Community
-          </div>
-          <div class="navbar-dropdown">
-            <a class="navbar-item" href="https://kubernetes.slack.com/archives/kubewarden" target="_blank"><i class="fas fa-user-edit"></i>&nbsp;Slack</a>
-            <a class="navbar-item" href="https://bsky.app/profile/kubewarden.io" target="_blank"><i class="fas fa-user-edit"></i>&nbsp;Bluesky</a>
-            <a class="navbar-item" href="https://hachyderm.io/@kubewarden" target="_blank"><i class="fas fa-user-edit"></i>&nbsp;Mastodon</a>
-          </div>
-        </div>
+        <a class="navbar-item" href="https://www.kubewarden.io/#components">Platform</a>
+        <a class="navbar-item" href="https://www.kubewarden.io/blog/">Blog</a>
+        <a class="navbar-item" href="https://www.kubewarden.io/#get-in-touch">Community</a>
+        <a class="navbar-item github-link" href="https://github.com/kubewarden"><i class="fab fa-github" aria-hidden="true"></i> GitHub</a>
       </div>
     </div>
-
-    </div>
-  </nav>
-</header>
-
-      </div>
-    </div>
-
-    </div>
+    <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to dark theme" title="Switch to dark theme" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path class="theme-moon" d="M21 12.5A9 9 0 1 1 11.5 3a6.5 6.5 0 0 0 9.5 9.5Z"/>
+        <g class="theme-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></g>
+      </svg>
+    </button>
+    <button type="button" class="navbar-burger" data-target="topbar-nav" aria-controls="topbar-nav" aria-expanded="false" aria-label="Toggle main navigation">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 </header>
