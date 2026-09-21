@@ -1,14 +1,14 @@
 include::partial$variables.adoc[]
 
-= Policy evaluation timeout protection
+= Policy evaluation timeout and memory limit protection
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-09-10
 :page-revdate: {revdate}
-:description: Configure policy evaluation timeouts to ensure timely completion and prevent resource exhaustion with the Policy Server's built-in protection feature.
+:description: Configure policy evaluation timeouts and memory limits to prevent resource exhaustion with the Policy Server's built-in protection features.
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
-:doc-topic: ["operator-manual", "policy-evaluation-timeout"]
+:doc-topic: ["operator-manual", "policy-evaluation-timeout", "policy-memory-limit"]
 :doc-type: ["reference"]
-:keywords: ["kubewarden", "kubernetes", "policy timeout protection"]
+:keywords: ["kubewarden", "kubernetes", "policy timeout protection", "policy memory limit"]
 :current-version: {page-origin-branch}
 
 [IMPORTANT]
@@ -161,6 +161,91 @@ spec:
       value: "3"
 ----
 
+[#_policy_memory_limit]
+== Policy memory limit
+
+A policy with a bug, or a malicious policy, can use all the memory of
+the Policy Server host process. The policy memory limit controls the
+quantity of linear memory that each policy can use during an evaluation.
+
+The Policy Server applies this limit by default. If you do not configure
+the limit, each policy can use a maximum of 256 MiB of linear memory.
+The Policy Server binary applies this default value. Thus the limit is
+active on all Policy Servers, including the `default` Policy Server.
+
+The limit applies to all policy runtimes: waPC, Rego, and WASI. You
+cannot set a different limit for one policy.
+
+You can configure this behavior with these `policy-server` flags, or
+with the matching environment variables:
+
+* `--policy-memory-limit` / `KUBEWARDEN_POLICY_MEMORY_LIMIT`: The maximum
+  amount of linear memory, in MiB, that a policy can use. The default
+  value is `256`. The value must be more than `0`.
+* `--disable-memory-limit` / `KUBEWARDEN_DISABLE_MEMORY_LIMIT`: This flag
+  disables the policy memory limit. The environment variable accepts only
+  `true` or `false`. The default value is `false`.
+
+When using the
+xref:/reference/CRDs.adoc#policyserver[`PolicyServer`]
+Kubernetes Custom Resource Definition, you can set these environment
+variables as follows:
+
+[source,yaml]
+----
+# A Policy Server where policies can use up to 512 MiB of linear memory
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: custom-policy-memory-limit
+spec:
+  env:
+    - name: KUBEWARDEN_POLICY_MEMORY_LIMIT
+      value: "512"
+---
+
+# A Policy Server that has the policy memory limit disabled
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: no-policy-memory-limit
+spec:
+  env:
+    - name: KUBEWARDEN_DISABLE_MEMORY_LIMIT
+      value: "true"
+----
+
+If a policy needs more than 256 MiB of linear memory, increase
+`--policy-memory-limit` on the PolicyServer that hosts the policy. If a
+policy uses more memory than the limit, the evaluation fails. The Policy
+Server continues to run.
+
+The value `0` is not valid for `--policy-memory-limit`. If you set the
+value to `0`, the Policy Server shows an error and does not start. To
+disable the limit, use `--disable-memory-limit`.
+
+`kwctl run` and `kwctl bench` accept the same two flags. Thus you can
+measure the memory use of a policy on your local machine before you
+deploy the policy.
+
+[NOTE]
+====
+
+The WASI runtime also limits the size of the in-memory stdout and stderr
+pipes. These pipes transfer data between the host and a WASI policy.
+
+A WASI policy reads the admission request and the settings from stdin.
+The policy writes the validation response, or the mutation response, to
+stdout. The policy writes only diagnostic messages to stderr.
+
+The limit for stdout is 64 MiB. The limit for stderr is 8 MiB. If a
+policy writes more data than the limit, the write operation fails and
+the evaluation fails. The Policy Server host process continues to run.
+
+This limit is different from the policy memory limit.
+
+====
+
 [#_comparison_with_kubernetes_dynamic_admission_controller_timeout]
 == Comparison with Kubernetes Dynamic Admission Controller timeout
 
@@ -234,7 +319,10 @@ Now the Policy Server has computational resources stuck in this infinite loop.
 Over time, with more admission requests triggering the bugged policy, the
 Policy Server runs out of computational resources. It's unable to respond
 to the Kubernetes API server. This is equal to a Denial Of Service (DOS)
-attack on the Policy Server.
+attack on the Policy Server. A policy that leaks memory, or that uses a
+memory spike during an evaluation, can cause the same kind of Denial Of
+Service through memory exhaustion. See
+xref:#_policy_memory_limit[Policy memory limit] for the mitigation.
 
 === {admc-short-name} policy evaluation timeout is enabled
 

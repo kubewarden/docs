@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Threat Model
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-09-10
 :page-revdate: {revdate}
 :description: Read and understand the Admission Control Threat Model to devise your own circumstance-specific threat model, ensuring secure defaults within Kubernetes.
 :doc-persona: ["kubewarden-all"]
@@ -334,6 +334,10 @@ Cluster operators should apply one or more of the following mitigations:
 * Deploy a dedicated PolicyServer for namespaced policies with a restricted
   `spec.namespacedPoliciesCapabilities` field (for example, set it to `[]` to
   deny all host capabilities).
+* Restrict the resources that namespaced policies can target. Use the
+  `namespacedPoliciesAllowedResources` Helm value. See
+  xref:/howtos/security-hardening/security-hardening.adoc#_namespaced_policy_allowed_resources[Namespaced
+  policy allowed resources].
 * Deploy the `ns-policyserver-mapper` policy to enforce that namespaced policies
   always run on the PolicyServer designated for their Namespace, preventing users
   from redirecting policies to more permissive PolicyServers.
@@ -356,6 +360,9 @@ host capabilities.
 * Apply the principle of least privilege to `spec.namespacedPoliciesCapabilities`
   on every PolicyServer. Grant only the host capabilities that the policies
   running on that instance actually require.
+* Apply the principle of least privilege to
+  `namespacedPoliciesAllowedResources`. Grant only the resources that
+  the namespaced policies on that instance need to target.
 * Isolate PolicyServers for sensitive Namespaces: do not co-locate high-trust
   and low-trust namespaced policies on the same PolicyServer instance.
 * Regularly audit PolicyServer configurations and the list of policies scheduled
