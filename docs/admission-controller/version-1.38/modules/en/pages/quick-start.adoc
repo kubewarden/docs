@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Quick start
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-14
+:revdate: 2026-09-10
 :page-revdate: {revdate}
 :description: Understand the {admc-name} stack by learning how to deploy and manage its main components, including PolicyServers and ClusterAdmissionPolicy resources.
 :doc-persona: ["kubewarden-all"]
@@ -256,8 +256,12 @@ resources.
 
 {admission-policy} is a namespace-wide resource. The policy processes only the
 requests that are targeting the Namespace with the {admission-policy} defined.
-Other than that, there are no functional differences between the
-{admission-policy} and {cluster-admission-policy} resources.
+
+An {admission-policy} can target only the resources that the resource
+allow list names. Cluster administrators control this list.
+Cluster wide policies do not have this limit. See
+xref:/howtos/security-hardening/security-hardening.adoc#_namespaced_policy_allowed_resources[Namespaced
+policy allowed resources] for more information.
 
 [IMPORTANT]
 ====

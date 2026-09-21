@@ -1,16 +1,95 @@
-= Kubewarden
+include::partial$variables.adoc[]
+= {project-name} documentation
 :revdate: 2026-09-18
 :page-revdate: {revdate}
+:description: Explore the {project-name} components to secure Kubernetes workloads, from admission policies and vulnerability scanning to runtime and network controls.
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["introduction", "overview"]
+:doc-type: ["explanation"]
+:page-role: kw-landing
+:page-toclevels: -1
 
-Welcome to the Kubewarden project.
+[.landing-hero]
+--
+[.landing-eyebrow]
+{project-name}
 
-Since the 1.36 release of Kubewarden Admission Controller
-the Kubewarden project comprises these components:
+[discrete]
+= Kubernetes security,
 
 * xref:latest@admission-controller:en:introduction.adoc[Kubewarden Admission Controller]
 * xref:latest@sbom-scanner:en:introduction.adoc[Kubewarden SBOMScanner]
 * xref:latest@runtime-enforcer:en:introduction.adoc[Kubewarden Runtime Enforcer]
 * xref:latest@network-enforcer:en:introduction.adoc[Kubewarden Network Enforcer]
+[.landing-tagline]
+from admission to runtime.
 
-Before that the Kubewarden project was a single component, the Kubewarden
-Admission Controller, known as Kubewarden.
+Choose where to start.
+Explore the components, follow a quick start, or find the reference you need.
+--
+
+[.component-grid]
+== Choose a component
+
+You can use the components together or independently.
+
+[.component-card.admission-card]
+=== {admc-short-name}
+
+Stop unsafe workloads before they enter your cluster.
+
+++++
+<div data-component-maturity="admission-controller"></div>
+++++
+
+[.card-links]
+* xref:latest@admission-controller:en:quick-start.adoc[Quick start]
+* xref:latest@admission-controller:en:introduction.adoc[Documentation]
+
+[.component-card.sbom-card]
+=== {sboms-short-name}
+
+Find vulnerabilities in the container images running inside your cluster.
+
+++++
+<div data-component-maturity="sbom-scanner"></div>
+++++
+
+[.card-links]
+* xref:latest@sbom-scanner:en:quickstart.adoc[Quick start]
+* xref:latest@sbom-scanner:en:introduction.adoc[Documentation]
+
+[.component-card.runtime-card]
+=== {rte-short-name}
+
+Control what can run inside your Kubernetes pods.
+
+++++
+<div data-component-maturity="runtime-enforcer"></div>
+++++
+
+[.card-links]
+* xref:latest@runtime-enforcer:en:installation/quickstart.adoc[Quick start]
+* xref:latest@runtime-enforcer:en:introduction.adoc[Documentation]
+
+[.component-card.network-card]
+=== {ne-short-name}
+
+Discover network activity and secure the communication between your workloads.
+
+++++
+<div data-component-maturity="network-enforcer"></div>
+++++
+
+[.card-links]
+* https://www.kubewarden.io/component/network-enforcer/[Explore component]
+
+[.landing-community]
+== Build with the community
+
+Get help, share an idea, or improve these docs.
+
+[.community-links]
+* https://kubernetes.slack.com/?redir=%2Fmessages%2Fkubewarden[Join us on Slack]
+* https://www.kubewarden.io/#get-in-touch[Community meetings]
+* https://github.com/kubewarden/docs[Contribute to the docs]

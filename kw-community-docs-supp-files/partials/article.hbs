@@ -1,4 +1,4 @@
-<article class="doc">
+<article class="doc" id="main-content" tabindex="-1">
 {{! Custom changes start}}
 {{#if page.componentVersion.prerelease}}
 <div class="admonitionblock warning">
@@ -17,9 +17,20 @@
 </div>
 {{/if}}
 {{! Custom changes end}}
+{{#unless (eq page.attributes.role 'kw-landing')}}
 {{#with page.title}}
 <h1 class="page">{{{this}}}</h1>
 {{/with}}
+{{/unless}}
+{{#if (eq page.attributes.role 'kw-landing')}}
+{{{component-maturity page.contents landing=true}}}
+{{else}}
 {{{page.contents}}}
+{{/if}}
+{{#if (eq page.attributes.role 'kw-landing')}}
+{{> landing-partners}}
+{{/if}}
+{{#unless (eq page.attributes.role 'kw-landing')}}
 {{> pagination}}
+{{/unless}}
 </article>

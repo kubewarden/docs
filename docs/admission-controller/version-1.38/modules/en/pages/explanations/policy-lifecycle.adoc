@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Policy lifecycle
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-19
+:revdate: 2026-09-10
 :page-revdate: {revdate}
 :description: Learn about creating the lifecycle of policies 
 :doc-persona: ["kubewarden-operator"]
@@ -110,6 +110,37 @@ The `+status.mode+` field indicates whether the policy is in `+protect+`
 mode (admission requests can be rejected) or `+monitor+` mode (requests
 are always allowed but decisions are logged).
 
+=== `+rejected+`
+
+The policy targets a resource that the resource allow list does not
+permit. Only `+AdmissionPolicy+` and `+AdmissionPolicyGroup+` can get to
+this status. `+ClusterAdmissionPolicy+` and
+`+ClusterAdmissionPolicyGroup+` cannot get to this status.
+
+The controller keeps the policy object in the cluster, but does not
+deploy the policy:
+
+* No webhook configuration is registered
+* No admission requests are forwarded to the policy
+* The policy is not audited by the audit scanner
+* The controller removes the policy from the `+PolicyServer+`
+configuration
+
+The `+PolicyActive+` condition is `+False+`. The `+message+` field of
+this condition names the resources that the allow list does not permit.
+
+See
+xref:/howtos/security-hardening/security-hardening.adoc#_namespaced_policy_allowed_resources[Namespaced
+policy allowed resources] for the allow list and its default value.
+
+[NOTE]
+====
+If you add the missing resources to the allow list, the controller
+deploys the policy again. You do not need to do more actions. If you
+remove a resource from the allow list, a policy with the `+active+`
+status becomes `+rejected+`.
+====
+
 == State machine
 
 
@@ -127,6 +158,12 @@ stateDiagram-v2
 
     pending --> active : PolicyServer ready\n(pods healthy, webhook created)
     active --> pending : PolicyServer updating\n(rolling update / config change)
+
+    unscheduled --> rejected : resource outside allow list
+    scheduled --> rejected : resource outside allow list
+    pending --> rejected : resource outside allow list
+    active --> rejected : resource leaves allow list
+    rejected --> pending : resource added to allow list
 ....
 
 == Conditions
@@ -138,7 +175,7 @@ provides finer-grained detail. The three condition types are:
 |===
 |Condition type |What it signals
 |`+PolicyActive+` |`+True+` when the webhook has been successfully
-created and the policy is enforcing
+created and the policy is enforcing.
 
 |`+PolicyUniquelyReachable+` |`+True+` when only the latest-generation
 `+PolicyServer+` pods are live (no old pods still serving)
@@ -148,7 +185,8 @@ version loaded by the running pods matches the current policy
 configuration
 |===
 
-All three conditions are `+True+` only when the policy is `+active+`.
+All three conditions are `+True+` only when the policy is `+active+`. A
+`+rejected+` policy always has `+PolicyActive=False+`.
 
 == PolicyServer deletion
 

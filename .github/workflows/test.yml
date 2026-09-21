@@ -17,3 +17,5 @@ jobs:
       - name: Build website
         run: |
           make community-local
+      - name: Check community UI
+        run: node --test tests/*.test.cjs
