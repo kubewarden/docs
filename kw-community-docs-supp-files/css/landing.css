@@ -43,7 +43,8 @@
 .kw-landing .runtime-card { --component-icon: url('../img/component-runtime.svg'); }
 .kw-landing .network-card { --component-icon: url('../img/component-network.svg'); }
 .kw-landing .component-card > .paragraph { margin: .75rem 0 1.5rem; line-height: 1.6; }
-.kw-landing .component-card .card-links { margin-top: auto; }
+.kw-landing .component-card > .component-stability { margin: auto 0 .75rem; }
+.kw-landing .component-card .card-links { margin-top: 0; }
 .kw-landing .card-links ul, .kw-landing .community-links ul { display: flex; flex-wrap: wrap; gap: .6rem 1.25rem; list-style: none; padding: 0; }
 .kw-landing .doc .card-links li, .kw-landing .doc .community-links li { margin: 0; }
 .kw-landing .card-links a, .kw-landing .community-links a { display: inline-block; padding: .3rem 0; font-size: .9rem; font-weight: 650; text-decoration: none; }

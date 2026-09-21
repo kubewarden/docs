@@ -42,8 +42,41 @@ tabs, tables, diagrams, and prerelease notices in both themes.
 Run the theme preference checks with:
 
 ```sh
-node --test tests/community-theme.test.cjs
+node --test tests/*.test.cjs
 ```
+
+## Component maturity
+
+`helpers/component-maturity.js` contains the community maturity map and its lookup.
+The toolbar checks the current component and Antora version for an exact override.
+If no override exists, it uses the component default.
+Components without a configured status have no pill.
+The landing cards use the defaults, which describe current component maturity.
+These defaults require manual synchronization with the main website.
+
+Version overrides use the `version` value from `antora.yml`, such as `0.13`.
+They do not use display labels such as `0.13-dev` or URL aliases such as `latest`.
+Prerelease documentation keeps its separate warning.
+
+For example, a future graduation could use this entry:
+
+```js
+'sbom-scanner': {
+  default: 'stable',
+  versions: { '0.11': 'beta', '0.12': 'beta', '0.13': 'beta' },
+},
+```
+
+This example is hypothetical, not a record of release maturity.
+Existing entries have no historical overrides until their values are confirmed.
+Before you change a default, check the maturity of each existing documentation version.
+Add explicit overrides for versions that must retain their previous status.
+Then change the default.
+Use `stable`, `beta`, or `experimental` as status values.
+
+The community article template fills the landing page's `data-component-maturity`
+placeholders at build time. The generated HTML includes the labels without browser scripts.
+Keep the map in this UI directory so product documentation can manage maturity separately.
 
 ## Fonts and logos
 

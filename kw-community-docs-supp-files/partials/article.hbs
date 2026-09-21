@@ -22,7 +22,11 @@
 <h1 class="page">{{{this}}}</h1>
 {{/with}}
 {{/unless}}
+{{#if (eq page.attributes.role 'kw-landing')}}
+{{{component-maturity page.contents landing=true}}}
+{{else}}
 {{{page.contents}}}
+{{/if}}
 {{#if (eq page.attributes.role 'kw-landing')}}
 {{> landing-partners}}
 {{/if}}
