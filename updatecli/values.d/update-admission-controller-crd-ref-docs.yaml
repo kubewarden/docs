@@ -5,7 +5,7 @@ scm:
 
 files:
   - src: "docs/crds/CRD-docs-for-docs-repo.adoc"
-    dst: docs/admission-controller/version-1.38/modules/en/partials/crd-reference.adoc
+    dst: docs/admission-controller/version-1.39/modules/en/partials/crd-reference.adoc
 src:
   branch: "main"
   url: "https://github.com/kubewarden/adm-controller.git"
