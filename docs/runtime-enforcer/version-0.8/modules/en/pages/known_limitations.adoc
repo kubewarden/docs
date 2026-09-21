@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Known limitations
-:revdate: 2026-09-16
+:revdate: 2026-09-21
 :page-revdate: {revdate}
 
 This document tracks the current, known limitations of runtime-enforcer. Some
@@ -56,22 +56,6 @@ Pod UID for static pods, and instead relies on the UID available via NRI.
 * *Impact*: when correlating runtime-enforcer events/policies with Kubernetes
   objects, the Pod UID may not match what you see on the Pod object returned by
   the Kubernetes API for static pods.
-
-== VAP-based protections aren't applied prior to Kubernetes 1.30
-
-runtime-enforcer uses Kubernetes Validating Admission Policy (VAP) to enforce
-admission-time protections (for example, preventing changes that would
-add/remove/update the `security.rancher.io/policy` label on Pods).
-
-VAP is only available as `admissionregistration.k8s.io/v1` starting in
-Kubernetes 1.30. On Kubernetes versions before v1.30, runtime-enforcer doesn't
-apply any VAP-based protections.
-
-Earlier Kubernetes versions exposed Validating Admission Policy as
-`admissionregistration.k8s.io/v1beta1`, but runtime-enforcer won't support it.
-This is a design decision.
-
-* *Impact*: on Kubernetes 1.29 and earlier, changes that should be blocked by VAP (such as mutating `security.rancher.io/policy` on existing Pods) may be allowed.
 
 == NRI may not be enabled by default for containerd prior to v2.0
 
