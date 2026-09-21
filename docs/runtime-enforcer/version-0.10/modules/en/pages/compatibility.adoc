@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Compatibility
-:revdate: 2026-09-17
+:revdate: 2026-09-21
 :page-revdate: {revdate}
 
 == Overview
@@ -33,8 +33,8 @@ eBPF features, so your kernel version and configuration matter.
 |
 
 |*Kubernetes*
-|To be determined
-|
+|1.31.0 or later
+|{rte-short-name} uses CEL-based Validating Admission Policies (VAP). These need Kubernetes 1.31.0 or later.
 
 |*Linux distribution*
 |To be determined
