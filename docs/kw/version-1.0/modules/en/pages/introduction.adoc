@@ -16,11 +16,6 @@ include::partial$variables.adoc[]
 
 [discrete]
 = Kubernetes security,
-
-* xref:latest@admission-controller:en:introduction.adoc[Kubewarden Admission Controller]
-* xref:latest@sbom-scanner:en:introduction.adoc[Kubewarden SBOMScanner]
-* xref:latest@runtime-enforcer:en:introduction.adoc[Kubewarden Runtime Enforcer]
-* xref:latest@network-enforcer:en:introduction.adoc[Kubewarden Network Enforcer]
 [.landing-tagline]
 from admission to runtime.
 
