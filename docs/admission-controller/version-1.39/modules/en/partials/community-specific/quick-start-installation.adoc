@@ -1,0 +1,60 @@
+[IMPORTANT]
+.Authentication
+====
+
+:gh-pat-url: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
+
+You can retrieve {admc-short-name} policies from the GitHub container registry at
+https://ghcr.io. You need authentication to use the repository with the
+{admc-short-name} CLI, a {gh-pat-url}[GitHub personal access token] (PAT). Their
+documentation guides you through creating one if you haven't already done so.
+Then you authenticate with a command like:
+
+[subs="+attributes",console]
+----
+echo $PAT | docker login ghcr.io --username <my-gh-username> --password-stdin
+----
+
+====
+
+
+Deploy the {admc-short-name} stack using `helm` charts as follows:
+
+[subs="+attributes",console]
+----
+helm repo add kubewarden https://charts.kubewarden.io
+----
+
+[subs="+attributes",console]
+----
+helm repo update kubewarden
+----
+
+Install the `admission-controller` Helm chart in the `{admc-namespace}` namespace in your
+Kubernetes cluster. This will:
+
+* Register the {cluster-admission-policy},
+  {admission-policy} and {policy-server} Custom Resource Definitions. Also, the
+  {policy-report} Custom Resource Definitions used by the audit scanner.
+* Deploy the {admc-short-name} and the audit scanner
++
+[NOTE]
+====
+
+If you need to disable the audit scanner component check the audit scanner
+installation xref:howtos/audit-scanner.adoc[documentation page].
+
+====
++
+* Create a `PolicyServer` resource named
+  `default`. You can also install a set of recommended policies to secure your
+  cluster by enforcing well known best practices.
+
+[subs="+attributes",console]
+----
+helm install --wait -n {admc-namespace} --create-namespace {admc-release} {admc-chart-location}
+----
+
+The default configuration values are sufficient for most deployments. The
+https://charts.kubewarden.io/#configuration[documentation] describes all the
+options.

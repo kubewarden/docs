@@ -1,0 +1,8 @@
+[NOTE]
+====
+
+Check the
+https://github.com/kubewarden/adm-controller/policy-server/pkgs/container/adm-controller%2Fpolicy-server[latest
+released `PolicyServer` version] and change the tag to match.
+
+====
