@@ -19,8 +19,8 @@ To remove them, you can run the following commands:
 
 [source,bash]
 ----
-kubectl delete crd workloadpolicies.security.rancher.io
-kubectl delete crd workloadpolicyproposals.security.rancher.io
+kubectl delete crd workloadpolicies.runtimeenforcer.kubewarden.io
+kubectl delete crd workloadpolicyproposals.runtimeenforcer.kubewarden.io
 ----
 
 [NOTE]
