@@ -1,0 +1,26 @@
+include::partial$variables.adoc[]
+
+= Policy Server CLI
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-07-20
+:page-revdate: {revdate}
+:title: Policy Server CLI
+:description: Explore the policy-server command-line help and options to customize and run the `policy-server` program.
+:keywords: cli, reference, policy-server
+:doc-persona: kubewarden-operator
+:doc-type: reference
+:doc-topic: operator-manual
+
+////
+CLI REFERENCE GOES BELOW.
+Synced automatically from a file generated in the kubewarden/adm-controller
+repo at crates/policy-server/cli-docs.adoc. Do not edit
+partials/policy-server-cli-reference.adoc by hand.
+
+The generated file starts with its own "= Command-Line Help for
+`policy-server`" doctitle and a blank line; skip both with lines=3..-1 so the
+include doesn't introduce a second level-0 section (which requires
+"doctype: book" and would change the page's rendered structure).
+////
+
+include::partial$policy-server-cli-reference.adoc[lines=3..-1]

@@ -1,0 +1,24 @@
+include::partial$variables.adoc[]
+
+= Custom Resource Definitions (CRD)
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-06-18
+:page-revdate: {revdate}
+:description: Learn about Custom Resource Definitions (CRDs) for {admc-name}, and access related API references.
+:doc-persona: ["kubewarden-policy-developer"]
+:doc-topic: ["operator-manual", "crd"]
+:doc-type: ["reference"]
+:doctype: book
+:keywords: ["{admc-name}", "kubewarden", "kubernetes", "custom resource definitions", "crd"]
+:sidebar_label: Custom Resources Definitions (CRD)
+:current-version: {page-origin-branch}
+
+You can find the definitions for the {admc-name} Custom Resources on this page.
+
+////
+API REFERENCE GOES BELOW.
+Synced automatically from a file generated in the kubewarden/adm-controller
+repo in docs/crds. Do not edit partials/crd-reference.adoc by hand.
+////
+
+include::partial$crd-reference.adoc[]
