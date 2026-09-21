@@ -62,3 +62,13 @@ test('toolbar template passes the page version and omits unconfigured components
   assert.match(template({ page: { ...page, version: '0.12', url: '/sbom-scanner/latest/en/introduction.html' } }), /Component maturity: Beta/);
   assert.equal(template({ page: {} }).trim(), '');
 });
+
+test('Network Enforcer documentation renders its version maturity through the community template', () => {
+  const handlebars = Handlebars.create();
+  handlebars.registerHelper('component-maturity', helper);
+  const template = handlebars.compile(readFileSync(join(__dirname,
+    '../kw-community-docs-supp-files/partials/component-maturity.hbs'), 'utf8'));
+  const page = { component: { name: 'network-enforcer' }, version: '0.2', displayVersion: '0.2-latest' };
+  assert.match(template({ page }), /stability-experimental/);
+  assert.match(template({ page }), /Component maturity: Experimental/);
+});
