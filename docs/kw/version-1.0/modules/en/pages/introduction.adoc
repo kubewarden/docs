@@ -34,8 +34,9 @@ You can use the components together or independently.
 
 Stop unsafe workloads before they enter your cluster.
 
-[.component-stability]
-[.stability-pill.stability-stable]#Stable#
+++++
+<div data-component-maturity="admission-controller"></div>
+++++
 
 [.card-links]
 * xref:latest@admission-controller:en:quick-start.adoc[Quick start]
@@ -46,8 +47,9 @@ Stop unsafe workloads before they enter your cluster.
 
 Find vulnerabilities in the container images running inside your cluster.
 
-[.component-stability]
-[.stability-pill.stability-beta]#Beta#
+++++
+<div data-component-maturity="sbom-scanner"></div>
+++++
 
 [.card-links]
 * xref:latest@sbom-scanner:en:quickstart.adoc[Quick start]
@@ -58,8 +60,9 @@ Find vulnerabilities in the container images running inside your cluster.
 
 Control what can run inside your Kubernetes pods.
 
-[.component-stability]
-[.stability-pill.stability-beta]#Beta#
+++++
+<div data-component-maturity="runtime-enforcer"></div>
+++++
 
 [.card-links]
 * xref:latest@runtime-enforcer:en:installation/quickstart.adoc[Quick start]
@@ -70,8 +73,9 @@ Control what can run inside your Kubernetes pods.
 
 Discover network activity and secure the communication between your workloads.
 
-[.component-stability]
-[.stability-pill.stability-experimental]#Experimental#
+++++
+<div data-component-maturity="network-enforcer"></div>
+++++
 
 [.card-links]
 * https://www.kubewarden.io/component/network-enforcer/[Explore component]

@@ -95,6 +95,11 @@ a:hover { color: var(--accent-color); }
 .nav-panel-explore .component .version a:hover, .nav-panel-explore .component .is-current a { color: var(--accent-color); border-color: var(--accent-color); background: var(--surface-tint); }
 
 /* Breadcrumbs, article versions, and on-page navigation */
+.stability-pill { display: inline-block; font-family: var(--font-sans); font-size: .8125rem; font-weight: 700; font-style: normal; letter-spacing: .02em; padding: .25rem .75rem; border-radius: 999px; }
+.stability-stable { background: var(--success-bg); color: var(--success-text); }
+.stability-beta { background: var(--neutral-bg); color: var(--neutral-text); }
+.stability-experimental { background: var(--warning-bg); color: var(--warning-text); }
+.toolbar-maturity { flex-shrink: 0; font-size: .75rem; line-height: 1.5; margin: 0 .5rem; padding: .2rem .6rem; }
 .toolbar { top: var(--header-height); height: var(--toolbar-height); padding: 0 1rem; background: var(--page-bg); color: var(--text-muted); box-shadow: none; border-bottom: 1px solid var(--border); font-size: .8rem; }
 .toolbar a, .toolbar .edit-this-page a { color: var(--text-muted); }
 .toolbar a:hover { color: var(--accent-color); }
