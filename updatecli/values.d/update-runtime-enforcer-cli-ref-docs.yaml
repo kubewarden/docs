@@ -5,7 +5,7 @@ scm:
 
 files:
   - src: "docs/kubectl-plugin/cli-docs.adoc"
-    dst: docs/runtime-enforcer/version-0.10/modules/en/partials/kubectl-plugin-cli-reference.adoc
+    dst: docs/runtime-enforcer/version-0.11/modules/en/partials/kubectl-plugin-cli-reference.adoc
 src:
   branch: "main"
   url: "https://github.com/kubewarden/runtime-enforcer.git"
