@@ -17,6 +17,7 @@ scms:
       token: "{{ default $GitHubPAT .scm.token }}"
       username: "{{ default $GitHubUsername .scm.username }}"
       branch: "{{ .scm.branch }}"
+      commitusingapi: true
       commitmessage:
         hidecredit: true
         footers: "Signed-off-by: Kubewarden bot <cncf-kubewarden-maintainers@lists.cncf.io>"
