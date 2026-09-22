@@ -32,6 +32,7 @@ This is an [Antora](https://antora.org) multi-component documentation site writt
 | `kubewarden` | `docs/kw/version-*` | Site landing / umbrella component |
 | `admission-controller` | `docs/admission-controller/version-*` | Main product docs, versioned `version-X.Y` |
 | `sbom-scanner` | `docs/sbom-scanner/v*` | SBOM scanner docs, versioned `version-X.Y` |
+| `runtime-enforcer` | `docs/runtime-enforcer/version-*` | Runtime enforcer docs, versioned `version-X.Y` |
 | `shared` | `shared/` | Shared partials and variables; no pages |
 
 **Playbooks**:
@@ -100,6 +101,7 @@ xref:howtos/policy-management.adoc[]
 
 - **`admission-controller`** versions: directories named `version-X.Y`
 - **`sbom-scanner`** versions: directories named `version-X.Y`
+- **`runtime-enforcer`** versions: directories named `version-X.Y`
 - Prerelease (dev) versions have `prerelease: -dev` in `antora.yml`
 - The current latest release has `display: 'X.Y-latest'` in `antora.yml`; the previous latest loses the `display:` line
 
@@ -107,7 +109,23 @@ Use the release script to create a new version:
 ```bash
 ./scripts/make-new-release.sh admission-controller <current-latest> <current-prerelease> <new-prerelease> [yyyy-mm-dd|-n]
 ./scripts/make-new-release.sh sbom-scanner <current-latest> <current-prerelease> <new-prerelease>
+./scripts/make-new-release.sh runtime-enforcer <current-latest> <current-prerelease> <new-prerelease>
 ```
+
+### Generated reference documentation
+
+Some partials are copies of files that upstream repositories generate. Do not edit them by hand. A scheduled updatecli job (`.github/workflows/update-ref-docs.yml`) copies them and opens a pull request. The values files under `updatecli/values.d/` hold the source and destination paths.
+
+| Component | Upstream file | Partial |
+|---|---|---|
+| `admission-controller` | `adm-controller/docs/crds/CRD-docs-for-docs-repo.adoc` | `partials/crd-reference.adoc` |
+| `admission-controller` | `adm-controller/crates/kwctl/cli-docs.adoc` | `partials/kwctl-cli-reference.adoc` |
+| `admission-controller` | `adm-controller/crates/policy-server/cli-docs.adoc` | `partials/policy-server-cli-reference.adoc` |
+| `sbom-scanner` | `sbomscanner/docs/crds/CRD-docs-for-docs-repo.adoc` | `partials/crd-reference.adoc` |
+| `runtime-enforcer` | `runtime-enforcer/docs/crds/CRD-docs-for-docs-repo.adoc` | `partials/crd-reference.adoc` |
+| `runtime-enforcer` | `runtime-enforcer/docs/kubectl-plugin/cli-docs.adoc` | `partials/kubectl-plugin-cli-reference.adoc` |
+
+The partials land in the current dev version only. An hourly updatecli job (`.github/workflows/updatecli.yml`) watches upstream releases. When a new release appears, the job promotes the dev version and points the values files at the next dev version.
 
 ### Spell checking
 

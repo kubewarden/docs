@@ -30,3 +30,21 @@ policies:
       - updatecli.d/commit-ref-docs.yaml
     values:
       - values.d/crd-ref-docs-sbom-scanner.yaml
+  - name: Copy runtime-enforcer CRD reference documentation files
+    policy: ghcr.io/updatecli/policies/file:0.2.1
+    values:
+      - values.d/update-runtime-enforcer-crd-ref-docs.yaml
+  - name: Copy runtime-enforcer kubectl plugin CLI reference documentation files
+    policy: ghcr.io/updatecli/policies/file:0.2.1
+    values:
+      - values.d/update-runtime-enforcer-cli-ref-docs.yaml
+  - name: Commit runtime-enforcer CRD reference documentation
+    config:
+      - updatecli.d/commit-ref-docs.yaml
+    values:
+      - values.d/crd-ref-docs-runtime-enforcer.yaml
+  - name: Commit runtime-enforcer kubectl plugin CLI reference documentation
+    config:
+      - updatecli.d/commit-ref-docs.yaml
+    values:
+      - values.d/cli-ref-docs-runtime-enforcer.yaml
