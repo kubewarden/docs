@@ -1,0 +1,422 @@
+// Generated documentation. Please do not edit.
+:anchor_prefix: k8s-api
+
+[id="{p}-api-reference"]
+== API Reference
+
+.Packages
+- xref:{anchor_prefix}-runtimeenforcer-kubewarden-io-v1alpha1[$$runtimeenforcer.kubewarden.io/v1alpha1$$]
+
+
+[id="{anchor_prefix}-runtimeenforcer-kubewarden-io-v1alpha1"]
+=== runtimeenforcer.kubewarden.io/v1alpha1
+
+Package v1alpha1 contains API Schema definitions for the runtimeenforcer v1alpha1 API group.
+
+.Resource Types
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicy[$$WorkloadPolicy$$]
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicylist[$$WorkloadPolicyList$$]
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyproposal[$$WorkloadPolicyProposal$$]
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyproposallist[$$WorkloadPolicyProposalList$$]
+
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-acknowledgedviolationrecord"]
+==== AcknowledgedViolationRecord
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicystatus[$$WorkloadPolicyStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`violation`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-violationrecord[$$ViolationRecord$$]__ | violation is the violation record acknowledged by users + |  | 
+| *`reason`* __string__ | reason is an optional field to indicate the reason this violation is acknowledged. + |  | 
+| *`acknowledgedAt`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | acknowledgedAt is the time when the violation was acknowledged + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-phase"]
+==== Phase
+
+_Underlying type:_ _string_
+
+Phase represents the current phase of the workload policy.
+Possible values are:
+- "Transitioning": the policy is in the process of changing its enforcement mode.
+- "Failed": the policy deployment has failed.
+- "Ready": the policy is ready and actively enforced.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicystatus[$$WorkloadPolicyStatus$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-policycode"]
+==== PolicyCode
+
+_Underlying type:_ _string_
+
+PolicyCode represents the status code of a policy on a node.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-policynodestatus[$$PolicyNodeStatus$$]
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-policystatus[$$PolicyStatus$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-policynodestatus"]
+==== PolicyNodeStatus
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicystatus[$$WorkloadPolicyStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`code`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-policycode[$$PolicyCode$$]__ | code is the policy code. + |  | 
+| *`message`* __string__ | message is a human-readable description. + |  | 
+| *`since`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | since is the time at which the node entered its current status. +
+It is stamped by the controller when the node's code changes and +
+preserved across status recomputations while the code is unchanged; +
+the agent does not report it. + |  | 
+| *`nodeName`* __string__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-policystatus"]
+==== PolicyStatus
+
+
+
+PolicyStatus represents information about a policy status on a node.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-policynodestatus[$$PolicyNodeStatus$$]
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicystatus[$$WorkloadPolicyStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`code`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-policycode[$$PolicyCode$$]__ | code is the policy code. + |  | 
+| *`message`* __string__ | message is a human-readable description. + |  | 
+| *`since`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | since is the time at which the node entered its current status. +
+It is stamped by the controller when the node's code changes and +
+preserved across status recomputations while the code is unchanged; +
+the agent does not report it. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-violationrecord"]
+==== ViolationRecord
+
+
+
+ViolationRecord holds the details of a single policy violation.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-acknowledgedviolationrecord[$$AcknowledgedViolationRecord$$]
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicystatus[$$WorkloadPolicyStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`id`* __integer__ | id is a per-policy unique identifier allocated by the controller +
+when the record is first observed. It is stable across re-scrapes +
+of the same logical violation, so consumers can refer to a single +
+record by id (for example when correlating with external events). +
+
+Stored as int64 (not uint64) for compatibility with the Kubernetes +
+field-management machinery used by controller-runtime's test +
+fixtures; the counter is monotonically increasing and never goes +
+negative, so the sign bit is never set in practice. + |  | 
+| *`lastObservedTimestamp`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | lastObservedTimestamp is when the violation was last observed. + |  | 
+| *`occurrences`* __integer__ | occurrences is the number of times this violation (identified by +
+pod, container, executable and action) has been observed since the +
+record was first created. It is a per-record counter, distinct from +
+the policy-level violationCount aggregate: it is only incremented +
+when a scraped event matches this exact record, so consumers can +
+tell how many times this specific executable/container/pod combo +
+fired. + | 1 | 
+| *`firstObservedTimestamp`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | firstObservedTimestamp is when the violation was first observed. It +
+is stamped from the scraped event's own timestamp when the record +
+is created and is never updated on re-scrapes, so consumers can +
+compute the age of the violation (unlike timestamp, which tracks +
+the last occurrence). + |  | 
+| *`podName`* __string__ | podName is the name of the pod where the violation occurred. + |  | 
+| *`containerName`* __string__ | containerName is the container where the unauthorized executable ran. + |  | 
+| *`executablePath`* __string__ | executablePath is the path of the unauthorized executable. + |  | 
+| *`nodeName`* __string__ | nodeName is the node where the violation occurred. + |  | 
+| *`action`* __string__ | action is the enforcement action taken (monitor or protect). + |  | 
+| *`workloadName`* __string__ | workloadName is the name of the workload that owns the pod, taken +
+from the pod's first owner reference at the time the record was +
+first observed. Empty if the pod has no owner reference or could +
+not be looked up. + |  | 
+| *`workloadKind`* __string__ | workloadKind is the kind of the workload that owns the pod, taken +
+from the pod's first owner reference at the time the record was +
+first observed. Empty if the pod has no owner reference or could +
+not be looked up. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicy"]
+==== WorkloadPolicy
+
+
+
+WorkloadPolicy is the Schema for the workloadpolicies API.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicylist[$$WorkloadPolicyList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `runtimeenforcer.kubewarden.io/v1alpha1` | |
+| *`kind`* __string__ | `WorkloadPolicy` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyspec[$$WorkloadPolicySpec$$]__ |  |  | 
+| *`status`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicystatus[$$WorkloadPolicyStatus$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyexecutables"]
+==== WorkloadPolicyExecutables
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyrules[$$WorkloadPolicyRules$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`allowed`* __string array__ | allowed defines a list of executables that are allowed to run + |  | items:Pattern: ^/.*$ +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicylist"]
+==== WorkloadPolicyList
+
+
+
+WorkloadPolicyList contains a list of WorkloadPolicy.
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `runtimeenforcer.kubewarden.io/v1alpha1` | |
+| *`kind`* __string__ | `WorkloadPolicyList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicy[$$WorkloadPolicy$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyproposal"]
+==== WorkloadPolicyProposal
+
+
+
+WorkloadPolicyProposal is the Schema for the workloadpolicyproposals API.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyproposallist[$$WorkloadPolicyProposalList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `runtimeenforcer.kubewarden.io/v1alpha1` | |
+| *`kind`* __string__ | `WorkloadPolicyProposal` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyproposalspec[$$WorkloadPolicyProposalSpec$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyproposallist"]
+==== WorkloadPolicyProposalList
+
+
+
+WorkloadPolicyProposalList contains a list of WorkloadPolicyProposal.
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `runtimeenforcer.kubewarden.io/v1alpha1` | |
+| *`kind`* __string__ | `WorkloadPolicyProposalList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyproposal[$$WorkloadPolicyProposal$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyproposalspec"]
+==== WorkloadPolicyProposalSpec
+
+
+
+WorkloadPolicyProposalSpec defines the desired state of WorkloadPolicyProposal.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyproposal[$$WorkloadPolicyProposal$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`rulesByContainer`* __object (keys:string, values:xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyrules[$$WorkloadPolicyRules$$])__ | rulesByContainer specifies for each container the list of rules to apply. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyrules"]
+==== WorkloadPolicyRules
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyproposalspec[$$WorkloadPolicyProposalSpec$$]
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyspec[$$WorkloadPolicySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`executables`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyexecutables[$$WorkloadPolicyExecutables$$]__ | executables defines a security policy for executables. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyspec"]
+==== WorkloadPolicySpec
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicy[$$WorkloadPolicy$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`mode`* __string__ | mode defines the execution mode of this policy. Can be set to +
+either "protect" or "monitor". In "protect" mode, the policy +
+blocks and reports violations, while in "monitor" mode, +
+it only reports violations. + |  | Enum: [monitor protect] +
+Required: \{} +
+
+| *`rulesByContainer`* __object (keys:string, values:xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyrules[$$WorkloadPolicyRules$$])__ | rulesByContainer specifies for each container the list of rules to apply. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicystatus"]
+==== WorkloadPolicyStatus
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicy[$$WorkloadPolicy$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`observedGeneration`* __integer__ |  |  | 
+| *`nodesWithIssues`* __object (keys:string, values:xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-policystatus[$$PolicyStatus$$])__ | nodesWithIssues contains the status of each node with issues. + |  | 
+| *`totalNodes`* __integer__ | totalNodes is the total number of nodes the policy is applied to. + |  | 
+| *`successfulNodes`* __integer__ | successfulNodes is the number of nodes where the policy is successfully enforced. + |  | 
+| *`failedNodes`* __integer__ | failedNodes is the number of nodes where the policy enforcement failed. + |  | 
+| *`transitioningNodes`* __integer__ | transitioningNodes is the number of nodes where the policy is transitioning mode. + |  | 
+| *`nodesTransitioning`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-policynodestatus[$$PolicyNodeStatus$$] array__ | nodesTransitioning contains the nodes that are transitioning, including +
+the time at which each node entered the transitioning state. + |  | 
+| *`phase`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-phase[$$Phase$$]__ | phase indicates the current phase of the workload policy. + |  | 
+| *`violationCount`* __integer__ | violationCount is the total number of unique violation records +
+ever observed for this policy, including those that have already +
+been trimmed out of Violations or cleared because the executable +
+was later added to an allowlist. It is not guaranteed to be strongly +
+consistent and may be temporarily outdated. + | 0 | 
+| *`activeViolationCount`* __integer__ | activeViolationCount is the number of currently active (non-cleared) +
+violation records. It is always equal to len(Violations) and is +
+updated in the same status write. + | 0 | 
+| *`violations`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-violationrecord[$$ViolationRecord$$] array__ | violations is the list of the most recent violation records (max maxViolationRecords). +
+Oldest entries are dropped when the limit is reached. + |  | 
+| *`acknowledgedViolations`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-acknowledgedviolationrecord[$$AcknowledgedViolationRecord$$] array__ | acknowledgedViolations is the list of the most recent violation records that are acknowledged +
+by users (max maxViolationRecords). +
+Oldest entries are dropped when the limit is reached. + |  | 
+|===
+
+

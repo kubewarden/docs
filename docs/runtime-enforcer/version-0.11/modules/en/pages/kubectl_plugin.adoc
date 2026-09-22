@@ -1,0 +1,134 @@
+include::partial$variables.adoc[]
+
+= kubectl runtime-enforcer
+:revdate: 2026-09-22
+:page-revdate: {revdate}
+
+The `kubectl runtime-enforcer` plugin wraps common operations for
+`WorkloadPolicyProposal` and `WorkloadPolicy` CRDs.
+
+This page shows the main workflows. For the full list of commands and flags,
+see xref:kubectl-plugin-cli.adoc[].
+
+[#_install]
+== Installation
+
+[#_download-a-pre-built-binary]
+=== Download a pre-built binary
+
+Pre-built binaries for `linux/amd64`, `linux/arm64`, `darwin/amd64`, and
+`darwin/arm64` are published on each
+https://github.com/kubewarden/runtime-enforcer/releases[GitHub Release].
+
+[source,bash]
+----
+# Example: linux/amd64
+VERSION=latest
+curl -Lo kubectl-runtime_enforcer \
+  "https://github.com/kubewarden/runtime-enforcer/releases/download/${VERSION}/kubectl-runtime_enforcer-linux-amd64"
+chmod +x kubectl-runtime_enforcer
+sudo mv kubectl-runtime_enforcer /usr/local/bin/
+----
+
+Verify checksums with the `.sha256` file published next to the binary.
+
+[source,bash]
+----
+sha256sum --check kubectl-runtime_enforcer-linux-amd64.sha256
+----
+
+[#_build-from-source]
+=== Build from source
+
+From the repository root:
+
+[source,bash]
+----
+# Current platform
+make kubectl-plugin          # output: bin/kubectl-runtime_enforcer
+# All supported platforms at once
+make kubectl-plugin-cross    # output: bin/kubectl-plugin/kubectl-runtime_enforcer-<os>-<arch>
+----
+
+[#_verify]
+=== Verify
+
+[source,bash]
+----
+- `kubectl runtime-enforcer` or `kubectl runtime-enforcer -h/--help` — show help
+- `kubectl runtime-enforcer -v/--version` — print version
+----
+
+[#_enable-auto-completion]
+=== Enable auto-completion
+
+To enable auto-completion, make sure that you enable the auto-completion of
+kubectl. Then, create a script called `kubectl_complete-runtime_enforcer`
+following the below steps:
+
+[source,bash]
+----
+cat <<EOF > kubectl_complete-runtime_enforcer
+#!/bin/bash
+kubectl runtime-enforcer __complete "\$@"
+EOF
+chmod +x kubectl_complete-runtime_enforcer
+sudo mv kubectl_complete-runtime_enforcer /usr/local/bin/
+----
+
+[#_promote-a-proposal]
+=== Promote a proposal
+
+Promoting a `WorkloadPolicyProposal` sets the
+`runtimeenforcer.kubewarden.io/promote` label to the corresponding value
+(`monitor`/`protect`) and lets the controller create a `WorkloadPolicy`.
+
+*Plugin:*
+
+[source,bash]
+----
+kubectl runtime-enforcer proposal promote <PROPOSAL_NAME> -n <namespace> --mode <monitor|protect>
+----
+
+Use `kubectl runtime-enforcer proposal promote --dry-run` to validate without
+persisting.
+
+[#_switch-monitor-protect]
+=== Switch monitor ↔ protect
+
+*Plugin:*
+
+Switching the mode of a `WorkloadPolicy` between `monitor` and `protect`.
+
+[source,bash]
+----
+kubectl runtime-enforcer policy protect <POLICY_NAME> -n <namespace>
+kubectl runtime-enforcer policy monitor <POLICY_NAME> -n <namespace>
+----
+
+Use `--dry-run` on `policy protect` and `policy monitor` to preview.
+
+[#_allowing-denying-executables]
+=== Allowing/denying executables
+
+To limit or expand allowed executables, add or remove executable paths on a
+per-container basis:
+
+*Plugin:*
+
+[source,bash]
+----
+kubectl runtime-enforcer policy allow <POLICY> <container> <executable-path> [<executable-path>...]
+kubectl runtime-enforcer policy deny  <POLICY> <container> <executable-path> [<executable-path>...]
+----
+
+[#_show-protection-mappings]
+=== Show protection mappings
+
+Lists workloads and how they map to policies (table or JSON).
+
+[source,bash]
+----
+kubectl runtime-enforcer policy show protection
+kubectl runtime-enforcer policy show protection -A -o json
+----

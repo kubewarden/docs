@@ -1,7 +1,7 @@
 ---
 name: "Updates runtime-enforcer CRD reference documentation files"
 files:
-  - dst: docs/runtime-enforcer/version-0.10/modules/en/partials/crd-reference.adoc
+  - dst: docs/runtime-enforcer/version-0.11/modules/en/partials/crd-reference.adoc
 scm:
   branch: "main"
 pr:
