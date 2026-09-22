@@ -5,7 +5,7 @@ scm:
 
 files:
   - src: "docs/crds/CRD-docs-for-docs-repo.adoc"
-    dst: docs/runtime-enforcer/version-0.10/modules/en/partials/crd-reference.adoc
+    dst: docs/runtime-enforcer/version-0.11/modules/en/partials/crd-reference.adoc
 src:
   branch: "main"
   url: "https://github.com/kubewarden/runtime-enforcer.git"
