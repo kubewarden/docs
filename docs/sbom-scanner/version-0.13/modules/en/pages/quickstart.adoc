@@ -6,6 +6,8 @@ include::partial$variables.adoc[]
 
 This guide explains how to install SBOMscanner and run an image scan.
 
+include::partial${build-type}-specific/warning.adoc[]
+
 This guide has these steps:
 
 * Deploy the SBOMscanner stack in a Kubernetes cluster.
