@@ -1,0 +1,12 @@
+---
+name: "Updates runtime-enforcer CLI reference documentation files"
+files:
+  - dst: docs/runtime-enforcer/version-0.10/modules/en/partials/kubectl-plugin-cli-reference.adoc
+scm:
+  branch: "main"
+pr:
+  title: "Update Kubewarden runtime-enforcer kubectl plugin CLI reference documentation"
+  description: "Automatically sync the kubectl plugin CLI reference documentation from the kubewarden/runtime-enforcer repository"
+  labels:
+    - "kind/chore"
+    - "area/documentation"

@@ -7,6 +7,9 @@ include::partial$variables.adoc[]
 The `kubectl runtime-enforcer` plugin wraps common operations for
 `WorkloadPolicyProposal` and `WorkloadPolicy` CRDs.
 
+This page shows the main workflows. For the full list of commands and flags,
+see xref:kubectl-plugin-cli.adoc[].
+
 [#_install]
 == Installation
 
@@ -115,8 +118,8 @@ per-container basis:
 
 [source,bash]
 ----
-kubectl runtime-enforcer policy exec allow <POLICY> <container> <executable-path> [<executable-path>...]
-kubectl runtime-enforcer policy exec deny  <POLICY> <container> <executable-path> [<executable-path>...]
+kubectl runtime-enforcer policy allow <POLICY> <container> <executable-path> [<executable-path>...]
+kubectl runtime-enforcer policy deny  <POLICY> <container> <executable-path> [<executable-path>...]
 ----
 
 [#_show-protection-mappings]
