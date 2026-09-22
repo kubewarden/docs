@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Custom Resource Definitions (CRD)
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-04
+:revdate: 2026-09-22
 :page-revdate: {revdate}
 :description: Learn about Custom Resource Definitions (CRDs) for {project-name}, and access related API references.
 :doc-persona: ["kubewarden-policy-developer"]
@@ -18,8 +18,8 @@ https://doc.crds.dev/github.com/kubewarden/kubewarden-controller[here at docs.cr
 
 ////
 API REFERENCE GOES BELOW.
-From a file generated in the kubewarden/kubewarden-controller repo
-in docs/crds.
+Generated from the v1.35.0 release of kubewarden/adm-controller.
+Do not edit partials/crd-reference.adoc by hand.
 ////
 
-include::latest@shared:en:partial$CRD-docs-for-docs-repo-v1.35-forward.adoc[]
+include::partial$crd-reference.adoc[]
