@@ -1,0 +1,489 @@
+= Command-Line Help for `kubectl runtime-enforcer`
+
+This document contains the help content for the `kubectl runtime-enforcer` command-line program.
+
+*Command Overview:*
+
+* <<runtime-enforcer,`kubectl runtime-enforcer`>>
+* <<runtime-enforcer-policy,`kubectl runtime-enforcer policy`>>
+* <<runtime-enforcer-policy-ack,`kubectl runtime-enforcer policy ack`>>
+* <<runtime-enforcer-policy-allow,`kubectl runtime-enforcer policy allow`>>
+* <<runtime-enforcer-policy-deny,`kubectl runtime-enforcer policy deny`>>
+* <<runtime-enforcer-policy-monitor,`kubectl runtime-enforcer policy monitor`>>
+* <<runtime-enforcer-policy-protect,`kubectl runtime-enforcer policy protect`>>
+* <<runtime-enforcer-policy-show,`kubectl runtime-enforcer policy show`>>
+* <<runtime-enforcer-policy-show-protection,`kubectl runtime-enforcer policy show protection`>>
+* <<runtime-enforcer-proposal,`kubectl runtime-enforcer proposal`>>
+* <<runtime-enforcer-proposal-promote,`kubectl runtime-enforcer proposal promote`>>
+
+[#runtime-enforcer]
+== `kubectl runtime-enforcer`
+
+Kubernetes plugin for Kubewarden Runtime Enforcer
+
+*Usage:* `kubectl runtime-enforcer [flags]`
+
+=== Options
+
+....
+      --as string                      Username to impersonate for the operation. User could be a regular user or a service account in a namespace.
+      --as-group stringArray           Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+      --as-uid string                  UID to impersonate for the operation.
+      --as-user-extra stringArray      User extras to impersonate for the operation, this flag can be repeated to specify multiple values for the same key.
+      --cache-dir string               Default cache directory (default "$HOME/.kube/cache")
+      --certificate-authority string   Path to a cert file for the certificate authority
+      --client-certificate string      Path to a client certificate file for TLS
+      --client-key string              Path to a client key file for TLS
+      --cluster string                 The name of the kubeconfig cluster to use
+      --context string                 The name of the kubeconfig context to use
+      --disable-compression            If true, opt-out of response compression for all requests to the server
+  -h, --help                           help for runtime-enforcer
+      --insecure-skip-tls-verify       If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+      --kubeconfig string              Path to the kubeconfig file to use for CLI requests.
+  -n, --namespace string               If present, the namespace scope for this CLI request
+      --proxy-url string               Proxy URL to use for requests to the API server
+      --request-timeout string         The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
+  -s, --server string                  The address and port of the Kubernetes API server
+      --tls-server-name string         Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used
+      --token string                   Bearer token for authentication to the API server
+      --user string                    The name of the kubeconfig user to use
+  -v, --version                        version for runtime-enforcer
+....
+
+=== SEE ALSO
+
+* <<runtime-enforcer-policy,`kubectl runtime-enforcer policy`>> - Manage WorkloadPolicy
+* <<runtime-enforcer-proposal,`kubectl runtime-enforcer proposal`>> - Manage WorkloadPolicyProposal
+
+[#runtime-enforcer-policy]
+== `kubectl runtime-enforcer policy`
+
+Manage WorkloadPolicy
+
+=== Options
+
+....
+  -h, --help   help for policy
+....
+
+=== Options inherited from parent commands
+
+....
+      --as string                      Username to impersonate for the operation. User could be a regular user or a service account in a namespace.
+      --as-group stringArray           Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+      --as-uid string                  UID to impersonate for the operation.
+      --as-user-extra stringArray      User extras to impersonate for the operation, this flag can be repeated to specify multiple values for the same key.
+      --cache-dir string               Default cache directory (default "$HOME/.kube/cache")
+      --certificate-authority string   Path to a cert file for the certificate authority
+      --client-certificate string      Path to a client certificate file for TLS
+      --client-key string              Path to a client key file for TLS
+      --cluster string                 The name of the kubeconfig cluster to use
+      --context string                 The name of the kubeconfig context to use
+      --disable-compression            If true, opt-out of response compression for all requests to the server
+      --insecure-skip-tls-verify       If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+      --kubeconfig string              Path to the kubeconfig file to use for CLI requests.
+  -n, --namespace string               If present, the namespace scope for this CLI request
+      --proxy-url string               Proxy URL to use for requests to the API server
+      --request-timeout string         The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
+  -s, --server string                  The address and port of the Kubernetes API server
+      --tls-server-name string         Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used
+      --token string                   Bearer token for authentication to the API server
+      --user string                    The name of the kubeconfig user to use
+....
+
+=== SEE ALSO
+
+* <<runtime-enforcer,`kubectl runtime-enforcer`>> - 
+* <<runtime-enforcer-policy-ack,`kubectl runtime-enforcer policy ack`>> - Acknowledge a WorkloadPolicy violation
+* <<runtime-enforcer-policy-allow,`kubectl runtime-enforcer policy allow`>> - allow executables for a WorkloadPolicy container
+* <<runtime-enforcer-policy-deny,`kubectl runtime-enforcer policy deny`>> - deny executables for a WorkloadPolicy container
+* <<runtime-enforcer-policy-monitor,`kubectl runtime-enforcer policy monitor`>> - Set WorkloadPolicy mode to monitor
+* <<runtime-enforcer-policy-protect,`kubectl runtime-enforcer policy protect`>> - Set WorkloadPolicy mode to protect
+* <<runtime-enforcer-policy-show,`kubectl runtime-enforcer policy show`>> - Show WorkloadPolicy information
+
+[#runtime-enforcer-policy-ack]
+== `kubectl runtime-enforcer policy ack`
+
+Acknowledge a WorkloadPolicy violation
+
+*Usage:* `kubectl runtime-enforcer policy ack POLICY_NAME <violation-id> [--reason <reason>] [flags]`
+
+=== Options
+
+....
+      --dry-run         Show what would happen without making any changes
+  -h, --help            help for ack
+      --reason string   Reason for acknowledging the violation. If omitted, you will be prompted
+....
+
+=== Options inherited from parent commands
+
+....
+      --as string                      Username to impersonate for the operation. User could be a regular user or a service account in a namespace.
+      --as-group stringArray           Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+      --as-uid string                  UID to impersonate for the operation.
+      --as-user-extra stringArray      User extras to impersonate for the operation, this flag can be repeated to specify multiple values for the same key.
+      --cache-dir string               Default cache directory (default "$HOME/.kube/cache")
+      --certificate-authority string   Path to a cert file for the certificate authority
+      --client-certificate string      Path to a client certificate file for TLS
+      --client-key string              Path to a client key file for TLS
+      --cluster string                 The name of the kubeconfig cluster to use
+      --context string                 The name of the kubeconfig context to use
+      --disable-compression            If true, opt-out of response compression for all requests to the server
+      --insecure-skip-tls-verify       If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+      --kubeconfig string              Path to the kubeconfig file to use for CLI requests.
+  -n, --namespace string               If present, the namespace scope for this CLI request
+      --proxy-url string               Proxy URL to use for requests to the API server
+      --request-timeout string         The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
+  -s, --server string                  The address and port of the Kubernetes API server
+      --tls-server-name string         Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used
+      --token string                   Bearer token for authentication to the API server
+      --user string                    The name of the kubeconfig user to use
+....
+
+=== SEE ALSO
+
+* <<runtime-enforcer-policy,`kubectl runtime-enforcer policy`>> - Manage WorkloadPolicy
+
+[#runtime-enforcer-policy-allow]
+== `kubectl runtime-enforcer policy allow`
+
+allow executables for a WorkloadPolicy container
+
+*Usage:* `kubectl runtime-enforcer policy allow POLICY_NAME <container-name> <executable-name> [<executable-name>...] [flags]`
+
+=== Options
+
+....
+      --dry-run   Show what would happen without making any changes
+  -h, --help      help for allow
+....
+
+=== Options inherited from parent commands
+
+....
+      --as string                      Username to impersonate for the operation. User could be a regular user or a service account in a namespace.
+      --as-group stringArray           Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+      --as-uid string                  UID to impersonate for the operation.
+      --as-user-extra stringArray      User extras to impersonate for the operation, this flag can be repeated to specify multiple values for the same key.
+      --cache-dir string               Default cache directory (default "$HOME/.kube/cache")
+      --certificate-authority string   Path to a cert file for the certificate authority
+      --client-certificate string      Path to a client certificate file for TLS
+      --client-key string              Path to a client key file for TLS
+      --cluster string                 The name of the kubeconfig cluster to use
+      --context string                 The name of the kubeconfig context to use
+      --disable-compression            If true, opt-out of response compression for all requests to the server
+      --insecure-skip-tls-verify       If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+      --kubeconfig string              Path to the kubeconfig file to use for CLI requests.
+  -n, --namespace string               If present, the namespace scope for this CLI request
+      --proxy-url string               Proxy URL to use for requests to the API server
+      --request-timeout string         The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
+  -s, --server string                  The address and port of the Kubernetes API server
+      --tls-server-name string         Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used
+      --token string                   Bearer token for authentication to the API server
+      --user string                    The name of the kubeconfig user to use
+....
+
+=== SEE ALSO
+
+* <<runtime-enforcer-policy,`kubectl runtime-enforcer policy`>> - Manage WorkloadPolicy
+
+[#runtime-enforcer-policy-deny]
+== `kubectl runtime-enforcer policy deny`
+
+deny executables for a WorkloadPolicy container
+
+*Usage:* `kubectl runtime-enforcer policy deny POLICY_NAME <container-name> <executable-name> [<executable-name>...] [flags]`
+
+=== Options
+
+....
+      --dry-run   Show what would happen without making any changes
+  -h, --help      help for deny
+....
+
+=== Options inherited from parent commands
+
+....
+      --as string                      Username to impersonate for the operation. User could be a regular user or a service account in a namespace.
+      --as-group stringArray           Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+      --as-uid string                  UID to impersonate for the operation.
+      --as-user-extra stringArray      User extras to impersonate for the operation, this flag can be repeated to specify multiple values for the same key.
+      --cache-dir string               Default cache directory (default "$HOME/.kube/cache")
+      --certificate-authority string   Path to a cert file for the certificate authority
+      --client-certificate string      Path to a client certificate file for TLS
+      --client-key string              Path to a client key file for TLS
+      --cluster string                 The name of the kubeconfig cluster to use
+      --context string                 The name of the kubeconfig context to use
+      --disable-compression            If true, opt-out of response compression for all requests to the server
+      --insecure-skip-tls-verify       If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+      --kubeconfig string              Path to the kubeconfig file to use for CLI requests.
+  -n, --namespace string               If present, the namespace scope for this CLI request
+      --proxy-url string               Proxy URL to use for requests to the API server
+      --request-timeout string         The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
+  -s, --server string                  The address and port of the Kubernetes API server
+      --tls-server-name string         Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used
+      --token string                   Bearer token for authentication to the API server
+      --user string                    The name of the kubeconfig user to use
+....
+
+=== SEE ALSO
+
+* <<runtime-enforcer-policy,`kubectl runtime-enforcer policy`>> - Manage WorkloadPolicy
+
+[#runtime-enforcer-policy-monitor]
+== `kubectl runtime-enforcer policy monitor`
+
+Set WorkloadPolicy mode to monitor
+
+*Usage:* `kubectl runtime-enforcer policy monitor POLICY_NAME [flags]`
+
+=== Options
+
+....
+      --dry-run   Show what would happen without making any changes
+  -h, --help      help for monitor
+....
+
+=== Options inherited from parent commands
+
+....
+      --as string                      Username to impersonate for the operation. User could be a regular user or a service account in a namespace.
+      --as-group stringArray           Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+      --as-uid string                  UID to impersonate for the operation.
+      --as-user-extra stringArray      User extras to impersonate for the operation, this flag can be repeated to specify multiple values for the same key.
+      --cache-dir string               Default cache directory (default "$HOME/.kube/cache")
+      --certificate-authority string   Path to a cert file for the certificate authority
+      --client-certificate string      Path to a client certificate file for TLS
+      --client-key string              Path to a client key file for TLS
+      --cluster string                 The name of the kubeconfig cluster to use
+      --context string                 The name of the kubeconfig context to use
+      --disable-compression            If true, opt-out of response compression for all requests to the server
+      --insecure-skip-tls-verify       If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+      --kubeconfig string              Path to the kubeconfig file to use for CLI requests.
+  -n, --namespace string               If present, the namespace scope for this CLI request
+      --proxy-url string               Proxy URL to use for requests to the API server
+      --request-timeout string         The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
+  -s, --server string                  The address and port of the Kubernetes API server
+      --tls-server-name string         Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used
+      --token string                   Bearer token for authentication to the API server
+      --user string                    The name of the kubeconfig user to use
+....
+
+=== SEE ALSO
+
+* <<runtime-enforcer-policy,`kubectl runtime-enforcer policy`>> - Manage WorkloadPolicy
+
+[#runtime-enforcer-policy-protect]
+== `kubectl runtime-enforcer policy protect`
+
+Set WorkloadPolicy mode to protect
+
+*Usage:* `kubectl runtime-enforcer policy protect POLICY_NAME [flags]`
+
+=== Options
+
+....
+      --dry-run   Show what would happen without making any changes
+  -h, --help      help for protect
+....
+
+=== Options inherited from parent commands
+
+....
+      --as string                      Username to impersonate for the operation. User could be a regular user or a service account in a namespace.
+      --as-group stringArray           Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+      --as-uid string                  UID to impersonate for the operation.
+      --as-user-extra stringArray      User extras to impersonate for the operation, this flag can be repeated to specify multiple values for the same key.
+      --cache-dir string               Default cache directory (default "$HOME/.kube/cache")
+      --certificate-authority string   Path to a cert file for the certificate authority
+      --client-certificate string      Path to a client certificate file for TLS
+      --client-key string              Path to a client key file for TLS
+      --cluster string                 The name of the kubeconfig cluster to use
+      --context string                 The name of the kubeconfig context to use
+      --disable-compression            If true, opt-out of response compression for all requests to the server
+      --insecure-skip-tls-verify       If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+      --kubeconfig string              Path to the kubeconfig file to use for CLI requests.
+  -n, --namespace string               If present, the namespace scope for this CLI request
+      --proxy-url string               Proxy URL to use for requests to the API server
+      --request-timeout string         The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
+  -s, --server string                  The address and port of the Kubernetes API server
+      --tls-server-name string         Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used
+      --token string                   Bearer token for authentication to the API server
+      --user string                    The name of the kubeconfig user to use
+....
+
+=== SEE ALSO
+
+* <<runtime-enforcer-policy,`kubectl runtime-enforcer policy`>> - Manage WorkloadPolicy
+
+[#runtime-enforcer-policy-show]
+== `kubectl runtime-enforcer policy show`
+
+Show WorkloadPolicy information
+
+=== Options
+
+....
+  -h, --help   help for show
+....
+
+=== Options inherited from parent commands
+
+....
+      --as string                      Username to impersonate for the operation. User could be a regular user or a service account in a namespace.
+      --as-group stringArray           Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+      --as-uid string                  UID to impersonate for the operation.
+      --as-user-extra stringArray      User extras to impersonate for the operation, this flag can be repeated to specify multiple values for the same key.
+      --cache-dir string               Default cache directory (default "$HOME/.kube/cache")
+      --certificate-authority string   Path to a cert file for the certificate authority
+      --client-certificate string      Path to a client certificate file for TLS
+      --client-key string              Path to a client key file for TLS
+      --cluster string                 The name of the kubeconfig cluster to use
+      --context string                 The name of the kubeconfig context to use
+      --disable-compression            If true, opt-out of response compression for all requests to the server
+      --insecure-skip-tls-verify       If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+      --kubeconfig string              Path to the kubeconfig file to use for CLI requests.
+  -n, --namespace string               If present, the namespace scope for this CLI request
+      --proxy-url string               Proxy URL to use for requests to the API server
+      --request-timeout string         The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
+  -s, --server string                  The address and port of the Kubernetes API server
+      --tls-server-name string         Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used
+      --token string                   Bearer token for authentication to the API server
+      --user string                    The name of the kubeconfig user to use
+....
+
+=== SEE ALSO
+
+* <<runtime-enforcer-policy,`kubectl runtime-enforcer policy`>> - Manage WorkloadPolicy
+* <<runtime-enforcer-policy-show-protection,`kubectl runtime-enforcer policy show protection`>> - List workloads to WorkloadPolicy protection mapping
+
+[#runtime-enforcer-policy-show-protection]
+== `kubectl runtime-enforcer policy show protection`
+
+List workloads to WorkloadPolicy protection mapping
+
+*Usage:* `kubectl runtime-enforcer policy show protection [flags]`
+
+=== Options
+
+....
+  -A, --all-namespaces   If present, list requested object(s) across all namespaces
+  -h, --help             help for protection
+  -o, --output string    Output format. One of: table|json (default "table")
+....
+
+=== Options inherited from parent commands
+
+....
+      --as string                      Username to impersonate for the operation. User could be a regular user or a service account in a namespace.
+      --as-group stringArray           Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+      --as-uid string                  UID to impersonate for the operation.
+      --as-user-extra stringArray      User extras to impersonate for the operation, this flag can be repeated to specify multiple values for the same key.
+      --cache-dir string               Default cache directory (default "$HOME/.kube/cache")
+      --certificate-authority string   Path to a cert file for the certificate authority
+      --client-certificate string      Path to a client certificate file for TLS
+      --client-key string              Path to a client key file for TLS
+      --cluster string                 The name of the kubeconfig cluster to use
+      --context string                 The name of the kubeconfig context to use
+      --disable-compression            If true, opt-out of response compression for all requests to the server
+      --insecure-skip-tls-verify       If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+      --kubeconfig string              Path to the kubeconfig file to use for CLI requests.
+  -n, --namespace string               If present, the namespace scope for this CLI request
+      --proxy-url string               Proxy URL to use for requests to the API server
+      --request-timeout string         The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
+  -s, --server string                  The address and port of the Kubernetes API server
+      --tls-server-name string         Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used
+      --token string                   Bearer token for authentication to the API server
+      --user string                    The name of the kubeconfig user to use
+....
+
+=== SEE ALSO
+
+* <<runtime-enforcer-policy-show,`kubectl runtime-enforcer policy show`>> - Show WorkloadPolicy information
+
+[#runtime-enforcer-proposal]
+== `kubectl runtime-enforcer proposal`
+
+Manage WorkloadPolicyProposal
+
+=== Options
+
+....
+  -h, --help   help for proposal
+....
+
+=== Options inherited from parent commands
+
+....
+      --as string                      Username to impersonate for the operation. User could be a regular user or a service account in a namespace.
+      --as-group stringArray           Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+      --as-uid string                  UID to impersonate for the operation.
+      --as-user-extra stringArray      User extras to impersonate for the operation, this flag can be repeated to specify multiple values for the same key.
+      --cache-dir string               Default cache directory (default "$HOME/.kube/cache")
+      --certificate-authority string   Path to a cert file for the certificate authority
+      --client-certificate string      Path to a client certificate file for TLS
+      --client-key string              Path to a client key file for TLS
+      --cluster string                 The name of the kubeconfig cluster to use
+      --context string                 The name of the kubeconfig context to use
+      --disable-compression            If true, opt-out of response compression for all requests to the server
+      --insecure-skip-tls-verify       If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+      --kubeconfig string              Path to the kubeconfig file to use for CLI requests.
+  -n, --namespace string               If present, the namespace scope for this CLI request
+      --proxy-url string               Proxy URL to use for requests to the API server
+      --request-timeout string         The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
+  -s, --server string                  The address and port of the Kubernetes API server
+      --tls-server-name string         Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used
+      --token string                   Bearer token for authentication to the API server
+      --user string                    The name of the kubeconfig user to use
+....
+
+=== SEE ALSO
+
+* <<runtime-enforcer,`kubectl runtime-enforcer`>> - 
+* <<runtime-enforcer-proposal-promote,`kubectl runtime-enforcer proposal promote`>> - Promote WorkloadPolicyProposal to WorkloadPolicy
+
+[#runtime-enforcer-proposal-promote]
+== `kubectl runtime-enforcer proposal promote`
+
+Promote WorkloadPolicyProposal to WorkloadPolicy. This will trigger the creation of a WorkloadPolicy.
+
+*Usage:* `kubectl runtime-enforcer proposal promote PROPOSAL_NAME [flags]`
+
+=== Options
+
+....
+      --dry-run       Show what would happen without making any changes
+  -h, --help          help for promote
+      --mode string   Policy mode for the promoted WorkloadPolicy (monitor or protect) (default "monitor")
+....
+
+=== Options inherited from parent commands
+
+....
+      --as string                      Username to impersonate for the operation. User could be a regular user or a service account in a namespace.
+      --as-group stringArray           Group to impersonate for the operation, this flag can be repeated to specify multiple groups.
+      --as-uid string                  UID to impersonate for the operation.
+      --as-user-extra stringArray      User extras to impersonate for the operation, this flag can be repeated to specify multiple values for the same key.
+      --cache-dir string               Default cache directory (default "$HOME/.kube/cache")
+      --certificate-authority string   Path to a cert file for the certificate authority
+      --client-certificate string      Path to a client certificate file for TLS
+      --client-key string              Path to a client key file for TLS
+      --cluster string                 The name of the kubeconfig cluster to use
+      --context string                 The name of the kubeconfig context to use
+      --disable-compression            If true, opt-out of response compression for all requests to the server
+      --insecure-skip-tls-verify       If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure
+      --kubeconfig string              Path to the kubeconfig file to use for CLI requests.
+  -n, --namespace string               If present, the namespace scope for this CLI request
+      --proxy-url string               Proxy URL to use for requests to the API server
+      --request-timeout string         The length of time to wait before giving up on a single server request. Non-zero values should contain a corresponding time unit (e.g. 1s, 2m, 3h). A value of zero means don't timeout requests. (default "0")
+  -s, --server string                  The address and port of the Kubernetes API server
+      --tls-server-name string         Server name to use for server certificate validation. If it is not provided, the hostname used to contact the server is used
+      --token string                   Bearer token for authentication to the API server
+      --user string                    The name of the kubeconfig user to use
+....
+
+=== SEE ALSO
+
+* <<runtime-enforcer-proposal,`kubectl runtime-enforcer proposal`>> - Manage WorkloadPolicyProposal
+

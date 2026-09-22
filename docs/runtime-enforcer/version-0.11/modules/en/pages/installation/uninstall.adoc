@@ -1,0 +1,45 @@
+include::partial$variables.adoc[]
+
+= {rte-name} Uninstall
+:revdate: 2026-09-17
+:page-revdate: {revdate}
+
+You can remove the {rte-name} and all the policies created by uninstalling
+the `helm` chart as follows:
+
+[source,bash]
+----
+helm uninstall runtime-enforcer --namespace runtime-enforcer
+----
+
+Note that this command won't delete the existing WorkloadPolicy and
+WorkloadPolicyProposal.
+
+To remove them, you can run the following commands:
+
+[source,bash]
+----
+kubectl delete crd workloadpolicies.runtimeenforcer.kubewarden.io
+kubectl delete crd workloadpolicyproposals.runtimeenforcer.kubewarden.io
+----
+
+[NOTE]
+====
+Deletion of a `WorkloadPolicy` will fail while at least one pod is still
+referencing it. Remove the pod(s) first, then delete the policy.
+====
+
+Finally, delete the namespace where {rte-short-name} was deployed:
+
+[source,bash]
+----
+kubectl delete ns runtime-enforcer
+----
+
+You can also delete the cert-manager:
+
+[source,bash]
+----
+helm uninstall cert-manager --namespace cert-manager
+kubectl delete ns cert-manager
+----

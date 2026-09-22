@@ -1,6 +1,7 @@
 name: runtime-enforcer
 title: Runtime Enforcer
-version: "0.9"
+version: "0.11"
+prerelease: -dev
 start_page: en:introduction.adoc
 nav:
   - modules/en/nav.adoc

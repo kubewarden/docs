@@ -1,0 +1,203 @@
+include::partial$variables.adoc[]
+
+= {rte-name} phases: learn, monitor, protect
+:revdate: 2026-09-22
+:page-revdate: {revdate}
+
+This document explains the three *phases* of {rte-name} and how to move
+between them.
+
+[#_learn-phase]
+== Learn phase
+
+[#_what-happens-during-this-phase]
+=== What happens during this phase
+
+* *Processes aren't blocked.*
+* {rte-short-name} observes process executions in your workloads and learns the
+  executable paths that run.
+* For each learned executable, runtime-enforcer creates or updates a
+  `WorkloadPolicyProposal` in the workload namespace and adds the executable
+  path under `.spec.rulesByContainer[CONTAINER_NAME].executables.allowed`.
+
+[NOTE]
+====
+Learn is based on *exec events observed after the agent is running*. The
+agent does *not* reconstruct what happened before it started.
+====
+
+This means:
+
+* If a workload was already running before runtime-enforcer started, *we can't
+  propose the full set of processes it already executed in the past*.
+* You only learn processes that exec after runtime-enforcer is running (for
+  long-lived pods that rarely execute, you may learn little or nothing until a
+  restart or other activity happens).
+
+Operationally, if you want complete proposals, enable learning first and then
+*(re)start* the workloads you want to learn.
+
+[#_how-to-enter-and-leave-the-learn-phase]
+=== How to enter and leave the `Learn` phase
+
+* *Enter*
+** Check learning is enabled on some namespaces:
+   `values.learning.namespaceSelector`
+** No per-workload configuration is required to start generating proposals
+   (proposals are created as exec events are observed).
+* *Leave*
+** Promote the corresponding proposal by setting the label:
+   `runtimeenforcer.kubewarden.io/promote=<monitor|protect>`
+** Alternatively, use the kubectl plugin: `kubectl runtime-enforcer proposal
+   promote <PROPOSAL_NAME>`.
+** This triggers creation of a `WorkloadPolicy` (defaulting to `mode: monitor`),
+   with the `runtimeenforcer.kubewarden.io/promoted-from` label set so the
+   promotion relationship is explicit.
+** The `WorkloadPolicyProposal` object is deleted after the promotion. Under
+   rare conditions, caches might not be immediately updated, causing the
+   `WorkloadPolicyProposal` to be created again. In those cases, a periodic
+   cleanup removes the leftover proposals.
+
+[NOTE]
+====
+If you create a `WorkloadPolicy` manually without that promotion relationship
+(no `runtimeenforcer.kubewarden.io/promote` label created in
+`WorkloadPolicyProposal`), the proposal *isn't* removed by that flow. You must
+delete the `WorkloadPolicyProposal` manually.
+====
+
+[#_crds-created-updated-during-this-phase]
+=== CRDs created/updated during this phase
+
+* *Created/updated*: `WorkloadPolicyProposal` (`runtimeenforcer.kubewarden.io/v1alpha1`)
+** Name format is derived from workload kind/name (for example, `deploy-NAME`,
+   `ds-NAME`, and so on).
+** The proposal is linked back to the owning workload via `ownerReferences`. If
+   the owning workload is deleted, so is the proposal.
+
+[#_monitor-phase]
+== Monitor phase
+
+[#_monitor-phase-what-happens-during-this-phase]
+=== What happens during this phase
+
+* *Processes aren't blocked.*
+* When a process exec *isn't on the allow-list* for the container:
+** the exec is *allowed*
+** a *violation* event is emitted and exported via OpenTelemetry with `action=monitor`.
+
+[NOTE]
+====
+`WorkloadPolicy` rules are evaluated only for containers explicitly listed in
+`.spec.rulesByContainer`. If a protected pod gets an additional container that
+is not in the policy (for example an ephemeral debug container created with
+`kubectl debug`, or an init container without a matching rule), runtime-enforcer
+intentionally leaves that container unenforced so debug and initialization
+workflows can still run.
+====
+
+[#_how-to-enter-and-leave-the-phase]
+=== How to enter and leave the phase
+
+* *Enter*
+** A `WorkloadPolicy` is created (usually by approving a proposal), and ensure it has:
+*** `.spec.mode: monitor`
+*** `.spec.rulesByContainer` populated with allowed executables per container name
+** Bind workloads/pods to the policy by applying the label: `runtimeenforcer.kubewarden.io/policy: WORKLOAD_POLICY_NAME`. The label must be applied to the Pod. When dealing with workload types (such as Deployment), make sure the label is specified inside of the `PodTemplateSpec`.
++
+Runtime-enforcer uses this label to decide which pods the policy applies to.
++
+[WARNING]
+====
+The `runtimeenforcer.kubewarden.io/policy` label must be set at Pod creation time only.
+Changing this label on a running Pod (adding, removing, or modifying its value)
+is prohibited.
+====
+
+[WARNING]
+====
+By default in the {rte-short-name} Helm chart, pods that reference a
+non-existing policy through the `runtimeenforcer.kubewarden.io/policy` label are
+prevented from running. This ensures that when a pod starts, it has all
+protections ready. Workloads and pods without the `runtimeenforcer.kubewarden.io/policy`
+label are not affected by this behavior and keep running as usual.
+To enable fail-open behavior, set `agent.nriFailopen=true`.
+====
+
+* *Leave*
+** *Monitor → Protect*: update the `WorkloadPolicy` and set `.spec.mode:
+   protect` (or `kubectl runtime-enforcer policy protect <POLICY_NAME>`).
+** *Monitor → Learn*: remove the binding label from workloads/pods, delete the
+   `WorkloadPolicy`, then delete the existing `WorkloadPolicyProposal`, or set
+   remove the `runtimeenforcer.kubewarden.io/promote` label from the proposal to resume learning.
+
+[#_monitor-phase-crds-created-updated-during-this-phase]
+=== CRDs created/updated during this phase
+
+* *Used/updated*: `WorkloadPolicy`
+** `.spec.mode` controls whether violations are blocked (`protect`) or allowed
+   (`monitor`).
+** If a policy is still in use by running workloads, {rte-short-name} will
+   prevent it from being deleted until it is no longer referenced.
+
+[#_protect-phase]
+== Protect phase
+
+[#_protect-phase-what-happens-during-this-phase]
+=== What happens during this phase
+
+* *Processes are blocked* when they violate the allow-list.
+* On an attempted exec that is not allowed:
+** a *violation* event is emitted (same as monitor, but with `action=protect`)
+** the exec fails, which typically appears as *“Permission denied”* in the
+   container/process
+** the process does not start; depending on what was blocked this can cause
+   application errors, crash loops, or failed jobs.
+
+[NOTE]
+====
+The same container scoping rule applies in protect mode: only containers present
+in `.spec.rulesByContainer` are enforced. Containers added to an already
+protected pod without a matching per-container rule remain intentionally
+unenforced.
+====
+
+[#_protect-phase-how-to-enter-and-leave-the-phase]
+=== How to enter and leave the phase
+
+* *Enter*
+** Ensure the workload is bound via `runtimeenforcer.kubewarden.io/policy:
+   WORKLOAD_POLICY_NAME`. The label must be applied to the Pod. When dealing
+   with workload types (such as Deployment), make sure the label is specified
+   inside of the `PodTemplateSpec`. + WARNING: The `runtimeenforcer.kubewarden.io/policy`
+   label must be set at Pod creation time only. Changing this label on a running
+   Pod (adding, removing, or modifying its value) is prohibited.
+** Update the `WorkloadPolicy` to set `.spec.mode: protect`.
+* *Leave*
+** *Protect → Monitor*: update the `WorkloadPolicy` and set `.spec.mode:
+   monitor` (or `kubectl runtime-enforcer policy monitor <POLICY_NAME>`).
+** *Protect → Learn*: remove the binding label from workloads/pods, delete the
+   `WorkloadPolicy`, then delete the existing `WorkloadPolicyProposal`, or set
+   remove the `runtimeenforcer.kubewarden.io/promote` label from the proposal to resume learning.
+
+[#_protect-phase-crds-created-updated-during-this-phase]
+=== CRDs created/updated during this phase
+
+* *Used/updated*: `WorkloadPolicy` (same CRD as monitor; only `.spec.mode`
+  changes).
+
+[#_quick-mapping-to-crds]
+== Quick mapping to CRDs
+
+* *Learn phase*: the system observes process executions and creates/updates
+  `WorkloadPolicyProposal` objects.
+* *Monitor phase*: a `WorkloadPolicy` exists with `.spec.mode: monitor`
+  (violations are reported, not blocked).
+* *Protect phase*: a `WorkloadPolicy` exists with `.spec.mode: protect`
+  (violations are reported and blocked).
+
+[IMPORTANT]
+====
+The `WorkloadPolicy` CRD only supports `monitor` and `protect` (`.spec.mode`).
+`Learn` is implemented as `WorkloadPolicyProposal` generation.
+====

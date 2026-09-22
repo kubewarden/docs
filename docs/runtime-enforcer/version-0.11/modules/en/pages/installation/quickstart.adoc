@@ -1,0 +1,570 @@
+include::partial$variables.adoc[]
+
+= {rte-name} Quick Start
+
+:revdate: 2026-09-22
+:page-revdate: {revdate}
+
+Welcome to the {rte-name} Quick Start!
+
+This guide walks you through the following steps:
+
+* Deploying the {rte-short-name} in a Kubernetes cluster
+* Deploying a simple workload and looking at the generated
+  WorkloadPolicyProposal.
+* Converting the WorkloadPolicyProposal into a WorkloadPolicy in monitor mode
+  and observing the alert.
+* Switching the WorkloadPolicy to protect mode and seeing enforcement in action.
+
+[#_prerequisites]
+== Prerequisites
+
+Before deployment, you need to prepare the following:
+
+* A Kubernetes cluster (you can simply run a https://kind.sigs.k8s.io/[kind]
+  cluster)
+* `helm` installed locally
+* `kubectl` installed locally
+* `cert-manager` and `cert-manager-csi-driver` installed in the cluster
+
+[WARNING]
+====
+Please check your environment satisfies the minimum
+xref:../compatibility.adoc[runtime enforcer requirements].
+====
+
+[#_install-cert-manager-and-cert-manager-csi-driver]
+=== Install cert-manager and cert-manager-csi-driver
+
+To install cert-manager, run the following commands:
+
+[source,bash]
+----
+helm repo add jetstack https://charts.jetstack.io
+
+helm repo update
+
+helm install cert-manager jetstack/cert-manager \
+	--namespace cert-manager \
+	--create-namespace \
+	--set crds.enabled=true \
+	--wait
+----
+
+[NOTE]
+====
+For more information on configuring cert-manager, please visit the
+link:https://cert-manager.io/docs/installation/helm[cert-manager documentation].
+====
+
+The `cert-manager-csi-driver` is used to automatically provision and mount TLS
+certificates directly inside runtime enforcer pods (agent and OTEL collector)
+without creating intermediate Secret resources. To install it, run the following
+commands:
+
+[source,bash]
+----
+helm install cert-manager-csi-driver jetstack/cert-manager-csi-driver \
+	--namespace cert-manager \
+	--wait
+----
+
+[#_deploy-rte-short-name]
+== Deploy {rte-short-name}
+
+Follow these simple steps from your local machine to get {rte-short-name} up and running:
+
+[#_install-the-helm-chart]
+=== Install the Helm chart
+
+{rte-short-name} ships with a standalone OTEL collector Deployment that handles violation metrics and events forwarding.
+No external OpenTelemetry Collector is needed for a basic setup.
+
+[subs="+attributes",console]
+----
+helm repo add kubewarden {runtime-enforcer-helm-chart}
+helm repo update
+helm install runtime-enforcer kubewarden/runtime-enforcer \
+  --namespace runtime-enforcer \
+  --create-namespace \
+  --wait
+----
+
+[#_verify-the-deployment]
+=== Verify the Deployment
+
+After installation, ensure all pods are running:
+
+[source,bash]
+----
+kubectl get pods -n runtime-enforcer
+----
+
+Example output:
+
+[source,bash]
+----
+runtime-enforcer   runtime-enforcer-controller-manager-bfbd8774d-bvjjn   1/1     Running
+runtime-enforcer   runtime-enforcer-agent-lsxt4                          1/1     Running
+runtime-enforcer   runtime-enforcer-otel-collector-7f8b4c6d9-xk2mv      1/1     Running
+----
+
+[NOTE]
+====
+The OTEL collector runs as a standalone Deployment (one replica per cluster)
+rather than as a sidecar in each agent pod.
+====
+
+[#_verify-violation-metrics]
+=== Verify violation metrics
+
+The OTEL collector Deployment exposes Prometheus metrics on port 9090. To
+verify:
+
+[source,bash]
+----
+kubectl port-forward -n runtime-enforcer deployment/runtime-enforcer-otel-collector 9090:9090
+curl localhost:9090/metrics | grep runtime_enforcer_violations
+----
+
+Once violations occur, you will see a counter like:
+
+----
+runtime_enforcer_violations_total{action="monitor",k8s_namespace_name="default",node_name="node-1",policy_name="deploy-opensuse-deployment"} 1
+----
+
+[#_summary]
+=== Summary
+
+At this point, {rte-short-name} is up and running. You're now ready to write
+some policies.
+
+[#_workloadpolicyproposal-generation]
+== WorkloadPolicyProposal generation
+
+When {rte-short-name} starts, it observes newly started processes on the node.
+For each Kubernetes workload, it generates a `WorkloadPolicyProposal` containing
+the list of observed executables. Executables that ran before the agent started
+won't be visible in the proposal.
+
+[#_deploy-a-simple-application]
+=== Deploy a simple application
+
+Let's create a fresh new openSUSE Deployment.
+
+[source,bash]
+----
+kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opensuse-deployment
+  labels:
+    app: opensuse-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opensuse-deployment
+  template:
+    metadata:
+      labels:
+        app: opensuse-deployment
+    spec:
+      containers:
+      - name: opensuse
+        image: registry.opensuse.org/opensuse/bci/bci-ci:3
+        # Create a while loop to continually run sleep and ls.
+        # This helps detect two groups of processes in this test:
+        # 1. process snapshot (bash)
+        # 2. process events (sleep and ls).
+        command: ["bash", "-c", "while true; do sleep 5; ls; done"]
+EOF
+
+# wait for the pod to be ready
+kubectl wait --for=condition=Ready pod -l app=opensuse-deployment --timeout=300s
+----
+
+[#_proposal-generation]
+=== Proposal generation
+
+After a few seconds, you should see a new `WorkloadPolicyProposal` resource
+created for the openSUSE deployment.
+
+[source,bash]
+----
+kubectl get workloadpolicyproposals.runtimeenforcer.kubewarden.io deploy-opensuse-deployment -o yaml
+----
+
+[source,yaml]
+----
+apiVersion: runtimeenforcer.kubewarden.io/v1alpha1
+kind: WorkloadPolicyProposal
+metadata:
+  name: deploy-opensuse-deployment
+  namespace: default
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Deployment
+    name: opensuse-deployment
+    uid: f5e1a25e-8a80-4c2a-b21a-b70f28a0651c
+  uid: 6aeac998-d4b6-4e17-9ce1-4d76bc4def61
+spec:
+  rulesByContainer:
+    opensuse:
+      executables:
+        allowed:
+        - /usr/bin/bash
+        - /usr/bin/ls
+        - /usr/bin/sleep
+  selector:
+    matchLabels:
+      app: opensuse
+      type: deployment
+----
+
+Notes on this proposal:
+
+* The proposal includes a list of observed executables for the `opensuse`
+  container. As expected, it captured the `bash`, `ls` and `sleep` commands.
+* As the name suggests, this is only a proposal and not a definitive policy yet,
+  so nothing is enforced at this stage. To enforce it, create a
+  `WorkloadPolicy`.
+* This proposal is tied to a specific workload. Its name is always in the form
+  of `<workload-type>-<workload-name>`. There is also an owner reference to the
+  Deployment so that when the workload is deleted, the proposal can be cleaned
+  up automatically.
+
+[#_workloadpolicy-monitor-mode]
+== WorkloadPolicy (monitor mode)
+
+This proposal looks reasonable for the Deployment, so the next step is
+converting it into a definitive policy. To do that, label the
+`WorkloadPolicyProposal` with `runtimeenforcer.kubewarden.io/promote=monitor`.
+
+[source,bash]
+----
+kubectl label workloadpolicyproposals.runtimeenforcer.kubewarden.io deploy-opensuse-deployment runtimeenforcer.kubewarden.io/promote=monitor
+----
+
+You can also use the kubectl plugin to perform the same step:
+
+[source,bash]
+----
+kubectl runtime-enforcer proposal promote deploy-opensuse-deployment --mode monitor
+----
+
+After a few seconds, you should see a new Custom Resource called
+`WorkloadPolicy`.
+
+[source,bash]
+----
+kubectl get workloadpolicy.runtimeenforcer.kubewarden.io deploy-opensuse-deployment -o yaml
+----
+
+[source,yaml]
+----
+apiVersion: runtimeenforcer.kubewarden.io/v1alpha1
+kind: WorkloadPolicy
+metadata:
+  labels:
+    runtimeenforcer.kubewarden.io/promoted-from: deploy-opensuse-deployment
+  name: deploy-opensuse-deployment
+  namespace: default
+spec:
+  mode: monitor
+  rulesByContainer:
+    opensuse:
+      executables:
+        allowed:
+        - /usr/bin/bash
+        - /usr/bin/sleep
+        - /usr/bin/ls
+----
+
+The syntax is similar to the proposal, but there is one important
+difference: the `spec.mode: monitor` field. `monitor` is a passive mode:
+violations of the executable list are reported but not blocked. This means that
+if a process other than `bash`, `ls`, or `sleep` is executed, it's reported as
+an OTEL event, but it isn't blocked.
+Here the proposal is promoted in `monitor` mode but you can
+promote a proposal directly in `protect` mode. In that case the enforcement
+is applied immediately, blocking any disallowed executables from running.
+See the `protect` mode section for details.
+
+[NOTE]
+====
+Container enforcement is scoped by container name in `.spec.rulesByContainer`.
+If an additional container is added to an already protected Pod, it is
+intentionally left unenforced. See xref:../phases.adoc#_monitor-phase[Monitor
+phase] and xref:../phases.adoc#_protect-phase[Protect phase] for details.
+====
+
+Converting a proposal into a policy isn't enough to apply it to a workload: the
+workload needs to bind itself to the policy. This is done by adding a label to
+the workload pods. Since this example uses a Deployment, the correct approach is to
+add the label to the Deployment's pod template.
+
+[WARNING]
+====
+You should set the `runtimeenforcer.kubewarden.io/policy` label at Pod creation time only.
+Changing this label on a running Pod (adding, removing, or modifying its value)
+is prohibited.
+====
+
+[source,bash]
+----
+kubectl patch deployment opensuse-deployment --type=merge -p '{"spec":{"template":{"metadata":{"labels":{"runtimeenforcer.kubewarden.io/policy":"deploy-opensuse-deployment"}}}}}'
+# wait for the new pods to be ready
+kubectl wait --for=condition=Ready pod -l runtimeenforcer.kubewarden.io/policy=deploy-opensuse-deployment --timeout=300s
+----
+
+[WARNING]
+====
+This label update causes a deployment rollout. To avoid this,
+you should put the label on the workload at creation time.
+====
+
+After the rollout, the policy will be applied. Let's test it.
+
+In one terminal, check the OTEL collector logs:
+
+[source,bash]
+----
+kubectl logs -n runtime-enforcer deployment/runtime-enforcer-otel-collector -f
+----
+
+In another terminal, run an allowed command:
+
+[source,bash]
+----
+kubectl exec -n default deployment/opensuse-deployment -- ls
+----
+
+Nothing should be reported.
+
+Now, run a command that is not in the allowlist:
+
+[source,bash]
+----
+kubectl exec -n default deployment/opensuse-deployment -- ps
+----
+
+In the OTEL collector logs you should see an event for the `ps` command being executed.
+
+[source,txt]
+----
+monitor 3f3235e0e92e6143965d46b967691cc1 9a6b46fa3165e86d evt.time=2026-01-14T10:39:01Z evt.rawtime=1768387141935180372 policy.name=deploy-opensuse-deployment k8s.ns.name=default k8s.workload.name=opensuse-deployment k8s.workload.kind=Deployment k8s.pod.name=opensuse-deployment-f69df6b94-7s7f4 container.full_id=2f6eb089830e2c281551274e8d0e94bdb182a5444fc1a4ab7316f33dff8a5017 container.name=opensuse proc.exepath=/usr/bin/ps action=monitor
+----
+
+Violations are also visible directly on the WorkloadPolicy status. After the
+controller's next sync tick (up to 30 seconds), you can inspect them with
+`kubectl`:
+
+[source,bash]
+----
+kubectl get workloadpolicy.runtimeenforcer.kubewarden.io deploy-opensuse-deployment -o yaml
+----
+
+In the output, look for the `Violations` section under `Status`:
+
+[source,yaml]
+----
+status:
+  activeViolationCount: 1
+  violationCount: 1
+  violations:
+  - action: monitor
+    containerName: opensuse
+    executablePath: /usr/bin/ps
+    id: 0
+    nodeName: kind-control-plane
+    podName: opensuse-deployment-f69df6b94-7s7f4
+    timestamp: "2026-01-14T10:39:01Z"
+    workloadKind: Deployment
+    workloadName: opensuse-deployment
+----
+
+- `violationCount` is the total number of violations that have occurred for this policy; it is a historical count.
+- `activeViolationCount` is the number of currently active violations for this policy.
+
+At this point, both are 1 because a single violation has been recorded.
+
+[NOTE]
+====
+The controller scrapes violation records from agents via gRPC during its
+periodic status sync and stores the most recent 100 entries in the
+WorkloadPolicy status. No external observability stack is required to view
+violations.
+====
+
+[#_add-a-binary-to-the-allowed-list]
+== Add a binary to the allowed list
+
+Now suppose `ps` is an allowed binary and you want to add it to the allowed
+list and clear the violation. You can use the kubectl plugin to add the binary,
+and the violations should be updated automatically by {rte-short-name}.
+
+[source,bash]
+----
+kubectl runtime-enforcer policy allow deploy-opensuse-deployment opensuse /usr/bin/ps
+----
+
+Looking at the resource again shows that the violation has been cleared:
+
+[source,bash]
+----
+kubectl get workloadpolicy.runtimeenforcer.kubewarden.io deploy-opensuse-deployment -o yaml
+----
+
+[source,yaml]
+----
+apiVersion: runtimeenforcer.kubewarden.io/v1alpha1
+kind: WorkloadPolicy
+metadata:
+  labels:
+    runtimeenforcer.kubewarden.io/promoted-from: deploy-opensuse-deployment
+  name: deploy-opensuse-deployment
+  namespace: default
+spec:
+  mode: monitor
+  rulesByContainer:
+    opensuse:
+      executables:
+        allowed:
+        - /usr/bin/bash
+        - /usr/bin/sleep
+        - /usr/bin/ls
+        - /usr/bin/ps
+status:
+  activeViolationCount: 0
+  violationCount: 1
+----
+
+- `/usr/bin/ps` is now part of the allowed list
+- `violationCount` is still 1 since it is a historical count
+- `activeViolationCount` is now 0 since the violation has been cleared.
+
+[#_workloadpolicy-protect-mode]
+== WorkloadPolicy (protect mode)
+
+Once confident in the policy and wanting to enforce it, change the mode to
+`protect`. From now on, every violation of the executable list is blocked.
+
+[source,bash]
+----
+kubectl patch workloadpolicy deploy-opensuse-deployment -n default --type='json' -p='[{"op": "replace", "path": "/spec/mode", "value": "protect"}]'
+----
+
+You can also use the kubectl plugin to perform the same step:
+
+[source,bash]
+----
+kubectl runtime-enforcer policy protect deploy-opensuse-deployment -n default
+----
+
+Now run an allowed binary again; nothing should be reported.
+
+[source,bash]
+----
+kubectl exec -n default deployment/opensuse-deployment -- ls
+----
+
+This time, if you run a non-permitted binary, you should see not only a report
+but also the process being blocked.
+
+[source,bash]
+----
+kubectl exec -n default deployment/opensuse-deployment -- cat /etc/os-release
+----
+
+The terminal tells us the process is blocked with `EPERM`.
+
+[source,txt]
+----
+exec /usr/bin/cat: operation not permitted
+command terminated with exit code 255
+----
+
+And there is a log entry for it:
+
+[source,txt]
+----
+protect 37298bcde8726ade2516b5d3c63aa663 cb28aa0b03259160 evt.time=2026-01-14T10:49:11Z evt.rawtime=1768387751471907924 policy.name=deploy-opensuse-deployment k8s.ns.name=default k8s.workload.name=opensuse-deployment k8s.workload.kind=Deployment k8s.pod.name=opensuse-deployment-f69df6b94-7s7f4 container.full_id=2f6eb089830e2c281551274e8d0e94bdb182a5444fc1a4ab7316f33dff8a5017 container.name=opensuse proc.exepath=/usr/bin/cat action=protect
+----
+
+Looking at the status shows that a new violation has been detected.
+
+[source,yaml]
+----
+status:
+  activeViolationCount: 1
+  violationCount: 2
+  violations:
+  - action: protect
+    containerName: opensuse
+    executablePath: /usr/bin/cat
+    id: 1
+    nodeName: kind-control-plane
+    podName: opensuse-deployment-f69df6b94-7s7f4
+    timestamp: "2026-01-14T10:49:11Z"
+    workloadKind: Deployment
+    workloadName: opensuse-deployment
+----
+
+[#_acknowledge-a-violation]
+== Acknowledge a violation
+
+Assume the `cat` violation was due to a debugging session and now it needs to be marked as resolved. You can add an acknowledgment for this violation; the most
+intuitive way is to use the kubectl plugin.
+
+[source,bash]
+----
+kubectl runtime-enforcer policy ack deploy-opensuse-deployment 1 --reason "inspect OS release during debugging"
+----
+
+The reason of the acknowledgment can be provided through the `--reason` flag.
+The status should change as follows:
+
+[source,yaml]
+----
+status:
+  acknowledgedViolations:
+  - acknowledgedAt: "2026-01-14T10:50:03Z"
+    reason: inspect OS release during debugging
+    violation:
+      action: protect
+      containerName: opensuse
+      executablePath: /usr/bin/cat
+      id: 1
+      nodeName: kind-control-plane
+      podName: opensuse-deployment-f69df6b94-7s7f4
+      timestamp: "2026-01-14T10:49:11Z"
+      workloadKind: Deployment
+      workloadName: opensuse-deployment
+  activeViolationCount: 0
+  violationCount: 2
+----
+
+The active violation is no longer listed. Instead, it appears under
+`acknowledgedViolations`.
+
+[#_advanced-configuration]
+== Advanced Configuration
+
+[#_use-an-external-collector]
+=== Use an external collector
+
+If you already have an OTEL collector deployed in your cluster, you can use the
+`external` collector strategy to point the agent directly at it:
+
+[source,bash]
+----
+helm upgrade runtime-enforcer kubewarden/runtime-enforcer \
+  --namespace runtime-enforcer \
+  --set telemetry.collectorStrategy=external \
+  --set telemetry.externalCollector.protocol=grpc \
+  --set telemetry.externalCollector.endpoint=https://otel-collector.otel-collector.svc.cluster.local:4317
+----

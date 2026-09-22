@@ -1,0 +1,41 @@
+include::partial$variables.adoc[]
+
+= Build requirements
+:revdate: 2026-09-17
+:page-revdate: {revdate}
+
+[#_build-system-dependencies]
+== Build System Dependencies
+
+On SLES/openSUSE:
+[source,bash]
+----
+sudo zypper install -y \
+  gcc \
+  libelf-devel \
+  clang \
+  llvm \
+  libbpf-devel
+----
+
+On Ubuntu/Debian:
+[source,bash]
+----
+sudo apt-get install -y \
+  build-essential \
+  libelf-dev \
+  clang \
+  llvm \
+  libbpf-dev
+----
+
+On RHEL/Fedora:
+[source,bash]
+----
+sudo dnf install -y \
+  gcc \
+  elfutils-libelf-devel \
+  clang \
+  llvm \
+  libbpf-devel
+----
