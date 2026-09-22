@@ -12,6 +12,7 @@ Given that these two components have different responsibilities, this document
 provides a high-level guide on how to configure these two components' resource
 utilization, especially in a large cluster.
 
+[#_sizing-recommendation]
 == Sizing recommendation
 
 We recommend explicitly configuring resource limits to match your cluster size.
@@ -62,6 +63,7 @@ Based on these and the benchmark results, this is our recommendation. Please
 consider this as a starting point for your optimization instead of the final
 configuration, since every cluster could vary.
 
+[#_agent]
 === Agent
 
 [cols=",,",options="header",]
@@ -72,6 +74,7 @@ configuration, since every cluster could vary.
 |++>++4000 (large) |250 or more |768 or more
 |===
 
+[#_controller]
 === Controller
 
 [cols=",,",options="header",]
@@ -83,6 +86,7 @@ configuration, since every cluster could vary.
 |===
 
 [[benchmark-results-v060]]
+[#_benchmark-results-v0-6-0]
 == Benchmark Results v0.6.0
 
 In each test, CPU and memory utilization is collected from
@@ -97,6 +101,7 @@ Depending on the timing when the metrics are collected, there could be
 variance in the numbers, especially in CPU utilization.
 ====
 
+[#_environment]
 === Environment
 
 [cols=",",options="header",]
@@ -116,6 +121,7 @@ variance in the numbers, especially in CPU utilization.
 |Benchmark script |hack/bench/bench.py
 |===
 
+[#_baseline]
 === Baseline
 
 The baseline is collected without any {rte-short-name} components.
@@ -129,6 +135,7 @@ The baseline is collected without any {rte-short-name} components.
 |100 |86 |1182 |638
 |===
 
+[#_scaling-per-pod]
 === Scaling per pod
 
 In this part, pods associated with a single policy are created on the sampled
@@ -143,6 +150,7 @@ node.
 |100 |90 |1209 |2 |101 |3 |29 |613 |625 |654
 |===
 
+[#_policy-scaling]
 === Policy Scaling
 
 In this part, each pod is associated with its own policy on the sampled node.
@@ -156,6 +164,7 @@ In this part, each pod is associated with its own policy on the sampled node.
 |50 |90 |1222 |2 |104 |3 |32 |615 |655 |631
 |===
 
+[#_controller-resource-utilization]
 === Controller Resource Utilization
 
 Unlike the per-node tests above, the metrics here were collected across all pods

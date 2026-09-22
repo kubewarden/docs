@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :revdate: 2026-09-22
 :page-revdate: {revdate}
 
+[#_overview]
 == Overview
 
 You can configure {rte-name} to operate in learning mode, allowing it
@@ -11,6 +12,7 @@ to observe process executions in your workloads and learn the executable paths
 that run. Then, it creates or update a `WorkloadPolicyProposal` in the
 workload namespace with the list of observed executables.
 
+[#_configuration-options]
 == Configuration Options
 By default, {rte-name} starts in *learning* mode for **all namespaces**:
 

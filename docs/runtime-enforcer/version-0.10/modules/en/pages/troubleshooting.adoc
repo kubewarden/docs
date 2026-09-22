@@ -6,6 +6,7 @@ include::partial$variables.adoc[]
 
 This document provides guidance for diagnosing issues with {rte-name}.
 
+[#_enable-verbose-logs]
 == Enable verbose logs
 
 To enable more verbose logs in each container via Helm values:
@@ -18,6 +19,7 @@ helm upgrade --install runtime-enforcer kubewarden/runtime-enforcer \
   --reuse-values
 ----
 
+[#_workloadpolicy-status-failures]
 == WorkloadPolicy status failures
 
 Each WorkloadPolicy reports its current deployment status on all targeted nodes
@@ -53,6 +55,7 @@ The `Phase` field can be one of:
 The node counters (`SuccessfulNodes`, `FailedNodes`, `TransitioningNodes`)
 always add up to `TotalNodes`.
 
+[#_node-issue-codes]
 === Node issue codes
 
 When a node has a problem, it appears in `Nodes With Issues` with a `Code`
@@ -95,6 +98,7 @@ kubectl logs -n runtime-enforcer -l app.kubernetes.io/component=agent --field-se
 Look for log lines containing `reconcile wp-policy` followed by an error. The
 message in the WorkloadPolicy status is a copy of that error.
 
+[#_controller-side-diagnostics]
 === Controller-side diagnostics
 
 If the `Nodes With Issues` section is empty but the phase is still `Failed`, the
@@ -111,6 +115,7 @@ Look for lines from the `WorkloadPolicyStatusSync` logger. Errors at this level
 indicate problems listing WorkloadPolicies, connecting to agents, or updating
 the status subresource.
 
+[#_quick-overview-with-the-kubectl-plugin]
 === Quick overview with the kubectl plugin
 
 The `kubectl runtime-enforcer policy show protection` command lists all
@@ -135,6 +140,7 @@ kube-system/coredns        Deployment    coredns-policy       Protect  Ready
 Use the `--all-namespaces` flag to include policies from every namespace, and
 `-o json` for machine-readable output.
 
+[#_debugger]
 == Debugger
 
 The debugger is an optional Kubernetes Deployment that helps diagnose issues
@@ -143,8 +149,10 @@ cluster.
 
 At the moment, it supports only a few basic operations listed below.
 
+[#_features]
 === Features
 
+[#_cache-comparison]
 ==== Cache comparison
 
 Each agent maintains an in-memory cache of the pods and containers it is aware
@@ -172,6 +180,7 @@ caches are aligned
 If there is a discrepancy you'll see a diff with the affected node and pods,
 followed by a full dump of the agent cache for that node.
 
+[#_nri-timeouts-and-required-plugins]
 == NRI timeouts and required plugins
 
 {rte-name} relies on NRI (Node Resource Interface) integration provided by
@@ -202,6 +211,7 @@ Apr 24 15:39:38 kind-control-plane containerd[114]: time="2026-04-24T15:39:38.78
 To mitigate this, you can increase the NRI timeout on the container runtime side
 by editing the container runtime configuration file.
 
+[#_containerd-increase-nri-timeout]
 === containerd: increase NRI timeout
 
 Edit `/etc/containerd/config.toml` and update the NRI plugin timeouts under
@@ -222,6 +232,7 @@ For details and additional NRI settings, see
 https://github.com/containerd/containerd/blob/main/docs/NRI.md#disabling-nri-support-in-containerd[containerd
 NRI configuration documentation].
 
+[#_cri-o-increase-nri-timeout]
 === CRI-O: increase NRI timeout
 
 Edit `/etc/crio/crio.conf` and update the `crio.nri` table:
@@ -241,6 +252,7 @@ For details, see
 https://github.com/cri-o/cri-o/blob/main/docs/crio.conf.5.md#crionri-table[CRI-O
 NRI configuration documentation].
 
+[#_required-plugins]
 === Required Plugins
 
 Additionally, recent container runtimes provide an option to require a set of
@@ -250,11 +262,13 @@ Follow the steps below to configure this on a per-workload basis. Check
 https://github.com/containerd/nri/blob/57442b2a20c63d48d69dc600c3fb4f0c063c7ef0/docs/validation-plugins.md#dealing-with-required-plugins[NRI
 docs] for more information about the best option to suit your environment.
 
+[#_prerequisites]
 ==== Prerequisites
 
 The *required plugins* feature is available since *containerd 2.2* and *CRI-O
 1.34.0*.
 
+[#_workloads]
 ==== Workloads
 
 For workloads that you want to ensure have {rte-short-name} protection present,
@@ -296,6 +310,7 @@ to start with errors in Kubernetes events:
 4s          Warning   Failed                    pod/opensuse-deployment-6655f5c7ff-xghnd    Error: failed to create containerd container: failed to get NRI adjustment for container: validator "00-default-validator" rejected container adjustment, reason: validation error: required plugin "runtime-enforcer-agent" not present
 ----
 
+[#_containerd-required-plugins]
 ==== containerd: required_plugins
 
 In `/etc/containerd/config.toml`, enable the `default_validator`:
@@ -306,6 +321,7 @@ In `/etc/containerd/config.toml`, enable the `default_validator`:
   enable = true
 ----
 
+[#_cri-o-nri-validator-required-plugins]
 ==== CRI-O: nri_validator_required_plugins
 
 In `/etc/crio/crio.conf`, configure the `crio.nri.default_validator` table to
@@ -317,6 +333,7 @@ enable the default validator:
   nri_enable_default_validator = true
 ----
 
+[#_enabling-the-debugger]
 === Enabling the debugger
 
 The debugger is disabled by default. Enable it via Helm values:
@@ -343,6 +360,7 @@ state, you can set the `debugger.interval` value in your Helm command:
   --set debugger.interval=<interval> # e.g. 1m, 30s
 ----
 
+[#_viewing-debugger-output]
 === Viewing debugger output
 
 Once the debugger pod is running, inspect its logs:

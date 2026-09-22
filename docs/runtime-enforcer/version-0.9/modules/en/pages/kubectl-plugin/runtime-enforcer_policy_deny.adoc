@@ -10,6 +10,7 @@ deny executables for a WorkloadPolicy container
 runtime-enforcer policy deny POLICY_NAME <container-name> <executable-name> [<executable-name>...] [flags]
 ....
 
+[#_options]
 == Options
 
 ....
@@ -17,6 +18,7 @@ runtime-enforcer policy deny POLICY_NAME <container-name> <executable-name> [<ex
   -h, --help      help for deny
 ....
 
+[#_options-inherited-from-parent-commands]
 == Options inherited from parent commands
 
 ....
@@ -41,6 +43,7 @@ runtime-enforcer policy deny POLICY_NAME <container-name> <executable-name> [<ex
       --user string                    The name of the kubeconfig user to use
 ....
 
+[#_see-also]
 == SEE ALSO
 
 * xref:kubectl-plugin/runtime-enforcer_policy.adoc[runtime-enforcer policy] - Manage WorkloadPolicy
