@@ -21,11 +21,22 @@ jobs:
       - name: Install Updatecli
         uses: updatecli/updatecli-action@cf942226b953240efac9ff60bf42df2b908c2fa0 # v2.83.0
 
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: generate-token
+        with:
+          app-id: ${{ secrets.APP_ID }} # zizmor: ignore[secrets-outside-env]
+          private-key: ${{ secrets.APP_PRIVATE_KEY }} # zizmor: ignore[secrets-outside-env]
+          owner: ${{ github.repository_owner }} # the default
+          repositories: ${{ github.event.repository.name }}
+          # minimum permissions for updatecli to push a branch and open a PR
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: Promote docs version and update CLI reference paths
         run: "updatecli compose apply --file updatecli/bump-documentation-version.yaml"
         env:
           GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
   sbomscanner-docs-update:
     runs-on: ubuntu-latest
@@ -37,11 +48,22 @@ jobs:
       - name: Install Updatecli
         uses: updatecli/updatecli-action@cf942226b953240efac9ff60bf42df2b908c2fa0 # v2.83.0
 
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: generate-token
+        with:
+          app-id: ${{ secrets.APP_ID }} # zizmor: ignore[secrets-outside-env]
+          private-key: ${{ secrets.APP_PRIVATE_KEY }} # zizmor: ignore[secrets-outside-env]
+          owner: ${{ github.repository_owner }} # the default
+          repositories: ${{ github.event.repository.name }}
+          # minimum permissions for updatecli to push a branch and open a PR
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: Promote docs version and update CLI reference paths
         run: "updatecli compose apply --file updatecli/sbomscanner-bump-documentation-version.yaml"
         env:
           GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
   runtime-enforcer-docs-update:
     runs-on: ubuntu-latest
@@ -53,8 +75,19 @@ jobs:
       - name: Install Updatecli
         uses: updatecli/updatecli-action@cf942226b953240efac9ff60bf42df2b908c2fa0 # v2.83.0
 
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: generate-token
+        with:
+          app-id: ${{ secrets.APP_ID }} # zizmor: ignore[secrets-outside-env]
+          private-key: ${{ secrets.APP_PRIVATE_KEY }} # zizmor: ignore[secrets-outside-env]
+          owner: ${{ github.repository_owner }} # the default
+          repositories: ${{ github.event.repository.name }}
+          # minimum permissions for updatecli to push a branch and open a PR
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: Promote docs version and update CRD and CLI reference paths
         run: "updatecli compose apply --file updatecli/runtime-enforcer-bump-documentation-version.yaml"
         env:
           GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
