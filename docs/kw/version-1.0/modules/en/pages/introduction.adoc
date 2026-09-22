@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = {project-name} documentation
-:revdate: 2026-09-18
+:revdate: 2026-09-21
 :page-revdate: {revdate}
 :description: Explore the {project-name} components to secure Kubernetes workloads, from admission policies and vulnerability scanning to runtime and network controls.
 :doc-persona: ["kubewarden-all"]
@@ -78,7 +78,8 @@ Discover network activity and secure the communication between your workloads.
 ++++
 
 [.card-links]
-* https://www.kubewarden.io/component/network-enforcer/[Explore component]
+* xref:latest@network-enforcer:en:installation/quickstart.adoc[Quick start]
+* xref:latest@network-enforcer:en:introduction.adoc[Documentation]
 
 [.landing-community]
 == Build with the community

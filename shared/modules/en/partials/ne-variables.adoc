@@ -1,0 +1,3 @@
+// Global attributes for network enforcer.
+
+include::globals.adoc[]

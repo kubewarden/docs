@@ -8,7 +8,7 @@ const components = {
   'admission-controller': { default: 'stable', versions: {} },
   'sbom-scanner': { default: 'beta', versions: {} },
   'runtime-enforcer': { default: 'beta', versions: {} },
-  'network-enforcer': { default: 'experimental', versions: {} },
+  'network-enforcer': { default: 'experimental', versions: { '0.2': 'experimental' } },
 }
 
 const labels = { stable: 'Stable', beta: 'Beta', experimental: 'Experimental' }

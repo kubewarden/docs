@@ -13,7 +13,8 @@ content:
         docs/kw/version-*,
         docs/admission-controller/version-*,
         docs/sbom-scanner/version-*,
-        docs/runtime-enforcer/version-*
+        docs/runtime-enforcer/version-*,
+        docs/network-enforcer/version-*
       ]
 
 ui:

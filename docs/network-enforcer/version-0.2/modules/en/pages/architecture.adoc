@@ -1,0 +1,331 @@
+include::partial$variables.adoc[]
+
+= Architecture
+:revdate: 2026-09-18
+:page-revdate: {revdate}
+
+{ne-name} is a Kubernetes operator. It watches east-west traffic between
+workloads, derives an allow list from what it sees, and (when a user opts in) projects
+that allow list into a native policy on a pluggable backend (Istio, Calico, or Cilium).
+
+[#_overview]
+== Overview
+
+The Helm chart deploys a controller and, by default, an OpenTelemetry collector.
+When `controller.provider.name` is `istio` it also deploys an `istio-fluent-bit`
+DaemonSet.
+
+`controller.provider.name` selects both the flow source and the policy backend
+written onto generated CRs:
+
+[cols="1,2,2"]
+|===
+| Provider | Flow source | Generated backend
+
+| `istio` (default)
+| ztunnel access logs, tailed by fluent-bit and pushed to the controller over OTLP (default listen port `4317`)
+| `spec.backend: istio` → Istio `AuthorizationPolicy`
+
+| `calico`
+| Goldmane gRPC (default `goldmane.calico-system.svc:7443`)
+| `spec.backend: kubernetes` → Kubernetes `NetworkPolicy`
+
+| `cilium`
+| Hubble Relay gRPC (default `hubble-relay.kube-system.svc:80`)
+| `spec.backend: kubernetes` → Kubernetes `NetworkPolicy`
+|===
+
+There are two OpenTelemetry paths. Do not conflate them:
+
+* *Ingestion (Istio only).* fluent-bit sends ztunnel logs to the controller's OTLP
+  receiver. That stream drives learning and Istio monitor/protect signals.
+* *Exporting (all providers).* The controller sends violation logs to the default
+  or external collector. That stream is telemetry about policies, not the flow
+  source.
+
+[#_diagram]
+== Diagram
+
+```
+  Istio ambient mode                    Calico                         Cilium
+  ------------------                    ------                         ------
+  ztunnel JSON logs                     Goldmane                       Hubble Relay
+        |                               gRPC :7443                     gRPC :80
+        |                                 |                               |
+        v                                 |                               |
+  istio-fluent-bit DaemonSet              |                               |
+        |                                 |                               |
+        | OTLP gRPC :4317                 |                               |
+        |                                 |                               |
+        +----------------+----------------+-------------------------------+
+                         |
+                         v
+              +----------+-----------+          OTLP logs (TLS)
+              | Controller           | --------------------------------+
+              |  provider scraper    |                                 |
+              |  learning reconciler |                                 v
+              |  proposal reconciler |                      +----------+-----------+
+              |  policy reconciler   |                      | OTEL collector       |
+              |  status sync         |                      | (default or external)|
+              +----------+-----------+                      +----------------------+
+                         |
+                create / update
+                         v
+              WorkloadNetworkPolicyProposal (learn)
+                         |
+                      promote
+                         v
+              WorkloadNetworkPolicy (monitor or protect)
+                         |
+                   ownerReference
+                         v
+              Istio:  AuthorizationPolicy
+              Calico / Cilium: Kubernetes NetworkPolicy
+```
+
+[#_component-responsibilities]
+== Component responsibilities
+
+The controller is a single Deployment. One manager process runs the pieces below.
+Leader election is on in the chart (`--leader-elect`). Run a single replica.
+
+[#_provider-scraper]
+=== Provider scraper
+
+Registered as a `manager.Runnable`. Exactly one scraper runs, selected by
+`controller.provider.name`:
+
+* Istio: OTLP log receiver for fluent-bit.
+* Calico: Goldmane gRPC client.
+* Cilium: Hubble Relay gRPC client.
+
+It enqueues learning events and violation observations. It does not write
+Kubernetes objects.
+
+[#_learning-reconciler]
+=== Learning reconciler
+
+Turns observed flows into `WorkloadNetworkPolicyProposal` resources (create and
+update). When a `WorkloadNetworkPolicy` already exists for that workload and
+direction, it does not recreate the proposal.
+
+[#_proposal-reconciler]
+=== Proposal reconciler
+
+Watches the `networkenforcer.kubewarden.io/promote` label. On `monitor` or
+`protect`, it copies the proposal spec onto a `WorkloadNetworkPolicy` of the
+same name and namespace, then deletes the proposal.
+
+[#_policy-reconciler]
+=== Policy reconciler
+
+Keeps the native policy object in sync with each `WorkloadNetworkPolicy`:
+Istio `AuthorizationPolicy`, or Kubernetes `NetworkPolicy` for Calico and Cilium.
+
+[#_status-sync]
+=== Status sync
+
+Writes violation records onto `WorkloadNetworkPolicy` status on a timer
+(`controller.wnpStatusUpdateInterval`, default `30s`).
+
+[#_otlp-log-exporter]
+=== OTLP log exporter
+
+Optional. When telemetry is enabled, exports `policy_violation_observed` and
+`policy_violation_acknowledged` to the default or external collector.
+
+[#_telemetry-ingestion]
+== Telemetry ingestion
+
+[#_istio-ztunnel-to-fluent-bit-to-otlp]
+=== Istio: ztunnel to fluent-bit to OTLP
+
+ztunnel on each node writes JSON access and authorization logs. The ambient
+install must set `AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY=true` on istiod,
+and `AUTHZ_POLICY_INFO_LOGGING=true` and `logAsJson=true` on ztunnel.
+
+The chart's `istio-fluent-bit` DaemonSet tails `/var/log/containers/*ztunnel*.log`,
+parses the JSON, maps it with a Lua filter, and exports OTLP logs over gRPC to
+the controller Service on port `4317`.
+
+The Istio scraper in the controller receives those logs, enriches identities
+from the cluster, and enqueues learning events. Ambient L4 authorization is
+inbound and TCP-only, so learning creates an *ingress* proposal on the
+destination workload. UDP never goes through ztunnel.
+
+The same log stream supplies monitor and protect signals: dry-run
+`AuthorizationPolicy` matches in monitor, and policy rejections in protect.
+
+[#_calico-goldmane-grpc]
+=== Calico: Goldmane gRPC
+
+The Calico scraper opens a streaming gRPC client to `goldmane.calico-system.svc:7443`
+(override with `controller.provider.endpoint`). The chart mounts
+Secret `net-enf-goldmane-client-certs` at `/etc/goldmane/certs`; it does not
+create that Secret. Copy Goldmane's CA and client key pair into the {ne-short-name}
+namespace before install (see `hack/setup-calico.sh`).
+
+Goldmane reports full flows, so learning updates two proposals per
+connection: egress on the source and ingress on the destination.
+
+[#_cilium-hubble-relay]
+=== Cilium: Hubble Relay
+
+The Cilium scraper follows Hubble Relay's `GetFlows` RPC at
+`hubble-relay.kube-system.svc:80` (override with `controller.provider.endpoint`).
+
+Like Calico, Hubble reports both directions, so learning writes an egress
+proposal and an ingress proposal.
+
+NOTE: Monitor evaluation is best-effort. Istio only sees inbound TCP that hits
+ztunnel; Calico and Cilium only report a violation for a flow the scraper
+actually observed.
+
+[#_opentelemetry-collector]
+== OpenTelemetry collector
+
+The default collector is not the flow source. When
+`telemetry.collectorStrategy=default` (the chart default), the release deploys
+`<fullname>-otel-collector`. The controller exports violation logs to it over
+OTLP/gRPC at `https://<fullname>-otel-collector.<namespace>.svc.cluster.local:4317`.
+
+The collector's logs pipeline dumps records with the debug exporter and feeds a
+count connector; metrics are exposed on Prometheus `:9090`.
+
+Other strategies:
+
+* `external` — the same exporter points at `telemetry.externalCollector.endpoint`.
+* `none` — no OTLP export. Learning, monitor and protect still work; violations
+  remain on `WorkloadNetworkPolicy` status.
+
+Event names:
+
+* `policy_violation_observed` — a monitor or protect violation, with
+  `action=monitor` or `action=protect`.
+* `policy_violation_acknowledged` — after
+  `networkenforcer.kubewarden.io/acknowledge-<id>` is applied and the status
+  patch succeeds.
+
+[#_custom-resources]
+== Custom resources
+
+Two namespaced CRDs in group `networkenforcer.kubewarden.io/v1alpha1`:
+
+[cols="2,1,3"]
+|===
+| Kind | Short name | Role
+
+| `WorkloadNetworkPolicyProposal`
+| `wnpp`
+| Learning output. One object per supported workload (`Deployment`,
+  `StatefulSet`, `DaemonSet`) and direction.
+
+| `WorkloadNetworkPolicy`
+| `wnp`
+| Runtime policy. `spec.mode` is `monitor` or `protect` (default `monitor`).
+|===
+
+Name format is `<kind>-<name>-<ingress|egress>`, where `<kind>` is the owning workload
+kind lowercased (`deployment`, `statefulset`, `daemonset`), `<name>` is the owning
+workload name as-is, and the direction suffix is lowercase (`ingress`, `egress`).
+Examples: `deployment-http-server-ingress`, `deployment-http-client-egress`.
+Istio produces only the ingress name.
+
+Both kinds carry a `PolicyBackendSpec`:
+
+* `spec.backend` is `istio` or `kubernetes` and is *immutable*.
+* Exactly one of `spec.istio` or `spec.kubernetes` is populated, matching
+  `spec.backend`.
+* `spec.istio` is a constrained L4 model (selector, SPIFFE principals, ports)
+  that the reconciler renders as an `AuthorizationPolicy`.
+* `spec.kubernetes` is a standard `networking.k8s.io/v1` `NetworkPolicySpec`.
+
+Promotion is a label on the proposal, not a spec field:
+
+* Set `networkenforcer.kubewarden.io/promote=monitor` or
+  `networkenforcer.kubewarden.io/promote=protect`.
+* The proposal reconciler copies the backend spec onto a `WorkloadNetworkPolicy`
+  of the same name and namespace, sets `spec.mode` from the label, adds
+  `networkenforcer.kubewarden.io/promoted-from: <proposal-name>`, and deletes
+  the proposal.
+* The chart installs a `ValidatingAdmissionPolicy` that rejects any other promote value.
+
+[#_generated-policy-objects]
+== Generated policy objects
+
+The policy reconciler keeps a native object in sync with each `WorkloadNetworkPolicy`.
+That object has the same name and namespace as the policy and an owner reference
+pointing at it. Deleting the `WorkloadNetworkPolicy` garbage-collects the native object.
+
+[cols="1,2,2"]
+|===
+| Backend | Monitor | Protect
+
+| Istio
+| Creates/updates `security.istio.io/AuthorizationPolicy` with
+  `istio.io/dry-run=true`. *Traffic is not blocked.*
+| Same `AuthorizationPolicy` without the `dry-run` annotation. *Traffic is blocked.*
+  Switching `spec.mode` back to monitor keeps the object and sets
+  `istio.io/dry-run=true` again.
+
+| Kubernetes (Calico, Cilium)
+| The controller compares observed flows to `spec.kubernetes` and if there is
+  a miss, it records a monitor violation on `WorkloadNetworkPolicy` status
+  and exports an OTLP log. No `NetworkPolicy`. *Traffic is not blocked.*
+| Creates/updates `networking.k8s.io/NetworkPolicy` from `spec.kubernetes`.
+  *Traffic is blocked.* Switching `spec.mode` back to monitor deletes that
+  `NetworkPolicy`.
+|===
+
+[#_cert-manager-trust]
+== cert-manager trust
+
+[#_default-collector]
+=== Default collector
+
+`telemetry.collectorStrategy=default` requires cert-manager and
+`cert-manager-csi-driver`. The chart builds this chain in the {ne-short-name}
+namespace:
+
+1. A self-signed `Issuer`.
+2. A CA `Certificate` stored in Secret `<fullname>-ca`.
+3. A CA `Issuer` that signs serving certificates from that Secret.
+
+The collector mounts its serving certificate with the cert-manager CSI driver
+(`csi.cert-manager.io`), using DNS names for `<fullname>-otel-collector` in the
+{ne-short-name} namespace. The controller mounts `<fullname>-ca` as `ca.crt`
+and sets `OTEL_EXPORTER_OTLP_CERTIFICATE`.
+
+That default hop is *server TLS*: the collector presents a certificate, the
+controller verifies it against the CA.
+
+```
+self-signed Issuer
+        |
+        v
+   CA Certificate  ---- Secret <fullname>-ca ---+
+        |                                       |
+        v                                       v (ca.crt)
+   CA Issuer                              controller
+        |                                       |
+        v                                       | verifies
+CSI volume on otel-collector                    |
+  (tls.crt / tls.key)                           |
+        |                                       |
+        +-------- TLS on :4317 -----------------+
+```
+
+[#_external-collector]
+=== External collector
+
+`telemetry.collectorStrategy=external` can stay insecure, use a CA Secret to
+verify the remote collector, and optionally present a client certificate
+(`telemetry.externalCollector.otelCollectorClientCertificateSecret`). That last
+option is mutual TLS.
+
+[#_calico-goldmane]
+=== Calico Goldmane
+
+Goldmane mTLS is independent of the collector chain. The controller mounts
+`net-enf-goldmane-client-certs` (CA, client cert, client key) only when
+`controller.provider.name=calico`.

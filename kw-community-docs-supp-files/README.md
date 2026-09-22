@@ -68,7 +68,8 @@ For example, a future graduation could use this entry:
 ```
 
 This example is hypothetical, not a record of release maturity.
-Existing entries have no historical overrides until their values are confirmed.
+Network Enforcer 0.2 has an explicit Experimental override.
+Other versions use their component defaults unless an override exists.
 Before you change a default, check the maturity of each existing documentation version.
 Add explicit overrides for versions that must retain their previous status.
 Then change the default.

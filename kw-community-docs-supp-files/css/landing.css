@@ -50,7 +50,6 @@
 .kw-landing .card-links a, .kw-landing .community-links a { display: inline-block; padding: .3rem 0; font-size: .9rem; font-weight: 650; text-decoration: none; }
 .kw-landing .card-links a:hover, .kw-landing .community-links a:hover { text-decoration: underline; }
 .kw-landing .card-links li:first-child a::after { content: ' →'; }
-.kw-landing .network-card .card-links li:first-child a::after { content: ' ↗'; }
 .kw-landing .card-links li + li a { color: var(--text-muted); }
 .kw-landing .doc .landing-community { margin-top: 2rem; padding: 1.75rem 2rem; border: 1px solid var(--border); border-radius: .8rem; background: var(--surface-muted); }
 .kw-landing .doc .landing-community h2 { margin: 0; font-size: 1.3rem; }

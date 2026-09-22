@@ -1,0 +1,7 @@
+// Here goes version specific shared attributes and content
+
+// Pull in version independent shared attributes
+include::latest@shared:en:partial$ne-variables.adoc[]
+
+// Pull in version specific shared attributes
+include::{build-type}-specific/variables.adoc[]
