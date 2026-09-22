@@ -69,7 +69,7 @@ The {admc-short-name} went over a migration, from v1.36 inclusive (3 Helm charts
 `kubewarden-controller`, `kubewarden-defaults`) to v1.37 onwards (1 Helm chart: `admission-controller`).
 
 Please see the
-xref:/community-specific/howtos/migration/app136-to-app137-migration.adoc[migration how-to].
+xref:/{build-type}-specific/howtos/migration/app136-to-app137-migration.adoc[migration how-to].
 
 ====
 
