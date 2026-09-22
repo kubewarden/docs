@@ -15,7 +15,7 @@ content:
         docs/sbom-scanner/version-*,
         docs/runtime-enforcer/version-*,
         docs/network-enforcer/version-*
-      ]
+        ]
 
 ui:
   bundle:
