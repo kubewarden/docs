@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {rte-name} phases: learn, monitor, protect
-:revdate: 2026-09-17
+:revdate: 2026-09-22
 :page-revdate: {revdate}
 
 This document explains the three *phases* of {rte-name} and how to move
@@ -44,11 +44,11 @@ Operationally, if you want complete proposals, enable learning first and then
    (proposals are created as exec events are observed).
 * *Leave*
 ** Promote the corresponding proposal by setting the label:
-   `security.rancher.io/promote=<monitor|protect>`
+   `runtimeenforcer.kubewarden.io/promote=<monitor|protect>`
 ** Alternatively, use the kubectl plugin: `kubectl runtime-enforcer proposal
    promote <PROPOSAL_NAME>`.
 ** This triggers creation of a `WorkloadPolicy` (defaulting to `mode: monitor`),
-   with the `workloadpolicy.security.rancher.io/promoted-from` label set so the
+   with the `runtimeenforcer.kubewarden.io/promoted-from` label set so the
    promotion relationship is explicit.
 ** The `WorkloadPolicyProposal` object is deleted after the promotion. Under
    rare conditions, caches might not be immediately updated, causing the
@@ -58,14 +58,14 @@ Operationally, if you want complete proposals, enable learning first and then
 [NOTE]
 ====
 If you create a `WorkloadPolicy` manually without that promotion relationship
-(no `security.rancher.io/promote` label created in
+(no `runtimeenforcer.kubewarden.io/promote` label created in
 `WorkloadPolicyProposal`), the proposal *isn't* removed by that flow. You must
 delete the `WorkloadPolicyProposal` manually.
 ====
 
 === CRDs created/updated during this phase
 
-* *Created/updated*: `WorkloadPolicyProposal` (`security.rancher.io/v1alpha1`)
+* *Created/updated*: `WorkloadPolicyProposal` (`runtimeenforcer.kubewarden.io/v1alpha1`)
 ** Name format is derived from workload kind/name (for example, `deploy-NAME`,
    `ds-NAME`, and so on).
 ** The proposal is linked back to the owning workload via `ownerReferences`. If
@@ -97,13 +97,13 @@ workflows can still run.
 ** A `WorkloadPolicy` is created (usually by approving a proposal), and ensure it has:
 *** `.spec.mode: monitor`
 *** `.spec.rulesByContainer` populated with allowed executables per container name
-** Bind workloads/pods to the policy by applying the label: `security.rancher.io/policy: WORKLOAD_POLICY_NAME`. The label must be applied to the Pod. When dealing with workload types (such as Deployment), make sure the label is specified inside of the `PodTemplateSpec`.
+** Bind workloads/pods to the policy by applying the label: `runtimeenforcer.kubewarden.io/policy: WORKLOAD_POLICY_NAME`. The label must be applied to the Pod. When dealing with workload types (such as Deployment), make sure the label is specified inside of the `PodTemplateSpec`.
 +
 Runtime-enforcer uses this label to decide which pods the policy applies to.
 +
 [WARNING]
 ====
-The `security.rancher.io/policy` label must be set at Pod creation time only.
+The `runtimeenforcer.kubewarden.io/policy` label must be set at Pod creation time only.
 Changing this label on a running Pod (adding, removing, or modifying its value)
 is prohibited.
 ====
@@ -111,9 +111,9 @@ is prohibited.
 [WARNING]
 ====
 By default in the {rte-short-name} Helm chart, pods that reference a
-non-existing policy through the `security.rancher.io/policy` label are
+non-existing policy through the `runtimeenforcer.kubewarden.io/policy` label are
 prevented from running. This ensures that when a pod starts, it has all
-protections ready. Workloads and pods without the `security.rancher.io/policy`
+protections ready. Workloads and pods without the `runtimeenforcer.kubewarden.io/policy`
 label are not affected by this behavior and keep running as usual.
 To enable fail-open behavior, set `agent.nriFailopen=true`.
 ====
@@ -123,7 +123,7 @@ To enable fail-open behavior, set `agent.nriFailopen=true`.
    protect` (or `kubectl runtime-enforcer policy protect <POLICY_NAME>`).
 ** *Monitor → Learn*: remove the binding label from workloads/pods, delete the
    `WorkloadPolicy`, then delete the existing `WorkloadPolicyProposal`, or set
-   remove the `security.rancher.io/promote` label from the proposal to resume learning.
+   remove the `runtimeenforcer.kubewarden.io/promote` label from the proposal to resume learning.
 
 === CRDs created/updated during this phase
 
@@ -157,10 +157,10 @@ unenforced.
 === How to enter and leave the phase
 
 * *Enter*
-** Ensure the workload is bound via `security.rancher.io/policy:
+** Ensure the workload is bound via `runtimeenforcer.kubewarden.io/policy:
    WORKLOAD_POLICY_NAME`. The label must be applied to the Pod. When dealing
    with workload types (such as Deployment), make sure the label is specified
-   inside of the `PodTemplateSpec`. + WARNING: The `security.rancher.io/policy`
+   inside of the `PodTemplateSpec`. + WARNING: The `runtimeenforcer.kubewarden.io/policy`
    label must be set at Pod creation time only. Changing this label on a running
    Pod (adding, removing, or modifying its value) is prohibited.
 ** Update the `WorkloadPolicy` to set `.spec.mode: protect`.
@@ -169,7 +169,7 @@ unenforced.
    monitor` (or `kubectl runtime-enforcer policy monitor <POLICY_NAME>`).
 ** *Protect → Learn*: remove the binding label from workloads/pods, delete the
    `WorkloadPolicy`, then delete the existing `WorkloadPolicyProposal`, or set
-   remove the `security.rancher.io/promote` label from the proposal to resume learning.
+   remove the `runtimeenforcer.kubewarden.io/promote` label from the proposal to resume learning.
 
 === CRDs created/updated during this phase
 

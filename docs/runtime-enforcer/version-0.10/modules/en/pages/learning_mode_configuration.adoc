@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {rte-name} Learning Mode Configuration
-:revdate: 2026-09-17
+:revdate: 2026-09-22
 :page-revdate: {revdate}
 
 == Overview
@@ -30,7 +30,7 @@ You can adjust this behaviour at install/upgrade time:
 +
 [source,bash]
 ----
-helm upgrade --install runtime-enforcer runtime-enforcer/runtime-enforcer \
+helm upgrade --install runtime-enforcer kubewarden/runtime-enforcer \
   --namespace runtime-enforcer \
   --set-json 'learning.namespaceSelector={}'
 ----
@@ -39,7 +39,7 @@ helm upgrade --install runtime-enforcer runtime-enforcer/runtime-enforcer \
 +
 [source,bash]
 ----
-helm upgrade --install runtime-enforcer runtime-enforcer/runtime-enforcer \
+helm upgrade --install runtime-enforcer kubewarden/runtime-enforcer \
   --namespace runtime-enforcer \
   --set-json 'learning.namespaceSelector={"matchLabels":{"env":"prod"}}'
 ----

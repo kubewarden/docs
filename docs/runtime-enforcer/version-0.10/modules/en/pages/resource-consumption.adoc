@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {rte-name} Resource Consumption
-:revdate: 2026-09-17
+:revdate: 2026-09-22
 :page-revdate: {revdate}
 
 The {rte-name} contains two main components. `controller` handles the
@@ -104,7 +104,7 @@ variance in the numbers, especially in CPU utilization.
 |Field |Value
 |Enforcer chart |runtime-enforcer-0.1.7
 |Agent version |v0.6.0
-|Agent image |ghcr.io/rancher-sandbox/runtime-enforcer/agent:latest
+|Agent image |ghcr.io/kubewarden/runtime-enforcer/agent:latest
 |Kubernetes |v1.35.3-gke.1389000
 |Kernel |6.8.0-1049-gke
 |OS image |Ubuntu 24.04.4 LTS

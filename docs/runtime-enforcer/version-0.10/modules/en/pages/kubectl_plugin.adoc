@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = kubectl runtime-enforcer
-:revdate: 2026-09-17
+:revdate: 2026-09-22
 :page-revdate: {revdate}
 
 The `kubectl runtime-enforcer` plugin wraps common operations for
@@ -14,14 +14,14 @@ The `kubectl runtime-enforcer` plugin wraps common operations for
 
 Pre-built binaries for `linux/amd64`, `linux/arm64`, `darwin/amd64`, and
 `darwin/arm64` are published on each
-https://github.com/rancher-sandbox/runtime-enforcer/releases[GitHub Release].
+https://github.com/kubewarden/runtime-enforcer/releases[GitHub Release].
 
 [source,bash]
 ----
 # Example: linux/amd64
 VERSION=latest
 curl -Lo kubectl-runtime_enforcer \
-  "https://github.com/rancher-sandbox/runtime-enforcer/releases/download/${VERSION}/kubectl-runtime_enforcer-linux-amd64"
+  "https://github.com/kubewarden/runtime-enforcer/releases/download/${VERSION}/kubectl-runtime_enforcer-linux-amd64"
 chmod +x kubectl-runtime_enforcer
 sudo mv kubectl-runtime_enforcer /usr/local/bin/
 ----
@@ -72,7 +72,7 @@ sudo mv kubectl_complete-runtime_enforcer /usr/local/bin/
 === Promote a proposal
 
 Promoting a `WorkloadPolicyProposal` sets the
-`security.rancher.io/promote` label to the corresponding value
+`runtimeenforcer.kubewarden.io/promote` label to the corresponding value
 (`monitor`/`protect`) and lets the controller create a `WorkloadPolicy`.
 
 *Plugin:*

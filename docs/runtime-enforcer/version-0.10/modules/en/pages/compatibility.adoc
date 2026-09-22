@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Compatibility
-:revdate: 2026-09-21
+:revdate: 2026-09-22
 :page-revdate: {revdate}
 
 == Overview
@@ -107,4 +107,4 @@ grep CONFIG_BPF <your kernel config>
 
 == Support
 
-Hit a compatibility issue not covered here? Open an link:https://github.com/rancher-sandbox/runtime-enforcer/issues[issue] with your environment details.
+Hit a compatibility issue not covered here? Open an link:https://github.com/kubewarden/runtime-enforcer/issues[issue] with your environment details.
