@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Setup Development Environments
-:revdate: 2026-09-17
+:revdate: 2026-09-22
 :page-revdate: {revdate}
 
 Runtime enforcer supports Tilt to run development environment in your local.
@@ -15,7 +15,7 @@ Runtime enforcer supports Tilt to run development environment in your local.
 == Steps
 
 . Clone the repository: `git clone
-  https://github.com/rancher-sandbox/runtime-enforcer.git`.
+  https://github.com/kubewarden/runtime-enforcer.git`.
 . Install https://kubernetes.io/docs/reference/kubectl/[kubectl] and
   https://helm.sh/[helm].
 . Install https://docs.tilt.dev/install.html[tilt].
@@ -28,7 +28,7 @@ You can use this command to list the policy proposals:
 
 [source,sh]
 ----
-kubectl get workloadpolicyproposals.security.rancher.io -A
+kubectl get workloadpolicyproposals.runtimeenforcer.kubewarden.io -A
 ----
 
 == Optional

@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Troubleshooting
-:revdate: 2026-09-17
+:revdate: 2026-09-22
 :page-revdate: {revdate}
 
 This document provides guidance for diagnosing issues with {rte-name}.
@@ -11,7 +11,7 @@ This document provides guidance for diagnosing issues with {rte-name}.
 To enable more verbose logs in each container via Helm values:
 [source,bash]
 ----
-helm upgrade --install runtime-enforcer runtime-enforcer/runtime-enforcer \
+helm upgrade --install runtime-enforcer kubewarden/runtime-enforcer \
   --namespace runtime-enforcer \
   --set agent.logLevel=debug \
   --set controller.logLevel=debug \
@@ -277,7 +277,7 @@ spec:
     metadata:
       labels:
         app: opensuse
-        security.rancher.io/policy: workloadpolicy-sample
+        runtimeenforcer.kubewarden.io/policy: workloadpolicy-sample
       annotations:
         # This specifies "runtime-enforcer-agent" plugin to be required.
         required-plugins.noderesource.dev: '["runtime-enforcer-agent"]'
@@ -323,7 +323,7 @@ The debugger is disabled by default. Enable it via Helm values:
 
 [source,bash]
 ----
-helm upgrade --install runtime-enforcer runtime-enforcer/runtime-enforcer \
+helm upgrade --install runtime-enforcer kubewarden/runtime-enforcer \
   --namespace runtime-enforcer \
   --set debugger.enabled=true \
   --reuse-values

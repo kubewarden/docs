@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {rte-name} Quick Start
 
-:revdate: 2026-09-17
+:revdate: 2026-09-22
 :page-revdate: {revdate}
 
 Welcome to the {rte-name} Quick Start!
@@ -78,9 +78,9 @@ No external OpenTelemetry Collector is needed for a basic setup.
 
 [subs="+attributes",console]
 ----
-helm repo add runtime-enforcer {runtime-enforcer-helm-chart}
+helm repo add kubewarden {runtime-enforcer-helm-chart}
 helm repo update
-helm install runtime-enforcer runtime-enforcer/runtime-enforcer \
+helm install runtime-enforcer kubewarden/runtime-enforcer \
   --namespace runtime-enforcer \
   --create-namespace \
   --wait
@@ -183,12 +183,12 @@ created for the openSUSE deployment.
 
 [source,bash]
 ----
-kubectl get workloadpolicyproposals.security.rancher.io deploy-opensuse-deployment -o yaml
+kubectl get workloadpolicyproposals.runtimeenforcer.kubewarden.io deploy-opensuse-deployment -o yaml
 ----
 
 [source,yaml]
 ----
-apiVersion: security.rancher.io/v1alpha1
+apiVersion: runtimeenforcer.kubewarden.io/v1alpha1
 kind: WorkloadPolicyProposal
 metadata:
   name: deploy-opensuse-deployment
@@ -231,11 +231,11 @@ Notes on this proposal:
 
 This proposal looks reasonable for the Deployment, so the next step is
 converting it into a definitive policy. To do that, label the
-`WorkloadPolicyProposal` with `security.rancher.io/promote=monitor`.
+`WorkloadPolicyProposal` with `runtimeenforcer.kubewarden.io/promote=monitor`.
 
 [source,bash]
 ----
-kubectl label workloadpolicyproposals.security.rancher.io deploy-opensuse-deployment security.rancher.io/promote=monitor
+kubectl label workloadpolicyproposals.runtimeenforcer.kubewarden.io deploy-opensuse-deployment runtimeenforcer.kubewarden.io/promote=monitor
 ----
 
 You can also use the kubectl plugin to perform the same step:
@@ -250,16 +250,16 @@ After a few seconds, you should see a new Custom Resource called
 
 [source,bash]
 ----
-kubectl get workloadpolicy.security.rancher.io deploy-opensuse-deployment -o yaml
+kubectl get workloadpolicy.runtimeenforcer.kubewarden.io deploy-opensuse-deployment -o yaml
 ----
 
 [source,yaml]
 ----
-apiVersion: security.rancher.io/v1alpha1
+apiVersion: runtimeenforcer.kubewarden.io/v1alpha1
 kind: WorkloadPolicy
 metadata:
   labels:
-    security.rancher.io/promoted-from: deploy-opensuse-deployment
+    runtimeenforcer.kubewarden.io/promoted-from: deploy-opensuse-deployment
   name: deploy-opensuse-deployment
   namespace: default
 spec:
@@ -298,16 +298,16 @@ add the label to the Deployment's pod template.
 
 [WARNING]
 ====
-You should set the `security.rancher.io/policy` label at Pod creation time only.
+You should set the `runtimeenforcer.kubewarden.io/policy` label at Pod creation time only.
 Changing this label on a running Pod (adding, removing, or modifying its value)
 is prohibited.
 ====
 
 [source,bash]
 ----
-kubectl patch deployment opensuse-deployment --type=merge -p '{"spec":{"template":{"metadata":{"labels":{"security.rancher.io/policy":"deploy-opensuse-deployment"}}}}}'
+kubectl patch deployment opensuse-deployment --type=merge -p '{"spec":{"template":{"metadata":{"labels":{"runtimeenforcer.kubewarden.io/policy":"deploy-opensuse-deployment"}}}}}'
 # wait for the new pods to be ready
-kubectl wait --for=condition=Ready pod -l security.rancher.io/policy=deploy-opensuse-deployment --timeout=300s
+kubectl wait --for=condition=Ready pod -l runtimeenforcer.kubewarden.io/policy=deploy-opensuse-deployment --timeout=300s
 ----
 
 [WARNING]
@@ -354,7 +354,7 @@ controller's next sync tick (up to 30 seconds), you can inspect them with
 
 [source,bash]
 ----
-kubectl get workloadpolicy.security.rancher.io deploy-opensuse-deployment -o yaml
+kubectl get workloadpolicy.runtimeenforcer.kubewarden.io deploy-opensuse-deployment -o yaml
 ----
 
 In the output, look for the `Violations` section under `Status`:
@@ -404,16 +404,16 @@ Looking at the resource again shows that the violation has been cleared:
 
 [source,bash]
 ----
-kubectl get workloadpolicy.security.rancher.io deploy-opensuse-deployment -o yaml
+kubectl get workloadpolicy.runtimeenforcer.kubewarden.io deploy-opensuse-deployment -o yaml
 ----
 
 [source,yaml]
 ----
-apiVersion: security.rancher.io/v1alpha1
+apiVersion: runtimeenforcer.kubewarden.io/v1alpha1
 kind: WorkloadPolicy
 metadata:
   labels:
-    security.rancher.io/promoted-from: deploy-opensuse-deployment
+    runtimeenforcer.kubewarden.io/promoted-from: deploy-opensuse-deployment
   name: deploy-opensuse-deployment
   namespace: default
 spec:
@@ -546,7 +546,7 @@ If you already have an OTEL collector deployed in your cluster, you can use the
 
 [source,bash]
 ----
-helm upgrade runtime-enforcer runtime-enforcer/runtime-enforcer \
+helm upgrade runtime-enforcer kubewarden/runtime-enforcer \
   --namespace runtime-enforcer \
   --set telemetry.collectorStrategy=external \
   --set telemetry.externalCollector.protocol=grpc \
