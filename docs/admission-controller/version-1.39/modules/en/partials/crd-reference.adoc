@@ -1,7 +1,7 @@
 // Generated documentation. Please do not edit.
 :anchor_prefix: k8s-api
 
-[id="{p}-api-reference"]
+[id="{anchor_prefix}-api-reference"]
 == API Reference
 
 .Packages
@@ -47,9 +47,15 @@ AdmissionPolicy is the Schema for the admissionpolicies API
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1` | |
 | *`kind`* __string__ | `AdmissionPolicy` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-admissionpolicyspec[$$AdmissionPolicySpec$$]__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-admissionpolicyspec[$$AdmissionPolicySpec$$]__
+a| 
+| 
+| 
 |===
 
 
@@ -74,9 +80,15 @@ AdmissionPolicyGroup is the Schema for the AdmissionPolicyGroups API
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1` | |
 | *`kind`* __string__ | `AdmissionPolicyGroup` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-admissionpolicygroupspec[$$AdmissionPolicyGroupSpec$$]__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-admissionpolicygroupspec[$$AdmissionPolicyGroupSpec$$]__
+a| 
+| 
+| 
 |===
 
 
@@ -98,9 +110,15 @@ AdmissionPolicyGroupList contains a list of AdmissionPolicyGroup.
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1` | |
 | *`kind`* __string__ | `AdmissionPolicyGroupList` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-admissionpolicygroup[$$AdmissionPolicyGroup$$] array__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-admissionpolicygroup[$$AdmissionPolicyGroup$$] array__
+a| 
+| 
+| 
 |===
 
 
@@ -121,7 +139,10 @@ AdmissionPolicyGroupSpec defines the desired state of AdmissionPolicyGroup.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`PolicyGroupSpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupspec[$$PolicyGroupSpec$$]__ |  |  | 
+| *`PolicyGroupSpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupspec[$$PolicyGroupSpec$$]__
+a| 
+| 
+| 
 |===
 
 
@@ -141,9 +162,15 @@ AdmissionPolicyList contains a list of AdmissionPolicy.
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1` | |
 | *`kind`* __string__ | `AdmissionPolicyList` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-admissionpolicy[$$AdmissionPolicy$$] array__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-admissionpolicy[$$AdmissionPolicy$$] array__
+a| 
+| 
+| 
 |===
 
 
@@ -164,7 +191,10 @@ AdmissionPolicySpec defines the desired state of AdmissionPolicy.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`PolicySpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policyspec[$$PolicySpec$$]__ |  |  | 
+| *`PolicySpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policyspec[$$PolicySpec$$]__
+a| 
+| 
+| 
 |===
 
 
@@ -187,9 +217,15 @@ ClusterAdmissionPolicy is the Schema for the clusteradmissionpolicies API
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1` | |
 | *`kind`* __string__ | `ClusterAdmissionPolicy` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicyspec[$$ClusterAdmissionPolicySpec$$]__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicyspec[$$ClusterAdmissionPolicySpec$$]__
+a| 
+| 
+| 
 |===
 
 
@@ -214,9 +250,15 @@ ClusterAdmissionPolicyGroup is the Schema for the clusteradmissionpolicies API
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1` | |
 | *`kind`* __string__ | `ClusterAdmissionPolicyGroup` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicygroupspec[$$ClusterAdmissionPolicyGroupSpec$$]__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicygroupspec[$$ClusterAdmissionPolicyGroupSpec$$]__
+a| 
+| 
+| 
 |===
 
 
@@ -238,9 +280,15 @@ ClusterAdmissionPolicyGroupList contains a list of ClusterAdmissionPolicyGroup
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1` | |
 | *`kind`* __string__ | `ClusterAdmissionPolicyGroupList` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicygroup[$$ClusterAdmissionPolicyGroup$$] array__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicygroup[$$ClusterAdmissionPolicyGroup$$] array__
+a| 
+| 
+| 
 |===
 
 
@@ -261,61 +309,72 @@ ClusterAdmissionPolicyGroupSpec defines the desired state of ClusterAdmissionPol
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`ClusterPolicyGroupSpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusterpolicygroupspec[$$ClusterPolicyGroupSpec$$]__ |  |  | 
-| *`namespaceSelector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta[$$LabelSelector$$]__ | NamespaceSelector decides whether to run the webhook on an object based +
-on whether the namespace for that object matches the selector. If the +
-object itself is a namespace, the matching is performed on +
-object.metadata.labels. If the object is another cluster scoped resource, +
-it never skips the webhook. +
-<br/><br/> +
-For example, to run the webhook on any objects whose namespace is not +
-associated with "runlevel" of "0" or "1";  you will set the selector as +
-follows: +
-<pre> +
-"namespaceSelector": \{<br/> +
-&nbsp;&nbsp;"matchExpressions": [<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;\{<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"key": "runlevel",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"operator": "NotIn",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"values": [<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"0",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"1"<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;\}<br/> +
-&nbsp;&nbsp;]<br/> +
-\} +
-</pre> +
-If instead you want to only run the webhook on any objects whose +
-namespace is associated with the "environment" of "prod" or "staging"; +
-you will set the selector as follows: +
-<pre> +
-"namespaceSelector": \{<br/> +
-&nbsp;&nbsp;"matchExpressions": [<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;\{<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"key": "environment",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"operator": "In",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"values": [<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"prod",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"staging"<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;\}<br/> +
-&nbsp;&nbsp;]<br/> +
-\} +
-</pre> +
-See +
-https://kubernetes.io/docs/concepts/overview/working-with-objects/labels +
-for more examples of label selectors. +
-<br/><br/> +
-Default to the empty LabelSelector, which matches everything. + |  | Optional: \{} +
+| *`ClusterPolicyGroupSpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusterpolicygroupspec[$$ClusterPolicyGroupSpec$$]__
+a| 
+| 
+| 
+| *`namespaceSelector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta[$$LabelSelector$$]__
+a| NamespaceSelector decides whether to run the webhook on an object based
+on whether the namespace for that object matches the selector. If the
+object itself is a namespace, the matching is performed on
+object.metadata.labels. If the object is another cluster scoped resource,
+it never skips the webhook.
 
-| *`allowInsideAdmissionControllerNamespace`* __boolean__ | AllowInsideAdmissionControllerNamespace controls whether the policy should also be +
-evaluated for resources in the namespace where Kubewarden is deployed. +
-By default (false), an exclusion rule is added to the webhook so that the +
-Kubewarden namespace is never targeted, protecting against an accidental +
-lockout. Set this to true only if you deliberately want the policy to apply +
-inside the Kubewarden namespace. +
-Warning: setting this to true may cause a deadlock if the policy prevents +
-Kubewarden components from starting. + |  | Optional: \{} +
+For example, to run the webhook on objects whose namespace does not have
+a runlevel of 0 or 1, use this selector:
+
+[source,json]
+----
+{
+  "namespaceSelector": {
+    "matchExpressions": [
+      {
+        "key": "runlevel",
+        "operator": "NotIn",
+        "values": ["0", "1"]
+      }
+    ]
+  }
+}
+----
+
+To run the webhook only on objects whose namespace has an environment of
+prod or staging, use this selector:
+
+[source,json]
+----
+{
+  "namespaceSelector": {
+    "matchExpressions": [
+      {
+        "key": "environment",
+        "operator": "In",
+        "values": ["prod", "staging"]
+      }
+    ]
+  }
+}
+----
+
+See
+https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
+for more examples of label selectors.
+
+Default to the empty LabelSelector, which matches everything.
+| 
+| Optional: \{} +
+
+| *`allowInsideAdmissionControllerNamespace`* __boolean__
+a| AllowInsideAdmissionControllerNamespace controls whether the policy should also be
+evaluated for resources in the namespace where Kubewarden is deployed.
+By default (false), an exclusion rule is added to the webhook so that the
+Kubewarden namespace is never targeted, protecting against an accidental
+lockout. Set this to true only if you deliberately want the policy to apply
+inside the Kubewarden namespace.
+Warning: setting this to true may cause a deadlock if the policy prevents
+Kubewarden components from starting.
+| 
+| Optional: \{} +
 
 |===
 
@@ -336,9 +395,15 @@ ClusterAdmissionPolicyList contains a list of ClusterAdmissionPolicy
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1` | |
 | *`kind`* __string__ | `ClusterAdmissionPolicyList` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicy[$$ClusterAdmissionPolicy$$] array__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicy[$$ClusterAdmissionPolicy$$] array__
+a| 
+| 
+| 
 |===
 
 
@@ -359,65 +424,79 @@ ClusterAdmissionPolicySpec defines the desired state of ClusterAdmissionPolicy.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`PolicySpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policyspec[$$PolicySpec$$]__ |  |  | 
-| *`namespaceSelector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta[$$LabelSelector$$]__ | NamespaceSelector decides whether to run the webhook on an object based +
-on whether the namespace for that object matches the selector. If the +
-object itself is a namespace, the matching is performed on +
-object.metadata.labels. If the object is another cluster scoped resource, +
-it never skips the webhook. +
-<br/><br/> +
-For example, to run the webhook on any objects whose namespace is not +
-associated with "runlevel" of "0" or "1";  you will set the selector as +
-follows: +
-<pre> +
-"namespaceSelector": \{<br/> +
-&nbsp;&nbsp;"matchExpressions": [<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;\{<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"key": "runlevel",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"operator": "NotIn",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"values": [<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"0",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"1"<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;\}<br/> +
-&nbsp;&nbsp;]<br/> +
-\} +
-</pre> +
-If instead you want to only run the webhook on any objects whose +
-namespace is associated with the "environment" of "prod" or "staging"; +
-you will set the selector as follows: +
-<pre> +
-"namespaceSelector": \{<br/> +
-&nbsp;&nbsp;"matchExpressions": [<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;\{<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"key": "environment",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"operator": "In",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"values": [<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"prod",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"staging"<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;\}<br/> +
-&nbsp;&nbsp;]<br/> +
-\} +
-</pre> +
-See +
-https://kubernetes.io/docs/concepts/overview/working-with-objects/labels +
-for more examples of label selectors. +
-<br/><br/> +
-Default to the empty LabelSelector, which matches everything. + |  | Optional: \{} +
+| *`PolicySpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policyspec[$$PolicySpec$$]__
+a| 
+| 
+| 
+| *`namespaceSelector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta[$$LabelSelector$$]__
+a| NamespaceSelector decides whether to run the webhook on an object based
+on whether the namespace for that object matches the selector. If the
+object itself is a namespace, the matching is performed on
+object.metadata.labels. If the object is another cluster scoped resource,
+it never skips the webhook.
 
-| *`contextAwareResources`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-contextawareresource[$$ContextAwareResource$$] array__ | List of Kubernetes resources the policy is allowed to access at evaluation time. +
-Access to these resources is done using the `ServiceAccount` of the PolicyServer +
-the policy is assigned to. + |  | Optional: \{} +
+For example, to run the webhook on objects whose namespace does not have
+a runlevel of 0 or 1, use this selector:
 
-| *`allowInsideAdmissionControllerNamespace`* __boolean__ | AllowInsideAdmissionControllerNamespace controls whether the policy should also be +
-evaluated for resources in the namespace where Kubewarden is deployed. +
-By default (false), an exclusion rule is added to the webhook so that the +
-Kubewarden namespace is never targeted, protecting against an accidental +
-lockout. Set this to true only if you deliberately want the policy to apply +
-inside the Kubewarden namespace. +
-Warning: setting this to true may cause a deadlock if the policy prevents +
-Kubewarden components from starting. + |  | Optional: \{} +
+[source,json]
+----
+{
+  "namespaceSelector": {
+    "matchExpressions": [
+      {
+        "key": "runlevel",
+        "operator": "NotIn",
+        "values": ["0", "1"]
+      }
+    ]
+  }
+}
+----
+
+To run the webhook only on objects whose namespace has an environment of
+prod or staging, use this selector:
+
+[source,json]
+----
+{
+  "namespaceSelector": {
+    "matchExpressions": [
+      {
+        "key": "environment",
+        "operator": "In",
+        "values": ["prod", "staging"]
+      }
+    ]
+  }
+}
+----
+
+See
+https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
+for more examples of label selectors.
+
+Default to the empty LabelSelector, which matches everything.
+| 
+| Optional: \{} +
+
+| *`contextAwareResources`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-contextawareresource[$$ContextAwareResource$$] array__
+a| List of Kubernetes resources the policy is allowed to access at evaluation time.
+Access to these resources is done using the `ServiceAccount` of the PolicyServer
+the policy is assigned to.
+| 
+| Optional: \{} +
+
+| *`allowInsideAdmissionControllerNamespace`* __boolean__
+a| AllowInsideAdmissionControllerNamespace controls whether the policy should also be
+evaluated for resources in the namespace where Kubewarden is deployed.
+By default (false), an exclusion rule is added to the webhook so that the
+Kubewarden namespace is never targeted, protecting against an accidental
+lockout. Set this to true only if you deliberately want the policy to apply
+inside the Kubewarden namespace.
+Warning: setting this to true may cause a deadlock if the policy prevents
+Kubewarden components from starting.
+| 
+| Optional: \{} +
 
 |===
 
@@ -439,10 +518,16 @@ Kubewarden components from starting. + |  | Optional: \{} +
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`GroupSpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-groupspec[$$GroupSpec$$]__ |  |  | 
-| *`policies`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupmemberswithcontext[$$PolicyGroupMembersWithContext$$]__ | Policies is a list of policies that are part of the group that will +
-be available to be called in the evaluation expression field. +
-Each policy in the group should be a Kubewarden policy. + |  | Required: \{} +
+| *`GroupSpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-groupspec[$$GroupSpec$$]__
+a| 
+| 
+| 
+| *`policies`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupmemberswithcontext[$$PolicyGroupMembersWithContext$$]__
+a| Policies is a list of policies that are part of the group that will
+be available to be called in the evaluation expression field.
+Each policy in the group should be a Kubewarden policy.
+| 
+| Required: \{} +
 
 |===
 
@@ -458,7 +543,7 @@ ContextAwareResource identifies a Kubernetes resource.
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicyfactory[$$ClusterAdmissionPolicyFactory$$]
+- ClusterAdmissionPolicyFactory
 - xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicyspec[$$ClusterAdmissionPolicySpec$$]
 - xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupmemberwithcontext[$$PolicyGroupMemberWithContext$$]
 ****
@@ -466,8 +551,14 @@ ContextAwareResource identifies a Kubernetes resource.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`apiVersion`* __string__ | apiVersion of the resource (v1 for core group, groupName/groupVersions for other). + |  | 
-| *`kind`* __string__ | Singular PascalCase name of the resource + |  | 
+| *`apiVersion`* __string__
+a| apiVersion of the resource (v1 for core group, groupName/groupVersions for other).
+| 
+| 
+| *`kind`* __string__
+a| Singular PascalCase name of the resource
+| 
+| 
 |===
 
 
@@ -489,104 +580,136 @@ ContextAwareResource identifies a Kubernetes resource.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`policyServer`* __string__ | PolicyServer identifies an existing PolicyServer resource. + | default | Optional: \{} +
+| *`policyServer`* __string__
+a| PolicyServer identifies an existing PolicyServer resource.
+| default
+| Optional: \{} +
 
-| *`mode`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policymode[$$PolicyMode$$]__ | Mode defines the execution mode of this policy. Can be set to +
-either "protect" or "monitor". If it's empty, it is defaulted to +
-"protect". +
-Transitioning this setting from "monitor" to "protect" is +
-allowed, but is disallowed to transition from "protect" to +
-"monitor". To perform this transition, the policy should be +
-recreated in "monitor" mode instead. + | protect | Enum: [protect monitor] +
+| *`mode`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policymode[$$PolicyMode$$]__
+a| Mode defines the execution mode of this policy. Can be set to
+either "protect" or "monitor". If it's empty, it is defaulted to
+"protect".
+Transitioning this setting from "monitor" to "protect" is
+allowed, but is disallowed to transition from "protect" to
+"monitor". To perform this transition, the policy should be
+recreated in "monitor" mode instead.
+| protect
+| Enum: [protect monitor] +
 Optional: \{} +
 
-| *`rules`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#rulewithoperations-v1-admissionregistration[$$RuleWithOperations$$] array__ | Rules describes what operations on what resources/subresources the webhook cares about. +
-The webhook cares about an operation if it matches _any_ Rule. + |  | 
-| *`failurePolicy`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#failurepolicytype-v1-admissionregistration[$$FailurePolicyType$$]__ | FailurePolicy defines how unrecognized errors and timeout errors from the +
-policy are handled. Allowed values are "Ignore" or "Fail". +
-* "Ignore" means that an error calling the webhook is ignored and the API +
-request is allowed to continue. +
-* "Fail" means that an error calling the webhook causes the admission to +
-fail and the API request to be rejected. +
-The default behaviour is "Fail" + |  | Optional: \{} +
+| *`rules`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#rulewithoperations-v1-admissionregistration[$$RuleWithOperations$$] array__
+a| Rules describes what operations on what resources/subresources the webhook cares about.
+The webhook cares about an operation if it matches _any_ Rule.
+| 
+| 
+| *`failurePolicy`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#failurepolicytype-v1-admissionregistration[$$FailurePolicyType$$]__
+a| FailurePolicy defines how unrecognized errors and timeout errors from the
+policy are handled. Allowed values are "Ignore" or "Fail".
+* "Ignore" means that an error calling the webhook is ignored and the API
+  request is allowed to continue.
+* "Fail" means that an error calling the webhook causes the admission to
+  fail and the API request to be rejected.
+The default behaviour is "Fail"
+| 
+| Optional: \{} +
 
-| *`backgroundAudit`* __boolean__ | BackgroundAudit indicates whether a policy should be used or skipped when +
-performing audit checks. If false, the policy cannot produce meaningful +
-evaluation results during audit checks and will be skipped. +
-The default is "true". + | true | Optional: \{} +
+| *`backgroundAudit`* __boolean__
+a| BackgroundAudit indicates whether a policy should be used or skipped when
+performing audit checks. If false, the policy cannot produce meaningful
+evaluation results during audit checks and will be skipped.
+The default is "true".
+| true
+| Optional: \{} +
 
-| *`matchPolicy`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#matchpolicytype-v1-admissionregistration[$$MatchPolicyType$$]__ | matchPolicy defines how the "rules" list is used to match incoming requests. +
-Allowed values are "Exact" or "Equivalent". +
-<ul> +
-<li> +
-Exact: match a request only if it exactly matches a specified rule. +
-For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1, +
-but "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`, +
-a request to apps/v1beta1 or extensions/v1beta1 would not be sent to the webhook. +
-</li> +
-<li> +
-Equivalent: match a request if modifies a resource listed in rules, even via another API group or version. +
-For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1, +
-and "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`, +
-a request to apps/v1beta1 or extensions/v1beta1 would be converted to apps/v1 and sent to the webhook. +
-</li> +
-</ul> +
-Defaults to "Equivalent" + |  | Optional: \{} +
+| *`matchPolicy`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#matchpolicytype-v1-admissionregistration[$$MatchPolicyType$$]__
+a| matchPolicy defines how the "rules" list is used to match incoming requests.
+Allowed values are "Exact" or "Equivalent".
 
-| *`matchConditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#matchcondition-v1-admissionregistration[$$MatchCondition$$] array__ | MatchConditions are a list of conditions that must be met for a request to be +
-validated. Match conditions filter requests that have already been matched by +
-the rules, namespaceSelector, and objectSelector. An empty list of +
-matchConditions matches all requests. There are a maximum of 64 match +
-conditions allowed. If a parameter object is provided, it can be accessed via +
-the `params` handle in the same manner as validation expressions. The exact +
-matching logic is (in order): 1. If ANY matchCondition evaluates to FALSE, +
-the policy is skipped. 2. If ALL matchConditions evaluate to TRUE, the policy +
-is evaluated. 3. If any matchCondition evaluates to an error (but none are +
-FALSE): - If failurePolicy=Fail, reject the request - If +
-failurePolicy=Ignore, the policy is skipped. +
-Only available if the feature gate AdmissionWebhookMatchConditions is enabled. + |  | Optional: \{} +
+* `Exact`: Match a request only if it exactly matches a specified rule.
+For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1,
+but "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`,
+a request to apps/v1beta1 or extensions/v1beta1 would not be sent to the webhook.
+* `Equivalent`: Match a request that modifies a listed resource through an equivalent API group or version.
+For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1,
+and "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`,
+a request to apps/v1beta1 or extensions/v1beta1 would be converted to apps/v1 and sent to the webhook.
 
-| *`objectSelector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta[$$LabelSelector$$]__ | ObjectSelector decides whether to run the webhook based on if the +
-object has matching labels. objectSelector is evaluated against both +
-the oldObject and newObject that would be sent to the webhook, and +
-is considered to match if either object matches the selector. A null +
-object (oldObject in the case of create, or newObject in the case of +
-delete) or an object that cannot have labels (like a +
-DeploymentRollback or a PodProxyOptions object) is not considered to +
-match. +
-Use the object selector only if the webhook is opt-in, because end +
-users may skip the admission webhook by setting the labels. +
-Default to the empty LabelSelector, which matches everything. + |  | Optional: \{} +
+Defaults to "Equivalent"
+| 
+| Optional: \{} +
 
-| *`sideEffects`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sideeffectclass-v1-admissionregistration[$$SideEffectClass$$]__ | SideEffects states whether this webhook has side effects. +
-Acceptable values are: None, NoneOnDryRun (webhooks created via v1beta1 may also specify Some or Unknown). +
-Webhooks with side effects MUST implement a reconciliation system, since a request may be +
-rejected by a future step in the admission change and the side effects therefore need to be undone. +
-Requests with the dryRun attribute will be auto-rejected if they match a webhook with +
-sideEffects == Unknown or Some. + |  | 
-| *`timeoutSeconds`* __integer__ | TimeoutSeconds specifies the timeout for this webhook. After the timeout passes, +
-the webhook call will be ignored or the API call will fail based on the +
-failure policy. +
-The timeout value must be between 2 and 30 seconds. +
-Default to 10 seconds. + | 10 | Maximum: 30 +
+| *`matchConditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#matchcondition-v1-admissionregistration[$$MatchCondition$$] array__
+a| MatchConditions are a list of conditions that must be met for a request to be
+validated. Match conditions filter requests that have already been matched by
+the rules, namespaceSelector, and objectSelector. An empty list of
+matchConditions matches all requests. There are a maximum of 64 match
+conditions allowed. If a parameter object is provided, it can be accessed via
+the `params` handle in the same manner as validation expressions. The exact
+matching logic is (in order): 1. If ANY matchCondition evaluates to FALSE,
+the policy is skipped. 2. If ALL matchConditions evaluate to TRUE, the policy
+is evaluated. 3. If any matchCondition evaluates to an error (but none are
+FALSE): - If failurePolicy=Fail, reject the request - If
+failurePolicy=Ignore, the policy is skipped.
+Only available if the feature gate AdmissionWebhookMatchConditions is enabled.
+| 
+| Optional: \{} +
+
+| *`objectSelector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta[$$LabelSelector$$]__
+a| ObjectSelector decides whether to run the webhook based on if the
+object has matching labels. objectSelector is evaluated against both
+the oldObject and newObject that would be sent to the webhook, and
+is considered to match if either object matches the selector. A null
+object (oldObject in the case of create, or newObject in the case of
+delete) or an object that cannot have labels (like a
+DeploymentRollback or a PodProxyOptions object) is not considered to
+match.
+Use the object selector only if the webhook is opt-in, because end
+users may skip the admission webhook by setting the labels.
+Default to the empty LabelSelector, which matches everything.
+| 
+| Optional: \{} +
+
+| *`sideEffects`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sideeffectclass-v1-admissionregistration[$$SideEffectClass$$]__
+a| SideEffects states whether this webhook has side effects.
+Acceptable values are: None, NoneOnDryRun (webhooks created via v1beta1 may also specify Some or Unknown).
+Webhooks with side effects MUST implement a reconciliation system, since a request may be
+rejected by a future step in the admission change and the side effects therefore need to be undone.
+Requests with the dryRun attribute will be auto-rejected if they match a webhook with
+sideEffects == Unknown or Some.
+| 
+| 
+| *`timeoutSeconds`* __integer__
+a| TimeoutSeconds specifies the timeout for this webhook. After the timeout passes,
+the webhook call will be ignored or the API call will fail based on the
+failure policy.
+The timeout value must be between 2 and 30 seconds.
+Default to 10 seconds.
+| 10
+| Maximum: 30 +
 Minimum: 2 +
 Optional: \{} +
 
-| *`expression`* __string__ | Expression is the evaluation expression to accept or reject the +
-admission request under evaluation. This field uses CEL as the +
-expression language for the policy groups. Each policy in the group +
-will be represented as a function call in the expression with the +
-same name as the policy defined in the group. The expression field +
-should be a valid CEL expression that evaluates to a boolean value. +
-If the expression evaluates to true, the group policy will be +
-considered as accepted, otherwise, it will be considered as +
-rejected. This expression allows grouping policies calls and perform +
-logical operations on the results of the policies. See Kubewarden +
-documentation to learn about all the features available. + |  | Required: \{} +
+| *`expression`* __string__
+a| Expression is the evaluation expression to accept or reject the
+admission request under evaluation. This field uses CEL as the
+expression language for the policy groups. Each policy in the group
+will be represented as a function call in the expression with the
+same name as the policy defined in the group. The expression field
+should be a valid CEL expression that evaluates to a boolean value.
+If the expression evaluates to true, the group policy will be
+considered as accepted, otherwise, it will be considered as
+rejected. This expression allows grouping policies calls and perform
+logical operations on the results of the policies. See Kubewarden
+documentation to learn about all the features available.
+| 
+| Required: \{} +
 
-| *`message`* __string__ | Message is  used to specify the message that will be returned when +
-the policy group is rejected. The specific policy results will be +
-returned in the warning field of the response. + |  | Required: \{} +
+| *`message`* __string__
+a| Message is  used to specify the message that will be returned when
+the policy group is rejected. The specific policy results will be
+returned in the warning field of the response.
+| 
+| Required: \{} +
 
 |===
 
@@ -623,21 +746,30 @@ returned in the warning field of the response. + |  | Required: \{} +
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`module`* __string__ | Module is the location of the WASM module to be loaded. Can be a +
-local file (file://), a remote file served by an HTTP server +
-(http://, https://), or an artifact served by an OCI-compatible +
-registry (registry://). +
-If prefix is missing, it will default to registry:// and use that +
-internally. + |  | Required: \{} +
+| *`module`* __string__
+a| Module is the location of the WASM module to be loaded. Can be a
+local file (file://), a remote file served by an HTTP server
+(http://, https://), or an artifact served by an OCI-compatible
+registry (registry://).
+If prefix is missing, it will default to registry:// and use that
+internally.
+| 
+| Required: \{} +
 
-| *`settings`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#rawextension-runtime-pkg[$$RawExtension$$]__ | Settings is a free-form object that contains the policy configuration +
-values. +
-x-kubernetes-embedded-resource: false + |  | Optional: \{} +
+| *`settings`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#rawextension-runtime-pkg[$$RawExtension$$]__
+a| Settings is a free-form object that contains the policy configuration
+values.
+x-kubernetes-embedded-resource: false
+| 
+| Optional: \{} +
 
-| *`timeoutEvalSeconds`* __integer__ | TimeoutEvalSeconds specifies the timeout for the policy evaluation. After +
-the timeout passes, the policy evaluation call will fail based on the +
-failure policy. +
-The timeout value must be between 2 and 30 seconds. + |  | Maximum: 30 +
+| *`timeoutEvalSeconds`* __integer__
+a| TimeoutEvalSeconds specifies the timeout for the policy evaluation. After
+the timeout passes, the policy evaluation call will fail based on the
+failure policy.
+The timeout value must be between 2 and 30 seconds.
+| 
+| Maximum: 30 +
 Minimum: 2 +
 Optional: \{} +
 
@@ -661,10 +793,16 @@ Optional: \{} +
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`PolicyGroupMember`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupmember[$$PolicyGroupMember$$]__ |  |  | 
-| *`contextAwareResources`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-contextawareresource[$$ContextAwareResource$$] array__ | List of Kubernetes resources the policy is allowed to access at evaluation time. +
-Access to these resources is done using the `ServiceAccount` of the PolicyServer +
-the policy is assigned to. + |  | Optional: \{} +
+| *`PolicyGroupMember`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupmember[$$PolicyGroupMember$$]__
+a| 
+| 
+| 
+| *`contextAwareResources`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-contextawareresource[$$ContextAwareResource$$] array__
+a| List of Kubernetes resources the policy is allowed to access at evaluation time.
+Access to these resources is done using the `ServiceAccount` of the PolicyServer
+the policy is assigned to.
+| 
+| Optional: \{} +
 
 |===
 
@@ -672,7 +810,7 @@ the policy is assigned to. + |  | Optional: \{} +
 [id="{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupmembers"]
 ==== PolicyGroupMembers
 
-_Underlying type:_ _xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-map-string-policygroupmember[$$map[string]PolicyGroupMember$$]_
+_Underlying type:_ _object (keys:string, values:xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupmember[$$PolicyGroupMember$$])_
 
 
 
@@ -680,7 +818,7 @@ _Underlying type:_ _xref:{anchor_prefix}-github-com-kubewarden-adm-controller-ap
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-admissionpolicygroupfactory[$$AdmissionPolicyGroupFactory$$]
+- AdmissionPolicyGroupFactory
 - xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupspec[$$PolicyGroupSpec$$]
 ****
 
@@ -689,7 +827,7 @@ _Underlying type:_ _xref:{anchor_prefix}-github-com-kubewarden-adm-controller-ap
 [id="{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupmemberswithcontext"]
 ==== PolicyGroupMembersWithContext
 
-_Underlying type:_ _xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-map-string-policygroupmemberwithcontext[$$map[string]PolicyGroupMemberWithContext$$]_
+_Underlying type:_ _object (keys:string, values:xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupmemberwithcontext[$$PolicyGroupMemberWithContext$$])_
 
 
 
@@ -697,7 +835,7 @@ _Underlying type:_ _xref:{anchor_prefix}-github-com-kubewarden-adm-controller-ap
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicygroupfactory[$$ClusterAdmissionPolicyGroupFactory$$]
+- ClusterAdmissionPolicyGroupFactory
 - xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusterpolicygroupspec[$$ClusterPolicyGroupSpec$$]
 ****
 
@@ -720,10 +858,16 @@ _Underlying type:_ _xref:{anchor_prefix}-github-com-kubewarden-adm-controller-ap
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`GroupSpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-groupspec[$$GroupSpec$$]__ |  |  | 
-| *`policies`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupmembers[$$PolicyGroupMembers$$]__ | Policies is a list of policies that are part of the group that will +
-be available to be called in the evaluation expression field. +
-Each policy in the group should be a Kubewarden policy. + |  | Required: \{} +
+| *`GroupSpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-groupspec[$$GroupSpec$$]__
+a| 
+| 
+| 
+| *`policies`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policygroupmembers[$$PolicyGroupMembers$$]__
+a| Policies is a list of policies that are part of the group that will
+be available to be called in the evaluation expression field.
+Each policy in the group should be a Kubewarden policy.
+| 
+| Required: \{} +
 
 |===
 
@@ -744,10 +888,10 @@ _Underlying type:_ _string_
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-admissionpolicyfactory[$$AdmissionPolicyFactory$$]
-- xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-admissionpolicygroupfactory[$$AdmissionPolicyGroupFactory$$]
-- xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicyfactory[$$ClusterAdmissionPolicyFactory$$]
-- xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-clusteradmissionpolicygroupfactory[$$ClusterAdmissionPolicyGroupFactory$$]
+- AdmissionPolicyFactory
+- AdmissionPolicyGroupFactory
+- ClusterAdmissionPolicyFactory
+- ClusterAdmissionPolicyGroupFactory
 - xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-groupspec[$$GroupSpec$$]
 - xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policyspec[$$PolicySpec$$]
 ****
@@ -766,7 +910,7 @@ _Underlying type:_ _string_
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policystatus[$$PolicyStatus$$]
+- PolicyStatus
 ****
 
 
@@ -792,9 +936,15 @@ PolicyServer is the Schema for the policyservers API.
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1` | |
 | *`kind`* __string__ | `PolicyServer` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policyserverspec[$$PolicyServerSpec$$]__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policyserverspec[$$PolicyServerSpec$$]__
+a| 
+| 
+| 
 |===
 
 
@@ -818,9 +968,15 @@ PolicyServerList contains a list of PolicyServer.
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1` | |
 | *`kind`* __string__ | `PolicyServerList` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policyserver[$$PolicyServer$$] array__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policyserver[$$PolicyServer$$] array__
+a| 
+| 
+| 
 |===
 
 
@@ -841,9 +997,15 @@ PolicyServerSecurity defines securityContext configuration to be used in the Pol
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`container`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#securitycontext-v1-core[$$SecurityContext$$]__ | securityContext definition to be used in the policy server container + |  | Optional: \{} +
+| *`container`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#securitycontext-v1-core[$$SecurityContext$$]__
+a| securityContext definition to be used in the policy server container
+| 
+| Optional: \{} +
 
-| *`pod`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podsecuritycontext-v1-core[$$PodSecurityContext$$]__ | podSecurityContext definition to be used in the policy server Pod + |  | Optional: \{} +
+| *`pod`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#podsecuritycontext-v1-core[$$PodSecurityContext$$]__
+a| podSecurityContext definition to be used in the policy server Pod
+| 
+| Optional: \{} +
 
 |===
 
@@ -865,118 +1027,187 @@ PolicyServerSpec defines the desired state of PolicyServer.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`image`* __string__ | Docker image name. + |  | 
-| *`replicas`* __integer__ | Replicas is the number of desired replicas. + |  | 
-| *`minAvailable`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#intorstring-intstr-util[$$IntOrString$$]__ | Number of policy server replicas that must be still available after the +
-eviction. The value can be an absolute number or a percentage. Only one of +
-MinAvailable or Max MaxUnavailable can be set. + |  | 
-| *`maxUnavailable`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#intorstring-intstr-util[$$IntOrString$$]__ | Number of policy server replicas that can be unavailable after the +
-eviction. The value can be an absolute number or a percentage. Only one of +
-MinAvailable or Max MaxUnavailable can be set. + |  | 
-| *`annotations`* __object (keys:string, values:string)__ | Annotations is an unstructured key value map stored with a resource that may be +
-set by external tools to store and retrieve arbitrary metadata. They are not +
-queryable and should be preserved when modifying objects. +
-More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ + |  | Optional: \{} +
+| *`image`* __string__
+a| Docker image name.
+| 
+| 
+| *`replicas`* __integer__
+a| Replicas is the number of desired replicas.
+| 
+| 
+| *`minAvailable`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#intorstring-intstr-util[$$IntOrString$$]__
+a| Number of policy server replicas that must be still available after the
+eviction. The value can be an absolute number or a percentage. Only one of
+MinAvailable or Max MaxUnavailable can be set.
+| 
+| 
+| *`maxUnavailable`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#intorstring-intstr-util[$$IntOrString$$]__
+a| Number of policy server replicas that can be unavailable after the
+eviction. The value can be an absolute number or a percentage. Only one of
+MinAvailable or Max MaxUnavailable can be set.
+| 
+| 
+| *`annotations`* __object (keys:string, values:string)__
+a| Annotations is an unstructured key value map stored with a resource that may be
+set by external tools to store and retrieve arbitrary metadata. They are not
+queryable and should be preserved when modifying objects.
+More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+| 
+| Optional: \{} +
 
-| *`labels`* __object (keys:string, values:string)__ | Labels is a map of custom labels to be applied to the Deployment created by the +
-PolicyServer and to the Pods managed by that Deployment. System labels set by +
-the controller always take precedence over user-defined labels with the same key. +
-More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/ + |  | Optional: \{} +
+| *`labels`* __object (keys:string, values:string)__
+a| Labels is a map of custom labels to be applied to the Deployment created by the
+PolicyServer and to the Pods managed by that Deployment. System labels set by
+the controller always take precedence over user-defined labels with the same key.
+More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+| 
+| Optional: \{} +
 
-| *`env`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvar-v1-core[$$EnvVar$$] array__ | List of environment variables to set in the container. + |  | Optional: \{} +
+| *`env`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvar-v1-core[$$EnvVar$$] array__
+a| List of environment variables to set in the container.
+| 
+| Optional: \{} +
 
-| *`serviceAccountName`* __string__ | Name of the service account associated with the policy server. +
-Namespace service account will be used if not specified. + |  | Optional: \{} +
+| *`serviceAccountName`* __string__
+a| Name of the service account associated with the policy server.
+Namespace service account will be used if not specified.
+| 
+| Optional: \{} +
 
-| *`imagePullSecret`* __string__ | Name of ImagePullSecret secret in the same namespace, used for pulling +
-policies from repositories. + |  | Optional: \{} +
+| *`imagePullSecret`* __string__
+a| Name of ImagePullSecret secret in the same namespace, used for pulling
+policies from repositories.
+| 
+| Optional: \{} +
 
-| *`insecureSources`* __string array__ | List of insecure URIs to policy repositories. The `insecureSources` +
-content format corresponds with the contents of the `insecure_sources` +
-key in `sources.yaml`. Reference for `sources.yaml` is found in the +
-Kubewarden documentation in the reference section. + |  | Optional: \{} +
+| *`insecureSources`* __string array__
+a| List of insecure URIs to policy repositories. The `insecureSources`
+content format corresponds with the contents of the `insecure_sources`
+key in `sources.yaml`. Reference for `sources.yaml` is found in the
+Kubewarden documentation in the reference section.
+| 
+| Optional: \{} +
 
-| *`sourceAuthorities`* __object (keys:string, values:string array)__ | Key value map of registry URIs endpoints to a list of their associated +
-PEM encoded certificate authorities that have to be used to verify the +
-certificate used by the endpoint. The `sourceAuthorities` content format +
-corresponds with the contents of the `source_authorities` key in +
-`sources.yaml`. Reference for `sources.yaml` is found in the Kubewarden +
-documentation in the reference section. + |  | Optional: \{} +
+| *`sourceAuthorities`* __object (keys:string, values:string array)__
+a| Key value map of registry URIs endpoints to a list of their associated
+PEM encoded certificate authorities that have to be used to verify the
+certificate used by the endpoint. The `sourceAuthorities` content format
+corresponds with the contents of the `source_authorities` key in
+`sources.yaml`. Reference for `sources.yaml` is found in the Kubewarden
+documentation in the reference section.
+| 
+| Optional: \{} +
 
-| *`verificationConfig`* __string__ | Name of VerificationConfig configmap in the kubewarden namespace (same +
-namespace as the controller deployment), containing Sigstore verification +
-configuration. The configuration must be under a key named +
-verification-config in the ConfigMap. + |  | Optional: \{} +
+| *`verificationConfig`* __string__
+a| Name of VerificationConfig configmap in the kubewarden namespace (same
+namespace as the controller deployment), containing Sigstore verification
+configuration. The configuration must be under a key named
+verification-config in the ConfigMap.
+| 
+| Optional: \{} +
 
-| *`sigstoreTrustConfig`* __string__ | Name of SigstoreTrustConfig configmap in the kubewarden namespace (same +
-namespace as the controller deployment), containing Sigstore trust +
-configuration (ClientTrustConfig JSON). The configuration must be under a +
-key named sigstore-trust-config in the ConfigMap. This is used to configure +
-a custom Sigstore instance instead of the default public Sigstore infrastructure. +
-WARNING: This feature requires strict access control. Users with write access +
-to this ConfigMap can influence policy signature verification. + |  | Optional: \{} +
+| *`sigstoreTrustConfig`* __string__
+a| Name of SigstoreTrustConfig configmap in the kubewarden namespace (same
+namespace as the controller deployment), containing Sigstore trust
+configuration (ClientTrustConfig JSON). The configuration must be under a
+key named sigstore-trust-config in the ConfigMap. This is used to configure
+a custom Sigstore instance instead of the default public Sigstore infrastructure.
+WARNING: This feature requires strict access control. Users with write access
+to this ConfigMap can influence policy signature verification.
+| 
+| Optional: \{} +
 
-| *`securityContexts`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policyserversecurity[$$PolicyServerSecurity$$]__ | Security configuration to be used in the Policy Server workload. +
-The field allows different configurations for the pod and containers. +
-If set for the containers, this configuration will not be used in +
-containers added by other controllers (e.g. telemetry sidecars) + |  | Optional: \{} +
+| *`securityContexts`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policyserversecurity[$$PolicyServerSecurity$$]__
+a| Security configuration to be used in the Policy Server workload.
+The field allows different configurations for the pod and containers.
+If set for the containers, this configuration will not be used in
+containers added by other controllers (e.g. telemetry sidecars)
+| 
+| Optional: \{} +
 
-| *`affinity`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#affinity-v1-core[$$Affinity$$]__ | Affinity rules for the associated Policy Server pods. + |  | Optional: \{} +
+| *`affinity`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#affinity-v1-core[$$Affinity$$]__
+a| Affinity rules for the associated Policy Server pods.
+| 
+| Optional: \{} +
 
-| *`limits`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#resourcelist-v1-core[$$ResourceList$$]__ | Limits describes the maximum amount of compute resources allowed. + |  | Optional: \{} +
+| *`limits`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#resourcelist-v1-core[$$ResourceList$$]__
+a| Limits describes the maximum amount of compute resources allowed.
+| 
+| Optional: \{} +
 
-| *`requests`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#resourcelist-v1-core[$$ResourceList$$]__ | Requests describes the minimum amount of compute resources required. +
-If Request is omitted for, it defaults to Limits if that is explicitly specified, +
-otherwise to an implementation-defined value + |  | Optional: \{} +
+| *`requests`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#resourcelist-v1-core[$$ResourceList$$]__
+a| Requests describes the minimum amount of compute resources required.
+If Request is omitted for, it defaults to Limits if that is explicitly specified,
+otherwise to an implementation-defined value
+| 
+| Optional: \{} +
 
-| *`tolerations`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#toleration-v1-core[$$Toleration$$] array__ | Tolerations describe the policy server pod's tolerations. It can be +
-used to ensure that the policy server pod is not scheduled onto a +
-node with a taint. + |  | 
-| *`priorityClassName`* __string__ | PriorityClassName is the name of the PriorityClass to be used for the +
-policy server pods. Useful to schedule policy server pods with higher +
-priority to ensure their availability over other cluster workload +
-resources. +
-Note: If the referenced PriorityClass is deleted, existing pods +
-remain unchanged, but new pods that reference it cannot be created. + |  | Optional: \{} +
+| *`tolerations`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#toleration-v1-core[$$Toleration$$] array__
+a| Tolerations describe the policy server pod's tolerations. It can be
+used to ensure that the policy server pod is not scheduled onto a
+node with a taint.
+| 
+| 
+| *`priorityClassName`* __string__
+a| PriorityClassName is the name of the PriorityClass to be used for the
+policy server pods. Useful to schedule policy server pods with higher
+priority to ensure their availability over other cluster workload
+resources.
+Note: If the referenced PriorityClass is deleted, existing pods
+remain unchanged, but new pods that reference it cannot be created.
+| 
+| Optional: \{} +
 
-| *`namespacedPoliciesCapabilities`* __string array__ | NamespacedPoliciesCapabilities lists host capability API calls allowed +
-for namespaced policies running on this PolicyServer. When not set, +
-all host capabilities are granted to namespaced policies. +
-Supported wildcard patterns: +
-- "*": allow all host capabilities +
-- "category/*": allow all capabilities in a category (e.g. "oci/*") +
-- "category/version/*": allow all capabilities of a specific version (e.g. "oci/v1/*") +
-- Specific capability paths (e.g. "oci/v1/verify", "net/v1/dns_lookup_host") + |  | Optional: \{} +
+| *`namespacedPoliciesCapabilities`* __string array__
+a| NamespacedPoliciesCapabilities lists host capability API calls allowed
+for namespaced policies running on this PolicyServer. When not set,
+all host capabilities are granted to namespaced policies.
+Supported wildcard patterns:
+- "*": allow all host capabilities
+- "category/*": allow all capabilities in a category (e.g. "oci/*")
+- "category/version/*": allow all capabilities of a specific version (e.g. "oci/v1/*")
+- Specific capability paths (e.g. "oci/v1/verify", "net/v1/dns_lookup_host")
+| 
+| Optional: \{} +
 
-| *`webhookPort`* __integer__ | Port where the policy server listens for incoming webhook requests. +
-When unset, defaults to 8443. This is the port the Kubernetes API server +
-reaches when evaluating admission requests. + |  | Maximum: 65535 +
+| *`webhookPort`* __integer__
+a| Port where the policy server listens for incoming webhook requests.
+When unset, defaults to 8443. This is the port the Kubernetes API server
+reaches when evaluating admission requests.
+| 
+| Maximum: 65535 +
 Minimum: 1 +
 Optional: \{} +
 
-| *`readinessProbePort`* __integer__ | Port used by the policy server to expose the readiness probe endpoint. +
-When unset, defaults to 8081. + |  | Maximum: 65535 +
+| *`readinessProbePort`* __integer__
+a| Port used by the policy server to expose the readiness probe endpoint.
+When unset, defaults to 8081.
+| 
+| Maximum: 65535 +
 Minimum: 1 +
 Optional: \{} +
 
-| *`metricsPort`* __integer__ | Port exposed by the metrics Service for this policy server. +
-When unset, defaults to the controller-wide default +
-(KUBEWARDEN_POLICY_SERVER_SERVICES_METRICS_PORT env var, or 8080). +
-Only relevant when metrics are enabled. +
+| *`metricsPort`* __integer__
+a| Port exposed by the metrics Service for this policy server.
+When unset, defaults to the controller-wide default
+(KUBEWARDEN_POLICY_SERVER_SERVICES_METRICS_PORT env var, or 8080).
+Only relevant when metrics are enabled.
 
-Use this field to customize which port Prometheus scrapes for this +
-PolicyServer's metrics Service (e.g. to match naming conventions or +
-avoid Service-level port collisions). +
+Use this field to customize which port Prometheus scrapes for this
+PolicyServer's metrics Service (e.g. to match naming conventions or
+avoid Service-level port collisions).
 
-NOTE: this field controls only the Service Port (the externally visible +
-scrape port). The Service TargetPort — the port the pod actually listens +
-on — is always the controller-wide default and is not affected by this +
-field. This is intentional: when the OpenTelemetry sidecar mode is +
-enabled, each pod gets its own injected sidecar, but the pod-side +
-Prometheus listener port is determined by controller-wide/injection +
-configuration, not per PolicyServer. Therefore, changing this field does +
-not change the pod listener port and will not resolve pod-port conflicts +
-such as those caused by hostNetwork. + |  | Maximum: 65535 +
+NOTE: this field controls only the Service Port (the externally visible
+scrape port). The Service TargetPort — the port the pod actually listens
+on — is always the controller-wide default and is not affected by this
+field. This is intentional: when the OpenTelemetry sidecar mode is
+enabled, each pod gets its own injected sidecar, but the pod-side
+Prometheus listener port is determined by controller-wide/injection
+configuration, not per PolicyServer. Therefore, changing this field does
+not change the pod listener port and will not resolve pod-port conflicts
+such as those caused by hostNetwork.
+| 
+| Maximum: 65535 +
 Minimum: 1 +
 Optional: \{} +
 
@@ -1005,113 +1236,154 @@ Optional: \{} +
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`policyServer`* __string__ | PolicyServer identifies an existing PolicyServer resource. + | default | Optional: \{} +
+| *`policyServer`* __string__
+a| PolicyServer identifies an existing PolicyServer resource.
+| default
+| Optional: \{} +
 
-| *`mode`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policymode[$$PolicyMode$$]__ | Mode defines the execution mode of this policy. Can be set to +
-either "protect" or "monitor". If it's empty, it is defaulted to +
-"protect". +
-Transitioning this setting from "monitor" to "protect" is +
-allowed, but is disallowed to transition from "protect" to +
-"monitor". To perform this transition, the policy should be +
-recreated in "monitor" mode instead. + | protect | Enum: [protect monitor] +
+| *`mode`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policymode[$$PolicyMode$$]__
+a| Mode defines the execution mode of this policy. Can be set to
+either "protect" or "monitor". If it's empty, it is defaulted to
+"protect".
+Transitioning this setting from "monitor" to "protect" is
+allowed, but is disallowed to transition from "protect" to
+"monitor". To perform this transition, the policy should be
+recreated in "monitor" mode instead.
+| protect
+| Enum: [protect monitor] +
 Optional: \{} +
 
-| *`module`* __string__ | Module is the location of the WASM module to be loaded. Can be a +
-local file (file://), a remote file served by an HTTP server +
-(http://, https://), or an artifact served by an OCI-compatible +
-registry (registry://). +
-If prefix is missing, it will default to registry:// and use that +
-internally. + |  | Required: \{} +
+| *`module`* __string__
+a| Module is the location of the WASM module to be loaded. Can be a
+local file (file://), a remote file served by an HTTP server
+(http://, https://), or an artifact served by an OCI-compatible
+registry (registry://).
+If prefix is missing, it will default to registry:// and use that
+internally.
+| 
+| Required: \{} +
 
-| *`settings`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#rawextension-runtime-pkg[$$RawExtension$$]__ | Settings is a free-form object that contains the policy configuration +
-values. +
-x-kubernetes-embedded-resource: false + |  | Optional: \{} +
+| *`settings`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#rawextension-runtime-pkg[$$RawExtension$$]__
+a| Settings is a free-form object that contains the policy configuration
+values.
+x-kubernetes-embedded-resource: false
+| 
+| Optional: \{} +
 
-| *`rules`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#rulewithoperations-v1-admissionregistration[$$RuleWithOperations$$] array__ | Rules describes what operations on what resources/subresources the webhook cares about. +
-The webhook cares about an operation if it matches _any_ Rule. + |  | 
-| *`failurePolicy`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#failurepolicytype-v1-admissionregistration[$$FailurePolicyType$$]__ | FailurePolicy defines how unrecognized errors and timeout errors from the +
-policy are handled. Allowed values are "Ignore" or "Fail". +
-* "Ignore" means that an error calling the webhook is ignored and the API +
-request is allowed to continue. +
-* "Fail" means that an error calling the webhook causes the admission to +
-fail and the API request to be rejected. +
-The default behaviour is "Fail" + |  | Optional: \{} +
+| *`rules`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#rulewithoperations-v1-admissionregistration[$$RuleWithOperations$$] array__
+a| Rules describes what operations on what resources/subresources the webhook cares about.
+The webhook cares about an operation if it matches _any_ Rule.
+| 
+| 
+| *`failurePolicy`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#failurepolicytype-v1-admissionregistration[$$FailurePolicyType$$]__
+a| FailurePolicy defines how unrecognized errors and timeout errors from the
+policy are handled. Allowed values are "Ignore" or "Fail".
+* "Ignore" means that an error calling the webhook is ignored and the API
+  request is allowed to continue.
+* "Fail" means that an error calling the webhook causes the admission to
+  fail and the API request to be rejected.
+The default behaviour is "Fail"
+| 
+| Optional: \{} +
 
-| *`mutating`* __boolean__ | Mutating indicates whether a policy has the ability to mutate +
-incoming requests or not. + |  | 
-| *`backgroundAudit`* __boolean__ | BackgroundAudit indicates whether a policy should be used or skipped when +
-performing audit checks. If false, the policy cannot produce meaningful +
-evaluation results during audit checks and will be skipped. +
-The default is "true". + | true | Optional: \{} +
+| *`mutating`* __boolean__
+a| Mutating indicates whether a policy has the ability to mutate
+incoming requests or not.
+| 
+| 
+| *`backgroundAudit`* __boolean__
+a| BackgroundAudit indicates whether a policy should be used or skipped when
+performing audit checks. If false, the policy cannot produce meaningful
+evaluation results during audit checks and will be skipped.
+The default is "true".
+| true
+| Optional: \{} +
 
-| *`matchPolicy`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#matchpolicytype-v1-admissionregistration[$$MatchPolicyType$$]__ | matchPolicy defines how the "rules" list is used to match incoming requests. +
-Allowed values are "Exact" or "Equivalent". +
-<ul> +
-<li> +
-Exact: match a request only if it exactly matches a specified rule. +
-For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1, +
-but "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`, +
-a request to apps/v1beta1 or extensions/v1beta1 would not be sent to the webhook. +
-</li> +
-<li> +
-Equivalent: match a request if modifies a resource listed in rules, even via another API group or version. +
-For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1, +
-and "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`, +
-a request to apps/v1beta1 or extensions/v1beta1 would be converted to apps/v1 and sent to the webhook. +
-</li> +
-</ul> +
-Defaults to "Equivalent" + |  | Optional: \{} +
+| *`matchPolicy`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#matchpolicytype-v1-admissionregistration[$$MatchPolicyType$$]__
+a| matchPolicy defines how the "rules" list is used to match incoming requests.
+Allowed values are "Exact" or "Equivalent".
 
-| *`matchConditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#matchcondition-v1-admissionregistration[$$MatchCondition$$] array__ | MatchConditions are a list of conditions that must be met for a request to be +
-validated. Match conditions filter requests that have already been matched by +
-the rules, namespaceSelector, and objectSelector. An empty list of +
-matchConditions matches all requests. There are a maximum of 64 match +
-conditions allowed. If a parameter object is provided, it can be accessed via +
-the `params` handle in the same manner as validation expressions. The exact +
-matching logic is (in order): 1. If ANY matchCondition evaluates to FALSE, +
-the policy is skipped. 2. If ALL matchConditions evaluate to TRUE, the policy +
-is evaluated. 3. If any matchCondition evaluates to an error (but none are +
-FALSE): - If failurePolicy=Fail, reject the request - If +
-failurePolicy=Ignore, the policy is skipped. +
-Only available if the feature gate AdmissionWebhookMatchConditions is enabled. + |  | Optional: \{} +
+* `Exact`: Match a request only if it exactly matches a specified rule.
+For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1,
+but "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`,
+a request to apps/v1beta1 or extensions/v1beta1 would not be sent to the webhook.
+* `Equivalent`: Match a request that modifies a listed resource through an equivalent API group or version.
+For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1,
+and "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`,
+a request to apps/v1beta1 or extensions/v1beta1 would be converted to apps/v1 and sent to the webhook.
 
-| *`objectSelector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta[$$LabelSelector$$]__ | ObjectSelector decides whether to run the webhook based on if the +
-object has matching labels. objectSelector is evaluated against both +
-the oldObject and newObject that would be sent to the webhook, and +
-is considered to match if either object matches the selector. A null +
-object (oldObject in the case of create, or newObject in the case of +
-delete) or an object that cannot have labels (like a +
-DeploymentRollback or a PodProxyOptions object) is not considered to +
-match. +
-Use the object selector only if the webhook is opt-in, because end +
-users may skip the admission webhook by setting the labels. +
-Default to the empty LabelSelector, which matches everything. + |  | Optional: \{} +
+Defaults to "Equivalent"
+| 
+| Optional: \{} +
 
-| *`sideEffects`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sideeffectclass-v1-admissionregistration[$$SideEffectClass$$]__ | SideEffects states whether this webhook has side effects. +
-Acceptable values are: None, NoneOnDryRun (webhooks created via v1beta1 may also specify Some or Unknown). +
-Webhooks with side effects MUST implement a reconciliation system, since a request may be +
-rejected by a future step in the admission change and the side effects therefore need to be undone. +
-Requests with the dryRun attribute will be auto-rejected if they match a webhook with +
-sideEffects == Unknown or Some. + |  | 
-| *`timeoutSeconds`* __integer__ | TimeoutSeconds specifies the timeout for the policy webhook. After the timeout passes, +
-the webhook call will be ignored or the API call will fail based on the +
-failure policy. +
-The timeout value must be between 2 and 30 seconds. +
-Default to 10 seconds. + | 10 | Maximum: 30 +
+| *`matchConditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#matchcondition-v1-admissionregistration[$$MatchCondition$$] array__
+a| MatchConditions are a list of conditions that must be met for a request to be
+validated. Match conditions filter requests that have already been matched by
+the rules, namespaceSelector, and objectSelector. An empty list of
+matchConditions matches all requests. There are a maximum of 64 match
+conditions allowed. If a parameter object is provided, it can be accessed via
+the `params` handle in the same manner as validation expressions. The exact
+matching logic is (in order): 1. If ANY matchCondition evaluates to FALSE,
+the policy is skipped. 2. If ALL matchConditions evaluate to TRUE, the policy
+is evaluated. 3. If any matchCondition evaluates to an error (but none are
+FALSE): - If failurePolicy=Fail, reject the request - If
+failurePolicy=Ignore, the policy is skipped.
+Only available if the feature gate AdmissionWebhookMatchConditions is enabled.
+| 
+| Optional: \{} +
+
+| *`objectSelector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta[$$LabelSelector$$]__
+a| ObjectSelector decides whether to run the webhook based on if the
+object has matching labels. objectSelector is evaluated against both
+the oldObject and newObject that would be sent to the webhook, and
+is considered to match if either object matches the selector. A null
+object (oldObject in the case of create, or newObject in the case of
+delete) or an object that cannot have labels (like a
+DeploymentRollback or a PodProxyOptions object) is not considered to
+match.
+Use the object selector only if the webhook is opt-in, because end
+users may skip the admission webhook by setting the labels.
+Default to the empty LabelSelector, which matches everything.
+| 
+| Optional: \{} +
+
+| *`sideEffects`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sideeffectclass-v1-admissionregistration[$$SideEffectClass$$]__
+a| SideEffects states whether this webhook has side effects.
+Acceptable values are: None, NoneOnDryRun (webhooks created via v1beta1 may also specify Some or Unknown).
+Webhooks with side effects MUST implement a reconciliation system, since a request may be
+rejected by a future step in the admission change and the side effects therefore need to be undone.
+Requests with the dryRun attribute will be auto-rejected if they match a webhook with
+sideEffects == Unknown or Some.
+| 
+| 
+| *`timeoutSeconds`* __integer__
+a| TimeoutSeconds specifies the timeout for the policy webhook. After the timeout passes,
+the webhook call will be ignored or the API call will fail based on the
+failure policy.
+The timeout value must be between 2 and 30 seconds.
+Default to 10 seconds.
+| 10
+| Maximum: 30 +
 Minimum: 2 +
 Optional: \{} +
 
-| *`timeoutEvalSeconds`* __integer__ | TimeoutEvalSeconds specifies the timeout for the policy evaluation. After +
-the timeout passes, the policy evaluation call will fail based on the +
-failure policy. +
-The timeout value must be between 2 and 30 seconds. + |  | Maximum: 30 +
+| *`timeoutEvalSeconds`* __integer__
+a| TimeoutEvalSeconds specifies the timeout for the policy evaluation. After
+the timeout passes, the policy evaluation call will fail based on the
+failure policy.
+The timeout value must be between 2 and 30 seconds.
+| 
+| Maximum: 30 +
 Minimum: 2 +
 Optional: \{} +
 
-| *`message`* __string__ | Message overrides the rejection message of the policy. +
-When provided, the policy's rejection message can be found +
-inside of the `.status.details.causes` field of the +
-AdmissionResponse object + |  | Optional: \{} +
+| *`message`* __string__
+a| Message overrides the rejection message of the policy.
+When provided, the policy's rejection message can be found
+inside of the `.status.details.causes` field of the
+AdmissionResponse object
+| 
+| Optional: \{} +
 
 |===
 
@@ -1130,7 +1402,7 @@ _Underlying type:_ _string_
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1-policystatus[$$PolicyStatus$$]
+- PolicyStatus
 ****
 
 
@@ -1172,9 +1444,15 @@ AdmissionPolicy is the Schema for the admissionpolicies API
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1alpha2` | |
 | *`kind`* __string__ | `AdmissionPolicy` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-admissionpolicyspec[$$AdmissionPolicySpec$$]__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-admissionpolicyspec[$$AdmissionPolicySpec$$]__
+a| 
+| 
+| 
 |===
 
 
@@ -1194,9 +1472,15 @@ AdmissionPolicyList contains a list of AdmissionPolicy.
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1alpha2` | |
 | *`kind`* __string__ | `AdmissionPolicyList` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-admissionpolicy[$$AdmissionPolicy$$] array__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-admissionpolicy[$$AdmissionPolicy$$] array__
+a| 
+| 
+| 
 |===
 
 
@@ -1217,7 +1501,10 @@ AdmissionPolicySpec defines the desired state of AdmissionPolicy.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`PolicySpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-policyspec[$$PolicySpec$$]__ |  |  | 
+| *`PolicySpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-policyspec[$$PolicySpec$$]__
+a| 
+| 
+| 
 |===
 
 
@@ -1240,9 +1527,15 @@ ClusterAdmissionPolicy is the Schema for the clusteradmissionpolicies API
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1alpha2` | |
 | *`kind`* __string__ | `ClusterAdmissionPolicy` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-clusteradmissionpolicyspec[$$ClusterAdmissionPolicySpec$$]__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-clusteradmissionpolicyspec[$$ClusterAdmissionPolicySpec$$]__
+a| 
+| 
+| 
 |===
 
 
@@ -1262,9 +1555,15 @@ ClusterAdmissionPolicyList contains a list of ClusterAdmissionPolicy
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1alpha2` | |
 | *`kind`* __string__ | `ClusterAdmissionPolicyList` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-clusteradmissionpolicy[$$ClusterAdmissionPolicy$$] array__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-clusteradmissionpolicy[$$ClusterAdmissionPolicy$$] array__
+a| 
+| 
+| 
 |===
 
 
@@ -1285,52 +1584,60 @@ ClusterAdmissionPolicySpec defines the desired state of ClusterAdmissionPolicy.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`PolicySpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-policyspec[$$PolicySpec$$]__ |  |  | 
-| *`namespaceSelector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta[$$LabelSelector$$]__ | NamespaceSelector decides whether to run the webhook on an object based +
-on whether the namespace for that object matches the selector. If the +
-object itself is a namespace, the matching is performed on +
-object.metadata.labels. If the object is another cluster scoped resource, +
-it never skips the webhook. +
-<br/><br/> +
-For example, to run the webhook on any objects whose namespace is not +
-associated with "runlevel" of "0" or "1";  you will set the selector as +
-follows: +
-<pre> +
-"namespaceSelector": \{<br/> +
-&nbsp;&nbsp;"matchExpressions": [<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;\{<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"key": "runlevel",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"operator": "NotIn",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"values": [<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"0",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"1"<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;\}<br/> +
-&nbsp;&nbsp;]<br/> +
-\} +
-</pre> +
-If instead you want to only run the webhook on any objects whose +
-namespace is associated with the "environment" of "prod" or "staging"; +
-you will set the selector as follows: +
-<pre> +
-"namespaceSelector": \{<br/> +
-&nbsp;&nbsp;"matchExpressions": [<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;\{<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"key": "environment",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"operator": "In",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"values": [<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"prod",<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"staging"<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br/> +
-&nbsp;&nbsp;&nbsp;&nbsp;\}<br/> +
-&nbsp;&nbsp;]<br/> +
-\} +
-</pre> +
-See +
-https://kubernetes.io/docs/concepts/overview/working-with-objects/labels +
-for more examples of label selectors. +
-<br/><br/> +
-Default to the empty LabelSelector, which matches everything. + |  | Optional: \{} +
+| *`PolicySpec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-policyspec[$$PolicySpec$$]__
+a| 
+| 
+| 
+| *`namespaceSelector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta[$$LabelSelector$$]__
+a| NamespaceSelector decides whether to run the webhook on an object based
+on whether the namespace for that object matches the selector. If the
+object itself is a namespace, the matching is performed on
+object.metadata.labels. If the object is another cluster scoped resource,
+it never skips the webhook.
+
+For example, to run the webhook on objects whose namespace does not have
+a runlevel of 0 or 1, use this selector:
+
+[source,json]
+----
+{
+  "namespaceSelector": {
+    "matchExpressions": [
+      {
+        "key": "runlevel",
+        "operator": "NotIn",
+        "values": ["0", "1"]
+      }
+    ]
+  }
+}
+----
+
+To run the webhook only on objects whose namespace has an environment of
+prod or staging, use this selector:
+
+[source,json]
+----
+{
+  "namespaceSelector": {
+    "matchExpressions": [
+      {
+        "key": "environment",
+        "operator": "In",
+        "values": ["prod", "staging"]
+      }
+    ]
+  }
+}
+----
+
+See
+https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
+for more examples of label selectors.
+
+Default to the empty LabelSelector, which matches everything.
+| 
+| Optional: \{} +
 
 |===
 
@@ -1368,7 +1675,7 @@ _Underlying type:_ _string_
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-policystatus[$$PolicyStatus$$]
+- PolicyStatus
 ****
 
 
@@ -1392,9 +1699,15 @@ PolicyServer is the Schema for the policyservers API.
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1alpha2` | |
 | *`kind`* __string__ | `PolicyServer` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-policyserverspec[$$PolicyServerSpec$$]__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-policyserverspec[$$PolicyServerSpec$$]__
+a| 
+| 
+| 
 |===
 
 
@@ -1416,9 +1729,15 @@ PolicyServerList contains a list of PolicyServer.
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `policies.kubewarden.io/v1alpha2` | |
 | *`kind`* __string__ | `PolicyServerList` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
- |  | 
-| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-policyserver[$$PolicyServer$$] array__ |  |  | 
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__
+a| Refer to Kubernetes API documentation for fields of `metadata`.
+
+| 
+| 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-policyserver[$$PolicyServer$$] array__
+a| 
+| 
+| 
 |===
 
 
@@ -1439,36 +1758,63 @@ PolicyServerSpec defines the desired state of PolicyServer.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`image`* __string__ | Docker image name. + |  | 
-| *`replicas`* __integer__ | Replicas is the number of desired replicas. + |  | 
-| *`annotations`* __object (keys:string, values:string)__ | Annotations is an unstructured key value map stored with a resource that may be +
-set by external tools to store and retrieve arbitrary metadata. They are not +
-queryable and should be preserved when modifying objects. +
-More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/ + |  | Optional: \{} +
+| *`image`* __string__
+a| Docker image name.
+| 
+| 
+| *`replicas`* __integer__
+a| Replicas is the number of desired replicas.
+| 
+| 
+| *`annotations`* __object (keys:string, values:string)__
+a| Annotations is an unstructured key value map stored with a resource that may be
+set by external tools to store and retrieve arbitrary metadata. They are not
+queryable and should be preserved when modifying objects.
+More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+| 
+| Optional: \{} +
 
-| *`env`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvar-v1-core[$$EnvVar$$] array__ | List of environment variables to set in the container. + |  | Optional: \{} +
+| *`env`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#envvar-v1-core[$$EnvVar$$] array__
+a| List of environment variables to set in the container.
+| 
+| Optional: \{} +
 
-| *`serviceAccountName`* __string__ | Name of the service account associated with the policy server. +
-Namespace service account will be used if not specified. + |  | Optional: \{} +
+| *`serviceAccountName`* __string__
+a| Name of the service account associated with the policy server.
+Namespace service account will be used if not specified.
+| 
+| Optional: \{} +
 
-| *`imagePullSecret`* __string__ | Name of ImagePullSecret secret in the same namespace, used for pulling +
-policies from repositories. + |  | Optional: \{} +
+| *`imagePullSecret`* __string__
+a| Name of ImagePullSecret secret in the same namespace, used for pulling
+policies from repositories.
+| 
+| Optional: \{} +
 
-| *`insecureSources`* __string array__ | List of insecure URIs to policy repositories. The `insecureSources` +
-content format corresponds with the contents of the `insecure_sources` +
-key in `sources.yaml`. Reference for `sources.yaml` is found in the +
-Kubewarden documentation in the reference section. + |  | Optional: \{} +
+| *`insecureSources`* __string array__
+a| List of insecure URIs to policy repositories. The `insecureSources`
+content format corresponds with the contents of the `insecure_sources`
+key in `sources.yaml`. Reference for `sources.yaml` is found in the
+Kubewarden documentation in the reference section.
+| 
+| Optional: \{} +
 
-| *`sourceAuthorities`* __object (keys:string, values:string array)__ | Key value map of registry URIs endpoints to a list of their associated +
-PEM encoded certificate authorities that have to be used to verify the +
-certificate used by the endpoint. The `sourceAuthorities` content format +
-corresponds with the contents of the `source_authorities` key in +
-`sources.yaml`. Reference for `sources.yaml` is found in the Kubewarden +
-documentation in the reference section. + |  | Optional: \{} +
+| *`sourceAuthorities`* __object (keys:string, values:string array)__
+a| Key value map of registry URIs endpoints to a list of their associated
+PEM encoded certificate authorities that have to be used to verify the
+certificate used by the endpoint. The `sourceAuthorities` content format
+corresponds with the contents of the `source_authorities` key in
+`sources.yaml`. Reference for `sources.yaml` is found in the Kubewarden
+documentation in the reference section.
+| 
+| Optional: \{} +
 
-| *`verificationConfig`* __string__ | Name of VerificationConfig configmap in the same namespace, containing +
-Sigstore verification configuration. The configuration must be under a +
-key named verification-config in the Configmap. + |  | Optional: \{} +
+| *`verificationConfig`* __string__
+a| Name of VerificationConfig configmap in the same namespace, containing
+Sigstore verification configuration. The configuration must be under a
+key named verification-config in the Configmap.
+| 
+| Optional: \{} +
 
 |===
 
@@ -1493,79 +1839,108 @@ key named verification-config in the Configmap. + |  | Optional: \{} +
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`policyServer`* __string__ | PolicyServer identifies an existing PolicyServer resource. + | default | Optional: \{} +
+| *`policyServer`* __string__
+a| PolicyServer identifies an existing PolicyServer resource.
+| default
+| Optional: \{} +
 
-| *`module`* __string__ | Module is the location of the WASM module to be loaded. Can be a +
-local file (file://), a remote file served by an HTTP server +
-(http://, https://), or an artifact served by an OCI-compatible +
-registry (registry://). + |  | Required: \{} +
+| *`module`* __string__
+a| Module is the location of the WASM module to be loaded. Can be a
+local file (file://), a remote file served by an HTTP server
+(http://, https://), or an artifact served by an OCI-compatible
+registry (registry://).
+| 
+| Required: \{} +
 
-| *`mode`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-policymode[$$PolicyMode$$]__ | Mode defines the execution mode of this policy. Can be set to +
-either "protect" or "monitor". If it's empty, it is defaulted to +
-"protect". +
-Transitioning this setting from "monitor" to "protect" is +
-allowed, but is disallowed to transition from "protect" to +
-"monitor". To perform this transition, the policy should be +
-recreated in "monitor" mode instead. + | protect | Enum: [protect monitor] +
+| *`mode`* __xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-policymode[$$PolicyMode$$]__
+a| Mode defines the execution mode of this policy. Can be set to
+either "protect" or "monitor". If it's empty, it is defaulted to
+"protect".
+Transitioning this setting from "monitor" to "protect" is
+allowed, but is disallowed to transition from "protect" to
+"monitor". To perform this transition, the policy should be
+recreated in "monitor" mode instead.
+| protect
+| Enum: [protect monitor] +
 Optional: \{} +
 
-| *`settings`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#rawextension-runtime-pkg[$$RawExtension$$]__ | Settings is a free-form object that contains the policy configuration +
-values. +
-x-kubernetes-embedded-resource: false + |  | Optional: \{} +
+| *`settings`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#rawextension-runtime-pkg[$$RawExtension$$]__
+a| Settings is a free-form object that contains the policy configuration
+values.
+x-kubernetes-embedded-resource: false
+| 
+| Optional: \{} +
 
-| *`rules`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#rulewithoperations-v1-admissionregistration[$$RuleWithOperations$$] array__ | Rules describes what operations on what resources/subresources the webhook cares about. +
-The webhook cares about an operation if it matches _any_ Rule. + |  | 
-| *`failurePolicy`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#failurepolicytype-v1-admissionregistration[$$FailurePolicyType$$]__ | FailurePolicy defines how unrecognized errors and timeout errors from the +
-policy are handled. Allowed values are "Ignore" or "Fail". +
-* "Ignore" means that an error calling the webhook is ignored and the API +
-request is allowed to continue. +
-* "Fail" means that an error calling the webhook causes the admission to +
-fail and the API request to be rejected. +
-The default behaviour is "Fail" + |  | Optional: \{} +
+| *`rules`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#rulewithoperations-v1-admissionregistration[$$RuleWithOperations$$] array__
+a| Rules describes what operations on what resources/subresources the webhook cares about.
+The webhook cares about an operation if it matches _any_ Rule.
+| 
+| 
+| *`failurePolicy`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#failurepolicytype-v1-admissionregistration[$$FailurePolicyType$$]__
+a| FailurePolicy defines how unrecognized errors and timeout errors from the
+policy are handled. Allowed values are "Ignore" or "Fail".
+* "Ignore" means that an error calling the webhook is ignored and the API
+  request is allowed to continue.
+* "Fail" means that an error calling the webhook causes the admission to
+  fail and the API request to be rejected.
+The default behaviour is "Fail"
+| 
+| Optional: \{} +
 
-| *`mutating`* __boolean__ | Mutating indicates whether a policy has the ability to mutate +
-incoming requests or not. + |  | 
-| *`matchPolicy`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#matchpolicytype-v1-admissionregistration[$$MatchPolicyType$$]__ | matchPolicy defines how the "rules" list is used to match incoming requests. +
-Allowed values are "Exact" or "Equivalent". +
-<ul> +
-<li> +
-Exact: match a request only if it exactly matches a specified rule. +
-For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1, +
-but "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`, +
-a request to apps/v1beta1 or extensions/v1beta1 would not be sent to the webhook. +
-</li> +
-<li> +
-Equivalent: match a request if modifies a resource listed in rules, even via another API group or version. +
-For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1, +
-and "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`, +
-a request to apps/v1beta1 or extensions/v1beta1 would be converted to apps/v1 and sent to the webhook. +
-</li> +
-</ul> +
-Defaults to "Equivalent" + |  | Optional: \{} +
+| *`mutating`* __boolean__
+a| Mutating indicates whether a policy has the ability to mutate
+incoming requests or not.
+| 
+| 
+| *`matchPolicy`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#matchpolicytype-v1-admissionregistration[$$MatchPolicyType$$]__
+a| matchPolicy defines how the "rules" list is used to match incoming requests.
+Allowed values are "Exact" or "Equivalent".
 
-| *`objectSelector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta[$$LabelSelector$$]__ | ObjectSelector decides whether to run the webhook based on if the +
-object has matching labels. objectSelector is evaluated against both +
-the oldObject and newObject that would be sent to the webhook, and +
-is considered to match if either object matches the selector. A null +
-object (oldObject in the case of create, or newObject in the case of +
-delete) or an object that cannot have labels (like a +
-DeploymentRollback or a PodProxyOptions object) is not considered to +
-match. +
-Use the object selector only if the webhook is opt-in, because end +
-users may skip the admission webhook by setting the labels. +
-Default to the empty LabelSelector, which matches everything. + |  | Optional: \{} +
+* `Exact`: Match a request only if it exactly matches a specified rule.
+For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1,
+but "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`,
+a request to apps/v1beta1 or extensions/v1beta1 would not be sent to the webhook.
+* `Equivalent`: Match a request that modifies a listed resource through an equivalent API group or version.
+For example, if deployments can be modified via apps/v1, apps/v1beta1, and extensions/v1beta1,
+and "rules" only included `apiGroups:["apps"], apiVersions:["v1"], resources: ["deployments"]`,
+a request to apps/v1beta1 or extensions/v1beta1 would be converted to apps/v1 and sent to the webhook.
 
-| *`sideEffects`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sideeffectclass-v1-admissionregistration[$$SideEffectClass$$]__ | SideEffects states whether this webhook has side effects. +
-Acceptable values are: None, NoneOnDryRun (webhooks created via v1beta1 may also specify Some or Unknown). +
-Webhooks with side effects MUST implement a reconciliation system, since a request may be +
-rejected by a future step in the admission change and the side effects therefore need to be undone. +
-Requests with the dryRun attribute will be auto-rejected if they match a webhook with +
-sideEffects == Unknown or Some. + |  | 
-| *`timeoutSeconds`* __integer__ | TimeoutSeconds specifies the timeout for this webhook. After the timeout passes, +
-the webhook call will be ignored or the API call will fail based on the +
-failure policy. +
-The timeout value must be between 1 and 30 seconds. +
-Default to 10 seconds. + | 10 | Optional: \{} +
+Defaults to "Equivalent"
+| 
+| Optional: \{} +
+
+| *`objectSelector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#labelselector-v1-meta[$$LabelSelector$$]__
+a| ObjectSelector decides whether to run the webhook based on if the
+object has matching labels. objectSelector is evaluated against both
+the oldObject and newObject that would be sent to the webhook, and
+is considered to match if either object matches the selector. A null
+object (oldObject in the case of create, or newObject in the case of
+delete) or an object that cannot have labels (like a
+DeploymentRollback or a PodProxyOptions object) is not considered to
+match.
+Use the object selector only if the webhook is opt-in, because end
+users may skip the admission webhook by setting the labels.
+Default to the empty LabelSelector, which matches everything.
+| 
+| Optional: \{} +
+
+| *`sideEffects`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#sideeffectclass-v1-admissionregistration[$$SideEffectClass$$]__
+a| SideEffects states whether this webhook has side effects.
+Acceptable values are: None, NoneOnDryRun (webhooks created via v1beta1 may also specify Some or Unknown).
+Webhooks with side effects MUST implement a reconciliation system, since a request may be
+rejected by a future step in the admission change and the side effects therefore need to be undone.
+Requests with the dryRun attribute will be auto-rejected if they match a webhook with
+sideEffects == Unknown or Some.
+| 
+| 
+| *`timeoutSeconds`* __integer__
+a| TimeoutSeconds specifies the timeout for this webhook. After the timeout passes,
+the webhook call will be ignored or the API call will fail based on the
+failure policy.
+The timeout value must be between 1 and 30 seconds.
+Default to 10 seconds.
+| 10
+| Optional: \{} +
 
 |===
 
@@ -1584,7 +1959,7 @@ _Underlying type:_ _string_
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-kubewarden-adm-controller-api-policies-v1alpha2-policystatus[$$PolicyStatus$$]
+- PolicyStatus
 ****
 
 
