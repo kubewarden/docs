@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 // Generated documentation. Please do not edit.
 = CRD API Reference
-:revdate: 2026-09-18
+:revdate: 2026-09-23
 :page-revdate: {revdate}
 :anchor_prefix: k8s-api
 :p: network-enforcer
@@ -409,7 +409,7 @@ at runtime.
 ****
 - xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-violationinfo[$$ViolationInfo$$]
 - xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-violationrecord[$$ViolationRecord$$]
-- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-violationrecordkey[$$ViolationRecordKey$$]
+- ViolationRecordKey
 - xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyspec[$$WorkloadNetworkPolicySpec$$]
 ****
 
