@@ -1,0 +1,12 @@
+---
+name: "Updates network-enforcer CRD reference documentation files"
+files:
+  - dst: docs/network-enforcer/version-0.3/modules/en/partials/crd-reference.adoc
+scm:
+  branch: "main"
+pr:
+  title: "Update Kubewarden network-enforcer CRD reference documentation"
+  description: "Automatically sync the CRD reference documentation from the kubewarden/network-enforcer repository"
+  labels:
+    - "kind/chore"
+    - "area/documentation"
