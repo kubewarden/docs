@@ -1,0 +1,12 @@
+---
+pipelineid: "network-enforcer-docs-update"
+# Source repository to watch for new releases (format: owner/repo)
+sourceRepository: "kubewarden/network-enforcer"
+component: "network-enforcer"
+
+pr:
+  title: "Update Kubewarden network-enforcer documentation version"
+  description: "Automatically update Kubewarden network-enforcer version and the values files to proper update CRD reference documentation in future updates"
+  labels:
+    - "kind/chore"
+    - "area/documentation"
