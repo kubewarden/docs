@@ -9,7 +9,7 @@ function is_valid_date() {
 usage() {
   cat <<EOF
 Usage: $(basename "$0")
-  <kw_component> # must be one of admission-controller sbom-scanner runtime-enforcer
+  <kw_component> # must be one of admission-controller sbom-scanner runtime-enforcer network-enforcer
   <current_latest_version>
   <current_prerelease_version>
   <new_prerelease_version>
@@ -105,8 +105,11 @@ case "$kw_component" in
   runtime-enforcer)
     version_str="version-"
     ;;
+  network-enforcer)
+    version_str="version-"
+    ;;
   *)
-    echo "Error: invalid component '$kw_component'. Expected one of: admission-controller sbom-scanner runtime-enforcer."
+    echo "Error: invalid component '$kw_component'. Expected one of: admission-controller sbom-scanner runtime-enforcer network-enforcer."
     exit 1
     ;;
 esac

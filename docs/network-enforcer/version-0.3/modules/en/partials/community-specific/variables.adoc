@@ -1,0 +1,3 @@
+// Here goes version specific, community-specific shared attributes and content
+
+:network-enforcer-helm-chart: https://github.com/kubewarden/helm-charts/tree/main/charts/network-enforcer

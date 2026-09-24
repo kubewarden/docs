@@ -1,0 +1,609 @@
+include::partial$variables.adoc[]
+
+// Generated documentation. Please do not edit.
+= CRD API Reference
+:revdate: 2026-09-23
+:page-revdate: {revdate}
+:anchor_prefix: k8s-api
+:p: network-enforcer
+
+
+[id="{p}-api-reference"]
+== API Reference
+
+.Packages
+- xref:{anchor_prefix}-networkenforcer-kubewarden-io-v1alpha1[$$networkenforcer.kubewarden.io/v1alpha1$$]
+
+
+[id="{anchor_prefix}-networkenforcer-kubewarden-io-v1alpha1"]
+=== networkenforcer.kubewarden.io/v1alpha1
+
+Package v1alpha1 contains API Schema definitions for the security v1alpha1 API group.
+
+.Resource Types
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicy[$$WorkloadNetworkPolicy$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicylist[$$WorkloadNetworkPolicyList$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposal[$$WorkloadNetworkPolicyProposal$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposallist[$$WorkloadNetworkPolicyProposalList$$]
+
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-acknowledgedviolationrecord"]
+==== AcknowledgedViolationRecord
+
+
+
+AcknowledgedViolationRecord wraps a ViolationRecord together with the
+acknowledgement reason and timestamp.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicystatus[$$WorkloadNetworkPolicyStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`violation`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-violationrecord[$$ViolationRecord$$]__ | Violation is the violation record that was acknowledged. + |  | 
+| *`reason`* __string__ | Reason is an optional field to indicate why this violation was +
+acknowledged. + |  | 
+| *`acknowledgedAt`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | AcknowledgedAt is the time when the violation was acknowledged. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioauthorizationpolicyrule"]
+==== IstioAuthorizationPolicyRule
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioauthorizationpolicyspec[$$IstioAuthorizationPolicySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`from`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istiofrom[$$IstioFrom$$] array__ | From defines source identities for the rule. + |  | 
+| *`to`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioto[$$IstioTo$$] array__ | To defines destination operations for the rule. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioauthorizationpolicyspec"]
+==== IstioAuthorizationPolicySpec
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-policybackendspec[$$PolicyBackendSpec$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposalspec[$$WorkloadNetworkPolicyProposalSpec$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyspec[$$WorkloadNetworkPolicySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`selector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta[$$LabelSelector$$]__ | Selector selects the destination workloads where the policy is enforced. + |  | 
+| *`rules`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioauthorizationpolicyrule[$$IstioAuthorizationPolicyRule$$] array__ | Rules is the ruleset. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istiofrom"]
+==== IstioFrom
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioauthorizationpolicyrule[$$IstioAuthorizationPolicyRule$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`source`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istiosource[$$IstioSource$$]__ | Source defines the source identities for the rule. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istiooperation"]
+==== IstioOperation
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioto[$$IstioTo$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`ports`* __string array__ | Ports is the list of destination ports. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istiosource"]
+==== IstioSource
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istiofrom[$$IstioFrom$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`principals`* __string array__ | Principals are the source SPIFFE identities. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioto"]
+==== IstioTo
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioauthorizationpolicyrule[$$IstioAuthorizationPolicyRule$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`operation`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istiooperation[$$IstioOperation$$]__ | Operation defines the destination operations for the rule. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-policybackend"]
+==== PolicyBackend
+
+_Underlying type:_ _string_
+
+PolicyBackend selects which data-plane policy model is used.
+
+.Validation:
+- Enum: [kubernetes istio]
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-policybackendspec[$$PolicyBackendSpec$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposalspec[$$WorkloadNetworkPolicyProposalSpec$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyspec[$$WorkloadNetworkPolicySpec$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-policybackendspec"]
+==== PolicyBackendSpec
+
+
+
+PolicyBackendSpec contains the backend-specific policy payload.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposalspec[$$WorkloadNetworkPolicyProposalSpec$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyspec[$$WorkloadNetworkPolicySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`backend`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-policybackend[$$PolicyBackend$$]__ | Backend selects which backend policy model this object carries. + |  | Enum: [kubernetes istio] +
+Required: \{} +
+
+| *`kubernetes`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#networkpolicyspec-v1-networking[$$NetworkPolicySpec$$]__ | Kubernetes contains the policy expressed as a standard Kubernetes +
+NetworkPolicySpec. + |  | 
+| *`istio`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioauthorizationpolicyspec[$$IstioAuthorizationPolicySpec$$]__ | Istio contains a constrained L4 policy model rendered as an Istio +
+AuthorizationPolicy by the reconciler. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-violationinfo"]
+==== ViolationInfo
+
+
+
+ViolationInfo holds the details of a single network policy violation without
+the controller-assigned ID. Backend scrapers produce observations in this
+shape (see violation.Observation); the controller assigns the ID
+when it persists the record into wnp.Status.Violations.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-violationrecord[$$ViolationRecord$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`timestamp`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | Timestamp is when the violation last occurred. + |  | 
+| *`source`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadref[$$WorkloadRef$$]__ | Source is the workload that initiated the traffic. + |  | 
+| *`dest`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadref[$$WorkloadRef$$]__ | Dest is the workload that received the traffic. + |  | 
+| *`protocol`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#protocol-v1-core[$$Protocol$$]__ | Protocol is the L4 protocol (TCP, UDP). + |  | 
+| *`dstPort`* __integer__ | DstPort is the destination port. 0 when unavailable. + |  | Maximum: 65535 +
+Minimum: 0 +
+
+| *`action`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicymode[$$WorkloadNetworkPolicyMode$$]__ | Action is the enforcement action taken (monitor or protect). + |  | Enum: [monitor protect] +
+
+| *`denyingPolicyNamespace`* __string__ | DenyingPolicyNamespace is the namespace of the WorkloadNetworkPolicy this +
+violation belongs to. For a DENY it is the policy that denied the flow; for +
+an ALLOW-miss (which carries no denying policy on the wire) the scraper +
+resolves the owning WorkloadNetworkPolicy by matching the destination pod's +
+labels against WNP selectors and records it here (see istio.Enricher). + |  | 
+| *`denyingPolicyName`* __string__ | DenyingPolicyName is the name of the WorkloadNetworkPolicy this violation +
+belongs to. For a DENY it is the policy that denied the flow; for an +
+ALLOW-miss it is the owning WorkloadNetworkPolicy resolved by selector match +
+(see DenyingPolicyNamespace). The controller keys the violation to its WNP +
+by this name for both cases; Action (monitor vs protect) distinguishes them. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-violationrecord"]
+==== ViolationRecord
+
+
+
+ViolationRecord holds the details of a single network policy violation.
+It embeds ViolationInfo (the violation without the ID) so that the two
+types cannot drift apart: every violation field is defined once, in
+ViolationInfo.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-acknowledgedviolationrecord[$$AcknowledgedViolationRecord$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicystatus[$$WorkloadNetworkPolicyStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`timestamp`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | Timestamp is when the violation last occurred. + |  | 
+| *`source`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadref[$$WorkloadRef$$]__ | Source is the workload that initiated the traffic. + |  | 
+| *`dest`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadref[$$WorkloadRef$$]__ | Dest is the workload that received the traffic. + |  | 
+| *`protocol`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#protocol-v1-core[$$Protocol$$]__ | Protocol is the L4 protocol (TCP, UDP). + |  | 
+| *`dstPort`* __integer__ | DstPort is the destination port. 0 when unavailable. + |  | Maximum: 65535 +
+Minimum: 0 +
+
+| *`action`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicymode[$$WorkloadNetworkPolicyMode$$]__ | Action is the enforcement action taken (monitor or protect). + |  | Enum: [monitor protect] +
+
+| *`denyingPolicyNamespace`* __string__ | DenyingPolicyNamespace is the namespace of the WorkloadNetworkPolicy this +
+violation belongs to. For a DENY it is the policy that denied the flow; for +
+an ALLOW-miss (which carries no denying policy on the wire) the scraper +
+resolves the owning WorkloadNetworkPolicy by matching the destination pod's +
+labels against WNP selectors and records it here (see istio.Enricher). + |  | 
+| *`denyingPolicyName`* __string__ | DenyingPolicyName is the name of the WorkloadNetworkPolicy this violation +
+belongs to. For a DENY it is the policy that denied the flow; for an +
+ALLOW-miss it is the owning WorkloadNetworkPolicy resolved by selector match +
+(see DenyingPolicyNamespace). The controller keys the violation to its WNP +
+by this name for both cases; Action (monitor vs protect) distinguishes them. + |  | 
+| *`id`* __integer__ | ID is a per-policy unique identifier allocated by the controller +
+when the record is first observed. It is stable across re-scrapes +
+of the same logical violation, so consumers can refer to a single +
+record by ID (for example when correlating with external events). +
+
+Stored as int64 (not uint64) for compatibility with the Kubernetes +
+field-management machinery used by controller-runtime's test +
+fixtures; the counter is monotonically increasing and never goes +
+negative, so the sign bit is never set in practice. + |  | 
+|===
+
+
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadkind"]
+==== WorkloadKind
+
+_Underlying type:_ _string_
+
+WorkloadKind identifies the Kubernetes owner resource kind for a workload.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadref[$$WorkloadRef$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicy"]
+==== WorkloadNetworkPolicy
+
+
+
+WorkloadNetworkPolicy is the schema for the runtime network policy API.
+Spec carries a backend-specific policy payload (Kubernetes or Istio) and a
+mode (monitor or protect). The resource is intentionally namespaced and uses
+the `networkenforcer.kubewarden.io` group to avoid colliding with the upstream
+`networking.k8s.io/NetworkPolicy` kind.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicylist[$$WorkloadNetworkPolicyList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `networkenforcer.kubewarden.io/v1alpha1` | |
+| *`kind`* __string__ | `WorkloadNetworkPolicy` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyspec[$$WorkloadNetworkPolicySpec$$]__ |  |  | 
+| *`status`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicystatus[$$WorkloadNetworkPolicyStatus$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicylist"]
+==== WorkloadNetworkPolicyList
+
+
+
+WorkloadNetworkPolicyList is a list of WorkloadNetworkPolicy.
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `networkenforcer.kubewarden.io/v1alpha1` | |
+| *`kind`* __string__ | `WorkloadNetworkPolicyList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicy[$$WorkloadNetworkPolicy$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicymode"]
+==== WorkloadNetworkPolicyMode
+
+_Underlying type:_ _string_
+
+WorkloadNetworkPolicyMode selects how a WorkloadNetworkPolicy is interpreted
+at runtime.
+
+.Validation:
+- Enum: [monitor protect]
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-violationinfo[$$ViolationInfo$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-violationrecord[$$ViolationRecord$$]
+- ViolationRecordKey
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyspec[$$WorkloadNetworkPolicySpec$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposal"]
+==== WorkloadNetworkPolicyProposal
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposallist[$$WorkloadNetworkPolicyProposalList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `networkenforcer.kubewarden.io/v1alpha1` | |
+| *`kind`* __string__ | `WorkloadNetworkPolicyProposal` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposalspec[$$WorkloadNetworkPolicyProposalSpec$$]__ |  |  | 
+| *`status`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposalstatus[$$WorkloadNetworkPolicyProposalStatus$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposallist"]
+==== WorkloadNetworkPolicyProposalList
+
+
+
+
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `networkenforcer.kubewarden.io/v1alpha1` | |
+| *`kind`* __string__ | `WorkloadNetworkPolicyProposalList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposal[$$WorkloadNetworkPolicyProposal$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposalspec"]
+==== WorkloadNetworkPolicyProposalSpec
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposal[$$WorkloadNetworkPolicyProposal$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`backend`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-policybackend[$$PolicyBackend$$]__ | Backend selects which backend policy model this object carries. + |  | Enum: [kubernetes istio] +
+Required: \{} +
+
+| *`kubernetes`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#networkpolicyspec-v1-networking[$$NetworkPolicySpec$$]__ | Kubernetes contains the policy expressed as a standard Kubernetes +
+NetworkPolicySpec. + |  | 
+| *`istio`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioauthorizationpolicyspec[$$IstioAuthorizationPolicySpec$$]__ | Istio contains a constrained L4 policy model rendered as an Istio +
+AuthorizationPolicy by the reconciler. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposalstatus"]
+==== WorkloadNetworkPolicyProposalStatus
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposal[$$WorkloadNetworkPolicyProposal$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#condition-v1-meta[$$Condition$$] array__ | conditions represent the current state of the proposal. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyspec"]
+==== WorkloadNetworkPolicySpec
+
+
+
+WorkloadNetworkPolicySpec defines the desired state of a WorkloadNetworkPolicy.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicy[$$WorkloadNetworkPolicy$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`backend`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-policybackend[$$PolicyBackend$$]__ | Backend selects which backend policy model this object carries. + |  | Enum: [kubernetes istio] +
+Required: \{} +
+
+| *`kubernetes`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#networkpolicyspec-v1-networking[$$NetworkPolicySpec$$]__ | Kubernetes contains the policy expressed as a standard Kubernetes +
+NetworkPolicySpec. + |  | 
+| *`istio`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioauthorizationpolicyspec[$$IstioAuthorizationPolicySpec$$]__ | Istio contains a constrained L4 policy model rendered as an Istio +
+AuthorizationPolicy by the reconciler. + |  | 
+| *`mode`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicymode[$$WorkloadNetworkPolicyMode$$]__ | Mode controls whether the policy is observed (monitor) or actively +
+enforced (protect). Defaults to monitor. + | monitor | Enum: [monitor protect] +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicystatus"]
+==== WorkloadNetworkPolicyStatus
+
+
+
+WorkloadNetworkPolicyStatus defines the observed state of a
+WorkloadNetworkPolicy.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicy[$$WorkloadNetworkPolicy$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`observedGeneration`* __integer__ | ObservedGeneration is the most recent generation observed for this +
+WorkloadNetworkPolicy. It corresponds to the resource's +
+metadata.generation, which is updated by the API server when the +
+spec changes. + |  | 
+| *`violationCount`* __integer__ | ViolationCount is the total number of violation records ever +
+observed for this policy, including those that have already been +
+trimmed out of Violations or cleared because the flow is now +
+permitted by the policy template. It is not guaranteed to be strongly +
+consistent and may be temporarily outdated. + | 0 | 
+| *`activeViolationCount`* __integer__ | ActiveViolationCount is the number of currently active (non-cleared) +
+violation records. It is always equal to len(Violations) and is +
+updated in the same status write. + | 0 | 
+| *`violations`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-violationrecord[$$ViolationRecord$$] array__ | Violations is the list of the most recent violation records +
+(max maxViolationRecords). Oldest entries are dropped when the +
+limit is reached. + |  | 
+| *`acknowledgedViolations`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-acknowledgedviolationrecord[$$AcknowledgedViolationRecord$$] array__ | AcknowledgedViolations is the list of the most recent violation +
+records that have been acknowledged by users (max maxViolationRecords). +
+Oldest entries are dropped when the limit is reached. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadref"]
+==== WorkloadRef
+
+
+
+WorkloadRef identifies a Kubernetes workload.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-violationinfo[$$ViolationInfo$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-violationrecord[$$ViolationRecord$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`namespace`* __string__ | Namespace is the Kubernetes namespace of the workload. + |  | 
+| *`ownerKind`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadkind[$$WorkloadKind$$]__ | OwnerKind is the kind of the owner resource. + |  | 
+| *`ownerName`* __string__ | OwnerName is the name of the owner resource. + |  | 
+| *`identity`* __string__ | Identity is the istio-specific workload identity. +
+This field is not populated for other providers. + |  | 
+| *`selector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta[$$LabelSelector$$]__ | Selector is the label selector for the workload. + |  | 
+|===
+
+
