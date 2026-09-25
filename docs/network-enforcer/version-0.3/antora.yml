@@ -1,0 +1,7 @@
+name: network-enforcer
+title: Network Enforcer
+version: "0.3"
+prerelease: -dev
+start_page: en:introduction.adoc
+nav:
+  - modules/en/nav.adoc

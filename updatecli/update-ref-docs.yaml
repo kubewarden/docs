@@ -48,3 +48,12 @@ policies:
       - updatecli.d/commit-ref-docs.yaml
     values:
       - values.d/cli-ref-docs-runtime-enforcer.yaml
+  - name: Copy network-enforcer CRD reference documentation files
+    policy: ghcr.io/updatecli/policies/file:0.2.1
+    values:
+      - values.d/update-network-enforcer-crd-ref-docs.yaml
+  - name: Commit network-enforcer CRD reference documentation
+    config:
+      - updatecli.d/commit-ref-docs.yaml
+    values:
+      - values.d/crd-ref-docs-network-enforcer.yaml
