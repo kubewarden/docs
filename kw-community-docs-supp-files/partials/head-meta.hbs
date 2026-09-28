@@ -11,7 +11,7 @@
 
 {{#with (resolvePage page.relativeSrcPath model=false)}}
 {{#if (eq (lookup asciidoc.attributes 'ga-build') true)}}
-{{!-- <!-- Start Google Analytics --> --}}
+<!-- Start Google Analytics -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -24,6 +24,16 @@
 <link rel="preconnect" href="https://www.google-analytics.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PSW07XK7TM"></script>
-{{!-- <!-- End Google Analytics --> --}}
+<script>
+  var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+  var doNotTrack = (dnt === "1" || dnt === "yes");
+  if (!doNotTrack) {
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PSW07XK7TM');
+  }
+</script>
+<!-- End Google Analytics -->
 {{/if}}
 {{/with}}
