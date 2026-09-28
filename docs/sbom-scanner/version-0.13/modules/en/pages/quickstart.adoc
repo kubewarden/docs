@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = SBOMscanner Quick Start
+:description: Install SBOMscanner in a Kubernetes cluster and run an automated container image scan with a Registry custom resource after you install the required components
 :revdate: 2026-09-01
 :page-revdate: {revdate}
 
