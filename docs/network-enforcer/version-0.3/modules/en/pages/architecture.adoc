@@ -24,15 +24,15 @@ written onto generated CRs:
 | Provider | Flow source | Generated backend
 
 | `istio` (default)
-| ztunnel access logs, tailed by fluent-bit and pushed to the controller over OTLP (default listen port `4317`)
+| ztunnel access logs, tailed by fluent-bit and pushed to the controller over OTLP (default listen port `4317`, mutual TLS)
 | `spec.backend: istio` → Istio `AuthorizationPolicy`
 
 | `calico`
-| Goldmane gRPC (default `goldmane.calico-system.svc:7443`)
+| Goldmane gRPC (default `goldmane.calico-system.svc:7443`, mutual TLS)
 | `spec.backend: kubernetes` → Kubernetes `NetworkPolicy`
 
 | `cilium`
-| Hubble Relay gRPC (default `hubble-relay.kube-system.svc:80`)
+| Hubble Relay gRPC (default `hubble-relay.kube-system.svc:443`, mutual TLS)
 | `spec.backend: kubernetes` → Kubernetes `NetworkPolicy`
 |===
 
@@ -51,12 +51,12 @@ There are two OpenTelemetry paths. Do not conflate them:
   Istio ambient mode                    Calico                         Cilium
   ------------------                    ------                         ------
   ztunnel JSON logs                     Goldmane                       Hubble Relay
-        |                               gRPC :7443                     gRPC :80
+        |                               gRPC :7443 mTLS                gRPC :443 mTLS
         |                                 |                               |
         v                                 |                               |
   istio-fluent-bit DaemonSet              |                               |
         |                                 |                               |
-        | OTLP gRPC :4317                 |                               |
+        | OTLP gRPC :4317 mTLS            |                               |
         |                                 |                               |
         +----------------+----------------+-------------------------------+
                          |
@@ -149,6 +149,12 @@ The chart's `istio-fluent-bit` DaemonSet tails `/var/log/containers/*ztunnel*.lo
 parses the JSON, maps it with a Lua filter, and exports OTLP logs over gRPC to
 the controller Service on port `4317`.
 
+The OTLP hop is the connection from fluent-bit to the controller.
+It uses mutual TLS. fluent-bit is the client. The controller is the server.
+The default TLS mode is `issuer`.
+cert-manager CSI mounts the certificates at `/etc/provider/certs`.
+Set `controller.provider.istio.tls.mode` to `insecure` to turn TLS off.
+
 The Istio scraper in the controller receives those logs, enriches identities
 from the cluster, and enqueues learning events. Ambient L4 authorization is
 inbound and TCP-only, so learning creates an *ingress* proposal on the
@@ -160,11 +166,30 @@ The same log stream supplies monitor and protect signals: dry-run
 [#_calico-goldmane-grpc]
 === Calico: Goldmane gRPC
 
-The Calico scraper opens a streaming gRPC client to `goldmane.calico-system.svc:7443`
-(override with `controller.provider.endpoint`). The chart mounts
-Secret `net-enf-goldmane-client-certs` at `/etc/goldmane/certs`; it does not
-create that Secret. Copy Goldmane's CA and client key pair into the {ne-short-name}
-namespace before install (see `hack/setup-calico.sh`).
+The Calico scraper opens a streaming gRPC client to `goldmane.calico-system.svc:7443`.
+Override the address with `controller.provider.calico.endpoint`.
+
+This hop uses mutual TLS. Goldmane is the server. The controller is the client.
+
+The default TLS mode is `existingSecret`.
+The controller reads Secret `goldmane-key-pair` in namespace `calico-system`.
+It reads the CA from ConfigMap `goldmane-ca-bundle` in the same namespace.
+The CA data key is `tigera-ca-bundle.crt`. Those objects stay in `calico-system`.
+
+The chart creates a Role and a RoleBinding in `calico-system`.
+The controller ServiceAccount can then get that Secret and that ConfigMap.
+You can install the release in any namespace.
+
+`controller.provider.calico.tls.mode` accepts `existingSecret` or `issuer`.
+`issuer` asks cert-manager to write a client certificate to `/etc/provider/certs`.
+Goldmane accepts only mutual TLS.
+
+If you already have a client Secret in the release namespace, leave
+`controller.provider.calico.tls.existingSecret.namespace` empty.
+Set `controller.provider.calico.tls.existingSecret.name` to that Secret name,
+for example `net-enf-goldmane-client-certs`.
+The chart then mounts the Secret at `/etc/provider/certs`.
+The Secret must contain `tls.crt`, `tls.key`, and `ca.crt`.
 
 Goldmane reports full flows, so learning updates two proposals per
 connection: egress on the source and ingress on the destination.
@@ -172,8 +197,21 @@ connection: egress on the source and ingress on the destination.
 [#_cilium-hubble-relay]
 === Cilium: Hubble Relay
 
-The Cilium scraper follows Hubble Relay's `GetFlows` RPC at
-`hubble-relay.kube-system.svc:80` (override with `controller.provider.endpoint`).
+The Cilium scraper follows Hubble Relay `GetFlows` at
+`hubble-relay.kube-system.svc:443`.
+Override the address with `controller.provider.cilium.endpoint`.
+
+The default TLS mode is `existingSecret`.
+The controller reads Secret `hubble-relay-client-certs` in `kube-system`.
+It requires the server name `ui.hubble-relay.cilium.io`.
+Set that name with `controller.provider.cilium.tls.serverName`.
+
+`issuer` mounts a cert-manager client certificate at `/etc/provider/certs`.
+
+`insecure` turns TLS off.
+Clear `controller.provider.cilium.tls.serverName` when you use `insecure`.
+The chart rejects a server name in `insecure` mode.
+If the endpoint is still `hubble-relay.kube-system.svc:443`, the chart automatically overwrites the port to `80`.
 
 Like Calico, Hubble reports both directions, so learning writes an egress
 proposal and an ingress proposal.
@@ -323,10 +361,3 @@ CSI volume on otel-collector                    |
 verify the remote collector, and optionally present a client certificate
 (`telemetry.externalCollector.otelCollectorClientCertificateSecret`). That last
 option is mutual TLS.
-
-[#_calico-goldmane]
-=== Calico Goldmane
-
-Goldmane mTLS is independent of the collector chain. The controller mounts
-`net-enf-goldmane-client-certs` (CA, client cert, client key) only when
-`controller.provider.name=calico`.

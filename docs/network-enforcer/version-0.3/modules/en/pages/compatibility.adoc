@@ -31,7 +31,7 @@ include::partial$variables.adoc[]
 
 |*cert-manager*
 |Required for the default chart install
-|Together with `cert-manager-csi-driver`, so mTLS certificates are mounted directly into pods.
+|Together with `cert-manager-csi-driver`. The default collector and TLS mode `issuer` mount certificates into pods. Calico and Cilium defaults read an existing Secret.
 
 |*Linux distribution*
 |To be determined
@@ -49,19 +49,19 @@ include::partial$variables.adoc[]
 
 |*Istio (ambient)*
 |1.30.3
-|OTLP gRPC to the controller. Default listen port `4317`.
+|OTLP gRPC mutual TLS to the controller. Default listen port `4317`. Default TLS mode `issuer`.
 |`spec.backend: istio` (Istio `AuthorizationPolicy`). +
 ztunnel access logs via fluent-bit.
 
 |*Calico*
 |v3.32.1
-|gRPC to `goldmane.calico-system.svc:7443`
+|gRPC mutual TLS to `goldmane.calico-system.svc:7443`. Default TLS mode `existingSecret`.
 |`spec.backend: kubernetes` (Kubernetes `NetworkPolicy`). +
 Goldmane flow stream.
 
 |*Cilium*
 |1.20.0
-|gRPC to `hubble-relay.kube-system.svc:80`
+|gRPC mutual TLS to `hubble-relay.kube-system.svc:443`. Default TLS mode `existingSecret`.
 |`spec.backend: kubernetes` (Kubernetes `NetworkPolicy`). +
 Hubble Relay flow stream.
 |===
@@ -74,10 +74,52 @@ Monitor and protect depend on ztunnel emitting JSON authorization logs that flue
 * istiod: `profile=ambient` and `pilot.env.AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY=true`
 * ztunnel: `env.AUTHZ_POLICY_INFO_LOGGING=true` and `logAsJson=true`
 
-[#_calico-goldmane-client-secret]
-=== Calico Goldmane client Secret
+[#_provider-tls]
+=== Provider TLS
 
-The chart mounts the Secret net-enf-goldmane-client-certs when controller.provider.name=calico, but does not create it. Before installing, copy Goldmane's CA bundle and key pair into the {ne-short-name} release namespace under that exact name (see hack/setup-calico.sh).
+Mutual TLS means both peers present a certificate.
+A hop is one connection between {ne-short-name} and the provider.
+TLS mode says where the certificates for that hop come from.
+
+Set TLS under `controller.provider.istio.tls`, `controller.provider.cilium.tls`, or `controller.provider.calico.tls`.
+Only the active provider is applied.
+
+[cols="1,3,2,2,3"]
+|===
+| Provider | Hop | Direction | Default mode | What you supply
+
+| Istio
+| fluent-bit to Service `<fullname>-istio-otlp` on port `4317` (`controller.provider.istio.endpoint`)
+| Controller is the server. fluent-bit is the client. Mutual TLS.
+| `issuer`
+| Nothing, when cert-manager and `cert-manager-csi-driver` are installed. +
+The chart CA Issuer `<fullname>-ca` issues the certificates into `/etc/provider/certs`. +
+`existingSecret` must name a Secret in the release namespace. Leave `existingSecret.namespace` empty. The Secret needs `tls.crt`, `tls.key`, and `ca.crt`. +
+`insecure` turns TLS off.
+
+| Calico
+| Controller to Goldmane at `goldmane.calico-system.svc:7443` (`controller.provider.calico.endpoint`)
+| Controller is the client. Goldmane is the server. Mutual TLS.
+| `existingSecret`
+| Nothing in the release namespace. +
+The controller reads Secret `calico-system/goldmane-key-pair` (`tls.crt` and `tls.key`) and ConfigMap `calico-system/goldmane-ca-bundle` key `tigera-ca-bundle.crt`. +
+`issuer` uses cert-manager CSI and writes a client certificate to `/etc/provider/certs`. +
+If you already have a client Secret in the release namespace, set `existingSecret.name` to that Secret, for example `net-enf-goldmane-client-certs`. Leave `existingSecret.namespace` empty. The chart mounts that Secret. It must contain `tls.crt`, `tls.key`, and `ca.crt`. +
+`insecure` is rejected.
+
+| Cilium
+| Controller to Hubble Relay at `hubble-relay.kube-system.svc:443` (`controller.provider.cilium.endpoint`)
+| Controller is the client. Relay is the server. Mutual TLS.
+| `existingSecret`
+| Nothing, when Secret `kube-system/hubble-relay-client-certs` exists (`ca.crt`, `tls.crt`, and `tls.key`). +
+The server name is `ui.hubble-relay.cilium.io` (`tls.serverName`). +
+`issuer` uses cert-manager CSI. The client certificate DNS name is `network-enforcer.hubble-relay.cilium.io`. +
+`insecure` is plaintext. Clear `tls.serverName`. If the endpoint is still the default `:443`, the chart automatically overwrites the port to `80`.
+|===
+
+The chart renders `--provider-tls-mode` and the matching `--provider-tls-*` flags on the controller.
+A cross-namespace Secret also renders a Role and a RoleBinding in that namespace.
+The Role allows `get` on that Secret, and on the CA ConfigMap when one is set.
 
 [#_capability-matrix]
 == Capability Matrix
@@ -110,17 +152,13 @@ ifeval::["{build-type}" == "product"]
 |===
 |Rancher Version |Status |Notes
 
-|*2.9.x*
+|*2.12.x*
 |✓ Supported
 |Minimum supported version
 
-|*2.10.x - 2.12.x*
-|✓ Supported
-|Fully tested
-
 |*2.13.x - 2.15.x*
 |Expected
-|Should work but not yet verified
+|Fully tested
 |===
 endif:[]
 

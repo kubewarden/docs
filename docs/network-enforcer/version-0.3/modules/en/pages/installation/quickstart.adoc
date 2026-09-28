@@ -27,7 +27,8 @@ Before you start, you need:
   This guide creates one for you.
 * `kubectl`, `helm` and `curl` installed locally.
 * `cert-manager` and `cert-manager-csi-driver` in the cluster.
-  They are used to issue the TLS material of the bundled OpenTelemetry collector.
+  The bundled OpenTelemetry collector uses them for its serving certificate.
+  The Istio default TLS mode `issuer` uses them for the OTLP hop.
 
 [NOTE]
 ====
@@ -61,13 +62,14 @@ Pick one provider and follow only its section.
 
 | Cilium
 | `cilium`
-| Hubble Relay gRPC API (`hubble-relay.kube-system.svc:80`)
+| Hubble Relay gRPC API over mutual TLS (`hubble-relay.kube-system.svc:443`)
 | Kubernetes `NetworkPolicy`
 | `backend: kubernetes`
 |===
 
 The provider also decides the endpoint the controller connects to.
-When `controller.provider.endpoint` is empty, the chart uses the per-provider default listed above
+The Helm value is `controller.provider.<name>.endpoint`, for example `controller.provider.calico.endpoint`.
+When that value is empty, the chart uses the per-provider default listed above
 (for `istio` the value is the local OTLP port, `4317`).
 
 [#_option-1-istio-ambient]
@@ -152,17 +154,27 @@ Otherwise, run it straight from the repository:
 curl -sSL https://raw.githubusercontent.com/kubewarden/network-enforcer/main/hack/setup-calico.sh | bash
 ----
 
-The script installs the Calico CRDs and the Tigera operator with `goldmane.enabled=true`, waits for the
-Goldmane deployment, and then creates the `net-enf-goldmane-client-certs` Secret that {ne-short-name}
-uses as a client certificate when it scrapes flows from Goldmane.
+The script installs the Calico CRDs and the Tigera operator with `goldmane.enabled=true`.
+It waits until ConfigMap `goldmane-ca-bundle` and Secret `goldmane-key-pair` exist in `calico-system`.
+It then waits until the Goldmane deployment is ready.
 
 [IMPORTANT]
 ====
-Run the script *before* installing the {ne-short-name} chart.
-The controller Deployment mounts `net-enf-goldmane-client-certs` from its own namespace, so the Secret —
-and therefore the `network-enforcer` namespace — must already exist.
-The script creates both for you; set `NETWORK_ENFORCER_NAMESPACE` if you install the chart somewhere
-other than `network-enforcer`.
+Run the script before you install the {ne-short-name} chart.
+You can install the chart in any namespace.
+The controller reads those Goldmane objects in `calico-system`.
+You do not need to create a client Secret in the release namespace.
+
+The default TLS mode is `existingSecret`.
+The controller reads `tls.crt` and `tls.key` from `goldmane-key-pair`.
+It reads the CA from `goldmane-ca-bundle`, key `tigera-ca-bundle.crt`.
+
+If you already have a client Secret in the release namespace, leave
+`controller.provider.calico.tls.existingSecret.namespace` empty.
+Set `controller.provider.calico.tls.existingSecret.name` to that Secret name,
+for example `net-enf-goldmane-client-certs`.
+The chart then mounts the Secret.
+The Secret must contain `tls.crt`, `tls.key`, and `ca.crt`.
 ====
 
 [#_option-3-cilium]
@@ -190,15 +202,21 @@ Otherwise, run it straight from the repository:
 curl -sSL https://raw.githubusercontent.com/kubewarden/network-enforcer/main/hack/setup-cilium.sh | bash
 ----
 
-The script installs Cilium with the settings {ne-short-name} needs, and waits for the agent, the
-operator and Hubble Relay to be ready:
+The script installs Cilium with the values {ne-short-name} needs, and waits for the agent,
+the operator and Hubble Relay to be ready:
 
 * `hubble.enabled=true` and `hubble.relay.enabled=true`, because the controller reads flows from the
   Hubble Relay gRPC API.
-* `hubble.relay.tls.server.enabled=false`, because the controller currently talks to
-  `hubble-relay.kube-system.svc:80` in plaintext.
-* `policyDenyResponse=icmp`, so denied egress traffic is answered with an ICMP error instead of being
-  silently dropped.
+* Relay TLS is on. `HUBBLE_RELAY_TLS` defaults to `helm`, which sets `hubble.relay.tls.server.enabled=true`
+  and `hubble.relay.tls.server.mtls=true`.
+  The chart default reads Secret `kube-system/hubble-relay-client-certs` and connects to
+  `hubble-relay.kube-system.svc:443`.
+* `policyDenyResponse=icmp`. A denied egress packet returns an ICMP error.
+
+If Relay must serve plaintext, run the script with `HUBBLE_RELAY_TLS=off`.
+Then install the chart with `controller.provider.cilium.tls.mode=insecure`.
+Set `controller.provider.cilium.tls.serverName` to an empty string.
+The chart then automatically overwrites the port to `80`.
 
 Use `CILIUM_VERSION` to pick a different Cilium version, for example
 `CILIUM_VERSION=1.19.7 ./hack/setup-cilium.sh`.
@@ -206,8 +224,8 @@ Use `CILIUM_VERSION` to pick a different Cilium version, for example
 [#_install-cert-manager-and-cert-manager-csi-driver]
 == Install cert-manager and cert-manager-csi-driver
 
-The bundled OpenTelemetry collector terminates TLS with a certificate provisioned by
-`cert-manager-csi-driver`, so both components must be installed before the chart:
+The default install needs cert-manager and `cert-manager-csi-driver` before the chart.
+The collector and the Istio TLS mode `issuer` both mount certificates from that driver.
 
 [source,bash]
 ----
@@ -230,10 +248,12 @@ helm install cert-manager-csi-driver jetstack/cert-manager-csi-driver \
 For more information on configuring cert-manager, see the
 link:https://cert-manager.io/docs/installation/helm[cert-manager documentation].
 
-If you do not want to install cert-manager, you can deploy the chart with
+If you skip the bundled collector, deploy the chart with
 `--set telemetry.collectorStrategy=none`.
-{ne-short-name} then keeps working — learning, monitor and protect are unaffected — but violations are
-no longer exported as OpenTelemetry logs.
+Learning, monitor, and protect still work.
+Violations stay on `WorkloadNetworkPolicy` status, but they are not exported to the OpenTelemetry collector.
+The Istio default TLS mode `issuer` still needs cert-manager and `cert-manager-csi-driver`.
+Calico and Cilium defaults use an existing Secret for the provider hop.
 ====
 
 [#_install-the-network-enforcer-chart]
