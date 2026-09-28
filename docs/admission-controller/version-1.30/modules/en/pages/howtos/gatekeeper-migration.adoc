@@ -1,5 +1,6 @@
 include::partial$variables.adoc[]
 = Migrating Gatekeeper Policies to {project-name}
+:description: Convert an existing Gatekeeper policy into a {project-name} policy by compiling the Rego program into a WebAssembly module and distributing it as a policy
 :revdate: 2025-07-09
 :page-revdate: {revdate}
 description: "How to migrate Gatekeeper policies to {short-project-name}"
