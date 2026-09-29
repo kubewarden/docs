@@ -1,0 +1,43 @@
+include::partial$variables.adoc[]
+
+= Common problems
+:revdate: 2026-09-01
+:page-revdate: {revdate}
+:description: Resolve common {sboms-name} issues and error conditions.
+
+This page documents common errors that occur while users run
+{sboms-name}. It explains how to correct these errors.
+
+== Docker Hub pull rate limit reached
+
+=== Problem
+
+Scans end up in an error state with a message similar to:
+
+[source,text]
+----
+You have reached your unauthenticated pull rate limit
+----
+
+This happens because anonymous image pulls from https://hub.docker.com/[Docker Hub] (`docker.io`) are subject to rate limiting. Once the limit is hit, further pulls are rejected until the window resets.
+
+See the official Docker documentation for full details:
+
+* https://docs.docker.com/docker-hub/usage/[Docker Hub usage and limits]
+* https://docs.docker.com/docker-hub/usage/pulls/[Docker Hub pull rate limits]
+* https://www.docker.com/increase-rate-limits/[Download rate limit overview]
+
+=== Solution
+
+Authenticate with Docker Hub. Then pulls count against your account limits
+instead of the shared anonymous quota. See the Docker documentation for
+available options:
+
+* https://docs.docker.com/docker-hub/usage/#authenticate-to-increase-your-pull-rate-limit[Authenticate to increase your pull rate limit]
+* https://docs.docker.com/subscription/[Subscriptions and higher limits]
+
+After you get credentials, create a `kubernetes.io/dockerconfigjson` Secret
+in the {sboms-name} installation namespace. Reference the Secret from the
+applicable `Registry` resource. To propagate credentials to managed
+registries, set the `authSecret` field in `WorkloadScanConfiguration`. See
+xref:user-guide/private-registries.adoc[Private Registries] for the procedure.

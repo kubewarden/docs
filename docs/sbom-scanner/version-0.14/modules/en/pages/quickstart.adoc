@@ -1,0 +1,219 @@
+include::partial$variables.adoc[]
+
+= SBOMscanner Quick Start
+:description: Install SBOMscanner in a Kubernetes cluster and run an automated container image scan with a Registry custom resource after you install the required components
+:revdate: 2026-09-01
+:page-revdate: {revdate}
+
+This guide explains how to install SBOMscanner and run an image scan.
+
+include::partial${build-type}-specific/warning.adoc[]
+
+This guide has these steps:
+
+* Deploy the SBOMscanner stack in a Kubernetes cluster.
+* Run an image scan with a `Registry` custom resource.
+
+== Requirements
+
+Before you deploy SBOMscanner, prepare these items:
+
+* A Kubernetes cluster, for example a https://kind.sigs.k8s.io/[kind] cluster.
+* A
+https://kubernetes.io/docs/concepts/storage/storage-classes/#default-storageclass[default
+Storage Class] defined inside of the cluster
+* `helm` installed locally
+* `kubectl` installed locally
+* `cert-manager` installed in the cluster
+* `CloudNativePG` installed in the cluster
+
+=== Install cert-manager
+
+Install cert-manager:
+
+[source,bash]
+----
+helm repo add jetstack https://charts.jetstack.io
+
+helm repo update
+
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --set crds.enabled=true \
+  --wait
+----
+
+[NOTE]
+====
+For configuration details, see the https://cert-manager.io/docs/installation/helm[cert-manager documentation].
+====
+
+
+=== Install CloudNativePG
+
+Install CloudNativePG:
+
+[source,bash]
+----
+helm repo add cnpg https://cloudnative-pg.github.io/charts
+helm repo update
+helm install cnpg \
+  --namespace cnpg-system \
+  --create-namespace \
+  --wait \
+  cnpg/cloudnative-pg
+----
+
+For CloudNativePG configuration, see
+xref:/installation/helm-values.adoc#using-cloudnativepg-recommended[Using CloudNativePG
+(Recommended)] in the Helm values documentation. You can use an external
+PostgreSQL instance instead. See
+xref:/installation/helm-values.adoc#using-an-external-postgresql-instance[Using an
+External PostgreSQL Instance] for configuration details.
+
+== Deploy SBOMscanner
+
+Install SBOMscanner from your local machine:
+
+=== Install the Helm chart
+
+[source,bash]
+----
+helm repo add kubewarden https://charts.kubewarden.io
+helm repo update
+helm install sbomscanner kubewarden/sbomscanner \
+  --namespace sbomscanner \
+  --create-namespace \
+  --wait
+----
+
+[TIP]
+====
+
+SBOMscanner is highly available by default. If your environment has
+limited resources, reduce the replica count:
+
+[source,bash]
+----
+helm install sbomscanner kubewarden/sbomscanner \
+  --namespace sbomscanner \
+  --create-namespace \
+  --set controller.replicas=1 \
+  --set storage.replicas=1 \
+  --set storage.postgres.cnpg.instances=1 \
+  --set worker.replicas=1 \
+  --wait
+----
+
+This configuration is suitable for development environments where high
+availability is not required.
+====
+
+=== Verify the Deployment
+
+After installation, make sure that all pods are running:
+
+[source,bash]
+----
+kubectl get pods -n sbomscanner
+----
+
+Example output:
+
+[source,bash]
+----
+sbomscanner           sbomscanner-controller-7f568c88dc-bmjgs       1/1     Running
+sbomscanner           sbomscanner-controller-7f568c88dc-gcgbn       1/1     Running
+sbomscanner           sbomscanner-controller-7f568c88dc-q7hbh       1/1     Running
+sbomscanner           sbomscanner-nats-0                            2/2     Running
+sbomscanner           sbomscanner-nats-1                            2/2     Running
+sbomscanner           sbomscanner-nats-2                            2/2     Running
+sbomscanner           sbomscanner-storage-5f596cd8f8-4t7z8          1/1     Running
+sbomscanner           sbomscanner-worker-d9d68c5c-5dtck             1/1     Running
+sbomscanner           sbomscanner-worker-d9d68c5c-qcp7n             1/1     Running
+sbomscanner           sbomscanner-worker-d9d68c5c-tlpgm             1/1     Running
+----
+
+=== Summary
+
+The SBOMscanner deployment is running. You can scan images and generate
+reports.
+== Run a Scan
+
+This section explains how to create a registry source and trigger an
+automated scan.
+
+=== Prepare a `registry.yaml` file
+
+Before you run a scan, define a `Registry` custom resource. SBOMscanner
+uses this resource to fetch images.
+
+[source,yaml]
+----
+apiVersion: sbomscanner.kubewarden.io/v1alpha1
+kind: Registry
+metadata:
+  name: test-registry
+  namespace: default
+spec:
+  uri: ghcr.io
+  repositories:
+    - name: kubewarden/sbomscanner/test-assets/golang
+----
+
+=== Create the Registry CR
+
+[source,bash]
+----
+kubectl apply -f registry.yaml
+----
+
+=== Prepare a `scan-job.yaml`
+
+The `ScanJob` CR tells SBOMscanner which registry to scan.
+
+[source,yaml]
+----
+apiVersion: sbomscanner.kubewarden.io/v1alpha1
+kind: ScanJob
+metadata:
+  name: test-scanjob
+  namespace: default
+spec:
+  registry: test-registry
+----
+
+=== Create a ScanJob CR
+
+[source,bash]
+----
+kubectl apply -f scanjob.yaml
+----
+
+=== Wait for Results
+
+When the scan completes, examine the generated SBOMs and vulnerability
+reports:
+
+[source,bash]
+----
+kubectl get sbom -n default
+kubectl get vulnerabilityreport -n default
+----
+
+The command shows output similar to this:
+
+[source,bash]
+----
+NAME                                                               CREATED AT
+2ca3e0b033d523509544cb6f31c626af2a710d7dbcc15cb9dffced2e4634d69b   2025-06-10T10:26:38Z
+...
+----
+
+=== Summary
+
+You created a `Registry` resource and triggered an automated scan.
+
+The xref:/user-guide/querying-reports.adoc[Querying reports] guide
+explains how to inspect images, SBOMs, and vulnerability reports.

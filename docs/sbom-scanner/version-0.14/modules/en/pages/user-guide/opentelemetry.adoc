@@ -1,0 +1,135 @@
+include::partial$variables.adoc[]
+
+= OpenTelemetry
+:revdate: 2026-08-19
+:page-revdate: {revdate}
+:description: Export traces and metrics from {sboms-name} with OpenTelemetry.
+:keywords: ["{sboms-name}", "kubewarden", "kubernetes", "opentelemetry", "otlp", "traces", "metrics", "observability"]
+:doc-persona: ["kubewarden-operator"]
+:doc-type: ["howto"]
+:doc-topic: ["operator-manual", "observability"]
+
+{sboms-name} exports traces and metrics with https://opentelemetry.io/[OpenTelemetry], over OTLP/gRPC.
+Telemetry export is off by default.
+When you enable it, one scan produces one trace across all the components.
+The trace starts at the admission webhook and ends at the SQL statements of the storage component.
+The metrics include scan counts, stage durations, and the resource usage of each replica.
+
+The full list of spans and metrics is in the xref:reference/opentelemetry-reference.adoc[OpenTelemetry Reference].
+
+[NOTE]
+====
+The controller also serves its metrics on the standard controller-runtime Prometheus endpoint.
+Telemetry export does not change this endpoint.
+====
+
+[#_prerequisites]
+== Prerequisites
+
+* An OTLP/gRPC endpoint that receives the telemetry.
+  This is usually an https://opentelemetry.io/docs/collector/[OpenTelemetry Collector] in the cluster.
+  An OTLP-compatible backend also works.
+* A TLS server certificate for the endpoint, and a client certificate for {sboms-name}.
+  You can create the certificates with https://cert-manager.io/[cert-manager].
+
+[#_enable_telemetry_export]
+== Enable telemetry export
+
+Set the `otel.endpoint` value to the URL of your OTLP endpoint:
+
+[source,bash]
+----
+helm upgrade sbomscanner ./chart \
+  --set otel.endpoint=https://otel-collector.telemetry.svc.cluster.local:4317
+----
+
+The URL scheme controls the connection security.
+An `https://` URL makes the components connect with TLS.
+
+[CAUTION]
+====
+Do not use an `http://` URL in production.
+An `http://` URL sends the telemetry as plaintext on the network.
+====
+
+[#_configure_mtls]
+== Configure mTLS
+
+Two values configure the TLS certificates.
+Both secrets must exist in the namespace where {sboms-name} is installed.
+
+* `otel.caSecretName` names a secret that contains a `ca.crt` key.
+  The components use this CA certificate to verify the server certificate of the endpoint.
+* `otel.clientCertificateSecretName` names a secret that contains `tls.crt` and `tls.key` keys.
+  The components use this certificate to authenticate to the endpoint (mTLS).
+
+=== Create the certificates with cert-manager
+
+This example creates a client certificate from an existing cert-manager issuer.
+The certificate secret also contains the `ca.crt` key of the issuer.
+For this reason, one secret can serve both values.
+
+[source,yaml]
+----
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sbomscanner-otel-client
+  namespace: sbomscanner
+spec:
+  secretName: sbomscanner-otel-client
+  commonName: sbomscanner
+  usages:
+    - client auth
+  issuerRef:
+    kind: ClusterIssuer
+    name: my-ca-issuer
+----
+
+The OTLP endpoint must present a server certificate from the same issuer.
+It must also require client certificates from this issuer.
+For an OpenTelemetry Collector, set `cert_file`, `key_file`, and `client_ca_file` on the OTLP receiver.
+
+=== Install with mTLS
+
+Set all three values:
+
+[source,bash]
+----
+helm upgrade sbomscanner ./chart \
+  --set otel.endpoint=https://otel-collector.telemetry.svc.cluster.local:4317 \
+  --set otel.caSecretName=sbomscanner-otel-client \
+  --set otel.clientCertificateSecretName=sbomscanner-otel-client
+----
+
+The chart mounts the secrets into the components.
+Then the components connect to the endpoint with TLS and a client certificate.
+
+[#_histograms]
+== Histograms
+
+The components export histograms as https://opentelemetry.io/docs/specs/otel/metrics/sdk/#base2-exponential-bucket-histogram-aggregation[exponential histograms].
+Exponential histograms adapt their bucket resolution to the recorded values.
+Prometheus stores them as native histograms.
+
+Some backends do not support exponential histograms.
+If your backend does not support them, convert the histograms in the collector.
+The https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/transformprocessor[transform processor] converts them to explicit histograms:
+
+[source,yaml]
+----
+processors:
+  transform:
+    metric_statements:
+      - context: metric
+        statements:
+          - convert_exponential_histogram_to_histogram("midpoint", [0.05, 0.1, 0.5, 1, 5, 30, 120])
+----
+
+[#_example_dashboard]
+== Example dashboard
+
+The {sboms-name} repository contains an example Grafana dashboard at https://github.com/kubewarden/sbomscanner/blob/main/examples/dashboards/sbomscanner.json[examples/dashboards/sbomscanner.json].
+The dashboard shows the scan counters, the stage durations, the storage metrics, and the resource usage of each replica.
+The latency panels show exemplars.
+An exemplar connects one point on a latency panel to the trace that produced it.
