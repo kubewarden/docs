@@ -1,14 +1,14 @@
 include::partial$variables.adoc[]
+
 = Migrating Gatekeeper Policies to {project-name}
 :description: Convert an existing Gatekeeper policy into a {project-name} policy by compiling the Rego program into a WebAssembly module and distributing it as a policy
 :revdate: 2025-11-17
 :page-revdate: {revdate}
-description: "How to migrate Gatekeeper policies to {short-project-name}"
-keywords: ["{project-name}", kubewarden, gatekeeper]
-doc-persona:
+:keywords: ["{project-name}", kubewarden, gatekeeper]
+:doc-persona:
   [kubewarden-operator, kubewarden-integrator, kubewarden-policy-developer]
-doc-type: [howto]
-doc-topic: [operator-manual]
+:doc-type: [howto]
+:doc-topic: [operator-manual]
 
 This guide shows you how to convert an existing Gatekeeper policy into a
 {project-name} policy. This process involves two main steps:
