@@ -107,6 +107,15 @@ xref:howtos/policy-management.adoc[]
 - Prerelease (dev) versions have `prerelease: -dev` in `antora.yml`
 - The current latest release has `display: 'X.Y-latest'` in `antora.yml`; the previous latest loses the `display:` line
 
+Each component must always have **exactly one** version directory with `prerelease:` and **exactly one** with a `-latest` display marker. These are not conventions, the automation depends on them:
+
+- The promotion target in `updatecli/updatecli.d/antora.yaml` fails the scheduled job when either count is wrong.
+- The reference documentation manifests read the dev version from the directory marked `prerelease:` to decide where generated partials are written.
+
+Never remove `prerelease:` from a version directory by hand without adding `display: 'X.Y-latest'` to it and removing that line from the previous latest. Doing so stalls the automatic version bump. Use the release script instead, which handles both edits.
+
+The component repository defines the version number. The `prerelease:` directory is a placeholder for the next release, and its number is a guess made by the previous promotion. When a release appears, the promotion renames that directory to the published version. The placeholder number carries no meaning until that rename happens, so a placeholder whose number differs from the next release is normal.
+
 Use the release script to create a new version:
 ```bash
 ./scripts/make-new-release.sh admission-controller <current-latest> <current-prerelease> <new-prerelease> [yyyy-mm-dd|-n]
