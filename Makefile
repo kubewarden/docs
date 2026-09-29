@@ -7,6 +7,7 @@ all:
 	@echo "  preview                    Preview the local community docs site"
 	@echo "  clean                      Clean build artifacts"
 	@echo "  checkmake                  Check Makefile for common issues"
+	@echo "  check-versions             Check the documentation version markers"
 	@echo "  environment                Set up the Node.js environment"
 	@echo "  tmpdir                     Create temporary directories"
 
@@ -70,6 +71,10 @@ checkmake:
 		else echo "checkmake passed"; \
 		fi; \
 	else echo "checkmake not available"; fi
+
+.PHONY: check-versions
+check-versions:
+	./scripts/check-docs-versions.sh
 
 .PHONY: preview
 preview:
