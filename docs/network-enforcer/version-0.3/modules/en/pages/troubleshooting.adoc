@@ -84,14 +84,15 @@ OTLP hops.
 === Calico
 
 . Goldmane is enabled in the Tigera `Installation` (`goldmane.enabled=true`).
-. Secret `net-enf-goldmane-client-certs` exists in the {ne-short-name}
-  namespace. The chart mounts that Secret.
+. Secret `goldmane-key-pair` and ConfigMap `goldmane-ca-bundle` exist in
+  `calico-system`.
 . Default endpoint `goldmane.calico-system.svc:7443` is reachable from the
-  controller (override with `controller.provider.endpoint`).
+  controller (override with `controller.provider.calico.endpoint`).
 +
 [source,bash]
 ----
-kubectl get secret -n network-enforcer net-enf-goldmane-client-certs
+kubectl get secret -n calico-system goldmane-key-pair
+kubectl get configmap -n calico-system goldmane-ca-bundle
 kubectl get deploy -n calico-system -l k8s-app=goldmane
 ----
 
@@ -100,14 +101,104 @@ kubectl get deploy -n calico-system -l k8s-app=goldmane
 
 . Hubble and Hubble Relay are enabled
   (`hubble.enabled=true`, `hubble.relay.enabled=true`).
-. Default endpoint `hubble-relay.kube-system.svc:80` is reachable
-  (override with `controller.provider.endpoint`).
+. Secret `hubble-relay-client-certs` exists in `kube-system`.
+. Default endpoint `hubble-relay.kube-system.svc:443` is reachable
+  (override with `controller.provider.cilium.endpoint`).
 +
 [source,bash]
 ----
+kubectl get secret -n kube-system hubble-relay-client-certs
 kubectl get svc -n kube-system hubble-relay
 kubectl get pods -n kube-system -l k8s-app=hubble-relay
 ----
+
+[#_provider-tls-handshake]
+== Provider TLS handshake
+
+Read the active mode from the controller arguments:
+
+[source,bash]
+----
+kubectl get deploy -n network-enforcer \
+  -l app.kubernetes.io/component=controller \
+  -o jsonpath='{range .items[0].spec.template.spec.containers[0].args}{@}{"\n"}{end}' \
+  | grep provider-
+----
+
+`--provider-tls-mode` is `issuer`, `existingSecret`, or `insecure`.
+The same output shows `--provider-endpoint` and the certificate flags.
+`issuer` and a same-namespace Secret mount volume `provider-tls` at `/etc/provider/certs`.
+When `existingSecret.namespace` is set, the controller reads the Secret through the API.
+
+Raise `controller.logLevel` to `debug` before you follow a handshake.
+The commands are in <<_enable-verbose-logs>>.
+
+[#_istio-handshake]
+=== Istio
+
+The controller is the TLS server.
+fluent-bit is the client.
+The default mode is `issuer`.
+
+. If the controller pod or a fluent-bit pod stays `Pending`, describe the pod.
+  A missing `cert-manager-csi-driver` fails the `provider-tls` volume.
+. If the controller log says `failed to load TLS credentials for OTLP logs server`,
+  `/etc/provider/certs` is missing `tls.crt`, `tls.key`, or `ca.crt`.
+. If the controller log says `OTLP Istio scraper running in insecure mode`, TLS is off.
+  fluent-bit uses the same mode.
+  A mismatch fails the client handshake.
+. If the controller is running and proposals stay empty, read the fluent-bit logs:
++
+[source,bash]
+----
+kubectl logs -n network-enforcer \
+  -l app.kubernetes.io/component=istio-fluent-bit --tail=100
+----
++
+fluent-bit sets `Tls.verify_hostname On` unless the mode is `insecure`.
+A certificate name that does not match Service `<fullname>-istio-otlp` shows up in those logs.
+
+[#_calico-handshake]
+=== Calico
+
+Goldmane requires mutual TLS.
+The chart rejects mode `insecure`.
+
+. Make sure that Secret `goldmane-key-pair` and ConfigMap `goldmane-ca-bundle` exist in `calico-system`.
+  The Secret must contain `tls.crt` and `tls.key`.
+  The ConfigMap must contain key `tigera-ca-bundle.crt`.
+. Make sure that Role `<fullname>-provider-tls` in `calico-system` allows `get` on those objects.
+  The log `failed to get Secret` means the Secret is missing, or the Role does not allow `get`.
+  The log `failed to get ConfigMap` means the same for the ConfigMap.
+. The log `secret ... is missing key` means `tls.crt` or `tls.key` is absent.
+  The log `configmap ... is missing key` means the CA key is absent.
+. A successful dial logs `Using TLS credentials for Goldmane connection` and a `serverName`.
+. If a later log names a certificate or a handshake, the material loaded and Goldmane rejected it.
+  An empty `controller.provider.calico.tls.serverName` uses the endpoint host `goldmane.calico-system.svc`.
+  Set `serverName` when the Goldmane certificate uses a different name.
+
+If `existingSecret.namespace` is empty, the Secret is mounted from the release namespace.
+`--provider-tls-cert-dir=/etc/provider/certs` is present and `--provider-tls-cert-secret` is absent.
+The mounted Secret must contain `tls.crt`, `tls.key`, and `ca.crt`.
+
+[#_cilium-handshake]
+=== Cilium
+
+The default mode is `existingSecret`.
+The default endpoint port is `443`.
+The default server name is `ui.hubble-relay.cilium.io`.
+
+. Make sure that Secret `hubble-relay-client-certs` in `kube-system` contains `ca.crt`, `tls.crt`, and `tls.key`.
+. The log `failed to obtain TLS material for Hubble Relay` means the Secret read failed.
+  The log `failed to load TLS credentials for Hubble Relay` means the PEM data is not usable.
+. A successful dial logs `Using TLS credentials for Hubble Relay connection` and a `serverName`.
+. If that line is followed by a handshake error, the server name does not match the Relay certificate.
+  Relay certificates use a name under `hubble-relay.cilium.io`.
+. The log `Connecting to Hubble Relay without TLS` means the mode is `insecure`.
+  Relay must listen without TLS.
+  Clear `controller.provider.cilium.tls.serverName`.
+  The chart automatically overwrites only the default endpoint `hubble-relay.kube-system.svc:443` to port `80`.
+  If `--provider-endpoint` still uses port `443`, set the endpoint to port `80`.
 
 [#_flow-dumper]
 == Flow dumper

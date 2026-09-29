@@ -130,8 +130,9 @@ traffic once the generated `AuthorizationPolicy` objects are gone.
 === Cilium Hubble settings
 
 The Quick Start enables Hubble and Hubble Relay (`hubble.enabled=true`,
-`hubble.relay.enabled=true`, `hubble.relay.tls.server.enabled=false`) and sets
-`policyDenyResponse=icmp` so denied egress returns an ICMP error.
+`hubble.relay.enabled=true`) with Relay TLS on
+(`hubble.relay.tls.server.enabled=true`, `hubble.relay.tls.server.mtls=true`)
+and sets `policyDenyResponse=icmp` so denied egress returns an ICMP error.
 If you enabled those only for {ne-short-name}, restore the values you want on
 the Cilium Helm release.
 Leave Hubble in place if you use it for anything else.
@@ -143,10 +144,10 @@ The Quick Start installs the Tigera operator with `goldmane.enabled=true`.
 If you enabled Goldmane only for {ne-short-name}, disable it on the Calico
 Helm release.
 Leave it enabled if other tools still scrape Goldmane.
-The Secret `net-enf-goldmane-client-certs` is removed when the
-`network-enforcer` namespace is deleted; Calico's own
-`goldmane-ca-bundle` ConfigMap and `goldmane-key-pair` Secret in `calico-system`
-are not {ne-short-name} objects.
+Helm uninstall removes the Role and RoleBinding that the chart added in
+`calico-system`.
+Calico's `goldmane-ca-bundle` ConfigMap and `goldmane-key-pair` Secret stay.
+They are Calico objects.
 
 [#_verify]
 == Verify nothing {ne-short-name} owned remains
