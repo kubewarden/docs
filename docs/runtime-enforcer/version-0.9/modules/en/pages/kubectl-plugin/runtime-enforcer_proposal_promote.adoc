@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = runtime-enforcer proposal promote
+:description: Promote WorkloadPolicyProposal to WorkloadPolicy to create a new WorkloadPolicy based on the proposal details and apply the defined rules to the system
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 

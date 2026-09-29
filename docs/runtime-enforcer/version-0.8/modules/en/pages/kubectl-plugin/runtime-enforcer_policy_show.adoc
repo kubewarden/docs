@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = runtime-enforcer policy show
+:description: Show WorkloadPolicy information to see details about the policies applied to workloads and how they map to protection settings
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 

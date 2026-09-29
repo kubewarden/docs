@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = Known limitations
+:description: Understand the known limitations of the system, including design decisions and constraints from upstream components
 :revdate: 2026-09-21
 :page-revdate: {revdate}
 

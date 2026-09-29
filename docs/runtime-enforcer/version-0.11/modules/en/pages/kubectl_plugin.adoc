@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = kubectl runtime-enforcer
+:description: Use kubectl runtime-enforcer to manage WorkloadPolicyProposal and WorkloadPolicy custom resources by promoting proposals, applying policies, and switching between
 :revdate: 2026-09-22
 :page-revdate: {revdate}
 

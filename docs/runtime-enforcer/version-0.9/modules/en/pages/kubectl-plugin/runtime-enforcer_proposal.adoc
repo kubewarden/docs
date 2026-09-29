@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = runtime-enforcer proposal
+:description: Create a WorkloadPolicyProposal using the runtime-enforcer proposal command to define and manage policies that control how workloads run in the system
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 

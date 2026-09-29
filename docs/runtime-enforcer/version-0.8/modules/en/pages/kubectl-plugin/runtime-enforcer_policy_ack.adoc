@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = runtime-enforcer policy ack
+:description: Acknowledge a WorkloadPolicy violation to confirm that you are aware of the issue and to choose the action that applies to your current situation
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 

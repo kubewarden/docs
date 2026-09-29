@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = runtime-enforcer policy
+:description: Configure a WorkloadPolicy to control which executables run in a container by using allow, deny, monitor, or protect commands to set rules and view policy
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 

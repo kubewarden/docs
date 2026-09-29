@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = runtime-enforcer policy monitor
+:description: Monitor the WorkloadPolicy to check how it enforces rules without changing the system or affecting workload operation
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 

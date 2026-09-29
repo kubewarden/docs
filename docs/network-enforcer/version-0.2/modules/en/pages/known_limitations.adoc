@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = Known limitations
+:description: Understand the current known limitations of the network-enforcer and how they affect deployment and policy enforcement
 :revdate: 2026-09-18
 :page-revdate: {revdate}
 

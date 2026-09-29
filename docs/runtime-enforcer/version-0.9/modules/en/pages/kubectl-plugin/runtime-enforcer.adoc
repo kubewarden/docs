@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = runtime-enforcer
+:description: Use the runtime-enforcer plugin to manage Kubernetes WorkloadPolicy and WorkloadPolicyProposal resources
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 
