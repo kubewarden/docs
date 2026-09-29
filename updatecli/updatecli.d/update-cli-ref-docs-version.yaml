@@ -31,37 +31,40 @@ scms:
         footers: "Signed-off-by: Kubewarden bot <cncf-kubewarden-maintainers@lists.cncf.io>"
 
 sources:
-  releaseVersion:
-    name: "Get latest {{ .component }} release version"
-    kind: githubrelease
-    spec:
-      # {{ $AppGitHubRepositoryList := .sourceRepository | split "/"}}
-      owner: "{{ $AppGitHubRepositoryList._0 }}"
-      repository: "{{ $AppGitHubRepositoryList._1 }}"
-      token: "{{ default .scm.token $GitHubPAT }}"
-      username: "{{ default .scm.username $GitHubUsername }}"
-      versionfilter:
-        kind: "semver"
-        pattern: ">0.1"
-    transformers:
-      - trimprefix: "v"
-      - findsubmatch:
-          pattern: '^(\d*).(\d*)'
-          captureindex: 0
-
   devVersion:
-    name: "Compute next dev version (release + 1)"
+    name: "Find the {{ .component }} dev version"
     kind: shell
-    dependson:
-      - "source#releaseVersion"
+    scmid: default
     spec:
+      environments:
+        - name: "PATH"
+      # Read the dev version from the documentation tree rather than
+      # computing "latest release + 1". The two only agree while the
+      # promotion in updatecli.d/antora.yaml is working: when it is blocked,
+      # the arithmetic keeps moving these paths to a directory that does not
+      # exist. Reading the tree makes that impossible, and it stays correct
+      # whether the promotion ran in this same pipeline or not.
       command: |
         #!/bin/sh
-        VERSION='{{ source "releaseVersion" }}'
-        MAJOR=$(echo "$VERSION" | cut -d. -f1)
-        MINOR=$(echo "$VERSION" | cut -d. -f2)
-        NEXT_MINOR=$((MINOR + 1))
-        echo "${MAJOR}.${NEXT_MINOR}"
+        COMPONENT_DIR="docs/{{ .component }}"
+
+        DEV_VERSION=""
+        DEV_COUNT=0
+
+        for dir in ${COMPONENT_DIR}/version-*/; do
+          [ -f "${dir}antora.yml" ] || continue
+          grep -q "prerelease:" "${dir}antora.yml" || continue
+
+          DEV_COUNT=$((DEV_COUNT + 1))
+          [ -n "$DEV_VERSION" ] || DEV_VERSION=$(basename "$dir" | sed 's/^version-//')
+        done
+
+        if [ "$DEV_COUNT" -ne 1 ]; then
+          echo "${COMPONENT_DIR}: expected exactly 1 dev version directory with 'prerelease:', found ${DEV_COUNT}" >&2
+          exit 1
+        fi
+
+        echo "$DEV_VERSION"
 
 targets:
   updateCliCopyValuesFile:
