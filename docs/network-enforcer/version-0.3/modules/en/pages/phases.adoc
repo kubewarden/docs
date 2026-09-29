@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = {ne-name} phases: learn, monitor, protect
+:description: Learn how to move between the learn, monitor, and protect phases to manage network policies, observe traffic flows, create proposals, and update policies
 :revdate: 2026-09-18
 :page-revdate: {revdate}
 

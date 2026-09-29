@@ -2,6 +2,7 @@ include::partial$variables.adoc[]
 
 // Generated documentation. Please do not edit.
 = CRD API Reference
+:description: API reference for the {rte-name} Custom Resource Definitions
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 :anchor_prefix: k8s-api

@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = Troubleshooting
+:description: Troubleshoot common failures by checking logs, verifying configurations, and confirming network and component statuses
 :revdate: 2026-09-18
 :page-revdate: {revdate}
 

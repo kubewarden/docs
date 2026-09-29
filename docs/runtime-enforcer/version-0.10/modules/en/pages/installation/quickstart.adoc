@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = {rte-name} Quick Start
+:description: Start by deploying the application in a Kubernetes cluster, then create a WorkloadPolicyProposal based on observed processes and convert it to a WorkloadPolicy
 
 :revdate: 2026-09-22
 :page-revdate: {revdate}

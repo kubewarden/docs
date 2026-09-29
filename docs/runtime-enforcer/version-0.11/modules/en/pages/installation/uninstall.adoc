@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = {rte-name} Uninstall
+:description: Uninstall the application and all related policies by running the helm chart uninstall command then deleting the WorkloadPolicy and WorkloadPolicyProposal
 :revdate: 2026-09-17
 :page-revdate: {revdate}
 

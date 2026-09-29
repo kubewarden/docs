@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = runtime-enforcer policy protect
+:description: Protect a workload by setting the WorkloadPolicy mode to protect and managing the policy using the runtime-enforcer tool to ensure secure and controlled
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 

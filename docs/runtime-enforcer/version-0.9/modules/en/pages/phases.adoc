@@ -1,6 +1,7 @@
 include::partial$variables.adoc[]
 
 = {rte-name} phases: learn, monitor, protect
+:description: Learn how to move between the learn, monitor, and protect phases to manage workload process execution
 :revdate: 2026-09-16
 :page-revdate: {revdate}
 
