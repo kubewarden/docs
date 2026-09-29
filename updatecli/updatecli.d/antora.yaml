@@ -56,6 +56,14 @@ conditions:
           failure: 1
           success: 0
           warning: 1
+      # This condition answers one question only: is there a release that is
+      # still marked as a prerelease in the documentation tree?
+      #
+      # A false result makes Updatecli skip the promotion target and report
+      # the pipeline as skipped, which is the correct outcome when there is
+      # simply nothing to promote. Checks that describe a broken repository
+      # rather than an up to date one belong in the target, where a failure
+      # is reported as a failure.
       command: |+
         #!/bin/sh
         VERSION='{{ source "releaseVersion" }}'
@@ -67,30 +75,6 @@ conditions:
             echo "Version ${VERSION} is already promoted to stable"
             exit 1
           fi
-        fi
-
-        DEV_COUNT=0
-        for dir in ${COMPONENT_DIR}/version-*/; do
-          if [ -f "${dir}antora.yml" ] && grep -q "prerelease:" "${dir}antora.yml"; then
-            DEV_COUNT=$((DEV_COUNT + 1))
-          fi
-        done
-
-        if [ "$DEV_COUNT" -ne 1 ]; then
-          echo "Expected exactly 1 dev version directory, found ${DEV_COUNT}"
-          exit 1
-        fi
-
-        LATEST_COUNT=0
-        for dir in ${COMPONENT_DIR}/version-*/; do
-          if [ -f "${dir}antora.yml" ] && grep -q "display:.*-latest" "${dir}antora.yml"; then
-            LATEST_COUNT=$((LATEST_COUNT + 1))
-          fi
-        done
-
-        if [ "$LATEST_COUNT" -ne 1 ]; then
-          echo "Expected exactly 1 version with -latest display marker, found ${LATEST_COUNT}"
-          exit 1
         fi
 
         exit 0
@@ -118,40 +102,55 @@ targets:
         NEXT_MINOR=$((MINOR + 1))
         NEXT_VERSION="${MAJOR}.${NEXT_MINOR}"
 
-        # If the version directory does not exist, find the current dev
-        # version and rename it. The dev version content is preserved
-        # and released under the new version number.
-        if [ ! -d "$TARGET_DIR" ]; then
-          DEV_DIR=""
-          for dir in ${COMPONENT_DIR}/version-*/; do
-            if [ -f "${dir}antora.yml" ] && grep -q "prerelease:" "${dir}antora.yml"; then
-              DEV_DIR="$dir"
-              break
-            fi
-          done
+        # Every component must have exactly one dev version directory, marked
+        # with "prerelease:", and exactly one released version directory
+        # marked with 'display: "X.Y-latest"'. Anything else is a defect in
+        # the documentation tree that a human has to repair, so fail here
+        # instead of quietly doing nothing.
+        DEV_DIR=""
+        DEV_COUNT=0
+        CURRENT_LATEST=""
+        LATEST_COUNT=0
 
-          if [ -z "$DEV_DIR" ]; then
-            echo "No dev version directory found to promote"
-            exit 1
+        for dir in ${COMPONENT_DIR}/version-*/; do
+          [ -f "${dir}antora.yml" ] || continue
+
+          if grep -q "prerelease:" "${dir}antora.yml"; then
+            DEV_COUNT=$((DEV_COUNT + 1))
+            [ -n "$DEV_DIR" ] || DEV_DIR="$dir"
           fi
 
-          echo "Renaming $(basename "$DEV_DIR") to version-${VERSION}"
-          mv "$DEV_DIR" "$TARGET_DIR"
-          sed -i "s/^version:.*$/version: '${VERSION}'/" "${TARGET_DIR}/antora.yml"
-        fi
-
-        # Find current latest version (the one with display: *-latest)
-        CURRENT_LATEST=""
-        for dir in ${COMPONENT_DIR}/version-*/; do
-          if [ -f "${dir}antora.yml" ] && grep -q "display:.*-latest" "${dir}antora.yml"; then
-            CURRENT_LATEST=$(basename "$dir" | sed 's/^version-//')
-            break
+          if grep -q "display:.*-latest" "${dir}antora.yml"; then
+            LATEST_COUNT=$((LATEST_COUNT + 1))
+            [ -n "$CURRENT_LATEST" ] || CURRENT_LATEST=$(basename "$dir" | sed 's/^version-//')
           fi
         done
 
-        if [ -z "$CURRENT_LATEST" ]; then
-          echo "No version with -latest display marker found"
+        if [ "$DEV_COUNT" -ne 1 ]; then
+          echo "${COMPONENT}: expected exactly 1 dev version directory with 'prerelease:', found ${DEV_COUNT}"
+          echo "Add or remove the 'prerelease:' key under ${COMPONENT_DIR} so that exactly one version is a dev version."
           exit 1
+        fi
+
+        if [ "$LATEST_COUNT" -ne 1 ]; then
+          echo "${COMPONENT}: expected exactly 1 version with a '-latest' display marker, found ${LATEST_COUNT}"
+          echo "Add 'display: \"X.Y-latest\"' to the released version under ${COMPONENT_DIR} and remove it from the others."
+          exit 1
+        fi
+
+        # The component repository defines the version number. The dev
+        # directory is only a placeholder for the next release, and its name
+        # is a guess: the previous promotion named it "current minor + 1".
+        # The rename below makes the documentation adopt the number that
+        # upstream published, so the guess never has to be correct. The dev
+        # content is preserved and released under that number.
+        #
+        # Do not replace this rename with a check that the two versions
+        # match. A different name here is normal and not an error.
+        if [ ! -d "$TARGET_DIR" ]; then
+          echo "Renaming $(basename "$DEV_DIR") to version-${VERSION}"
+          mv "$DEV_DIR" "$TARGET_DIR"
+          sed -i "s/^version:.*$/version: '${VERSION}'/" "${TARGET_DIR}/antora.yml"
         fi
 
         echo "Promoting: current_latest=${CURRENT_LATEST}, release=${VERSION}, next_dev=${NEXT_VERSION}"
