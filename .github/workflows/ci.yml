@@ -104,6 +104,16 @@ jobs:
           persist-credentials: false
       - run: shellcheck $(find scripts/ -name '*.sh')
 
+  docs-versions:
+    name: Documentation version markers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: ./scripts/check-docs-versions.sh
+
   spelling:
     name: Spelling check
     runs-on: ubuntu-latest
@@ -128,6 +138,7 @@ jobs:
     needs:
       - changes
       - shellcheck
+      - docs-versions
     runs-on: ubuntu-latest
     steps:
       - name: Check all jobs status
