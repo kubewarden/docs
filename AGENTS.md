@@ -12,6 +12,9 @@ make community-local
 # Serve the built site
 make preview
 
+# Rebuild on file change and live-reload the browser (http://127.0.0.1:8080)
+make dev
+
 # Clean build artifacts
 make clean
 
@@ -20,6 +23,13 @@ make clean environment community-local
 ```
 
 Build output lands in `build/site/`. Logs are written to `tmp/build.log`.
+
+`make dev` runs a full Antora build (all components and versions, ~20-25s)
+on every change under `docs/`, `shared/`, or `kw-community-docs-supp-files/`,
+then live-reloads the browser. Antora has no incremental build mode, so
+there is no way to rebuild a single page faster; the whole site is
+regenerated every time because navigation, cross-references, and version
+selectors depend on the full content set. Stop it with Ctrl-C.
 
 ## Architecture
 
