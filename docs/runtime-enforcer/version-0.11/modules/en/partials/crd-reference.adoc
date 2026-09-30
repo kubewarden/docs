@@ -39,7 +39,8 @@ Package v1alpha1 contains API Schema definitions for the runtimeenforcer v1alpha
 |===
 | Field | Description | Default | Validation
 | *`violation`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-violationrecord[$$ViolationRecord$$]__ | violation is the violation record acknowledged by users + |  | 
-| *`reason`* __string__ | reason is an optional field to indicate the reason this violation is acknowledged. + |  | 
+| *`reason`* __string__ | reason is an optional field to indicate the reason this violation is acknowledged. + |  | Optional: \{} +
+
 | *`acknowledgedAt`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | acknowledgedAt is the time when the violation was acknowledged + |  | 
 |===
 
@@ -103,7 +104,8 @@ PolicyCode represents the status code of a policy on a node.
 | *`since`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | since is the time at which the node entered its current status. +
 It is stamped by the controller when the node's code changes and +
 preserved across status recomputations while the code is unchanged; +
-the agent does not report it. + |  | 
+the agent does not report it. + |  | Optional: \{} +
+
 | *`nodeName`* __string__ |  |  | 
 |===
 
@@ -131,7 +133,8 @@ PolicyStatus represents information about a policy status on a node.
 | *`since`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | since is the time at which the node entered its current status. +
 It is stamped by the controller when the node's code changes and +
 preserved across status recomputations while the code is unchanged; +
-the agent does not report it. + |  | 
+the agent does not report it. + |  | Optional: \{} +
+
 |===
 
 
@@ -169,12 +172,14 @@ record was first created. It is a per-record counter, distinct from +
 the policy-level violationCount aggregate: it is only incremented +
 when a scraped event matches this exact record, so consumers can +
 tell how many times this specific executable/container/pod combo +
-fired. + | 1 | 
+fired. + | 1 | Optional: \{} +
+
 | *`firstObservedTimestamp`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | firstObservedTimestamp is when the violation was first observed. It +
 is stamped from the scraped event's own timestamp when the record +
 is created and is never updated on re-scrapes, so consumers can +
 compute the age of the violation (unlike timestamp, which tracks +
-the last occurrence). + |  | 
+the last occurrence). + |  | Optional: \{} +
+
 | *`podName`* __string__ | podName is the name of the pod where the violation occurred. + |  | 
 | *`containerName`* __string__ | containerName is the container where the unauthorized executable ran. + |  | 
 | *`executablePath`* __string__ | executablePath is the path of the unauthorized executable. + |  | 
@@ -234,7 +239,8 @@ WorkloadPolicy is the Schema for the workloadpolicies API.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`allowed`* __string array__ | allowed defines a list of executables that are allowed to run + |  | items:Pattern: ^/.*$ +
+| *`allowed`* __string array__ | allowed defines a list of executables that are allowed to run + |  | items:Pattern: `^/.*$` +
+Optional: \{} +
 
 |===
 
@@ -347,7 +353,8 @@ WorkloadPolicyProposalSpec defines the desired state of WorkloadPolicyProposal.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`executables`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyexecutables[$$WorkloadPolicyExecutables$$]__ | executables defines a security policy for executables. + |  | 
+| *`executables`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyexecutables[$$WorkloadPolicyExecutables$$]__ | executables defines a security policy for executables. + |  | Optional: \{} +
+
 |===
 
 
@@ -408,15 +415,19 @@ the time at which each node entered the transitioning state. + |  |
 ever observed for this policy, including those that have already +
 been trimmed out of Violations or cleared because the executable +
 was later added to an allowlist. It is not guaranteed to be strongly +
-consistent and may be temporarily outdated. + | 0 | 
+consistent and may be temporarily outdated. + | 0 | Optional: \{} +
+
 | *`activeViolationCount`* __integer__ | activeViolationCount is the number of currently active (non-cleared) +
 violation records. It is always equal to len(Violations) and is +
-updated in the same status write. + | 0 | 
+updated in the same status write. + | 0 | Optional: \{} +
+
 | *`violations`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-violationrecord[$$ViolationRecord$$] array__ | violations is the list of the most recent violation records (max maxViolationRecords). +
-Oldest entries are dropped when the limit is reached. + |  | 
+Oldest entries are dropped when the limit is reached. + |  | Optional: \{} +
+
 | *`acknowledgedViolations`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-acknowledgedviolationrecord[$$AcknowledgedViolationRecord$$] array__ | acknowledgedViolations is the list of the most recent violation records that are acknowledged +
 by users (max maxViolationRecords). +
-Oldest entries are dropped when the limit is reached. + |  | 
+Oldest entries are dropped when the limit is reached. + |  | Optional: \{} +
+
 |===
 
 
