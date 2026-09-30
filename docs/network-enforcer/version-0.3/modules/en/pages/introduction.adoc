@@ -38,3 +38,4 @@ It operates in three phases:
   xref:troubleshooting.adoc[Troubleshooting]
 * *Reference*: xref:crd.adoc[CRD API Reference]
 * *Development*: xref:setup-development-env.adoc[Development Environment]
+* *Use cases*: xref:use-cases.adoc[Use cases]

@@ -14,3 +14,4 @@ include::partial$variables.adoc[]
 ** xref:crd.adoc[CRD API Reference]
 * Development
 ** xref:setup-development-env.adoc[Development Environment]
+* xref:use-cases.adoc[Use cases]
