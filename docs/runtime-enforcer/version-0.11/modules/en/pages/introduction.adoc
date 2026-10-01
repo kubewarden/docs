@@ -5,16 +5,16 @@ include::partial$variables.adoc[]
 :page-revdate: {revdate}
 :description: {rte-name} uses eBPF to monitor and enforce process-execution security policies for Kubernetes workloads.
 
-{rte-name} is a Kubernetes security tool that uses eBPF (Extended Berkeley
-Packet Filter) to observe process executions in your workloads and to enforce
-allow-list based security policies at the kernel level.
+{rte-name} is a Kubernetes security tool that uses {ebpf-term} (Extended
+Berkeley Packet Filter) to observe process executions in your workloads and to
+enforce {allow-list-term} based security policies at the kernel level.
 
 It operates in three phases:
 
-* *Learn* -- observe process executions and generate a `WorkloadPolicyProposal`
-  per workload.
-* *Monitor* -- report violations of an approved `WorkloadPolicy` without
-  blocking them.
+* *Learn* -- observe process executions and generate a
+  {workloadpolicyproposal-cr} per workload.
+* *Monitor* -- report {violation-term}s of an approved {workloadpolicy-cr}
+  without blocking them.
 * *Protect* -- block executions that violate the policy allow-list.
 
 [#_getting-started]

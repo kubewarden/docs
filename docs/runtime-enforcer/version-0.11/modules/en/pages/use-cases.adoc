@@ -12,8 +12,8 @@ These are example use cases for {rte-name}. Each case names a
 xref:personas.adoc[persona] and a goal. Then it explains how {rte-short-name}
 meets that goal.
 
-{rte-short-name} works in three phases: learn, monitor, and protect. The use
-cases that follow move through these phases. See
+{rte-short-name} works in three phases: {learn-phase-term}, {monitor-term},
+and {protect-term}. The use cases that follow move through these phases. See
 xref:phases.adoc[{rte-name} phases] for a full description of each phase.
 
 == Case A: As a cluster operator, I want an allow-list of the executables that each workload runs, without writing it by hand.
@@ -22,25 +22,25 @@ I want each pod to run only the executables that its job needs. I do not know
 the full list for each workload. The list is different for each image, and it
 changes with each release.
 
-I install {rte-short-name} once, for the whole cluster. An agent runs on each
-node. It observes each process that starts inside a container. For each
-Deployment, StatefulSet, DaemonSet, Job, and CronJob, {rte-short-name} creates
-a `WorkloadPolicyProposal`. The proposal lists the allowed executables for
-each container of the workload. Init containers and sidecars get their own
-lists.
+I install {rte-short-name} once, for the whole cluster. An {agent-term} runs
+on each node. It observes each process that starts inside a container. For
+each Deployment, StatefulSet, DaemonSet, Job, and CronJob, {rte-short-name}
+creates a {workloadpolicyproposal-cr}. The proposal lists the allowed
+executables for each container of the workload. Init containers and sidecars
+get their own lists. This list is the {allow-list-term}.
 
 The agent records the absolute path of each executable. When a container runs
-a script, the agent records the script and the interpreter. Both must be in
-the allow-list.
+a script, the agent records the path of the script. It does not record the
+interpreter.
 
 Learning starts when the agent starts. Processes from before that moment are
 not in the proposal. If a workload is quiet, I restart it so that its start-up
 processes are observed. I limit learning to selected namespaces with a
-namespace selector.
+{learning-namespace-selector-term}.
 
 Each command that runs during learning becomes an allowed executable. This
-includes commands from `kubectl exec`. I review the proposal before I promote
-it.
+includes commands from `kubectl exec`. I review the proposal before I
+{promotion-term} it.
 
 See xref:phases.adoc#_learn-phase[Learn phase],
 xref:learning_mode_configuration.adoc[Learning mode configuration], and
@@ -49,35 +49,37 @@ xref:known_limitations.adoc#_learning-cap-100-allowed-executables-per-proposal[L
 == Case B: As an application team, I want to protect my workload without breaking it.
 
 I do not want a wrong rule to stop my application. I promote the proposal in
-`monitor` mode first. To do this, I set the label
-`runtimeenforcer.kubewarden.io/promote=monitor` on the proposal. The
-`kubectl runtime-enforcer` plugin can set the label for me:
+`monitor` mode first. To do this, I set the label {promote-label-term} to
+`monitor` on the proposal. The {kubectl-plugin-term} can set the label for
+me:
 
 [source,console]
 ----
 $ kubectl runtime-enforcer proposal promote deploy-my-app
 ----
 
-{rte-short-name} creates a `WorkloadPolicy` and removes the proposal. In
+{rte-short-name} creates a {workloadpolicy-cr} and removes the proposal. In
 `monitor` mode, the agent reports each executable that the policy does not
 allow. It does not block the executable.
 
-I watch the `Active Violations` column of the policy. For each violation, I
-make one of two decisions. If the executable is expected, I add it to the
-allow-list of the policy, under `spec.rulesByContainer`. The plugin command
-`kubectl runtime-enforcer policy allow` does this edit for me. The violation
-is cleared. If the executable is not expected, but I accept the risk, I
-acknowledge the violation. I add the annotation
-`runtimeenforcer.kubewarden.io/acknowledge-<id>` with a reason, or I run
+I watch the `Active Violations` column of the policy. For each
+{violation-term}, I make one of two decisions. If the executable is expected,
+I add it to the allow-list of the policy, under `spec.rulesByContainer`. The
+plugin command `kubectl runtime-enforcer policy allow` does this edit for me.
+The violation is cleared. If the executable is not expected, but I accept the
+risk, I {acknowledge-term} the violation. I add the annotation
+{acknowledge-annotation-term} with a reason, or I run
 `kubectl runtime-enforcer policy ack`. The reason stays in the policy status
 as a record.
 
-When the policy has no active violations for a period that I trust, I set the
-mode to `protect`. If a new release adds an executable, the rollout can fail.
-Then I set the mode back to `monitor`, add the executable, and try again.
+When the policy has no {active-violation-term}s for a period that I trust, I
+set the mode to `protect`. If a new release adds an executable, the rollout
+can fail. Then I set the mode back to `monitor`, add the executable, and try
+again.
 
-The policy is bound to my pods with a label. The same image in a different
-namespace can have a different policy. My policy does not affect other teams.
+The policy is {binding-term} to my pods with the {policy-label-term} label.
+The same image in a different namespace can have a different policy. My
+policy does not affect other teams.
 
 See xref:phases.adoc#_monitor-phase[Monitor phase],
 xref:phases.adoc#_protect-phase[Protect phase],
@@ -93,7 +95,7 @@ package manager, a downloaded binary, or a scanner. None of these are in the
 allow-list of the workload.
 
 In `protect` mode, the agent checks each process before it starts. The check
-runs in the kernel, in an eBPF program. If the executable is not in the
+runs in the kernel, in an {ebpf-term} program. If the executable is not in the
 allow-list, the kernel refuses the start. The process never runs. The agent
 records a violation with the pod, the container, the executable, and the node.
 
@@ -104,7 +106,8 @@ Short-lived pods, such as Jobs, are covered in the same way.
 
 If a pod refers to a policy that does not exist, the agent does not start the
 container. This is the default behavior. A pod is not left without protection
-by mistake.
+by mistake. The {fail-open-term} entry in the glossary describes the setting
+that changes this.
 
 {rte-short-name} controls which executables start. It does not inspect what
 an allowed executable does after it starts. Code that runs inside an allowed
@@ -128,14 +131,14 @@ that need a decision. The `violationCount` shows all the violations that the
 policy has ever recorded. I sort by the active count to find the noisy
 policies.
 
-The policy status holds the 100 most recent violations. The controller
-updates it every 30 seconds. For a longer history and for alerts, I use the
-telemetry pipeline. The agent emits a `policy_violation` event for each
-violation, and a `policy_violation_acknowledged` event for each
-acknowledgement. The events go to the collector that {rte-short-name}
-installs, or to my own collector. The collector exports a Prometheus counter
-for violations. The controller exports a gauge for active violations. I set
-alerts on these metrics.
+The policy status holds the 100 most recent {violation-record-term}s. The
+{controller-term} updates it every 30 seconds. For a longer history and for
+alerts, I use the telemetry pipeline. The agent emits a `policy_violation`
+event for each violation, and a `policy_violation_acknowledged` event for each
+acknowledgement. The events go to the {opentelemetry-collector-term} that
+{rte-short-name} installs, or to my own collector. The collector exports a
+Prometheus counter for violations. The controller exports a gauge for active
+violations. I set alerts on these metrics.
 
 See xref:troubleshooting.adoc#_quick-overview-with-the-kubectl-plugin[Quick overview with the kubectl plugin]
 and xref:installation/quickstart.adoc#_use-an-external-collector[Use an external collector].

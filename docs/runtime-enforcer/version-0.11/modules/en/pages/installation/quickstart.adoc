@@ -12,10 +12,11 @@ This guide walks you through the following steps:
 
 * Deploying the {rte-short-name} in a Kubernetes cluster
 * Deploying a simple workload and looking at the generated
-  WorkloadPolicyProposal.
-* Converting the WorkloadPolicyProposal into a WorkloadPolicy in monitor mode
-  and observing the alert.
-* Switching the WorkloadPolicy to protect mode and seeing enforcement in action.
+  {workloadpolicyproposal-cr}.
+* Converting the WorkloadPolicyProposal into a {workloadpolicy-cr} in
+  {monitor-term} mode and observing the alert.
+* Switching the WorkloadPolicy to {protect-term} mode and seeing enforcement in
+  action.
 
 [#_prerequisites]
 == Prerequisites
@@ -26,7 +27,7 @@ Before deployment, you need to prepare the following:
   cluster)
 * `helm` installed locally
 * `kubectl` installed locally
-* `cert-manager` and `cert-manager-csi-driver` installed in the cluster
+* {cert-manager-term} and `cert-manager-csi-driver` installed in the cluster
 
 [WARNING]
 ====
@@ -59,8 +60,9 @@ link:https://cert-manager.io/docs/installation/helm[cert-manager documentation].
 ====
 
 The `cert-manager-csi-driver` is used to automatically provision and mount TLS
-certificates directly inside runtime enforcer pods (agent and OTEL collector)
-without creating intermediate Secret resources. To install it, run the following
+certificates directly inside runtime enforcer pods ({agent-term} and OTEL
+collector) without creating intermediate Secret resources. To install it, run
+the following
 commands:
 
 [source,bash]
@@ -78,7 +80,7 @@ Follow these simple steps from your local machine to get {rte-short-name} up and
 [#_install-the-helm-chart]
 === Install the Helm chart
 
-{rte-short-name} ships with a standalone OTEL collector Deployment that handles violation metrics and events forwarding.
+{rte-short-name} ships with a standalone {opentelemetry-collector-term} Deployment that handles {violation-term} metrics and events forwarding.
 No external OpenTelemetry Collector is needed for a basic setup.
 
 [subs="+attributes",console]
@@ -242,15 +244,15 @@ Notes on this proposal:
 == WorkloadPolicy (monitor mode)
 
 This proposal looks reasonable for the Deployment, so the next step is
-converting it into a definitive policy. To do that, label the
-`WorkloadPolicyProposal` with `runtimeenforcer.kubewarden.io/promote=monitor`.
+converting it into a definitive policy. To do that, set the
+{promote-label-term} label of the `WorkloadPolicyProposal` to `monitor`.
 
 [source,bash]
 ----
 kubectl label workloadpolicyproposals.runtimeenforcer.kubewarden.io deploy-opensuse-deployment runtimeenforcer.kubewarden.io/promote=monitor
 ----
 
-You can also use the kubectl plugin to perform the same step:
+You can also use the {kubectl-plugin-term} to perform the same step:
 
 [source,bash]
 ----
@@ -304,13 +306,13 @@ phase] and xref:../phases.adoc#_protect-phase[Protect phase] for details.
 ====
 
 Converting a proposal into a policy isn't enough to apply it to a workload: the
-workload needs to bind itself to the policy. This is done by adding a label to
-the workload pods. Since this example uses a Deployment, the correct approach is to
-add the label to the Deployment's pod template.
+workload needs to be {binding-term} to the policy. This is done by adding a
+label to the workload pods. Since this example uses a Deployment, the correct
+approach is to add the label to the Deployment's pod template.
 
 [WARNING]
 ====
-You should set the `runtimeenforcer.kubewarden.io/policy` label at Pod creation time only.
+You should set the {policy-label-term} label at Pod creation time only.
 Changing this label on a running Pod (adding, removing, or modifying its value)
 is prohibited.
 ====
@@ -361,8 +363,8 @@ monitor 3f3235e0e92e6143965d46b967691cc1 9a6b46fa3165e86d evt.time=2026-01-14T10
 ----
 
 Violations are also visible directly on the WorkloadPolicy status. After the
-controller's next sync tick (up to 30 seconds), you can inspect them with
-`kubectl`:
+{controller-term}'s next sync tick (up to 30 seconds), you can inspect them
+with `kubectl`:
 
 [source,bash]
 ----
