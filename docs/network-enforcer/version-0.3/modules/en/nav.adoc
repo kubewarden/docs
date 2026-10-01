@@ -15,3 +15,4 @@ include::partial$variables.adoc[]
 * Development
 ** xref:setup-development-env.adoc[Development Environment]
 * xref:use-cases.adoc[Use cases]
+* xref:disclosure.adoc[Security disclosure]
