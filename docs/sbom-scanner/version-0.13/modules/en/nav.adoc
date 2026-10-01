@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 * xref:introduction.adoc[Introduction]
 * xref:quickstart.adoc[Quick start]
 * Tutorials
+** xref:tutorials/verifying-sbom-scanner.adoc[Verifying {sboms-short-name}]
 ** User guide
 *** xref:user-guide/scanning-registries.adoc[Scanning Registries]
 *** xref:user-guide/scanning-workloads.adoc[Scanning Workloads]

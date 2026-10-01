@@ -1,0 +1,206 @@
+include::partial$variables.adoc[]
+
+= Verifying {rte-name}
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:description: Verify the signatures, the SBOMs, and the provenance of the {rte-name} container images and Helm chart, and check the integrity of the kubectl plugin.
+:doc-persona: kubewarden-operator
+:doc-topic: security
+:doc-type: tutorial
+:keywords: {rte-name}, kubewarden, kubernetes, security, verification, cosign, sbom, provenance
+
+The {rte-name} project signs what it publishes, so that you can check that an
+artifact is the one the project built. For each release, the project
+publishes:
+
+* Signed container images, one per component.
+* A signed Software Bill of Materials (SBOM) and a signed provenance
+  attestation for each image and architecture.
+* A signed Helm chart.
+
+The signatures use https://docs.sigstore.dev[Sigstore] in keyless mode. The
+signing certificate names the GitHub Actions workflow that built the
+artifact. Each `cosign` command below passes two values:
+
+* `--certificate-oidc-issuer`: always
+  `\https://token.actions.githubusercontent.com`.
+* `--certificate-identity`: the workflow file and the Git ref of the release.
+  For a release of {rte-short-name}, this is
+  `\https://github.com/kubewarden/runtime-enforcer/.github/workflows/release.yml@refs/tags/{release-tag}`.
+
+[IMPORTANT]
+====
+Use the exact identity, with the release tag, as the commands below do. A
+pattern such as `\https://github.com/kubewarden/*` passed to
+`--certificate-identity-regexp` accepts an artifact from any workflow in any
+repository of the organization. The exact identity accepts only an artifact
+that this release workflow built.
+====
+
+The examples use the release `{release-tag}` and the chart version
+`{chart-version}`. Replace them with the versions that you verify.
+
+[#_container_images]
+== Container images
+
+{rte-short-name} publishes three images, all at `ghcr.io/kubewarden/runtime-enforcer/`:
+
+* `controller`
+* `agent`
+* `debugger`
+
+The release workflow signs each single-architecture image and the
+multi-architecture index. To verify the controller image, run:
+
+[source,console,subs="+attributes"]
+----
+cosign verify \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --certificate-identity="https://github.com/kubewarden/runtime-enforcer/.github/workflows/release.yml@refs/tags/{release-tag}" \
+  ghcr.io/kubewarden/runtime-enforcer/controller:{release-tag}
+
+Verification for ghcr.io/kubewarden/runtime-enforcer/controller:{release-tag} --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+
+<snipped json>
+----
+
+The same command, with `agent` or `debugger` in place of `controller`,
+verifies the other two images.
+
+[#_sbom_and_provenance]
+== SBOM and provenance attestations
+
+For each image and each architecture, the release workflow extracts an SBOM in
+SPDX format and a provenance attestation in SLSA format. It signs each file
+and attaches the files to the GitHub release. The names follow this pattern:
+
+* `RuntimeEnforcer-<component>-attestation-<arch>-provenance.intoto.jsonl`
+* `RuntimeEnforcer-<component>-attestation-<arch>-sbom.json`
+
+Each file has a Sigstore bundle with the same name and the suffix
+`.bundle.sigstore`. Download the file and its bundle from the
+https://github.com/kubewarden/runtime-enforcer/releases[release page], then
+verify the provenance:
+
+[source,console,subs="+attributes"]
+----
+cosign verify-blob \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --certificate-identity="https://github.com/kubewarden/runtime-enforcer/.github/workflows/release.yml@refs/tags/{release-tag}" \
+  --bundle RuntimeEnforcer-controller-attestation-amd64-provenance.intoto.jsonl.bundle.sigstore \
+  RuntimeEnforcer-controller-attestation-amd64-provenance.intoto.jsonl
+
+Verified OK
+----
+
+And the SBOM:
+
+[source,console,subs="+attributes"]
+----
+cosign verify-blob \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --certificate-identity="https://github.com/kubewarden/runtime-enforcer/.github/workflows/release.yml@refs/tags/{release-tag}" \
+  --bundle RuntimeEnforcer-controller-attestation-amd64-sbom.json.bundle.sigstore \
+  RuntimeEnforcer-controller-attestation-amd64-sbom.json
+
+Verified OK
+----
+
+After the check, you can read the files. The SBOM lists the packages in the
+image. The provenance names the source commit, the builder, and the build
+parameters.
+
+The same attestations are also attached to each image in the registry, in
+the format that Docker uses. The signed copies are the release assets. To
+read the registry copy, list the attestation manifest with
+https://github.com/google/go-containerregistry/tree/main/cmd/crane[`crane`]:
+
+[source,console,subs="+attributes"]
+----
+crane manifest ghcr.io/kubewarden/runtime-enforcer/controller:{release-tag} \
+  | jq '.manifests[] | select(.annotations["vnd.docker.reference.type"]=="attestation-manifest")'
+----
+
+Then fetch the manifest by its digest and read each layer with `crane blob`.
+
+[#_helm_chart]
+== Helm chart
+
+The {rte-short-name} chart is in the Helm repository at
+https://charts.kubewarden.io and, as an OCI artifact, at
+`ghcr.io/kubewarden/charts/runtime-enforcer`. The OCI copy is signed. The
+chart is released from the `kubewarden/helm-charts` repository, so the
+identity names that workflow:
+
+[source,console,subs="+attributes"]
+----
+cosign verify \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --certificate-identity="https://github.com/kubewarden/helm-charts/.github/workflows/helm-chart-release.yml@refs/heads/main" \
+  ghcr.io/kubewarden/charts/runtime-enforcer:{chart-version}
+
+Verification for ghcr.io/kubewarden/charts/runtime-enforcer:{chart-version} --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+
+<snipped json>
+----
+
+The chart also has a GitHub build provenance attestation. The GitHub CLI
+verifies it:
+
+[source,console,subs="+attributes"]
+----
+gh attestation verify oci://ghcr.io/kubewarden/charts/runtime-enforcer:{chart-version} \
+  --repo kubewarden/helm-charts
+----
+
+To list every image that the chart deploys, render it and extract the image
+fields:
+
+[source,bash,subs="+attributes"]
+----
+helm template runtime-enforcer oci://ghcr.io/kubewarden/charts/runtime-enforcer \
+  --version {chart-version} \
+  | yq '..|.image? | select(.)' \
+  | sort -u
+----
+
+Verify each {rte-short-name} image in that list as the
+<<_container_images,container images>> section shows.
+
+[#_third_party_images]
+== Third-party images
+
+The chart also deploys one image that the {rte-short-name} project does not
+build and does not sign:
+
+* `otel/opentelemetry-collector-contrib`, when `telemetry.collectorStrategy`
+  is `default`.
+
+Verify it with the method that its own project documents.
+
+[#_kubectl_plugin]
+== kubectl plugin
+
+The `kubectl-runtime_enforcer` binaries on the release page come with a
+SHA-256 checksum file each, named with the suffix `.sha256`. The checksum
+lets you check that the download is complete and not corrupted:
+
+[source,console]
+----
+sha256sum -c kubectl-runtime_enforcer-linux-amd64.sha256
+kubectl-runtime_enforcer-linux-amd64: OK
+----
+
+The plugin binaries have no signature and no provenance attestation at this
+time. The checksum shows that the file matches what the release page lists.
+It does not show who built the file. If you need that assurance, build the
+plugin from the tagged source. See
+xref:howtos/build.adoc[Build requirements].

@@ -15,6 +15,7 @@ The {rte-name} documentation has these parts:
 * xref:introduction.adoc[Introduction]: what {rte-short-name} is.
 * xref:quickstart.adoc[Quick start]: install {rte-short-name} and walk
   through the learn, monitor, and protect workflow.
+* _Tutorials_: how to verify the signatures of the release.
 * _Explanations_: the learn, monitor, and protect phases, and how the
   components are built.
 * _How-tos_: tasks for the operator and the contributor, such as the
@@ -29,8 +30,8 @@ The {rte-name} documentation has these parts:
 * xref:glossary.adoc[Glossary]: the terms used in these pages.
 * xref:disclosure.adoc[Security disclosure]: how to report a vulnerability.
 
-Most of the content is in the _Explanations_, _How-tos_, and _Reference_
-sections. The sections can overlap. The {rte-short-name} project follows the
+Most of the content is in the _Tutorials_, _Explanations_, _How-tos_, and
+_Reference_ sections. The sections can overlap. The {rte-short-name} project follows the
 link:https://diataxis.fr/[Diátaxis] documentation framework where it can.
 
 == Navigation

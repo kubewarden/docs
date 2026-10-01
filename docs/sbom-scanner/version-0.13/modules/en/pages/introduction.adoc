@@ -60,7 +60,9 @@ xref:user-guide/scanning-workloads.adoc[workloads], or
 xref:user-guide/scanning-nodes.adoc[nodes]. Operators find the Helm values
 and the troubleshooting steps in the how-tos. Security engineers find the
 report fields in xref:user-guide/querying-reports.adoc[Querying reports] and
-the terms in the xref:glossary.adoc[glossary].
+the terms in the xref:glossary.adoc[glossary]. Before you deploy to
+production, xref:tutorials/verifying-sbom-scanner.adoc[verify the release]
+that you install.
 
 == What is an SBOM?
 

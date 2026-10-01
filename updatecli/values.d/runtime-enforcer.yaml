@@ -3,6 +3,8 @@ pipelineid: "runtime-enforcer-docs-update"
 # Source repository to watch for new releases (format: owner/repo)
 sourceRepository: "kubewarden/runtime-enforcer"
 component: "runtime-enforcer"
+# Chart name as published by kubewarden/helm-charts, used by updatecli.d/update-release-attributes.yaml
+chartName: "runtime-enforcer"
 # Partial file name used by updatecli.d/update-cli-ref-docs-version.yaml
 cliReferencePartial: "kubectl-plugin-cli-reference.adoc"
 

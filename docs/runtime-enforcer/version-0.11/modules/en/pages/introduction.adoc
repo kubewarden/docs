@@ -68,7 +68,10 @@ xref:reference/compatibility.adoc[Compatibility], and the
 learning scope in xref:howtos/learning_mode_configuration.adoc[Learning mode
 configuration]. Application teams find the day-to-day commands in the
 xref:howtos/kubectl_plugin.adoc[kubectl plugin] page. The
-xref:glossary.adoc[glossary] defines the terms that these pages use.
+xref:glossary.adoc[glossary] defines the terms that these pages use. Before
+you deploy to production,
+xref:tutorials/verifying-runtime-enforcer.adoc[verify the release] that you
+install.
 
 == What is eBPF?
 

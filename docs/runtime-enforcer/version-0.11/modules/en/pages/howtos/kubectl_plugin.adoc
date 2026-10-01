@@ -39,6 +39,11 @@ Verify checksums with the `.sha256` file published next to the binary.
 sha256sum --check kubectl-runtime_enforcer-linux-amd64.sha256
 ----
 
+The checksum confirms the integrity of the download. It does not confirm who
+built the binary. See
+xref:tutorials/verifying-runtime-enforcer.adoc#_kubectl_plugin[Verifying
+{rte-short-name}] for what the project signs and what it does not.
+
 [#_build-from-source]
 === Build from source
 

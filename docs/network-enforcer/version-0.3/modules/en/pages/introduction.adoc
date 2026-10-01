@@ -67,7 +67,9 @@ xref:explanations/architecture.adoc[Architecture] for the components and the
 flow of data. Operators find the provider requirements in
 xref:reference/compatibility.adoc[Compatibility] and the troubleshooting
 steps in the how-tos. Security engineers find the violation fields in the
-xref:glossary.adoc[glossary].
+xref:glossary.adoc[glossary]. Before you deploy to production,
+xref:tutorials/verifying-network-enforcer.adoc[verify the release] that you
+install.
 
 == What is learn, monitor, protect?
 

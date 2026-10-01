@@ -150,6 +150,19 @@ Some partials are copies of files that upstream repositories generate. Do not ed
 
 The partials land in the current dev version only. An hourly updatecli job (`.github/workflows/updatecli.yml`) watches upstream releases. When a new release appears, the job promotes the dev version and points the values files at the next dev version.
 
+### Release version attributes
+
+Each component's dev version defines two AsciiDoc attributes in `partials/community-specific/variables.adoc`:
+
+```asciidoc
+:release-tag: v1.38.2
+:chart-version: 6.1.0
+```
+
+Use `{release-tag}` for the upstream release tag (image tags, cosign certificate identities) and `{chart-version}` for the published Helm chart version. Inside a `[source]` block, add `subs="+attributes"` or the attribute is printed literally.
+
+Do not bump these by hand. The hourly updatecli job runs `updatecli/updatecli.d/update-release-attributes.yaml` for each component. It reads the latest GitHub release of the component repository and the latest `<chart name>-X.Y.Z` release of `kubewarden/helm-charts`, and rewrites the two attributes in the dev version. The chart name per component is `chartName` in `updatecli/values.d/`.
+
 ### Spell checking
 
 `typos` checks `.adoc` files in `docs/` and `shared/`. Configuration is in `typos.toml`. Add intentional exceptions to `[default.extend-words]` or `[default.extend-identifiers]`, or use an inline `# adn:ignore` comment to suppress a specific line.

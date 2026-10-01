@@ -2,6 +2,8 @@ include::partial$variables.adoc[]
 
 * xref:introduction.adoc[Introduction]
 * xref:quickstart.adoc[Quick start]
+* Tutorials
+** xref:tutorials/verifying-runtime-enforcer.adoc[Verifying {rte-short-name}]
 * Explanations
 ** xref:explanations/phases.adoc[Phases: learn, monitor, protect]
 ** xref:explanations/architecture.adoc[Architecture]
