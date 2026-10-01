@@ -66,6 +66,17 @@ kubectl logs -n network-enforcer \
 . DaemonSet `<fullname>-istio-fluent-bit` is running. It tails
   `/var/log/containers/*ztunnel*.log` and ships OTLP/gRPC to the controller
   Service `<fullname>-istio-otlp` on port `4317`.
+. The hop from fluent-bit to the controller uses TLS by default. Both ends
+  get their certificates from `cert-manager-csi-driver`. A TLS handshake
+  error in the fluent-bit log, or a certificate error in the controller log,
+  points at this hop. Check that cert-manager and the CSI driver are healthy.
+  Then check that the CSI volume of each pod was provisioned:
++
+[source,bash]
+----
+kubectl get pods -n cert-manager
+kubectl describe pod -n network-enforcer -l app.kubernetes.io/component=controller | grep -A3 provider-tls
+----
 . Confirm fluent-bit pods and the OTLP Service:
 +
 [source,bash]
@@ -85,8 +96,12 @@ OTLP hops.
 === Calico
 
 . Goldmane is enabled in the Tigera `Installation` (`goldmane.enabled=true`).
-. Secret `goldmane-key-pair` and ConfigMap `goldmane-ca-bundle` exist in
-  `calico-system`.
+. The Secret `goldmane-key-pair` and the ConfigMap `goldmane-ca-bundle` exist
+  in `calico-system`. Calico creates them. The controller reads them through
+  the Kubernetes API.
+. The Role and RoleBinding `<fullname>-provider-tls` exist in
+  `calico-system`. The chart creates them, so that the controller can read
+  the Secret and the ConfigMap.
 . Default endpoint `goldmane.calico-system.svc:7443` is reachable from the
   controller (override with `controller.provider.calico.endpoint`).
 +
@@ -94,6 +109,7 @@ OTLP hops.
 ----
 kubectl get secret -n calico-system goldmane-key-pair
 kubectl get configmap -n calico-system goldmane-ca-bundle
+kubectl get role,rolebinding -n calico-system -l app.kubernetes.io/name=network-enforcer
 kubectl get deploy -n calico-system -l k8s-app=goldmane
 ----
 
@@ -102,15 +118,23 @@ kubectl get deploy -n calico-system -l k8s-app=goldmane
 
 . Hubble and Hubble Relay are enabled
   (`hubble.enabled=true`, `hubble.relay.enabled=true`).
-. Secret `hubble-relay-client-certs` exists in `kube-system`.
-. Default endpoint `hubble-relay.kube-system.svc:443` is reachable
-  (override with `controller.provider.cilium.endpoint`).
+. Relay serves TLS (`hubble.relay.tls.server.enabled=true`). The client
+  certificate Secret `hubble-relay-client-certs` exists in `kube-system`.
+  Cilium creates it. The controller reads it through the Kubernetes API and
+  verifies the Relay certificate against the server name
+  `ui.hubble-relay.cilium.io`.
+. The Role and RoleBinding `<fullname>-provider-tls` exist in `kube-system`.
+. Default endpoint `hubble-relay.kube-system.svc:443` is reachable (override
+  with `controller.provider.cilium.endpoint`). If you installed Relay without
+  TLS, the chart must have `controller.provider.cilium.tls.mode=insecure` and
+  an empty `serverName`, and the endpoint becomes port `80`.
 +
 [source,bash]
 ----
-kubectl get secret -n kube-system hubble-relay-client-certs
 kubectl get svc -n kube-system hubble-relay
 kubectl get pods -n kube-system -l k8s-app=hubble-relay
+kubectl get secret -n kube-system hubble-relay-client-certs
+kubectl get role,rolebinding -n kube-system -l app.kubernetes.io/name=network-enforcer
 ----
 
 [#_provider-tls-handshake]
@@ -474,8 +498,8 @@ backend is immutable
 [#_related-admission-error]
 === Related admission error
 
-The chart also installs a `ValidatingAdmissionPolicy` that rejects an invalid
-promote label:
+The chart installs two Validating Admission Policies. One of them rejects an
+invalid promote label:
 
 ----
 networkenforcer.kubewarden.io/promote must be "monitor" or "protect"

@@ -135,8 +135,9 @@ Promotion is explicit. Network-enforcer does not turn a proposal into a policy u
 * *Return to learning*
 ** Delete the `WorkloadNetworkPolicy`. The next observed flow creates or updates a `WorkloadNetworkPolicyProposal` again. If a leftover proposal is still around after you delete the policy, learning resumes by updating that object; delete it first if you want a clean slate.
 ** Creating a `WorkloadNetworkPolicy` by hand *without* `networkenforcer.kubewarden.io/promoted-from` does *not* remove a same-named proposal. Delete the proposal yourself in that case.
-* *ValidatingAdmissionPolicy*
-** The Helm chart installs a cluster-scoped `ValidatingAdmissionPolicy` (and binding) that rejects `WorkloadNetworkPolicyProposal` CREATE/UPDATE when `networkenforcer.kubewarden.io/promote` is present and is set to anything other than `monitor` or `protect`. The check runs only when the label is set; proposals without the label are admitted as usual.
+* *Validating Admission Policies*
+** The Helm chart installs two cluster-scoped `ValidatingAdmissionPolicy` resources, each with a binding. The first rejects a `WorkloadNetworkPolicyProposal` CREATE or UPDATE when `networkenforcer.kubewarden.io/promote` is present with a value other than `monitor` or `protect`. The check runs only when the label is set. Proposals without the label are admitted as usual.
+** The second rejects an UPDATE that removes or rewrites an existing owner reference of a proposal, so that a proposal stays tied to its workload.
 
 [#_backend-selection]
 == Backend selection

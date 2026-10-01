@@ -28,13 +28,14 @@ Before you start, you need:
   This guide creates one for you.
 * `kubectl`, `helm` and `curl` installed locally.
 * {cert-manager-term} and `cert-manager-csi-driver` in the cluster.
-  The bundled {opentelemetry-collector-term} uses them for its serving certificate.
-  The Istio default TLS mode `issuer` uses them for the OTLP hop.
+  They issue the TLS certificates of the bundled {opentelemetry-collector-term}.
+  With the Istio provider, in the default TLS mode `issuer`, they also issue
+  the certificate of the controller endpoint that receives the ztunnel logs.
 
 [NOTE]
 ====
-This page documents the chart in this repository (`charts/network-enforcer`), which is published as
-chart version `0.2.0` and later.
+This page documents the chart in this repository (`charts/network-enforcer`), for
+{ne-short-name} version `0.2.0` and later.
 Every `--set` flag used here exists in `charts/network-enforcer/values.yaml`.
 ====
 
@@ -68,10 +69,10 @@ Pick one provider and follow only its section.
 | `backend: kubernetes`
 |===
 
-The provider also decides the endpoint the controller connects to.
-The Helm value is `controller.provider.<name>.endpoint`, for example `controller.provider.calico.endpoint`.
-When that value is empty, the chart uses the per-provider default listed above
-(for `istio` the value is the local OTLP port, `4317`).
+Each provider has its own endpoint value: `controller.provider.istio.endpoint`,
+`controller.provider.calico.endpoint`, and `controller.provider.cilium.endpoint`.
+The defaults are the values listed above. For `istio`, the value is the local
+OTLP port, `4317`.
 
 [#_option-1-istio-ambient]
 === Option 1: Istio ambient
@@ -155,16 +156,22 @@ Otherwise, run it straight from the repository:
 curl -sSL https://raw.githubusercontent.com/kubewarden/network-enforcer/main/hack/setup-calico.sh | bash
 ----
 
-The script installs the Calico CRDs and the Tigera operator with `goldmane.enabled=true`.
-It waits until ConfigMap `goldmane-ca-bundle` and Secret `goldmane-key-pair` exist in `calico-system`.
-It then waits until the Goldmane deployment is ready.
+The script installs the Calico CRDs and the Tigera operator with
+`goldmane.enabled=true`. Then it waits for the ConfigMap `goldmane-ca-bundle`
+and the Secret `goldmane-key-pair` that Calico creates in `calico-system`, and
+for the Goldmane deployment.
+
+{ne-short-name} reads that key pair and CA bundle from `calico-system` through
+the Kubernetes API. The chart creates a Role in `calico-system` for this. You
+do not copy a Secret, and you do not create the {ne-short-name} namespace
+before the install. Goldmane always requires mutual TLS. There is no
+plain-text option.
 
 [IMPORTANT]
 ====
-Run the script before you install the {ne-short-name} chart.
-You can install the chart in any namespace.
-The controller reads those Goldmane objects in `calico-system`.
-You do not need to create a client Secret in the release namespace.
+Run the script *before* installing the {ne-short-name} chart, so that the
+Goldmane key pair exists when the controller starts. You can install the
+chart in any namespace.
 
 The default TLS mode is `existingSecret`.
 The controller reads `tls.crt` and `tls.key` from `goldmane-key-pair`.
@@ -208,25 +215,32 @@ the operator and Hubble Relay to be ready:
 
 * `hubble.enabled=true` and `hubble.relay.enabled=true`, because the controller reads flows from the
   Hubble Relay gRPC API.
-* Relay TLS is on. `HUBBLE_RELAY_TLS` defaults to `helm`, which sets `hubble.relay.tls.server.enabled=true`
-  and `hubble.relay.tls.server.mtls=true`.
-  The chart default reads Secret `kube-system/hubble-relay-client-certs` and connects to
-  `hubble-relay.kube-system.svc:443`.
-* `policyDenyResponse=icmp`. A denied egress packet returns an ICMP error.
-
-If Relay must serve plaintext, run the script with `HUBBLE_RELAY_TLS=off`.
-Then install the chart with `controller.provider.cilium.tls.mode=insecure`.
-Set `controller.provider.cilium.tls.serverName` to an empty string.
-The chart then automatically overwrites the port to `80`.
+* `hubble.relay.tls.server.enabled=true` and `hubble.relay.tls.server.mtls=true`,
+  because the controller talks to `hubble-relay.kube-system.svc:443` over
+  mutual TLS. Cilium creates the client certificate in the Secret
+  `hubble-relay-client-certs` in `kube-system`, and {ne-short-name} reads it
+  through the Kubernetes API.
+* `policyDenyResponse=icmp`, so denied egress traffic is answered with an ICMP error instead of being
+  silently dropped.
 
 Use `CILIUM_VERSION` to pick a different Cilium version, for example
 `CILIUM_VERSION=1.19.7 ./hack/setup-cilium.sh`.
 
+Use `HUBBLE_RELAY_TLS` to select how the Hubble certificates are made. The
+default, `helm`, lets Cilium generate them. The value `certmanager` lets
+cert-manager issue them. The value `off` turns Relay TLS off. In that case,
+install the chart with `controller.provider.cilium.tls.mode=insecure` and an
+empty `controller.provider.cilium.tls.serverName`. The chart then talks to
+Relay on port `80` in plain text.
+
 [#_install-cert-manager-and-cert-manager-csi-driver]
 == Install cert-manager and cert-manager-csi-driver
 
-The default install needs cert-manager and `cert-manager-csi-driver` before the chart.
-The collector and the Istio TLS mode `issuer` both mount certificates from that driver.
+Two parts of {ne-short-name} receive TLS certificates from
+`cert-manager-csi-driver`. One is the bundled OpenTelemetry collector. The
+other is the controller endpoint that receives the ztunnel logs, with the
+Istio provider in the default TLS mode `issuer`. Install both components
+before the chart:
 
 [source,bash]
 ----
@@ -249,12 +263,14 @@ helm install cert-manager-csi-driver jetstack/cert-manager-csi-driver \
 For more information on configuring cert-manager, see the
 link:https://cert-manager.io/docs/installation/helm[cert-manager documentation].
 
-If you skip the bundled collector, deploy the chart with
-`--set telemetry.collectorStrategy=none`.
-Learning, monitor, and protect still work.
-Violations stay on `WorkloadNetworkPolicy` status, but they are not exported to the OpenTelemetry collector.
-The Istio default TLS mode `issuer` still needs cert-manager and `cert-manager-csi-driver`.
-Calico and Cilium defaults use an existing Secret for the provider hop.
+If you do not want to install cert-manager, set
+`telemetry.collectorStrategy=none` to turn the export off. With the Istio
+provider, also set `controller.provider.istio.tls.mode=insecure`, so that the
+log endpoint of the controller does not need a certificate. The Calico and
+Cilium defaults read an existing Secret, so they do not need cert-manager.
+{ne-short-name} then keeps working. Learning, monitor, and protect are not
+affected. Violations stay in the policy status but are not exported as
+OpenTelemetry logs.
 ====
 
 [#_install-the-network-enforcer-chart]
@@ -549,7 +565,7 @@ kubectl label wnpp deployment-http-client-egress deployment-http-server-ingress 
 
 [NOTE]
 ====
-The chart installs a `ValidatingAdmissionPolicy` that rejects any other value:
+One of the two Validating Admission Policies that the chart installs rejects any other value:
 
 [source,bash]
 ----

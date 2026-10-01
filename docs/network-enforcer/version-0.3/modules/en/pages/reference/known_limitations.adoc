@@ -80,8 +80,11 @@ or restart them.
   about (or restart those workloads) while the controller is up if you want
   complete proposals.
 
-[#_kubernetes-1-30-or-later-is-required]
-== Kubernetes 1.30 or later is required
+[#_kubernetes-1-31-or-later-is-required]
+== Kubernetes 1.31 or later is required
+
+The Helm chart sets `kubeVersion: ">= 1.31.0-0"`. Helm refuses to install the
+chart on an older cluster.
 
 network-enforcer uses Kubernetes Validating Admission Policy (VAP) to enforce
 admission-time protections on `WorkloadNetworkPolicyProposal` objects
@@ -89,13 +92,14 @@ admission-time protections on `WorkloadNetworkPolicyProposal` objects
 value is `monitor` or `protect`, and preventing existing `ownerReferences`
 from being removed or rewritten).
 
-VAP is only available as `admissionregistration.k8s.io/v1` starting in
-Kubernetes 1.30. Earlier Kubernetes versions exposed it as
+VAP became available as `admissionregistration.k8s.io/v1` in Kubernetes
+1.30. Earlier Kubernetes versions exposed it as
 `admissionregistration.k8s.io/v1beta1`, but network-enforcer does not
-support that API. This is a design decision.
+support that API. The project tests against Kubernetes 1.31 and later, so
+the chart requires 1.31. This is a design decision.
 
 * *Impact*: network-enforcer is not compatible with Kubernetes versions
-  before 1.30.
+  before 1.31.
 
 [#_spec-backend-is-immutable]
 == `spec.backend` is immutable

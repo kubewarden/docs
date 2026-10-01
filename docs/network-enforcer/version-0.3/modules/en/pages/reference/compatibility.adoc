@@ -27,12 +27,12 @@ include::partial$variables.adoc[]
 |Fully supported.
 
 |*Kubernetes*
-|1.30+
-|The promote-label guard is a `ValidatingAdmissionPolicy` (`admissionregistration.k8s.io/v1`). Before 1.30 the guard cannot be applied.
+|1.31+
+|The chart sets `kubeVersion: ">= 1.31.0-0"`. It installs two `ValidatingAdmissionPolicy` resources (`admissionregistration.k8s.io/v1`): one guards the promote label, one guards the owner reference of a proposal. The API went GA in 1.30, but 1.31 is the oldest version the project tests against.
 
 |*cert-manager*
 |Required for the default chart install
-|Together with `cert-manager-csi-driver`. The default collector and TLS mode `issuer` mount certificates into pods. Calico and Cilium defaults read an existing Secret.
+|Together with `cert-manager-csi-driver`. The CSI driver mounts the certificates into the pods. The bundled collector always uses them. A provider hop uses them when its TLS mode is `issuer`, the Istio default. The Calico and Cilium defaults read an existing Secret.
 
 |*Linux distribution*
 |To be determined
@@ -56,13 +56,13 @@ ztunnel access logs via fluent-bit.
 
 |*Calico*
 |v3.32.1
-|gRPC mutual TLS to `goldmane.calico-system.svc:7443`. Default TLS mode `existingSecret`.
+|gRPC with mutual TLS to `goldmane.calico-system.svc:7443`. Default TLS mode `existingSecret`.
 |`spec.backend: kubernetes` (Kubernetes `NetworkPolicy`). +
 Goldmane flow stream.
 
 |*Cilium*
 |1.20.0
-|gRPC mutual TLS to `hubble-relay.kube-system.svc:443`. Default TLS mode `existingSecret`.
+|gRPC with mutual TLS to `hubble-relay.kube-system.svc:443`. Default TLS mode `existingSecret`. Plain text on port `80` is an opt-in.
 |`spec.backend: kubernetes` (Kubernetes `NetworkPolicy`). +
 Hubble Relay flow stream.
 |===
@@ -161,7 +161,7 @@ ifeval::["{build-type}" == "product"]
 |Expected
 |Fully tested
 |===
-endif:[]
+endif::[]
 
 [#_support]
 == Support

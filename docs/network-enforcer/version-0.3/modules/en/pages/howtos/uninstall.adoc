@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {ne-name} Uninstall
-:description: Uninstall the Helm chart to remove the network-enforcer release and all related resources including the two CRDs that delete generated policies
+:description: Uninstall the Helm chart, then delete the two CRDs to remove the policies and the generated native policy objects
 :revdate: 2026-09-18
 :page-revdate: {revdate}
 :page-aliases: installation/uninstall.adoc
@@ -18,10 +18,9 @@ Substitute the names from `helm list -A` if you installed elsewhere.
 Do this while the controller is still running, before `helm uninstall`.
 ====
 
-Deleting the CRDs is enough to remove generated policies; `helm uninstall`
-does that for you.
-Use this only if you want to drop `protect` without waiting on garbage
-collection.
+When you delete the CRDs later in this guide, Kubernetes removes the
+generated policies through garbage collection. Use this step only if you want
+to drop `protect` before that, without a wait.
 
 On Calico and Cilium the reconciler deletes the `NetworkPolicy`.
 On Istio it keeps the `AuthorizationPolicy` and sets `istio.io/dry-run=true`:
@@ -45,22 +44,26 @@ You can remove {ne-short-name} by uninstalling the Helm chart:
 helm uninstall network-enforcer --namespace network-enforcer
 ----
 
-That removes everything the chart installs, including the two CRDs.
-Because the CRDs are gone, every `WorkloadNetworkPolicy` and
-`WorkloadNetworkPolicyProposal` is deleted with them.
-Generated `NetworkPolicy` and `AuthorizationPolicy` objects are owned by
-the WNP (`controller: true`), so they will be deleted by Kubernetes GC.
+That removes the controller, the collector, the admission policies, and the
+RBAC objects. It does *not* remove the two CRDs. They carry the annotation
+`helm.sh/resource-policy: keep`, so that an uninstall does not delete every
+`WorkloadNetworkPolicy` and `WorkloadNetworkPolicyProposal` in the cluster by
+accident. The policies, the proposals, and the generated `NetworkPolicy` and
+`AuthorizationPolicy` objects all stay in place. In `protect` mode, the data
+plane keeps enforcing them.
 
 [WARNING]
 ====
-`helm uninstall` does not delete the `network-enforcer` namespace.
+`helm uninstall` does not delete the `network-enforcer` namespace, and it does
+not delete the CRDs. Follow the next section to remove the policies.
 ====
 
 [#_delete-the-crds]
 == Delete the CRDs
 
-`helm uninstall` already removes the CRDs.
-If they are still present, delete them manually:
+Delete the CRDs to remove every policy and proposal. Kubernetes then deletes
+the generated `NetworkPolicy` and `AuthorizationPolicy` objects through their
+owner references.
 
 [WARNING]
 ====
@@ -130,9 +133,9 @@ traffic once the generated `AuthorizationPolicy` objects are gone.
 [#_cilium-hubble-settings]
 === Cilium Hubble settings
 
-The Quick Start enables Hubble and Hubble Relay (`hubble.enabled=true`,
-`hubble.relay.enabled=true`) with Relay TLS on
-(`hubble.relay.tls.server.enabled=true`, `hubble.relay.tls.server.mtls=true`)
+The Quick Start enables Hubble and Hubble Relay with TLS
+(`hubble.enabled=true`, `hubble.relay.enabled=true`,
+`hubble.relay.tls.server.enabled=true`, `hubble.relay.tls.server.mtls=true`)
 and sets `policyDenyResponse=icmp` so denied egress returns an ICMP error.
 If you enabled those only for {ne-short-name}, restore the values you want on
 the Cilium Helm release.
@@ -145,10 +148,10 @@ The Quick Start installs the Tigera operator with `goldmane.enabled=true`.
 If you enabled Goldmane only for {ne-short-name}, disable it on the Calico
 Helm release.
 Leave it enabled if other tools still scrape Goldmane.
-Helm uninstall removes the Role and RoleBinding that the chart added in
-`calico-system`.
-Calico's `goldmane-ca-bundle` ConfigMap and `goldmane-key-pair` Secret stay.
-They are Calico objects.
+The `goldmane-ca-bundle` ConfigMap and the `goldmane-key-pair` Secret in
+`calico-system` are Calico objects, not {ne-short-name} objects. The
+{ne-short-name} chart only reads them. `helm uninstall` removes the Role and
+RoleBinding that granted that read access.
 
 [#_verify]
 == Verify nothing {ne-short-name} owned remains
@@ -166,6 +169,11 @@ kubectl get validatingadmissionpolicy,validatingadmissionpolicybinding \
 
 kubectl get clusterrole,clusterrolebinding \
   -l app.kubernetes.io/name=network-enforcer
+
+# The chart creates a Role and RoleBinding in the provider namespace,
+# kube-system for Cilium or calico-system for Calico.
+kubectl get role,rolebinding -n kube-system -l app.kubernetes.io/name=network-enforcer
+kubectl get role,rolebinding -n calico-system -l app.kubernetes.io/name=network-enforcer
 
 kubectl get ns network-enforcer
 

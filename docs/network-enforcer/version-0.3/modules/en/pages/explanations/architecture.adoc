@@ -204,7 +204,9 @@ installation. The provider selects the flow source and the backend.
 |===
 
 The endpoint of each flow source has a default that matches a standard
-installation. The Helm value `controller.provider.endpoint` overrides it.
+installation. The Helm values `controller.provider.istio.endpoint`,
+`controller.provider.calico.endpoint`, and
+`controller.provider.cilium.endpoint` override it.
 The `spec.backend` field of a proposal or policy cannot change after
 creation.
 
