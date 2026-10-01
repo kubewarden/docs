@@ -8,8 +8,9 @@ include::partial$variables.adoc[]
 :doc-type: explanation
 :doc-topic: explanation
 
-These are example use cases for {sboms-name}. Each case names a persona and
-a goal. Then it explains how {sboms-short-name} meets that goal.
+These are example use cases for {sboms-name}. Each case names a
+xref:personas.adoc[persona] and a goal. Then it explains how
+{sboms-short-name} meets that goal.
 
 == Case A: As a cluster operator, I want to know which vulnerabilities are in my registries.
 

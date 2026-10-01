@@ -25,5 +25,6 @@ endif::[]
 * Reference
 ** xref:reference/crd-reference.adoc[CRD Reference]
 ** xref:reference/opentelemetry-reference.adoc[OpenTelemetry Reference]
+* xref:personas.adoc[For who?]
 * xref:use-cases.adoc[Use cases]
 * xref:disclosure.adoc[Security disclosure]
