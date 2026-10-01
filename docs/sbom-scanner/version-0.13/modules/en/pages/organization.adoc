@@ -4,7 +4,7 @@ include::partial$variables.adoc[]
 :page-revdate: {revdate}
 :sidebar_label: Organization
 :sidebar_position: 75
-:description: How the {sboms-name} documentation is organized: introduction, quick start, user guide, how-tos, reference, and the pages about the project itself.
+:description: How the {sboms-name} documentation is organized: introduction, quick start, user guide, explanations, how-tos, reference, and the pages about the project itself.
 :keywords: {sboms-name}, kubewarden, documentation, organization
 :doc-persona: kubewarden-all
 :doc-type: explanation
@@ -17,6 +17,7 @@ The {sboms-name} documentation has these parts:
   first scan.
 * _Tutorials_: the user guide. One page per feature, from registry scans to
   the MCP server.
+* _Explanations_: how {sboms-short-name} is built and why.
 * _How-tos_: tasks for the operator, such as Helm values, uninstall, and
   troubleshooting.
 * _Reference_: the custom resource definitions and the OpenTelemetry
@@ -27,10 +28,10 @@ The {sboms-name} documentation has these parts:
 * xref:glossary.adoc[Glossary]: the terms used in these pages.
 * xref:disclosure.adoc[Security disclosure]: how to report a vulnerability.
 
-Most of the content is in the _Tutorials_, _How-tos_, and _Reference_
-sections. The sections can overlap. The {sboms-short-name} project follows
-the link:https://diataxis.fr/[Diátaxis] documentation framework where it
-can.
+Most of the content is in the _Tutorials_, _Explanations_, _How-tos_, and
+_Reference_ sections. The sections can overlap. The {sboms-short-name}
+project follows the link:https://diataxis.fr/[Diátaxis] documentation
+framework where it can.
 
 == Navigation
 

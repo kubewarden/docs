@@ -1,0 +1,331 @@
+include::partial$variables.adoc[]
+
+= {sboms-name} architecture
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:description: How {sboms-name} is built: the controller, the workers, the queue, the storage API server, and the path of a scan from a Registry resource to a VulnerabilityReport.
+:doc-persona: kubewarden-all
+:doc-topic: architecture
+:doc-type: explanation
+:keywords: {sboms-name}, kubewarden, kubernetes, architecture
+
+{sboms-name} is an event-driven scanner. A controller watches the custom
+resources and publishes work to a queue. Workers take the work from the queue
+and do the scan in stages. Each stage writes its result as a Kubernetes
+resource. A storage API server serves these results from a database, so that
+you read them with `kubectl` like any other resource.
+
+The xref:introduction.adoc#_why_scan_sboms_instead_of_images[introduction]
+explains why the scanner works on SBOMs. This page explains how the parts fit
+together.
+
+== Design principles
+
+=== The SBOM is the source of truth
+
+The scanner reads an image once, when it discovers the image. It stores the
+{sbom-term} and scans the stored SBOM each time after that. Two images with
+the same xref:glossary.adoc#_digest[digest] share one SBOM.
+
+=== Work flows through a queue
+
+The controller does not scan. It publishes a message for each unit of work to
+xref:glossary.adoc#_nats[NATS]. Any worker can take the message. A failed stage is retried
+without the controller. Workers scale on their own, apart from the
+controller.
+
+=== Results are Kubernetes resources
+
+Each image, SBOM, and report is a resource with a Kubernetes API. You list,
+watch, and filter them with `kubectl`. Owner references tie them together, so
+Kubernetes deletes them when you delete the {registry-cr}. Other tools, such
+as a UI or an admission policy, read them without a special client.
+
+=== Large objects stay out of etcd
+
+An SBOM can be large, and a cluster can hold many thousands of them. Etcd is
+not made for that. The scanner serves these kinds from an
+xref:glossary.adoc#_storage-component[extension API server] backed by PostgreSQL. The small
+configuration kinds stay in etcd as custom resource definitions.
+
+=== Namespaces give multi-tenancy
+
+The {registry-cr} and its results live in one namespace. A team reads its own
+reports with its own RBAC. The workload scan feature can keep results in the
+workload namespace or in one central namespace.
+
+=== A job runs on a frozen input
+
+When the controller schedules a {scanjob-cr}, it copies the `Registry` spec
+into an annotation of the job. The workers read that copy. A change to the
+`Registry` during the scan does not change the running scan.
+
+== The {sboms-name} stack
+
+.Architecture
+[mermaid]
+....
+%%{init: { "themeVariables": { "fontSize": "24px" } }}%%
+graph LR
+    accTitle: SBOM Scanner architecture
+    accDescr: A diagram showing the components of SBOM Scanner and the flow of data between them.
+    subgraph outer[" "]
+      direction LR
+      subgraph platform[" "]
+        direction LR
+        k8s(("Kubernetes API"))
+        registry[("Container registry")]
+        trivydb[("Vulnerability database")]
+        vexhub[("VEX Hub")]
+      end
+      subgraph kw["`**SBOM Scanner**`"]
+        direction LR
+        controller("`**Controller**`")
+        nats{{"NATS"}}
+        worker["Worker"]
+        nodeworker["Node worker\n(one per node)"]
+        storage("`**Storage API server**`")
+        postgres[("PostgreSQL")]
+      end
+    end
+    k8s -->|"custom resources,\nwebhooks"| controller
+    controller -->|"publishes\nscan messages"| nats
+    nats -->|"delivers\nmessages"| worker
+    nats -->|"delivers\nper-node messages"| nodeworker
+    worker -->|"catalog, SBOM"| registry
+    worker -->|"matches SBOM"| trivydb
+    worker -->|"applies\nstatements"| vexhub
+    nodeworker -->|"reads host\nfile system"| nodeworker
+    worker -->|"writes Image, SBOM,\nVulnerabilityReport"| k8s
+    nodeworker -->|"writes NodeSBOM,\nNodeVulnerabilityReport"| k8s
+    k8s -. "aggregates\nstorage API" .-> storage
+    storage -->|"stores"| postgres
+    storage -->|"fans out\nwatch events"| nats
+    class outer,platform,kw container
+....
+
+=== Controller
+
+The xref:glossary.adoc#_controller[controller] is a Deployment with leader
+election. The leader runs the reconcilers. All replicas serve the admission
+webhooks. The controller watches the custom resources, validates and
+defaults them, publishes the first message of each scan, and keeps the
+{scanjob-cr} status up to date. It does not talk to registries, to the
+database, or to the vulnerability database.
+
+=== Worker
+
+The xref:glossary.adoc#_worker[worker] is a Deployment. All replicas share
+one durable queue consumer, so NATS spreads the messages across them.
+A worker catalogs a registry, generates an SBOM with xref:glossary.adoc#_trivy[Trivy], and
+scans an SBOM. It is the only component that reads registry credentials, and
+it holds them only for the duration of one message.
+
+=== Node worker
+
+The node worker is the same binary as the worker, deployed as a DaemonSet.
+Each pod subscribes to a queue subject that carries the name of its node, so
+a node scan message reaches one pod only. The pod mounts the root file
+system of the node read-only, runs as root, and holds one Linux capability,
+`DAC_READ_SEARCH`. It has no host network and no host PID namespace. See
+xref:user-guide/scanning-nodes.adoc[Scanning nodes] for the Pod Security
+Admission consequences.
+
+=== Storage API server
+
+The xref:glossary.adoc#_storage-component[storage API server] is a Deployment.
+Kubernetes registers it as an aggregated API for the group
+`storage.sbomscanner.kubewarden.io`. It stores each resource as a JSON
+document in PostgreSQL. It delegates authentication and authorization to the
+Kubernetes API server. Field selectors and label selectors run as database
+queries, so a filtered list does not load every object.
+
+Each replica publishes its writes to NATS and listens for the writes of the
+other replicas. As a result, a `kubectl get --watch` works against any
+replica.
+
+=== NATS
+
+xref:glossary.adoc#_nats[NATS] is a StatefulSet, deployed by a subchart.
+JetStream holds the scan messages in a work queue. Core NATS carries the
+watch events between the storage replicas. The server requires a client
+certificate, so each component authenticates with mutual TLS.
+
+=== PostgreSQL
+
+The storage API server needs a PostgreSQL database. You have two options. By
+default, the chart deploys a database with the
+xref:glossary.adoc#_cloudnativepg[CloudNativePG] operator, which you install
+first. Or you bring your own PostgreSQL, inside or outside the cluster, and
+give the chart the connection details. In both cases the storage API server
+verifies the server certificate of the database. See
+xref:installation/helm-values.adoc#using-an-external-postgresql-instance[Using
+an external PostgreSQL instance].
+
+=== MCP server
+
+The xref:glossary.adoc#_mcp-server[MCP server] is optional and off by default. It is a
+Deployment. It talks to the Kubernetes API only, with HTTPS
+and basic authentication in front of it.
+
+== Two API groups, two backends
+
+{sboms-name} has two API groups. One group holds the configuration. The other
+group holds the results.
+
+[cols="1,2,2", options="header"]
+|===
+|API group |Kinds |Backend
+
+|`sbomscanner.kubewarden.io`
+|{registry-cr}, {scanjob-cr}, {vexhub-cr},
+{workloadscanconfiguration-cr}, {nodescanconfiguration-cr},
+{nodescanjob-cr}
+|Custom resource definitions. Stored in etcd by the Kubernetes API server.
+
+|`storage.sbomscanner.kubewarden.io`
+|{image-cr}, {sbom-cr}, {vulnerabilityreport-cr}, {workloadscanreport-cr},
+{nodesbom-cr}, {nodevulnerabilityreport-cr}
+|Aggregated API. Served by the storage API server from PostgreSQL.
+|===
+
+The two groups look the same to `kubectl`. The difference matters when you
+back up the cluster, or when you size the database.
+
+== The journey of a scan
+
+This section follows one {scanjob-cr} from creation to completion. The
+message subject at each step is the NATS subject.
+
+. *A job is created.* You create a `ScanJob` for a `Registry`, or the
+  <<_scheduled_scans,scan runner>> creates one. A mutating webhook adds a
+  creation timestamp and a trace context. A validating webhook rejects the
+  job if the `Registry` does not exist, or if another job for the same
+  `Registry` still runs.
+
+. *The controller schedules the job.* The controller sets the `Registry` as
+  the owner of the job and copies the `Registry` spec into an annotation.
+  Then it publishes one message to `sbomscanner.catalog.create` and marks the
+  job `Scheduled`. The controller keeps the ten most recent jobs per
+  `Registry` and deletes the older ones.
+
+. *A worker catalogs the registry.* The worker marks the job `InProgress`
+  with the reason `CatalogCreationInProgress`. It lists the repositories,
+  from the `_catalog` endpoint or from the spec. It lists the tags of each
+  repository and applies the xref:glossary.adoc#_match-condition[match conditions]. For each
+  tag that passes, it reads the manifest, applies the
+  xref:glossary.adoc#_platform-filter[platform filter], and skips artifacts that are not
+  images. It creates one {image-cr} per image and platform, owned by the
+  `Registry`. Then it publishes one message per image to
+  `sbomscanner.sbom.generate` and sets `status.imagesCount`.
+
+. *A worker generates the SBOM.* The worker looks for an existing
+  {sbom-cr} with the same xref:glossary.adoc#_digest[digest] in the namespace. If one
+  exists, it reuses the content. If not, it runs Trivy against the image and
+  stores the result in SPDX format. The `SBOM` is owned by the `Image`. The
+  worker publishes one message to `sbomscanner.sbom.scan`.
+
+. *A worker scans the SBOM.* The worker lists the enabled {vexhub-cr}
+  resources and gives them to Trivy. Trivy matches the SBOM against the
+  xref:glossary.adoc#_vulnerability-database[vulnerability database] and marks the entries
+  that a xref:glossary.adoc#_vex[VEX] statement covers as suppressed. The worker writes a
+  {vulnerabilityreport-cr}, owned by the `SBOM`, with a label that names the
+  job.
+
+. *The controller completes the job.* The controller watches the reports.
+  It counts the reports that carry the label of the job. When the count
+  equals `status.imagesCount`, it marks the job `Complete` with the reason
+  `AllImagesScanned`.
+
+=== Retry and failure
+
+NATS delivers a message up to five times, with a growing delay between
+deliveries. A worker that stops in the middle of a stage does not lose the
+message. After the fifth delivery fails, a failure handler marks the job
+`Failed` with the reason `InternalError` and the error text. The workers
+skip further messages of a failed job.
+
+=== Deletion
+
+Owner references form a chain: `Registry` → `ScanJob`, and `Registry` →
+`Image` → `SBOM` → `VulnerabilityReport`. When you delete the `Registry`,
+Kubernetes deletes everything below it. When you delete a `ScanJob`, the
+workers stop at the next stage.
+
+== Workload scan
+
+The workload scan feature reuses the pipeline above. A reconciler watches the
+Pods in the namespaces that the {workloadscanconfiguration-cr} selects. It
+groups the images of those Pods by registry host. For each host it creates a
+xref:glossary.adoc#_managed-resource[managed] {registry-cr}, named `workloadscan-` and the
+SHA-256 hash of the host. The repositories and xref:glossary.adoc#_match-condition[match
+conditions] of that `Registry` list the exact tags that the Pods use.
+
+When a Pod starts to use a new tag, the reconciler adds a match condition.
+It also sets a xref:glossary.adoc#_rescan-annotation[rescan annotation] that
+names only the new repositories. The scan runner turns the annotation into a
+`ScanJob` that scans that subset. The catalog, SBOM, and scan stages run as
+before.
+
+For each workload, the reconciler writes a {workloadscanreport-cr} in the
+workload namespace. The report is named after the kind and the UID of the
+workload, for example `deployment-` followed by the UID. The report stores
+only the list of containers and their image references. The storage API
+server computes the summary, the scan status, and the list of reports each
+time you read it. A storage admission plugin lets only the controller write
+these reports.
+
+== Node scan
+
+The node scan feature uses the same queue with a different subject per node.
+A runner on the controller creates one {nodescanjob-cr} per matching node.
+The controller copies the {nodescanconfiguration-cr} spec into an annotation
+of the job and publishes one message to `sbomscanner.nodesbom.generate.`
+followed by the node name. Only the node worker on that node subscribes to
+that subject.
+
+The node worker runs Trivy against the host file system, with the skip
+patterns from the annotation, and writes a cluster-scoped {nodesbom-cr}. It
+publishes one message to `sbomscanner.nodesbom.scan.` followed by the node
+name, scans the SBOM, writes a {nodevulnerabilityreport-cr}, and marks the
+job `Complete` itself.
+
+[#_scheduled_scans]
+== Scheduled scans
+
+Two runners on the controller leader wake up every ten seconds. The registry
+runner creates a `ScanJob` for each `Registry` whose xref:glossary.adoc#_scan-interval[scan
+interval] has passed since the last completed job, or that carries a rescan
+annotation. The node runner does the same for each node. Neither runner
+creates a job while one still runs for the same `Registry` or node.
+
+== Trust boundaries
+
+* NATS requires mutual TLS. Each component presents a client certificate
+  that cert-manager issues.
+* The webhooks, the aggregated API, and the MCP server serve HTTPS with
+  certificates from cert-manager. The Kubernetes API server trusts them
+  through an injected CA.
+* The storage API server verifies the certificate of PostgreSQL. There is no
+  plain-text fallback.
+* Only the worker service account can read Secrets, and only to get registry
+  credentials. The controller cannot.
+* Only the controller service account can write a `WorkloadScanReport` or a
+  managed `Registry`. A webhook and a storage admission plugin enforce this.
+* The node worker is the only component with access to the host. Its mount
+  is read-only.
+
+== How {sboms-name} scales
+
+Work is split per image. A registry with ten thousand images produces ten
+thousand SBOM messages and ten thousand scan messages. The workers share one
+queue consumer, so each message goes to one free worker. You add workers by
+raising the replica count.
+
+One `ScanJob` runs per `Registry` at a time. A second job waits. To scan
+registries in parallel, split them into several `Registry` resources.
+
+The storage replicas hold no state. Any replica serves any request. All of
+them write to one PostgreSQL primary, which is the limit for write
+throughput. Database replicas give failover, not write scale-out. This holds
+for the CloudNativePG cluster and for a database that you bring.

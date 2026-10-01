@@ -52,8 +52,9 @@ cases] page.
 == New to {sboms-short-name}?
 
 Start with the xref:quickstart.adoc[quick start]. It installs
-{sboms-short-name} and runs a first scan of a registry. Then read the user
-guide page for the scan that you need:
+{sboms-short-name} and runs a first scan of a registry. Then read the
+xref:explanations/architecture.adoc[architecture] page to see how the parts
+fit together, and the user guide page for the scan that you need:
 xref:user-guide/scanning-registries.adoc[registries],
 xref:user-guide/scanning-workloads.adoc[workloads], or
 xref:user-guide/scanning-nodes.adoc[nodes]. Operators find the Helm values

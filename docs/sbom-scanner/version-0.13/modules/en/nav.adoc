@@ -13,7 +13,8 @@ include::partial$variables.adoc[]
 *** xref:user-guide/vex.adoc[VEX Support]
 *** xref:user-guide/mcp-server.adoc[MCP Server]
 *** xref:user-guide/opentelemetry.adoc[OpenTelemetry]
-// * Explanations
+* Explanations
+** xref:explanations/architecture.adoc[Architecture]
 * Howtos
 ifeval::["{build-type}" == "product"]
 include::partial$product-specific/ui-extension-nav.adoc[]
