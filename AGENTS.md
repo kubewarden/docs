@@ -116,6 +116,7 @@ xref:howtos/policy-management.adoc[]
 - **`network-enforcer`** versions: directories named `version-X.Y`
 - Prerelease (dev) versions have `prerelease: -dev` in `antora.yml`
 - The current latest release has `display: 'X.Y-latest'` in `antora.yml`; the previous latest loses the `display:` line
+- The landing page in `docs/kw/` links each component with `latest@` xrefs. When you promote a version, check that those xrefs use the page paths of the newly promoted layout. A page alias keeps an old path working through a redirect, but the link should point at the page directly.
 
 Each component must always have **exactly one** version directory with `prerelease:` and **exactly one** with a `-latest` display marker. These are not conventions, the automation depends on them:
 
