@@ -14,7 +14,7 @@ meets that goal.
 
 {ne-short-name} works in three phases: {learn-phase-term}, {monitor-term},
 and {protect-term}. The use cases that follow move through these phases. See
-xref:phases.adoc[{ne-name} phases] for a full description of each phase.
+xref:explanations/phases.adoc[{ne-name} phases] for a full description of each phase.
 
 == Case A: As a platform engineer, I want a starting point for network policies without writing rules by hand.
 
@@ -38,8 +38,8 @@ Learning starts when the {controller-term} starts. Traffic from before that
 moment is not in the proposals. If a workload is quiet, I exercise it or
 restart it so that its flows are observed.
 
-See xref:phases.adoc#_learn-phase[Learn phase] and
-xref:known_limitations.adoc#_learning-starts-when-the-controller-starts[Learning starts when the controller starts].
+See xref:explanations/phases.adoc#_learn-phase[Learn phase] and
+xref:reference/known_limitations.adoc#_learning-starts-when-the-controller-starts[Learning starts when the controller starts].
 
 == Case B: As a namespace owner, I want to review what my workload talks to, and approve it myself.
 
@@ -62,7 +62,7 @@ If I delete the `WorkloadNetworkPolicy`, {ne-short-name} learns a new
 proposal for the workload. If I delete the workload, Kubernetes removes its
 proposals with it.
 
-See xref:phases.adoc#_transitions[Transitions].
+See xref:explanations/phases.adoc#_transitions[Transitions].
 
 == Case C: As an SRE, I want to see what a policy blocks before it blocks anything.
 
@@ -87,9 +87,9 @@ On Calico and Cilium, monitor mode does not create an object in the data
 plane. The controller only sees the flows that the {scraper-term} receives. A
 flow that the scraper does not see is not reported.
 
-See xref:phases.adoc#_monitor-phase[Monitor phase],
-xref:phases.adoc#_protect-phase[Protect phase], and
-xref:installation/quickstart.adoc#_acknowledge-a-violation[Acknowledge a violation].
+See xref:explanations/phases.adoc#_monitor-phase[Monitor phase],
+xref:explanations/phases.adoc#_protect-phase[Protect phase], and
+xref:quickstart.adoc#_acknowledge-a-violation[Acknowledge a violation].
 
 == Case D: As a security engineer, I want to know when a workload talks to a peer that it did not talk to before.
 
@@ -110,9 +110,9 @@ installs, or to my own collector. From there they go to my dashboards or my
 SIEM. The attribute names do not change between providers. One query covers
 Istio, Calico, and Cilium clusters.
 
-See xref:architecture.adoc#_opentelemetry-collector[OpenTelemetry collector],
-xref:phases.adoc#_otlp-events[Where OTLP events go], and
-xref:known_limitations.adoc#_violation-status-is-capped-at-100-records[Violation status is capped at 100 records].
+See xref:explanations/architecture.adoc#_opentelemetry-collector[OpenTelemetry collector],
+xref:explanations/phases.adoc#_otlp-events[Where OTLP events go], and
+xref:reference/known_limitations.adoc#_violation-status-is-capped-at-100-records[Violation status is capped at 100 records].
 
 == Case E: As a platform team, I want policies that fit the data plane that I already run.
 
@@ -140,10 +140,10 @@ The {backend-term} field, `spec.backend`, of a policy cannot change. If I
 move a cluster to a different provider, {ne-short-name} learns new
 proposals.
 
-See xref:compatibility.adoc#_provider-matrix[Provider matrix],
-xref:compatibility.adoc#_capability-matrix[Capability matrix],
-xref:phases.adoc#_backend-selection[Backend selection], and
-xref:known_limitations.adoc#_istio-learns-and-enforces-ingress-only[Istio learns and enforces ingress only].
+See xref:reference/compatibility.adoc#_provider-matrix[Provider matrix],
+xref:reference/compatibility.adoc#_capability-matrix[Capability matrix],
+xref:explanations/phases.adoc#_backend-selection[Backend selection], and
+xref:reference/known_limitations.adoc#_istio-learns-and-enforces-ingress-only[Istio learns and enforces ingress only].
 
 == Non-goals
 

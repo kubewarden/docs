@@ -14,7 +14,7 @@ meets that goal.
 
 {rte-short-name} works in three phases: {learn-phase-term}, {monitor-term},
 and {protect-term}. The use cases that follow move through these phases. See
-xref:phases.adoc[{rte-name} phases] for a full description of each phase.
+xref:explanations/phases.adoc[{rte-name} phases] for a full description of each phase.
 
 == Case A: As a cluster operator, I want an allow-list of the executables that each workload runs, without writing it by hand.
 
@@ -42,9 +42,9 @@ Each command that runs during learning becomes an allowed executable. This
 includes commands from `kubectl exec`. I review the proposal before I
 {promotion-term} it.
 
-See xref:phases.adoc#_learn-phase[Learn phase],
-xref:learning_mode_configuration.adoc[Learning mode configuration], and
-xref:known_limitations.adoc#_learning-cap-100-allowed-executables-per-proposal[Learning cap].
+See xref:explanations/phases.adoc#_learn-phase[Learn phase],
+xref:howtos/learning_mode_configuration.adoc[Learning mode configuration], and
+xref:reference/known_limitations.adoc#_learning-cap-100-allowed-executables-per-proposal[Learning cap].
 
 == Case B: As an application team, I want to protect my workload without breaking it.
 
@@ -81,12 +81,12 @@ The policy is {binding-term} to my pods with the {policy-label-term} label.
 The same image in a different namespace can have a different policy. My
 policy does not affect other teams.
 
-See xref:phases.adoc#_monitor-phase[Monitor phase],
-xref:phases.adoc#_protect-phase[Protect phase],
-xref:phases.adoc#_quick-mapping-to-crds[Quick mapping to CRDs],
-xref:kubectl_plugin.adoc#_promote-a-proposal[Promote a proposal],
-xref:kubectl_plugin.adoc#_allowing-denying-executables[Allowing and denying executables],
-and xref:installation/quickstart.adoc#_acknowledge-a-violation[Acknowledge a violation].
+See xref:explanations/phases.adoc#_monitor-phase[Monitor phase],
+xref:explanations/phases.adoc#_protect-phase[Protect phase],
+xref:explanations/phases.adoc#_quick-mapping-to-crds[Quick mapping to CRDs],
+xref:howtos/kubectl_plugin.adoc#_promote-a-proposal[Promote a proposal],
+xref:howtos/kubectl_plugin.adoc#_allowing-denying-executables[Allowing and denying executables],
+and xref:quickstart.adoc#_acknowledge-a-violation[Acknowledge a violation].
 
 == Case C: As a security engineer, I want to stop an attacker from running tools in a compromised container.
 
@@ -114,8 +114,8 @@ an allowed executable does after it starts. Code that runs inside an allowed
 process, without a new executable, is not seen. I combine {rte-short-name}
 with the other security tools that I run.
 
-See xref:phases.adoc#_protect-phase[Protect phase] and
-xref:troubleshooting.adoc#_required-plugins[Required plugins].
+See xref:explanations/phases.adoc#_protect-phase[Protect phase] and
+xref:howtos/troubleshooting.adoc#_required-plugins[Required plugins].
 
 == Case D: As a platform team, I want to know which workloads are protected, which are noisy, and to get alerts.
 
@@ -140,8 +140,8 @@ acknowledgement. The events go to the {opentelemetry-collector-term} that
 Prometheus counter for violations. The controller exports a gauge for active
 violations. I set alerts on these metrics.
 
-See xref:troubleshooting.adoc#_quick-overview-with-the-kubectl-plugin[Quick overview with the kubectl plugin]
-and xref:installation/quickstart.adoc#_use-an-external-collector[Use an external collector].
+See xref:howtos/troubleshooting.adoc#_quick-overview-with-the-kubectl-plugin[Quick overview with the kubectl plugin]
+and xref:quickstart.adoc#_use-an-external-collector[Use an external collector].
 
 == Case E: As a platform team with many clusters, I want the same policy in every cluster, managed as code.
 
@@ -162,7 +162,7 @@ require this label on each pod in selected namespaces.
 When I uninstall {rte-short-name}, the policies stay in the cluster. When I
 install it again, protection resumes.
 
-See xref:phases.adoc#_quick-mapping-to-crds[Quick mapping to CRDs].
+See xref:explanations/phases.adoc#_quick-mapping-to-crds[Quick mapping to CRDs].
 
 == Non-goals
 

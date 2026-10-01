@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Check if your kernel meets the requirements for using eBPF to monitor and enforce security policies in Kubernetes by verifying the configuration options
 :revdate: 2026-09-22
 :page-revdate: {revdate}
+:page-aliases: compatibility.adoc
 
 [#_overview]
 == Overview

@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Configure the resource limits for the controller and agent components to ensure they have enough CPU and memory to handle the workload and security events
 :revdate: 2026-09-22
 :page-revdate: {revdate}
+:page-aliases: resource-consumption.adoc
 
 The {rte-name} contains two main components. `controller` handles the
 interaction with the Kubernetes API server, and `agent` handles the behavior

@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Follow the steps to prepare a cluster, deploy with Helm, and observe network policy proposals and enforcement
 :revdate: 2026-09-18
 :page-revdate: {revdate}
+:page-aliases: installation/quickstart.adoc
 
 Welcome to the {ne-name} Quick Start.
 

@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Set up a local development environment that runs a Kubernetes cluster using Tilt, Docker, and a C compiler, then install required tools and configure
 :revdate: 2026-09-18
 :page-revdate: {revdate}
+:page-aliases: setup-development-env.adoc
 
 {ne-name} uses Tilt for local development.
 

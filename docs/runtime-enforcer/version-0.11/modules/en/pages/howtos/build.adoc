@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Find the commands to install build system dependencies on SLES, openSUSE, Ubuntu, Debian, RHEL, or Fedora
 :revdate: 2026-09-17
 :page-revdate: {revdate}
+:page-aliases: build.adoc
 
 [#_build-system-dependencies]
 == Build System Dependencies

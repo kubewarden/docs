@@ -4,7 +4,7 @@ include::partial$variables.adoc[]
 :page-revdate: {revdate}
 :sidebar_label: Organization
 :sidebar_position: 75
-:description: How the {ne-name} documentation is organized: introduction, installation, concepts and operations, reference, development, and the pages about the project itself.
+:description: How the {ne-name} documentation is organized: introduction, quick start, explanations, how-tos, reference, and the pages about the project itself.
 :keywords: {ne-name}, kubewarden, documentation, organization
 :doc-persona: kubewarden-all
 :doc-type: explanation
@@ -13,22 +13,23 @@ include::partial$variables.adoc[]
 The {ne-name} documentation has these parts:
 
 * xref:introduction.adoc[Introduction]: what {ne-short-name} is.
-* _Installation_: the quick start and the uninstall steps.
-* _Concepts & Operations_: the learn, monitor, and protect phases, the
-  architecture, the supported providers, the known limitations, and
-  troubleshooting.
-* _Reference_: the custom resource definitions.
-* _Development_: how to set up a development environment.
+* xref:quickstart.adoc[Quick start]: install {ne-short-name} and walk
+  through the learn, monitor, and protect workflow.
+* _Explanations_: the learn, monitor, and protect phases, and the
+  architecture.
+* _How-tos_: tasks for the operator and the contributor, such as uninstall,
+  troubleshooting, and the development environment.
+* _Reference_: the supported providers, the known limitations, and the
+  custom resource definitions.
 * xref:personas.adoc[For who?]: the people who use {ne-short-name}.
 * xref:use-cases.adoc[Use cases]: what each persona does with it.
 * Organization: this page.
 * xref:glossary.adoc[Glossary]: the terms used in these pages.
 * xref:disclosure.adoc[Security disclosure]: how to report a vulnerability.
 
-Most of the content is in the _Installation_, _Concepts & Operations_, and
-_Reference_ sections. The sections can overlap. The {ne-short-name} project
-follows the link:https://diataxis.fr/[Diátaxis] documentation framework
-where it can.
+Most of the content is in the _Explanations_, _How-tos_, and _Reference_
+sections. The sections can overlap. The {ne-short-name} project follows the
+link:https://diataxis.fr/[Diátaxis] documentation framework where it can.
 
 == Navigation
 

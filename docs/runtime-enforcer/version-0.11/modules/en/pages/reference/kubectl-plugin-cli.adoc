@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 = kubectl runtime-enforcer CLI Reference
 :revdate: 2026-09-22
 :page-revdate: {revdate}
+:page-aliases: kubectl-plugin-cli.adoc
 :description: Command reference for the `kubectl runtime-enforcer` plugin of {rte-name}.
 :keywords: ["{rte-name}", "kubewarden", "kubectl", "plugin", "cli", "reference"]
 :doc-persona: ["kubewarden-operator"]
@@ -10,7 +11,7 @@ include::partial$variables.adoc[]
 :doc-topic: ["operator-manual", "cli"]
 
 This page lists all commands and flags of the `kubectl runtime-enforcer` plugin.
-For installation steps and common workflows, see xref:kubectl_plugin.adoc[].
+For installation steps and common workflows, see xref:howtos/kubectl_plugin.adoc[].
 
 ////
 CLI REFERENCE GOES BELOW.

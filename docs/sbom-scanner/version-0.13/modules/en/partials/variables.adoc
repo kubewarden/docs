@@ -12,6 +12,16 @@ ifeval::["{build-type}" == "product"]
 :project-security-team: SUSE Security Team
 endif::[]
 
+// The project origin sentence, used by the introduction page. The community
+// text matches the Admission Controller introduction. The product text states
+// that the component is part of the Kubewarden project.
+ifeval::["{build-type}" == "community"]
+:intro-paragraph: {sboms-name} is a xref:#_vendor_neutrality[vendor neutral], https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
+endif::[]
+ifeval::["{build-type}" == "product"]
+:intro-paragraph: {sboms-name} is part of link:https://kubewarden.io[Kubewarden], a vendor neutral, https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
+endif::[]
+
 // Glossary terms start
 // Each attribute renders the term as a link to its glossary entry.
 // Use it for the first mention of a term on a page.

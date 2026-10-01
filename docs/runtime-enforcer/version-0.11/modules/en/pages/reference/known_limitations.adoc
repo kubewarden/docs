@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Understand the known limitations of the system, including design decisions and constraints from upstream components
 :revdate: 2026-09-21
 :page-revdate: {revdate}
+:page-aliases: known_limitations.adoc
 
 This document tracks the current, known limitations of {rte-name}. Some
 are explicit design decisions, some are constraints inherited from upstream

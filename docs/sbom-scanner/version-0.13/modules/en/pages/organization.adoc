@@ -4,7 +4,7 @@ include::partial$variables.adoc[]
 :page-revdate: {revdate}
 :sidebar_label: Organization
 :sidebar_position: 75
-:description: How the {sboms-name} documentation is organized: overview, quickstart, user guide, how-tos, reference, and the pages about the project itself.
+:description: How the {sboms-name} documentation is organized: introduction, quick start, user guide, how-tos, reference, and the pages about the project itself.
 :keywords: {sboms-name}, kubewarden, documentation, organization
 :doc-persona: kubewarden-all
 :doc-type: explanation
@@ -12,8 +12,8 @@ include::partial$variables.adoc[]
 
 The {sboms-name} documentation has these parts:
 
-* xref:introduction.adoc[Overview]: what {sboms-short-name} is.
-* xref:quickstart.adoc[Quickstart]: install {sboms-short-name} and run a
+* xref:introduction.adoc[Introduction]: what {sboms-short-name} is.
+* xref:quickstart.adoc[Quick start]: install {sboms-short-name} and run a
   first scan.
 * _Tutorials_: the user guide. One page per feature, from registry scans to
   the MCP server.

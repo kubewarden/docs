@@ -4,7 +4,7 @@ include::partial$variables.adoc[]
 :page-revdate: {revdate}
 :sidebar_label: Organization
 :sidebar_position: 75
-:description: How the {rte-name} documentation is organized: introduction, installation, concepts and operations, reference, development, and the pages about the project itself.
+:description: How the {rte-name} documentation is organized: introduction, quick start, explanations, how-tos, reference, and the pages about the project itself.
 :keywords: {rte-name}, kubewarden, documentation, organization
 :doc-persona: kubewarden-all
 :doc-type: explanation
@@ -13,23 +13,24 @@ include::partial$variables.adoc[]
 The {rte-name} documentation has these parts:
 
 * xref:introduction.adoc[Introduction]: what {rte-short-name} is.
-* _Installation_: the quick start and the uninstall steps.
-* _Concepts & Operations_: the learn, monitor, and protect phases, the
-  learning configuration, the kernel and runtime requirements, the known
-  limitations, and troubleshooting.
-* _Reference_: the custom resource definitions, the `kubectl` plugin, and
-  the resource consumption of the components.
-* _Development_: the build requirements and the development environment.
+* xref:quickstart.adoc[Quick start]: install {rte-short-name} and walk
+  through the learn, monitor, and protect workflow.
+* _Explanations_: the learn, monitor, and protect phases.
+* _How-tos_: tasks for the operator and the contributor, such as the
+  learning configuration, the `kubectl` plugin, troubleshooting, and the
+  build and development environment.
+* _Reference_: the kernel and runtime requirements, the known limitations,
+  the custom resource definitions, the `kubectl` plugin commands, and the
+  resource consumption of the components.
 * xref:personas.adoc[For who?]: the people who use {rte-short-name}.
 * xref:use-cases.adoc[Use cases]: what each persona does with it.
 * Organization: this page.
 * xref:glossary.adoc[Glossary]: the terms used in these pages.
 * xref:disclosure.adoc[Security disclosure]: how to report a vulnerability.
 
-Most of the content is in the _Installation_, _Concepts & Operations_, and
-_Reference_ sections. The sections can overlap. The {rte-short-name} project
-follows the link:https://diataxis.fr/[Diátaxis] documentation framework
-where it can.
+Most of the content is in the _Explanations_, _How-tos_, and _Reference_
+sections. The sections can overlap. The {rte-short-name} project follows the
+link:https://diataxis.fr/[Diátaxis] documentation framework where it can.
 
 == Navigation
 

@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Understand the system structure and how it uses Kubernetes to monitor traffic and create network policies
 :revdate: 2026-09-18
 :page-revdate: {revdate}
+:page-aliases: architecture.adoc
 
 {ne-name} is a Kubernetes operator. It watches east-west traffic between
 workloads, derives an allow list from what it sees, and (when a user opts in) projects

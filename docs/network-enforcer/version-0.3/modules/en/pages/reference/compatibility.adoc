@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Check which network providers and features work with your cluster by reviewing compatibility information
 :revdate: 2026-09-18
 :page-revdate: {revdate}
+:page-aliases: compatibility.adoc
 
 [#_overview]
 == Overview

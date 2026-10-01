@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Configure learning mode to observe process executions and generate a WorkloadPolicyProposal with observed executable paths
 :revdate: 2026-09-22
 :page-revdate: {revdate}
+:page-aliases: learning_mode_configuration.adoc
 
 [#_overview]
 == Overview

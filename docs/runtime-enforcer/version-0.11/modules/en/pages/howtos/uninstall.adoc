@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Uninstall the application and all related policies by running the helm chart uninstall command then deleting the WorkloadPolicy and WorkloadPolicyProposal
 :revdate: 2026-09-17
 :page-revdate: {revdate}
+:page-aliases: installation/uninstall.adoc
 
 You can remove the {rte-name} and all the policies created by uninstalling
 the `helm` chart as follows:

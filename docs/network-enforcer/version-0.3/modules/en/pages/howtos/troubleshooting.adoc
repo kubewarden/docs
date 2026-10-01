@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Troubleshoot common failures by checking logs, verifying configurations, and confirming network and component statuses
 :revdate: 2026-09-18
 :page-revdate: {revdate}
+:page-aliases: troubleshooting.adoc
 
 This document helps diagnose common {ne-name} failures.
 Failure modes are provider-specific: whether Goldmane is up, whether Hubble Relay

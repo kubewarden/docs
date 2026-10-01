@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Uninstall the Helm chart to remove the network-enforcer release and all related resources including the two CRDs that delete generated policies
 :revdate: 2026-09-18
 :page-revdate: {revdate}
+:page-aliases: installation/uninstall.adoc
 
 The commands below assume the Quick Start defaults: Helm release
 `network-enforcer` in namespace `network-enforcer`.

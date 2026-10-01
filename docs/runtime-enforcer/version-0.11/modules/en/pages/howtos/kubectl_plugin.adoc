@@ -4,12 +4,13 @@ include::partial$variables.adoc[]
 :description: Use kubectl runtime-enforcer to manage WorkloadPolicyProposal and WorkloadPolicy custom resources by promoting proposals, applying policies, and switching between
 :revdate: 2026-09-22
 :page-revdate: {revdate}
+:page-aliases: kubectl_plugin.adoc
 
 The `kubectl runtime-enforcer` plugin wraps common operations for
 `WorkloadPolicyProposal` and `WorkloadPolicy` CRDs.
 
 This page shows the main workflows. For the full list of commands and flags,
-see xref:kubectl-plugin-cli.adoc[].
+see xref:reference/kubectl-plugin-cli.adoc[].
 
 [#_install]
 == Installation

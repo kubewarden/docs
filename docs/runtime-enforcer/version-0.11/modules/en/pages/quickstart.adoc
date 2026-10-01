@@ -2,9 +2,9 @@ include::partial$variables.adoc[]
 
 = {rte-name} Quick Start
 :description: Start by deploying the application in a Kubernetes cluster, then create a WorkloadPolicyProposal based on observed processes and convert it to a WorkloadPolicy
-
 :revdate: 2026-09-22
 :page-revdate: {revdate}
+:page-aliases: installation/quickstart.adoc
 
 Welcome to the {rte-name} Quick Start!
 
@@ -32,7 +32,7 @@ Before deployment, you need to prepare the following:
 [WARNING]
 ====
 Please check your environment satisfies the minimum
-xref:../compatibility.adoc[runtime enforcer requirements].
+xref:reference/compatibility.adoc[runtime enforcer requirements].
 ====
 
 [#_install-cert-manager-and-cert-manager-csi-driver]
@@ -301,8 +301,8 @@ See the `protect` mode section for details.
 ====
 Container enforcement is scoped by container name in `.spec.rulesByContainer`.
 If an additional container is added to an already protected Pod, it is
-intentionally left unenforced. See xref:../phases.adoc#_monitor-phase[Monitor
-phase] and xref:../phases.adoc#_protect-phase[Protect phase] for details.
+intentionally left unenforced. See xref:explanations/phases.adoc#_monitor-phase[Monitor
+phase] and xref:explanations/phases.adoc#_protect-phase[Protect phase] for details.
 ====
 
 Converting a proposal into a policy isn't enough to apply it to a workload: the

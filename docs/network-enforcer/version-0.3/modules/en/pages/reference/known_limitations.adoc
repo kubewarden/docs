@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :description: Understand the current known limitations of the network-enforcer and how they affect deployment and policy enforcement
 :revdate: 2026-09-18
 :page-revdate: {revdate}
+:page-aliases: known_limitations.adoc
 
 This document tracks the current, known limitations of {ne-name}.
 Some are explicit design decisions, and some are constraints inherited from
