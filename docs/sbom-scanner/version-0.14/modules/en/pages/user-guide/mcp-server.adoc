@@ -25,7 +25,7 @@ This guide covers:
 == Prerequisites
 
 * A Kubernetes cluster with {sboms-name} installed, or a fresh cluster where {sboms-name} will be installed alongside the MCP server
-* cert-manager installed (for TLS, unless disabled with `mcp.disableTLS=true`)
+* cert-manager installed. The chart issues a certificate for the MCP server even when `mcp.disableTLS=true`, and the core components need cert-manager in any case.
 * An MCP-compatible client
 
 [#_authentication]
