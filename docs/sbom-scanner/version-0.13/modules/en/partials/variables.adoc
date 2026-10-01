@@ -11,3 +11,41 @@ endif::[]
 ifeval::["{build-type}" == "product"]
 :project-security-team: SUSE Security Team
 endif::[]
+
+// Glossary terms start
+// Each attribute renders the term as a link to its glossary entry.
+// Use it for the first mention of a term on a page.
+
+// Custom resources. The link text is monospace, to match the backtick
+// convention used for resource kinds everywhere else in these docs.
+// pass:q[] is needed: inline formatting is not applied inside an attribute
+// value unless the value asks for quote substitutions.
+:registry-cr: pass:q[xref:glossary.adoc#_registry[`Registry`]]
+:scanjob-cr: pass:q[xref:glossary.adoc#_scanjob[`ScanJob`]]
+:vexhub-cr: pass:q[xref:glossary.adoc#_vexhub[`VEXHub`]]
+:workloadscanconfiguration-cr: pass:q[xref:glossary.adoc#_workloadscanconfiguration[`WorkloadScanConfiguration`]]
+:nodescanconfiguration-cr: pass:q[xref:glossary.adoc#_nodescanconfiguration[`NodeScanConfiguration`]]
+:nodescanjob-cr: pass:q[xref:glossary.adoc#_nodescanjob[`NodeScanJob`]]
+:image-cr: pass:q[xref:glossary.adoc#_image[`Image`]]
+:sbom-cr: pass:q[xref:glossary.adoc#_sbom[`SBOM`]]
+:vulnerabilityreport-cr: pass:q[xref:glossary.adoc#_vulnerabilityreport[`VulnerabilityReport`]]
+:workloadscanreport-cr: pass:q[xref:glossary.adoc#_workloadscanreport[`WorkloadScanReport`]]
+:nodesbom-cr: pass:q[xref:glossary.adoc#_nodesbom[`NodeSBOM`]]
+:nodevulnerabilityreport-cr: pass:q[xref:glossary.adoc#_nodevulnerabilityreport[`NodeVulnerabilityReport`]]
+
+// Concepts, standards, and components. Plain link text.
+:sbom-term: xref:glossary.adoc#_sbom[SBOM]
+:spdx-term: xref:glossary.adoc#_spdx[SPDX]
+:cve-term: xref:glossary.adoc#_cve[CVE]
+:cvss-term: xref:glossary.adoc#_cvss[CVSS]
+:vex-term: xref:glossary.adoc#_vex[VEX]
+:vex-hub-term: xref:glossary.adoc#_vex-hub[VEX Hub]
+:purl-term: xref:glossary.adoc#_purl[PURL]
+:oci-term: xref:glossary.adoc#_oci[OCI]
+:cel-term: xref:glossary.adoc#_cel[CEL]
+:opentelemetry-term: xref:glossary.adoc#_opentelemetry[OpenTelemetry]
+:mcp-server-term: xref:glossary.adoc#_mcp-server[MCP server]
+:trivy-term: xref:glossary.adoc#_trivy[Trivy]
+:cloudnativepg-term: xref:glossary.adoc#_cloudnativepg[CloudNativePG]
+:vulnerability-database-term: xref:glossary.adoc#_vulnerability-database[vulnerability database]
+// Glossary terms end
