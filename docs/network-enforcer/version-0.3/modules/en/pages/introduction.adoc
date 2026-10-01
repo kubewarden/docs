@@ -3,19 +3,20 @@ include::partial$variables.adoc[]
 = {ne-name}
 :revdate: 2026-09-18
 :page-revdate: {revdate}
-:description: {ne-name} watches east-west Kubernetes traffic, learns an allow list per workload, and enforces it on Istio ambient, Calico, or Cilium.
+:description: {ne-name} watches east-west Kubernetes traffic, learns an allow-list per workload, and enforces it on Istio ambient, Calico, or Cilium.
 
-{ne-name} is a Kubernetes operator that observes east-west traffic between
-workloads, derives an allow list from what it sees, and, when you opt in,
-projects that allow list into a native policy on a pluggable backend (Istio
-ambient, Calico, or Cilium).
+{ne-name} is a Kubernetes operator that observes {east-west-traffic-term}
+between workloads, derives an {allow-list-term} from what it sees, and, when
+you opt in, projects that allow-list into a {native-policy-object-term} on a
+pluggable {backend-term} ({istio-ambient-term}, {calico-term}, or
+{cilium-term}).
 
 It operates in three phases:
 
-* *Learn* -- observe traffic and generate a `WorkloadNetworkPolicyProposal`
-  per workload and direction.
-* *Monitor* -- report violations of an approved `WorkloadNetworkPolicy`
-  without blocking them.
+* *Learn* -- observe traffic and generate a {workloadnetworkpolicyproposal-cr}
+  per workload and {direction-term}.
+* *Monitor* -- report {violation-term}s of an approved
+  {workloadnetworkpolicy-cr} without blocking them.
 * *Protect* -- block traffic that violates the policy allow-list.
 
 [#_getting-started]
@@ -23,7 +24,7 @@ It operates in three phases:
 
 * xref:installation/quickstart.adoc[] -- deploy {ne-short-name} and walk
   through the learn/monitor/protect workflow.
-* xref:compatibility.adoc[] -- provider and platform requirements.
+* xref:compatibility.adoc[] -- {provider-term} and platform requirements.
 * xref:phases.adoc[] -- understand the learn, monitor and protect phases in
   detail.
 

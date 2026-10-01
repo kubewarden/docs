@@ -13,3 +13,57 @@ endif::[]
 ifeval::["{build-type}" == "product"]
 :project-security-team: SUSE Security Team
 endif::[]
+
+// Glossary terms start
+// Each attribute renders the term as a link to its glossary entry.
+// Use it for the first mention of a term on a page.
+
+// Custom resources and native policy objects. The link text is monospace,
+// to match the backtick convention used for resource kinds everywhere else.
+// pass:q[] is needed: inline formatting is not applied inside an attribute
+// value unless the value asks for quote substitutions.
+:workloadnetworkpolicy-cr: pass:q[xref:glossary.adoc#_workloadnetworkpolicy[`WorkloadNetworkPolicy`]]
+:workloadnetworkpolicyproposal-cr: pass:q[xref:glossary.adoc#_workloadnetworkpolicyproposal[`WorkloadNetworkPolicyProposal`]]
+:authorizationpolicy-term: pass:q[xref:glossary.adoc#_authorizationpolicy[`AuthorizationPolicy`]]
+:networkpolicy-term: pass:q[xref:glossary.adoc#_networkpolicy[`NetworkPolicy`]]
+
+// Labels and annotations. Monospace link text, for the same reason.
+// The &lt; and &gt; entities keep <id> as text. pass:q[] skips the substitution
+// that normally escapes angle brackets.
+:promote-label-term: pass:q[xref:glossary.adoc#_promote-label[`networkenforcer.kubewarden.io/promote`]]
+:acknowledge-annotation-term: pass:q[xref:glossary.adoc#_acknowledged-violation[`networkenforcer.kubewarden.io/acknowledge-&lt;id&gt;`]]
+:ztunnel-term: pass:q[xref:glossary.adoc#_ztunnel[`ztunnel`]]
+
+// Concepts, phases, providers, and components. Plain link text.
+:acknowledge-term: xref:glossary.adoc#_acknowledged-violation[acknowledge]
+:active-violation-term: xref:glossary.adoc#_active-violation[active violation]
+:allow-list-term: xref:glossary.adoc#_allow-list[allow-list]
+:backend-term: xref:glossary.adoc#_backend[backend]
+:calico-term: xref:glossary.adoc#_calico[Calico]
+:cert-manager-term: xref:glossary.adoc#_cert-manager[cert-manager]
+:cilium-term: xref:glossary.adoc#_cilium[Cilium]
+:cni-term: xref:glossary.adoc#_cni[CNI]
+:controller-term: xref:glossary.adoc#_controller[controller]
+:data-plane-term: xref:glossary.adoc#_data-plane[data plane]
+:direction-term: xref:glossary.adoc#_direction[direction]
+:dry-run-term: xref:glossary.adoc#_dry-run[dry-run]
+:east-west-traffic-term: xref:glossary.adoc#_east-west-traffic[east-west traffic]
+:flow-term: xref:glossary.adoc#_flow[flow]
+:flow-source-term: xref:glossary.adoc#_flow-source[flow source]
+:goldmane-term: xref:glossary.adoc#_goldmane[Goldmane]
+:hubble-relay-term: xref:glossary.adoc#_hubble-relay[Hubble Relay]
+:istio-ambient-term: xref:glossary.adoc#_istio-ambient[Istio ambient]
+:learn-phase-term: xref:glossary.adoc#_learn-phase[learn]
+:monitor-term: xref:glossary.adoc#_monitor[monitor]
+:native-policy-object-term: xref:glossary.adoc#_native-policy-object[native policy object]
+:opentelemetry-collector-term: xref:glossary.adoc#_opentelemetry-collector[OpenTelemetry collector]
+:peer-term: xref:glossary.adoc#_peer[peer]
+:principal-term: xref:glossary.adoc#_principal[principal]
+:promotion-term: xref:glossary.adoc#_promotion[promote]
+:proposal-term: xref:glossary.adoc#_workloadnetworkpolicyproposal[proposal]
+:protect-term: xref:glossary.adoc#_protect[protect]
+:provider-term: xref:glossary.adoc#_provider[provider]
+:scraper-term: xref:glossary.adoc#_scraper[scraper]
+:violation-term: xref:glossary.adoc#_violation[violation]
+:violation-record-term: xref:glossary.adoc#_violation-record[violation record]
+// Glossary terms end

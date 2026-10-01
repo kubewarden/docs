@@ -12,29 +12,31 @@ These are example use cases for {ne-name}. Each case names a
 xref:personas.adoc[persona] and a goal. Then it explains how {ne-short-name}
 meets that goal.
 
-{ne-short-name} works in three phases: learn, monitor, and protect. The use
-cases that follow move through these phases. See
+{ne-short-name} works in three phases: {learn-phase-term}, {monitor-term},
+and {protect-term}. The use cases that follow move through these phases. See
 xref:phases.adoc[{ne-name} phases] for a full description of each phase.
 
 == Case A: As a platform engineer, I want a starting point for network policies without writing rules by hand.
 
 My cluster has workloads but no network policies. I know that I must add
 policies. I do not know which workloads talk to each other. That information
-is in the flow records of the data plane, not in a Kubernetes API object.
+is in the {flow-term} records of the {data-plane-term}, not in a Kubernetes
+API object.
 
-I install {ne-short-name} once, for the whole cluster. I point it at the flow
-source of my data plane. Learning starts at once and needs no configuration
-per workload.
+I install {ne-short-name} once, for the whole cluster. I point it at the
+{flow-source-term} of my data plane. Learning starts at once and needs no
+configuration per workload.
 
 For each Deployment, StatefulSet, and DaemonSet that carries traffic,
-{ne-short-name} creates a `WorkloadNetworkPolicyProposal`. One proposal covers
-one workload and one direction. The proposal contains the peers, protocols,
-and ports that {ne-short-name} observed. Learning continues until I promote
-the proposal.
+{ne-short-name} creates a {workloadnetworkpolicyproposal-cr}. One proposal
+covers one workload and one {direction-term}. The proposal contains the
+{peer-term}s, protocols, and ports that {ne-short-name} observed. This list
+is the {allow-list-term}. Learning continues until I {promotion-term} the
+proposal.
 
-Learning starts when the controller starts. Traffic from before that moment
-is not in the proposals. If a workload is quiet, I exercise it or restart it
-so that its flows are observed.
+Learning starts when the {controller-term} starts. Traffic from before that
+moment is not in the proposals. If a workload is quiet, I exercise it or
+restart it so that its flows are observed.
 
 See xref:phases.adoc#_learn-phase[Learn phase] and
 xref:known_limitations.adoc#_learning-starts-when-the-controller-starts[Learning starts when the controller starts].
@@ -51,10 +53,10 @@ Kubernetes permissions:
 $ kubectl get wnpp -n my-namespace
 ----
 
-I review the peers and ports in the proposal. If the list is correct, I add
-the label `networkenforcer.kubewarden.io/promote=monitor` to the proposal.
-{ne-short-name} creates a `WorkloadNetworkPolicy` and removes the proposal.
-Nothing is enforced yet.
+I review the peers and ports in the proposal. If the list is correct, I set
+the label {promote-label-term} to `monitor` on the proposal.
+{ne-short-name} creates a {workloadnetworkpolicy-cr} and removes the
+proposal. Nothing is enforced yet.
 
 If I delete the `WorkloadNetworkPolicy`, {ne-short-name} learns a new
 proposal for the workload. If I delete the workload, Kubernetes removes its
@@ -67,22 +69,23 @@ See xref:phases.adoc#_transitions[Transitions].
 I do not want to break production with a wrong rule. I promote the proposal
 to `monitor` mode first. In this mode, {ne-short-name} compares new flows
 with the policy. It records each flow that the policy does not allow as a
-violation. The data plane does not drop the flow.
+{violation-term}. The data plane does not drop the flow.
 
 I watch the `Active Violations` column of the `WorkloadNetworkPolicy`. I
 examine each violation. If the traffic is expected, I add a rule to the
-policy. {ne-short-name} then clears the violation. If the traffic is noise
-that I understand, I acknowledge the violation with an annotation and a
-reason.
+policy, so that the next flow is allowed. I then {acknowledge-term} the
+existing violation. If the traffic is noise that I understand, I acknowledge
+the violation with the annotation {acknowledge-annotation-term} and a reason.
 
-When the policy has no active violations for a period that I trust, I set
-`spec.mode` to `protect`. {ne-short-name} creates the native policy object on
-the data plane. If a problem occurs, I set `spec.mode` back to `monitor`.
-{ne-short-name} removes the native policy object.
+When the policy has no {active-violation-term}s for a period that I trust, I
+set `spec.mode` to `protect`. {ne-short-name} creates the
+{native-policy-object-term} on the data plane. If a problem occurs, I set
+`spec.mode` back to `monitor`. {ne-short-name} removes the native policy
+object.
 
 On Calico and Cilium, monitor mode does not create an object in the data
-plane. The controller only sees the flows that the scraper receives. A flow
-that the scraper does not see is not reported.
+plane. The controller only sees the flows that the {scraper-term} receives. A
+flow that the scraper does not see is not reported.
 
 See xref:phases.adoc#_monitor-phase[Monitor phase],
 xref:phases.adoc#_protect-phase[Protect phase], and
@@ -96,16 +99,16 @@ of that policy is a signal. In `monitor` mode the signal does not block. In
 record.
 
 {ne-short-name} writes the violations to the status of the
-`WorkloadNetworkPolicy`. The status keeps the 100 most recent violations. For
-a longer history, I use OpenTelemetry. {ne-short-name} emits a
-`policy_violation_observed` log event for each violation. Each event has a
-fixed set of attributes: the source workload, the destination workload, the
-protocol, the port, the mode, and the policy.
+`WorkloadNetworkPolicy`. The status keeps the 100 most recent
+{violation-record-term}s. For a longer history, I use OpenTelemetry.
+{ne-short-name} emits a `policy_violation_observed` log event for each
+violation. Each event has a fixed set of attributes: the source workload, the
+destination workload, the protocol, the port, the mode, and the policy.
 
-I send the events to the collector that {ne-short-name} installs, or to my
-own collector. From there they go to my dashboards or my SIEM. The attribute
-names do not change between providers. One query covers Istio, Calico, and
-Cilium clusters.
+I send the events to the {opentelemetry-collector-term} that {ne-short-name}
+installs, or to my own collector. From there they go to my dashboards or my
+SIEM. The attribute names do not change between providers. One query covers
+Istio, Calico, and Cilium clusters.
 
 See xref:architecture.adoc#_opentelemetry-collector[OpenTelemetry collector],
 xref:phases.adoc#_otlp-events[Where OTLP events go], and
@@ -113,27 +116,29 @@ xref:known_limitations.adoc#_violation-status-is-capped-at-100-records[Violation
 
 == Case E: As a platform team, I want policies that fit the data plane that I already run.
 
-I do not want to change my CNI or install a new mesh to get network policies.
-{ne-short-name} reads flows from the data plane that is already there. It
-writes policies in the native format of that data plane. I select the
-provider once, at installation time.
+I do not want to change my {cni-term} or install a new mesh to get network
+policies. {ne-short-name} reads flows from the data plane that is already
+there. It writes policies in the native format of that data plane. I select
+the {provider-term} once, at installation time.
 
-*Istio ambient.* {ne-short-name} reads the access logs of ztunnel. It learns
-the ingress traffic of each workload. The policy identifies each peer by its
-SPIFFE identity, which comes from the ServiceAccount of the workload. In
-`protect` mode, {ne-short-name} creates an Istio `AuthorizationPolicy`.
-Workloads that share the `default` ServiceAccount also share one identity.
-The policy for them is wider than I want. A policy in the
-xref:latest@admission-controller:en:introduction.adoc[{admc-name}] can require
-a dedicated ServiceAccount for each workload.
+*Istio ambient.* {ne-short-name} reads the access logs of {ztunnel-term}. It
+learns the ingress traffic of each workload. The policy identifies each peer
+by its SPIFFE {principal-term}, which comes from the ServiceAccount of the
+workload. In `protect` mode, {ne-short-name} creates an Istio
+{authorizationpolicy-term}. Workloads that share the `default` ServiceAccount
+also share one identity. The policy for them is wider than I want. A policy
+in the xref:latest@admission-controller:en:introduction.adoc[{admc-name}] can
+require a dedicated ServiceAccount for each workload.
 
-*Calico and Cilium.* {ne-short-name} reads flows from Goldmane or Hubble
-Relay. It learns both ingress and egress traffic, for TCP and UDP. In
-`protect` mode, it creates a standard Kubernetes `NetworkPolicy`. The CNI
-enforces it. I can read the policy with the tools that I already use.
+*Calico and Cilium.* {ne-short-name} reads flows from {goldmane-term} or
+{hubble-relay-term}. It learns both ingress and egress traffic, for TCP and
+UDP. In `protect` mode, it creates a standard Kubernetes
+{networkpolicy-term}. The CNI enforces it. I can read the policy with the
+tools that I already use.
 
-The `spec.backend` field of a policy cannot change. If I move a cluster to a
-different provider, {ne-short-name} learns new proposals.
+The {backend-term} field, `spec.backend`, of a policy cannot change. If I
+move a cluster to a different provider, {ne-short-name} learns new
+proposals.
 
 See xref:compatibility.adoc#_provider-matrix[Provider matrix],
 xref:compatibility.adoc#_capability-matrix[Capability matrix],

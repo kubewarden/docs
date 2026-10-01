@@ -9,12 +9,12 @@ Welcome to the {ne-name} Quick Start.
 
 This guide walks you through the following steps:
 
-* Preparing a cluster with one of the supported data-plane providers: Istio ambient, Calico or Cilium.
+* Preparing a cluster with one of the supported {data-plane-term} {provider-term}s: {istio-ambient-term}, {calico-term} or {cilium-term}.
 * Deploying {ne-short-name} with `helm`.
-* Deploying a simple workload and inspecting the `WorkloadNetworkPolicyProposal` resources that {ne-short-name} learns from the observed traffic.
-* Promoting those proposals into `WorkloadNetworkPolicy` resources in `monitor` mode and observing violations without blocking traffic.
-* Switching the policies to `protect` mode and seeing enforcement in action.
-* Acknowledging a violation you consider expected.
+* Deploying a simple workload and inspecting the {workloadnetworkpolicyproposal-cr} resources that {ne-short-name} learns from the observed traffic.
+* Promoting those proposals into {workloadnetworkpolicy-cr} resources in {monitor-term} mode and observing {violation-term}s without blocking traffic.
+* Switching the policies to {protect-term} mode and seeing enforcement in action.
+* Marking a violation that you consider expected as xref:glossary.adoc#_acknowledged-violation[acknowledged].
 
 '''
 
@@ -26,8 +26,8 @@ Before you start, you need:
 * A Kubernetes cluster you can throw away, for example a link:https://kind.sigs.k8s.io/[kind] cluster.
   This guide creates one for you.
 * `kubectl`, `helm` and `curl` installed locally.
-* `cert-manager` and `cert-manager-csi-driver` in the cluster.
-  The bundled OpenTelemetry collector uses them for its serving certificate.
+* {cert-manager-term} and `cert-manager-csi-driver` in the cluster.
+  The bundled {opentelemetry-collector-term} uses them for its serving certificate.
   The Istio default TLS mode `issuer` uses them for the OTLP hop.
 
 [NOTE]
@@ -40,8 +40,8 @@ Every `--set` flag used here exists in `charts/network-enforcer/values.yaml`.
 [#_choose-your-provider]
 == Choose your provider
 
-{ne-short-name} does not observe traffic on its own: it consumes flow information from the data plane
-already running in your cluster, and it enforces policies with the native policy API of that data plane.
+{ne-short-name} does not observe traffic on its own: it consumes {flow-term} information from the data plane
+already running in your cluster, and it enforces policies with the {native-policy-object-term} API of that data plane.
 Pick one provider and follow only its section.
 
 [cols="1,1,2,2,1"]
@@ -50,19 +50,19 @@ Pick one provider and follow only its section.
 
 | Istio ambient
 | `istio` (default)
-| `ztunnel` access logs, tailed by the `istio-fluent-bit` DaemonSet and pushed to the controller over OTLP
-| Istio `AuthorizationPolicy`
+| {ztunnel-term} access logs, tailed by the `istio-fluent-bit` DaemonSet and pushed to the controller over OTLP
+| Istio {authorizationpolicy-term}
 | `backend: istio`
 
 | Calico
 | `calico`
-| Calico Goldmane flow API over mTLS (`goldmane.calico-system.svc:7443`)
-| Kubernetes `NetworkPolicy`
+| Calico {goldmane-term} flow API over mTLS (`goldmane.calico-system.svc:7443`)
+| Kubernetes {networkpolicy-term}
 | `backend: kubernetes`
 
 | Cilium
 | `cilium`
-| Hubble Relay gRPC API over mutual TLS (`hubble-relay.kube-system.svc:443`)
+| {hubble-relay-term} gRPC API over mutual TLS (`hubble-relay.kube-system.svc:443`)
 | Kubernetes `NetworkPolicy`
 | `backend: kubernetes`
 |===
@@ -99,7 +99,7 @@ curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.30.3 sh -
 
 These `--set` flags are not optional for {ne-short-name}:
 
-* `AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY` lets `ztunnel` evaluate the dry-run `AuthorizationPolicy`
+* `AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY` lets `ztunnel` evaluate the {dry-run-term} `AuthorizationPolicy`
   that `monitor` mode installs, without blocking traffic.
 * `AUTHZ_POLICY_INFO_LOGGING` makes `ztunnel` log the policy decision of every connection.
 * `logAsJson` makes `ztunnel` emit JSON access logs, which is the format the `istio-fluent-bit` pipeline
@@ -124,7 +124,7 @@ kubectl label namespace default istio.io/dataplane-mode=ambient
 Istio ambient authorization is L4 and identity based, which has three consequences for this guide:
 
 * Only TCP traffic is observed and enforced; UDP does not go through `ztunnel`.
-* Rules are written in terms of SPIFFE principals, so every workload should have its own
+* Rules are written in terms of SPIFFE {principal-term}s, so every workload should have its own
   `ServiceAccount` — otherwise all workloads sharing the default service account share one identity.
 * Authorization is enforced on the receiving side, so {ne-short-name} only learns *ingress* proposals.
 ====
@@ -277,7 +277,7 @@ helm install network-enforcer kubewarden/network-enforcer \
   --wait
 ----
 
-`controller.wnpStatusUpdateInterval` is the interval at which the controller refreshes the violations in
+`controller.wnpStatusUpdateInterval` is the interval at which the {controller-term} refreshes the violations in
 the status of every `WorkloadNetworkPolicy`.
 It is lowered from its default (`30s`) to make this demo responsive; in production you rarely need to
 change it.
@@ -529,7 +529,7 @@ from the client on TCP `18080`.
 [#_monitor-promote-proposals-into-workloadnetworkpolicy-resources]
 == Monitor: promote proposals into WorkloadNetworkPolicy resources
 
-To turn a proposal into a policy, label it with `networkenforcer.kubewarden.io/promote`.
+To turn a proposal into a policy, label it with {promote-label-term}.
 Use `monitor` for a passive policy, or `protect` to enforce it straight away.
 
 On the Istio provider:
@@ -1012,7 +1012,7 @@ never violated again.
 == Acknowledge a violation
 
 A violation you consider expected can be acknowledged by annotating the policy with
-`networkenforcer.kubewarden.io/acknowledge-<id>`, where `<id>` is the `id` of the violation record and the value is
+{acknowledge-annotation-term}, where `<id>` is the `id` of the {violation-record-term} and the value is
 the reason:
 
 [source,bash]
