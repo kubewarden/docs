@@ -5,3 +5,61 @@ include::latest@shared:en:partial$rte-variables.adoc[]
 
 // Pull in version specific shared attributes
 include::{build-type}-specific/variables.adoc[]
+
+// The project security team, used by the security disclosure page.
+ifeval::["{build-type}" == "community"]
+:project-security-team: Kubewarden team
+endif::[]
+ifeval::["{build-type}" == "product"]
+:project-security-team: SUSE Security Team
+endif::[]
+
+// The project origin sentence, used by the introduction page. The community
+// text matches the Admission Controller introduction. The product text states
+// that the component is part of the Kubewarden project.
+ifeval::["{build-type}" == "community"]
+:intro-paragraph: {rte-name} is a xref:#_vendor_neutrality[vendor neutral], https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
+endif::[]
+ifeval::["{build-type}" == "product"]
+:intro-paragraph: {rte-name} is part of link:https://kubewarden.io[Kubewarden], a vendor neutral, https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
+endif::[]
+
+// Glossary terms start
+// Each attribute renders the term as a link to its glossary entry.
+// Use it for the first mention of a term on a page.
+
+// Custom resources. The link text is monospace, to match the backtick
+// convention used for resource kinds everywhere else in these docs.
+// pass:q[] is needed: inline formatting is not applied inside an attribute
+// value unless the value asks for quote substitutions.
+:workloadpolicy-cr: pass:q[xref:glossary.adoc#_workloadpolicy[`WorkloadPolicy`]]
+:workloadpolicyproposal-cr: pass:q[xref:glossary.adoc#_workloadpolicyproposal[`WorkloadPolicyProposal`]]
+
+// Labels and annotations. Monospace link text, for the same reason.
+:policy-label-term: pass:q[xref:glossary.adoc#_policy-label[`runtimeenforcer.kubewarden.io/policy`]]
+:promote-label-term: pass:q[xref:glossary.adoc#_promote-label[`runtimeenforcer.kubewarden.io/promote`]]
+// The &lt; and &gt; entities keep <id> as text. pass:q[] skips the substitution
+// that normally escapes angle brackets.
+:acknowledge-annotation-term: pass:q[xref:glossary.adoc#_acknowledged-violation[`runtimeenforcer.kubewarden.io/acknowledge-&lt;id&gt;`]]
+
+// Concepts, phases, and components. Plain link text.
+:acknowledge-term: xref:glossary.adoc#_acknowledged-violation[acknowledge]
+:active-violation-term: xref:glossary.adoc#_active-violation[active violation]
+:agent-term: xref:glossary.adoc#_agent[agent]
+:allow-list-term: xref:glossary.adoc#_allow-list[allow-list]
+:binding-term: xref:glossary.adoc#_binding[bound]
+:cert-manager-term: xref:glossary.adoc#_cert-manager[cert-manager]
+:controller-term: xref:glossary.adoc#_controller[controller]
+:ebpf-term: xref:glossary.adoc#_ebpf[eBPF]
+:fail-open-term: xref:glossary.adoc#_fail-open[fail-open]
+:kubectl-plugin-term: xref:glossary.adoc#_kubectl-plugin[kubectl plugin]
+:learn-phase-term: xref:glossary.adoc#_learn-phase[learn]
+:learning-namespace-selector-term: xref:glossary.adoc#_learning-namespace-selector[namespace selector]
+:monitor-term: xref:glossary.adoc#_monitor[monitor]
+:opentelemetry-collector-term: xref:glossary.adoc#_opentelemetry-collector[OpenTelemetry collector]
+:promotion-term: xref:glossary.adoc#_promotion[promote]
+:proposal-term: xref:glossary.adoc#_workloadpolicyproposal[proposal]
+:protect-term: xref:glossary.adoc#_protect[protect]
+:violation-term: xref:glossary.adoc#_violation[violation]
+:violation-record-term: xref:glossary.adoc#_violation-record[violation record]
+// Glossary terms end

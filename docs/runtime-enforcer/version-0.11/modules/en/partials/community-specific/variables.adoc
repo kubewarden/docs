@@ -1,3 +1,8 @@
 // Here goes version specific, community-specific shared attributes and content
 
 :runtime-enforcer-helm-chart: https://charts.kubewarden.io
+
+// Current upstream release tag and published Helm chart version.
+// Bumped by updatecli on each upstream release. Do not edit by hand.
+:release-tag: v0.10.1
+:chart-version: 0.2.1

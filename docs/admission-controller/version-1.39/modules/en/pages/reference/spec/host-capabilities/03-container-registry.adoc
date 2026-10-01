@@ -189,10 +189,10 @@ OR
 ----
 
 For example, when requesting the manifest of the
-`ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0` image,
+`{default-policy-server-image-tag}` image,
 the payload would be:
 
-* Input payload: `"ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0"`
+* Input payload: `"{default-policy-server-image-tag}"`
 * Output payload: the body of the successful response obtained from the
 registry.
 It can be an https://github.com/opencontainers/image-spec/blob/main/image-index.md[OCI index image]
@@ -339,9 +339,9 @@ string
 ----
 
 For example, when requesting the image manifest and configuration of the
-`ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0` image, the payload would be:
+`{default-policy-server-image-tag}` image, the payload would be:
 
-* Input payload: `"ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0"`
+* Input payload: `"{default-policy-server-image-tag}"`
 * Output payload: the body of the successful response obtained from the
 registry. It will contain the https://github.com/opencontainers/image-spec/blob/main/manifest.md[OCI image
 manifest]

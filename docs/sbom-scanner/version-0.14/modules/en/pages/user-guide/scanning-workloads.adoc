@@ -247,15 +247,19 @@ kubectl get workloadscanreports -n prod
 
 [source,text]
 ----
-NAME               AGE
-deployment-nginx   2m
+NAME                                              AGE
+deployment-3f2a9c1e-7b4d-4e8a-9c21-5d6e7f8a9b0c   2m
 ----
+
+The name of a report is the kind of the workload, in lower case, followed by
+the UID of the workload. The UID keeps the name unique and short enough for
+Kubernetes. Use the owner reference in the report to find the workload name.
 
 Retrieve a report:
 
 [source,bash]
 ----
-kubectl get workloadscanreport deployment-nginx -n prod -o yaml
+kubectl get workloadscanreport deployment-3f2a9c1e-7b4d-4e8a-9c21-5d6e7f8a9b0c -n prod -o yaml
 ----
 
 [source,yaml]
@@ -263,18 +267,18 @@ kubectl get workloadscanreport deployment-nginx -n prod -o yaml
 apiVersion: storage.sbomscanner.kubewarden.io/v1alpha1
 kind: WorkloadScanReport
 metadata:
-  name: deployment-nginx
+  name: deployment-3f2a9c1e-7b4d-4e8a-9c21-5d6e7f8a9b0c
   namespace: prod
   ownerReferences:
     - apiVersion: apps/v1
       kind: Deployment
       name: nginx
-      uid: ...
+      uid: 3f2a9c1e-7b4d-4e8a-9c21-5d6e7f8a9b0c
 spec:
   containers:
     - name: nginx
       imageRef:
-        registry: workload-scan-docker-io
+        registry: workloadscan-c0f6b1a9e2d4f87350b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3
         namespace: sbomscanner
         repository: library/nginx
         tag: "1.25"
@@ -293,7 +297,7 @@ containers:
   - name: nginx
     vulnerabilityReports:
       - imageMetadata:
-          registry: workload-scan-docker-io
+          registry: workloadscan-c0f6b1a9e2d4f87350b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3
           registryURI: docker.io
           repository: library/nginx
           tag: "1.25"
@@ -335,6 +339,9 @@ Each container in the report has a `scanStatus` that tracks the progress of its 
 === Managed resources
 
 {sboms-name} creates and manages `Registry` resources behind the scenes to drive scanning. These resources are labeled with `sbomscanner.kubewarden.io/workloadscan: "true"` and `app.kubernetes.io/managed-by: sbomscanner`.
+The name of a managed `Registry` is `workloadscan-` followed by the SHA-256
+hash of the registry host. The `spec.uri` field holds the host in clear
+text.
 
 Managed resources are protected from external changes. Validating webhooks
 block changes to managed `Registry` resources. A storage API admission plugin

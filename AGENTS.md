@@ -116,6 +116,7 @@ xref:howtos/policy-management.adoc[]
 - **`network-enforcer`** versions: directories named `version-X.Y`
 - Prerelease (dev) versions have `prerelease: -dev` in `antora.yml`
 - The current latest release has `display: 'X.Y-latest'` in `antora.yml`; the previous latest loses the `display:` line
+- The landing page in `docs/kw/` links each component with `latest@` xrefs. When you promote a version, check that those xrefs use the page paths of the newly promoted layout. A page alias keeps an old path working through a redirect, but the link should point at the page directly.
 
 Each component must always have **exactly one** version directory with `prerelease:` and **exactly one** with a `-latest` display marker. These are not conventions, the automation depends on them:
 
@@ -149,6 +150,19 @@ Some partials are copies of files that upstream repositories generate. Do not ed
 | `network-enforcer` | `network-enforcer/docs/crds/CRD-docs-for-docs-repo.adoc` | `partials/crd-reference.adoc` |
 
 The partials land in the current dev version only. An hourly updatecli job (`.github/workflows/updatecli.yml`) watches upstream releases. When a new release appears, the job promotes the dev version and points the values files at the next dev version.
+
+### Release version attributes
+
+Each component's dev version defines two AsciiDoc attributes in `partials/community-specific/variables.adoc`:
+
+```asciidoc
+:release-tag: v1.38.2
+:chart-version: 6.1.0
+```
+
+Use `{release-tag}` for the upstream release tag (image tags, cosign certificate identities) and `{chart-version}` for the published Helm chart version. Inside a `[source]` block, add `subs="+attributes"` or the attribute is printed literally.
+
+Do not bump these by hand. The hourly updatecli job runs `updatecli/updatecli.d/update-release-attributes.yaml` for each component. It reads the latest GitHub release of the component repository and the latest `<chart name>-X.Y.Z` release of `kubewarden/helm-charts`, and rewrites the two attributes in the dev version. The chart name per component is `chartName` in `updatecli/values.d/`.
 
 ### Spell checking
 

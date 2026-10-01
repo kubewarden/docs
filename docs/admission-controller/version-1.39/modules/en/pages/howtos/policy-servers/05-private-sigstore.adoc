@@ -188,14 +188,14 @@ The ConfigMap key **must** be `verification-config` (not the filename).
 Set `spec.sigstoreTrustConfig` and `spec.verificationConfig` on your PolicyServer
 to the names of the ConfigMaps you created:
 
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
 metadata:
   name: default
 spec:
-  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
+  image: {default-policy-server-image-tag}
   replicas: 1
   sigstoreTrustConfig: my-sigstore-trust-config
   verificationConfig: my-verification-config

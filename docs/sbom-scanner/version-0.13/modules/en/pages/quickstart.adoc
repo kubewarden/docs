@@ -12,7 +12,7 @@ include::partial${build-type}-specific/warning.adoc[]
 This guide has these steps:
 
 * Deploy the SBOMscanner stack in a Kubernetes cluster.
-* Run an image scan with a `Registry` custom resource.
+* Run an image scan with a {registry-cr} custom resource.
 
 == Requirements
 
@@ -25,7 +25,7 @@ Storage Class] defined inside of the cluster
 * `helm` installed locally
 * `kubectl` installed locally
 * `cert-manager` installed in the cluster
-* `CloudNativePG` installed in the cluster
+* {cloudnativepg-term} installed in the cluster
 
 === Install cert-manager
 
@@ -171,7 +171,7 @@ kubectl apply -f registry.yaml
 
 === Prepare a `scan-job.yaml`
 
-The `ScanJob` CR tells SBOMscanner which registry to scan.
+The {scanjob-cr} CR tells SBOMscanner which registry to scan.
 
 [source,yaml]
 ----

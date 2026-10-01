@@ -1,3 +1,8 @@
 // Here goes version specific, community-specific shared attributes and content
 
 :network-enforcer-helm-chart: https://github.com/kubewarden/helm-charts/tree/main/charts/network-enforcer
+
+// Current upstream release tag and published Helm chart version.
+// Bumped by updatecli on each upstream release. Do not edit by hand.
+:release-tag: v0.2.0
+:chart-version: 0.1.2

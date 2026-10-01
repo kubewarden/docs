@@ -109,10 +109,10 @@ The {admc-short-name} Helm chart provide values for setting affinity on differen
 components:
 
 * `affinity` - Sets affinity rules on the controller Deployment.
-  * `global.affinity` - Falls back to this if `affinity` isn't set. Also
-  propagates to the defaults chart.
+** `global.affinity` - Falls back to this if `affinity` isn't set. Also
+   propagates to the defaults chart.
 * `policyServer.affinity` - Sets affinity on the default PolicyServer resource.
-  * `global.affinity` - Falls back to this if `policyServer.affinity` isn't set.
+** `global.affinity` - Falls back to this if `policyServer.affinity` isn't set.
 
 Example Helm values to spread all Kubewarden components across different nodes:
 

@@ -1,0 +1,47 @@
+include::partial$variables.adoc[]
+= Who is this project for? The personas.
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:description: Who is this project for? The personas of {rte-name}.
+:keywords: {rte-name}, kubewarden, documentation, personas
+:doc-persona: kubewarden-all
+:doc-type: explanation
+:doc-topic: explanation
+
+This page lists the people who use {rte-name}, and what each of them does
+with it. The xref:use-cases.adoc[use cases] refer to these personas.
+
+== {rte-name} personas
+
+[cols="1,2", options="header"]
+|===
+|Persona |Description
+
+|**Operator**
+|Installs {rte-short-name} in a cluster and keeps it running. Makes sure that
+the nodes meet the kernel and container runtime requirements. Configures the
+telemetry collector.
+
+|**Platform engineer**
+|Owns the runtime security posture of the cluster. Selects the namespaces
+where learning runs. Sees which workloads have a policy, in which mode, and
+which policies are noisy. Decides when teams move to protect mode.
+
+|**Application team**
+|Owns one or more workloads. Reviews the proposal for a workload and promotes
+it. Adds expected executables to the allow-list and acknowledges the
+violations that it accepts. Does these tasks with labels and annotations on
+the custom resources, or with the `kubectl` plugin.
+
+|**Security engineer**
+|Reads the violations and the exported events. Decides when a blocked or
+reported executable is a risk. Sets alerts on the violation metrics.
+
+|**Integrator**
+|Builds tools on top of {rte-short-name}. Reads the custom resources and the
+OpenTelemetry events. Examples are a dashboard, a SIEM, or a GitOps pipeline
+that applies the same policy to many clusters.
+
+|**Developer**
+|Works on {rte-short-name} itself.
+|===

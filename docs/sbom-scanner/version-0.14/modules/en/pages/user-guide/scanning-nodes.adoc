@@ -210,8 +210,8 @@ Apply the job:
 kubectl apply -f nodescanjob.yaml
 ----
 
-If another `NodeScanJob` is already in progress for the same node, the
-new job is marked as `Failed` with the reason `ScanAlreadyInProgress`.
+The scheduler does not create a new `NodeScanJob` for a node while another
+job for that node is in progress. It waits for the running job to finish.
 
 === Triggering an immediate rescan
 
@@ -304,11 +304,11 @@ Common failure reasons:
 |===
 |Reason |Description
 
-|`ScanAlreadyInProgress`
-|Another scan job is already running for the same node.
-
 |`NodeScanConfigurationMissing`
 |No `NodeScanConfiguration` resource exists in the cluster.
+
+|`NodeNotFound`
+|The node named in `spec.nodeName` does not exist.
 
 |`NodeNotMatching`
 |The target node does not match the `nodeSelector` defined in the

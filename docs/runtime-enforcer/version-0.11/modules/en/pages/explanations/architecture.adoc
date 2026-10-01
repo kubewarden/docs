@@ -1,0 +1,350 @@
+include::partial$variables.adoc[]
+
+= {rte-name} architecture
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:description: How {rte-name} is built: the controller, the per-node agent, the eBPF program, and the path of a policy from the first observed process to a blocked one.
+:doc-persona: kubewarden-all
+:doc-topic: architecture
+:doc-type: explanation
+:keywords: {rte-name}, kubewarden, kubernetes, architecture, ebpf, nri
+
+{rte-name} has two main components. A {controller-term} runs once per
+cluster and owns the policy resources. An {agent-term} runs on each node and
+owns the enforcement on that node. The agent sits between the container
+runtime and the Linux kernel. It learns from the container runtime which
+container owns which process, and it tells the kernel which executables
+each container can run.
+
+The xref:introduction.adoc#_what_is_ebpf[introduction] explains what eBPF is
+and why the enforcer checks each process in the kernel. The
+xref:explanations/phases.adoc[Phases] page explains the learn, monitor, and
+protect lifecycle. This page explains how the parts fit together.
+
+== Design principles
+
+=== Enforce in the kernel, before the process starts
+
+The check runs inside the kernel, in the code path that starts a process. A
+process that is not allowed never starts. There is no agent in the
+container to bypass, and no window between the start and the check.
+
+=== Bind before the entrypoint
+
+The agent is a plugin of the container runtime. The runtime calls the agent
+before the first process of a container starts. At that moment, the agent
+binds the container to its policy. As a result, the entrypoint itself is
+subject to the policy, and so is a pod that lives for one second.
+
+=== Learn where the processes run
+
+The processes that a workload runs are visible on the node, in the kernel.
+The agent on each node writes what it sees to a
+{workloadpolicyproposal-cr}. The controller does not take part in learning.
+It only completes the owner reference of each proposal.
+
+=== The controller owns the policy, the agent owns the node
+
+The controller is the only component that creates a {workloadpolicy-cr} and
+writes its status. The agent is the only component that loads the policy
+into the kernel. The two talk through the Kubernetes API and through one
+gRPC call per status update.
+
+=== Fail closed
+
+A pod that names a policy that the agent does not know does not start. This
+is the default. A mistake in a label does not leave a workload without
+protection.
+
+=== A policy carries no node state
+
+A `WorkloadPolicy` holds a mode and an {allow-list-term} per container. It
+holds nothing about nodes, pods, or the kernel. You can learn it in one
+cluster and apply it to another.
+
+== The {rte-name} stack
+
+.Architecture
+[mermaid]
+....
+%%{init: { "themeVariables": { "fontSize": "24px" } }}%%
+graph LR
+    accTitle: Runtime Enforcer architecture
+    accDescr: A diagram showing the components of Runtime Enforcer and the flow of data between them.
+    subgraph outer[" "]
+      direction LR
+      subgraph platform[" "]
+        direction LR
+        k8s(("Kubernetes API"))
+        runtime["Container runtime"]
+        kernel["Linux kernel"]
+      end
+      subgraph kw["`**Runtime Enforcer**`"]
+        direction LR
+        controller("`**Controller**`")
+        agent("`**Agent**
+        (one per node)`")
+        collector["OpenTelemetry\ncollector"]
+        debugger["Debugger\n(optional)"]
+        plugin["kubectl plugin"]
+      end
+    end
+    plugin -->|"labels, annotations,\nspec edits"| k8s
+    k8s -->|"webhooks,\npromotion, status"| controller
+    k8s -->|"watches\nWorkloadPolicy"| agent
+    agent -->|"writes\nWorkloadPolicyProposal"| k8s
+    runtime -->|"NRI: container\nstart events"| agent
+    agent -->|"loads programs,\nwrites maps"| kernel
+    kernel -->|"learning and\nviolation events"| agent
+    controller -->|"gRPC, mTLS:\nhealth, violations"| agent
+    debugger -. "gRPC, mTLS:\ncontainer cache" .-> agent
+    agent -->|"policy_violation\nevents"| collector
+    controller -->|"acknowledged\nevents"| collector
+    class outer,platform,kw container
+....
+
+=== Controller
+
+The {controller-term} is a Deployment with leader election. The leader runs
+two loops. The promotion loop watches for the {promote-label-term} on a
+proposal, creates the `WorkloadPolicy`, and deletes the proposal. The status
+loop calls each agent over <<_trust_boundaries,gRPC>> on
+the xref:glossary.adoc#_status-sync-interval[status sync interval] and writes
+what it learns to the `WorkloadPolicy` status.
+
+All replicas serve three admission webhooks. A mutating webhook completes
+the owner reference of each new proposal. A validating webhook rejects a
+promote label whose value is not `monitor` or `protect`. A validating
+webhook rejects the deletion of a `WorkloadPolicy` while a pod in the
+namespace still carries its {policy-label-term}.
+
+=== Agent
+
+The {agent-term} is a DaemonSet. One pod runs on each node and does five
+things. It registers as an xref:glossary.adoc#_nri[NRI] plugin of the
+container runtime. It loads the <<_the_ebpf_program,eBPF program>> and
+owns its maps. It turns learning events from the kernel into
+`WorkloadPolicyProposal` writes. It turns violation events into
+OpenTelemetry events and keeps them in a buffer for the controller. It
+serves a gRPC endpoint that the controller and the debugger call.
+
+The agent watches every `WorkloadPolicy` in the cluster and loads each one
+into the kernel, whether or not a pod on its node uses it. This is why a new
+policy is ready on every node before a pod binds to it.
+
+=== Debugger
+
+The xref:glossary.adoc#_debugger[debugger] is optional and off by default.
+It asks each agent for the list of containers that the agent knows. It
+compares that list with the pods in the Kubernetes API and logs the
+differences. Use it when
+a policy does not apply to a pod that you expect it to. See
+xref:howtos/troubleshooting.adoc#_debugger[Troubleshooting].
+
+=== OpenTelemetry collector
+
+The {opentelemetry-collector-term} receives the violation events. The Helm
+value `telemetry.collectorStrategy` selects one of three setups: the chart
+deploys a collector, you point the enforcer at your own, or the export is
+off. The bundled collector counts the events and exports a Prometheus
+counter. See xref:quickstart.adoc#_use-an-external-collector[Use an external
+collector].
+
+=== kubectl plugin
+
+The {kubectl-plugin-term} is a client-side binary. It is not deployed in
+the cluster. It sets the labels, annotations, and spec fields that drive the
+workflow, with your own `kubectl` credentials. Every task it does, you can
+also do with `kubectl label`, `kubectl annotate`, or `kubectl edit`.
+
+=== Validating Admission Policy
+
+The chart installs one
+xref:glossary.adoc#_validating-admission-policy[Validating Admission Policy].
+It rejects any change to the {policy-label-term} on a running pod. A pod
+cannot move to another policy, and cannot leave its policy, without a
+restart.
+
+== What runs where
+
+[cols="1,3", options="header"]
+|===
+|Place |Work
+
+|Controller leader
+|Promotion. Status sync. Acknowledgement of violations. Removal of leftover
+proposals.
+
+|Every controller replica
+|The three admission webhooks.
+
+|Every agent
+|NRI plugin. Policy load into the kernel. Binding of pods to policies.
+Learning writes. Violation buffer and OpenTelemetry events. gRPC endpoint.
+
+|Linux kernel, on every node
+|The check of each process start against the allow-list of its container.
+|===
+
+== The journey of a policy
+
+This section follows one workload from its first observed process to a
+blocked one.
+
+. *A pod starts.* The container runtime calls the agent through NRI before
+  the first process of each container. The agent reads the cgroup of the
+  container and records which pod and workload it belongs to. It writes the
+  cgroup to a kernel map, so that the eBPF program recognizes processes of
+  this container.
+
+. *A process starts, and no policy applies.* The eBPF program resolves the
+  path of the executable. It finds no policy for the cgroup, so it writes a
+  learning event to a ring buffer. The agent reads the event, finds the
+  namespace of the pod, and checks it against the
+  {learning-namespace-selector-term}. If the namespace matches, the agent
+  creates or updates the `WorkloadPolicyProposal` of the workload and adds
+  the path under the container name. The mutating webhook of the controller
+  fills in the owner reference, so Kubernetes deletes the proposal with the
+  workload. The agent stops adding paths when the proposal holds 100.
+
+. *You promote the proposal.* You set the {promote-label-term}. The
+  controller creates a `WorkloadPolicy` with the same name and allow-list,
+  sets the mode from the label, sets the xref:glossary.adoc#_promoted-from-label[promoted-from label], and deletes
+  the proposal. Each agent sees the new policy and stops learning for that
+  workload.
+
+. *Every agent loads the policy.* Each agent allocates a policy ID per
+  container, writes the allowed paths into kernel maps, and writes the mode
+  into a map of its own. The agent reports the policy as ready to the
+  controller, with the mode it loaded.
+
+. *A pod binds to the policy.* You add the {policy-label-term} to the pod
+  template. When the pod starts, the agent looks up the policy in its own
+  memory. It writes the cgroup of each named container into the map that
+  links cgroups to policy IDs. This happens before the entrypoint starts. A
+  container that the policy does not name gets no entry and runs without
+  restriction.
+
+. *The kernel checks each process.* The eBPF program looks up the policy ID
+  for the cgroup, resolves the path, and looks for an exact match in the
+  allow-list. A match returns at once. A miss writes a violation event to a
+  second ring buffer. In `monitor` mode the process then starts. In
+  `protect` mode the program returns `EPERM` and the process does not start.
+
+. *The violation is reported.* The agent reads the event, emits a
+  `policy_violation` OpenTelemetry event at once, and adds a record to its
+  buffer. On the next status sync, the controller reads the buffers of all
+  agents and merges the records per policy. It removes duplicates and
+  assigns an `id` to each new record. It writes the 100 most recent records
+  to `status.violations`. The {violation-record-term} is now visible to
+  `kubectl`.
+
+=== A mode change
+
+When you change `spec.mode`, each agent sees the new generation and updates
+the mode map. The kernel reads that map on every process start, so the
+change applies to running pods without a restart. Until an agent catches
+up, the controller reports the policy as `Transitioning`.
+
+=== A missing policy
+
+When a pod names a policy that the agent has not loaded, the agent returns
+an error to the container runtime. The container does not start. The
+kubelet retries. If the policy appears, the next start succeeds. The Helm
+value `agent.nriFailopen=true` turns the error into a warning, and the
+container starts without a policy. See
+xref:glossary.adoc#_fail-open[fail-open].
+
+=== An agent upgrade
+
+The agent DaemonSet starts the new pod on a node while the old pod still
+runs. The new pod loads its own programs and maps. It receives the list of
+running containers from the runtime. It loads every policy and binds every
+running pod again. Only then does it pass its startup probe, and only then
+does the old pod stop. Protection does not lapse during the upgrade. The
+violation buffer of the old pod is lost. The OpenTelemetry events were
+already sent.
+
+== What the status tells you
+
+The controller writes two kinds of information to the `WorkloadPolicy`
+status.
+
+The first kind comes from the health of each agent. The controller asks
+every agent whether it loaded the policy, and in which mode. The answers
+become the xref:glossary.adoc#_status-phase[status phase] and the
+xref:glossary.adoc#_node-issue-code[node issue codes]. The field
+`totalNodes` counts the agents, not the nodes that run the workload, because
+every agent loads every policy. An agent that does not answer, or that
+reports no policies, gives the code `Missing`.
+
+The second kind comes from the violation buffers. The controller keeps the
+100 most recent active records and the 100 most recent acknowledged records.
+The counter `violationCount` grows with each scraped report, so it can
+exceed the number of distinct records.
+
+The status does not record which pods are enforced. That fact lives in the
+kernel map on each node. The xref:glossary.adoc#_debugger[debugger] compares the
+containers that each agent knows with the pods in the API. It does not read
+the kernel maps.
+
+[#_the_ebpf_program]
+== The eBPF program
+
+The agent attaches one program to the kernel function that prepares the
+credentials of a new process, with the `fmod_ret` attach type. That function
+runs once per process start, after the kernel opens the executable and
+before any interpreter runs. Its return value can stop the start. For a
+script with a shebang line, the program sees the path of the script. It does
+not see the interpreter.
+
+The program finds the container of the current process through its cgroup.
+It resolves the path of the executable as the container sees it. It looks
+the path up in a hash map that holds the allow-list of the policy, as an
+exact string. There is no pattern match and no hash of the file content. On
+a miss, the program writes an event and, in `protect` mode, returns `EPERM`.
+
+The program uses CO-RE, so the kernel must expose
+xref:glossary.adoc#_btf[BTF]. Kernels before 5.11 limit a path to 512
+characters. See xref:reference/compatibility.adoc[Compatibility] for the
+supported kernels and the required options.
+
+[#_trust_boundaries]
+== Trust boundaries
+
+* One certificate authority, issued by {cert-manager-term}, signs every
+  certificate. Each pod receives its certificate through the cert-manager
+  CSI driver. No certificate is stored in a Secret.
+* The controller and the debugger call the agent over gRPC with mutual TLS.
+  The agent verifies the client certificate. The caller verifies the pod
+  name of the agent.
+* The agent writes one kind of resource, the `WorkloadPolicyProposal`. The
+  controller writes the `WorkloadPolicy` and its status. No component writes
+  a Pod.
+* The webhooks fail closed. If the controller is down, a promotion or a
+  policy deletion waits.
+* The agent runs with `hostPID` so that it can read the cgroup tree of the
+  node. It holds four Linux capabilities: `BPF` to load programs, `PERFMON`
+  to attach them, `SYS_RESOURCE` to lift the memory lock limit, and
+  `SYS_PTRACE` to read the process tree of the node. It runs unconfined
+  under AppArmor and as `spc_t` under SELinux for the same reason. It is not
+  privileged.
+* The agent mounts the NRI socket read-only. As an NRI plugin, it can stop a
+  container from starting, and nothing else.
+* The Validating Admission Policy makes the binding label immutable on a
+  running pod.
+
+== How {rte-name} scales
+
+Enforcement costs one map lookup per process start, on the node where the
+process starts. No network hop is involved. The
+xref:reference/resource-consumption.adoc[Resource consumption] page gives
+the measured overhead.
+
+Every agent loads every policy. The memory of each agent grows with the
+number of policies in the cluster, not with the number of pods on the node.
+
+The controller leader talks to every agent on each status sync, one agent
+after the other. The agents answer from memory, so a sync is quick. The
+controller removes duplicate violation records, so a loud workload does not
+flood the status.
