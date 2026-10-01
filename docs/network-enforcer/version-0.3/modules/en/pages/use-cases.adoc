@@ -8,8 +8,9 @@ include::partial$variables.adoc[]
 :doc-type: explanation
 :doc-topic: explanation
 
-These are example use cases for {ne-name}. Each case names a persona and a
-goal. Then it explains how {ne-short-name} meets that goal.
+These are example use cases for {ne-name}. Each case names a
+xref:personas.adoc[persona] and a goal. Then it explains how {ne-short-name}
+meets that goal.
 
 {ne-short-name} works in three phases: learn, monitor, and protect. The use
 cases that follow move through these phases. See
