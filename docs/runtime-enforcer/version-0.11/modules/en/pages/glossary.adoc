@@ -90,13 +90,13 @@ The container runtimes that {rte-short-name} supports. Both must have
 [#_controller]
 === Controller
 
-The component that talks to the Kubernetes API server. It runs as a
-Deployment. It creates the <<_workloadpolicyproposal,WorkloadPolicyProposal>>
-resources during the <<_learn-phase,learn phase>>. It handles
-<<_promotion,promotion>>. It reads the <<_violation-record,violation
-records>> from each <<_agent,agent>> over <<_grpc,gRPC>> and writes them to
-the <<_workloadpolicy,WorkloadPolicy>> status on each
-<<_status-sync-interval,status sync>>.
+The component that owns the policy resources. It runs as a Deployment. It
+handles <<_promotion,promotion>>. It serves the admission webhooks, one of
+which completes the owner reference of each new
+<<_workloadpolicyproposal,WorkloadPolicyProposal>>. It reads the
+<<_violation-record,violation records>> from each <<_agent,agent>> over
+<<_grpc,gRPC>> and writes them to the <<_workloadpolicy,WorkloadPolicy>>
+status on each <<_status-sync-interval,status sync>>.
 
 == D
 
@@ -167,8 +167,7 @@ label`, `kubectl annotate`, or `kubectl edit`.
 === Learn phase
 
 The first <<_phase,phase>>. The <<_agent,agent>> observes the executables
-that each container runs and reports them to the
-<<_controller,controller>>. The controller writes them to a
+that each container runs and writes them to a
 <<_workloadpolicyproposal,WorkloadPolicyProposal>>. Nothing is blocked.
 Learning starts when the agent starts. It stops for a workload when you
 <<_promotion,promote>> its proposal. A proposal holds at most 100
@@ -378,9 +377,8 @@ Git and apply it to other clusters.
 === WorkloadPolicyProposal
 
 The resource that holds the <<_allow-list,allow-list>> learned for one
-<<_workload,workload>>, per container. Namespaced. The
-<<_controller,controller>> creates it during the <<_learn-phase,learn
-phase>>. Its name is the kind and the name of the workload, for example
+<<_workload,workload>>, per container. Namespaced. The <<_agent,agent>>
+creates and updates it during the <<_learn-phase,learn phase>>. Its name is the kind and the name of the workload, for example
 `deploy-nginx`. It is owned by the workload, so Kubernetes deletes it with
 the workload. Nothing is enforced while a workload has only a proposal.
 <<_promotion,Promotion>> replaces it with a

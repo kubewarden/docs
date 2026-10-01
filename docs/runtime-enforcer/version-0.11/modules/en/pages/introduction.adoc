@@ -60,8 +60,11 @@ cases] page.
 Start with the xref:quickstart.adoc[quick start]. It installs
 {rte-short-name}, learns a policy for a sample workload, and walks through
 monitor and protect mode. Then read xref:explanations/phases.adoc[Phases] for
-the full rules of each phase. Operators find the kernel and container runtime
-requirements in xref:reference/compatibility.adoc[Compatibility], and the
+the full rules of each phase, and
+xref:explanations/architecture.adoc[Architecture] to see how the controller,
+the agent, and the kernel work together. Operators find the kernel and
+container runtime requirements in
+xref:reference/compatibility.adoc[Compatibility], and the
 learning scope in xref:howtos/learning_mode_configuration.adoc[Learning mode
 configuration]. Application teams find the day-to-day commands in the
 xref:howtos/kubectl_plugin.adoc[kubectl plugin] page. The

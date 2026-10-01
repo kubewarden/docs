@@ -40,7 +40,7 @@ Status:
   Failed Nodes:         1
   Nodes With Issues:
     worker-3:
-      Code:    PolicyFailed
+      Code:    Failed
       Message: failed to populate policy for wp default/allow-shell, container app: ...
   Observed Generation:  1
   Phase:                Failed
@@ -63,9 +63,11 @@ always add up to `TotalNodes`.
 When a node has a problem, it appears in `Nodes With Issues` with a `Code`
 field. The codes are:
 
-* `PodNotReady` The controller cannot reach the agent pod on this node. The gRPC
-connection failed or the agent pod is not running. Check if the agent DaemonSet
-has a pod scheduled on that node and whether it is in `Running` state.
+* `Missing` The controller got no usable answer from the agent on this node.
+  This covers three cases: the controller cannot open a gRPC connection to
+  the agent pod, the status call fails, or the agent answers but reports no
+  policies at all. The `Message` field says which. First check that the
+  agent DaemonSet has a pod on that node and that the pod is `Running`:
 +
 [source,bash]
 ----
@@ -79,14 +81,13 @@ If the agent pod is crash-looping, inspect its logs:
 ----
 kubectl logs -n runtime-enforcer -l app.kubernetes.io/component=agent --field-selector spec.nodeName=<node-name>
 ----
++
+If the pod is healthy and the message says that no policies were found, the
+agent has not finished its first reconcile. This is normal for a few seconds
+after the agent starts. If it persists, check the agent logs for
+reconciliation errors.
 
-* `MissingPolicy` The agent pod is reachable but the policy is not loaded on it.
-  This typically happens when the policy was just created and the agent on that
-  node has not reconciled yet, or the pod carrying the policy label was not
-  scheduled on that node. If this persists, check the agent logs for
-  reconciliation errors.
-
-* `PolicyFailed` The agent received the policy but failed to apply it. The
+* `Failed` The agent received the policy but failed to apply it. The
   `Message` field contains the underlying error, usually a BPF map update
   failure or an internal resolver error. This means something went wrong inside
   the agent on that specific node. Check the agent logs on that node for more
@@ -99,6 +100,11 @@ kubectl logs -n runtime-enforcer -l app.kubernetes.io/component=agent --field-se
 +
 Look for log lines containing `reconcile wp-policy` followed by an error. The
 message in the WorkloadPolicy status is a copy of that error.
+
+* `Transitioning` The agent reports the policy as loaded, but in a mode that
+  differs from `spec.mode`. You see this for a short time after you change
+  the mode. It clears when the agent applies the new mode. If it persists,
+  the agent on that node is not reconciling. Check its logs.
 
 [#_controller-side-diagnostics]
 === Controller-side diagnostics

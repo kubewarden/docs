@@ -15,7 +15,8 @@ The {rte-name} documentation has these parts:
 * xref:introduction.adoc[Introduction]: what {rte-short-name} is.
 * xref:quickstart.adoc[Quick start]: install {rte-short-name} and walk
   through the learn, monitor, and protect workflow.
-* _Explanations_: the learn, monitor, and protect phases.
+* _Explanations_: the learn, monitor, and protect phases, and how the
+  components are built.
 * _How-tos_: tasks for the operator and the contributor, such as the
   learning configuration, the `kubectl` plugin, troubleshooting, and the
   build and development environment.
