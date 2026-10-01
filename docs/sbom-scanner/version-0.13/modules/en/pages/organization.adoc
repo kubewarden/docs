@@ -20,8 +20,8 @@ The {sboms-name} documentation has these parts:
 * _Explanations_: how {sboms-short-name} is built and why.
 * _How-tos_: tasks for the operator, such as Helm values, uninstall, and
   troubleshooting.
-* _Reference_: the custom resource definitions and the OpenTelemetry
-  signals.
+* _Reference_: the cluster requirements, the custom resource definitions,
+  and the OpenTelemetry signals.
 * xref:personas.adoc[For who?]: the people who use {sboms-short-name}.
 * xref:use-cases.adoc[Use cases]: what each persona does with it.
 * Organization: this page.

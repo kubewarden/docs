@@ -160,7 +160,9 @@ first. Or you bring your own PostgreSQL, inside or outside the cluster, and
 give the chart the connection details. In both cases the storage API server
 verifies the server certificate of the database. See
 xref:installation/helm-values.adoc#using-an-external-postgresql-instance[Using
-an external PostgreSQL instance].
+an external PostgreSQL instance]. The
+xref:reference/compatibility.adoc[compatibility] page lists the PostgreSQL
+and CloudNativePG versions that the project tests against.
 
 === MCP server
 
@@ -314,6 +316,10 @@ creates a job while one still runs for the same `Registry` or node.
   managed `Registry`. A webhook and a storage admission plugin enforce this.
 * The node worker is the only component with access to the host. Its mount
   is read-only.
+
+The xref:reference/compatibility.adoc[compatibility] page lists the
+cert-manager version that the project tests against, and the Kubernetes
+features that the chart depends on.
 
 == How {sboms-name} scales
 

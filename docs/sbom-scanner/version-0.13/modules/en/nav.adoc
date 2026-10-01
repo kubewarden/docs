@@ -25,6 +25,7 @@ endif::[]
 ** xref:troubleshooting/collecting-logs.adoc[Collecting Logs]
 ** xref:troubleshooting/common-problems.adoc[Common Problems]
 * Reference
+** xref:reference/compatibility.adoc[Compatibility]
 ** xref:reference/crd-reference.adoc[CRD Reference]
 ** xref:reference/opentelemetry-reference.adoc[OpenTelemetry Reference]
 * xref:personas.adoc[For who?]
