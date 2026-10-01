@@ -40,3 +40,4 @@ It operates in three phases:
   xref:resource-consumption.adoc[Resource Consumption]
 * *Development*: xref:build.adoc[Build Requirements],
   xref:setup-development-env.adoc[Development Environment]
+* *Use cases*: xref:use-cases.adoc[Use cases]
