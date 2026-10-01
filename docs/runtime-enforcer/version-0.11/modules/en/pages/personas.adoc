@@ -30,7 +30,8 @@ which policies are noisy. Decides when teams move to protect mode.
 |**Application team**
 |Owns one or more workloads. Reviews the proposal for a workload and promotes
 it. Adds expected executables to the allow-list and acknowledges the
-violations that it accepts. Uses the `kubectl` plugin for these tasks.
+violations that it accepts. Does these tasks with labels and annotations on
+the custom resources, or with the `kubectl` plugin.
 
 |**Security engineer**
 |Reads the violations and the exported events. Decides when a blocked or

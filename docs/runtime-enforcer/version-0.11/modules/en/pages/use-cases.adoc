@@ -49,7 +49,9 @@ xref:known_limitations.adoc#_learning-cap-100-allowed-executables-per-proposal[L
 == Case B: As an application team, I want to protect my workload without breaking it.
 
 I do not want a wrong rule to stop my application. I promote the proposal in
-`monitor` mode first:
+`monitor` mode first. To do this, I set the label
+`runtimeenforcer.kubewarden.io/promote=monitor` on the proposal. The
+`kubectl runtime-enforcer` plugin can set the label for me:
 
 [source,console]
 ----
@@ -62,10 +64,13 @@ allow. It does not block the executable.
 
 I watch the `Active Violations` column of the policy. For each violation, I
 make one of two decisions. If the executable is expected, I add it to the
-allow-list with `kubectl runtime-enforcer policy allow`. The violation is
-cleared. If the executable is not expected, but I accept the risk, I
-acknowledge the violation with a reason. The reason stays in the policy
-status as a record.
+allow-list of the policy, under `spec.rulesByContainer`. The plugin command
+`kubectl runtime-enforcer policy allow` does this edit for me. The violation
+is cleared. If the executable is not expected, but I accept the risk, I
+acknowledge the violation. I add the annotation
+`runtimeenforcer.kubewarden.io/acknowledge-<id>` with a reason, or I run
+`kubectl runtime-enforcer policy ack`. The reason stays in the policy status
+as a record.
 
 When the policy has no active violations for a period that I trust, I set the
 mode to `protect`. If a new release adds an executable, the rollout can fail.
@@ -76,6 +81,7 @@ namespace can have a different policy. My policy does not affect other teams.
 
 See xref:phases.adoc#_monitor-phase[Monitor phase],
 xref:phases.adoc#_protect-phase[Protect phase],
+xref:phases.adoc#_quick-mapping-to-crds[Quick mapping to CRDs],
 xref:kubectl_plugin.adoc#_promote-a-proposal[Promote a proposal],
 xref:kubectl_plugin.adoc#_allowing-denying-executables[Allowing and denying executables],
 and xref:installation/quickstart.adoc#_acknowledge-a-violation[Acknowledge a violation].
