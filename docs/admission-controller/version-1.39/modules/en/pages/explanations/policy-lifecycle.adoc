@@ -110,6 +110,7 @@ The `+status.mode+` field indicates whether the policy is in `+protect+`
 mode (admission requests can be rejected) or `+monitor+` mode (requests
 are always allowed but decisions are logged).
 
+[#_rejected]
 === `+rejected+`
 
 The policy targets a resource that the resource allow list does not
