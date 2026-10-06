@@ -108,6 +108,30 @@ Within the same component and version, shorter forms are fine:
 xref:howtos/policy-management.adoc[]
 ```
 
+### Always use explicit anchors for links to headings, etc.
+
+Using the (nice) auto-generated anchors facility breaks downstream translation
+efforts.
+
+Use xref syntax with the anchor name, never `<<>>` style. Not strictly necessary
+but is clearer.
+
+```asciidoc
+xref:howtos/policy-management.adoc#_policy_management[Link text] for a different
+document,
+
+or
+
+xref:#_policy_management[Link text] in the same document
+```
+
+with the heading defined as:
+
+```asciidoc
+[#_policy_management]
+== Policy Management
+```
+
 ### Version management
 
 - **`admission-controller`** versions: directories named `version-X.Y`
