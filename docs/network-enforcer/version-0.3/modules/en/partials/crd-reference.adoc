@@ -593,8 +593,11 @@ spec changes. + |  | Optional: \{} +
 | *`violationCount`* __integer__ | ViolationCount is the total number of violation records ever +
 observed for this policy, including those that have already been +
 trimmed out of Violations or cleared because the flow is now +
-permitted by the policy template. It is not guaranteed to be strongly +
-consistent and may be temporarily outdated. + | 0 | Optional: \{} +
+permitted by the policy template. It counts each violation event +
+reported by the CNI/scraper, not unique TCP sessions: a single +
+connection may therefore increment this more than once when the +
+backend emits multiple samples for the same session. It is not +
+guaranteed to be strongly consistent and may be temporarily outdated. + | 0 | Optional: \{} +
 
 | *`activeViolationCount`* __integer__ | ActiveViolationCount is the number of currently active (non-cleared) +
 violation records. It is always equal to len(Violations) and is +
