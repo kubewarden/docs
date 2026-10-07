@@ -108,6 +108,34 @@ Within the same component and version, shorter forms are fine:
 xref:howtos/policy-management.adoc[]
 ```
 
+### Always use explicit anchors for link targets
+
+Every heading, block or other element that a link points to must have an
+explicit ID. Do not rely on Asciidoctor's auto-generated IDs. They change
+when the heading text changes, which breaks downstream translations.
+
+When you add an ID to an existing heading, use its current auto-generated
+value (for example `_policy_management`), so that existing links keep working.
+
+Always use `xref:` syntax for links to anchors. Do not use `<<>>`.
+(Generated reference partials are exempt. See "Generated reference documentation".)
+
+```asciidoc
+xref:howtos/policy-management.adoc#_policy_management[Link text] for a different
+document,
+
+or
+
+xref:#_policy_management[Link text] in the same document
+```
+
+with the heading defined as:
+
+```asciidoc
+[#_policy_management]
+== Policy Management
+```
+
 ### Version management
 
 - **`admission-controller`** versions: directories named `version-X.Y`
