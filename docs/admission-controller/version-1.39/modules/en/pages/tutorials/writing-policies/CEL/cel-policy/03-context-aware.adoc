@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 :page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-06-18
 :page-revdate: {revdate}
+:page-aliases: tutorials/writing-policies/CEL/03-context-aware.adoc
 :description: Configure context-aware policies to ensure unique Ingress rules across hosts, preventing conflicts with {admc-name}'s CEL extension libraries.
 :doc-persona: ["kubewarden-policy-developer", "kubewarden-operator"]
 :doc-topic: ["kubewarden", "writing-policies", "cel", "context-aware", "context", "awaree", "ingress"]

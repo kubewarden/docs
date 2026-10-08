@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Compile CEL to WebAssembly
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-09-29
+:revdate: 2026-10-08
 :page-revdate: {revdate}
 :description: Learn how to compile a CEL policy to a WebAssembly module for {admc-name} with kwctl and ferricel.
 :doc-persona: ["kubewarden-policy-developer", "kubewarden-operator"]
@@ -19,12 +19,14 @@ This is an experimental feature available since {admc-short-name} v1.39.0.
 In this tutorial, you compile a Kubernetes `ValidatingAdmissionPolicy` into a WebAssembly module with `kwctl`.
 You then inspect the module and prepare it for deployment as a {cluster-admission-policy}.
 
+[#_why_compile_cel_to_webassembly]
 == Why compile CEL to WebAssembly?
 
-The https://artifacthub.io/packages/kubewarden/kubewarden-policy-library/cel-policy[cel-policy] policy runs CEL code using the
+The alternative approach with https://artifacthub.io/packages/kubewarden/kubewarden-policy-library/cel-policy[cel-policy] policy runs CEL code using the
 official CEL Go interpreter.
+See xref:tutorials/writing-policies/CEL/cel-policy/01-intro.adoc[] for how that policy works.
 
-This approach has two drawbacks:
+That approach has two drawbacks:
 
 * Size: The `cel-policy` policy bundles the entire CEL runtime and the Kubernetes CEL libraries, even when a policy uses only
   some of them. As a result, the WebAssembly module is large, which increases the {policy-server} startup time.
@@ -32,16 +34,15 @@ This approach has two drawbacks:
   because there is no build step. But it makes the policy hard to share. The manifest also carries deployment details
   such as the target namespaces and objects, the enforcement mode, and more.
 
-When you compile CEL to WebAssembly, you produce a smaller and more efficient module that you can share and
+Alternatively, when you compile CEL to WebAssembly, you produce a smaller and more efficient module that you can share and
 reuse across different deployments.
 
 {admc-short-name} uses the https://flavio.github.io/ferricel/[ferricel] open source project to compile a Kubernetes
 `ValidatingAdmissionPolicy` into a specialized WebAssembly module.
 
-The resulting module is smaller and more efficient. As a comparison, the `cel-policy` WebAssembly file is 14 MiB,
-while one produced by this compiler is around 1.5 MiB.
+As a comparison, the WebAssembly file produced by this compiler is around 1.5MiB, while the one produced by the cel-policy is 14MiB.
 
-The compiled module is also much faster. See <<_performance>> for benchmark results.
+The compiled module is also much faster. See xref:#_performance[Performance] for benchmark results.
 
 == Prerequisites
 
@@ -343,6 +344,7 @@ Kubernetes `ValidatingAdmissionPolicy` uses CEL in this way. Therefore, deploy C
 both compiled and interpreted, only as {cluster-admission-policy} resources.
 ====
 
+[#_performance]
 == Performance
 
 The table compares the mean evaluation time for two Kubernetes `ValidatingAdmissionPolicy` configurations. The benchmark
