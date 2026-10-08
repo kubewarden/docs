@@ -15,9 +15,10 @@ xref:personas.adoc[persona] and a goal. Then it explains how
 == Case A: As a cluster operator, I want to know which vulnerabilities are in my registries.
 
 I create a {registry-cr} resource for each registry that I want to scan.
-{sboms-short-name} discovers the images in the registry. It generates a
-Software Bill of Materials ({sbom-term}) for each image. Then it scans each
-SBOM for vulnerabilities and stores a {vulnerabilityreport-cr}.
+{sboms-short-name} discovers the images in the registry. If the {sbom-cr}
+resource of an image does not exist, it generates a Software Bill of
+Materials ({sbom-term}) for that image. Then it scans each SBOM for
+vulnerabilities and stores a {vulnerabilityreport-cr}.
 
 I set `spec.scanInterval` on the `Registry` to scan on a schedule. I create a
 {scanjob-cr} to scan on demand. A `ScanJob` works like a Kubernetes `Job`. I
@@ -63,8 +64,8 @@ select the namespaces to scan. I add namespaces when I am ready.
 
 Each `WorkloadScanReport` lives in the namespace of its workload. Teams read
 the reports for their namespaces with the usual Kubernetes RBAC. I can set
-`spec.artifactsNamespace` to store the images, SBOMs, and vulnerability
-reports in one central namespace.
+`spec.artifactsNamespace` to keep the managed `Registry` resources and their
+images, SBOMs, and vulnerability reports in one central namespace.
 
 The {image-cr} resource lists the workloads that use the image. I use this list
 when one image has a critical vulnerability. I find the affected workloads
@@ -125,8 +126,9 @@ All the scan results are Kubernetes resources. I do not need a separate API or
 database client.
 
 * I read `VulnerabilityReport`, `WorkloadScanReport`, and
-  `NodeVulnerabilityReport` resources with `kubectl` or a Kubernetes client
-  library.
+  `NodeVulnerabilityReport` resources with `kubectl`, with a Kubernetes client
+  library, or through the
+  https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/[Kubernetes REST API].
 * I create `Registry` and `ScanJob` resources from a GitOps repository. The
   status conditions tell my pipeline when a scan completes or fails.
 * I export traces and metrics to an {opentelemetry-term} collector. A CI
