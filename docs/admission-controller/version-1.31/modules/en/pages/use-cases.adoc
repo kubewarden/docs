@@ -106,15 +106,15 @@ implementation in a Kubernetes controller.
 
 {short-project-name} doesn't intend to:
 
-- Replace Kubernetes built-in security features, but complement them:
-  - {short-project-name} provides migration from PSPs.
-  - You can re-use ValidatingAdmissionPolicies and CEL policies with {short-project-name}'s
-    `cel-policy`.
-  - {short-project-name} policies can be mutating, while Pod Security Admission cannot.
-  - {short-project-name} policies benefit from the {short-project-name} stack features (audit
-    scanner, telemetry, CRD management).
-- Provide runtime security like intrusion detection or runtime container
+* Replace Kubernetes built-in security features, but complement them:
+** {short-project-name} provides migration from PSPs.
+** You can re-use ValidatingAdmissionPolicies and CEL policies with {short-project-name}'s
+   `cel-policy`.
+** {short-project-name} policies can be mutating, while Pod Security Admission cannot.
+** {short-project-name} policies benefit from the {short-project-name} stack features (audit
+   scanner, telemetry, CRD management).
+* Provide runtime security like intrusion detection or runtime container
   isolation.
-- Provide host system protection of clusters.
-- Provide infinite policy execution flexibility. To prevent DoS attacks,
+* Provide host system protection of clusters.
+* Provide infinite policy execution flexibility. To prevent DoS attacks,
   policies' processing times are limited.

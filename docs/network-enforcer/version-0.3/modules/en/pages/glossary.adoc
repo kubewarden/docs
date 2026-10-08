@@ -1,0 +1,470 @@
+include::partial$variables.adoc[]
+= Glossary
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:description: Terms used in the {ne-name} documentation: custom resources, labels, providers and backends, phases, and the data plane features that the enforcer depends on.
+:doc-persona: kubewarden-all
+:doc-topic: glossary
+:doc-type: explanation
+:keywords: {ne-name}, kubewarden, glossary
+:sidebar_label: Glossary
+:sidebar_position: 90
+
+== A
+
+[#_acknowledged-violation]
+=== Acknowledged violation
+
+A <<_violation,violation>> that you mark as accepted, with a reason. You add
+the annotation `networkenforcer.kubewarden.io/acknowledge-<id>` to the
+<<_workloadnetworkpolicy,WorkloadNetworkPolicy>>, with the reason as the
+value. The `<id>` is the `id` of the <<_violation-record,violation record>>.
+The <<_controller,controller>> moves the record to
+`status.acknowledgedViolations`, keeps the reason, and removes the
+annotation. It also emits a `policy_violation_acknowledged` event.
+
+[#_active-violation]
+=== Active violation
+
+A <<_violation-record,violation record>> that is still in
+`status.violations`. It is not <<_acknowledged-violation,acknowledged>>. The
+field `status.activeViolationCount` holds the number of active violations.
+This is the number that needs a decision.
+
+[#_allow-list]
+=== Allow-list
+
+The set of <<_peer,peers>>, protocols, and ports that a workload can talk
+to, in one <<_direction,direction>>. It is the `spec.kubernetes` or
+`spec.istio` payload of a
+<<_workloadnetworkpolicyproposal,WorkloadNetworkPolicyProposal>> or a
+<<_workloadnetworkpolicy,WorkloadNetworkPolicy>>. A <<_flow,flow>> that is
+not in the allow-list is a <<_violation,violation>>.
+
+[#_authorizationpolicy]
+=== AuthorizationPolicy
+
+An Istio resource, `security.istio.io/v1`. The
+<<_native-policy-object,native policy object>> for the `istio`
+<<_backend,backend>>. The <<_controller,controller>> renders one per
+<<_workloadnetworkpolicy,WorkloadNetworkPolicy>>, with `action: ALLOW`, the
+learned <<_principal,principals>>, and the learned ports. In
+<<_monitor,monitor>> mode it carries the <<_dry-run,dry-run>> annotation.
+
+== B
+
+[#_backend]
+=== Backend
+
+The policy model that a proposal or policy carries. It is the field
+`spec.backend`. The values are `istio` and `kubernetes`. The
+<<_provider,provider>> decides the backend: the `istio` provider writes the
+`istio` backend, the `calico` and `cilium` providers write the `kubernetes`
+backend. The field cannot change after creation.
+
+[#_best-effort-monitor]
+=== Best-effort monitor
+
+A property of <<_monitor,monitor>> mode. The controller reports a
+<<_violation,violation>> only for a <<_flow,flow>> that the
+<<_scraper,scraper>> sees. On Istio, ztunnel logs cover inbound TCP through
+the mesh only. On Calico and Cilium, the controller compares the same flows
+that drive learning. A flow that is not observed is not reported.
+
+== C
+
+[#_calico]
+=== Calico
+
+A <<_cni,CNI>>. A <<_provider,provider>> of {ne-short-name}. The
+<<_flow-source,flow source>> is <<_goldmane,Goldmane>>. The
+<<_backend,backend>> is `kubernetes`. Learning covers TCP and UDP, in both
+<<_direction,directions>>.
+
+[#_cert-manager]
+=== cert-manager
+
+A prerequisite. Together with the cert-manager CSI driver, it issues the TLS
+certificates for the <<_opentelemetry-collector,OpenTelemetry collector>> and
+for the OTLP ingestion endpoint of the <<_controller,controller>>.
+
+[#_cilium]
+=== Cilium
+
+A <<_cni,CNI>>. A <<_provider,provider>> of {ne-short-name}. The
+<<_flow-source,flow source>> is <<_hubble-relay,Hubble Relay>>. The
+<<_backend,backend>> is `kubernetes`. Learning covers TCP and UDP, in both
+<<_direction,directions>>.
+
+[#_cni]
+=== CNI
+
+Container Network Interface. The plugin that connects pods to the network
+and enforces Kubernetes <<_networkpolicy,NetworkPolicy>> resources.
+{ne-short-name} supports <<_calico,Calico>> and <<_cilium,Cilium>> as
+providers. <<_istio-ambient,Istio ambient>> keeps the CNI in place and adds
+its own <<_data-plane,data plane>> on top.
+
+[#_controller]
+=== Controller
+
+The only component that {ne-short-name} installs, as a Deployment with one
+replica. It runs the <<_scraper,scraper>> and four reconcilers. The learning
+reconciler writes proposals. The proposal reconciler handles
+<<_promotion,promotion>>. The policy reconciler writes the
+<<_native-policy-object,native policy object>>. The
+<<_status-sync-interval,status sync>> writes violations to the policy status.
+The controller also exports events to the
+<<_opentelemetry-collector,OpenTelemetry collector>>.
+
+== D
+
+[#_data-plane]
+=== Data plane
+
+The layer that forwards traffic between pods and enforces network policy.
+{ne-short-name} does not observe traffic on its own. It reads
+<<_flow,flows>> from the data plane that already runs in the cluster, and it
+writes policy in the format of that data plane. See
+<<_provider,provider>>.
+
+[#_direction]
+=== Direction
+
+Ingress or egress. Ingress is traffic that a workload receives. Egress is
+traffic that a workload sends. Each proposal and policy covers one workload
+in one direction. The name ends in `-ingress` or `-egress`. With the
+`kubernetes` <<_backend,backend>>, one connection produces an egress
+proposal on the source and an ingress proposal on the destination. With the
+`istio` backend, learning produces ingress proposals only.
+
+[#_dry-run]
+=== Dry-run
+
+The <<_monitor,monitor>> behavior on <<_istio-ambient,Istio ambient>>. The
+<<_authorizationpolicy,AuthorizationPolicy>> carries the annotation
+`istio.io/dry-run: "true"`. <<_ztunnel,ztunnel>> evaluates the policy and
+logs the decision, but does not deny the connection. In
+<<_protect,protect>> mode the controller removes the annotation. The
+feature needs the istiod flag `AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY`.
+
+== E
+
+[#_east-west-traffic]
+=== East-west traffic
+
+Traffic between workloads inside the cluster. {ne-short-name} learns and
+enforces this traffic only. It does not learn traffic to or from
+destinations outside the cluster.
+
+== F
+
+[#_flow]
+=== Flow
+
+One observed connection between two workloads: source, destination,
+protocol, and port. The <<_scraper,scraper>> turns each flow into a learning
+event or a <<_violation,violation>> observation. A flow with one end
+outside the cluster, or on a `hostNetwork` pod, is dropped.
+
+[#_flow-dumper]
+=== Flow dumper
+
+An optional debug endpoint of the <<_controller,controller>>. The
+<<_scraper,scraper>> writes each <<_flow,flow>> to a ring buffer. A `GET
+/flow` request drains the buffer and returns the flows as JSON lines. It is
+off by default. Enable it with the Helm value `controller.flowDumper.enabled`.
+
+[#_flow-source]
+=== Flow source
+
+The service that the <<_scraper,scraper>> reads <<_flow,flows>> from. It
+depends on the <<_provider,provider>>: <<_ztunnel,ztunnel>> logs for Istio
+ambient, <<_goldmane,Goldmane>> for Calico, <<_hubble-relay,Hubble Relay>>
+for Cilium.
+
+[#_fluent-bit]
+=== fluent-bit
+
+A log forwarder. With the `istio` <<_provider,provider>>, the Helm chart
+deploys it as the `istio-fluent-bit` DaemonSet. It reads the
+<<_ztunnel,ztunnel>> log files on each node, parses the JSON, and sends the
+records to the <<_controller,controller>> as OTLP logs on port 4317.
+
+== G
+
+[#_goldmane]
+=== Goldmane
+
+The flow aggregation service of <<_calico,Calico>>. The
+<<_flow-source,flow source>> for the `calico` <<_provider,provider>>. The
+<<_controller,controller>> reads it over gRPC with mutual TLS. Enable it in
+the Tigera `Installation` resource with `goldmane.enabled=true`.
+
+== H
+
+[#_hubble-relay]
+=== Hubble Relay
+
+The observability service of <<_cilium,Cilium>>. The <<_flow-source,flow
+source>> for the `cilium` <<_provider,provider>>. The
+<<_controller,controller>> follows the `GetFlows` stream over gRPC. Enable it
+with `hubble.enabled=true` and `hubble.relay.enabled=true`.
+
+== I
+
+[#_istio-ambient]
+=== Istio ambient
+
+The sidecar-free mode of Istio. The default <<_provider,provider>> of
+{ne-short-name}. The <<_flow-source,flow source>> is the log of
+<<_ztunnel,ztunnel>>, forwarded by <<_fluent-bit,fluent-bit>>. The
+<<_backend,backend>> is `istio`. Enforcement happens at the destination
+ztunnel, inbound, for TCP only. A namespace joins the mesh with the label
+`istio.io/dataplane-mode=ambient`. The label must be present before the pods
+are created.
+
+== L
+
+[#_learn-phase]
+=== Learn phase
+
+The first <<_phase,phase>>. The <<_scraper,scraper>> observes
+<<_flow,flows>>. The <<_controller,controller>> writes them to a
+<<_workloadnetworkpolicyproposal,WorkloadNetworkPolicyProposal>> for each
+workload and <<_direction,direction>>. Nothing is blocked. Learning is
+cluster-wide and starts when the controller starts. It does not reconstruct
+flows from before that moment. Learning stops for a workload and direction
+when a <<_workloadnetworkpolicy,WorkloadNetworkPolicy>> with the same name
+exists.
+
+== M
+
+[#_mode]
+=== Mode
+
+The field `spec.mode` of a <<_workloadnetworkpolicy,WorkloadNetworkPolicy>>.
+The values are <<_monitor,`monitor`>> and <<_protect,`protect`>>. The
+default is `monitor`. You change the mode with `kubectl edit` or `kubectl
+patch`.
+
+[#_monitor]
+=== Monitor
+
+A <<_phase,phase>> and a <<_mode,mode>>. The <<_controller,controller>>
+reports each <<_flow,flow>> that the policy does not allow as a
+<<_violation,violation>>, with `action: monitor`. Nothing is blocked. On
+Istio, the <<_authorizationpolicy,AuthorizationPolicy>> runs in
+<<_dry-run,dry-run>>. On Calico and Cilium, no
+<<_native-policy-object,native policy object>> exists in this mode. See
+<<_best-effort-monitor,best-effort monitor>>.
+
+== N
+
+[#_native-policy-object]
+=== Native policy object
+
+The resource that the <<_data-plane,data plane>> enforces. For the `istio`
+<<_backend,backend>> it is an <<_authorizationpolicy,AuthorizationPolicy>>.
+For the `kubernetes` backend it is a <<_networkpolicy,NetworkPolicy>>. The
+<<_controller,controller>> creates it with the same name and namespace as
+the <<_workloadnetworkpolicy,WorkloadNetworkPolicy>>, and sets an owner
+reference to the policy.
+
+[#_networkpolicy]
+=== NetworkPolicy
+
+A Kubernetes resource, `networking.k8s.io/v1`. The
+<<_native-policy-object,native policy object>> for the `kubernetes`
+<<_backend,backend>>. The <<_cni,CNI>> enforces it. The
+<<_controller,controller>> creates it in <<_protect,protect>> mode only, and
+deletes it when the mode returns to <<_monitor,monitor>>.
+
+== O
+
+[#_opentelemetry-collector]
+=== OpenTelemetry collector
+
+The service that receives the <<_violation,violation>> events from the
+<<_controller,controller>>. The Helm value `telemetry.collectorStrategy`
+selects it: `default` deploys a collector, `external` points at your own,
+`none` turns the export off. The controller emits a
+`policy_violation_observed` event for each violation and a
+`policy_violation_acknowledged` event for each
+<<_acknowledged-violation,acknowledgement>>. The bundled collector exports
+the Prometheus counter `network_enforcer_policy_denies`. This export path is
+separate from the OTLP ingestion path that <<_fluent-bit,fluent-bit>> uses.
+
+== P
+
+[#_peer]
+=== Peer
+
+The other workload of a <<_flow,flow>>. In the `kubernetes`
+<<_backend,backend>>, a peer is a `namespaceSelector` and a `podSelector`.
+In the `istio` backend, a peer is a <<_principal,principal>>.
+
+[#_phase]
+=== Phase
+
+One of the three stages of the {ne-short-name} workflow:
+<<_learn-phase,learn>>, <<_monitor,monitor>>, and <<_protect,protect>>.
+Monitor and protect are also the two values of the <<_mode,mode>> field.
+Learn has no mode. In the learn phase, the workload has a
+<<_workloadnetworkpolicyproposal,WorkloadNetworkPolicyProposal>> and no
+<<_workloadnetworkpolicy,WorkloadNetworkPolicy>>.
+
+[#_principal]
+=== Principal
+
+The identity of a workload in <<_istio-ambient,Istio ambient>>, in SPIFFE
+form: `cluster.local/ns/<namespace>/sa/<serviceaccount>`. It comes from the
+ServiceAccount of the pod. Pods without an explicit ServiceAccount use
+`default`, so they share one principal. The `istio` <<_backend,backend>>
+names <<_peer,peers>> by principal.
+
+[#_promote-label]
+=== Promote label
+
+The label `networkenforcer.kubewarden.io/promote` on a
+<<_workloadnetworkpolicyproposal,WorkloadNetworkPolicyProposal>>. The value
+is `monitor` or `protect`. It starts the <<_promotion,promotion>>. A
+<<_validating-admission-policy,Validating Admission Policy>> rejects other
+values.
+
+[#_promoted-from-label]
+=== Promoted-from label
+
+The label `networkenforcer.kubewarden.io/promoted-from` on a
+<<_workloadnetworkpolicy,WorkloadNetworkPolicy>>. Its value is the name of
+the proposal that the policy came from. The <<_controller,controller>> sets
+it. The controller uses it to delete a proposal that the scraper creates
+again after promotion.
+
+[#_promotion]
+=== Promotion
+
+The step from a <<_workloadnetworkpolicyproposal,WorkloadNetworkPolicyProposal>>
+to a <<_workloadnetworkpolicy,WorkloadNetworkPolicy>>. You set the
+<<_promote-label,promote label>> on the proposal. The
+<<_controller,controller>> creates the policy with the same name, namespace,
+and <<_allow-list,allow-list>>. It sets the <<_mode,mode>> from the label
+and the <<_promoted-from-label,promoted-from label>>. Then it deletes the
+proposal. Promotion is explicit. {ne-short-name} does not promote on its
+own.
+
+[#_protect]
+=== Protect
+
+A <<_phase,phase>> and a <<_mode,mode>>. The <<_data-plane,data plane>>
+blocks each <<_flow,flow>> that the policy does not allow. The connection
+fails with a timeout, a reset, or a refusal. The data plane decides which.
+The <<_controller,controller>> records a <<_violation,violation>> with
+`action: protect`. On Istio, the <<_dry-run,dry-run>> annotation is removed.
+On Calico and Cilium, the controller creates the
+<<_networkpolicy,NetworkPolicy>>.
+
+[#_provider]
+=== Provider
+
+The <<_data-plane,data plane>> that {ne-short-name} reads from and writes
+to. You select it once, at installation, with the Helm value
+`controller.provider.name`. The values are `istio` (default), `calico`, and
+`cilium`. The provider selects the <<_scraper,scraper>>, the
+<<_flow-source,flow source>>, and the <<_backend,backend>>.
+
+== S
+
+[#_scraper]
+=== Scraper
+
+The part of the <<_controller,controller>> that reads the
+<<_flow-source,flow source>>. One scraper runs, for the selected
+<<_provider,provider>>. It turns each <<_flow,flow>> into a learning event
+or a <<_violation,violation>> observation. It does not write Kubernetes
+objects.
+
+[#_status-sync-interval]
+=== Status sync interval
+
+The period at which the <<_controller,controller>> writes the buffered
+<<_violation,violation>> observations to the
+<<_workloadnetworkpolicy,WorkloadNetworkPolicy>> status. The Helm value is
+`controller.wnpStatusUpdateInterval`. The default is 30 seconds. A violation
+can take up to one interval to appear in `kubectl`. The
+<<_opentelemetry-collector,OpenTelemetry>> events arrive at once.
+
+== V
+
+[#_validating-admission-policy]
+=== Validating Admission Policy
+
+A Kubernetes admission rule written in CEL. {ne-short-name} installs two.
+One rejects a <<_promote-label,promote label>> whose value is not `monitor`
+or `protect`. One rejects a change to the owner reference of a
+<<_workloadnetworkpolicyproposal,WorkloadNetworkPolicyProposal>>.
+
+[#_violation]
+=== Violation
+
+A <<_flow,flow>> that a <<_workloadnetworkpolicy,WorkloadNetworkPolicy>>
+does not allow. In <<_monitor,monitor>> mode the flow passes. In
+<<_protect,protect>> mode the <<_data-plane,data plane>> blocks it. In both
+modes the <<_controller,controller>> emits an event to the
+<<_opentelemetry-collector,OpenTelemetry collector>> and keeps a
+<<_violation-record,violation record>>.
+
+[#_violation-record]
+=== Violation record
+
+One entry in `status.violations` or `status.acknowledgedViolations` of a
+<<_workloadnetworkpolicy,WorkloadNetworkPolicy>>. It holds the `id`, the
+source and destination workloads, the protocol, the destination port, and
+the <<_mode,mode>>. It also holds the time of the last occurrence and the
+policy that denied the flow. Each list holds the 100 most recent records.
+The field `status.violationCount` counts all the observations that the
+policy ever had. On Istio, the destination port is always 0.
+
+== W
+
+[#_workload]
+=== Workload
+
+A Deployment, StatefulSet, or DaemonSet. The <<_learn-phase,learn phase>>
+creates one <<_workloadnetworkpolicyproposal,WorkloadNetworkPolicyProposal>>
+per workload and <<_direction,direction>>. Pods with other owners, and pods
+with `hostNetwork: true`, are not workloads for learning.
+
+[#_workloadnetworkpolicy]
+=== WorkloadNetworkPolicy
+
+The resource that holds the enforced <<_allow-list,allow-list>> of one
+<<_workload,workload>> in one <<_direction,direction>>, plus its
+<<_mode,mode>>. Short name `wnp`. Namespaced. The <<_controller,controller>>
+creates it on <<_promotion,promotion>>. You can also write one by hand. The
+controller renders it to a <<_native-policy-object,native policy object>>.
+Its status holds the <<_violation-record,violation records>>. If you delete
+it, learning starts again for that workload and direction.
+
+[#_workloadnetworkpolicyproposal]
+=== WorkloadNetworkPolicyProposal
+
+The resource that holds the learned <<_allow-list,allow-list>> of one
+<<_workload,workload>> in one <<_direction,direction>>. Short name `wnpp`.
+Namespaced. The <<_controller,controller>> creates it during the
+<<_learn-phase,learn phase>>. Its name is the kind, the name, and the
+direction of the workload, for example `deployment-nginx-ingress`. It is
+owned by the workload, so Kubernetes deletes it with the workload. Nothing
+is enforced while a workload has only a proposal. <<_promotion,Promotion>>
+replaces it with a <<_workloadnetworkpolicy,WorkloadNetworkPolicy>>.
+
+== Z
+
+[#_ztunnel]
+=== ztunnel
+
+The per-node proxy of <<_istio-ambient,Istio ambient>>. It handles the
+Layer 4 traffic of the pods on its node and enforces
+<<_authorizationpolicy,AuthorizationPolicy>> resources on inbound
+connections. Its JSON log is the <<_flow-source,flow source>> for the
+`istio` <<_provider,provider>>. UDP does not pass through ztunnel.

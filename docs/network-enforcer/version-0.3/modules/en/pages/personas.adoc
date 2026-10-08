@@ -1,0 +1,45 @@
+include::partial$variables.adoc[]
+= Who is this project for? The personas.
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:description: Who is this project for? The personas of {ne-name}.
+:keywords: {ne-name}, kubewarden, documentation, personas
+:doc-persona: kubewarden-all
+:doc-type: explanation
+:doc-topic: explanation
+
+This page lists the people who use {ne-name}, and what each of them does with
+it. The xref:use-cases.adoc[use cases] refer to these personas.
+
+== {ne-name} personas
+
+[cols="1,2", options="header"]
+|===
+|Persona |Description
+
+|**Operator**
+|Installs {ne-short-name} in a cluster and keeps it running. Selects the
+provider: Istio ambient, Calico, or Cilium. Connects the flow source and
+configures the telemetry collector.
+
+|**Platform engineer**
+|Owns the network posture of the cluster. Enables learning for the whole
+cluster. Decides when teams move their proposals to monitor mode and to
+protect mode.
+
+|**Namespace owner**
+|Owns one or more workloads. Reviews the proposal for a workload and approves
+it. Tunes the policy when a violation is expected traffic. Does not need
+cluster-wide permissions.
+
+|**Security engineer**
+|Reads the violations and the exported events. Looks for traffic that a
+workload did not produce before. Decides when a violation is a risk.
+
+|**Integrator**
+|Builds tools on top of {ne-short-name}. Reads the custom resources and the
+OpenTelemetry events. Examples are a dashboard, a SIEM, or a GitOps pipeline.
+
+|**Developer**
+|Works on {ne-short-name} itself.
+|===

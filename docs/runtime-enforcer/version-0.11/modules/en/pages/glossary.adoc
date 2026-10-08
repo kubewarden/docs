@@ -1,0 +1,385 @@
+include::partial$variables.adoc[]
+= Glossary
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:description: Terms used in the {rte-name} documentation: custom resources, labels, components, phases, and the kernel and runtime features that the enforcer depends on.
+:doc-persona: kubewarden-all
+:doc-topic: glossary
+:doc-type: explanation
+:keywords: {rte-name}, kubewarden, glossary
+:sidebar_label: Glossary
+:sidebar_position: 90
+
+== A
+
+[#_acknowledged-violation]
+=== Acknowledged violation
+
+A <<_violation,violation>> that you mark as accepted, with a reason. You add
+the annotation `runtimeenforcer.kubewarden.io/acknowledge-<id>` to the
+<<_workloadpolicy,WorkloadPolicy>>, with the reason as the value. The
+`<id>` is the `id` of the <<_violation-record,violation record>>. The
+<<_controller,controller>> moves the record to
+`status.acknowledgedViolations`, keeps the reason, and removes the
+annotation. The <<_kubectl-plugin,kubectl plugin>> command `policy ack` sets
+the annotation for you.
+
+[#_active-violation]
+=== Active violation
+
+A <<_violation-record,violation record>> that is still in
+`status.violations`. It is not <<_acknowledged-violation,acknowledged>>, and
+its executable is not in the <<_allow-list,allow-list>>. The field
+`status.activeViolationCount` holds the number of active violations. This is
+the number that needs a decision.
+
+[#_agent]
+=== Agent
+
+The component that runs on each node, as a DaemonSet. It loads the
+<<_ebpf,eBPF>> programs, learns the executables that containers run, and
+enforces the <<_workloadpolicy,WorkloadPolicy>> that each pod is
+<<_binding,bound>> to. It is also an <<_nri,NRI>> plugin, so it sees each
+container before the first process starts. It serves
+<<_grpc,gRPC>> to the <<_controller,controller>> and the
+<<_debugger,debugger>>.
+
+[#_allow-list]
+=== Allow-list
+
+The list of executables that a container can run. It is the field
+`spec.rulesByContainer[<container>].executables.allowed` of a
+<<_workloadpolicyproposal,WorkloadPolicyProposal>> or a
+<<_workloadpolicy,WorkloadPolicy>>. Each entry is an absolute
+<<_executable-path,executable path>>. A process that is not in the
+allow-list is a <<_violation,violation>>.
+
+== B
+
+[#_binding]
+=== Binding
+
+The link between a pod and its <<_workloadpolicy,WorkloadPolicy>>. You set
+the <<_policy-label,policy label>> on the pod, in the pod template of the
+workload. The label must be present when the pod is created. A
+<<_validating-admission-policy,Validating Admission Policy>> rejects changes
+to the label on a running pod.
+
+[#_btf]
+=== BTF
+
+BPF Type Format. Kernel type information that the <<_ebpf,eBPF>> programs of
+the <<_agent,agent>> need. The kernel must have `CONFIG_DEBUG_INFO_BTF=y`.
+
+== C
+
+[#_cert-manager]
+=== cert-manager
+
+A prerequisite. Together with the cert-manager CSI driver, it issues and
+mounts TLS certificates. The <<_agent,agent>>, the
+<<_controller,controller>>, and the <<_opentelemetry-collector,OpenTelemetry
+collector>> use these certificates to talk to each other.
+
+[#_containerd-and-cri-o]
+=== containerd and CRI-O
+
+The container runtimes that {rte-short-name} supports. Both must have
+<<_nri,NRI>> enabled. The `cri-dockerd` runtime is not supported.
+
+[#_controller]
+=== Controller
+
+The component that owns the policy resources. It runs as a Deployment. It
+handles <<_promotion,promotion>>. It serves the admission webhooks, one of
+which completes the owner reference of each new
+<<_workloadpolicyproposal,WorkloadPolicyProposal>>. It reads the
+<<_violation-record,violation records>> from each <<_agent,agent>> over
+<<_grpc,gRPC>> and writes them to the <<_workloadpolicy,WorkloadPolicy>>
+status on each <<_status-sync-interval,status sync>>.
+
+== D
+
+[#_debugger]
+=== Debugger
+
+An optional Deployment. It compares the pods and containers that each
+<<_agent,agent>> knows about with the pods in the Kubernetes API. Use it when
+a <<_workloadpolicy,WorkloadPolicy>> does not apply to a pod that you expect
+it to. It is off by default.
+
+== E
+
+[#_ebpf]
+=== eBPF
+
+Extended Berkeley Packet Filter. A way to run small programs inside the Linux
+kernel. The <<_agent,agent>> loads an eBPF program that runs before each
+process starts in a container. The program checks the
+<<_executable-path,executable path>> against the <<_allow-list,allow-list>>.
+In <<_protect,protect>> mode, it refuses the start.
+
+[#_executable-path]
+=== Executable path
+
+The absolute path of the file that a process runs, for example
+`/usr/bin/curl`. The <<_agent,agent>> records this path during learning and
+compares it with the <<_allow-list,allow-list>> during enforcement. When a
+container runs a script, the agent records the path of the script. It does
+not record the interpreter. The allow-list matches paths only. It does not
+match arguments, hashes, or patterns.
+
+== F
+
+[#_fail-open]
+=== Fail-open
+
+The behavior when a pod carries a <<_policy-label,policy label>> that names a
+<<_workloadpolicy,WorkloadPolicy>> that does not exist. By default, the
+<<_agent,agent>> does not start the container. This is the safe default. If
+you set the Helm value `agent.nriFailopen=true`, the container starts without
+protection.
+
+== G
+
+[#_grpc]
+=== gRPC
+
+The protocol between the <<_agent,agent>> on each node and the
+<<_controller,controller>> or the <<_debugger,debugger>>. The controller uses
+it to read the <<_violation-record,violation records>> that the agent holds.
+
+== K
+
+[#_kubectl-plugin]
+=== kubectl plugin
+
+The `kubectl runtime-enforcer` command. It sets the labels and annotations
+that drive <<_promotion,promotion>>, <<_mode,mode>> changes, changes to the
+<<_allow-list,allow-list>>, and <<_acknowledged-violation,acknowledgement>>.
+The `policy show protection` subcommand lists each workload with its policy,
+mode, and status. You can do each task without the plugin, with `kubectl
+label`, `kubectl annotate`, or `kubectl edit`.
+
+== L
+
+[#_learn-phase]
+=== Learn phase
+
+The first <<_phase,phase>>. The <<_agent,agent>> observes the executables
+that each container runs and writes them to a
+<<_workloadpolicyproposal,WorkloadPolicyProposal>>. Nothing is blocked.
+Learning starts when the agent starts. It stops for a workload when you
+<<_promotion,promote>> its proposal. A proposal holds at most 100
+executables.
+
+[#_learning-namespace-selector]
+=== Learning namespace selector
+
+The Helm value `learning.namespaceSelector`. It limits the
+<<_learn-phase,learn phase>> to the namespaces that match a label selector.
+The default selects all namespaces. The value `{}` turns learning off.
+
+== M
+
+[#_mode]
+=== Mode
+
+The field `spec.mode` of a <<_workloadpolicy,WorkloadPolicy>>. The values are
+<<_monitor,`monitor`>> and <<_protect,`protect`>>. You change the mode with
+`kubectl edit` or with the <<_kubectl-plugin,kubectl plugin>>. A mode change
+applies to running pods without a restart.
+
+[#_monitor]
+=== Monitor
+
+A <<_phase,phase>> and a <<_mode,mode>>. The <<_agent,agent>> reports each
+executable that is not in the <<_allow-list,allow-list>> as a
+<<_violation,violation>>. It does not block the executable. A
+<<_promotion,promoted>> proposal starts in this mode.
+
+== N
+
+[#_node-issue-code]
+=== Node issue code
+
+The `code` field of each entry in `status.nodesWithIssues` of a
+<<_workloadpolicy,WorkloadPolicy>>. The values are `Ready`, `Missing`,
+`Failed`, and `Transitioning`. The map holds at most 20 nodes.
+
+[#_nri]
+=== NRI
+
+Node Resource Interface. An interface of the container runtime that lets a
+plugin act when a container is created or started. The <<_agent,agent>> is an
+NRI plugin. Through NRI, it learns the cgroup of each container and attaches
+the <<_workloadpolicy,WorkloadPolicy>> before the first process starts. NRI
+must be enabled in <<_containerd-and-cri-o,containerd or CRI-O>>.
+
+== O
+
+[#_opentelemetry-collector]
+=== OpenTelemetry collector
+
+The service that receives the <<_violation,violation>> events from the
+<<_agent,agent>>. The Helm chart can deploy one for you, or you can point the
+agent at your own. The agent emits a `policy_violation` event for each
+violation and a `policy_violation_acknowledged` event for each
+<<_acknowledged-violation,acknowledgement>>. The bundled collector exports a
+Prometheus counter of violations. The <<_controller,controller>> exports a
+gauge of <<_active-violation,active violations>>.
+
+== P
+
+[#_phase]
+=== Phase
+
+One of the three stages of the {rte-short-name} workflow:
+<<_learn-phase,learn>>, <<_monitor,monitor>>, and <<_protect,protect>>.
+Monitor and protect are also the two values of the <<_mode,mode>> field.
+Learn has no mode. In the learn phase, the workload has a
+<<_workloadpolicyproposal,WorkloadPolicyProposal>> and no
+<<_workloadpolicy,WorkloadPolicy>>. Do not confuse the phase with the
+<<_status-phase,status phase>>.
+
+[#_policy-label]
+=== Policy label
+
+The label `runtimeenforcer.kubewarden.io/policy` on a pod. Its value is the
+name of a <<_workloadpolicy,WorkloadPolicy>> in the same namespace. It
+creates the <<_binding,binding>> between the pod and the policy. A pod
+without this label is not enforced.
+
+[#_promote-label]
+=== Promote label
+
+The label `runtimeenforcer.kubewarden.io/promote` on a
+<<_workloadpolicyproposal,WorkloadPolicyProposal>>. The value is `monitor` or
+`protect`. It starts the <<_promotion,promotion>>. If you remove the label
+before the controller acts, learning continues.
+
+[#_promoted-from-label]
+=== Promoted-from label
+
+The label `runtimeenforcer.kubewarden.io/promoted-from` on a
+<<_workloadpolicy,WorkloadPolicy>>. Its value is the name of the
+<<_workloadpolicyproposal,WorkloadPolicyProposal>> that the policy came from.
+The <<_controller,controller>> sets it. The controller uses it to know that
+the workload has a policy, so that it does not create a new proposal.
+
+[#_promotion]
+=== Promotion
+
+The step from a <<_workloadpolicyproposal,WorkloadPolicyProposal>> to a
+<<_workloadpolicy,WorkloadPolicy>>. You set the <<_promote-label,promote
+label>> on the proposal, or you run `kubectl runtime-enforcer proposal
+promote`. The <<_controller,controller>> creates the policy with the same
+<<_allow-list,allow-list>>, sets the <<_promoted-from-label,promoted-from
+label>>, and deletes the proposal. The policy starts in
+<<_monitor,`monitor`>> mode unless you ask for `protect`.
+
+[#_protect]
+=== Protect
+
+A <<_phase,phase>> and a <<_mode,mode>>. The <<_ebpf,eBPF>> program refuses
+to start each executable that is not in the <<_allow-list,allow-list>>. The
+process gets the error `EPERM`, "operation not permitted". The
+<<_agent,agent>> also records a <<_violation,violation>>.
+
+== R
+
+[#_required-plugins-annotation]
+=== Required plugins annotation
+
+The pod annotation `required-plugins.noderesource.dev`. Its value is a list
+of <<_nri,NRI>> plugin names, for example `'["runtime-enforcer-agent"]'`.
+The container runtime refuses to start the pod when a named plugin is not
+present. Use it to make sure that no pod starts without the
+<<_agent,agent>>. It needs containerd 2.2 or later, or CRI-O 1.34 or later.
+
+== S
+
+[#_status-phase]
+=== Status phase
+
+The field `status.phase` of a <<_workloadpolicy,WorkloadPolicy>>. It has
+three values. `Ready` means that all the targeted nodes enforce the policy.
+`Failed` means that at least one node has a problem. `Transitioning` means
+that some nodes are still changing <<_mode,mode>>. See
+<<_node-issue-code,node issue code>> for the detail per node. This is not the
+same as the workflow <<_phase,phase>>.
+
+[#_status-sync-interval]
+=== Status sync interval
+
+The period at which the <<_controller,controller>> reads the
+<<_violation-record,violation records>> from each <<_agent,agent>> and writes
+them to the <<_workloadpolicy,WorkloadPolicy>> status. The default is 30
+seconds. A violation can take up to 30 seconds to appear in `kubectl`. The
+<<_opentelemetry-collector,OpenTelemetry>> events arrive at once.
+
+== V
+
+[#_validating-admission-policy]
+=== Validating Admission Policy
+
+A Kubernetes admission rule written in CEL. {rte-short-name} installs one
+that makes the <<_policy-label,policy label>> immutable on a running pod.
+This needs Kubernetes 1.31 or later.
+
+[#_violation]
+=== Violation
+
+The start of a process whose <<_executable-path,executable path>> is not in
+the <<_allow-list,allow-list>> of its container. In <<_monitor,monitor>> mode
+the process runs. In <<_protect,protect>> mode it does not. In both modes the
+<<_agent,agent>> emits an event to the
+<<_opentelemetry-collector,OpenTelemetry collector>> and keeps a
+<<_violation-record,violation record>>.
+
+[#_violation-record]
+=== Violation record
+
+One entry in `status.violations` or `status.acknowledgedViolations` of a
+<<_workloadpolicy,WorkloadPolicy>>. It holds the `id`, the pod, the
+container, the <<_executable-path,executable path>>, the node, and the
+<<_mode,mode>>. It also holds the workload, the first and last time seen, and
+the number of occurrences. Each list holds the 100 most recent records. The
+field `status.violationCount` counts all the records that the policy ever
+had. This count includes the trimmed records.
+
+== W
+
+[#_workload]
+=== Workload
+
+A Deployment, StatefulSet, DaemonSet, Job, or CronJob. The
+<<_learn-phase,learn phase>> creates one
+<<_workloadpolicyproposal,WorkloadPolicyProposal>> per workload. A standalone
+Pod or a ReplicaSet is not a workload for learning. You can still
+<<_binding,bind>> such a pod to a <<_workloadpolicy,WorkloadPolicy>> that you
+write by hand.
+
+[#_workloadpolicy]
+=== WorkloadPolicy
+
+The resource that holds the enforced <<_allow-list,allow-list>> of a
+workload, per container, and its <<_mode,mode>>. Namespaced. The
+<<_controller,controller>> creates it on <<_promotion,promotion>>. You can
+also write one by hand. Pods <<_binding,bind>> to it with the
+<<_policy-label,policy label>>. Its status holds the
+<<_status-phase,status phase>>, the <<_violation-record,violation records>>,
+and the <<_node-issue-code,node issue codes>>. You cannot delete it while a
+pod refers to it. It has no cluster-specific state, so you can store it in
+Git and apply it to other clusters.
+
+[#_workloadpolicyproposal]
+=== WorkloadPolicyProposal
+
+The resource that holds the <<_allow-list,allow-list>> learned for one
+<<_workload,workload>>, per container. Namespaced. The <<_agent,agent>>
+creates and updates it during the <<_learn-phase,learn phase>>. Its name is the kind and the name of the workload, for example
+`deploy-nginx`. It is owned by the workload, so Kubernetes deletes it with
+the workload. Nothing is enforced while a workload has only a proposal.
+<<_promotion,Promotion>> replaces it with a
+<<_workloadpolicy,WorkloadPolicy>>.

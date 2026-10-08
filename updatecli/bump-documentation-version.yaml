@@ -33,3 +33,12 @@ policies:
     values:
       - values.d/scm.yaml
       - values.d/adm-controller.yaml
+
+  # Keep the :release-tag: and :chart-version: attributes of the dev version
+  # in sync with the latest upstream release and the latest published chart.
+  - name: Update admission-controller release attributes
+    config:
+      - updatecli.d/update-release-attributes.yaml
+    values:
+      - values.d/scm.yaml
+      - values.d/adm-controller.yaml

@@ -1,0 +1,159 @@
+include::partial$variables.adoc[]
+= {sboms-name} use cases
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:description: Example use cases for {sboms-name}. Registry, workload, and node scanning, noise reduction, and integration with other tools.
+:keywords: {sboms-name}, documentation, use cases
+:doc-persona: kubewarden-all
+:doc-type: explanation
+:doc-topic: explanation
+
+These are example use cases for {sboms-name}. Each case names a
+xref:personas.adoc[persona] and a goal. Then it explains how
+{sboms-short-name} meets that goal.
+
+== Case A: As a cluster operator, I want to know which vulnerabilities are in my registries.
+
+I create a {registry-cr} resource for each registry that I want to scan.
+{sboms-short-name} discovers the images in the registry. If the {sbom-cr}
+resource of an image does not exist, it generates a Software Bill of
+Materials ({sbom-term}) for that image. Then it scans each SBOM for
+vulnerabilities and stores a {vulnerabilityreport-cr}.
+
+I set `spec.scanInterval` on the `Registry` to scan on a schedule. I create a
+{scanjob-cr} to scan on demand. A `ScanJob` works like a Kubernetes `Job`. I
+can watch its status with `kubectl`.
+
+A registry can contain many images that I do not run. I limit the scan with
+filters:
+
+* `spec.platforms` selects the operating systems and architectures that I run.
+* `spec.repositories` selects the repositories to scan.
+* `matchConditions` selects tags with {cel-term} expressions. For example,
+  only tags that are semantic versions, or only tags that end in `-prod`.
+
+{sboms-short-name} uses the SBOM as the source of truth. When the
+{vulnerability-database-term} changes, the scanner reads the stored SBOM
+again. It does not pull the image again. Images with the same digest share
+one SBOM.
+
+My registries can require credentials or a private certificate authority. I
+set `spec.authSecret` and `spec.caBundle` on the `Registry`. In an air-gapped
+cluster, I mirror the vulnerability databases and the {vex-term} repositories
+to internal servers.
+
+See xref:user-guide/scanning-registries.adoc[],
+xref:user-guide/private-registries.adoc[], and
+xref:user-guide/airgap-support.adoc[].
+
+== Case B: As a platform team, I want to know which vulnerabilities affect the workloads that run in my cluster.
+
+A registry scan tells me what exists. It does not tell me what runs. I enable
+the {workloadscanconfiguration-cr} resource. {sboms-short-name} watches Pods,
+Deployments, StatefulSets, DaemonSets, Jobs, and CronJobs. It finds the images
+that they use. It creates and manages the `Registry` resources for those
+images.
+
+For each workload, {sboms-short-name} creates a {workloadscanreport-cr}. The
+report lists the containers of the workload and their vulnerabilities. It
+gives one summary for the whole workload. I use it to answer one question:
+what must I fix in this Deployment?
+
+I roll out workload scanning in phases. I set `spec.namespaceSelector` to
+select the namespaces to scan. I add namespaces when I am ready.
+
+Each `WorkloadScanReport` lives in the namespace of its workload. Teams read
+the reports for their namespaces with the usual Kubernetes RBAC. I can set
+`spec.artifactsNamespace` to keep the managed `Registry` resources and their
+images, SBOMs, and vulnerability reports in one central namespace.
+
+The {image-cr} resource lists the workloads that use the image. I use this list
+when one image has a critical vulnerability. I find the affected workloads
+without a manual search.
+
+See xref:user-guide/scanning-workloads.adoc[].
+
+== Case C: As a cluster operator, I want to know that the nodes under my workloads are safe.
+
+Nodes are the base of the cluster. I enable the {nodescanconfiguration-cr}
+resource. A worker runs on each node as a DaemonSet. It reads the host file
+system, generates a {nodesbom-cr}, and scans it. The result is a
+{nodevulnerabilityreport-cr} for each node.
+
+I set `spec.scanInterval` to scan the nodes on a schedule. I set
+`spec.nodeSelector` to select the nodes to scan. I set `spec.skipPatterns` to
+exclude paths from the scan. The default patterns skip the image store of the
+container runtime. The registry scan already covers that content. I add an
+annotation to the `NodeScanConfiguration` to request an immediate scan of all
+matching nodes.
+
+The node worker mounts the host root file system as read-only. It also needs
+the `DAC_READ_SEARCH` Linux capability. As a result, it cannot run in a
+namespace that enforces the `restricted` or `baseline` Pod Security Admission
+profiles.
+
+See xref:user-guide/scanning-nodes.adoc[].
+
+== Case D: As a security engineer, I want fewer false positives, so that I can focus on remediation.
+
+A vulnerability report often lists {cve-term}s that do not affect the image. A
+vendor can publish a Vulnerability Exploitability eXchange (VEX) statement for
+such a CVE. I create a {vexhub-cr} resource for each {vex-hub-term} repository
+that I trust. {sboms-short-name} installs repositories from Rancher and Aqua
+Security by default. In an air-gapped cluster, I point a `VEXHub` at an
+internal mirror.
+
+The scanner applies the VEX statements during the scan. It marks the matched
+vulnerabilities as `suppressed` and records the VEX status. The summary of the
+report does not count the suppressed vulnerabilities.
+
+For each vulnerability that remains, the report gives me the data that I need
+to act:
+
+* The package name, the package URL ({purl-term}), and the installed version.
+* The fixed versions, if a fix exists.
+* The image layer that added the package.
+* The severity and the {cvss-term} scores from each vendor.
+
+I query the reports with `kubectl` and field selectors. For example, I list
+all the reports for one repository or one tag.
+
+See xref:user-guide/vex.adoc[] and xref:user-guide/querying-reports.adoc[].
+
+== Case E: As an integrator, I want to consume scan results with my own tools.
+
+All the scan results are Kubernetes resources. I do not need a separate API or
+database client.
+
+* I read `VulnerabilityReport`, `WorkloadScanReport`, and
+  `NodeVulnerabilityReport` resources with `kubectl`, with a Kubernetes client
+  library, or through the
+  https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/[Kubernetes REST API].
+* I create `Registry` and `ScanJob` resources from a GitOps repository. The
+  status conditions tell my pipeline when a scan completes or fails.
+* I export traces and metrics to an {opentelemetry-term} collector. A CI
+  pipeline can set the `traceparent` annotation on a `ScanJob`. Then the whole
+  scan becomes part of the pipeline trace.
+* I connect an AI assistant to the experimental {mcp-server-term}. The
+  assistant finds the most vulnerable images, workloads, or nodes with natural
+  language.
+* I view the results in the Rancher UI.
+
+The reports are standard resources. As a result,
+xref:latest@admission-controller:en:explanations/context-aware-policies.adoc[context-aware policies]
+of the {admc-name} can read them and act on them.
+
+See xref:user-guide/querying-reports.adoc[],
+xref:user-guide/opentelemetry.adoc[], and
+xref:user-guide/mcp-server.adoc[].
+
+== Non-goals
+
+{sboms-short-name} does not intend to:
+
+* Enforce policies or block deployments. This is the role of the {admc-name}.
+* Detect malicious behavior at runtime. This is the role of the {rte-name}.
+* Patch or rebuild images.
+* Run compliance benchmarks for the cluster.
+* Scan {oci-term} artifacts that are not container images, for example
+  signatures, attestations, and Helm charts.

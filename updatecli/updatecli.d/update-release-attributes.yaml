@@ -1,0 +1,141 @@
+# {{ $GitHubUser := env ""}}
+# {{ $GitHubRepositoryList := env "GITHUB_REPOSITORY" | split "/"}}
+# {{ $GitHubPAT := env "GITHUB_TOKEN"}}
+# {{ $GitHubUsername := env "GITHUB_ACTOR"}}
+
+# Keeps the :release-tag: and :chart-version: AsciiDoc attributes of the dev
+# documentation version in sync with the latest upstream release and the
+# latest published Helm chart. The attributes live in
+# docs/<component>/version-<dev>/modules/en/partials/community-specific/variables.adoc
+# and feed the version numbers in the "Verifying <component>" tutorial and in
+# example manifests.
+
+name: 'Update {{ .component }} release attributes'
+pipelineid: "{{ .pipelineid }}"
+
+scms:
+  default:
+    kind: "github"
+    spec:
+      user: "{{ default $GitHubUser .scm.user}}"
+      email: "{{ .scm.email }}"
+      owner: "{{ default $GitHubRepositoryList._0 .scm.owner }}"
+      repository: "{{ default $GitHubRepositoryList._1 .scm.repository}}"
+      token: "{{ default $GitHubPAT .scm.token }}"
+      username: "{{ default $GitHubUsername .scm.username }}"
+      branch: "{{ .scm.branch }}"
+      commitusingapi: true
+      commitmessage:
+        hidecredit: true
+        footers: "Signed-off-by: Kubewarden bot <cncf-kubewarden-maintainers@lists.cncf.io>"
+
+sources:
+  # Full release tag, with the "v" prefix, as it appears in image tags and in
+  # the cosign certificate identity. No transformer, so a patch release
+  # (vX.Y.Z+1) is picked up, not only a minor release.
+  releaseTag:
+    name: "Get latest {{ .component }} release tag"
+    kind: githubrelease
+    spec:
+      # {{ $AppGitHubRepositoryList := .sourceRepository | split "/"}}
+      owner: "{{ $AppGitHubRepositoryList._0 }}"
+      repository: "{{ $AppGitHubRepositoryList._1 }}"
+      token: "{{ default .scm.token $GitHubPAT }}"
+      username: "{{ default .scm.username $GitHubUsername }}"
+      versionfilter:
+        kind: "semver"
+        pattern: ">0.1"
+
+  # Latest published chart version. The helm-charts repository tags each
+  # chart release as "<chart name>-<semver>". The anchored regex excludes
+  # pre-release tags such as "<chart name>-1.2.3-rc.1".
+  chartVersion:
+    name: "Get latest published {{ .chartName }} chart version"
+    kind: githubrelease
+    spec:
+      owner: "kubewarden"
+      repository: "helm-charts"
+      token: "{{ default .scm.token $GitHubPAT }}"
+      username: "{{ default .scm.username $GitHubUsername }}"
+      versionfilter:
+        kind: "regex"
+        pattern: '^{{ .chartName }}-\d+\.\d+\.\d+$'
+    transformers:
+      - trimprefix: "{{ .chartName }}-"
+
+  # The dev documentation version, read from the documentation tree, the same
+  # way updatecli.d/update-crd-docs-version.yaml does.
+  devVersion:
+    name: "Find the {{ .component }} dev version"
+    kind: shell
+    scmid: default
+    spec:
+      environments:
+        - name: "PATH"
+      # Read the dev version from the documentation tree rather than
+      # computing "latest release + 1". The two only agree while the
+      # promotion in updatecli.d/antora.yaml is working: when it is blocked,
+      # the arithmetic keeps moving these paths to a directory that does not
+      # exist. Reading the tree makes that impossible, and it stays correct
+      # whether the promotion ran in this same pipeline or not.
+      command: |
+        #!/bin/sh
+        COMPONENT_DIR="docs/{{ .component }}"
+
+        DEV_VERSION=""
+        DEV_COUNT=0
+
+        for dir in ${COMPONENT_DIR}/version-*/; do
+          [ -f "${dir}antora.yml" ] || continue
+          grep -q "prerelease:" "${dir}antora.yml" || continue
+
+          DEV_COUNT=$((DEV_COUNT + 1))
+          [ -n "$DEV_VERSION" ] || DEV_VERSION=$(basename "$dir" | sed 's/^version-//')
+        done
+
+        if [ "$DEV_COUNT" -ne 1 ]; then
+          echo "${COMPONENT_DIR}: expected exactly 1 dev version directory with 'prerelease:', found ${DEV_COUNT}" >&2
+          exit 1
+        fi
+
+        echo "$DEV_VERSION"
+
+targets:
+  releaseTagAttribute:
+    name: "Update :release-tag: in {{ .component }} dev docs"
+    kind: file
+    sourceid: releaseTag
+    scmid: default
+    spec:
+      file: 'docs/{{ .component }}/version-{{ source "devVersion" }}/modules/en/partials/community-specific/variables.adoc'
+      matchpattern: '(?m)^:release-tag: .*$'
+      replacepattern: ':release-tag: {{ source "releaseTag" }}'
+
+  chartVersionAttribute:
+    name: "Update :chart-version: in {{ .component }} dev docs"
+    kind: file
+    sourceid: chartVersion
+    scmid: default
+    spec:
+      file: 'docs/{{ .component }}/version-{{ source "devVersion" }}/modules/en/partials/community-specific/variables.adoc'
+      matchpattern: '(?m)^:chart-version: .*$'
+      replacepattern: ':chart-version: {{ source "chartVersion" }}'
+
+actions:
+  default:
+    kind: "github/pullrequest"
+    scmid: "default"
+    spec:
+      automerge: false
+# {{ if .pr.title }}
+      title: "{{ .pr.title }}"
+# {{ end }}
+# {{ if .pr.description }}
+      description: "{{ .pr.description }}"
+# {{ end }}
+# {{ if .pr.labels }}
+      labels:
+# {{ range .pr.labels }}
+        - "{{ . }}"
+# {{ end }}
+# {{ end }}

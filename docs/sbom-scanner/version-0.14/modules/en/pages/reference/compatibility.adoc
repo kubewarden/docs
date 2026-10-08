@@ -1,0 +1,134 @@
+include::partial$variables.adoc[]
+
+= Compatibility
+:revdate: 2026-10-01
+:page-revdate: {revdate}
+:description: The cluster requirements of {sboms-name}: Kubernetes, cert-manager, PostgreSQL, and the components that the chart bundles or that you can add.
+:keywords: ["{sboms-name}", "kubewarden", "kubernetes", "compatibility", "dependencies", "requirements"]
+:doc-persona: ["kubewarden-operator"]
+:doc-type: ["reference"]
+:doc-topic: ["operator-manual", "dependencies"]
+
+[#_overview]
+== Overview
+
+{sboms-name} needs a few things from the cluster before it starts: a
+certificate issuer, a database, and the Kubernetes API aggregation layer.
+This page lists each requirement, the versions that the project tests
+against, and the components that the chart brings along.
+
+Versions outside the tested set can work, but the project does not test
+them. Where the project states no minimum version, this page says so.
+
+[#_quick-reference]
+== Quick reference
+
+[cols="2,3,5"]
+|===
+|Component |Version/Requirement |Notes
+
+|*Kubernetes*
+|No stated minimum. Tested with 1.33.
+|The chart sets no `kubeVersion`. The storage API server is an aggregated API
+server, so the cluster must have the API aggregation layer on. All common
+distributions do. The custom resource definitions declare selectable fields,
+a feature that Kubernetes 1.32 and later honors and that older versions
+ignore.
+
+|*Architecture*
+|x86_64, aarch64
+|Fully supported. All images are multi-architecture.
+
+|*cert-manager*
+|Required. Tested with v1.18.2.
+|It issues the certificates of the admission webhooks, of the aggregated API,
+of the NATS cluster, and of the MCP server. The chart uses the
+`cert-manager.io/v1` API only. See
+xref:quickstart.adoc#_install_cert_manager[the
+quick start] for the install commands.
+
+|*CloudNativePG*
+|Required, unless you bring your own PostgreSQL. No stated version.
+|The chart creates a `postgresql.cnpg.io/v1` Cluster when
+`storage.postgres.cnpg.enabled` is `true`, the default. The project tests
+against the latest `cnpg/cloudnative-pg` chart at the time of each test run.
+See xref:installation/helm-values.adoc#using-cloudnativepg-recommended[Using
+CloudNativePG].
+
+|*PostgreSQL*
+|No stated minimum. Tested with 16.
+|For an external database, when CloudNativePG is off. The storage API server
+always verifies the server certificate of the database. There is no
+plain-text option. See
+xref:installation/helm-values.adoc#using-an-external-postgresql-instance[Using
+an external PostgreSQL instance].
+
+|*Default StorageClass*
+|Required with CloudNativePG.
+|The CloudNativePG cluster needs persistent volumes. The chart uses the
+default StorageClass unless `storage.postgres.cnpg.storage.storageClass`
+names one.
+|===
+
+[#_bundled-components]
+== Bundled components
+
+The chart ships this component. You do not install it, and its version
+changes with the chart version.
+
+[cols="2,8"]
+|===
+|Component |Notes
+
+|*NATS*
+|A subchart. Runs as a cluster with JetStream and mutual TLS. Carries the scan
+messages between the controller and the workers, and the watch events between
+the storage replicas.
+|===
+
+[#_optional-dependencies]
+== Optional dependencies
+
+Needed for specific features.
+
+[cols="2,3,5"]
+|===
+|Dependency |Version/Requirement |Feature
+
+|*OpenTelemetry collector*
+|Any collector that accepts OTLP over gRPC. No stated version.
+|Traces and metrics. Off until you set `otel.endpoint`. The OpenTelemetry
+stack changes often, and backwards-incompatible changes still occur. The
+project adjusts to them as they appear. See
+xref:user-guide/opentelemetry.adoc[OpenTelemetry].
+
+|*MCP client*
+|Any client that speaks the Model Context Protocol.
+|The MCP server, off by default. See xref:user-guide/mcp-server.adoc[MCP
+server].
+|===
+
+ifeval::["{build-type}" == "product"]
+[#_rancher-integration]
+== Rancher Integration
+
+The chart declares the Rancher versions that it supports in its catalog
+annotations.
+
+[cols="2,2,6"]
+|===
+|Rancher Version |Status |Notes
+
+|*2.10.1 - 2.15.x*
+|✓ Supported
+|The range that the chart annotation `catalog.cattle.io/rancher-version`
+declares, up to 2.15.100.
+|===
+endif::[]
+
+[#_support]
+== Support
+
+Hit a compatibility issue not covered here? Open an
+link:https://github.com/kubewarden/sbomscanner/issues[issue] with your
+environment details.

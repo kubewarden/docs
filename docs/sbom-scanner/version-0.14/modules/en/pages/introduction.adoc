@@ -1,13 +1,99 @@
 include::partial$variables.adoc[]
 
 = Introduction
-:revdate: 2026-06-15
+:revdate: 2026-09-30
 :page-revdate: {revdate}
-:description: Introducing {sboms-name}.
+:description: Learn what {sboms-name} is, how it finds vulnerabilities in images, workloads, and nodes, and why it scans SBOMs instead of images.
+:keywords: {sboms-name}, kubewarden, cncf, kubernetes, sbom, vulnerability scanner
 
-{sboms-short-name} is an SBOM-based vulnerability scanner for Kubernetes
+{sboms-short-name} is an {sbom-term}-based vulnerability scanner for Kubernetes
 clusters. It scans container images, image registries, running workloads, and
 cluster host nodes, generating a software bill of materials for each and
 detecting both operating-system and application-library vulnerabilities.
 
+{intro-paragraph}
+
 include::partial${build-type}-specific/warning.adoc[]
+
+== How does {sboms-name} help?
+
+{sboms-short-name} tells you which known vulnerabilities are in your cluster,
+where they are, and which ones matter.
+
+=== Benefits and value
+
+* One tool scans your registries, your running workloads, and your nodes.
+* The {sbom-term} is the source of truth. When the vulnerability database
+  changes, the scanner reads the stored SBOM again. It does not pull the image
+  again.
+* Every result is a Kubernetes resource. You read it with `kubectl`, and your
+  tools read it with a Kubernetes client.
+* {vex-term} statements remove the vulnerabilities that do not apply to your
+  images, so the reports contain less noise.
+* Platform and tag filters limit the scan to the images that you run.
+* The scanner works in an air-gapped cluster, with mirrored databases and
+  repositories.
+* Traces and metrics go to any OpenTelemetry collector. An AI assistant can
+  query the results through the MCP server.
+* {sboms-short-name} is part of a CNCF project, with an open community.
+
+=== Use cases
+
+* Inventory. Know which vulnerabilities are in each registry, workload, and
+  node of the cluster.
+* Remediation. Find the workloads that use a vulnerable image, and the
+  version that fixes it.
+* Integration. Feed the reports to dashboards, pipelines, and admission
+  policies.
+
+There is further documentation of use cases on the xref:use-cases.adoc[use
+cases] page.
+
+== New to {sboms-short-name}?
+
+Start with the xref:quickstart.adoc[quick start]. It installs
+{sboms-short-name} and runs a first scan of a registry. Then read the
+xref:explanations/architecture.adoc[architecture] page to see how the parts
+fit together, and the user guide page for the scan that you need:
+xref:user-guide/scanning-registries.adoc[registries],
+xref:user-guide/scanning-workloads.adoc[workloads], or
+xref:user-guide/scanning-nodes.adoc[nodes]. Operators find the cluster
+requirements in the xref:reference/compatibility.adoc[compatibility] page,
+and the Helm values and the troubleshooting steps in the how-tos. Security
+engineers find the report fields in
+xref:user-guide/querying-reports.adoc[Querying reports] and the terms in the
+xref:glossary.adoc[glossary]. Before you deploy to production,
+xref:tutorials/verifying-sbom-scanner.adoc[verify the release] that you
+install.
+
+== What is an SBOM?
+
+A Software Bill of Materials is a list of the packages in a piece of
+software, with the name and version of each package. {sboms-short-name}
+writes each SBOM in the https://spdx.dev/[SPDX] format. An SBOM of a
+container image lists the operating system packages and the application
+libraries in the image. An SBOM of a node lists the packages on the host file
+system.
+
+== Why scan SBOMs instead of images?
+
+The content of an image changes less often than the vulnerability database.
+A scanner that reads the image on each scan pulls the same bytes again and
+again. {sboms-short-name} generates the SBOM once, when it discovers the
+image. Each later scan matches the stored SBOM against the current database.
+This is fast, and it does not load the registry.
+
+Images with the same digest share one SBOM. A tag that moves to a new digest
+gets a new SBOM. Because the SBOM is a Kubernetes resource, you can read it,
+export it, and give it to an auditor without a scan.
+
+ifeval::["{build-type}" == "community"]
+
+[#_vendor_neutrality]
+== Vendor neutrality
+
+{sboms-short-name} is a
+link:https://contribute.cncf.io/maintainers/community/vendor-neutrality/[vendor
+neutral] project as defined by the CNCF.
+
+endif::[]

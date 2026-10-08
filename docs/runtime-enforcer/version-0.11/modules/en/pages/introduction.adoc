@@ -1,42 +1,107 @@
 include::partial$variables.adoc[]
 
 = {rte-name}
-:revdate: 2026-09-17
+:revdate: 2026-09-30
 :page-revdate: {revdate}
-:description: {rte-name} uses eBPF to monitor and enforce process-execution security policies for Kubernetes workloads.
+:description: Learn what {rte-name} is, how it learns an allow-list of executables per container, and why it enforces the list in the kernel with eBPF.
+:keywords: {rte-name}, kubewarden, cncf, kubernetes, ebpf, runtime security, allow-list
 
-{rte-name} is a Kubernetes security tool that uses eBPF (Extended Berkeley
-Packet Filter) to observe process executions in your workloads and to enforce
-allow-list based security policies at the kernel level.
+{rte-name} is a Kubernetes security tool that uses {ebpf-term} (Extended
+Berkeley Packet Filter) to observe process executions in your workloads and to
+enforce {allow-list-term} based security policies at the kernel level.
+
+{intro-paragraph}
 
 It operates in three phases:
 
-* *Learn* -- observe process executions and generate a `WorkloadPolicyProposal`
-  per workload.
-* *Monitor* -- report violations of an approved `WorkloadPolicy` without
-  blocking them.
+* *Learn* -- observe process executions and generate a
+  {workloadpolicyproposal-cr} per workload.
+* *Monitor* -- report {violation-term}s of an approved {workloadpolicy-cr}
+  without blocking them.
 * *Protect* -- block executions that violate the policy allow-list.
 
-[#_getting-started]
-== Getting started
+== How does {rte-name} help?
 
-* xref:installation/quickstart.adoc[] -- deploy {rte-short-name} and walk
-  through the learn/monitor/protect workflow.
-* xref:compatibility.adoc[] -- kernel, architecture and platform requirements.
-* xref:phases.adoc[] -- understand the learn, monitor and protect phases in
-  detail.
+{rte-short-name} limits each container to the executables that its job
+needs, and it stops every other executable before it starts.
 
-[#_documentation-map]
-== Documentation map
+=== Benefits and value
 
-* *Installation*: xref:installation/quickstart.adoc[Quick Start],
-  xref:installation/uninstall.adoc[Uninstall]
-* *Concepts & operations*: xref:phases.adoc[Phases],
-  xref:learning_mode_configuration.adoc[Learning Mode Configuration],
-  xref:known_limitations.adoc[Known Limitations],
-  xref:troubleshooting.adoc[Troubleshooting]
-* *Reference*: xref:crd.adoc[CRD API Reference],
-  xref:kubectl_plugin.adoc[kubectl Plugin],
-  xref:resource-consumption.adoc[Resource Consumption]
-* *Development*: xref:build.adoc[Build Requirements],
-  xref:setup-development-env.adoc[Development Environment]
+* The allow-list comes from the processes that the workload runs. You do
+  not write it by hand.
+* Each container of a workload has its own allow-list. Init containers and
+  sidecars are covered.
+* Enforcement happens in the kernel, before the process starts. A blocked
+  executable never runs.
+* The policy is attached when the container starts, so it covers the
+  entrypoint, short-lived pods, and commands from `kubectl exec`.
+* Nothing is enforced until you promote a proposal. Monitor mode shows what
+  a policy blocks before it blocks.
+* A policy is a namespaced resource with no cluster-specific state. You
+  learn it once and apply it to many clusters as code.
+* A `kubectl` plugin wraps the common tasks. Plain labels and annotations do
+  the same work without it.
+* {rte-short-name} is part of a CNCF project, with an open community.
+
+=== Use cases
+
+* Hardening. Give each workload an allow-list of executables without a
+  manual audit of each image.
+* Containment. Stop an attacker from running a shell, a package manager, or
+  a downloaded tool in a compromised container.
+* Fleet management. Keep the same policy in every cluster, from one Git
+  repository.
+
+There is further documentation of use cases on the xref:use-cases.adoc[use
+cases] page.
+
+== New to {rte-short-name}?
+
+Start with the xref:quickstart.adoc[quick start]. It installs
+{rte-short-name}, learns a policy for a sample workload, and walks through
+monitor and protect mode. Then read xref:explanations/phases.adoc[Phases] for
+the full rules of each phase, and
+xref:explanations/architecture.adoc[Architecture] to see how the controller,
+the agent, and the kernel work together. Operators find the kernel and
+container runtime requirements in
+xref:reference/compatibility.adoc[Compatibility], and the
+learning scope in xref:howtos/learning_mode_configuration.adoc[Learning mode
+configuration]. Application teams find the day-to-day commands in the
+xref:howtos/kubectl_plugin.adoc[kubectl plugin] page. The
+xref:glossary.adoc[glossary] defines the terms that these pages use. Before
+you deploy to production,
+xref:tutorials/verifying-runtime-enforcer.adoc[verify the release] that you
+install.
+
+== What is eBPF?
+
+eBPF is a feature of the Linux kernel. It runs small, verified programs
+inside the kernel, at points that the kernel exposes. A program can observe
+an event, such as the start of a process, and it can change the result of
+that event. {rte-short-name} loads one such program on each node. The
+program runs each time a process starts in a container.
+
+== Why enforce at process start, in the kernel?
+
+A check in the kernel sees every process, with no gap. There is no agent in
+the container to bypass, and no race between the start of the process and
+the check. When the executable is not in the allow-list, the kernel refuses
+the start. The process never runs, so it cannot do harm before a detection
+tool reacts.
+
+The policy is attached through the container runtime, before the first
+process of the container starts. As a result, the entrypoint itself is
+subject to the allow-list, and so is a pod that lives for one second. A pod
+whose policy is missing does not start at all. This is the default, so that
+a mistake in a label does not leave a workload without protection.
+
+ifeval::["{build-type}" == "community"]
+
+[#_vendor_neutrality]
+== Vendor neutrality
+
+{rte-short-name} is a
+link:https://contribute.cncf.io/maintainers/community/vendor-neutrality/[vendor
+neutral] project as defined by the CNCF.
+
+endif::[]

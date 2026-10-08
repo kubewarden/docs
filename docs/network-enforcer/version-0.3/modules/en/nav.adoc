@@ -1,16 +1,22 @@
 include::partial$variables.adoc[]
 
 * xref:introduction.adoc[Introduction]
-* Installation
-** xref:installation/quickstart.adoc[Quick Start]
-** xref:installation/uninstall.adoc[Uninstall]
-* Concepts & Operations
-** xref:phases.adoc[Phases: Learn, Monitor, Protect]
-** xref:architecture.adoc[Architecture]
-** xref:compatibility.adoc[Compatibility]
-** xref:known_limitations.adoc[Known Limitations]
-** xref:troubleshooting.adoc[Troubleshooting]
+* xref:quickstart.adoc[Quick start]
+* Tutorials
+** xref:tutorials/verifying-network-enforcer.adoc[Verifying {ne-short-name}]
+* Explanations
+** xref:explanations/phases.adoc[Phases: learn, monitor, protect]
+** xref:explanations/architecture.adoc[Architecture]
+* Howtos
+** xref:howtos/uninstall.adoc[Uninstall]
+** xref:howtos/troubleshooting.adoc[Troubleshooting]
+** xref:howtos/setup-development-env.adoc[Development environment]
 * Reference
-** xref:crd.adoc[CRD API Reference]
-* Development
-** xref:setup-development-env.adoc[Development Environment]
+** xref:reference/compatibility.adoc[Compatibility]
+** xref:reference/known_limitations.adoc[Known limitations]
+** xref:reference/crd.adoc[CRD API reference]
+* xref:personas.adoc[For who?]
+* xref:use-cases.adoc[Use cases]
+* xref:organization.adoc[Organization]
+* xref:glossary.adoc[Glossary]
+* xref:disclosure.adoc[Security disclosure]
