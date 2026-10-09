@@ -5,7 +5,7 @@ scm:
 
 files:
   - src: "docs/crds/CRD-docs-for-docs-repo.adoc"
-    dst: docs/network-enforcer/version-0.3/modules/en/partials/crd-reference.adoc
+    dst: docs/network-enforcer/version-0.4/modules/en/partials/crd-reference.adoc
 src:
   branch: "main"
   url: "https://github.com/kubewarden/network-enforcer.git"
