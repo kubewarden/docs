@@ -1,0 +1,36 @@
+# Component hierarchy for the "Component / version" selector in the left
+# navigation. The helper kw-community-docs-supp-files/helpers/componenthierarchy.js
+# reads this file at build time.
+#
+# Each node must set:
+#   component         Antora component name (the `name` in antora.yml)
+#   expanded          true to show the children when the page loads
+#   include_versions  true to show the version links of the component
+# A node can also set:
+#   title             overrides the component title from antora.yml
+#   children          list of child nodes
+#
+# A group that contains the component of the current page always opens.
+# Components that are not in this file or in hidden_components show at the
+# top level, so that a new component is never lost from the selector.
+
+component_hierarchy:
+  - component: kubewarden
+    expanded: true
+    include_versions: false
+    children:
+      - component: admission-controller
+        expanded: false
+        include_versions: true
+      - component: runtime-enforcer
+        expanded: false
+        include_versions: true
+      - component: sbom-scanner
+        expanded: false
+        include_versions: true
+      - component: network-enforcer
+        expanded: false
+        include_versions: true
+
+hidden_components:
+  - shared
