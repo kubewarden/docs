@@ -5,4 +5,4 @@
 // Current upstream release tag and published Helm chart version.
 // Bumped by updatecli on each upstream release. Do not edit by hand.
 :release-tag: v0.3.0
-:chart-version: 0.1.2
+:chart-version: 0.1.3
