@@ -1,13 +1,13 @@
 include::partial$variables.adoc[]
 = Introduction to CEL
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-10-08
 :page-revdate: {revdate}
-:description: Learn about CEL (Computation Expression Language) as a fast, portable, and safe expression language designed for Kubernetes validation rules and extensions to the Kubernetes API.
+:description: Learn about CEL (Common Expression Language) and the two ways to run CEL policies in {admc-name}: the interpreted cel-policy and compilation to WebAssembly with kwctl.
 :doc-persona: ["kubewarden-policy-developer", "kubewarden-operator"]
 :doc-topic: ["kubewarden", "writing-policies", "cel", "introduction"]
 :doc-type: ["tutorial"]
-:keywords: ["kubewarden", "kubernetes", "writing policies", "introduction"]
+:keywords: ["kubewarden", "kubernetes", "writing policies", "introduction", "cel", "cel-policy", "ferricel", "webassembly"]
 :current-version: {page-origin-branch}
 
 The https://cel.dev[Common Expression Language (CEL)] is a general-purpose
@@ -17,6 +17,7 @@ forever), and strong & dynamically typed. You can learn more about CEL at
 https://cel.dev[cel.dev], and practice it in the https://playcel.undistro.io[CEL
 playground].
 
+[#_cel_in_kubernetes]
 == CEL in Kubernetes
 
 CEL was chosen as the language for Kubernetes validation rules as CEL
@@ -30,6 +31,7 @@ https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-pol
 and other validation rules. For more info, see the Kubernetes docs
 https://kubernetes.io/docs/reference/using-api/cel[here].
 
+[#_kubernetes_function_libraries]
 === Kubernetes function libraries
 
 Kubernetes CEL validation rules have access to several function libraries:
@@ -41,48 +43,72 @@ Kubernetes CEL validation rules have access to several function libraries:
 with supplemental functions for lists, regex, URLs, authorizers, quantities,
 optional types, numerical comparisons, etc.
 
-== CEL in {admc-name}: `cel-policy`
+[#_cel_in_kubewarden]
+== CEL in {admc-name}
 
-{admc-short-name} provides https://github.com/kubewarden/cel-policy[cel-policy].
-This is a policy that builds and bundles the upstream
-https://pkg.go.dev/github.com/google/cel-go[cel-go] interpreter, and also the
-different libraries listed above and available for CEL in Kubernetes from
-`apiextensions-apiserver`.
+{admc-short-name} gives you two ways to run a CEL policy. Both ways run the
+CEL expressions in the {policy-server}, and both give the expressions the
+same function libraries:
 
-In addition, `cel-policy` bundles an *{admc-short-name} CEL extension library* that exposes
-{admc-short-name}'s https://github.com/kubewarden/cel-policy?tab=readme-ov-file#host-capabilities[host capabilities as native
-CEL]:
+* The CEL standard functions and macros
+* The cel-go extension libraries
+* The Kubernetes CEL extension libraries
+* The {admc-short-name} CEL extension library, which exposes the
+{admc-short-name} host capabilities as native CEL functions
 
-* Sigstore verification
-* OCI interaction
-* Cryptographic functions
-* Network operations
-* Access to Kubernetes resources
+The two ways differ in how the CEL expressions get to the {policy-server}.
 
-This means that `cel-policy` is a superset of Kubernetes CEL,
-and backwards-compatible. One can reuse CEL written for vanilla Kubernetes, and/or
-make use of the features added by {admc-short-name}.
+[#_cel_in_kubewarden_cel_policy]
+=== Interpreted: `cel-policy`
 
-The `cel-policy` is shipped compiled and behaves as a CEL interpreter. Users of
-the policy pass the desired CEL expressions in the `spec.settings` of the
-(Cluster)AdmissionPolicy, and thanks to CEL features, the expression gets
-compiled and typed-checked for correctness when creating or updating the
-(Cluster)AdmissionPolicy. This means there's no need for custom builds of the
-`cel-policy`.
+https://github.com/kubewarden/cel-policy[cel-policy] is a ready-made policy
+that bundles the https://pkg.go.dev/github.com/google/cel-go[cel-go]
+interpreter. You put the CEL expressions in the `spec.settings` of a
+(Cluster)AdmissionPolicy, and the policy evaluates them at admission time.
+There is no build step.
 
-[#_benefits_of_kubewardens_cel_policy_in_comparison_with_validatingadmissionpolicies]
-=== Benefits of {admc-short-name}'s `cel-policy` in comparison with ValidatingAdmissionPolicies
+This is the option for a fast start and for prototyping.
 
-The {admc-short-name} `cel-policy`:
+[#_cel_in_kubewarden_compiled]
+=== Compiled: CEL to WebAssembly
 
-* It's CEL code is backwards-compatible with ValidatingAdmissionPolicies.
-* Contrary to ValidatingAdmissionPolicies, it doesn't need a binding such as
-ValidatingAdmissionPolicyBinding, as this is included in {admc-short-name}'s
-(Cluster)Admissionpolicies definitions.
-* Can be deployed to clusters that lack ValidatingAdmissionPolicies support.
-* Is context-aware, and makes use of {admc-short-name}'s fine-grained permissions
-for xref:../../../reference/spec/05-context-aware-policies.adoc[context awareness].
-* Is deployed as (Cluster)AdmissionPolicy.
-* Benefits from {admc-short-name}'s tracing and telemetry on policies.
-* It will be taken into account by the Audit Scanner.
-* Can be developed and tested out-of-cluster thanks to kwctl.
+From {admc-short-name} v1.39.0, `kwctl` can compile a Kubernetes
+`ValidatingAdmissionPolicy` into a dedicated WebAssembly module. The module is
+specialized for the CEL code of your policy. It does not bundle the full CEL
+runtime.
+
+The compiled module is smaller and faster than `cel-policy`. You can publish
+the module to an OCI registry and reuse it across clusters, like any other
+{admc-short-name} policy.
+
+This is the option for policies that you distribute, and for clusters where
+the evaluation time matters. This feature is experimental.
+
+[#_choose_an_option]
+=== Choose an option
+
+[cols="1,1,1",options="header"]
+|===
+| | `cel-policy` | Compiled to WebAssembly
+
+| Build step
+| None
+| `kwctl scaffold vap --compile-to-wasm`
+
+| Where the CEL code lives
+| In the policy manifest
+| In the WebAssembly module
+
+| {admc-short-name} CEL extension library
+| Yes
+| Yes
+
+| Module size
+| Around 14 MiB
+| Around 1.5 MiB
+|===
+
+The next pages describe each option:
+
+* xref:tutorials/writing-policies/CEL/cel-policy/01-intro.adoc[]
+* xref:tutorials/writing-policies/CEL/02-compile-cel-to-wasm.adoc[]

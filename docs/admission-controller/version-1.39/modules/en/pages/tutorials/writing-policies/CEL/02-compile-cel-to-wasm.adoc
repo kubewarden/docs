@@ -1,0 +1,384 @@
+include::partial$variables.adoc[]
+= Compile CEL to WebAssembly
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-10-08
+:page-revdate: {revdate}
+:description: Learn how to compile a CEL policy to a WebAssembly module for {admc-name} with kwctl and ferricel.
+:doc-persona: ["kubewarden-policy-developer", "kubewarden-operator"]
+:doc-topic: ["kubewarden", "writing-policies", "cel"]
+:doc-type: ["tutorial"]
+:keywords: ["kubewarden", "kubernetes", "writing policies", "cel", "ferricel", "webassembly", "vap", "validatingadmissionpolicy"]
+:sidebar_label: Compile to WebAssembly
+:current-version: {page-origin-branch}
+
+[WARNING]
+====
+This is an experimental feature available since {admc-short-name} v1.39.0.
+====
+
+In this tutorial, you compile a Kubernetes `ValidatingAdmissionPolicy` into a WebAssembly module with `kwctl`.
+You then inspect the module and prepare it for deployment as a {cluster-admission-policy}.
+
+[#_why_compile_cel_to_webassembly]
+== Why compile CEL to WebAssembly?
+
+The alternative approach with https://artifacthub.io/packages/kubewarden/kubewarden-policy-library/cel-policy[cel-policy] policy runs CEL code using the
+official CEL Go interpreter.
+See xref:tutorials/writing-policies/CEL/cel-policy/01-intro.adoc[] for how that policy works.
+
+That approach has two drawbacks:
+
+* Size: The `cel-policy` policy bundles the entire CEL runtime and the Kubernetes CEL libraries, even when a policy uses only
+  some of them. As a result, the WebAssembly module is large, which increases the {policy-server} startup time.
+* Portability: The CEL code lives inside the {admc-short-name} policy manifest. This is good for prototyping
+  because there is no build step. But it makes the policy hard to share. The manifest also carries deployment details
+  such as the target namespaces and objects, the enforcement mode, and more.
+
+Alternatively, when you compile CEL to WebAssembly, you produce a smaller and more efficient module that you can share and
+reuse across different deployments.
+
+{admc-short-name} uses the https://flavio.github.io/ferricel/[ferricel] open source project to compile a Kubernetes
+`ValidatingAdmissionPolicy` into a specialized WebAssembly module.
+
+As a comparison, the WebAssembly file produced by this compiler is around 1.5MiB, while the one produced by the cel-policy is 14MiB.
+
+The compiled module is also much faster. See xref:#_performance[Performance] for benchmark results.
+
+== Prerequisites
+
+* The `kwctl` CLI tool.
+* A `ValidatingAdmissionPolicy` that `cel-policy` can run, and its matching `ValidatingAdmissionPolicyBinding`.
+
+== Compile a policy
+
+You compile a policy from the `ValidatingAdmissionPolicy` and its binding with
+the `kwctl scaffold vap` command.
+
+[NOTE]
+====
+Before {admc-short-name} v1.39.0, this command converted a `ValidatingAdmissionPolicy` into a
+{cluster-admission-policy} that used the
+https://artifacthub.io/packages/kubewarden/kubewarden-policy-library/cel-policy[cel-policy] policy.
+From v1.39.0, the command can also produce a `.wasm` file when you provide the `--compile-to-wasm` flag.
+====
+
+Start from this `ValidatingAdmissionPolicy` definition, in a file named `vap-with-params.yml`:
+
+.vap-with-params.yml
+[%collapsible]
+====
+[source,yaml]
+----
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "vap-test"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments", "deployments/scale"]
+  paramKind:
+    apiVersion: v1
+    kind: ConfigMap
+  validations:
+    - expression: "object.spec.replicas <= params.data.maxReplicas"
+      message: "not enough replicas"
+----
+====
+
+And this `ValidatingAdmissionPolicyBinding`, in a file named `vap-binding-params.yml`:
+
+.vap-binding-params.yml
+[%collapsible]
+====
+[source,yaml]
+----
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: "kw-scaffold-demo"
+spec:
+  policyName: "vap-test"
+  validationActions: [Deny]
+  matchResources:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: default
+  paramRef:
+    name: "replica-limit-override"
+    namespace: "test"
+    parameterNotFoundAction: Deny
+----
+====
+
+Compile them with this command:
+
+[source,console]
+----
+kwctl scaffold vap \
+  --policy vap-with-params.yml \
+  --binding vap-binding-params.yml \
+  --compile-to-wasm policy.wasm
+----
+
+The command produces two files:
+
+* `policy.wasm`: The `ValidatingAdmissionPolicy` compiled to WebAssembly.
+* `metadata.yml`: The standard metadata file for {admc-short-name} policies.
+
+The `metadata.yml` file looks like this:
+
+.metadata.yml
+[%collapsible]
+====
+[source,yaml]
+----
+rules:
+- apiGroups:
+  - apps
+  apiVersions:
+  - v1
+  resources:
+  - deployments
+  - deployments/scale
+  operations:
+  - CREATE
+  - UPDATE
+annotations:
+  io.kubewarden.policy.title: kw-scaffold-demo
+mutating: false
+backgroundAudit: true
+executionMode: ferricel
+policyType: kubernetes
+contextAwareResources:
+- apiVersion: v1
+  kind: ConfigMap
+hostCapabilities:
+- kubernetes/get_resource
+- kubernetes/list_resources_all
+- kubernetes/list_resources_by_namespace
+----
+====
+
+The command derives these metadata values from the `ValidatingAdmissionPolicy` and
+`ValidatingAdmissionPolicyBinding` definitions.
+
+The command also prints a {cluster-admission-policy} definition to standard output:
+
+.Generated ClusterAdmissionPolicy
+[%collapsible]
+====
+[source,yaml]
+----
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: kw-scaffold-demo
+spec:
+  module: file:///path/to/policy.wasm
+  settings:
+    failurePolicy: Fail
+    paramKind:
+      apiVersion: v1
+      kind: ConfigMap
+    paramRef:
+      name: replica-limit-override
+      namespace: test
+      parameterNotFoundAction: Deny
+  rules:
+  - apiGroups:
+    - apps
+    apiVersions:
+    - v1
+    resources:
+    - deployments
+    - deployments/scale
+    operations:
+    - CREATE
+    - UPDATE
+  mutating: false
+  contextAwareResources:
+  - apiVersion: v1
+    kind: ConfigMap
+  mode: protect
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: default
+----
+====
+
+This is the {cluster-admission-policy} definition that you can deploy in a Kubernetes cluster.
+
+[NOTE]
+====
+* Change the `module` URL to the location where you publish the policy.
+* The `settings` section passes parameter metadata to the compiled policy. At runtime, the policy uses this metadata to find the
+  ConfigMap or other resource. It also defines the failure mode for misconfigurations and
+  CEL evaluation errors.
+
+All these settings are derived from the https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy[ValidatingAdmissionPolicy]
+specification.
+====
+
+Next, like with any type of {admc-short-name} policy, annotate the WebAssembly module with this command:
+
+[source,console]
+----
+kwctl annotate -m metadata.yml -o annotated.wasm policy.wasm
+----
+
+== Inspect the policy
+
+The `kwctl inspect` command extracts more information from compiled CEL policies.
+This is the output of `kwctl inspect annotated.wasm`:
+
+.Output of kwctl inspect annotated.wasm
+[%collapsible]
+====
+[source,console]
+----
+Details
+title:                    kw-scaffold-demo
+mutating:                 false
+background audit support: true
+context aware:            true
+policy type:              kubernetes
+execution mode:           ferricel
+
+Annotations
+io.kubewarden.kwctl       1.39.0
+
+Rules
+- apiGroups:
+  - apps
+  apiVersions:
+  - v1
+  resources:
+  - deployments
+  - deployments/scale
+  operations:
+  - CREATE
+  - UPDATE
+
+Context Aware
+The policy requires access to the following Kubernetes resources at evaluation time:
+- apiVersion: v1
+  kind: ConfigMap
+To avoid abuses, review carefully what the policy requires access to.
+
+
+Ferricel
+language: Rust, CEL
+processed-by: rustc 1.98.1 (48a229cea 2026-09-01), walrus 0.27.2, ferricel 0.13.0
+VAP variables (referenced): object, params
+
+source:
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: vap-test
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:
+      - apps
+      apiVersions:
+      - v1
+      operations:
+      - CREATE
+      - UPDATE
+      resources:
+      - deployments
+      - deployments/scale
+  paramKind:
+    apiVersion: v1
+    kind: ConfigMap
+  validations:
+  - expression: object.spec.replicas <= params.data.maxReplicas
+    message: not enough replicas
+----
+====
+
+The new `Ferricel` section shows:
+
+* The version of the ferricel compiler that produced the WebAssembly module.
+* The original `ValidatingAdmissionPolicy` source code.
+
+The ferricel compiler embeds this information in the WebAssembly module as custom sections.
+This helps with transparency and debugging.
+See the ferricel documentation about
+https://flavio.github.io/ferricel/wasm-spec.html#producers-metadata[producers metadata] and
+https://flavio.github.io/ferricel/wasm-spec.html#source-custom-sections[source custom sections] for more details.
+
+== Run the policy
+
+Use `kwctl run` to test the policy locally before you deploy it.
+See xref:tutorials/testing-policies/02-policy-authors.adoc[] for the request and settings files
+that `kwctl run` needs, and for how to write automated tests.
+
+To distribute the policy, push it to an OCI registry with `kwctl push`:
+
+[source,console]
+----
+kwctl push annotated.wasm registry.example.com/policies/kw-scaffold-demo:v0.1.0
+----
+
+Then set the `module` field of the {cluster-admission-policy} to the registry URL, for example
+`registry://registry.example.com/policies/kw-scaffold-demo:v0.1.0`.
+See xref:explanations/distributing-policies.adoc[] for more details.
+
+[IMPORTANT]
+====
+All CEL policies need access to the Kubernetes API server. Policies with parameters need access
+to the referenced resources, such as the `ConfigMap` in this example.
+
+A policy without parameters still needs to query the API server for the Namespace of the object being
+evaluated.
+
+Kubernetes `ValidatingAdmissionPolicy` uses CEL in this way. Therefore, deploy CEL policies,
+both compiled and interpreted, only as {cluster-admission-policy} resources.
+====
+
+[#_performance]
+== Performance
+
+The table compares the mean evaluation time for two Kubernetes `ValidatingAdmissionPolicy` configurations. The benchmark
+compared the CEL code run by the `cel-policy` versus the specialized module produced by the ferricel compiler.
+
+The benchmark used the `kwctl bench` command. It recorded the interaction with the
+Kubernetes API server and replayed it to avoid network latency and other external factors.
+
+[cols="3,1,1,1",options="header"]
+|===
+| Variant | ferricel (mean time per evaluation) | cel-policy (mean time per evaluation) | Speedup
+
+| Plain VAP (no params, no host callbacks)
+| 197.4µs
+| 20.85ms
+| *~106x*
+
+| VAP with ConfigMap `paramRef` (recorded interactions replayed)
+| 332.2µs
+| 23.19ms
+| *~70x*
+|===
+
+The WebAssembly policy produced by the ferricel compiler runs one to two orders of magnitude faster
+than the interpreted `cel-policy`.
+
+== Limitations
+
+The ferricel compiler currently passes the full CEL compliance
+suite and supports the cel-go and Kubernetes extensions. However, it's still
+an experimental project and might not yet cover all edge cases.
+
+The full status of the ferricel compiler can be found in the official documentation:
+https://flavio.github.io/ferricel/cel-compliance.html[CEL compliance].
+
+If your compiled policy does not behave as expected, file an issue
+on the https://github.com/flavio/ferricel/issues[ferricel bug tracker].

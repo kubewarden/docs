@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = ValidatingAdmissionPolicy migration
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-10-08
 :page-revdate: {revdate}
 :description: Migrate a ValidatingAdmissionPolicy to {admc-name} via the kwctl command's migration steps for a smooth policy transition.
 :doc-persona: ["kubewarden-user", "kubewarden-operator", "kubewarden-distributor", "kubewarden-integrator"]
@@ -18,11 +18,18 @@ some https://kubernetes.io/docs/reference/using-api/cel/[Kubernetes-specific ext
 ValidatingAdmissionPolicy reached stability in Kubernetes v1.30.
 
 {admc-name} provides a CEL policy that is capable of running Kubernetes VAP policies without any modifications.
-You can read more about the CEL policy in xref:../tutorials/writing-policies/CEL/01-intro-cel.adoc[this section] of {admc-short-name}'s documentation.
-xref:tutorials/writing-policies/CEL/01-intro-cel.adoc#_benefits_of_kubewardens_cel_policy_in_comparison_with_validatingadmissionpolicies[This paragraph]
+You can read more about the CEL policy in xref:tutorials/writing-policies/CEL/cel-policy/01-intro.adoc[this section] of {admc-short-name}'s documentation.
+xref:tutorials/writing-policies/CEL/cel-policy/01-intro.adoc#_benefits_of_kubewardens_cel_policy_in_comparison_with_validatingadmissionpolicies[This paragraph]
 explains the benefits of running VAP policies using {admc-short-name}.
 
 This guide explains how to use the `kwctl` tool to migrate a VAP policy to {admc-short-name}.
+
+[NOTE]
+====
+This guide produces a policy that runs the CEL code with `cel-policy`.
+From {admc-short-name} v1.39.0, the same command can also compile the VAP policy to a dedicated WebAssembly module.
+See xref:tutorials/writing-policies/CEL/02-compile-cel-to-wasm.adoc[] for that option.
+====
 
 == Migration steps
 
