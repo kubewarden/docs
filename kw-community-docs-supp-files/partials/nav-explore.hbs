@@ -29,7 +29,7 @@
 <div class="nav-panel-explore{{#unless page.navigation}} is-active{{/unless}}" data-panel="explore">
   {{#if page.component}}
   <div class="context-header">
-    <div class="context-label" id="component-version-label">Component / version</div>
+    <div class="context-label" id="component-version-label" role="heading" aria-level="2">Component / version</div>
     <button type="button" class="context" aria-expanded="{{#if page.navigation}}false{{else}}true{{/if}}" aria-controls="component-versions" aria-labelledby="component-version-label component-version-current">
       <span class="context-row" id="component-version-current">
         <span class="title">{{page.component.title}}</span>
