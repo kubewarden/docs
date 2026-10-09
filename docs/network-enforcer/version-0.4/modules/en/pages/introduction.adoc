@@ -1,0 +1,109 @@
+include::partial$variables.adoc[]
+
+= {ne-name}
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:description: Learn what {ne-name} is, how it learns an allow-list per workload from east-west traffic, and why it reads the data plane instead of asking you to write rules.
+:keywords: {ne-name}, kubewarden, cncf, kubernetes, network policy, istio, calico, cilium
+
+{ne-name} is a Kubernetes operator that observes {east-west-traffic-term}
+between workloads, derives an {allow-list-term} from what it sees, and, when
+you opt in, projects that allow-list into a {native-policy-object-term} on a
+pluggable {backend-term} ({istio-ambient-term}, {calico-term}, or
+{cilium-term}).
+
+{intro-paragraph}
+
+It operates in three phases:
+
+* *Learn* -- observe traffic and generate a {workloadnetworkpolicyproposal-cr}
+  per workload and {direction-term}.
+* *Monitor* -- report {violation-term}s of an approved
+  {workloadnetworkpolicy-cr} without blocking them.
+* *Protect* -- block traffic that violates the policy allow-list.
+
+== How does {ne-name} help?
+
+{ne-short-name} gives you network policies that match the traffic your
+workloads produce, and it lets you check each policy before it blocks
+anything.
+
+=== Benefits and value
+
+* Policies come from observed traffic. You do not write rules by hand.
+* Nothing is enforced until you promote a proposal. Promotion is a label on
+  a resource, so it fits a review process and a GitOps workflow.
+* Monitor mode reports what a policy blocks before it blocks. You move to
+  protect mode when the policy is quiet.
+* One model covers Istio ambient, Calico, and Cilium. You select the
+  {provider-term} once, at installation.
+* The policy on the data plane is a native object, an `AuthorizationPolicy`
+  or a `NetworkPolicy`. You read it with the tools that you already use.
+* Each violation is a record in the policy status and an event with a fixed
+  schema. One query covers all your clusters.
+* {ne-short-name} installs one controller. It does not add a node agent or
+  an eBPF probe.
+* {ne-short-name} is part of a CNCF project, with an open community.
+
+=== Use cases
+
+* Bootstrap. Get a first set of network policies for a cluster that has
+  none.
+* Review. Let each team see what its workload talks to, and approve the
+  policy itself.
+* Detection. Know when a workload talks to a peer that it did not talk to
+  before.
+
+There is further documentation of use cases on the xref:use-cases.adoc[use
+cases] page.
+
+== New to {ne-short-name}?
+
+Start with the xref:quickstart.adoc[quick start]. It installs
+{ne-short-name} on the provider of your choice and walks through the learn,
+monitor, and protect workflow with two sample workloads. Then read
+xref:explanations/phases.adoc[Phases] for the full rules of each phase, and
+xref:explanations/architecture.adoc[Architecture] for the components and the
+flow of data. Operators find the provider requirements in
+xref:reference/compatibility.adoc[Compatibility] and the troubleshooting
+steps in the how-tos. Security engineers find the violation fields in the
+xref:glossary.adoc[glossary]. Before you deploy to production,
+xref:tutorials/verifying-network-enforcer.adoc[verify the release] that you
+install.
+
+== What is learn, monitor, protect?
+
+The three phases are the lifecycle of one policy. In the learn phase, the
+controller watches traffic and writes a proposal for each workload and
+direction. In the monitor phase, you have promoted the proposal to a policy.
+The controller compares new traffic with the policy and reports each
+mismatch. Nothing is blocked. In the protect phase, the data plane enforces
+the policy and blocks each mismatch. You move a policy from monitor to
+protect, and back, with one field. You return to the learn phase when you
+delete the policy.
+
+== Why learn from the data plane?
+
+The information about which workloads talk to each other exists in one
+place: the flow records of the data plane. A namespace owner knows what the
+application does, but not which other workloads connect to it. A platform
+team knows the cluster, but not each application. {ne-short-name} reads the
+flow records and writes them down as a proposal. The people who know the
+application then review a list instead of a blank page.
+
+Because {ne-short-name} reads flows from the data plane that already runs in
+the cluster, it needs no agent of its own on each node. For the same reason,
+it writes policy in the format of that data plane. The policy that protects
+a workload is a standard object that the mesh or the CNI understands, not a
+format that only {ne-short-name} can read.
+
+ifeval::["{build-type}" == "community"]
+
+[#_vendor_neutrality]
+== Vendor neutrality
+
+{ne-short-name} is a
+link:https://contribute.cncf.io/maintainers/community/vendor-neutrality/[vendor
+neutral] project as defined by the CNCF.
+
+endif::[]
