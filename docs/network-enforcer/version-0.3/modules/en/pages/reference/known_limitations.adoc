@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Known limitations
 :description: Understand the current known limitations of the network-enforcer and how they affect deployment and policy enforcement
-:revdate: 2026-09-18
+:revdate: 2026-10-09
 :page-revdate: {revdate}
 :page-aliases: known_limitations.adoc
 
@@ -124,3 +124,21 @@ into a `WorkloadNetworkPolicyProposal`.
 * *Impact*: a noisy workload can lose older violation records from status
   while `status.violationCount` keeps growing. Use OpenTelemetry export if
   you need a longer history.
+
+[#_cilium-can-overcount-violations-per-tcp-session]
+== Cilium can overcount violations per TCP session
+
+On Cilium, {ne-name} reports the flow events that the Hubble relay emits,
+without changes. Hubble can emit more than one forwarded event for a single
+TCP session. For example, one session can produce SYN, ESTABLISHED, PSH, and
+FIN events. `status.violationCount` counts each observed event. As a result,
+the value can be higher than the number of distinct TCP connections.
+
+`status.activeViolationCount` is not affected, because active records are keyed
+per flow. `status.violationCount` is a count of observed violation events, not
+of unique TCP sessions.
+
+The limitation applies to Cilium only.
+
+* *Impact*: on Cilium, `status.violationCount` can be higher than the number of
+  distinct TCP connections.
