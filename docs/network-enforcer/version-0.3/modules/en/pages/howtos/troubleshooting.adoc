@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Troubleshooting
 :description: Troubleshoot common failures by checking logs, verifying configurations, and confirming network and component statuses
-:revdate: 2026-09-18
+:revdate: 2026-10-08
 :page-revdate: {revdate}
 :page-aliases: troubleshooting.adoc
 
@@ -389,6 +389,10 @@ rarely needs to change the default.
 | `status.violationCount`
 | Count of violation records for this policy, including trimmed or
   cleared entries. May be temporarily outdated until the next status sync.
+  On Cilium, the count includes each flow event that Hubble forwards, so it
+  can be higher than the number of distinct TCP sessions.
+  `status.activeViolationCount` is not affected, because active records are
+  keyed per flow.
 
 | `status.activeViolationCount`
 | Number of currently active (non-cleared, non-acknowledged) records.

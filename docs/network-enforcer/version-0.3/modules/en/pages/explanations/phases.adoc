@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {ne-name} phases: learn, monitor, protect
 :description: Learn how to move between the learn, monitor, and protect phases to manage network policies, observe traffic flows, create proposals, and update policies
-:revdate: 2026-09-18
+:revdate: 2026-10-08
 :page-revdate: {revdate}
 :page-aliases: phases.adoc
 
@@ -77,7 +77,7 @@ NOTE: Monitor evaluation is best-effort. The Istio backend relies on ztunnel dry
 * *Used/updated*: `WorkloadNetworkPolicy`
 ** `.spec.mode: monitor` records violations without blocking traffic. The Istio backend still renders an `AuthorizationPolicy`, annotated with `istio.io/dry-run=true` so ztunnel does not deny the flow. The Kubernetes backend creates no `NetworkPolicy`, so the CNI does not enforce anything.
 ** Status fields:
-*** `status.violationCount`: count of violation records ever observed for this policy, including entries that have since been trimmed or cleared because the flow is now allowed.
+*** `status.violationCount`: count of violation records ever observed for this policy, including entries that have since been trimmed or cleared because the flow is now allowed. On Cilium, the count includes each flow event that Hubble forwards, so it can be higher than the number of distinct TCP sessions. `status.activeViolationCount` is not affected, because active records are keyed per flow. See xref:reference/known_limitations.adoc#_cilium-may-overcount-violations-per-tcp-session[Cilium may overcount violations per TCP session].
 *** `status.activeViolationCount`: number of currently active (non-cleared, non-acknowledged) records.
 *** `status.violations`: the most recent active records, capped at *100*. Oldest entries are dropped when the cap is reached.
 *** `status.acknowledgedViolations`: the most recent acknowledged records, also capped at *100*.
