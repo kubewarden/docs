@@ -1,0 +1,364 @@
+include::partial$variables.adoc[]
+
+= {ne-name} architecture
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:page-aliases: architecture.adoc
+:description: How {ne-name} is built: one controller that reads flows from the data plane, writes proposals and policies, and renders each policy as a native object on Istio ambient, Calico, or Cilium.
+:doc-persona: kubewarden-all
+:doc-topic: architecture
+:doc-type: explanation
+:keywords: {ne-name}, kubewarden, kubernetes, architecture, istio, calico, cilium
+
+{ne-name} is one controller. It does not add an agent to the nodes. It reads
+{flow-term} records from the {data-plane-term} that already runs in the
+cluster, and writes what it sees as a proposal. When you promote the
+proposal, it renders a policy in the format of that data plane. The data
+plane enforces the policy. The controller watches the result and reports each
+{violation-term}.
+
+The xref:introduction.adoc[introduction] explains why the enforcer learns
+from the data plane. The xref:explanations/phases.adoc[Phases] page explains
+the learn, monitor, and protect lifecycle. This page explains how the parts
+fit together.
+
+== Design principles
+
+=== Observe before you enforce
+
+Observation is always on and has no side effect. Enforcement is a label that
+you set on one resource. Nothing blocks traffic until you ask.
+
+=== Learn from the data plane, do not add one
+
+The flow records already exist. ztunnel, Goldmane, and Hubble Relay produce
+them. The controller reads them. It does not install an eBPF probe, a
+sidecar, or a node agent of its own.
+
+=== One model, three providers
+
+A proposal and a policy have the same shape on every {provider-term}. The
+provider changes the <<_flow_sources,flow source>> that the controller reads
+and the {backend-term} that it writes. The learn, monitor, and protect
+workflow does not change.
+
+=== Promotion is a label, not a side effect
+
+The controller never turns a proposal into a policy on its own. You set the
+{promote-label-term}. A reviewer can read the proposal, approve it, and keep
+the approval in Git.
+
+=== The native object is the policy
+
+In protect mode, the thing that blocks traffic is an
+{authorizationpolicy-term} or a {networkpolicy-term}. You read it, diff it,
+and debug it with the tools of the data plane. {ne-short-name} owns the
+object and keeps it in sync, but it adds no format of its own.
+
+=== Two telemetry paths, kept apart
+
+On Istio, the controller receives flow logs over OTLP. On every provider,
+the controller sends violation events over OTLP. The first path is the flow
+source. The second path is telemetry about policies. They use different
+ports, different certificates, and different settings.
+
+== The {ne-name} stack
+
+.Architecture
+[mermaid]
+....
+%%{init: { "themeVariables": { "fontSize": "24px" } }}%%
+graph LR
+    accTitle: Network Enforcer architecture
+    accDescr: A diagram showing the components of Network Enforcer and the flow of data between them.
+    subgraph outer[" "]
+      direction LR
+      subgraph platform[" "]
+        direction LR
+        k8s(("Kubernetes API"))
+        ztunnel["ztunnel logs
+        (Istio ambient)"]
+        goldmane["Goldmane
+        (Calico)"]
+        hubble["Hubble Relay
+        (Cilium)"]
+        native["Native policy object
+        AuthorizationPolicy or
+        NetworkPolicy"]
+      end
+      subgraph kw["`**Network Enforcer**`"]
+        direction LR
+        fluentbit["fluent-bit DaemonSet
+        (Istio only)"]
+        controller("`**Controller**`")
+        collector["OpenTelemetry
+        collector"]
+      end
+    end
+    ztunnel -->|"tails log files"| fluentbit
+    fluentbit -->|"OTLP logs"| controller
+    goldmane -->|"gRPC, mTLS"| controller
+    hubble -->|"gRPC"| controller
+    controller -->|"writes proposals
+    and policies"| k8s
+    k8s -->|"promote label,
+    mode changes"| controller
+    controller -->|"renders and
+    owns"| native
+    controller -->|"violation events,
+    OTLP"| collector
+    class outer,platform,kw container
+....
+
+=== Controller
+
+The {controller-term} is a Deployment with leader election, so one replica
+is active at a time. The active replica runs five parts in one process.
+
+* The {scraper-term} reads the flow source of the selected provider. It
+  turns each flow into a learning event or a violation observation. It does
+  not write Kubernetes objects.
+* The learning reconciler turns learning events into
+  {workloadnetworkpolicyproposal-cr} resources, one per workload and
+  {direction-term}.
+* The proposal reconciler watches the promote label. It creates the
+  {workloadnetworkpolicy-cr}, sets the
+  xref:glossary.adoc#_promoted-from-label[promoted-from label], and deletes
+  the proposal.
+* The policy reconciler renders each policy as a {native-policy-object-term}
+  and keeps it in sync.
+* The status sync writes the buffered violation observations to the policy
+  status on a timer, the xref:glossary.adoc#_status-sync-interval[status
+  sync interval].
+
+The controller also exports the violation events to the OpenTelemetry
+collector, when the export is on.
+
+=== fluent-bit DaemonSet
+
+With the `istio` provider, the chart deploys
+xref:glossary.adoc#_fluent-bit[fluent-bit] on each node. It reads the JSON
+log files of {ztunnel-term}, parses them, and sends them to the controller
+as OTLP logs on port 4317. The other providers do not need it, because
+Goldmane and Hubble Relay are services that the controller calls.
+
+[#_opentelemetry-collector]
+=== OpenTelemetry collector
+
+The {opentelemetry-collector-term} receives the violation events. The Helm
+value `telemetry.collectorStrategy` selects one of three setups. With
+`default`, the chart deploys a collector that prints each event and exports
+the Prometheus counter `network_enforcer_policy_denies`. With `external`,
+the controller sends the events to a collector that you run. With `none`,
+nothing is exported, and the violations stay in the policy status.
+
+The collector is not the flow source. On Istio, the controller receives
+flows on one port and sends events to the collector on another.
+
+[#_flow_sources]
+=== Flow sources
+
+The {flow-source-term} is a service of the data plane. The controller reads
+it with a client that matches the provider.
+
+* {istio-ambient-term}: the JSON access and authorization log of ztunnel,
+  delivered by fluent-bit. Learning sees inbound TCP only, so it creates
+  ingress proposals.
+* {calico-term}: the {goldmane-term} flow service, over gRPC with mutual
+  TLS. Goldmane reports both ends of a connection, so learning creates an
+  egress proposal on the source and an ingress proposal on the destination.
+* {cilium-term}: the `GetFlows` stream of {hubble-relay-term}, over gRPC
+  with TLS by default. Hubble reports both ends too.
+
+A flow with one end outside the cluster, or on a pod with `hostNetwork`, is
+dropped. See xref:reference/known_limitations.adoc[Known limitations].
+
+=== Validating Admission Policies
+
+The chart installs two
+xref:glossary.adoc#_validating-admission-policy[Validating Admission
+Policies]. One rejects a promote label whose value is not `monitor` or
+`protect`. One rejects a change to the owner reference of a proposal, so
+that a proposal stays tied to its workload.
+
+== Providers and backends
+
+The Helm value `controller.provider.name` selects the provider once, at
+installation. The provider selects the flow source and the backend.
+
+[cols="1,2,2", options="header"]
+|===
+|Provider |Flow source |Backend and native object
+
+|`istio` (default)
+|ztunnel logs, through fluent-bit, OTLP on port 4317
+|`spec.backend: istio`, rendered as an Istio `AuthorizationPolicy`
+
+|`calico`
+|Goldmane, gRPC with mutual TLS
+|`spec.backend: kubernetes`, rendered as a Kubernetes `NetworkPolicy`
+
+|`cilium`
+|Hubble Relay, gRPC with TLS by default
+|`spec.backend: kubernetes`, rendered as a Kubernetes `NetworkPolicy`
+|===
+
+The endpoint of each flow source has a default that matches a standard
+installation. The Helm values `controller.provider.istio.endpoint`,
+`controller.provider.calico.endpoint`, and
+`controller.provider.cilium.endpoint` override it.
+The `spec.backend` field of a proposal or policy cannot change after
+creation.
+
+== What runs where
+
+[cols="1,3", options="header"]
+|===
+|Place |Work
+
+|Controller leader
+|Flow scraping. Learning, promotion, and policy rendering. Status sync.
+Event export.
+
+|Every node, Istio provider only
+|fluent-bit reads the ztunnel log and forwards it.
+
+|Data plane
+|Enforcement of the native policy object. On Istio, ztunnel also evaluates
+the dry-run policy in monitor mode and logs the result.
+|===
+
+== The journey of a policy
+
+This section follows one workload from the first observed flow to a written
+violation record.
+
+. *A flow is observed.* The data plane records a connection between two
+  workloads. The scraper reads the record, resolves both ends to a workload
+  through the Kubernetes API, and emits a learning event. If a policy
+  already exists for that workload and direction, it emits a violation
+  observation instead.
+
+. *The controller writes a proposal.* The learning reconciler creates or
+  updates the `WorkloadNetworkPolicyProposal` for the workload and the
+  direction. The name is the kind, the name, and the direction of the
+  workload, for example `deployment-http-server-ingress`. The proposal lists
+  the {peer-term}s, protocols, and ports. It is owned by the workload, so
+  Kubernetes deletes it with the workload. Nothing is enforced.
+
+. *You promote the proposal.* You set the promote label to `monitor` or
+  `protect`. The proposal reconciler creates a `WorkloadNetworkPolicy` with
+  the same name, namespace, and backend spec. It sets `spec.mode` from the
+  label and sets the promoted-from label. Then it deletes the proposal. If
+  the
+  scraper creates the proposal again, the reconciler deletes it as a
+  leftover.
+
+. *The controller renders the native object.* The policy reconciler creates
+  an object with the same name and namespace as the policy, and an owner
+  reference to it. What it creates depends on the backend and the mode:
++
+[cols="1,2,2", options="header"]
+|===
+|Backend |Monitor |Protect
+
+|`istio`
+|An `AuthorizationPolicy` with the annotation `istio.io/dry-run: "true"`.
+ztunnel evaluates it and logs the decision. Traffic is not blocked.
+|The same `AuthorizationPolicy` without the annotation. Traffic is blocked.
+
+|`kubernetes`
+|No object. The controller compares each observed flow with
+`spec.kubernetes` in software. Traffic is not blocked.
+|A `NetworkPolicy` built from `spec.kubernetes`. The CNI blocks traffic.
+|===
+
+. *The data plane acts.* In monitor mode, the flow passes. In protect mode,
+  the data plane drops it, and the connection fails with a timeout, a reset,
+  or a refusal.
+
+. *A violation is observed.* On Istio, ztunnel logs a dry-run match in
+  monitor mode and a denial in protect mode. On Calico and Cilium, the
+  scraper sees a flow that the policy does not allow, or a dropped flow with
+  a policy as the reason. In each case the scraper emits a violation
+  observation. The controller buffers it and sends a
+  `policy_violation_observed` event to the collector.
+
+. *The status is written.* On the next status sync, the controller merges
+  the buffered observations into the policy status. It gives each new record
+  an `id`, keeps the 100 most recent records in `status.violations`, and
+  updates `status.violationCount` and `status.activeViolationCount`. The
+  {violation-record-term} is now visible to `kubectl`.
+
+=== A mode change
+
+When you change `spec.mode`, the policy reconciler updates the native
+object. On Istio, it adds or removes the dry-run annotation. On Calico and
+Cilium, it creates or deletes the `NetworkPolicy`. No pod restarts.
+
+=== An acknowledgement
+
+When you add the {acknowledge-annotation-term} with a reason, the status
+sync moves the record to `status.acknowledgedViolations`, removes the
+annotation, and sends a `policy_violation_acknowledged` event.
+
+=== Back to learning
+
+When you delete a `WorkloadNetworkPolicy`, Kubernetes deletes the native
+object through the owner reference. The next observed flow for that
+workload and direction creates a new proposal.
+
+== What the status tells you
+
+The status holds the 100 most recent active records and the 100 most recent
+acknowledged records. The counter `violationCount` grows with each
+observation that the controller scrapes, so it can exceed the number of
+distinct records. The field `activeViolationCount` equals the number of
+records in `status.violations`.
+
+A violation appears in the status up to one status sync interval after the
+data plane sees it. The OpenTelemetry event is sent at once. For a history
+longer than 100 records, use the collector.
+
+On Istio, the destination port of a violation record is always 0, because
+ztunnel does not report it in the policy log.
+
+== Trust boundaries
+
+* One certificate authority, issued by {cert-manager-term}, signs the
+  certificates of the collector and of the OTLP endpoint that receives the
+  fluent-bit logs. The collector and the controller mount their certificates
+  through the cert-manager CSI driver.
+* The default collector presents a server certificate, and the controller
+  verifies it. An external collector can also require a client certificate
+  from the controller, which makes the hop mutual TLS.
+* Goldmane requires mutual TLS. The controller reads the client key pair and
+  the CA bundle that Calico creates in its own namespace. There is no
+  plain-text option.
+* Hubble Relay uses TLS by default, with a client certificate that Cilium
+  creates. A plain-text connection is a choice that you make at installation.
+* Each provider hop has a TLS mode: `issuer`, `existingSecret`, or
+  `insecure`. The mode says where the certificates for that hop come from.
+  With `issuer`, cert-manager writes them into the pod. With
+  `existingSecret`, the controller reads a Secret that already exists, in
+  its own namespace or in the namespace of the provider. The
+  xref:reference/compatibility.adoc#_provider-tls[Provider TLS] table lists
+  the default mode and the Secret of each provider.
+* The controller is the only writer of proposals, policies, policy status,
+  and native policy objects. No component writes a Pod.
+* The two Validating Admission Policies fail closed. A promote label with a
+  wrong value, or a change to the owner of a proposal, is rejected.
+
+== How {ne-name} scales
+
+One controller replica is active. It reads one flow stream and handles all
+the workloads of the cluster. The rate of flows that the data plane produces
+is the main load. On Istio, the fluent-bit DaemonSet spreads the log reading
+across the nodes, and the controller receives one merged stream.
+
+The status of each policy is capped at 100 records, so a loud workload does
+not grow the API object without bound. The collector keeps the full history.
+
+The controller adds no cost to the data path. In protect mode, the data plane
+enforces the native object on its own. If the controller stops, the policies
+that it rendered stay in place.
