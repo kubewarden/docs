@@ -1,0 +1,396 @@
+include::partial$variables.adoc[]
+= Configuring {ne-name} for production
+:revdate: 2026-10-13
+:page-revdate: {revdate}
+:description: Configure the controller, the fluent-bit DaemonSet, the PriorityClass, and the telemetry of {ne-name} for high availability, scheduling, and reliable resource use.
+:keywords: ["{ne-name}", kubewarden, kubernetes, production, replicas, poddisruptionbudget, affinity, tolerations, priorityclass, resources, admission policies, pod security admission]
+:doc-persona: kubewarden-operator, kubewarden-integrator
+:doc-type: howto
+:doc-topic: operator-manual, production, replicas, poddisruptionbudget, affinity, tolerations, priorityclass, resources, admission-policies, pod-security-admission
+
+This page gives configuration for {ne-short-name} in a production cluster.
+It covers the {controller-term}, the fluent-bit DaemonSet of the Istio
+{provider-term}, the PriorityClass, the telemetry, and the other chart
+values that matter at scale.
+
+For the provider and Kubernetes requirements, see
+xref:reference/compatibility.adoc[Compatibility]. For how the components
+work together, see xref:explanations/architecture.adoc[Architecture]. For
+the debug tools, see xref:howtos/troubleshooting.adoc[Troubleshooting].
+
+[#_controller]
+== Controller
+
+The {controller-term} runs as a Kubernetes Deployment with leader
+election. One replica is active at a time. It reads {flow-term}s from the
+data plane, writes proposals and policies, and updates the policy status.
+
+{ne-short-name} has no admission webhook. When the controller is down,
+learning stops and the policy status is not updated. The
+{native-policy-object-term}s that the controller already rendered stay in
+place, and the data plane keeps enforcing them.
+
+[#_controller_replicas]
+=== Controller replicas
+
+`controller.replicas` defaults to `1`. Only the leader does the work. An
+extra replica is a warm standby. It shortens the failover time, and it
+does not add throughput.
+
+With the Istio provider, keep `controller.replicas` at `1`. The controller
+is the OTLP server that receives the {ztunnel-term} logs from fluent-bit,
+and only the leader listens on that port.
+
+With the Calico or the Cilium provider, you can run two replicas:
+
+[source,yaml]
+----
+controller:
+  replicas: 2
+----
+
+[#_schedule_the_controller]
+=== Schedule the controller
+
+Use `controller.tolerations`, `controller.nodeSelector`, and
+`controller.affinity` to control where the controller pods run. For
+example, spread two replicas across different nodes with
+`podAntiAffinity`. This example matters only when `controller.replicas` is
+more than `1`:
+
+[source,yaml]
+----
+controller:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/component: controller
+            topologyKey: kubernetes.io/hostname
+----
+
+[#_set_controller_resources]
+=== Set controller resources
+
+`controller.resources` defaults to a Guaranteed `100m` CPU and `256Mi`
+memory, with the same `requests` and `limits`. The memory of the
+controller grows with the number of distinct flows and the number of
+proposals in the cluster. Watch the controller pod after the install, and
+raise both values when the pod gets close to its limit. Keep `requests`
+equal to `limits`, so that the pod keeps the Guaranteed class:
+
+[source,yaml]
+----
+controller:
+  resources:
+    limits:
+      cpu: 250m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+----
+
+[#_keep_the_status_sync_interval]
+=== Keep the status sync interval
+
+`controller.wnpStatusUpdateInterval` defaults to `30s`. The quick start
+lowers it to make the demo responsive. A shorter interval writes the
+policy status more often and adds load on the API server. In production,
+keep the default. See
+xref:howtos/troubleshooting.adoc#_wnpstatusupdateinterval-latency[`wnpStatusUpdateInterval`
+latency] for what the interval changes.
+
+[#_add_a_poddisruptionbudget_for_the_controller]
+=== Add a PodDisruptionBudget for the controller
+
+A PodDisruptionBudget (PDB) limits how many pods a voluntary disruption can
+remove at the same time, for example a node drain or a cluster upgrade. The
+chart ships a PDB template for the controller, off by default.
+
+Set `controller.pdb.enabled` to `true`. Set `minAvailable` or
+`maxUnavailable` under `controller.pdb`, in the same way as a PDB `spec`:
+
+[source,yaml]
+----
+controller:
+  pdb:
+    enabled: true
+    minAvailable: 1
+----
+
+[WARNING]
+====
+If `controller.replicas` is `1` and `controller.pdb.minAvailable` is `1`,
+the PodDisruptionBudget blocks every voluntary disruption of the controller
+pod, including `kubectl drain`. Before you turn on the PodDisruptionBudget,
+set `controller.replicas` to `2` or more. With the Istio provider, where
+the controller must stay at one replica, leave the PodDisruptionBudget off.
+====
+
+[#_fluent_bit_daemonset_istio_provider]
+== fluent-bit DaemonSet, Istio provider
+
+With `controller.provider.name: istio`, the chart deploys fluent-bit as a
+DaemonSet. One pod runs on each node. It reads the log files of
+{ztunnel-term} and sends the records to the controller. A node without a
+fluent-bit pod produces no proposals and no monitor-mode {violation-term}s
+for the pods on that node. Protect mode still blocks traffic there,
+because ztunnel enforces the policy on its own.
+
+[#_fluent_bit_scheduling]
+=== fluent-bit scheduling
+
+`controller.provider.istio.fluentBit` has its own `resources`,
+`tolerations`, `nodeSelector`, and `affinity` keys. The pod also gets the
+shared xref:#_priorityclass[PriorityClass].
+
+fluent-bit must run on every node where ztunnel runs. The chart sets a
+toleration that matches every taint by default, the same default that
+ztunnel itself uses. If you set
+`controller.provider.istio.fluentBit.tolerations` to `[]`, fluent-bit
+stops tolerating taints. The pod is then missing from each tainted node
+that still runs ztunnel. The chart loses the ztunnel logs from that node,
+together with the proposals and the monitor-mode violations of its
+workloads.
+
+If you restrict fluent-bit with `nodeSelector` or `affinity`, make sure
+that the selection still matches every node where ztunnel runs.
+
+In the default TLS mode `issuer`, each fluent-bit pod receives its
+certificate from the cert-manager CSI driver. Make sure that the CSI
+driver runs on every node. See
+xref:reference/compatibility.adoc#_provider-tls[Provider TLS] for the
+other modes.
+
+[#_fluent_bit_security_context]
+=== fluent-bit security context
+
+fluent-bit runs as root (`runAsUser: 0`) and mounts two read-only
+`hostPath` volumes, `/var/log` and `/var/lib/docker/containers`, to read
+the container logs of the node. It is not privileged, it does not allow
+privilege escalation, and it drops all capabilities.
+
+These two requirements come from the job, not from a gap in the chart.
+Every log shipper that tails node log files needs the same two
+requirements.
+
+The container runtime writes the log files under `/var/log/pods` with
+mode `0640` and owner `root:root`. A pod's `fsGroup` does not change the
+ownership of a `hostPath` volume, so it cannot open the files to a
+non-root user. The capability `CAP_DAC_READ_SEARCH` is not an option
+either. The `baseline` and the `restricted` Pod Security Admission
+levels both forbid it. The kernel also does not activate it for a
+non-root process. Reading the files needs UID `0`.
+
+The DaemonSet mounts `/var/log` and `/var/lib/docker/containers` to reach
+those files from the host. No Pod Security Admission level below
+`privileged` admits a `hostPath` volume. So the fluent-bit pod needs the
+`privileged` level, and the two
+xref:#_admission_policies_and_pod_security_admission[recommended
+policies] that this page excludes next.
+
+[#_priorityclass]
+== PriorityClass
+
+The chart creates a PriorityClass named `network-enforcer-priorityclass`,
+with value `1000000`, and applies it to the controller, the fluent-bit,
+and the collector pods. This makes the Kubernetes scheduler prefer these
+pods over most application pods, and keeps the kubelet from evicting them
+first under node pressure.
+
+To reuse an existing PriorityClass, for example `system-cluster-critical`,
+turn off the chart-managed one and point `priorityClass.name` at the
+existing class:
+
+[source,yaml]
+----
+priorityClass:
+  enabled: false
+  name: system-cluster-critical
+----
+
+[WARNING]
+====
+If you delete a PriorityClass, running pods that use it keep running. New
+pods that name the deleted class do not start.
+====
+
+[#_admission_policies_and_pod_security_admission]
+== Admission policies and Pod Security Admission
+
+What an admission policy accepts depends on the provider.
+
+With the Calico or the Cilium provider, the chart deploys the controller
+and the collector only. Both pods run as non-root, drop all capabilities,
+and use no host namespace and no `hostPath` volume. They meet the
+`restricted` Pod Security Admission level, and none of the {admc-name}
+recommended policies rejects them. The {ne-short-name} namespace can
+carry `pod-security.kubernetes.io/enforce: restricted`.
+
+With the Istio provider, the fluent-bit pod fails both the `baseline` and
+the `restricted` level. In `protect` mode, two of the {admc-short-name}
+recommended policies reject it:
+
+[cols="1,2", options="header"]
+|===
+|Policy |Rejects fluent-bit because
+
+|`do-not-share-host-paths`
+|`/var/log` and `/var/lib/docker/containers` are not under `/tmp`.
+
+|`do-not-run-as-root`
+|`runAsUser` is `0` and `runAsNonRoot` is `false`.
+|===
+
+Exclude the {ne-short-name} namespace from these policies, with the
+`recommendedPolicies.skipAdditionalNamespaces` value of the
+{admc-short-name} Helm chart. The default exclusion list of that chart
+does not include a {ne-short-name} namespace, so add yours in every case:
+
+[source,yaml]
+----
+recommendedPolicies:
+  skipAdditionalNamespaces:
+    - network-enforcer
+----
+
+Keep the namespace at the `privileged` Pod Security Admission level, or
+use `audit` or `warn` mode only.
+
+See xref:latest@admission-controller:en:howtos/security-hardening/security-hardening.adoc[Security
+hardening] for the full list of recommended policies, and
+xref:latest@admission-controller:en:howtos/pod-security-admission-with-kubewarden.adoc[Pod
+Security Admission] for the three levels.
+
+[#_telemetry]
+== Telemetry
+
+By default, the chart deploys its own {opentelemetry-collector-term}, as
+a single Deployment replica. `telemetry.defaultCollector` has
+`tolerations`, `nodeSelector`, and `affinity` values, but the replica
+count stays fixed at one. The collector keeps its counters in memory, so
+a restart resets them. This default is enough for a basic setup, but it
+is a single point of failure for the violation metrics.
+
+For production, point {ne-short-name} at an OpenTelemetry collector that
+your own platform operates and schedules for high availability:
+
+[source,yaml]
+----
+telemetry:
+  collectorStrategy: external
+  externalCollector:
+    protocol: grpc
+    endpoint: otel-collector.observability.svc.cluster.local:4317
+    otelCollectorCertificateSecret: otel-collector-ca
+----
+
+The Secret in `otelCollectorCertificateSecret` holds the CA certificate
+of your collector in the key `ca.crt`. Without it, the controller sends
+the events without TLS verification. The Secret must be in the
+{ne-short-name} namespace.
+
+[NOTE]
+====
+This collector receives the violation events. It is not the OTLP endpoint
+that receives the ztunnel logs on the Istio provider. The two hops use
+different ports and different certificates. See
+xref:explanations/architecture.adoc#_opentelemetry-collector[OpenTelemetry
+collector].
+====
+
+[#_learning_scope]
+== Learning scope
+
+The chart has no value that limits the learning scope. Learning is
+cluster-wide and starts when the controller starts. The provider decides
+which flows the controller sees:
+
+* With the Istio provider, only the namespaces that carry the label
+  `istio.io/dataplane-mode=ambient` send traffic through ztunnel. That
+  label is the learning scope.
+* With the Calico or the Cilium provider, every flow that the data plane
+  reports is learned, in every namespace.
+
+Learning stops for a workload and direction when a
+{workloadnetworkpolicy-cr} with the same name exists. You can learn the
+policies in another cluster, for example staging, promote them there, and
+apply the resulting policies to production as code. The controller then
+writes a {workloadnetworkpolicyproposal-cr} only for the workloads that
+have no policy yet.
+
+See
+xref:reference/known_limitations.adoc#_learning-starts-when-the-controller-starts[Learning
+starts when the controller starts] for what learning does not record.
+
+[#_keep_the_flow_dumper_off]
+== Keep the flow dumper off
+
+`controller.flowDumper.enabled` defaults to `false`. Keep it off in
+production. When it is on, the chart creates a `NodePort` Service on port
+`30080` that exposes the raw flow records on every node. Turning it on or
+off also changes the controller arguments, so the controller restarts.
+
+See xref:howtos/troubleshooting.adoc#_flow-dumper[Flow dumper] for what
+it shows and how to read it.
+
+[#_example_production_configuration]
+== Example production configuration
+
+This example combines the configuration from this page into one Helm
+values file, for the Istio provider:
+
+[source,yaml]
+----
+controller:
+  provider:
+    name: istio
+  replicas: 1
+  resources:
+    limits:
+      cpu: 250m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  wnpStatusUpdateInterval: 30s
+  flowDumper:
+    enabled: false
+
+telemetry:
+  collectorStrategy: external
+  externalCollector:
+    protocol: grpc
+    endpoint: otel-collector.observability.svc.cluster.local:4317
+    otelCollectorCertificateSecret: otel-collector-ca
+----
+
+With the Calico or the Cilium provider, set `controller.provider.name` to
+`calico` or `cilium`. You can then raise `controller.replicas` to `2` and
+turn on the PodDisruptionBudget:
+
+[source,yaml]
+----
+controller:
+  provider:
+    name: calico
+  replicas: 2
+  pdb:
+    enabled: true
+    minAvailable: 1
+----
+
+Apply the file at install or upgrade time:
+
+[source,bash]
+----
+helm upgrade --install network-enforcer kubewarden/network-enforcer \
+  --namespace network-enforcer \
+  --create-namespace \
+  -f production-values.yaml \
+  --wait
+----

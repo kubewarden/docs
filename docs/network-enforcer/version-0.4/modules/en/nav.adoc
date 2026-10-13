@@ -9,6 +9,7 @@ include::partial$variables.adoc[]
 ** xref:explanations/architecture.adoc[Architecture]
 * Howtos
 ** xref:howtos/uninstall.adoc[Uninstall]
+** xref:howtos/production-deployments.adoc[Production deployments]
 ** xref:howtos/troubleshooting.adoc[Troubleshooting]
 ** xref:howtos/setup-development-env.adoc[Development environment]
 * Reference
