@@ -5,7 +5,7 @@ include::partial$variables.adoc[]
 :revdate: 2026-10-13
 :page-revdate: {revdate}
 
-{rte-name} supports Tilt to run development environment in your local.
+You can use Tilt to run a local development environment for {rte-name}.
 
 [#_pre-requisite]
 == Pre-requisite

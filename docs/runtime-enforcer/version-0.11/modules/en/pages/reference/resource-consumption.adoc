@@ -41,7 +41,7 @@ agent:
 
 [NOTE]
 ====
-By default, the {rte-short-name} helm charts deploy these components as
+By default, the {rte-short-name} Helm charts deploy these components as
 `Guaranteed` QoS by specifying the same value in both `requests` and `limits`.
 Please refer to
 https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/#pod-selection-for-kubelet-eviction[Kubernetes

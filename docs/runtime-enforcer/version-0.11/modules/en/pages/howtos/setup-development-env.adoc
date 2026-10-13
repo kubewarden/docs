@@ -6,7 +6,7 @@ include::partial$variables.adoc[]
 :page-revdate: {revdate}
 :page-aliases: setup-development-env.adoc
 
-{rte-name} supports Tilt to run development environment in your local.
+You can use Tilt to run a local development environment for {rte-name}.
 
 [#_pre-requisite]
 == Pre-requisite
