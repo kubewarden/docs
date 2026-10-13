@@ -76,11 +76,67 @@ include::partial$variables.adoc[]
 
 ### Never hardcode product names in content
 
-Use AsciiDoc attributes instead:
+Use AsciiDoc attributes instead. Each component has a set of name attributes:
 
-- `{product-name}` — resolves to community or enterprise name depending on build
-- `{project-name}` — short project name
-- `{short-product-name}`, `{product-abbrev}`
+| Component | Full name | Short name | Abbreviation |
+|---|---|---|---|
+| `admission-controller` | `{admc-name}` | `{admc-short-name}` | `{admc-abbrev}` |
+| `sbom-scanner` | `{sboms-name}` | `{sboms-short-name}` | `{sboms-abbrev}` |
+| `runtime-enforcer` | `{rte-name}` | `{rte-short-name}` | `{rte-abbrev}` |
+| `network-enforcer` | `{ne-name}` | `{ne-short-name}` | `{ne-abbrev}` |
+
+Use the full name for the first mention on a page and in `:description:`.
+Use the short name after that. Keep literal names in commands, Helm release
+names, namespaces, labels, and generated reference partials.
+
+The name attributes above give the name that the current build uses. If a
+page must use one specific name in every build, use the community or product
+form, for example `{admc-community-name}` or `{admc-product-name}`. A
+community page that links to the SUSE product is an example.
+
+Older versions use `{product-name}`, `{project-name}`, and
+`{short-product-name}` from the legacy shared partials. Do not use them in
+new content.
+
+### Community and product values
+
+The same page source builds in this repository (community) and in the
+product repository. Both repositories have the same structure. The playbook
+sets the `build-type` attribute to `community` or `product`. Do not set
+`build-type` anywhere else.
+
+Put a value that is different in each build in a file under a
+`{build-type}-specific/` directory. This repository provides only the
+`community-specific/` files. The product repository provides the
+`product-specific/` files.
+
+| Scope | File |
+|---|---|
+| Same in every build | `shared/modules/en/partials/globals.adoc` |
+| Different per build, all components | `shared/modules/en/partials/community-specific/globals.adoc` |
+| Different per build, one component version | `partials/community-specific/variables.adoc` in the version directory |
+
+Names are facts that are true in every build, so `globals.adoc` defines both
+forms of each name, for example `{admc-community-name}` and
+`{admc-product-name}`. Keep this file the same in both repositories.
+`community-specific/globals.adoc` only selects the names for this build, for
+example `:admc-name: {admc-community-name}`. To add a component, add its
+names to `globals.adoc` and its selection lines to the build specific files.
+
+A version's `partials/variables.adoc` includes the shared `globals.adoc` and
+then `{build-type}-specific/variables.adoc`. It holds only values that are the
+same in every build, such as glossary terms.
+
+Do not use `ifeval::["{build-type}" == ...]` blocks for attribute values. Some
+older versions and the legacy `kubewarden-variables-*.adoc` partials still use
+them.
+
+Do not set name attributes in `antora.yml`. Antora gives `antora.yml` and
+playbook attributes priority over values that a page sets, and does not warn.
+
+The playbooks set `attribute-missing: warn`. A reference to an undefined
+attribute causes a `WARN (asciidoctor): skipping reference to missing
+attribute` line in `tmp/build.log`.
 
 ### Required page-level attributes
 

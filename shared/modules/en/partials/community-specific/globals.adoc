@@ -1,26 +1,31 @@
 // Community specific global attributes. In scope for all sub-projects of
-// Kubewarden.
+// Kubewarden. The names come from globals.adoc. This file only selects the
+// community names. The product repository has a product-specific/globals.adoc
+// that selects the product names.
 
-:admc-name: Kubewarden Admission Controller
-:admc-short-name: Admission Controller
-:admc-abbrev: ADMC
+:admc-name: {admc-community-name}
+:admc-short-name: {admc-community-short-name}
+:admc-abbrev: {admc-community-abbrev}
 
-:co-name: Kubewarden Compliance Operator
-:co-short-name: Compliance Operator
-:co-abbrev: CO
+:co-name: {co-community-name}
+:co-short-name: {co-community-short-name}
+:co-abbrev: {co-community-abbrev}
 
-:ne-name: Kubewarden Network Enforcer
-:ne-short-name: Network Enforcer
-:ne-abbrev: NE
+:ne-name: {ne-community-name}
+:ne-short-name: {ne-community-short-name}
+:ne-abbrev: {ne-community-abbrev}
 
-:rte-name: Kubewarden Runtime Enforcer
-:rte-short-name: Runtime Enforcer
-:rte-abbrev: RTE
+:rte-name: {rte-community-name}
+:rte-short-name: {rte-community-short-name}
+:rte-abbrev: {rte-community-abbrev}
 
-:sboms-name: Kubewarden SBOM Scanner
-:sboms-short-name: SBOM Scanner
-:sboms-abbrev: SBOMS
+:sboms-name: {sboms-community-name}
+:sboms-short-name: {sboms-community-short-name}
+:sboms-abbrev: {sboms-community-abbrev}
 
-:waf-name: Kubewarden Web Application Firewall
-:waf-short-name: Web Application Firewall
-:waf-abbrev: WAF
+:waf-name: {waf-community-name}
+:waf-short-name: {waf-community-short-name}
+:waf-abbrev: {waf-community-abbrev}
+
+// The project security team, used by the security disclosure pages.
+:project-security-team: {kw-community-project-name} team
