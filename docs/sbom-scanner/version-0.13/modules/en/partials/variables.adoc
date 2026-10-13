@@ -1,5 +1,5 @@
 // Pull in the names of the other Kubewarden components.
-// The sboms-* attributes come from antora.yml and are not changed here.
+// This includes the sboms-* attributes.
 include::latest@shared:en:partial$globals.adoc[]
 
 // Pull in version specific shared attributes

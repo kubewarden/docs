@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Glossary
-:revdate: 2026-09-30
+:revdate: 2026-10-13
 :page-revdate: {revdate}
 :description: Terms used in the {ne-name} documentation: custom resources, labels, providers and backends, phases, and the data plane features that the enforcer depends on.
 :doc-persona: kubewarden-all
@@ -76,7 +76,7 @@ that drive learning. A flow that is not observed is not reported.
 [#_calico]
 === Calico
 
-A <<_cni,CNI>>. A <<_provider,provider>> of {ne-short-name}. The
+A <<_cni,CNI>>. A <<_provider,provider>> of {ne-name}. The
 <<_flow-source,flow source>> is <<_goldmane,Goldmane>>. The
 <<_backend,backend>> is `kubernetes`. Learning covers TCP and UDP, in both
 <<_direction,directions>>.

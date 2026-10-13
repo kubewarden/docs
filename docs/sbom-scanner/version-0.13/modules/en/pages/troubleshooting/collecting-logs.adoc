@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Collecting logs for debugging
-:revdate: 2026-09-11
+:revdate: 2026-10-13
 :page-revdate: {revdate}
 :description: Collect {sboms-name} logs and support bundles for troubleshooting.
 
@@ -45,7 +45,7 @@ Example output:
 [source,text]
 ----
 == Helm release ==
-  ✅ Found {sboms-name} Helm release
+  ✅ Found SBOMscanner Helm release
   Release name       sbomscanner
   Namespace          sbomscanner
   Chart              sbomscanner-0.2.0

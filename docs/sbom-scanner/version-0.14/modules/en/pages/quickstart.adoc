@@ -1,22 +1,22 @@
 include::partial$variables.adoc[]
 
-= SBOMscanner Quick Start
-:description: Install SBOMscanner in a Kubernetes cluster and run an automated container image scan with a Registry custom resource after you install the required components
-:revdate: 2026-09-01
+= {sboms-name} Quick Start
+:description: Install {sboms-name} in a Kubernetes cluster and run an automated container image scan with a Registry custom resource after you install the required components
+:revdate: 2026-10-13
 :page-revdate: {revdate}
 
-This guide explains how to install SBOMscanner and run an image scan.
+This guide explains how to install {sboms-short-name} and run an image scan.
 
 include::partial${build-type}-specific/warning.adoc[]
 
 This guide has these steps:
 
-* Deploy the SBOMscanner stack in a Kubernetes cluster.
+* Deploy the {sboms-short-name} stack in a Kubernetes cluster.
 * Run an image scan with a {registry-cr} custom resource.
 
 == Requirements
 
-Before you deploy SBOMscanner, prepare these items:
+Before you deploy {sboms-short-name}, prepare these items:
 
 * A Kubernetes cluster, for example a https://kind.sigs.k8s.io/[kind] cluster.
 * A
@@ -72,9 +72,9 @@ PostgreSQL instance instead. See
 xref:/installation/helm-values.adoc#using-an-external-postgresql-instance[Using an
 External PostgreSQL Instance] for configuration details.
 
-== Deploy SBOMscanner
+== Deploy {sboms-short-name}
 
-Install SBOMscanner from your local machine:
+Install {sboms-short-name} from your local machine:
 
 === Install the Helm chart
 
@@ -91,7 +91,7 @@ helm install sbomscanner kubewarden/sbomscanner \
 [TIP]
 ====
 
-SBOMscanner is highly available by default. If your environment has
+{sboms-short-name} is highly available by default. If your environment has
 limited resources, reduce the replica count:
 
 [source,bash]
@@ -137,7 +137,7 @@ sbomscanner           sbomscanner-worker-d9d68c5c-tlpgm             1/1     Runn
 
 === Summary
 
-The SBOMscanner deployment is running. You can scan images and generate
+The {sboms-short-name} deployment is running. You can scan images and generate
 reports.
 == Run a Scan
 
@@ -146,7 +146,7 @@ automated scan.
 
 === Prepare a `registry.yaml` file
 
-Before you run a scan, define a `Registry` custom resource. SBOMscanner
+Before you run a scan, define a `Registry` custom resource. {sboms-short-name}
 uses this resource to fetch images.
 
 [source,yaml]
@@ -171,7 +171,7 @@ kubectl apply -f registry.yaml
 
 === Prepare a `scan-job.yaml`
 
-The {scanjob-cr} CR tells SBOMscanner which registry to scan.
+The {scanjob-cr} CR tells {sboms-short-name} which registry to scan.
 
 [source,yaml]
 ----

@@ -3,7 +3,7 @@ include::partial$variables.adoc[]
 = {rte-name} Quick Start
 :description: Start by deploying the application in a Kubernetes cluster, then create a WorkloadPolicyProposal based on observed processes and convert it to a WorkloadPolicy
 
-:revdate: 2026-09-22
+:revdate: 2026-10-13
 :page-revdate: {revdate}
 
 Welcome to the {rte-name} Quick Start!
@@ -31,7 +31,7 @@ Before deployment, you need to prepare the following:
 [WARNING]
 ====
 Please check your environment satisfies the minimum
-xref:../compatibility.adoc[runtime enforcer requirements].
+xref:../compatibility.adoc[{rte-short-name} requirements].
 ====
 
 [#_install-cert-manager-and-cert-manager-csi-driver]
@@ -59,7 +59,7 @@ link:https://cert-manager.io/docs/installation/helm[cert-manager documentation].
 ====
 
 The `cert-manager-csi-driver` is used to automatically provision and mount TLS
-certificates directly inside runtime enforcer pods (agent and OTEL collector)
+certificates directly inside {rte-short-name} pods (agent and OTEL collector)
 without creating intermediate Secret resources. To install it, run the following
 commands:
 

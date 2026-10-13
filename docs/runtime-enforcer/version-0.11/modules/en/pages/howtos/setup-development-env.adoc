@@ -2,11 +2,11 @@ include::partial$variables.adoc[]
 
 = Setup Development Environments
 :description: Set up a local development environment by installing a one-node Kubernetes cluster on a supported Linux host, cloning the repository, and installing required
-:revdate: 2026-09-22
+:revdate: 2026-10-13
 :page-revdate: {revdate}
 :page-aliases: setup-development-env.adoc
 
-Runtime enforcer supports Tilt to run development environment in your local.
+{rte-name} supports Tilt to run development environment in your local.
 
 [#_pre-requisite]
 == Pre-requisite
