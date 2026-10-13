@@ -9,6 +9,7 @@ include::partial$variables.adoc[]
 ** xref:explanations/architecture.adoc[Architecture]
 * Howtos
 ** xref:howtos/uninstall.adoc[Uninstall]
+** xref:howtos/production-deployments.adoc[Production deployments]
 ** xref:howtos/learning_mode_configuration.adoc[Learning mode configuration]
 ** xref:howtos/kubectl_plugin.adoc[kubectl plugin]
 ** xref:howtos/troubleshooting.adoc[Troubleshooting]
