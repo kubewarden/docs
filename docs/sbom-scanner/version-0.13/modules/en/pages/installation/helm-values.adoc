@@ -101,6 +101,30 @@ For more information on resource management, see the https://kubernetes.io/docs/
 
 {sboms-name} requires a PostgreSQL database to store SBOM data. You have two options: use the built-in https://cloudnative-pg.io/[CloudNativePG (CNPG) operator] or connect to an external PostgreSQL instance.
 
+[#backups]
+[IMPORTANT]
+.Backups
+====
+The chart does not configure backups for the PostgreSQL database.
+
+PostgreSQL holds the `Image`, `SBOM`, `VulnerabilityReport`,
+`WorkloadScanReport`, `NodeSBOM`, and `NodeVulnerabilityReport` resources.
+The configuration resources (`Registry`, `WorkloadScanConfiguration`,
+`NodeScanConfiguration`, `VEXHub`) live in etcd and are not affected.
+
+If you lose the database, {sboms-short-name} rebuilds the current reports
+the next time it scans. It cannot rebuild the history of past reports, or
+the SBOM of an image that has since been removed from its registry.
+
+If you need to keep past reports, for example for audit evidence, back up
+the database:
+
+* With the built-in CNPG cluster, configure a
+  https://cloudnative-pg.io/documentation/current/backup/[CNPG backup] on the
+  `Cluster` resource.
+* With an external PostgreSQL instance, use the backup tooling of that instance.
+====
+
 [#using-cloudnativepg-recommended]
 === Using CloudNativePG (Recommended)
 
