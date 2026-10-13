@@ -352,6 +352,7 @@ WorkloadKind identifies the Kubernetes owner resource kind for a workload.
 .Appears In:
 ****
 - xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadref[$$WorkloadRef$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadtargetref[$$WorkloadTargetRef$$]
 ****
 
 
@@ -509,6 +510,9 @@ NetworkPolicySpec. + |  | Optional +
 | *`istio`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioauthorizationpolicyspec[$$IstioAuthorizationPolicySpec$$]__ | Istio contains a constrained L4 policy model rendered as an Istio +
 AuthorizationPolicy by the reconciler. + |  | Optional +
 
+| *`targetRef`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadtargetref[$$WorkloadTargetRef$$]__ | TargetRef is the target workload. + |  | 
+| *`direction`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#policytype-v1-networking[$$PolicyType$$]__ | Direction is the traffic direction. + |  | Enum: [Ingress Egress] +
+
 |===
 
 
@@ -559,6 +563,9 @@ NetworkPolicySpec. + |  | Optional +
 
 | *`istio`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-istioauthorizationpolicyspec[$$IstioAuthorizationPolicySpec$$]__ | Istio contains a constrained L4 policy model rendered as an Istio +
 AuthorizationPolicy by the reconciler. + |  | Optional +
+
+| *`targetRef`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadtargetref[$$WorkloadTargetRef$$]__ | TargetRef is the target workload. + |  | 
+| *`direction`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#policytype-v1-networking[$$PolicyType$$]__ | Direction is the traffic direction. + |  | Enum: [Ingress Egress] +
 
 | *`mode`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicymode[$$WorkloadNetworkPolicyMode$$]__ | Mode controls whether the policy is observed (monitor) or actively +
 enforced (protect). Defaults to monitor. + | monitor | Enum: [monitor protect] +
@@ -642,6 +649,58 @@ WorkloadRef identifies a Kubernetes workload.
 This field is not populated for other providers. + |  | Optional +
 
 | *`selector`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#labelselector-v1-meta[$$LabelSelector$$]__ | Selector is the label selector for the workload. + |  | Optional +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadtargetref"]
+==== WorkloadTargetRef
+
+
+
+WorkloadTargetRef identifies the target workload.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposalspec[$$WorkloadNetworkPolicyProposalSpec$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyspec[$$WorkloadNetworkPolicySpec$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadtargetingspec[$$WorkloadTargetingSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`kind`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadkind[$$WorkloadKind$$]__ | Kind is the workload kind. + |  | Enum: [Deployment StatefulSet DaemonSet] +
+
+| *`name`* __string__ | Name is the workload name in the same namespace as this object. + |  | MaxLength: 253 +
+MinLength: 1 +
+Pattern: `^[a-z0-9]([-a-z0-9]\*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$` +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadtargetingspec"]
+==== WorkloadTargetingSpec
+
+
+
+WorkloadTargetingSpec identifies the target workload and traffic direction.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyproposalspec[$$WorkloadNetworkPolicyProposalSpec$$]
+- xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadnetworkpolicyspec[$$WorkloadNetworkPolicySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`targetRef`* __xref:{anchor_prefix}-github-com-kubewarden-network-enforcer-api-v1alpha1-workloadtargetref[$$WorkloadTargetRef$$]__ | TargetRef is the target workload. + |  | 
+| *`direction`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#policytype-v1-networking[$$PolicyType$$]__ | Direction is the traffic direction. + |  | Enum: [Ingress Egress] +
 
 |===
 
