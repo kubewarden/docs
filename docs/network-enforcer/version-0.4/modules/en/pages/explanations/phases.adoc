@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {ne-name} phases: learn, monitor, protect
 :description: Learn how to move between the learn, monitor, and protect phases to manage network policies, observe traffic flows, create proposals, and update policies
-:revdate: 2026-10-08
+:revdate: 2026-10-13
 :page-revdate: {revdate}
 :page-aliases: phases.adoc
 
@@ -15,20 +15,20 @@ This document explains the three *phases* of {ne-short-name} and how to move bet
 === What happens during this phase
 
 * *Traffic is not blocked.*
-* Network-enforcer observes flows after the controller is running, and turns those flows into `WorkloadNetworkPolicyProposal` objects.
+* {ne-short-name} observes flows after the controller is running, and turns those flows into `WorkloadNetworkPolicyProposal` objects.
 * *Istio backend* (`controller.provider.name` `istio`): Istio ambient L4 authorization is enforced on the receiving side, so learning creates *only an ingress* proposal on the destination workload.
 * *Kubernetes backend* (`controller.provider.name` `calico` or `cilium`): each observed connection updates *two* proposals, one per endpoint and direction.
 ** Source workload: an *egress* proposal that allows traffic to the destination.
 ** Destination workload: an *ingress* proposal that allows traffic from the source.
 
-NOTE: Learn is based on *flows observed after the controller is running*. Network-enforcer does *not* reconstruct traffic that happened before it started.
+NOTE: Learn is based on *flows observed after the controller is running*. {ne-short-name} does *not* reconstruct traffic that happened before it started.
 
 That means:
 
-* If a workload was already running before network-enforcer started, *we cannot propose the full set of peers it already talked to in the past*.
+* If a workload was already running before {ne-short-name} started, *we cannot propose the full set of peers it already talked to in the past*.
 * You will only learn flows that occur after the controller is running (for long-lived pods that rarely open new connections, you may learn little or nothing until you generate traffic or restart the workload).
 
-Operationally, if you want complete proposals, install network-enforcer first and then *(re)start* the workloads you want to learn, or generate the traffic you care about while the controller is running.
+Operationally, if you want complete proposals, install {ne-short-name} first and then *(re)start* the workloads you want to learn, or generate the traffic you care about while the controller is running.
 
 [#_how-to-enter-and-leave-the-learn-phase]
 === How to enter and leave the `Learn` phase
@@ -124,7 +124,7 @@ WARNING: The Istio backend learns and enforces only on the destination (ingress)
 [#_transitions]
 == Transitions
 
-Promotion is explicit. Network-enforcer does not turn a proposal into a policy until you ask.
+Promotion is explicit. {ne-short-name} does not turn a proposal into a policy until you ask.
 
 * *Promote a proposal*
 ** Set the label `networkenforcer.kubewarden.io/promote=monitor` or `networkenforcer.kubewarden.io/promote=protect` on the `WorkloadNetworkPolicyProposal`.

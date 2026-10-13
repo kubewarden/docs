@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Glossary
-:revdate: 2026-09-30
+:revdate: 2026-10-13
 :page-revdate: {revdate}
 :description: Terms used in the {rte-name} documentation: custom resources, labels, components, phases, and the kernel and runtime features that the enforcer depends on.
 :doc-persona: kubewarden-all
@@ -84,7 +84,7 @@ collector>> use these certificates to talk to each other.
 [#_containerd-and-cri-o]
 === containerd and CRI-O
 
-The container runtimes that {rte-short-name} supports. Both must have
+The container runtimes that {rte-name} supports. Both must have
 <<_nri,NRI>> enabled. The `cri-dockerd` runtime is not supported.
 
 [#_controller]

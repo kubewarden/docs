@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {rte-name} phases: learn, monitor, protect
 :description: Learn how to move between the learn, monitor, and protect phases to manage workload process execution
-:revdate: 2026-09-22
+:revdate: 2026-10-13
 :page-revdate: {revdate}
 :page-aliases: phases.adoc
 
@@ -18,7 +18,7 @@ between them.
 * *Processes aren't blocked.*
 * {rte-short-name} observes process executions in your workloads and learns the
   executable paths that run.
-* For each learned executable, runtime-enforcer creates or updates a
+* For each learned executable, {rte-short-name} creates or updates a
   `WorkloadPolicyProposal` in the workload namespace and adds the executable
   path under `.spec.rulesByContainer[CONTAINER_NAME].executables.allowed`.
 
@@ -30,9 +30,9 @@ agent does *not* reconstruct what happened before it started.
 
 This means:
 
-* If a workload was already running before runtime-enforcer started, *we can't
+* If a workload was already running before {rte-short-name} started, *we can't
   propose the full set of processes it already executed in the past*.
-* You only learn processes that exec after runtime-enforcer is running (for
+* You only learn processes that exec after {rte-short-name} is running (for
   long-lived pods that rarely execute, you may learn little or nothing until a
   restart or other activity happens).
 
@@ -93,7 +93,7 @@ delete the `WorkloadPolicyProposal` manually.
 `WorkloadPolicy` rules are evaluated only for containers explicitly listed in
 `.spec.rulesByContainer`. If a protected pod gets an additional container that
 is not in the policy (for example an ephemeral debug container created with
-`kubectl debug`, or an init container without a matching rule), runtime-enforcer
+`kubectl debug`, or an init container without a matching rule), {rte-short-name}
 intentionally leaves that container unenforced so debug and initialization
 workflows can still run.
 ====
@@ -107,7 +107,7 @@ workflows can still run.
 *** `.spec.rulesByContainer` populated with allowed executables per container name
 ** Bind workloads/pods to the policy by applying the label: `runtimeenforcer.kubewarden.io/policy: WORKLOAD_POLICY_NAME`. The label must be applied to the Pod. When dealing with workload types (such as Deployment), make sure the label is specified inside of the `PodTemplateSpec`.
 +
-Runtime-enforcer uses this label to decide which pods the policy applies to.
+{rte-short-name} uses this label to decide which pods the policy applies to.
 +
 [WARNING]
 ====

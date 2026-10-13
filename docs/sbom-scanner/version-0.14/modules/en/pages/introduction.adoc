@@ -1,12 +1,12 @@
 include::partial$variables.adoc[]
 
 = Introduction
-:revdate: 2026-09-30
+:revdate: 2026-10-13
 :page-revdate: {revdate}
 :description: Learn what {sboms-name} is, how it finds vulnerabilities in images, workloads, and nodes, and why it scans SBOMs instead of images.
 :keywords: {sboms-name}, kubewarden, cncf, kubernetes, sbom, vulnerability scanner
 
-{sboms-short-name} is an {sbom-term}-based vulnerability scanner for Kubernetes
+{sboms-name} is an {sbom-term}-based vulnerability scanner for Kubernetes
 clusters. It scans container images, image registries, running workloads, and
 cluster host nodes, generating a software bill of materials for each and
 detecting both operating-system and application-library vulnerabilities.

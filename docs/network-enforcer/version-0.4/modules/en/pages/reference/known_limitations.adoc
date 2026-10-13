@@ -1,8 +1,8 @@
 include::partial$variables.adoc[]
 
 = Known limitations
-:description: Understand the current known limitations of the network-enforcer and how they affect deployment and policy enforcement
-:revdate: 2026-10-08
+:description: Understand the current known limitations of {ne-name} and how they affect deployment and policy enforcement
+:revdate: 2026-10-13
 :page-revdate: {revdate}
 :page-aliases: known_limitations.adoc
 
@@ -10,7 +10,7 @@ This document tracks the current, known limitations of {ne-name}.
 Some are explicit design decisions, and some are constraints inherited from
 the data-plane provider (Istio ambient, Calico, or Cilium) or from Kubernetes.
 The goal is to help you understand the limitations and make informed decisions
-about your network-enforcer deployment.
+about your {ne-short-name} deployment.
 
 [#_egress-outside-the-cluster-is-not-learned]
 == Egress outside the cluster is not learned
@@ -42,7 +42,7 @@ enforced.
 [#_host-network-workloads-are-not-supported]
 == Host-network workloads are not supported
 
-network-enforcer does not learn or enforce policies for pods with
+{ne-short-name} does not learn or enforce policies for pods with
 `hostNetwork: true`. Those pods are not presented as normal workload
 endpoints. Therefore, Kubernetes `NetworkPolicy` (Calico and Cilium)
 and Istio `AuthorizationPolicy` do not cover them the way they cover
@@ -50,7 +50,7 @@ cluster-networked pods.
 
 * *Impact*: host-network traffic does not produce a useful allow list, and
   violations from those pods may be missing or attributed to a raw IP. Keep
-  application workloads off the host network if you want network-enforcer to
+  application workloads off the host network if you want {ne-short-name} to
   cover them.
 
 [#_short-lived-pods-can-miss-learning-and-violation-records]
@@ -70,12 +70,12 @@ affects learning and violation reporting, not enforcement by an existing policy.
 [#_learning-starts-when-the-controller-starts]
 == Learning starts when the controller starts
 
-network-enforcer does not reconstruct pre-existing traffic.
+{ne-short-name} does not reconstruct pre-existing traffic.
 It only records flows seen after the controller is running, so long-lived
 idle workloads yield thin or empty proposals until you generate traffic
 or restart them.
 
-* *Impact*: installing network-enforcer onto an already-running cluster does
+* *Impact*: installing {ne-short-name} onto an already-running cluster does
   not produce a complete historical allow list. Generate the traffic you care
   about (or restart those workloads) while the controller is up if you want
   complete proposals.
@@ -86,7 +86,7 @@ or restart them.
 The Helm chart sets `kubeVersion: ">= 1.31.0-0"`. Helm refuses to install the
 chart on an older cluster.
 
-network-enforcer uses Kubernetes Validating Admission Policy (VAP) to enforce
+{ne-short-name} uses Kubernetes Validating Admission Policy (VAP) to enforce
 admission-time protections on `WorkloadNetworkPolicyProposal` objects
 (for example, rejecting `networkenforcer.kubewarden.io/promote` unless the
 value is `monitor` or `protect`, and preventing existing `ownerReferences`
@@ -94,11 +94,11 @@ from being removed or rewritten).
 
 VAP became available as `admissionregistration.k8s.io/v1` in Kubernetes
 1.30. Earlier Kubernetes versions exposed it as
-`admissionregistration.k8s.io/v1beta1`, but network-enforcer does not
+`admissionregistration.k8s.io/v1beta1`, but {ne-short-name} does not
 support that API. The project tests against Kubernetes 1.31 and later, so
 the chart requires 1.31. This is a design decision.
 
-* *Impact*: network-enforcer is not compatible with Kubernetes versions
+* *Impact*: {ne-short-name} is not compatible with Kubernetes versions
   before 1.31.
 
 [#_spec-backend-is-immutable]
@@ -128,7 +128,7 @@ into a `WorkloadNetworkPolicyProposal`.
 [#_cilium-may-overcount-violations-per-tcp-session]
 == Cilium may overcount violations per TCP session
 
-On Cilium, {ne-name} reports the flow events that the Hubble relay emits,
+On Cilium, {ne-short-name} reports the flow events that the Hubble relay emits,
 without changes. Hubble can emit more than one forwarded event for a single
 TCP session. For example, one session can produce SYN, ESTABLISHED, PSH, and
 FIN events. `status.violationCount` counts each observed event. As a result,
