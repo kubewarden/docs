@@ -22,6 +22,7 @@ include::partial$product-specific/ui-extension-nav.adoc[]
 endif::[]
 ** xref:installation/uninstall.adoc[Uninstall]
 ** xref:installation/helm-values.adoc[Helm Values]
+** xref:installation/production-deployments.adoc[Production deployments]
 ** xref:troubleshooting/collecting-logs.adoc[Collecting Logs]
 ** xref:troubleshooting/common-problems.adoc[Common Problems]
 * Reference

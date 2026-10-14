@@ -462,6 +462,7 @@ controller:
     enabled: false
 ----
 
+[#_pod_security_admission]
 == Pod Security Admission
 
 The worker DaemonSet mounts the node root filesystem read-only through a

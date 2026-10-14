@@ -1,0 +1,384 @@
+include::partial$variables.adoc[]
+= Configuring {sboms-name} for production
+:revdate: 2026-10-13
+:page-revdate: {revdate}
+:description: Configure the controller, the storage API server, the worker, PostgreSQL, and NATS of {sboms-name} for high availability and reliable resource use.
+:keywords: ["{sboms-name}", kubewarden, kubernetes, production, replicas, postgresql, nats, backups, admission policies, pod security admission]
+:doc-persona: kubewarden-operator, kubewarden-integrator
+:doc-type: howto
+:doc-topic: operator-manual, production, replicas, postgresql, nats, backups, admission-policies, pod-security-admission
+
+This page gives configuration for {sboms-short-name} in a production
+cluster. It covers the replicas of each component, PostgreSQL, NATS, the
+node scan xref:glossary.adoc#_worker[worker], and the other chart values
+that matter at scale.
+
+For the full list of chart values, see
+xref:installation/helm-values.adoc[Helm Values Configuration]. For how the
+components work together, see
+xref:explanations/architecture.adoc[Architecture]. For the cluster
+requirements, see xref:reference/compatibility.adoc[Compatibility].
+
+[#_replicas]
+== Replicas
+
+The chart sets `controller.replicas`, `storage.replicas`, and
+`worker.replicas` to `3` by default. Each component uses its replicas in a
+different way.
+
+The xref:glossary.adoc#_controller[controller] runs with leader election.
+The leader reconciles the custom resources and runs the two scheduled-scan
+runners. Every replica serves the admission webhooks. The webhooks use
+`failurePolicy: Fail`, and they cover only the {sboms-short-name} custom
+resources. When the controller is down, a change to a {registry-cr}, a
+{scanjob-cr}, or a scan configuration waits. Nothing else in the cluster
+waits on the controller.
+
+The xref:glossary.adoc#_storage-component[storage API server] has no
+leader. Every replica serves any request, and each replica checks the
+database as part of its own readiness probe. When the database is
+unreachable, every storage replica turns not ready at the same time. See
+xref:#_storage_api_server_and_kubectl[Storage API server and kubectl].
+
+The xref:glossary.adoc#_worker[worker] is the throughput knob. Each worker
+pod processes one message at a time, from one shared queue. Raise
+`worker.replicas` to scan more images at once:
+
+[source,yaml]
+----
+worker:
+  replicas: 5
+----
+
+[#_scheduling_current_limits]
+== Scheduling: current limits of the chart
+
+The chart has no `tolerations`, `nodeSelector`, `affinity`, or
+`priorityClassName` value for the controller, the storage API server, the
+worker, or the MCP server. It has no PodDisruptionBudget for any of them
+either. With three replicas of a component and no anti-affinity, every
+replica of that component can land on one node.
+
+The node scan worker, covered next, has the same gap, and it also reuses
+`worker.resources`, so you cannot size it apart from the worker Deployment.
+
+NATS and PostgreSQL are not affected. The NATS subchart ships its own
+PodDisruptionBudget. The CloudNativePG operator manages its own
+PodDisruptionBudgets for the database pods.
+
+These are limits of the current chart, not a setting you can change today.
+They are going to be addressed in future releases.
+
+[#_storage_api_server_and_kubectl]
+== Storage API server and kubectl
+
+The storage API server is registered as a Kubernetes aggregated API, in
+the group `storage.sbomscanner.kubewarden.io`. When no storage replica is
+ready, for example during a database outage, that aggregated API turns
+unavailable. A request for one of its kinds, such as {image-cr} or
+{vulnerabilityreport-cr}, fails. Requests for ordinary Kubernetes resources
+keep working.
+
+The controller and the worker wait for the storage API at startup, so a
+storage outage also delays a fresh controller or worker pod. Keep
+`storage.replicas` at `3` or more, and keep the database reachable.
+
+[#_postgresql]
+== PostgreSQL
+
+PostgreSQL holds every scan result: {image-cr}, {sbom-cr},
+{vulnerabilityreport-cr}, {workloadscanreport-cr}, {nodesbom-cr}, and
+{nodevulnerabilityreport-cr}. The {registry-cr}, the {scanjob-cr}, and the
+other configuration resources live in etcd and do not depend on it. If you
+lose the database, {sboms-short-name} rebuilds the current reports the
+next time it scans. It cannot rebuild the history of past reports, or the
+SBOM of an image that a registry no longer carries.
+
+By default, the chart deploys PostgreSQL with the CloudNativePG operator.
+`storage.postgres.cnpg.instances` defaults to `3`. These extra instances
+give failover. They do not add write capacity: every instance writes
+through one primary. See
+xref:installation/helm-values.adoc#using-cloudnativepg-recommended[Using
+CloudNativePG].
+
+`storage.postgres.cnpg.storage.size` starts small. You can raise it later,
+and CloudNativePG resizes the existing volume. You cannot lower it. Raise
+the value with headroom before your first large scan. Set
+`storage.postgres.cnpg.storage.storageClass` to a storage class with the
+performance that your scan volume needs, rather than keep the cluster
+default.
+
+You install and upgrade the CloudNativePG operator yourself. The chart
+only creates the `Cluster` resource that the operator reconciles.
+
+[#_postgresql_backups]
+=== Back up the database
+
+The chart does not configure a backup on its own. Use
+`storage.postgres.cnpg.merge` to add a backup configuration to the CNPG
+`Cluster` resource. This value deep-merges into the `Cluster` spec, so you
+can set any field that the chart does not expose directly. A list in
+`merge` replaces the chart-managed list; it does not append to it.
+
+This example adds the Barman Cloud plugin:
+
+[source,yaml]
+----
+storage:
+  postgres:
+    cnpg:
+      merge:
+        plugins:
+          - name: barman-cloud.cloudnative-pg.io
+            isWALArchiver: true
+            parameters:
+              barmanObjectName: my-object-store
+        backup:
+          retentionPolicy: "30d"
+----
+
+Before you install this configuration, install the Barman Cloud plugin
+next to the CloudNativePG operator. Then create the `ObjectStore`
+resource that the plugin parameter names. After the install, create a
+`ScheduledBackup` that targets the `Cluster` named
+`<release>-sbomscanner-cnpg-cluster`. See the
+https://cloudnative-pg.io/documentation/current/backup/[CloudNativePG
+backup documentation] for the plugin and the `ObjectStore` and
+`ScheduledBackup` fields.
+
+[#_use_your_own_postgresql]
+=== Use your own PostgreSQL
+
+Turn off CloudNativePG for your own backup process, your own
+high-availability setup, or sizing that an in-cluster database cannot
+give you. Point {sboms-short-name} at a PostgreSQL instance that you
+manage instead. See
+xref:installation/helm-values.adoc#using-an-external-postgresql-instance[Using
+an external PostgreSQL instance].
+
+[#_nats]
+== NATS
+
+The chart deploys xref:glossary.adoc#_nats[NATS] as a subchart, with
+https://docs.nats.io/reference/jetstream/[JetStream] on.
+By default it runs three pods, each with its own persistent
+volume on the cluster default storage class. NATS carries the scan
+messages between the controller and the workers, and the watch events
+between the storage replicas. The messages that a worker has not yet
+processed survive a worker or a controller restart. They stay on the
+NATS volume until a worker acknowledges them. The subchart creates its
+own PodDisruptionBudget.
+
+The `nats` values block configures this subchart directly. Do not edit it
+by hand; a value set elsewhere in the chart already shapes it to work with
+{sboms-short-name}.
+
+[#_node_scan_worker]
+== Node scan worker
+
+With `controller.nodeScan.enabled` at its default of `true`, the chart
+deploys a second worker as a DaemonSet, one pod on every node. This pod
+reads the root file system of its node to produce a {nodesbom-cr} and a
+{nodevulnerabilityreport-cr}.
+
+Reading every file on the node needs either the UID `0` or the Linux
+capability `DAC_READ_SEARCH`. Both the `baseline` and the `restricted` Pod
+Security Admission levels forbid that capability, so the pod needs UID
+`0` regardless. The pod mounts the root file system read-only, and it adds
+no other capability. See
+xref:user-guide/scanning-nodes.adoc#_pod_security_admission[Pod Security
+Admission] for the full reasoning.
+
+If you do not need node scanning, turn it off. The DaemonSet is removed,
+and every remaining pod in the release meets the `restricted` level:
+
+[source,yaml]
+----
+controller:
+  nodeScan:
+    enabled: false
+----
+
+See
+xref:user-guide/scanning-nodes.adoc#disabling-node-scanning[Disabling node
+scanning] for the difference between this value and disabling scans
+through the `NodeScanConfiguration` resource.
+
+[#_admission_policies_and_pod_security_admission]
+== Admission policies and Pod Security Admission
+
+What an admission policy accepts depends on whether node scanning is on.
+
+With `controller.nodeScan.enabled: false`, the controller, the storage API
+server, the worker, the MCP server, and NATS all run as non-root and drop
+every capability. None of them use a host namespace or a `hostPath`
+volume. They meet the `restricted` Pod Security Admission level, and no
+{admc-name} recommended policy rejects them.
+
+With node scanning on, the node scan worker fails both the `baseline` and
+the `restricted` level. In `protect` mode, three of the {admc-short-name}
+recommended policies reject it:
+
+[cols="1,2", options="header"]
+|===
+|Policy |Rejects the node scan worker because
+
+|`do-not-share-host-paths`
+|The root file system, `/`, is not under `/tmp`.
+
+|`do-not-run-as-root`
+|`runAsUser` is `0` and `runAsNonRoot` is `false`.
+
+|`drop-capabilities`
+|It adds `DAC_READ_SEARCH`, and the allowed list of the policy is empty.
+|===
+
+Exclude the {sboms-short-name} namespace from these policies, with the
+`recommendedPolicies.skipAdditionalNamespaces` value of the
+{admc-short-name} Helm chart. The default exclusion list of that chart
+already contains `cattle-sbomscanner-system`. If you install
+{sboms-short-name} into a namespace with another name, such as
+`sbomscanner` from the quick start, add that name:
+
+[source,yaml]
+----
+recommendedPolicies:
+  skipAdditionalNamespaces:
+    - sbomscanner
+----
+
+Keep the namespace at the `privileged` Pod Security Admission level, or
+use `audit` or `warn` mode only.
+
+See xref:latest@admission-controller:en:howtos/security-hardening/security-hardening.adoc[Security
+hardening] for the full list of recommended policies, and
+xref:latest@admission-controller:en:howtos/pod-security-admission-with-kubewarden.adoc[Pod
+Security Admission] for the three levels.
+
+[#_telemetry]
+== Telemetry
+
+{sboms-short-name} has no bundled OpenTelemetry collector. Set
+`otel.endpoint` to the OTLP/gRPC endpoint of a collector that you already
+operate. The export stays off while this value is empty:
+
+[source,yaml]
+----
+otel:
+  endpoint: "https://otel-collector.observability.svc.cluster.local:4317"
+  caSecretName: "sbomscanner-otel-ca"
+  clientCertificateSecretName: "sbomscanner-otel-client"
+----
+
+Both Secrets must exist in the {sboms-short-name} namespace before you set
+these values. See
+xref:installation/helm-values.adoc#_opentelemetry[OpenTelemetry] for what
+each value does, and xref:user-guide/opentelemetry.adoc[OpenTelemetry] for
+the full setup, including the exported traces and metrics. The MCP server
+does not export telemetry.
+
+[#_scan_scope_and_intervals]
+== Scan scope and intervals
+
+The chart has no value that limits the scan scope or the scan frequency.
+Each lives in a custom resource instead:
+
+* `Registry.spec.scanInterval` sets how often the registry runner rescans
+  a {registry-cr}. Leave it unset to scan only on demand. See
+  xref:user-guide/scanning-registries.adoc[Scanning Registries].
+* `WorkloadScanConfiguration.spec.namespaceSelector` and `.scanInterval`
+  set which namespaces the workload scan covers, and how often it
+  rescans them. See
+  xref:user-guide/scanning-workloads.adoc[Scanning Workloads].
+* `NodeScanConfiguration.spec.nodeSelector`, `.platforms`, and
+  `.scanInterval` set which nodes the node scan covers, and how often. See
+  xref:user-guide/scanning-nodes.adoc[Scanning Nodes].
+
+A validating webhook rejects a `scanInterval` under one minute, on every
+one of these resources. {sboms-short-name} runs one {scanjob-cr} per
+{registry-cr} at a time; split a large registry into several `Registry`
+resources to scan it in parallel.
+
+Turn off a feature that you do not use, so that the controller does not
+reconcile it:
+
+[source,yaml]
+----
+controller:
+  workloadScan:
+    enabled: false
+  nodeScan:
+    enabled: false
+----
+
+[#_air_gap]
+== Air-gapped clusters
+
+A production cluster without internet access needs its own sources for
+the vulnerability databases, the PostgreSQL operand image, and the
+default VEX feeds:
+
+[source,yaml]
+----
+worker:
+  trivyDBRepository: "my-registry.example.com/aquasecurity/trivy-db"
+  trivyJavaDBRepository: "my-registry.example.com/aquasecurity/trivy-java-db"
+controller:
+  defaultVEXHubResources: false
+storage:
+  postgres:
+    cnpg:
+      imageName: "my-registry.example.com/postgresql:18.1"
+----
+
+See xref:user-guide/airgap-support.adoc[Air Gap Support] for the full
+setup, including how to self-host a VEX Hub.
+
+[#_example_production_configuration]
+== Example production configuration
+
+This example combines the configuration from this page into one Helm
+values file:
+
+[source,yaml]
+----
+worker:
+  replicas: 5
+
+storage:
+  postgres:
+    cnpg:
+      storage:
+        storageClass: fast-ssd
+        size: 20Gi
+      merge:
+        plugins:
+          - name: barman-cloud.cloudnative-pg.io
+            isWALArchiver: true
+            parameters:
+              barmanObjectName: my-object-store
+        backup:
+          retentionPolicy: "30d"
+
+otel:
+  endpoint: "https://otel-collector.observability.svc.cluster.local:4317"
+  caSecretName: "sbomscanner-otel-ca"
+  clientCertificateSecretName: "sbomscanner-otel-client"
+
+controller:
+  nodeScan:
+    enabled: true
+mcp:
+  enabled: false
+----
+
+Apply the file at install or upgrade time:
+
+[source,bash]
+----
+helm upgrade --install sbomscanner kubewarden/sbomscanner \
+  --namespace sbomscanner \
+  --create-namespace \
+  -f production-values.yaml \
+  --wait
+----
