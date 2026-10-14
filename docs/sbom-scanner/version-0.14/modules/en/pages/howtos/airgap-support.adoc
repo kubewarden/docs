@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 = Air Gap Support
 :revdate: 2026-09-01
 :page-revdate: {revdate}
+:page-aliases: user-guide/airgap-support.adoc
 :description: Run {sboms-name} in air-gapped environments with mirrored dependencies.
 
 You can use {sboms-name} in air-gapped environments.

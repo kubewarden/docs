@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 = Helm Values Configuration
 :revdate: 2026-09-01
 :page-revdate: {revdate}
+:page-aliases: installation/helm-values.adoc
 :description: Configure {sboms-name} Helm chart values for deployment and storage.
 
 This document describes the available configuration options for the {sboms-name} Helm chart.
@@ -219,7 +220,7 @@ controller:
 ----
 
 Set this to `false` to prevent default-resource seeding. Use this setting
-in air-gapped environments. See xref:user-guide/airgap-support.adoc#self-hosting-vex-hub[Air Gap Support]
+in air-gapped environments. See xref:howtos/airgap-support.adoc#self-hosting-vex-hub[Air Gap Support]
 to configure a self-hosted VEX Hub.
 
 [#_opentelemetry]
@@ -244,4 +245,4 @@ otel:
   The components use this certificate to authenticate to the endpoint (mTLS).
 
 Both secrets must exist in the namespace where {sboms-name} is installed.
-See xref:user-guide/opentelemetry.adoc[OpenTelemetry] for the full setup and xref:reference/opentelemetry-reference.adoc[OpenTelemetry Reference] for the exported traces and metrics.
+See xref:howtos/opentelemetry.adoc[OpenTelemetry] for the full setup and xref:reference/opentelemetry-reference.adoc[OpenTelemetry Reference] for the exported traces and metrics.

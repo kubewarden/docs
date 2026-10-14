@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 = Querying SBOM and VulnerabilityReport Resources
 :revdate: 2026-09-01
 :page-revdate: {revdate}
+:page-aliases: user-guide/querying-reports.adoc
 :description: Query {sboms-name} images, SBOMs, and vulnerability reports.
 
 This guide explains how to query {sboms-name} resources with metadata

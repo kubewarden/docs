@@ -3,12 +3,13 @@ include::partial$variables.adoc[]
 = Scanning Nodes
 :revdate: 2026-09-01
 :page-revdate: {revdate}
+:page-aliases: user-guide/scanning-nodes.adoc
 :description: Configure node scanning and understand node vulnerability reports.
 
 == Overview
 
 {sboms-name} can scan container images through
-xref:user-guide/scanning-registries.adoc[Registry configurations] and
+xref:tutorials/scanning-registries.adoc[Registry configurations] and
 workload scanning, but the security posture of a cluster also depends on
 the nodes themselves. Nodes run the operating system, the container
 runtime, the kubelet, and other system-level packages that are invisible

@@ -2,6 +2,7 @@ include::partial$variables.adoc[]
 = Configuring {sboms-name} for production
 :revdate: 2026-10-13
 :page-revdate: {revdate}
+:page-aliases: installation/production-deployments.adoc
 :description: Configure the controller, the storage API server, the worker, PostgreSQL, and NATS of {sboms-name} for high availability and reliable resource use.
 :keywords: ["{sboms-name}", kubewarden, kubernetes, production, replicas, postgresql, nats, backups, admission policies, pod security admission]
 :doc-persona: kubewarden-operator, kubewarden-integrator
@@ -14,7 +15,7 @@ node scan xref:glossary.adoc#_worker[worker], and the other chart values
 that matter at scale.
 
 For the full list of chart values, see
-xref:installation/helm-values.adoc[Helm Values Configuration]. For how the
+xref:howtos/helm-values.adoc[Helm Values Configuration]. For how the
 components work together, see
 xref:explanations/architecture.adoc[Architecture]. For the cluster
 requirements, see xref:reference/compatibility.adoc[Compatibility].
@@ -98,7 +99,7 @@ By default, the chart deploys PostgreSQL with the CloudNativePG operator.
 `storage.postgres.cnpg.instances` defaults to `3`. These extra instances
 give failover. They do not add write capacity: every instance writes
 through one primary. See
-xref:installation/helm-values.adoc#using-cloudnativepg-recommended[Using
+xref:howtos/helm-values.adoc#using-cloudnativepg-recommended[Using
 CloudNativePG].
 
 `storage.postgres.cnpg.storage.size` starts small. You can raise it later,
@@ -153,7 +154,7 @@ Turn off CloudNativePG for your own backup process, your own
 high-availability setup, or sizing that an in-cluster database cannot
 give you. Point {sboms-short-name} at a PostgreSQL instance that you
 manage instead. See
-xref:installation/helm-values.adoc#using-an-external-postgresql-instance[Using
+xref:howtos/helm-values.adoc#using-an-external-postgresql-instance[Using
 an external PostgreSQL instance].
 
 [#_nats]
@@ -186,7 +187,7 @@ capability `DAC_READ_SEARCH`. Both the `baseline` and the `restricted` Pod
 Security Admission levels forbid that capability, so the pod needs UID
 `0` regardless. The pod mounts the root file system read-only, and it adds
 no other capability. See
-xref:user-guide/scanning-nodes.adoc#_pod_security_admission[Pod Security
+xref:tutorials/scanning-nodes.adoc#_pod_security_admission[Pod Security
 Admission] for the full reasoning.
 
 If you do not need node scanning, turn it off. The DaemonSet is removed,
@@ -200,7 +201,7 @@ controller:
 ----
 
 See
-xref:user-guide/scanning-nodes.adoc#disabling-node-scanning[Disabling node
+xref:tutorials/scanning-nodes.adoc#disabling-node-scanning[Disabling node
 scanning] for the difference between this value and disabling scans
 through the `NodeScanConfiguration` resource.
 
@@ -272,8 +273,8 @@ otel:
 
 Both Secrets must exist in the {sboms-short-name} namespace before you set
 these values. See
-xref:installation/helm-values.adoc#_opentelemetry[OpenTelemetry] for what
-each value does, and xref:user-guide/opentelemetry.adoc[OpenTelemetry] for
+xref:howtos/helm-values.adoc#_opentelemetry[OpenTelemetry] for what
+each value does, and xref:howtos/opentelemetry.adoc[OpenTelemetry] for
 the full setup, including the exported traces and metrics. The MCP server
 does not export telemetry.
 
@@ -285,14 +286,14 @@ Each lives in a custom resource instead:
 
 * `Registry.spec.scanInterval` sets how often the registry runner rescans
   a {registry-cr}. Leave it unset to scan only on demand. See
-  xref:user-guide/scanning-registries.adoc[Scanning Registries].
+  xref:tutorials/scanning-registries.adoc[Scanning Registries].
 * `WorkloadScanConfiguration.spec.namespaceSelector` and `.scanInterval`
   set which namespaces the workload scan covers, and how often it
   rescans them. See
-  xref:user-guide/scanning-workloads.adoc[Scanning Workloads].
+  xref:tutorials/scanning-workloads.adoc[Scanning Workloads].
 * `NodeScanConfiguration.spec.nodeSelector`, `.platforms`, and
   `.scanInterval` set which nodes the node scan covers, and how often. See
-  xref:user-guide/scanning-nodes.adoc[Scanning Nodes].
+  xref:tutorials/scanning-nodes.adoc[Scanning Nodes].
 
 A validating webhook rejects a `scanInterval` under one minute, on every
 one of these resources. {sboms-short-name} runs one {scanjob-cr} per
@@ -331,7 +332,7 @@ storage:
       imageName: "my-registry.example.com/postgresql:18.1"
 ----
 
-See xref:user-guide/airgap-support.adoc[Air Gap Support] for the full
+See xref:howtos/airgap-support.adoc[Air Gap Support] for the full
 setup, including how to self-host a VEX Hub.
 
 [#_example_production_configuration]

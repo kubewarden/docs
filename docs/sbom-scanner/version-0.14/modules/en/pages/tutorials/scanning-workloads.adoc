@@ -3,11 +3,12 @@ include::partial$variables.adoc[]
 = Scanning Workloads
 :revdate: 2026-09-11
 :page-revdate: {revdate}
+:page-aliases: user-guide/scanning-workloads.adoc
 :description: Configure workload scanning and understand workload vulnerability reports.
 
 == Overview
 
-{sboms-name} can scan container registries with explicit xref:user-guide/scanning-registries.adoc[Registry configurations]. The important question is which vulnerabilities affect workloads in the cluster.
+{sboms-name} can scan container registries with explicit xref:tutorials/scanning-registries.adoc[Registry configurations]. The important question is which vulnerabilities affect workloads in the cluster.
 
 A registry can contain thousands of images. Only some of these images are
 deployed. The WorkloadScan feature watches running workloads. It finds the
@@ -118,7 +119,7 @@ a|A standard https://kubernetes.io/docs/concepts/overview/working-with-objects/l
 |-
 
 |`authSecret`
-a|Name of a secret in the {sboms-name} installation namespace containing registry credentials in `kubernetes.io/dockerconfigjson` format. These credentials are propagated to all managed `Registry` resources. See xref:user-guide/private-registries.adoc[Private Registries].
+a|Name of a secret in the {sboms-name} installation namespace containing registry credentials in `kubernetes.io/dockerconfigjson` format. These credentials are propagated to all managed `Registry` resources. See xref:howtos/private-registries.adoc[Private Registries].
 |-
 
 |`caBundle`

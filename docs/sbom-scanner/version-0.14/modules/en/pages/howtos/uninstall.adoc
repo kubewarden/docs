@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 = {sboms-name} Uninstall
 :revdate: 2026-09-01
 :page-revdate: {revdate}
+:page-aliases: installation/uninstall.adoc
 :description: Uninstall {sboms-name} and remove its Kubernetes resources.
 
 Remove the resources that the `helm` chart created:

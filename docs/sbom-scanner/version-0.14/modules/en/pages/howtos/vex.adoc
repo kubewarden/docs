@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 = VEX Support
 :revdate: 2026-09-01
 :page-revdate: {revdate}
+:page-aliases: user-guide/vex.adoc
 :description: Use VEX hubs to enrich {sboms-name} vulnerability findings.
 
 VEX communicates vulnerability exploitability information. Software
@@ -67,4 +68,4 @@ kubectl patch vexhub <vexhub-name> -p '{"spec":{"enabled":false}}'
 
 == Air Gap
 
-Air Gap support for VEX Hub is described xref:user-guide/airgap-support.adoc#self-hosting-vex-hub[here].
+Air Gap support for VEX Hub is described xref:howtos/airgap-support.adoc#self-hosting-vex-hub[here].

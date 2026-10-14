@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 = OpenTelemetry
 :revdate: 2026-08-19
 :page-revdate: {revdate}
+:page-aliases: user-guide/opentelemetry.adoc
 :description: Export traces and metrics from {sboms-name} with OpenTelemetry.
 :keywords: ["{sboms-name}", "kubewarden", "kubernetes", "opentelemetry", "otlp", "traces", "metrics", "observability"]
 :doc-persona: ["kubewarden-operator"]

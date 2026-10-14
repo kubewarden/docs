@@ -85,7 +85,7 @@ init container. Each storage replica runs them, and they are safe to run
 more than once. A new version that changes the database schema applies
 the change during this step. Back up the database before you upgrade a
 `MINOR` version. See
-xref:installation/production-deployments.adoc#_postgresql_backups[Back up
+xref:howtos/production-deployments.adoc#_postgresql_backups[Back up
 the database].
 
 The scan messages that a worker has not yet processed stay in NATS during
