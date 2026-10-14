@@ -1,13 +1,13 @@
 include::partial$variables.adoc[]
 
 = Collecting logs for debugging
-:revdate: 2026-08-20
+:revdate: 2026-10-13
 :page-revdate: {revdate}
 :description: Collect {sboms-name} logs and support bundles for troubleshooting.
 
 == Install dependencies
 
-Please follow the instructions in the xref:quickstart.adoc[quickstart guide] to ensure you have the necessary dependencies installed.
+Install the dependencies in the xref:quickstart.adoc[quickstart guide].
 
 The `sbomscanner-debug.sh` script additionally requires:
 
@@ -45,7 +45,7 @@ Example output:
 [source,text]
 ----
 == Helm release ==
-  ✅ Found {sboms-name} Helm release
+  ✅ Found SBOMscanner Helm release
   Release name       sbomscanner
   Namespace          sbomscanner
   Chart              sbomscanner-0.2.0
@@ -58,11 +58,17 @@ Example output:
 
 == StatefulSets ==
   ✅ statefulset 'sbomscanner-nats' running, all pods ready.
+
+== DaemonSets ==
+  ✅ daemonset 'sbomscanner-worker-node' running, all pods ready.
 ────────────────────────────────────────────────────────────────────
 ✅ Verification passed.
 ----
 
-If your release lives in a non-standard namespace and discovery fails, you can still pin it explicitly:
+The script skips the `DaemonSets` section when node scanning is disabled in the chart (`controller.nodeScan.enabled=false`).
+
+If discovery fails for a release in a non-standard namespace, specify the
+namespace:
 
 [source,bash]
 ----
@@ -73,7 +79,11 @@ If your release lives in a non-standard namespace and discovery fails, you can s
 
 [WARNING]
 ====
-⚠️ The bundle may contain sensitive data. Pod logs include container registry names and URIs, and by default the bundle also includes the rendered Helm values and manifest, which can contain credentials depending on how the chart was configured (for example image pull secrets, registry auth, or any value passed via `--set`). Review the bundle contents before sharing.
+The bundle can contain sensitive data. Pod logs include container registry names
+and URIs. By default the bundle also includes the rendered Helm values and
+manifest. These can contain credentials depending on how the chart was
+configured. For example image pull secrets, registry auth, or any value passed
+via `--set`. Review the bundle contents before sharing.
 ====
 
 Using https://github.com/kubewarden/sbomscanner/blob/main/hack/sbomscanner-debug.sh[the script found in the sbomscanner repository]:
@@ -85,7 +95,7 @@ Using https://github.com/kubewarden/sbomscanner/blob/main/hack/sbomscanner-debug
 
 By default the script collects:
 
-* Logs from the pods of all {sboms-name} components (controller, workers, storage, NATS), including init containers and previous-container logs for crash-looped pods.
+* Logs from the pods of all {sboms-name} components (controller, workers, node workers, storage, NATS), including init containers and previous-container logs for crash-looped pods.
 * Logs from the CloudNativePG cluster pods running in the {sboms-name} namespace.
 * Helm release metadata (`values`, rendered `manifest`, history).
 
@@ -96,7 +106,7 @@ By default the script collects:
 |Flag |Purpose
 |`--namespace <ns>` |Force a specific install namespace (otherwise auto-discovered)
 |`--cnpg-namespace <ns>` |Also collect logs from the CNPG operator in that namespace (e.g. `cnpg-system`)
-|`--manifests` |Also dump every {sboms-name} CR (cluster-scoped `VEXHub` and `WorkloadScanConfiguration`; namespaced `Registry`, `ScanJob`, `Image`, `VulnerabilityReport`, `WorkloadScanReport` collected cluster-wide), plus CNPG `Cluster`/`Pooler`/`Backup`/`ScheduledBackup` CRs, events and `kubectl describe` for every pod in the install namespace
+|`--manifests` |Also dump every {sboms-name} CR (cluster-scoped `VEXHub`, `WorkloadScanConfiguration`, `NodeScanConfiguration`, `NodeScanJob`, `NodeSBOM` and `NodeVulnerabilityReport`; namespaced `Registry`, `ScanJob`, `Image`, `VulnerabilityReport`, `WorkloadScanReport` collected cluster-wide), plus CNPG `Cluster`/`Pooler`/`Backup`/`ScheduledBackup` CRs, events and `kubectl describe` for every pod in the install namespace
 |`--output-dir <dir>` |Write the bundle to `<dir>` instead of the current directory
 |`--compress-results` |Tar+gzip the bundle into a single `.tar.gz`
 |===

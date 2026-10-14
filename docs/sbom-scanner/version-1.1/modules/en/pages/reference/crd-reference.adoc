@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = CRD Reference
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-08-20
+:revdate: 2026-08-06
 :page-revdate: {revdate}
 :title: CRD Reference
 :description: API reference for {sboms-name} Custom Resource Definitions.
