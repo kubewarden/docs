@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 = Common problems
 :revdate: 2026-09-01
 :page-revdate: {revdate}
+:page-aliases: troubleshooting/common-problems.adoc
 :description: Resolve common {sboms-name} issues and error conditions.
 
 This page documents common errors that occur while users run
@@ -40,4 +41,4 @@ After you get credentials, create a `kubernetes.io/dockerconfigjson` Secret
 in the {sboms-name} installation namespace. Reference the Secret from the
 applicable `Registry` resource. To propagate credentials to managed
 registries, set the `authSecret` field in `WorkloadScanConfiguration`. See
-xref:user-guide/private-registries.adoc[Private Registries] for the procedure.
+xref:howtos/private-registries.adoc[Private Registries] for the procedure.

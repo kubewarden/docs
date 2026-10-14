@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 = MCP Server (Experimental)
 :revdate: 2026-09-01
 :page-revdate: {revdate}
+:page-aliases: user-guide/mcp-server.adoc
 :description: Enable and use the experimental {sboms-name} MCP server.
 
 [NOTE]
@@ -366,7 +367,7 @@ responses that exceed client context limits.
 |`create_nodescanjobs` |Create NodeScanJob resources (cluster-scoped)
 |===
 
-For details on the resources these tools manage, see xref:user-guide/scanning-registries.adoc[Scanning Registries], xref:user-guide/scanning-workloads.adoc[Scanning Workloads], and xref:user-guide/vex.adoc[VEX].
+For details on the resources these tools manage, see xref:tutorials/scanning-registries.adoc[Scanning Registries], xref:tutorials/scanning-workloads.adoc[Scanning Workloads], and xref:howtos/vex.adoc[VEX].
 
 [#_example-prompts]
 == 6. Example Prompts

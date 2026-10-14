@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 = Private Registries
 :revdate: 2026-06-15
 :page-revdate: {revdate}
+:page-aliases: user-guide/private-registries.adoc
 :description: Configure {sboms-name} to scan private container registries.
 
 {sboms-name} supports private registries to scan for images. In order to make it work, please follow the steps listed below.

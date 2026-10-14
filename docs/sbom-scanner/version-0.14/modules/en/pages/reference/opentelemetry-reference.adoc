@@ -10,7 +10,7 @@ include::partial$variables.adoc[]
 :doc-topic: ["operator-manual", "observability"]
 
 This page lists the traces and metrics that {sboms-name} exports.
-To enable the export, see xref:user-guide/opentelemetry.adoc[OpenTelemetry].
+To enable the export, see xref:howtos/opentelemetry.adoc[OpenTelemetry].
 
 [NOTE]
 ====

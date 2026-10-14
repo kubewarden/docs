@@ -128,7 +128,7 @@ Each pod subscribes to a queue subject that carries the name of its node, so
 a node scan message reaches one pod only. The pod mounts the root file
 system of the node read-only, runs as root, and holds one Linux capability,
 `DAC_READ_SEARCH`. It has no host network and no host PID namespace. See
-xref:user-guide/scanning-nodes.adoc[Scanning nodes] for the Pod Security
+xref:tutorials/scanning-nodes.adoc[Scanning nodes] for the Pod Security
 Admission consequences.
 
 === Storage API server
@@ -159,7 +159,7 @@ xref:glossary.adoc#_cloudnativepg[CloudNativePG] operator, which you install
 first. Or you bring your own PostgreSQL, inside or outside the cluster, and
 give the chart the connection details. In both cases the storage API server
 verifies the server certificate of the database. See
-xref:installation/helm-values.adoc#using-an-external-postgresql-instance[Using
+xref:howtos/helm-values.adoc#using-an-external-postgresql-instance[Using
 an external PostgreSQL instance]. The
 xref:reference/compatibility.adoc[compatibility] page lists the PostgreSQL
 and CloudNativePG versions that the project tests against.

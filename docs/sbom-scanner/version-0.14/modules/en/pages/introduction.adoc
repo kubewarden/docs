@@ -55,13 +55,13 @@ Start with the xref:quickstart.adoc[quick start]. It installs
 {sboms-short-name} and runs a first scan of a registry. Then read the
 xref:explanations/architecture.adoc[architecture] page to see how the parts
 fit together, and the user guide page for the scan that you need:
-xref:user-guide/scanning-registries.adoc[registries],
-xref:user-guide/scanning-workloads.adoc[workloads], or
-xref:user-guide/scanning-nodes.adoc[nodes]. Operators find the cluster
+xref:tutorials/scanning-registries.adoc[registries],
+xref:tutorials/scanning-workloads.adoc[workloads], or
+xref:tutorials/scanning-nodes.adoc[nodes]. Operators find the cluster
 requirements in the xref:reference/compatibility.adoc[compatibility] page,
 and the Helm values and the troubleshooting steps in the how-tos. Security
 engineers find the report fields in
-xref:user-guide/querying-reports.adoc[Querying reports] and the terms in the
+xref:tutorials/querying-reports.adoc[Querying reports] and the terms in the
 xref:glossary.adoc[glossary]. Before you deploy to production,
 xref:tutorials/verifying-sbom-scanner.adoc[verify the release] that you
 install.

@@ -52,7 +52,7 @@ quick start] for the install commands.
 |The chart creates a `postgresql.cnpg.io/v1` Cluster when
 `storage.postgres.cnpg.enabled` is `true`, the default. The project tests
 against the latest `cnpg/cloudnative-pg` chart at the time of each test run.
-See xref:installation/helm-values.adoc#using-cloudnativepg-recommended[Using
+See xref:howtos/helm-values.adoc#using-cloudnativepg-recommended[Using
 CloudNativePG].
 
 |*PostgreSQL*
@@ -60,7 +60,7 @@ CloudNativePG].
 |For an external database, when CloudNativePG is off. The storage API server
 always verifies the server certificate of the database. There is no
 plain-text option. See
-xref:installation/helm-values.adoc#using-an-external-postgresql-instance[Using
+xref:howtos/helm-values.adoc#using-an-external-postgresql-instance[Using
 an external PostgreSQL instance].
 
 |*Default StorageClass*
@@ -100,11 +100,11 @@ Needed for specific features.
 |Traces and metrics. Off until you set `otel.endpoint`. The OpenTelemetry
 stack changes often, and backwards-incompatible changes still occur. The
 project adjusts to them as they appear. See
-xref:user-guide/opentelemetry.adoc[OpenTelemetry].
+xref:howtos/opentelemetry.adoc[OpenTelemetry].
 
 |*MCP client*
 |Any client that speaks the Model Context Protocol.
-|The MCP server, off by default. See xref:user-guide/mcp-server.adoc[MCP
+|The MCP server, off by default. See xref:howtos/mcp-server.adoc[MCP
 server].
 |===
 

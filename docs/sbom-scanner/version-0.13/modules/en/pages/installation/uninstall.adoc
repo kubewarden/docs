@@ -30,4 +30,11 @@ Finally, delete the namespace where {sboms-name} was deployed:
 kubectl delete ns sbomscanner
 ----
 
-This will remove the Persistent Volume Claims and their associated Persistent Volumes.
+This removes the PersistentVolumeClaims of PostgreSQL and NATS.
+
+WARNING: Whether this also destroys the data depends on the `reclaimPolicy` of
+your StorageClass. A `Delete` policy deletes the PersistentVolume and the
+data on it. A `Retain` policy keeps the PersistentVolume, marked as
+`Released`, so you can recover the data manually. Check your StorageClass
+before you delete the namespace, and take a backup first if you need to keep
+past reports. See xref:installation/helm-values.adoc#backups[Backups].

@@ -4,7 +4,7 @@ include::partial$variables.adoc[]
 :page-revdate: {revdate}
 :sidebar_label: Organization
 :sidebar_position: 75
-:description: How the {sboms-name} documentation is organized: introduction, quick start, user guide, explanations, how-tos, reference, and the pages about the project itself.
+:description: How the {sboms-name} documentation is organized: introduction, quick start, tutorials, explanations, how-tos, reference, and the pages about the project itself.
 :keywords: {sboms-name}, kubewarden, documentation, organization
 :doc-persona: kubewarden-all
 :doc-type: explanation
@@ -15,11 +15,13 @@ The {sboms-name} documentation has these parts:
 * xref:introduction.adoc[Introduction]: what {sboms-short-name} is.
 * xref:quickstart.adoc[Quick start]: install {sboms-short-name} and run a
   first scan.
-* _Tutorials_: how to verify the signatures of the release, and the user
-  guide, with one page per feature, from registry scans to the MCP server.
+* _Tutorials_: how to verify the signatures of the release, and one page
+  per scan type: registries, workloads, and nodes, plus how to query the
+  reports.
 * _Explanations_: how {sboms-short-name} is built and why.
-* _How-tos_: tasks for the operator, such as Helm values, uninstall, and
-  troubleshooting.
+* _How-tos_: tasks for the operator, such as Helm values, production
+  deployment, private registries, air gap support, VEX, OpenTelemetry,
+  the MCP server, uninstall, and troubleshooting.
 * _Reference_: the cluster requirements, the custom resource definitions,
   and the OpenTelemetry signals.
 * xref:personas.adoc[For who?]: the people who use {sboms-short-name}.

@@ -1,0 +1,107 @@
+include::partial$variables.adoc[]
+= Upgrade path
+:revdate: 2026-10-13
+:page-revdate: {revdate}
+:description: Upgrade {sboms-name} with the supported version steps, one minor version at a time, and keep the database and its operator in mind.
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["operator-manual", "upgrade-path"]
+:doc-type: ["reference"]
+:keywords: ["{sboms-name}", kubewarden, "upgrade path", support, versioning]
+
+[#_versioning]
+== Versioning
+
+{sboms-short-name} uses https://semver.org/[semantic versioning]. A
+version follows the `MAJOR.MINOR.PATCH` pattern. The supported version is
+the latest release.
+
+One deliverable follows this version: the `sbomscanner` Helm chart, in its
+`appVersion` field. The controller, the storage API server, the worker,
+and the MCP server images carry this version as their tag. All four images
+run the same version.
+
+[#_helm_chart_versions]
+== Helm chart versions
+
+A Helm chart has two version fields. The `appVersion` field holds the
+{sboms-short-name} version described above. The `version` field is the
+version of the chart itself. It also follows semantic versioning, and it
+describes changes to the chart templates and to `values.yaml`.
+
+For {sboms-short-name}, the two fields move together.
+
+[#_components_outside_the_version]
+== Components outside the version
+
+Two components run with {sboms-short-name} and follow their own versions:
+
+* NATS. The chart ships it as a subchart. A chart upgrade can move the
+  NATS version, and the chart `version` field records such a change.
+* The CloudNativePG operator and the PostgreSQL image. You install and
+  upgrade the operator yourself. The chart creates only the `Cluster`
+  resource that the operator reconciles. Read the release notes of the
+  operator before you upgrade it, because it owns the database that holds
+  every scan result.
+
+[#_upgrade_paths]
+== Upgrade paths
+
+You can upgrade across several `PATCH` versions in one operation. You
+cannot upgrade across more than one `MINOR` or `MAJOR` version in one
+operation.
+
+For example, you can upgrade from `0.13.0` to `0.13.2` in one step. You
+cannot upgrade from `0.12.0` to `0.14.0` in one step. Upgrade from
+`0.12.0` to `0.13.x` first, then from `0.13.x` to `0.14.0`. To move
+across a `MAJOR` version, apply every `MINOR` version between the two.
+
+.Example upgrade path support graph
+[mermaid]
+....
+flowchart LR;
+  accTitle: Upgrade path support graph
+  accDescr: A diagram showing supported and unsupported upgrade paths for SBOM Scanner.
+  0.12.0(0.12.0)-->0.12.1(0.12.1);
+  0.12.1-->0.13.0(0.13.0);
+  0.13.0-->0.13.1(0.13.1);
+  0.12.0-->0.13.0;
+  0.13.1-->0.14.0(0.14.0);
+  0.13.0-->|Not recommended|0.14.0;
+  0.12.1-->|Not supported|0.14.0;
+  linkStyle 5 color:brown,stroke-width:2px,stroke-dasharray: 3 5
+  linkStyle 6 color:red,stroke-width:2px,stroke-dasharray: 3 5
+....
+
+[#_upgrade_order]
+== Upgrade order
+
+Upgrade the `sbomscanner` Helm chart. There is no other
+{sboms-short-name} component to upgrade. The chart upgrades the
+controller, the storage API server, the worker, the node scan worker, and
+the MCP server together.
+
+The storage API server runs the database migrations at startup, in its
+init container. Each storage replica runs them, and they are safe to run
+more than once. A new version that changes the database schema applies
+the change during this step. Back up the database before you upgrade a
+`MINOR` version. See
+xref:howtos/production-deployments.adoc#_postgresql_backups[Back up
+the database].
+
+The scan messages that a worker has not yet processed stay in NATS during
+the upgrade. A new worker picks them up when it starts.
+
+[#_downgrades]
+== Downgrades
+
+{sboms-short-name} does not support downgrades, and the project does not
+test them. A downgrade across a schema migration can leave the database
+in a state that the older storage API server does not read.
+
+[#_scan_results]
+== Scan results
+
+The {registry-cr}, the {scanjob-cr}, and the other configuration
+resources stay in etcd across upgrades. You do not rewrite or re-apply
+them. The scan results stay in PostgreSQL. A new version does not rescan
+on its own. The next scheduled scan produces results in the new version.

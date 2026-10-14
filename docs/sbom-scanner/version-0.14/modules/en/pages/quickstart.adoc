@@ -66,10 +66,10 @@ helm install cnpg \
 ----
 
 For CloudNativePG configuration, see
-xref:/installation/helm-values.adoc#using-cloudnativepg-recommended[Using CloudNativePG
+xref:howtos/helm-values.adoc#using-cloudnativepg-recommended[Using CloudNativePG
 (Recommended)] in the Helm values documentation. You can use an external
 PostgreSQL instance instead. See
-xref:/installation/helm-values.adoc#using-an-external-postgresql-instance[Using an
+xref:howtos/helm-values.adoc#using-an-external-postgresql-instance[Using an
 External PostgreSQL Instance] for configuration details.
 
 [#_deploy_sbomscanner]
@@ -216,5 +216,5 @@ NAME                                                               CREATED AT
 
 You created a `Registry` resource and triggered an automated scan.
 
-The xref:/user-guide/querying-reports.adoc[Querying reports] guide
+The xref:tutorials/querying-reports.adoc[Querying reports] guide
 explains how to inspect images, SBOMs, and vulnerability reports.

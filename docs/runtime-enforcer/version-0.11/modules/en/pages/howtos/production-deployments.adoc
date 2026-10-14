@@ -1,0 +1,399 @@
+include::partial$variables.adoc[]
+= Configuring {rte-name} for production
+:revdate: 2026-10-13
+:page-revdate: {revdate}
+:description: Configure the controller, the agent, and the PriorityClass of {rte-name} for high availability, scheduling, and reliable resource use.
+:keywords: ["{rte-name}", kubewarden, kubernetes, production, poddisruptionbudget, affinity, tolerations, priorityclass, resources, admission policies, pod security admission]
+:doc-persona: kubewarden-operator, kubewarden-integrator
+:doc-type: howto
+:doc-topic: operator-manual, production, poddisruptionbudget, affinity, tolerations, priorityclass, resources, admission-policies, pod-security-admission
+
+This page gives configuration for {rte-short-name} in a production cluster.
+It covers the scheduling, the resources, and the reliability of the
+{controller-term} and the {agent-term}, and the other chart values that
+matter at scale.
+
+For the kernel and container runtime requirements, see
+xref:reference/compatibility.adoc[Compatibility]. For CPU and memory sizing
+by cluster size, see
+xref:reference/resource-consumption.adoc[Resource consumption]. For how the
+components work together, see
+xref:explanations/architecture.adoc[Architecture].
+
+[#_controller]
+== Controller
+
+The {controller-term} runs as a Kubernetes Deployment. Every controller
+replica serves three admission webhooks, and the webhooks use
+`failurePolicy: Fail`. When the controller is down, a promotion, a policy
+deletion, or a change to the {promote-label-term} label waits until a
+controller pod answers.
+
+[#_run_more_than_one_controller_replica]
+=== Run more than one controller replica
+
+The Helm value `controller.replicas` defaults to `1`. The controller
+already turns on leader election (`--leader-elect`), so you can run more
+than one replica without conflict. The leader runs the promotion and the
+status-sync loop. Every replica serves the admission webhooks, so more
+replicas keep the webhooks available while one replica restarts.
+
+Set `controller.replicas` to `2` or more:
+
+[source,yaml]
+----
+controller:
+  replicas: 2
+----
+
+[#_add_a_poddisruptionbudget_for_the_controller]
+=== Add a PodDisruptionBudget for the controller
+
+A PodDisruptionBudget (PDB) limits how many pods a voluntary disruption can
+remove at the same time, for example a node drain or a cluster upgrade. The
+chart ships a PDB template for the controller, off by default.
+
+Set `controller.pdb.enabled` to `true`. Set `minAvailable` or
+`maxUnavailable` under `controller.pdb`, in the same way as a PDB `spec`:
+
+[source,yaml]
+----
+controller:
+  pdb:
+    enabled: true
+    minAvailable: 1
+----
+
+[WARNING]
+====
+If `controller.replicas` is `1` and `controller.pdb.minAvailable` is `1`,
+the PodDisruptionBudget blocks every voluntary disruption of the controller
+pod, including `kubectl drain`. Before you turn on the PodDisruptionBudget,
+set `controller.replicas` to `2` or more.
+====
+
+[#_schedule_the_controller]
+=== Schedule the controller
+
+Use `controller.tolerations`, `controller.nodeSelector`, and
+`controller.affinity` to control where the controller pods run. For
+example, spread controller replicas across different nodes with
+`podAntiAffinity`:
+
+[source,yaml]
+----
+controller:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/component: controller
+            topologyKey: kubernetes.io/hostname
+----
+
+[#_set_controller_resources]
+=== Set controller resources
+
+`controller.resources` defaults to a Guaranteed `250m` CPU and `256Mi`
+memory, with the same `requests` and `limits`. See
+xref:reference/resource-consumption.adoc#_sizing-recommendation[Sizing
+recommendation] for the values to use at your cluster size.
+
+[#_agent]
+== Agent
+
+The {agent-term} runs as a DaemonSet, one pod on every node. Each agent pod
+loads the eBPF program and enforces the {workloadpolicy-cr} of the pods on
+its node. A node without an agent pod gives no protection to the pods that
+start there. By default, `agent.nriFailopen` is `false`, so a pod that
+carries the {policy-label-term} label does not start on a node without an
+agent. Plan the agent scheduling before you taint nodes or restrict its
+placement.
+
+[#_tolerate_tainted_nodes]
+=== Tolerate tainted nodes
+
+The chart sets no default tolerations for the agent. If a node carries a
+taint, for example a control-plane taint, the agent does not run there, and
+pods on that node run without enforcement.
+
+Add a toleration so that the agent runs on tainted nodes too:
+
+[source,yaml]
+----
+agent:
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+----
+
+[#_restrict_or_confirm_node_selection]
+=== Restrict node selection
+
+Use `agent.nodeSelector` or `agent.affinity` to keep the agent off nodes
+whose kernel does not meet the minimum
+xref:reference/compatibility.adoc[requirements]. For example, keep the
+agent off an arm64 node with a kernel older than 6.4. The agent does not
+run on a node that the selector excludes. Make sure that the selector
+still matches every node that runs workloads:
+
+[source,yaml]
+----
+agent:
+  nodeSelector:
+    kubernetes.io/os: linux
+----
+
+[#_agent_rolling_updates]
+=== Agent rolling updates
+
+The agent DaemonSet sets a fixed update strategy:
+`maxUnavailable: 0` and `maxSurge: 100%`. You cannot change this value.
+During an upgrade, the new agent pod loads every policy and binds every
+running pod again. Only then does its startup probe pass, and only then
+does the old pod stop. Protection does not lapse during the upgrade. See
+xref:explanations/architecture.adoc[Architecture] for the full upgrade
+sequence.
+
+[#_set_agent_resources]
+=== Set agent resources
+
+`agent.resources` defaults to a Guaranteed `250m` CPU and `256Mi` memory.
+The memory of each agent grows with the number of {workloadpolicy-cr}
+objects in the cluster, not with the number of pods on its node. See
+xref:reference/resource-consumption.adoc#_sizing-recommendation[Sizing
+recommendation] for the values to use at your cluster size.
+
+[#_agent_security_context]
+=== Agent security context
+
+The agent needs `hostPID: true` and four Linux capabilities (`BPF`,
+`PERFMON`, `SYS_RESOURCE`, `SYS_PTRACE`) to load the eBPF program and read
+the cgroup tree of the node. It also mounts a `hostPath` volume for the
+NRI socket, and it does not set `runAsNonRoot`. The chart sets
+`privileged: false`.
+
+An admission policy that forbids one of these fields rejects the agent
+pod, and the DaemonSet then has no pod on that node. In `protect` mode,
+four of the {admc-name} recommended policies reject the agent:
+
+[cols="1,2", options="header"]
+|===
+|Policy |Rejects the agent because
+
+|`no-host-namespace-sharing`
+|`hostPID` is `true`.
+
+|`drop-capabilities`
+|Its allowed list is empty, and the agent adds four capabilities.
+
+|`do-not-share-host-paths`
+|The NRI socket path is not under `/tmp`.
+
+|`do-not-run-as-root`
+|`runAsNonRoot` is not `true`.
+|===
+
+Exclude the {rte-short-name} namespace from these policies, with the
+`recommendedPolicies.skipAdditionalNamespaces` value of the
+{admc-short-name} Helm chart:
+
+[source,yaml]
+----
+recommendedPolicies:
+  skipAdditionalNamespaces:
+    - runtime-enforcer
+----
+
+[NOTE]
+====
+The namespace `cattle-runtime-enforcer-system` is already in the default
+exclusion list. When you install {rte-short-name} under a different
+name, add your own namespace.
+====
+
+See xref:latest@admission-controller:en:howtos/security-hardening/security-hardening.adoc[Security
+hardening] for the full list of recommended policies.
+
+Both the `baseline` and the `restricted` Pod Security Admission levels
+reject the same fields. Keep the {rte-short-name} namespace at the
+`privileged` level, or use `audit` or `warn` mode only. See
+xref:latest@admission-controller:en:howtos/pod-security-admission-with-kubewarden.adoc[Pod
+Security Admission] for the three levels.
+
+[#_priorityclass]
+== PriorityClass
+
+The chart creates a PriorityClass named `runtime-enforcer-priorityclass`,
+with value `1000000`, and applies it to the controller and the agent pods.
+This makes the Kubernetes scheduler prefer these pods over most application
+pods, and keeps the kubelet from evicting them first under node pressure.
+
+To reuse an existing PriorityClass, for example `system-node-critical`,
+turn off the chart-managed one and point `priorityClass.name` at the
+existing class:
+
+[source,yaml]
+----
+priorityClass:
+  enabled: false
+  name: system-node-critical
+----
+
+[WARNING]
+====
+If you delete a PriorityClass, running pods that use it keep running. New
+pods that name the deleted class do not start.
+====
+
+[#_telemetry]
+== Telemetry
+
+By default, the chart deploys its own OpenTelemetry collector, as a single
+Deployment replica with no `tolerations`, `nodeSelector`, or `affinity`
+value. This default is enough for a basic setup, but it is a single point of
+failure for the {violation-term} metrics.
+
+For production, point {rte-short-name} at an OpenTelemetry collector that
+your own platform operates and schedules for high availability:
+
+[source,yaml]
+----
+telemetry:
+  collectorStrategy: external
+  externalCollector:
+    protocol: grpc
+    endpoint: https://otel-collector.observability.svc.cluster.local:4317
+----
+
+See xref:quickstart.adoc#_use-an-external-collector[Use an external
+collector] for the full set of values.
+
+[#_restrict_the_learning_scope]
+== Restrict the learning scope
+
+By default, `learning.namespaceSelector` matches every namespace, so the
+agent writes a {workloadpolicyproposal-cr} for every workload in the
+cluster. In production, restrict the selector to the namespaces that you
+onboard:
+
+[source,yaml]
+----
+learning:
+  namespaceSelector:
+    matchLabels:
+      env: prod
+----
+
+Once every workload has a {workloadpolicy-cr}, set the selector to `{}` to
+turn learning off.
+
+You can also learn policies in another cluster, for example staging, and
+promote them there. If every production workload already carries the
+{policy-label-term} label, turn learning off across the whole cluster:
+
+[source,yaml]
+----
+learning:
+  namespaceSelector: {}
+----
+
+See xref:howtos/learning_mode_configuration.adoc[Learning mode
+configuration] for more examples.
+
+[#_keep_the_debugger_off]
+== Keep the debugger off
+
+`debugger.enabled` defaults to `false`. Keep it off in production. If you
+need it to diagnose a mismatch between the agent cache and the cluster,
+turn it on. Use `--reuse-values`, so that the change does not restart the
+agent:
+
+[source,bash]
+----
+helm upgrade --install runtime-enforcer kubewarden/runtime-enforcer \
+  --namespace runtime-enforcer \
+  --set debugger.enabled=true \
+  --reuse-values
+----
+
+See xref:howtos/troubleshooting.adoc#_debugger[Debugger] for what it shows.
+
+[#_require_the_agent_before_a_workload_starts]
+== Require the agent before a workload starts
+
+Add `required-plugins.noderesource.dev` to a workload that must never run
+without the agent. This annotation needs containerd 2.2 or later, or
+CRI-O 1.34 or later. The container runtime refuses to start the pod when
+the agent is not present as an NRI plugin on that node:
+
+[source,yaml]
+----
+spec:
+  template:
+    metadata:
+      annotations:
+        required-plugins.noderesource.dev: '["runtime-enforcer-agent"]'
+----
+
+See xref:howtos/troubleshooting.adoc#_required-plugins[Required plugins]
+for the prerequisites and the error that a missing agent produces.
+
+[#_example_production_configuration]
+== Example production configuration
+
+This example combines the configuration from this page into one Helm
+values file:
+
+[source,yaml]
+----
+controller:
+  replicas: 2
+  pdb:
+    enabled: true
+    minAvailable: 1
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/component: controller
+            topologyKey: kubernetes.io/hostname
+
+agent:
+  tolerations:
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+telemetry:
+  collectorStrategy: external
+  externalCollector:
+    protocol: grpc
+    endpoint: https://otel-collector.observability.svc.cluster.local:4317
+
+learning:
+  namespaceSelector:
+    matchLabels:
+      env: prod
+
+debugger:
+  enabled: false
+----
+
+Apply it at install or upgrade time:
+
+[source,bash]
+----
+helm upgrade --install runtime-enforcer kubewarden/runtime-enforcer \
+  --namespace runtime-enforcer \
+  --create-namespace \
+  -f production-values.yaml \
+  --wait
+----
