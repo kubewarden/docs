@@ -17,6 +17,7 @@ include::partial$variables.adoc[]
 ** xref:howtos/setup-development-env.adoc[Development environment]
 * Reference
 ** xref:reference/compatibility.adoc[Compatibility]
+** xref:reference/upgrade-path.adoc[Upgrade path]
 ** xref:reference/known_limitations.adoc[Known limitations]
 ** xref:reference/crd.adoc[CRD API reference]
 ** xref:reference/kubectl-plugin-cli.adoc[kubectl plugin CLI reference]

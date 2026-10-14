@@ -1,0 +1,95 @@
+include::partial$variables.adoc[]
+= Upgrade path
+:revdate: 2026-10-13
+:page-revdate: {revdate}
+:description: Upgrade {ne-name} with the supported version steps, one minor version at a time.
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["operator-manual", "upgrade-path"]
+:doc-type: ["reference"]
+:keywords: ["{ne-name}", kubewarden, "upgrade path", support, versioning]
+
+[#_versioning]
+== Versioning
+
+{ne-short-name} uses https://semver.org/[semantic versioning]. A version
+follows the `MAJOR.MINOR.PATCH` pattern. The supported version is the
+latest release.
+
+One deliverable follows this version: the `network-enforcer` Helm chart,
+in its `appVersion` field. The controller image carries this version as
+its tag. {ne-short-name} has no separate CLI or plugin to keep in step.
+
+[#_helm_chart_versions]
+== Helm chart versions
+
+A Helm chart has two version fields. The `appVersion` field holds the
+{ne-short-name} version described above. The `version` field is the
+version of the chart itself. It also follows semantic versioning, and it
+describes changes to the chart templates and to `values.yaml`.
+
+The two fields do not move together. When you plan an upgrade, read
+the `appVersion` of the target chart.
+
+The chart also ships two third-party images that follow their own
+versions. One is fluent-bit, with the Istio provider. The other is the
+OpenTelemetry collector, with the default telemetry strategy. A chart
+upgrade can move these images. The chart `version` field records such a
+change.
+
+[#_upgrade_paths]
+== Upgrade paths
+
+You can upgrade across several `PATCH` versions in one operation. You
+cannot upgrade across more than one `MINOR` or `MAJOR` version in one
+operation.
+
+For example, you can upgrade from `0.3.0` to `0.3.2` in one step. You
+cannot upgrade from `0.2.0` to `0.4.0` in one step. Upgrade from `0.2.0`
+to `0.3.x` first, then from `0.3.x` to `0.4.0`. To move across a `MAJOR`
+version, apply every `MINOR` version between the two.
+
+.Example upgrade path support graph
+[mermaid]
+....
+flowchart LR;
+  accTitle: Upgrade path support graph
+  accDescr: A diagram showing supported and unsupported upgrade paths for Network Enforcer.
+  0.2.0(0.2.0)-->0.2.1(0.2.1);
+  0.2.1-->0.3.0(0.3.0);
+  0.3.0-->0.3.1(0.3.1);
+  0.2.0-->0.3.0;
+  0.3.1-->0.4.0(0.4.0);
+  0.3.0-->|Not recommended|0.4.0;
+  0.2.1-->|Not supported|0.4.0;
+  linkStyle 5 color:brown,stroke-width:2px,stroke-dasharray: 3 5
+  linkStyle 6 color:red,stroke-width:2px,stroke-dasharray: 3 5
+....
+
+[#_upgrade_order]
+== Upgrade order
+
+Upgrade the `network-enforcer` Helm chart. There is no other component to
+upgrade. The chart upgrades the controller and, with the Istio provider,
+the fluent-bit DaemonSet together.
+
+The native policy objects that the controller rendered stay in place
+during the upgrade. The data plane keeps enforcing them while the
+controller pod restarts. See
+xref:explanations/architecture.adoc[Architecture].
+
+[#_downgrades]
+== Downgrades
+
+{ne-short-name} does not support downgrades, and the project does not
+test them.
+
+[#_policies]
+== Policies
+
+A `WorkloadNetworkPolicy` carries no version of its own. It holds a mode,
+a backend, and an allow-list, and it stays in the cluster across
+{ne-short-name} upgrades. You do not rewrite or re-apply your policies
+when you upgrade. The `spec.backend` field cannot change after creation,
+in any version. See
+xref:reference/known_limitations.adoc#_spec-backend-is-immutable[`spec.backend`
+is immutable].
