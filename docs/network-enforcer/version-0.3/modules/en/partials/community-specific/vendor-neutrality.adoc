@@ -1,0 +1,8 @@
+// Community only: the vendor neutrality section of the introduction.
+// The product repository has a product-specific/vendor-neutrality.adoc.
+[#_vendor_neutrality]
+== Vendor neutrality
+
+{ne-short-name} is a
+link:https://contribute.cncf.io/maintainers/community/vendor-neutrality/[vendor
+neutral] project as defined by the CNCF.

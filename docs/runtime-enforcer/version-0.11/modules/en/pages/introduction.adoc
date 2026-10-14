@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {rte-name}
-:revdate: 2026-09-30
+:revdate: 2026-10-14
 :page-revdate: {revdate}
 :description: Learn what {rte-name} is, how it learns an allow-list of executables per container, and why it enforces the list in the kernel with eBPF.
 :keywords: {rte-name}, kubewarden, cncf, kubernetes, ebpf, runtime security, allow-list
@@ -95,13 +95,4 @@ subject to the allow-list, and so is a pod that lives for one second. A pod
 whose policy is missing does not start at all. This is the default, so that
 a mistake in a label does not leave a workload without protection.
 
-ifeval::["{build-type}" == "community"]
-
-[#_vendor_neutrality]
-== Vendor neutrality
-
-{rte-short-name} is a
-link:https://contribute.cncf.io/maintainers/community/vendor-neutrality/[vendor
-neutral] project as defined by the CNCF.
-
-endif::[]
+include::partial${build-type}-specific/vendor-neutrality.adoc[]

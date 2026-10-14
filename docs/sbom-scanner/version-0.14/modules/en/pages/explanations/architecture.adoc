@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {sboms-name} architecture
-:revdate: 2026-09-30
+:revdate: 2026-10-14
 :page-revdate: {revdate}
 :description: How {sboms-name} is built: the controller, the workers, the queue, the storage API server, and the path of a scan from a Registry resource to a VulnerabilityReport.
 :doc-persona: kubewarden-all
@@ -63,12 +63,12 @@ into an annotation of the job. The workers read that copy. A change to the
 == The {sboms-name} stack
 
 .Architecture
-[mermaid]
+[mermaid,subs="attributes"]
 ....
 %%{init: { "themeVariables": { "fontSize": "24px" } }}%%
 graph LR
-    accTitle: SBOM Scanner architecture
-    accDescr: A diagram showing the components of SBOM Scanner and the flow of data between them.
+    accTitle: {sboms-short-name} architecture
+    accDescr: A diagram showing the components of {sboms-short-name} and the flow of data between them.
     subgraph outer[" "]
       direction LR
       subgraph platform[" "]
@@ -78,7 +78,7 @@ graph LR
         trivydb[("Vulnerability database")]
         vexhub[("VEX Hub")]
       end
-      subgraph kw["`**SBOM Scanner**`"]
+      subgraph kw["`**{sboms-short-name}**`"]
         direction LR
         controller("`**Controller**`")
         nats{{"NATS"}}

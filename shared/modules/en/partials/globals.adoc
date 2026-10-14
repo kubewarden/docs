@@ -9,11 +9,11 @@
 // for example {admc-name}. The playbook sets build-type.
 
 // Project names.
-:kw-community-project-name: Kubewarden
+:community-project-name: Kubewarden
 :product-project-name: SUSE Security
 
 // Admission Controller.
-:admc-community-name: {kw-community-project-name} Admission Controller
+:admc-community-name: {community-project-name} Admission Controller
 :admc-community-short-name: Admission Controller
 :admc-community-abbrev: KWAC
 :admc-product-name: {product-project-name} Admission Controller
@@ -21,7 +21,7 @@
 :admc-product-abbrev: SSAC
 
 // Compliance Operator.
-:co-community-name: {kw-community-project-name} Compliance Operator
+:co-community-name: {community-project-name} Compliance Operator
 :co-community-short-name: Compliance Operator
 :co-community-abbrev: KWCO
 :co-product-name: {product-project-name} Compliance Operator
@@ -29,7 +29,7 @@
 :co-product-abbrev: SSCO
 
 // Network Enforcer.
-:ne-community-name: {kw-community-project-name} Network Enforcer
+:ne-community-name: {community-project-name} Network Enforcer
 :ne-community-short-name: Network Enforcer
 :ne-community-abbrev: KWNE
 :ne-product-name: {product-project-name} Network Enforcer
@@ -37,7 +37,7 @@
 :ne-product-abbrev: SSNE
 
 // Runtime Enforcer.
-:rte-community-name: {kw-community-project-name} Runtime Enforcer
+:rte-community-name: {community-project-name} Runtime Enforcer
 :rte-community-short-name: Runtime Enforcer
 :rte-community-abbrev: KWRTE
 :rte-product-name: {product-project-name} Runtime Enforcer
@@ -45,7 +45,7 @@
 :rte-product-abbrev: SSRTE
 
 // SBOM Scanner.
-:sboms-community-name: {kw-community-project-name} SBOM Scanner
+:sboms-community-name: {community-project-name} SBOM Scanner
 :sboms-community-short-name: SBOM Scanner
 :sboms-community-abbrev: KWSBOMS
 :sboms-product-name: {product-project-name} Vulnerability Scanner
@@ -53,7 +53,7 @@
 :sboms-product-abbrev: SSVS
 
 // Web Application Firewall.
-:waf-community-name: {kw-community-project-name} Web Application Firewall
+:waf-community-name: {community-project-name} Web Application Firewall
 :waf-community-short-name: Web Application Firewall
 :waf-community-abbrev: KWWAF
 :waf-product-name: {product-project-name} Web Application Firewall

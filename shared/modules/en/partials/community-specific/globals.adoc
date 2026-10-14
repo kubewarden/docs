@@ -28,4 +28,9 @@
 :waf-abbrev: {waf-community-abbrev}
 
 // The project security team, used by the security disclosure pages.
-:project-security-team: {kw-community-project-name} team
+:project-security-team: {community-project-name} team
+
+// The documentation repository and team, used by the contribution guide.
+:docs-repo-name: kubewarden/docs
+:docs-repo-url: https://github.com/{docs-repo-name}
+:docs-team-url: https://github.com/orgs/kubewarden/teams/kubewarden-documentation

@@ -1,6 +1,6 @@
-// Pull in the names of the other Kubewarden components.
-// This includes the sboms-* attributes.
-include::latest@shared:en:partial$globals.adoc[]
+// Pull in the global attributes, including the names of all components,
+// and the component wide attributes.
+include::latest@shared:en:partial$sboms-variables.adoc[]
 
 // Pull in version specific shared attributes
 include::{build-type}-specific/variables.adoc[]

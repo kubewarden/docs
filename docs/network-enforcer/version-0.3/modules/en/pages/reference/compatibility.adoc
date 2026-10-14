@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Compatibility
 :description: Check which network providers and features work with your cluster by reviewing compatibility information
-:revdate: 2026-09-18
+:revdate: 2026-10-14
 :page-revdate: {revdate}
 :page-aliases: compatibility.adoc
 
@@ -145,23 +145,7 @@ The Role allows `get` on that Secret, and on the CA ConfigMap when one is set.
 |Yes
 |===
 
-ifeval::["{build-type}" == "product"]
-[#_rancher-integration]
-== Rancher Integration
-
-[cols="2,2,6"]
-|===
-|Rancher Version |Status |Notes
-
-|*2.12.x*
-|✓ Supported
-|Minimum supported version
-
-|*2.13.x - 2.15.x*
-|Expected
-|Fully tested
-|===
-endif::[]
+include::partial${build-type}-specific/compatibility-integrations.adoc[]
 
 [#_support]
 == Support

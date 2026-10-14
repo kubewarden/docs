@@ -19,7 +19,7 @@ content:
 
 ui:
   bundle:
-    url: https://github.com/rancher/product-docs-ui/blob/main/build/ui-bundle.zip?raw=true
+    url: ./ui/ui-bundle.zip
     snapshot: true
   supplemental_files: ./kw-community-docs-supp-files
 
@@ -34,19 +34,17 @@ asciidoc:
     tabs-sync-option: ''
   extensions:
     - '@asciidoctor/tabs'
+    - ./extensions/mermaid-block.js
 
 antora:
   extensions:
     # - require: "@antora/pdf-extension"
     - require: "@antora/lunr-extension"
       index_latest_only: true
-    - require: "@sntke/antora-mermaid-extension"
-      script_stem: header-scripts
-      mermaid_initialize_options:
-    - require: ./product-docs-common/extensions/dynamic-loading-attributes/load-global-site-attributes.js
-      attributefile: ./product-docs-common/global-attributes.yml
+    - require: ./docs-common/extensions/dynamic-loading-attributes/load-global-site-attributes.js
+      attributefile: ./docs-common/global-attributes.yml
       enabled: true
-    - require: ./product-docs-common/extensions/versions-latest-prerelease/vlp.js
+    - require: ./docs-common/extensions/versions-latest-prerelease/vlp.js
       enabled: true
 
 

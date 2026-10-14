@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {ne-name}
-:revdate: 2026-09-30
+:revdate: 2026-10-14
 :page-revdate: {revdate}
 :description: Learn what {ne-name} is, how it learns an allow-list per workload from east-west traffic, and why it reads the data plane instead of asking you to write rules.
 :keywords: {ne-name}, kubewarden, cncf, kubernetes, network policy, istio, calico, cilium
@@ -97,13 +97,4 @@ it writes policy in the format of that data plane. The policy that protects
 a workload is a standard object that the mesh or the CNI understands, not a
 format that only {ne-short-name} can read.
 
-ifeval::["{build-type}" == "community"]
-
-[#_vendor_neutrality]
-== Vendor neutrality
-
-{ne-short-name} is a
-link:https://contribute.cncf.io/maintainers/community/vendor-neutrality/[vendor
-neutral] project as defined by the CNCF.
-
-endif::[]
+include::partial${build-type}-specific/vendor-neutrality.adoc[]

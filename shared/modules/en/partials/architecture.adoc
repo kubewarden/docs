@@ -1,9 +1,9 @@
-[mermaid]
+[mermaid,subs="attributes"]
 ....
 %%{init: { "themeVariables": { "fontSize": "24px" } }}%%
 graph LR
-    accTitle: Admission Controller architecture
-    accDescr: A diagram showing the architecture of Admission Controller components.
+    accTitle: {admc-short-name} architecture
+    accDescr: A diagram showing the architecture of {admc-short-name} components.
     subgraph outer[" "]
       direction LR
       subgraph platform[" "]
@@ -11,8 +11,8 @@ graph LR
           k8s(("Kubernetes"))
           registry[("OCI registry")]
         end
-        subgraph kw["`**Kubewarden**`"]
-          controller("`**KW Admission Controller**`")
+        subgraph kw["`**{admc-short-name}**`"]
+          controller("`**Controller**`")
           subgraph policy-server["`**policy-server**`"]
             direction LR
             kw-policy-1{{"Policy 1"}}
@@ -20,7 +20,7 @@ graph LR
             kw-policy-3{{"Policy 3"}}
         end
         webhooks(["ValidationWebhooks and\nMutatingWebhooks"])
-        audit-scanner["KW audit scanner"]
+        audit-scanner["Audit scanner"]
       end
     end
     policy-server -->|"downloads\npolicies from"| registry

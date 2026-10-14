@@ -1,6 +1,6 @@
-// Pull in the names of all Kubewarden components and the other global
-// attributes. This includes the admc-* attributes.
-include::latest@shared:en:partial$globals.adoc[]
+// Pull in the global attributes, including the names of all components,
+// and the component wide attributes.
+include::latest@shared:en:partial$admc-variables.adoc[]
 
 // Pull in the version specific attributes for this build type.
 include::partial${build-type}-specific/variables.adoc[]
