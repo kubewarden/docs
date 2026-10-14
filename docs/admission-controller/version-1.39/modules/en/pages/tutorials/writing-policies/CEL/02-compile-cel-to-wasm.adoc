@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Compile CEL to WebAssembly
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-10-08
+:revdate: 2026-10-14
 :page-revdate: {revdate}
 :description: Learn how to compile a CEL policy to a WebAssembly module for {admc-name} with kwctl and ferricel.
 :doc-persona: ["kubewarden-policy-developer", "kubewarden-operator"]
@@ -48,12 +48,6 @@ The compiled module is also much faster. See xref:#_performance[Performance] for
 
 * The `kwctl` CLI tool.
 * A `ValidatingAdmissionPolicy` that `cel-policy` can run, and its matching `ValidatingAdmissionPolicyBinding`.
-
-```bash
-# ConfigMap in test namespace
-kubectl create ns test
-kubectl -n test create configmap replica-limit-override --from-literal=maxReplicas=1
-```
 
 == Compile a policy
 
@@ -337,6 +331,44 @@ kwctl push annotated.wasm registry.example.com/policies/kw-scaffold-demo:v0.1.0
 Then set the `module` field of the {cluster-admission-policy} to the registry URL, for example
 `registry://registry.example.com/policies/kw-scaffold-demo:v0.1.0`.
 See xref:explanations/distributing-policies.adoc[] for more details.
+
+The `paramRef` of the binding refers to a `replica-limit-override` ConfigMap in the `test` namespace.
+The policy reads `maxReplicas` from this ConfigMap at evaluation time.
+Before deploying the {cluster-admission-policy} in cluster, create the Namespace and the ConfigMap.
+Put them in a file named `replica-limit-override.yml`:
+
+.replica-limit-override.yml
+[%collapsible]
+====
+[source,yaml]
+----
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: replica-limit-override
+  namespace: test
+data:
+  maxReplicas: "1"
+----
+====
+
+Apply the file:
+
+[source,console]
+----
+kubectl apply -f replica-limit-override.yml
+----
+
+[NOTE]
+====
+The binding sets `parameterNotFoundAction: Deny`.
+If the ConfigMap is missing, the policy rejects all `CREATE` and `UPDATE` operations on Deployments in the `default` namespace.
+====
 
 [IMPORTANT]
 ====
