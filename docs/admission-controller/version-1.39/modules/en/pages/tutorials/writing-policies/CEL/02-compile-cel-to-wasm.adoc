@@ -49,6 +49,12 @@ The compiled module is also much faster. See xref:#_performance[Performance] for
 * The `kwctl` CLI tool.
 * A `ValidatingAdmissionPolicy` that `cel-policy` can run, and its matching `ValidatingAdmissionPolicyBinding`.
 
+```bash
+# ConfigMap in test namespace
+kubectl create ns test
+kubectl -n test create configmap replica-limit-override --from-literal=maxReplicas=1
+```
+
 == Compile a policy
 
 You compile a policy from the `ValidatingAdmissionPolicy` and its binding with
@@ -85,8 +91,8 @@ spec:
     apiVersion: v1
     kind: ConfigMap
   validations:
-    - expression: "object.spec.replicas <= params.data.maxReplicas"
-      message: "not enough replicas"
+    - expression: "object.spec.replicas <= int(params.data.maxReplicas)"
+      message: "too many replicas"
 ----
 ====
 
@@ -299,8 +305,8 @@ spec:
     apiVersion: v1
     kind: ConfigMap
   validations:
-  - expression: object.spec.replicas <= params.data.maxReplicas
-    message: not enough replicas
+  - expression: object.spec.replicas <= int(params.data.maxReplicas)
+    message: too many replicas
 ----
 ====
 
