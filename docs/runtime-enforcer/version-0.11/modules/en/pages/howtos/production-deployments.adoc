@@ -107,10 +107,19 @@ recommendation] for the values to use at your cluster size.
 
 The {agent-term} runs as a DaemonSet, one pod on every node. Each agent pod
 loads the eBPF program and enforces the {workloadpolicy-cr} of the pods on
-its node. A node without an agent pod gives no protection to the pods that
-start there. By default, `agent.nriFailopen` is `false`, so a pod that
-carries the {policy-label-term} label does not start on a node without an
-agent. Plan the agent scheduling before you taint nodes or restrict its
+its node.
+
+A node without an agent pod gives no protection to the pods that start
+there. The container runtime does not call an agent that is not
+connected, so the pod starts without a policy.
+
+This differs from a pod that names a policy the agent has not loaded
+yet. There the agent is present, and it blocks the start by default.
+`agent.nriFailopen` controls that second case only. It is `false` by
+default. See
+xref:explanations/architecture.adoc#_a_missing_policy[A missing policy].
+
+Plan the agent scheduling before you taint nodes or restrict its
 placement.
 
 [#_tolerate_tainted_nodes]
