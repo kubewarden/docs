@@ -1,0 +1,201 @@
+include::partial$variables.adoc[]
+
+= OpenTelemetry Reference
+:revdate: 2026-08-19
+:page-revdate: {revdate}
+:description: Reference of the traces and metrics that {sboms-name} exports.
+:keywords: ["{sboms-name}", "kubewarden", "kubernetes", "opentelemetry", "traces", "spans", "metrics", "reference"]
+:doc-persona: ["kubewarden-operator"]
+:doc-type: ["reference"]
+:doc-topic: ["operator-manual", "observability"]
+
+This page lists the traces and metrics that {sboms-name} exports.
+To enable the export, see xref:user-guide/opentelemetry.adoc[OpenTelemetry].
+
+[NOTE]
+====
+Prometheus stores the metrics with underscores instead of dots.
+Prometheus also adds a unit suffix to some names.
+For example, `worker.scan.duration` becomes `worker_scan_duration_seconds`.
+====
+
+[#_trace_model]
+== Trace model
+
+One scan produces one trace.
+The trace context travels with the job object, in the `sbomscanner.kubewarden.io/traceparent` annotation.
+The components write this annotation once, when the job is created, and never overwrite it.
+A client that already has a trace can set the annotation on a new `ScanJob`.
+Then the whole scan becomes part of the client trace.
+
+[#_controller_spans]
+== Controller spans
+
+[cols="1,1,2", options="header"]
+|===
+| Span | When | Attributes
+
+| `<Kind>Reconciler.Reconcile`
+| Each reconcile of a watched resource
+| `k8s.resource.kind`, `k8s.namespace.name`, `k8s.object.name`, `controller.result`; the job reconcilers add `scanjob.status` or `nodescanjob.status`
+
+| `RegistryScanRunner.CreateScanJob`
+| The runner creates a scheduled `ScanJob`
+| `scanjob.trigger=runner`, `registry.name`, `registry.namespace`, `k8s.object.name`
+
+| `NodeScanRunner.CreateNodeScanJob`
+| The runner creates a scheduled `NodeScanJob`
+| `nodescanjob.trigger=runner`, `k8s.node.name`, `k8s.object.name`
+
+| `<Kind>ValidatingWebhook.<Verb>`
+| Each validating admission request
+| `webhook.type=validating`, `webhook.kind`, `webhook.operation`, `webhook.request.uid`, `webhook.allowed`, `webhook.reason`, `k8s.namespace.name`, `k8s.object.name`
+
+| `<Kind>MutatingWebhook.<Verb>`
+| Each mutating admission request
+| `webhook.type=mutating`, plus the validating-webhook attributes
+|===
+
+[#_controller_metrics]
+== Controller metrics
+
+[cols="1,1,2", options="header"]
+|===
+| Metric | Type | Labels
+
+| `controller.webhook.decisions`
+| Counter
+| `type` (`validating` / `mutating`), `kind`, `operation`, `allowed`, `reason`
+
+| `controller.registry_scan.ticks`
+| Counter
+| `result`
+
+| `controller.node_scan.ticks`
+| Counter
+| `result`
+
+| `sbomscanner.scanjobs`
+| Counter
+| `result` (`complete` / `failed`), `source` (`registry` / `workload`)
+
+| `sbomscanner.nodescanjobs`
+| Counter
+| `result` (`complete` / `failed`)
+|===
+
+The controller also exports the standard controller-runtime metrics over OTLP.
+These include the reconcile durations, the workqueue metrics, the rest-client metrics, and the Go runtime metrics.
+
+[#_worker_spans]
+== Worker spans
+
+[cols="1,1,2", options="header"]
+|===
+| Span | When | Attributes
+
+| `<Handler>.Handle`
+| Each consumed scan message (catalog, SBOM generation, scan)
+| `messaging.system=nats`; `handler.skip_reason` on the early-return paths
+
+| `<Handler>.HandleFailure`
+| A message used all its delivery attempts
+| `messaging.system=nats`, `error.message`
+
+| `Trivy.Image` / `Trivy.SBOM` / `Trivy.Filesystem`
+| Each Trivy invocation
+| `trivy.command`
+|===
+
+[#_worker_metrics]
+== Worker metrics
+
+[cols="1,1,2", options="header"]
+|===
+| Metric | Type | Labels
+
+| `worker.scan.duration`
+| Histogram
+| `stage` (`catalog` / `generate_sbom` / `scan_sbom` / `generate_node_sbom` / `node_scan_sbom`), `result`
+
+| `sbomscanner.images.scanned`
+| Counter
+| `registry` (host), `result`
+
+| `worker.registry.call.duration`
+| Histogram
+| `operation` (`catalog` / `list_repository_contents` / `get_descriptor` / `get_image_details`), `result`
+
+| `worker.trivy.duration`
+| Histogram
+| `command` (`image` / `sbom` / `filesystem`), `result`
+
+| `worker.handler.errors`
+| Counter
+| `handler`, `error.type` (Kubernetes status reason, `canceled`, `deadline_exceeded`, or `unknown`)
+|===
+
+The worker also exports the process metrics and the Go runtime metrics.
+
+[#_storage_spans]
+== Storage spans
+
+[cols="1,1,2", options="header"]
+|===
+| Span | When | Attributes
+
+| `GET` / `POST` / other HTTP methods
+| Each resource request to the storage API server
+| Standard HTTP server attributes
+
+| `<Kind>Store.<Operation>`
+| Each storage operation (`Create`, `Get`, `GetList`, `GuaranteedUpdate`, `Delete`, `Watch`)
+| `k8s.namespace.name`, `k8s.object.name`, `storage.result` (`success` / `not_found` / `already_exists` / `error`)
+
+| `query <KEYWORD>`, for example `query INSERT`
+| Each SQL query
+| Standard database client attributes, and the SQL statement text
+
+| `NatsBroadcaster.Publish`
+| A write publishes a watch event to NATS
+| `messaging.system=nats`, `messaging.destination.name`, `event.type` (`added` / `modified` / `deleted`)
+
+| `NatsWatcher.HandleMessage`
+| A replica consumes a watch event
+| `messaging.system=nats`, `messaging.destination.name`, `event.type`
+
+| `WorkloadScanReportWatcher.HandleVulnerabilityReportEvent`
+| A `VulnerabilityReport` event updates the related `WorkloadScanReport` watchers
+| `messaging.system=nats`, `messaging.destination.name`
+|===
+
+[NOTE]
+====
+The SQL statement text contains placeholders, for example `$1`.
+The spans never contain the bound parameter values.
+====
+
+[#_storage_metrics]
+== Storage metrics
+
+[cols="1,1,2", options="header"]
+|===
+| Metric | Type | Labels
+
+| `storage.apiserver.request.duration`
+| Histogram
+| `verb`, `resource`, `code`
+
+| `storage.watch.events`
+| Counter
+| `resource`, `event.type`
+|===
+
+The storage component also exports the standard `http.server.request.duration` histogram, the `db.client.operation.duration` histogram, the database connection pool metrics, the process metrics, and the Go runtime metrics.
+
+[#_exemplars]
+== Exemplars
+
+The histograms carry https://opentelemetry.io/docs/specs/otel/metrics/data-model/#exemplars[exemplars].
+An exemplar is one real measurement with the ID of the trace that produced it.
+A backend with exemplar support can link a latency panel directly to the trace.
