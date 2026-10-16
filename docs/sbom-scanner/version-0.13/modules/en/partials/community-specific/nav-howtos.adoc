@@ -1,0 +1,8 @@
+// Community entries for the Howtos section of nav.adoc. There are none at
+// the moment. The product build adds its own entries here.
+//
+// nav.adoc includes only the lines between the tags. vlp.js (from
+// docs-common) prepends an attribute line to every included file. In
+// a list, that line would become part of the list item text.
+// tag::nav[]
+// end::nav[]

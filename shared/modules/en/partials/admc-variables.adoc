@@ -1,0 +1,11 @@
+// Attributes for the Admission Controller that are the same in every version.
+// Each version's partials/variables.adoc in docs/admission-controller/ includes this file.
+//
+// The order is global, then component, then version. A later definition
+// overrides an earlier one.
+
+// Names of all components and the other global attributes.
+include::globals.adoc[]
+
+// Component wide values and overrides for this build.
+include::{build-type}-specific/admc-variables.adoc[]

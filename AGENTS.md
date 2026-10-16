@@ -50,7 +50,7 @@ This is an [Antora](https://antora.org) multi-component documentation site writt
 - `kw-local-community-playbook.yml` — uses `url: ./` (local filesystem); use this for development.
 - `kw-remote-community-playbook.yml` — fetches from GitHub `main` branch; used by CI and Netlify.
 
-**`product-docs-common/`** is a git submodule providing shared Antora extensions and `global-attributes.yml` (SUSE product names used across all product docs repos).
+**`docs-common/`** is a git submodule (the `rancher/product-docs-common` repository) providing shared Antora extensions and `global-attributes.yml` (SUSE product names used across all product docs repos).
 
 Each component version directory contains:
 ```
@@ -72,15 +72,121 @@ include::partial$variables.adoc[]
 :revdate: YYYY-MM-DD
 ```
 
-`partials/variables.adoc` pulls in the shared `kubewarden-variables` partial from `shared/` and resolves product name attributes for community vs. enterprise builds.
+`partials/variables.adoc` pulls in the component wrapper from `shared/` and
+the build specific values for the version. See "Community and product
+builds".
 
-### Never hardcode product names in content
+### Community and product builds
 
-Use AsciiDoc attributes instead:
+The same page source builds two sites: the community site from this
+repository, and the SUSE product site from the product repository. Both
+repositories have the same structure. The playbook sets the `build-type`
+attribute to `community` or `product`. Do not set `build-type` anywhere else.
 
-- `{product-name}` — resolves to community or enterprise name depending on build
-- `{project-name}` — short project name
-- `{short-product-name}`, `{product-abbrev}`
+This repository holds shared content and community content only. Keep
+references to the product to a minimum.
+
+#### Product names
+
+Do not hardcode a product name. Use the name attributes:
+
+| Component | Full name | Short name | Abbreviation |
+|---|---|---|---|
+| `admission-controller` | `{admc-name}` | `{admc-short-name}` | `{admc-abbrev}` |
+| `sbom-scanner` | `{sboms-name}` | `{sboms-short-name}` | `{sboms-abbrev}` |
+| `runtime-enforcer` | `{rte-name}` | `{rte-short-name}` | `{rte-abbrev}` |
+| `network-enforcer` | `{ne-name}` | `{ne-short-name}` | `{ne-abbrev}` |
+
+- Use the full name for the first mention on a page and in `:description:`.
+  Use the short name after that.
+- Keep literal names in commands, Helm release names, namespaces, labels,
+  and generated reference partials.
+- These attributes give the name of the current build. If a page must use
+  one specific name in every build, use the community or product form, for
+  example `{admc-community-name}` or `{admc-product-name}`.
+- Older versions use `{product-name}`, `{project-name}`, and
+  `{short-product-name}` from the legacy shared partials. Do not use them in
+  new content.
+
+#### Where attribute values go
+
+| Scope | Same in every build | Different per build |
+|---|---|---|
+| All components | `shared/modules/en/partials/globals.adoc` | `shared/modules/en/partials/community-specific/globals.adoc` |
+| All versions of one component | `shared/modules/en/partials/<key>-variables.adoc` | `shared/modules/en/partials/community-specific/<key>-variables.adoc` |
+| One component version | `partials/variables.adoc` | `partials/community-specific/variables.adoc` |
+
+The component keys are `admc`, `ne`, `rte`, `sboms`, and `kw`. The product
+repository has the same files with `product-specific/` in place of
+`community-specific/`.
+
+The files include each other in this order: global, then component, then
+version. A later definition overrides an earlier one.
+
+- A version's `partials/variables.adoc` includes its component wrapper,
+  `<key>-variables.adoc`, then `{build-type}-specific/variables.adoc`.
+- The wrapper includes `globals.adoc`, then
+  `{build-type}-specific/<key>-variables.adoc`.
+- `globals.adoc` ends with `include::{build-type}-specific/globals.adoc[]`.
+
+Names are facts that are true in every build. `globals.adoc` defines both
+forms of each name, for example `{admc-community-name}` and
+`{admc-product-name}`. `community-specific/globals.adoc` only selects the
+names for this build, for example `:admc-name: {admc-community-name}`. To add
+a component, add its names to `globals.adoc` and its selection lines to the
+build specific files.
+
+Every version includes the `shared` files from `latest@shared`. A change in
+`shared` changes every published version. Put a value there only if it is
+true for all published versions. Otherwise, put it in the version.
+
+#### Build specific content
+
+- A whole page that exists in only one build goes in
+  `pages/{build-type}-specific/`. Its URL contains the directory name.
+- A passage that exists in only one build goes in a partial,
+  `partials/{build-type}-specific/<name>.adoc`, that the shared page
+  includes with `include::partial${build-type}-specific/<name>.adoc[]`. If a
+  build has no text for the passage, its partial holds only a comment.
+- If the two builds differ only in a value, such as a URL, use an attribute
+  instead of a partial. For example, the contribution guide uses
+  `{docs-repo-url}`.
+- Nav entries that exist in only one build go in a nav fragment,
+  `partials/{build-type}-specific/nav-<section>.adoc`. The `nav.adoc`
+  includes the fragment with a tag:
+
+  ```asciidoc
+  ** Migrations
+  include::partial${build-type}-specific/nav-migrations.adoc[tag=nav]
+  ```
+
+  The fragment puts its entries between `// tag::nav[]` and
+  `// end::nav[]`. If a build has no entries, the fragment holds only the
+  two tag lines.
+
+Use a tag for every partial that you include inside a list. `vlp.js` from
+`docs-common` adds an attribute line to the top of every included file.
+Inside a list, that line becomes part of the list item text. A blank line
+before the include does not help, because it ends the list.
+
+#### Rules
+
+- Do not use `ifeval::["{build-type}" == ...]`. Some older versions and
+  pages, and the legacy `kubewarden-variables-*.adoc` partials, still use
+  it. Replace it when you edit that content.
+- Do not set name attributes in `antora.yml`. Antora gives `antora.yml` and
+  playbook attributes priority over values that a page sets, and does not
+  warn.
+- The playbooks set `attribute-missing: warn`. A reference to an undefined
+  attribute causes a `WARN (asciidoctor): skipping reference to missing
+  attribute` line in `tmp/build.log`.
+
+#### Sync to the product repository
+
+The product repository copies everything from this repository except the
+`community-specific/` directories. It adds its own `product-specific/`
+files. Keep `globals.adoc` and the component wrappers the same in both
+repositories. A script and a GitHub Action will automate the sync.
 
 ### Required page-level attributes
 
@@ -191,6 +297,28 @@ Each component's dev version defines two AsciiDoc attributes in `partials/commun
 Use `{release-tag}` for the upstream release tag (image tags, cosign certificate identities) and `{chart-version}` for the published Helm chart version. Inside a `[source]` block, add `subs="+attributes"` or the attribute is printed literally.
 
 Do not bump these by hand. The hourly updatecli job runs `updatecli/updatecli.d/update-release-attributes.yaml` for each component. It reads the latest GitHub release of the component repository and the latest `<chart name>-X.Y.Z` release of `kubewarden/helm-charts`, and rewrites the two attributes in the dev version. The chart name per component is `chartName` in `updatecli/values.d/`.
+
+### Mermaid diagrams
+
+The local extension `extensions/mermaid-block.js` processes `[mermaid]`
+blocks. It writes the diagram source into the page. The browser draws the
+diagram with `kw-community-docs-supp-files/js/mermaid-init.js`, which loads
+mermaid from a CDN and applies the site theme.
+
+To use attributes such as `{sboms-short-name}` in a diagram, add
+`subs="attributes"`:
+
+```asciidoc
+[mermaid,subs="attributes"]
+....
+graph LR
+    accTitle: {sboms-short-name} architecture
+....
+```
+
+Do not use `subs="+attributes"`. The normal substitutions escape `>`, and
+this breaks mermaid arrows. An attribute value that contains `"` or `]`
+breaks the diagram syntax.
 
 ### Spell checking
 

@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {ne-name} architecture
-:revdate: 2026-09-30
+:revdate: 2026-10-14
 :page-revdate: {revdate}
 :page-aliases: architecture.adoc
 :description: How {ne-name} is built: one controller that reads flows from the data plane, writes proposals and policies, and renders each policy as a native object on Istio ambient, Calico, or Cilium.
@@ -65,12 +65,12 @@ ports, different certificates, and different settings.
 == The {ne-name} stack
 
 .Architecture
-[mermaid]
+[mermaid,subs="attributes"]
 ....
 %%{init: { "themeVariables": { "fontSize": "24px" } }}%%
 graph LR
-    accTitle: Network Enforcer architecture
-    accDescr: A diagram showing the components of Network Enforcer and the flow of data between them.
+    accTitle: {ne-short-name} architecture
+    accDescr: A diagram showing the components of {ne-short-name} and the flow of data between them.
     subgraph outer[" "]
       direction LR
       subgraph platform[" "]
@@ -86,7 +86,7 @@ graph LR
         AuthorizationPolicy or
         NetworkPolicy"]
       end
-      subgraph kw["`**Network Enforcer**`"]
+      subgraph kw["`**{ne-short-name}**`"]
         direction LR
         fluentbit["fluent-bit DaemonSet
         (Istio only)"]

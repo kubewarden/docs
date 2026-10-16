@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {rte-name} architecture
-:revdate: 2026-09-30
+:revdate: 2026-10-14
 :page-revdate: {revdate}
 :description: How {rte-name} is built: the controller, the per-node agent, the eBPF program, and the path of a policy from the first observed process to a blocked one.
 :doc-persona: kubewarden-all
@@ -65,12 +65,12 @@ cluster and apply it to another.
 == The {rte-name} stack
 
 .Architecture
-[mermaid]
+[mermaid,subs="attributes"]
 ....
 %%{init: { "themeVariables": { "fontSize": "24px" } }}%%
 graph LR
-    accTitle: Runtime Enforcer architecture
-    accDescr: A diagram showing the components of Runtime Enforcer and the flow of data between them.
+    accTitle: {rte-short-name} architecture
+    accDescr: A diagram showing the components of {rte-short-name} and the flow of data between them.
     subgraph outer[" "]
       direction LR
       subgraph platform[" "]
@@ -79,7 +79,7 @@ graph LR
         runtime["Container runtime"]
         kernel["Linux kernel"]
       end
-      subgraph kw["`**Runtime Enforcer**`"]
+      subgraph kw["`**{rte-short-name}**`"]
         direction LR
         controller("`**Controller**`")
         agent("`**Agent**

@@ -3,8 +3,5 @@ title: SBOM Scanner
 version: "0.13"
 display: "0.13-latest"
 start_page: en:introduction.adoc
-asciidoc:
-  attributes:
-    build-type: community
 nav:
   - modules/en/nav.adoc

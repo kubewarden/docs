@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Suggesting a documentation improvement
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-10-14
 :page-revdate: {revdate}
 :description: Initiate a documentation improvement by opening a GitHub issue with clear details about what's missing, outdated, erroneous, or requires a quality review.
 :doc-persona: ["kubewarden-developer", "kubewarden-operator", "kubewarden-manager"]
@@ -18,12 +18,7 @@ https://github.com/join[GitHub account] and a browser.
 
 Usually, any new documentation work for {admc-short-name} begins with an issue in
 GitHub.
-ifeval::["{build-type}" == "community"]
-The https://github.com/orgs/kubewarden/teams/kubewarden-documentation[{admc-short-name} documentation team] reviews, categorizes, and tags them. documentation team] reviews, categorizes, and tags them. ]
-endif::[]
-ifeval::["{build-type}" == "product"]
-The https://github.com/orgs/rancher/teams/docs[{admc-short-name} documentation team] reviews, categorizes, and tags them. documentation team] reviews, categorizes, and tags them. ]
-endif::[]
+The {docs-team-url}[{admc-short-name} documentation team] reviews, categorizes, and tags them. documentation team] reviews, categorizes, and tags them. ]
 Everybody is welcome
 to work on any issue, including the reporter, but you should assign it to
 yourself before commencing any work to avoid duplicate efforts.
@@ -34,12 +29,7 @@ To suggest improvements to existing documentation content or report an error,
 open an issue.
 
 * Click the GitHub Octocat icon at the top. This redirects you to the
-ifeval::["{build-type}" == "community"]
-  https://github.com/kubewarden/docs[documentation repository for {admc-short-name}].
-endif::[]
-ifeval::["{build-type}" == "product"]
-  https://github.com/rancher/kubewarden-product-docs[documentation repository for {admc-short-name}].
-endif::[]
+  {docs-repo-url}[documentation repository for {admc-short-name}].
 * Navigate to the Issues tab and click *New issue*.
 * Describe the issue or suggestion for improvement. The more details, the
   better.
@@ -57,14 +47,8 @@ To suggest new content, please file an issue as using one of these mechanisms:
 
 * Choose an existing page in the section you think the content belongs in and
   click *Create an issue*. OR
-ifeval::["{build-type}" == "community"]
-* Navigate to https://github.com/kubewarden/docs/issues/new/choose[GitHub] and
+* Navigate to {docs-repo-url}/issues/new/choose[GitHub] and
   file the issue directly.
-endif::[]
-ifeval::["{build-type}" == "product"]
-* Navigate to https://github.com/rancher/kubewarden-product-docs/issues/new/choose[GitHub] and
-  file the issue directly.
-endif::[]
 
 == How you can make a contribution count?
 
