@@ -73,14 +73,6 @@ The controller labels every rendered policy with
 `app.kubernetes.io/managed-by=network-enforcer`. One label selector
 finds all of them, and nothing else in the cluster.
 
-[NOTE]
-====
-A rendered policy that an older controller created carries this label
-only after the new controller reconciles it once. An upgrade reconciles
-every policy on its first startup, so by the time of an incident every
-rendered policy already has the label.
-====
-
 Run the command for your provider.
 
 [#_on_istio]
