@@ -239,6 +239,7 @@ blocked one.
   to `status.violations`. The {violation-record-term} is now visible to
   `kubectl`.
 
+[#_a_mode_change]
 === A mode change
 
 When you change `spec.mode`, each agent sees the new generation and updates
@@ -246,6 +247,7 @@ the mode map. The kernel reads that map on every process start, so the
 change applies to running pods without a restart. Until an agent catches
 up, the controller reports the policy as `Transitioning`.
 
+[#_a_missing_policy]
 === A missing policy
 
 When a pod names a policy that the agent has not loaded, the agent returns
@@ -255,6 +257,7 @@ value `agent.nriFailopen=true` turns the error into a warning, and the
 container starts without a policy. See
 xref:glossary.adoc#_fail-open[fail-open].
 
+[#_an_agent_upgrade]
 === An agent upgrade
 
 The agent DaemonSet starts the new pod on a node while the old pod still

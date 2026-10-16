@@ -1,0 +1,164 @@
+include::partial$variables.adoc[]
+= Emergency disable
+:revdate: 2026-10-16
+:page-revdate: {revdate}
+:description: Stop {ne-name} from blocking traffic during an incident, and restore it with one command.
+:keywords: ["{ne-name}", kubewarden, emergency, incident, disable]
+:doc-persona: kubewarden-operator
+:doc-type: howto
+:doc-topic: operator-manual, emergency, incident-response
+
+During an incident, a {ne-short-name} policy can block traffic that
+your team needs. This page stops the blocking with two commands, and
+restores it with one command once the incident is over.
+
+The commands on this page assume the release name `network-enforcer`
+in namespace `network-enforcer`. Substitute the names from
+`helm list -A` if you installed elsewhere.
+
+[#_what_enforcement_depends_on]
+== What enforcement depends on
+
+The data plane enforces a rendered policy: an Istio
+`AuthorizationPolicy`, or a Kubernetes `NetworkPolicy` on Calico and
+Cilium. The {controller-term} renders one rendered policy for every
+`WorkloadNetworkPolicy`, and it recreates a rendered policy the moment
+it disappears.
+
+If the controller stops, every rendered policy stays. See
+xref:explanations/architecture.adoc#_how_network_enforcer_scales[How
+{ne-name} scales] for why the controller can stop without a gap in
+enforcement. Stopping the controller does not stop the blocking by
+itself. You must also remove the rendered policies, which the next
+section covers.
+
+[#_stop_blocking]
+== Stop blocking
+
+[#_scale_the_controller_to_zero]
+=== 1. Scale the controller to zero
+
+Scale the controller Deployment to zero replicas, then wait for its
+pod to terminate:
+
+[source,bash]
+----
+kubectl scale deployment network-enforcer-controller-manager \
+  -n network-enforcer \
+  --replicas=0
+
+kubectl wait --for=delete pod \
+  -l app.kubernetes.io/component=controller \
+  -n network-enforcer \
+  --timeout=60s
+----
+
+[WARNING]
+====
+Do not go to the next step until the wait command returns. A running
+controller watches every rendered policy and recreates one the instant
+you delete it.
+====
+
+While the controller is at zero, learning, promotion, status sync, and
+violation events all stop. Nothing else breaks: {ne-short-name} installs
+no admission webhook, so every other API write still works. On Istio,
+the fluent-bit DaemonSet keeps running. It only drops the log records
+that it cannot forward.
+
+[#_delete_the_rendered_policies]
+=== 2. Delete the rendered policies
+
+The controller labels every rendered policy with
+`app.kubernetes.io/managed-by=network-enforcer`. One label selector
+finds all of them, and nothing else in the cluster.
+
+Run the command for your provider.
+
+[#_on_istio]
+==== On Istio
+
+[source,bash]
+----
+kubectl delete authorizationpolicy -A \
+  -l app.kubernetes.io/managed-by=network-enforcer
+----
+
+[#_on_calico_or_cilium]
+==== On Calico or Cilium
+
+[source,bash]
+----
+kubectl delete networkpolicy -A \
+  -l app.kubernetes.io/managed-by=network-enforcer
+----
+
+Run only the command for the provider that your cluster uses.
+
+[#_make_sure_traffic_flows]
+=== 3. Make sure traffic flows
+
+List the rendered policies again, with the same selector you deleted
+with:
+
+[source,bash]
+----
+kubectl get networkpolicy,authorizationpolicy -A \
+  -l app.kubernetes.io/managed-by=network-enforcer
+----
+
+The list is empty. Traffic that a rendered policy blocked now flows,
+within seconds of the deletion. Run the request that the incident
+needed, and make sure that it succeeds.
+
+[#_restore_protection]
+== Restore protection
+
+Scale the controller back up:
+
+[source,bash]
+----
+kubectl scale deployment network-enforcer-controller-manager \
+  -n network-enforcer \
+  --replicas=1
+----
+
+Use the replica count that you ran before the incident, if you changed
+`controller.replicas` from its default.
+
+On startup, the controller reconciles every `WorkloadNetworkPolicy` and
+renders each protect policy again. You do not patch anything, and you
+do not relabel anything. Run the xref:#_make_sure_traffic_flows[list
+command from step 3] again, and the rendered policies reappear.
+
+[#_do_not]
+== Do not
+
+[#_do_not_delete_a_rendered_policy_while_the_controller_runs]
+=== Do not delete a rendered policy while the controller runs
+
+The controller watches every rendered policy that it owns. If you
+delete one while the controller runs, the controller recreates it at
+once.
+
+[#_do_not_patch_spec_mode_while_the_controller_is_down]
+=== Do not patch `spec.mode` while the controller is down
+
+The Kubernetes API accepts a patch to `spec.mode` even with the
+controller at zero, because {ne-short-name} installs no admission
+webhook. Only the controller turns that patch into a change on the
+rendered policy. With the controller down, the patch changes nothing,
+and the policy keeps blocking.
+
+[#_see_also]
+== See also
+
+* xref:explanations/architecture.adoc#_a_mode_change[A mode change]
+  explains what the controller does to a rendered policy when you
+  change `spec.mode`, while the controller runs.
+* xref:howtos/production-deployments.adoc#_controller_replicas[Controller
+  replicas] covers the default replica count and how to run more than
+  one.
+* xref:howtos/troubleshooting.adoc#_traffic-still-flows[Traffic still
+  flows] helps when traffic is not blocked the way that you expect,
+  outside an incident.

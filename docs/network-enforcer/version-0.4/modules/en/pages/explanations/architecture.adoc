@@ -290,6 +290,7 @@ ztunnel evaluates it and logs the decision. Traffic is not blocked.
   updates `status.violationCount` and `status.activeViolationCount`. The
   {violation-record-term} is now visible to `kubectl`.
 
+[#_a_mode_change]
 === A mode change
 
 When you change `spec.mode`, the policy reconciler updates the native
@@ -349,6 +350,7 @@ ztunnel does not report it in the policy log.
 * The two Validating Admission Policies fail closed. A promote label with a
   wrong value, or a change to the owner of a proposal, is rejected.
 
+[#_how_network_enforcer_scales]
 == How {ne-name} scales
 
 One controller replica is active. It reads one flow stream and handles all

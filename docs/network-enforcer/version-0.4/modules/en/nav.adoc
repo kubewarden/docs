@@ -10,6 +10,7 @@ include::partial$variables.adoc[]
 * Howtos
 ** xref:howtos/uninstall.adoc[Uninstall]
 ** xref:howtos/production-deployments.adoc[Production deployments]
+** xref:howtos/emergency-disable.adoc[Emergency disable]
 ** xref:howtos/troubleshooting.adoc[Troubleshooting]
 ** xref:howtos/setup-development-env.adoc[Development environment]
 * Reference
