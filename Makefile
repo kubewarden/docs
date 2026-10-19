@@ -19,7 +19,7 @@ community-local: tmpdir environment build-community-local
 build-community-local:
 	npx antora --version | tee tmp/build.log
 	npx antora --stacktrace --log-format=pretty --log-level=info \
-		kw-local-community-playbook.yml \
+		local-community-playbook.yml \
 		2>&1 | tee -a tmp/build.log
 	cd build/site && ln -sf kubewarden/latest latest
 	./scripts/generate-redirects.sh \
@@ -34,7 +34,7 @@ build-community-local:
 community-remote: tmpdir environment
 	npx antora --version | tee tmp/build.log
 	npx antora --stacktrace --log-format=pretty --log-level=info \
-		kw-remote-community-playbook.yml \
+		remote-community-playbook.yml \
 		2>&1 | tee -a tmp/build.log
 	cd build/site && ln -sf kubewarden/latest latest
 	./scripts/generate-redirects.sh \
@@ -45,7 +45,7 @@ community-remote: tmpdir environment
 community-netlify-preview: tmpdir environment
 	npx antora --version | tee tmp/build.log
 	npx antora --attribute build-environment=netlify --stacktrace --log-format=pretty --log-level=info \
-		kw-local-community-playbook.yml \
+		local-community-playbook.yml \
 		2>&1 | tee -a tmp/build.log
 	cd build/site && ln -sf kubewarden/latest latest
 	./scripts/generate-redirects.sh \
@@ -89,7 +89,7 @@ dev: tmpdir environment
 	touch tmp/reload-stamp
 	npx nodemon \
 		--watch docs --watch shared --watch kw-community-docs-supp-files \
-		--watch kw-local-community-playbook.yml \
+		--watch local-community-playbook.yml \
 		--ext adoc,yml,hbs,css,js,svg,png \
 		--delay 1 \
 		--exec "$(MAKE) build-community-local && touch tmp/reload-stamp" & \

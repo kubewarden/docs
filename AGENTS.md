@@ -47,8 +47,8 @@ This is an [Antora](https://antora.org) multi-component documentation site writt
 | `shared` | `shared/` | Shared partials and variables; no pages |
 
 **Playbooks**:
-- `kw-local-community-playbook.yml` — uses `url: ./` (local filesystem); use this for development.
-- `kw-remote-community-playbook.yml` — fetches from GitHub `main` branch; used by CI and Netlify.
+- `local-community-playbook.yml` — uses `url: ./` (local filesystem); use this for development.
+- `remote-community-playbook.yml` — fetches from GitHub `main` branch; used by CI and Netlify.
 
 **`docs-common/`** is a git submodule (the `rancher/product-docs-common` repository) providing shared Antora extensions and `global-attributes.yml` (SUSE product names used across all product docs repos).
 
