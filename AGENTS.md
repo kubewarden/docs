@@ -101,9 +101,9 @@ Do not hardcode a product name. Use the name attributes:
   Use the short name after that.
 - Keep literal names in commands, Helm release names, namespaces, labels,
   and generated reference partials.
-- These attributes give the name of the current build. If a page must use
-  one specific name in every build, use the community or product form, for
-  example `{admc-community-name}` or `{admc-product-name}`.
+- These attributes give the name of the current build. If a page must name
+  the community project in every build, use the community form, for example
+  `{admc-community-name}`.
 - Older versions use `{product-name}`, `{project-name}`, and
   `{short-product-name}` from the legacy shared partials. Do not use them in
   new content.
@@ -129,12 +129,13 @@ version. A later definition overrides an earlier one.
   `{build-type}-specific/<key>-variables.adoc`.
 - `globals.adoc` ends with `include::{build-type}-specific/globals.adoc[]`.
 
-Names are facts that are true in every build. `globals.adoc` defines both
-forms of each name, for example `{admc-community-name}` and
-`{admc-product-name}`. `community-specific/globals.adoc` only selects the
-names for this build, for example `:admc-name: {admc-community-name}`. To add
-a component, add its names to `globals.adoc` and its selection lines to the
-build specific files.
+`globals.adoc` defines the community name of each component, for example
+`{admc-community-name}`. Both builds use these names. `community-specific/globals.adoc`
+only selects them, for example `:admc-name: {admc-community-name}`. The
+product names are not in this repository. The product repository defines and
+selects them in its `product-specific/globals.adoc`. To add a component, add
+its community names to `globals.adoc` and its selection lines to
+`community-specific/globals.adoc`.
 
 Every version includes the `shared` files from `latest@shared`. A change in
 `shared` changes every published version. Put a value there only if it is

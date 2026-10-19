@@ -1,64 +1,48 @@
 // Global attributes for the Kubewarden project.
 //
 // This file is the same in the community and the product repository. It
-// holds facts that do not depend on the build, such as both the community
-// and the product name of each component. A page can use these to name the
-// other build, for example a community page that names the product.
+// holds facts that do not depend on the build: the community name of each
+// component. Both builds use these names, for example when product pages
+// refer to the community project.
+//
+// The product names are not here. The product repository defines them in its
+// product-specific/globals.adoc.
 //
 // {build-type}-specific/globals.adoc then selects the values for this build,
 // for example {admc-name}. The playbook sets build-type.
 
-// Project names.
+// Project name.
 :community-project-name: Kubewarden
-:product-project-name: SUSE Security
 
 // Admission Controller.
 :admc-community-name: {community-project-name} Admission Controller
 :admc-community-short-name: Admission Controller
 :admc-community-abbrev: KWAC
-:admc-product-name: {product-project-name} Admission Controller
-:admc-product-short-name: Admission Controller
-:admc-product-abbrev: SSAC
 
 // Compliance Operator.
 :co-community-name: {community-project-name} Compliance Operator
 :co-community-short-name: Compliance Operator
 :co-community-abbrev: KWCO
-:co-product-name: {product-project-name} Compliance Operator
-:co-product-short-name: Compliance Operator
-:co-product-abbrev: SSCO
 
 // Network Enforcer.
 :ne-community-name: {community-project-name} Network Enforcer
 :ne-community-short-name: Network Enforcer
 :ne-community-abbrev: KWNE
-:ne-product-name: {product-project-name} Network Enforcer
-:ne-product-short-name: Network Enforcer
-:ne-product-abbrev: SSNE
 
 // Runtime Enforcer.
 :rte-community-name: {community-project-name} Runtime Enforcer
 :rte-community-short-name: Runtime Enforcer
 :rte-community-abbrev: KWRTE
-:rte-product-name: {product-project-name} Runtime Enforcer
-:rte-product-short-name: Runtime Enforcer
-:rte-product-abbrev: SSRTE
 
 // SBOM Scanner.
 :sboms-community-name: {community-project-name} SBOM Scanner
 :sboms-community-short-name: SBOM Scanner
 :sboms-community-abbrev: KWSBOMS
-:sboms-product-name: {product-project-name} Vulnerability Scanner
-:sboms-product-short-name: Vulnerability Scanner
-:sboms-product-abbrev: SSVS
 
 // Web Application Firewall.
 :waf-community-name: {community-project-name} Web Application Firewall
 :waf-community-short-name: Web Application Firewall
 :waf-community-abbrev: KWWAF
-:waf-product-name: {product-project-name} Web Application Firewall
-:waf-product-short-name: Web Application Firewall
-:waf-product-abbrev: SSWAF
 
 // Pull in the build specific global attributes.
 include::{build-type}-specific/globals.adoc[]

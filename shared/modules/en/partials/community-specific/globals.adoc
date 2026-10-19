@@ -1,7 +1,7 @@
 // Community specific global attributes. In scope for all sub-projects of
 // Kubewarden. The names come from globals.adoc. This file only selects the
 // community names. The product repository has a product-specific/globals.adoc
-// that selects the product names.
+// that defines and selects the product names.
 
 :admc-name: {admc-community-name}
 :admc-short-name: {admc-community-short-name}
