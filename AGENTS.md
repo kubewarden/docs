@@ -90,15 +90,17 @@ references to the product to a minimum.
 
 Do not hardcode a product name. Use the name attributes:
 
-| Component | Full name | Short name | Abbreviation |
-|---|---|---|---|
-| `admission-controller` | `{admc-name}` | `{admc-short-name}` | `{admc-abbrev}` |
-| `sbom-scanner` | `{sboms-name}` | `{sboms-short-name}` | `{sboms-abbrev}` |
-| `runtime-enforcer` | `{rte-name}` | `{rte-short-name}` | `{rte-abbrev}` |
-| `network-enforcer` | `{ne-name}` | `{ne-short-name}` | `{ne-abbrev}` |
+| Component | Full name | Short name |
+|---|---|---|
+| `admission-controller` | `{admc-name}` | `{admc-short-name}` |
+| `sbom-scanner` | `{sboms-name}` | `{sboms-short-name}` |
+| `runtime-enforcer` | `{rte-name}` | `{rte-short-name}` |
+| `network-enforcer` | `{ne-name}` | `{ne-short-name}` |
 
 - Use the full name for the first mention on a page and in `:description:`.
   Use the short name after that.
+- Do not use the abbreviation attributes (`{admc-abbrev}` and so on) in
+  shared pages. The product names have no abbreviations.
 - Keep literal names in commands, Helm release names, namespaces, labels,
   and generated reference partials.
 - These attributes give the name of the current build. If a page must name

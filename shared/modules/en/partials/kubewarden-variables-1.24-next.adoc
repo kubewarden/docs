@@ -14,10 +14,6 @@ ifndef::kw-product-short-name[]
 :kw-product-short-name: Admission Controller
 endif::[]
 
-ifndef::kw-product-abbrev[]
-:kw-product-abbrev: SSAC
-endif::[]
-
 ifndef::kw-community-name[]
 :kw-community-name: Kubewarden
 endif::[]
@@ -43,9 +39,7 @@ ifeval::["{build-type}" == "product"]
 :community-name: {kw-community-name}
 :short-project-name: {kw-product-short-name}
 :short-product-name: {short-project-name}
-:project-abbrev: {kw-product-abbrev}
-:product-abbrev: {project-abbrev}
-:intro-paragraph: {short-project-name} is derived from a vendor neutral, https://cncf.io[CNCF] Sandbox project, called link:https://kubewarden.io[{community-name}], originally created by https://www.rancher.com/[SUSE Rancher]. The name {project-name} may be shortened to {short-project-name} or abbreviated as {project-abbrev}. The name {community-name} refers to the open-source community project. The name {community-name} may also be used throughout this documentation in place of {project-name}, {short-project-name}, or {project-abbrev}.
+:intro-paragraph: {short-project-name} is derived from a vendor neutral, https://cncf.io[CNCF] Sandbox project, called link:https://kubewarden.io[{community-name}], originally created by https://www.rancher.com/[SUSE Rancher]. The name {project-name} may be shortened to {short-project-name}. The name {community-name} refers to the open-source community project. The name {community-name} may also be used throughout this documentation in place of {project-name} or {short-project-name}.
 // The two admc attributes below match the community block above.
 :admc-name: {kw-product-name}
 :admc-short-name: {kw-product-short-name}
