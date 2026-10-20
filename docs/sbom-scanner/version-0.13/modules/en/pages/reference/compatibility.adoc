@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Compatibility
-:revdate: 2026-10-01
+:revdate: 2026-10-14
 :page-revdate: {revdate}
 :description: The cluster requirements of {sboms-name}: Kubernetes, cert-manager, PostgreSQL, and the components that the chart bundles or that you can add.
 :keywords: ["{sboms-name}", "kubewarden", "kubernetes", "compatibility", "dependencies", "requirements"]
@@ -108,23 +108,7 @@ xref:user-guide/opentelemetry.adoc[OpenTelemetry].
 server].
 |===
 
-ifeval::["{build-type}" == "product"]
-[#_rancher-integration]
-== Rancher Integration
-
-The chart declares the Rancher versions that it supports in its catalog
-annotations.
-
-[cols="2,2,6"]
-|===
-|Rancher Version |Status |Notes
-
-|*2.10.1 - 2.15.x*
-|✓ Supported
-|The range that the chart annotation `catalog.cattle.io/rancher-version`
-declares, up to 2.15.100.
-|===
-endif::[]
+include::partial${build-type}-specific/compatibility-integrations.adoc[]
 
 [#_support]
 == Support

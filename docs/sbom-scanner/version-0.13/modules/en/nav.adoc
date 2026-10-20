@@ -17,9 +17,7 @@ include::partial$variables.adoc[]
 * Explanations
 ** xref:explanations/architecture.adoc[Architecture]
 * Howtos
-ifeval::["{build-type}" == "product"]
-include::partial$product-specific/ui-extension-nav.adoc[]
-endif::[]
+include::partial${build-type}-specific/nav-howtos.adoc[tag=nav]
 ** xref:installation/uninstall.adoc[Uninstall]
 ** xref:installation/helm-values.adoc[Helm Values]
 ** xref:troubleshooting/collecting-logs.adoc[Collecting Logs]

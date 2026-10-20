@@ -1,0 +1,2 @@
+// Integrations section of the compatibility page. The community build has
+// none at the moment. The product build adds its own section here.
