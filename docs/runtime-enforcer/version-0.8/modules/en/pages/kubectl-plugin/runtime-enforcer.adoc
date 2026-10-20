@@ -8,7 +8,7 @@ include::partial$variables.adoc[]
 [#_synopsis]
 == Synopsis
 
-Kubernetes plugin for SUSE Security Runtime Enforcer
+Kubernetes plugin for {rte-name}
 
 ....
 runtime-enforcer [flags]

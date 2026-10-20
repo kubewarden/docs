@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Compatibility
 :description: Check if your kernel meets the requirements for using eBPF to monitor and enforce security policies in Kubernetes by verifying the configuration options
-:revdate: 2026-09-21
+:revdate: 2026-10-20
 :page-revdate: {revdate}
 
 [#_overview]
@@ -87,29 +87,7 @@ ls /sys/kernel/btf/vmlinux
 grep CONFIG_BPF <your kernel config>
 ----
 
-[#_rancher-integration]
-== Rancher Integration
-
-[cols="2,2,6"]
-|===
-|Rancher Version |Status |Notes
-
-|*2.6.x*
-|✓ Supported
-|Minimum supported version
-
-|*2.7.x - 2.11.x*
-|✓ Supported
-|Fully tested
-
-|*2.12.x*
-|✓ Supported
-|Latest tested version (up to 2.12.100)
-
-|*2.13.x+*
-|Expected
-|Should work but not yet verified
-|===
+include::partial${build-type}-specific/compatibility-integrations.adoc[]
 
 [#_support]
 == Support
