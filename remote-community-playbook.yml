@@ -34,7 +34,7 @@ asciidoc:
     tabs-sync-option: ''
   extensions:
     - '@asciidoctor/tabs'
-    - ./extensions/mermaid-block.js
+    - ./docs-common/extensions/mermaid-block/mermaid-block.js
 
 antora:
   extensions:

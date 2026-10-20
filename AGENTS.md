@@ -303,10 +303,12 @@ Do not bump these by hand. The hourly updatecli job runs `updatecli/updatecli.d/
 
 ### Mermaid diagrams
 
-The local extension `extensions/mermaid-block.js` processes `[mermaid]`
-blocks. It writes the diagram source into the page. The browser draws the
-diagram with `kw-community-docs-supp-files/js/mermaid-init.js`, which loads
-mermaid from a CDN and applies the site theme.
+The extension `docs-common/extensions/mermaid-block/mermaid-block.js` (from
+`rancher/product-docs-common`) processes `[mermaid]` blocks. The product
+build uses the same extension. It writes the diagram source into the page.
+The browser draws the diagram with
+`kw-community-docs-supp-files/js/mermaid-init.js`, which loads mermaid from a
+CDN and applies the site theme.
 
 To use attributes such as `{sboms-short-name}` in a diagram, add
 `subs="attributes"`:
