@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Compatibility
 :description: Check which network providers and features work with your cluster by reviewing compatibility information
-:revdate: 2026-09-18
+:revdate: 2026-10-20
 :page-revdate: {revdate}
 
 [#_overview]
@@ -102,27 +102,7 @@ The chart mounts the Secret net-enf-goldmane-client-certs when controller.provid
 |Yes
 |===
 
-ifeval::["{build-type}" == "product"]
-[#_rancher-integration]
-== Rancher Integration
-
-[cols="2,2,6"]
-|===
-|Rancher Version |Status |Notes
-
-|*2.9.x*
-|✓ Supported
-|Minimum supported version
-
-|*2.10.x - 2.12.x*
-|✓ Supported
-|Fully tested
-
-|*2.13.x - 2.15.x*
-|Expected
-|Should work but not yet verified
-|===
-endif:[]
+include::partial${build-type}-specific/compatibility-integrations.adoc[]
 
 [#_support]
 == Support
