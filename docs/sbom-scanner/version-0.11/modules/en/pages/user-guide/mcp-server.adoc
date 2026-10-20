@@ -16,13 +16,13 @@ This guide covers:
 
 * Enabling and configuring the MCP server
 * Connecting from different AI clients
-* Available tools for reading and writing {sboms-name} resources
+* Available tools for reading and writing {sboms-short-name} resources
 * Example prompts for common workflows
 * Read-only mode, rate limiting, and TLS configuration
 
 == Prerequisites
 
-* A Kubernetes cluster with {sboms-name} installed, or a fresh cluster where {sboms-name} will be installed alongside the MCP server
+* A Kubernetes cluster with {sboms-short-name} installed, or a fresh cluster where {sboms-short-name} will be installed alongside the MCP server
 * cert-manager installed (for TLS, unless disabled with `mcp.disableTLS=true`)
 * An MCP-compatible client
 
@@ -240,7 +240,7 @@ stringData:
 ----
 . *Apply the AIAgentConfig resource:*
 +
-Replace `<namespace>` with the namespace where {sboms-name} is installed:
+Replace `<namespace>` with the namespace where {sboms-short-name} is installed:
 +
 [source,yaml]
 ----
@@ -302,7 +302,7 @@ spec:
 [#_available-tools]
 == 5. Available Tools
 
-The MCP server exposes tools that let AI assistants interact with {sboms-name} resources.
+The MCP server exposes tools that let AI assistants interact with {sboms-short-name} resources.
 
 === Read tools
 
@@ -349,7 +349,7 @@ For details on the resources these tools manage, see xref:user-guide/scanning-re
 [#_example-prompts]
 == 6. Example Prompts
 
-Once connected, you can interact with {sboms-name} using natural language. Below are example prompts organized by workflow.
+Once connected, you can interact with {sboms-short-name} using natural language. Below are example prompts organized by workflow.
 
 === Registry scanning workflow
 
@@ -386,7 +386,7 @@ helm upgrade sbomscanner sbomscanner/sbomscanner \
   --set mcp.readOnly=true
 ----
 
-Use read-only mode when you want AI assistants to query vulnerability data without being able to modify {sboms-name} resources.
+Use read-only mode when you want AI assistants to query vulnerability data without being able to modify {sboms-short-name} resources.
 
 [#_rate-limiting]
 == 8. Rate Limiting

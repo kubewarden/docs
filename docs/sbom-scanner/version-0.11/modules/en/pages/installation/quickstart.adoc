@@ -5,11 +5,11 @@ include::partial$variables.adoc[]
 :page-revdate: {revdate}
 :description: Quickly install {sboms-name} and run your first registry scan.
 
-Welcome to the {sboms-name} Quick Start!
+Welcome to the {sboms-short-name} Quick Start!
 
 This guide will walk you through the following steps:
 
-* Deploying the {sboms-name} stack in a Kubernetes cluster
+* Deploying the {sboms-short-name} stack in a Kubernetes cluster
 * Running an automated image scan using a `Registry` custom resource
 
 [#requirements]
@@ -65,9 +65,9 @@ helm install cnpg \
 
 To customize the CloudNativePG installation, refer to xref:installation/helm-values.adoc#using-cloudnativepg-recommended[Using CloudNativePG (Recommended)] in the Helm values documentation. You can also bring your own PostgreSQL instance instead of using CloudNativePG. See xref:installation/helm-values.adoc#using-an-external-postgresql-instance[Using an External PostgreSQL Instance] for configuration details.
 
-== Deploy {sboms-name}
+== Deploy {sboms-short-name}
 
-Follow these simple steps from your local machine to get {sboms-name} up and running:
+Follow these simple steps from your local machine to get {sboms-short-name} up and running:
 
 === Install the Helm chart
 
@@ -84,7 +84,7 @@ helm install sbomscanner kubewarden/sbomscanner \
 [TIP]
 ====
 
-By default, the installation of {sboms-name} is configured to be highly available. If you want to save on resources, you can reduce the number of replicas to the minimum:
+By default, the installation of {sboms-short-name} is configured to be highly available. If you want to save on resources, you can reduce the number of replicas to the minimum:
 
 [source,bash]
 ----
@@ -128,7 +128,7 @@ sbomscanner           sbomscanner-worker-d9d68c5c-tlpgm             1/1     Runn
 
 === Summary
 
-At this point, your {sboms-name} deployment is up and running successfully. You're now ready to begin scanning images and generating reports!
+At this point, your {sboms-short-name} deployment is up and running successfully. You're now ready to begin scanning images and generating reports!
 
 '''''
 
@@ -139,7 +139,7 @@ In this section, you'll learn how to create a registry source and trigger an aut
 [#prepare-a-registryyaml-file]
 === Prepare a `registry.yaml` file
 
-Before running a scan, you need to define a `Registry` custom resource for {sboms-name} to fetch images.
+Before running a scan, you need to define a `Registry` custom resource for {sboms-short-name} to fetch images.
 
 [source,yaml]
 ----
@@ -193,7 +193,7 @@ kubectl apply -f registry.yaml
 [#prepare-a-scan-jobyaml]
 === Prepare a `scan-job.yaml`
 
-The `ScanJob` CR tells {sboms-name} which registry to scan.
+The `ScanJob` CR tells {sboms-short-name} which registry to scan.
 
 [source,yaml]
 ----

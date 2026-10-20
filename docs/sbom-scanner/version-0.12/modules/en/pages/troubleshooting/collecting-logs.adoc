@@ -45,7 +45,7 @@ Example output:
 [source,text]
 ----
 == Helm release ==
-  ✅ Found {sboms-name} Helm release
+  ✅ Found SBOMscanner Helm release
   Release name       sbomscanner
   Namespace          sbomscanner
   Chart              sbomscanner-0.2.0
@@ -85,8 +85,8 @@ Using https://github.com/kubewarden/sbomscanner/blob/main/hack/sbomscanner-debug
 
 By default the script collects:
 
-* Logs from the pods of all {sboms-name} components (controller, workers, storage, NATS), including init containers and previous-container logs for crash-looped pods.
-* Logs from the CloudNativePG cluster pods running in the {sboms-name} namespace.
+* Logs from the pods of all {sboms-short-name} components (controller, workers, storage, NATS), including init containers and previous-container logs for crash-looped pods.
+* Logs from the CloudNativePG cluster pods running in the {sboms-short-name} namespace.
 * Helm release metadata (`values`, rendered `manifest`, history).
 
 === Optional flags
@@ -96,7 +96,7 @@ By default the script collects:
 |Flag |Purpose
 |`--namespace <ns>` |Force a specific install namespace (otherwise auto-discovered)
 |`--cnpg-namespace <ns>` |Also collect logs from the CNPG operator in that namespace (e.g. `cnpg-system`)
-|`--manifests` |Also dump every {sboms-name} CR (cluster-scoped `VEXHub` and `WorkloadScanConfiguration`; namespaced `Registry`, `ScanJob`, `Image`, `VulnerabilityReport`, `WorkloadScanReport` collected cluster-wide), plus CNPG `Cluster`/`Pooler`/`Backup`/`ScheduledBackup` CRs, events and `kubectl describe` for every pod in the install namespace
+|`--manifests` |Also dump every {sboms-short-name} CR (cluster-scoped `VEXHub` and `WorkloadScanConfiguration`; namespaced `Registry`, `ScanJob`, `Image`, `VulnerabilityReport`, `WorkloadScanReport` collected cluster-wide), plus CNPG `Cluster`/`Pooler`/`Backup`/`ScheduledBackup` CRs, events and `kubectl describe` for every pod in the install namespace
 |`--output-dir <dir>` |Write the bundle to `<dir>` instead of the current directory
 |`--compress-results` |Tar+gzip the bundle into a single `.tar.gz`
 |===

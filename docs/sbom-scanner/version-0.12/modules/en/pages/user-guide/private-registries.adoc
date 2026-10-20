@@ -9,7 +9,7 @@ include::partial$variables.adoc[]
 
 == Create the Secret
 
-{sboms-name} relies on the docker `config.json` file to manage the authentication to the registries.
+{sboms-short-name} relies on the docker `config.json` file to manage the authentication to the registries.
 
 The first step to setup a private registry is to create a `Secret` with the `config.json` content, having the following structure:
 
@@ -68,7 +68,7 @@ spec:
   authSecret: my-auth-secret
 ----
 
-This will allow {sboms-name} to scan for images from private registries.
+This will allow {sboms-short-name} to scan for images from private registries.
 
 *Please, note*:
 

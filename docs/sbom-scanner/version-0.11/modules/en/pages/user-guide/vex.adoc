@@ -53,7 +53,7 @@ You can configure an arbitrary number of `VEXHub` repositories within your clust
 
 If, for some reasons, you want to disable some of them, you can just patch their `spec.enabled` to `false`.
 
-This will let {sboms-name} exclude the `VEXHub` resource when scanning the registries.
+This will let {sboms-short-name} exclude the `VEXHub` resource when scanning the registries.
 
 Here's the command to disable a `VEXHub` resource:
 

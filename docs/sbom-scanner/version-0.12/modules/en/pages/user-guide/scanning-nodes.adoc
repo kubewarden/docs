@@ -20,7 +20,7 @@ eligible node as a DaemonSet, scans the host filesystem, and produces a
 comprehensive overview of node-level vulnerabilities, helping you secure
 the infrastructure your workloads run on.
 
-Under the hood, {sboms-name} creates a `NodeScanJob` resource for each
+Under the hood, {sboms-short-name} creates a `NodeScanJob` resource for each
 matching node, on the configured schedule or on demand. The worker pod
 on the node scans the host filesystem and produces a `NodeSBOM` (in SPDX
 format) and a `NodeVulnerabilityReport` for that node.
@@ -166,7 +166,7 @@ files. Glob patterns such as `++**/++vendor/` are supported.
 
 === Scanning specific platforms
 
-By default, {sboms-name} scans all nodes regardless of their platform. In
+By default, {sboms-short-name} scans all nodes regardless of their platform. In
 clusters with mixed architectures, you can restrict scanning to specific
 OS/architecture combinations:
 
@@ -465,4 +465,4 @@ filesystem. These settings are rejected by both the `restricted` and the
 `baseline`
 https://kubernetes.io/docs/concepts/security/pod-security-admission/[Pod Security Admission]
 profiles. When node scanning is enabled, the namespace where
-{sboms-name} is installed cannot enforce either profile.
+{sboms-short-name} is installed cannot enforce either profile.
