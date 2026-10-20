@@ -91,13 +91,4 @@ You can serve {admc-short-name} policies using a standard web server or, better,
 you can publish them in an OCI compliant registry as
 https://github.com/opencontainers/artifacts[OCI artifacts].
 
-ifeval::["{build-type}" == "community"]
-
-[#_vendor_neutrality]
-== Vendor neutrality
-
-{admc-short-name} is a
-link:https://contribute.cncf.io/maintainers/community/vendor-neutrality/[vendor
-neutral] project as defined by the CNCF.
-
-endif::[]
+include::partial${build-type}-specific/vendor-neutrality.adoc[]

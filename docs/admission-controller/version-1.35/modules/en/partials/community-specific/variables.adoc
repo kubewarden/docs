@@ -1,0 +1,5 @@
+// This partial file contains variables that are relevant only for the
+// community version.
+
+// The project origin sentence, used by the introduction page.
+:intro-paragraph: {admc-name} is a xref:#_vendor_neutrality[vendor neutral], https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].

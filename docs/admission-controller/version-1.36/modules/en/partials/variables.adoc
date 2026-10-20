@@ -1,4 +1,34 @@
-// Include shared project global variables
-include::latest@shared:en:partial$kubewarden-variables-1.36-forward.adoc[]
+// Pull in the global attributes, including the names of all components,
+// and the component wide attributes.
+include::latest@shared:en:partial$admc-variables.adoc[]
 
-// global variables for this version below:
+// Pull in the version specific attributes for this build type.
+include::partial${build-type}-specific/variables.adoc[]
+
+// Glossary terms start
+
+:admission-policy: xref:glossary.adoc#_admissionpolicy[AdmissionPolicy]
+
+:cluster-admission-policy: xref:glossary.adoc#_clusteradmissionpolicy[ClusterAdmissionPolicy]
+
+:cluster-policy-report: xref:glossary.adoc#_clusterreport[ClusterPolicyReport]
+
+:kwctl: xref:glossary.adoc#_kwctl[kwctl]
+
+:mutating-webhook-configuration: xref:glossary.adoc#_mutatingwebhookconfiguration[MutatingWebhookConfiguration]
+
+:policy-report: xref:glossary.adoc#_report[PolicyReport]
+
+:policy-server: xref:glossary.adoc#_policyserver[PolicyServer]
+
+:validating-webhook-configuration: xref:glossary.adoc#_validatingwebhookconfiguration[ValidatingWebhookConfiguration]
+
+:waPC: xref:glossary.adoc#_wapc[waPC]
+
+:WASI: xref:glossary.adoc#_wasi[WASI]
+
+:Wasm: xref:glossary.adoc#_wasm[Wasm]
+
+:Wasmtime: xref:glossary.adoc#_wasmtime[Wasmtime]
+
+// Glossary terms end
