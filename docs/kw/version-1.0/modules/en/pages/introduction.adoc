@@ -1,8 +1,8 @@
 include::partial$variables.adoc[]
-= {community-project-name} documentation
+= {kw-name} documentation
 :revdate: 2026-09-21
 :page-revdate: {revdate}
-:description: Explore the {community-project-name} components to secure Kubernetes workloads, from admission policies and vulnerability scanning to runtime and network controls.
+:description: Explore the {kw-name} components to secure Kubernetes workloads, from admission policies and vulnerability scanning to runtime and network controls.
 :doc-persona: ["kubewarden-all"]
 :doc-topic: ["introduction", "overview"]
 :doc-type: ["explanation"]
@@ -12,7 +12,7 @@ include::partial$variables.adoc[]
 [.landing-hero]
 --
 [.landing-eyebrow]
-{community-project-name}
+{kw-name}
 
 [discrete]
 = Kubernetes security,
