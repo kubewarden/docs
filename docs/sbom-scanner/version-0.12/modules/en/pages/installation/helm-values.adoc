@@ -29,7 +29,7 @@ For more details on customizing Helm charts, see the https://helm.sh/docs/intro/
 
 == Log Levels
 
-You can configure the log level for each {sboms-name} component to control the verbosity of the logs.
+You can configure the log level for each {sboms-short-name} component to control the verbosity of the logs.
 
 [source,yaml]
 ----
@@ -97,12 +97,12 @@ For more information on resource management, see the https://kubernetes.io/docs/
 
 == PostgreSQL Configuration
 
-{sboms-name} requires a PostgreSQL database to store SBOM data. You have two options: use the built-in https://cloudnative-pg.io/[CloudNativePG (CNPG) operator] or connect to an external PostgreSQL instance.
+{sboms-short-name} requires a PostgreSQL database to store SBOM data. You have two options: use the built-in https://cloudnative-pg.io/[CloudNativePG (CNPG) operator] or connect to an external PostgreSQL instance.
 
 [#using-cloudnativepg-recommended]
 === Using CloudNativePG (Recommended)
 
-By default, {sboms-name} deploys a PostgreSQL cluster using the CloudNativePG operator. This is the easiest way to get started.
+By default, {sboms-short-name} deploys a PostgreSQL cluster using the CloudNativePG operator. This is the easiest way to get started.
 
 [source,yaml]
 ----
@@ -166,7 +166,7 @@ The URI format follows the https://www.postgresql.org/docs/current/libpq-connect
 [NOTE]
 ====
 Any `sslmode` or other `ssl*` parameters in the URI are ignored. +
-{sboms-name} always enforces CA verification when connecting to the database, +
+{sboms-short-name} always enforces CA verification when connecting to the database, +
 using the CA certificate specified in the `caSecretName` secret.
 ====
 
@@ -202,7 +202,7 @@ storage:
 
 == Default VEXHub Resources
 
-On chart install, {sboms-name} seeds two `VEXHub` resources pointing to the public `github.com/rancher/vexhub` and `github.com/aquasecurity/vexhub` repositories. They are created via a `post-install` hook and are not tracked by the Helm release, so you can freely modify, disable, or delete them afterwards without Helm reverting your changes on subsequent upgrades.
+On chart install, {sboms-short-name} seeds two `VEXHub` resources pointing to the public `github.com/rancher/vexhub` and `github.com/aquasecurity/vexhub` repositories. They are created via a `post-install` hook and are not tracked by the Helm release, so you can freely modify, disable, or delete them afterwards without Helm reverting your changes on subsequent upgrades.
 
 [source,yaml]
 ----

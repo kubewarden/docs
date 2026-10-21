@@ -19,10 +19,10 @@ https://github.com/join[GitHub account] and a browser.
 Usually, any new documentation work for {short-project-name} begins with an issue in
 GitHub.
 ifeval::["{build-type}" == "community"]
-The https://github.com/orgs/kubewarden/teams/kubewarden-documentation[{short-project-name} documentation team] reviews, categorizes, and tags them. documentation team] reviews, categorizes, and tags them. ]
+The https://github.com/orgs/kubewarden/teams/kubewarden-documentation[{short-project-name} documentation team] reviews, categorizes, and tags them.
 endif::[]
 ifeval::["{build-type}" == "product"]
-The https://github.com/orgs/rancher/teams/docs[{short-project-name} documentation team] reviews, categorizes, and tags them. documentation team] reviews, categorizes, and tags them. ]
+The https://github.com/orgs/rancher/teams/docs[{short-project-name} documentation team] reviews, categorizes, and tags them.
 endif::[]
 Everybody is welcome
 to work on any issue, including the reporter, but you should assign it to

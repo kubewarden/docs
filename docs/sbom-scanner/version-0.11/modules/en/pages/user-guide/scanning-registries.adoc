@@ -153,7 +153,7 @@ When `spec.repositories` is set, the obsolete-image cleanup is skipped for the e
 
 In some cases, you may work with registries that do not implement/exposes the `_catalog` endpoint (such as *Docker Hub*, *Amazon ECR*, or *ghcr.io*).
 
-To make {sboms-name} work with these registries, you can manually specify the repositories you want to scan, instead of pulling the catalog.
+To make {sboms-short-name} work with these registries, you can manually specify the repositories you want to scan, instead of pulling the catalog.
 
 [NOTE]
 ====
@@ -187,7 +187,7 @@ Here's a list of registries that do NOT support `_catalog` (or intentionally dis
 
 In most cases you don't want to scan all the platforms of the same image version. For this reason we created a filter mechanism to avoid unuseful scans and waste of time.
 
-To lighten the workload of {sboms-name}, you can specify which platforms you want to scan, instead of discovering them and consequently scan.
+To lighten the workload of {sboms-short-name}, you can specify which platforms you want to scan, instead of discovering them and consequently scan.
 
 Here's an example of how to configure the registry to look only at the `linux/amd64` platform.
 

@@ -18,7 +18,7 @@ https://github.com/join[GitHub account] and a browser.
 
 Usually, any new documentation work for {admc-short-name} begins with an issue in
 GitHub.
-The {docs-team-url}[{admc-short-name} documentation team] reviews, categorizes, and tags them. documentation team] reviews, categorizes, and tags them. ]
+The {docs-team-url}[{admc-short-name} documentation team] reviews, categorizes, and tags them.
 Everybody is welcome
 to work on any issue, including the reporter, but you should assign it to
 yourself before commencing any work to avoid duplicate efforts.

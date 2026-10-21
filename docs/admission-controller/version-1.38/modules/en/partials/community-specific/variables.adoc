@@ -1,13 +1,18 @@
-// This partial file contains variables that are relevant only for community 
-// version only
+// This partial file contains variables that are relevant only for the
+// community version.
+
+// The project origin sentence, used by the introduction page.
+:intro-paragraph: {admc-name} is a xref:#_vendor_neutrality[vendor neutral], https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
+
+// Container registry, Helm chart, and install defaults.
+:default-oci-registry: ghcr.io
+:default-oci-admcontroller-container-namespace: kubewarden/adm-controller
+:default-policy-server-image: {default-oci-registry}/{default-oci-admcontroller-container-namespace}/policy-server
+:admc-chart-location: kubewarden/admission-controller
+:admc-namespace: kubewarden
+// Default name used when installing the admission-controller component. (e.g. helm install)
+:admc-release: admission-controller
 
 // Default container image tag used in the documentation version. All the admission
-// controller container image has synced container tag
-:default-container-image-tag: v1.37.0
-
-// The documentation repository and team, used by the contribution guide.
-// Version 1.39 and later get these from shared community-specific/globals.adoc.
-// This version still uses the legacy shared partial, so it sets them here.
-:docs-repo-name: kubewarden/docs
-:docs-repo-url: https://github.com/{docs-repo-name}
-:docs-team-url: https://github.com/orgs/kubewarden/teams/kubewarden-documentation
+// controller container images share the container tag.
+:default-container-image-tag: v1.38.2

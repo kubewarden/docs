@@ -1,5 +1,9 @@
 // Here goes version specific, community-specific shared attributes and content
 
+// The project origin sentence, used by the introduction page. The text
+// matches the Admission Controller introduction.
+:intro-paragraph: {sboms-name} is a xref:#_vendor_neutrality[vendor neutral], https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
+
 // Current upstream release tag and published Helm chart version.
 // Bumped by updatecli on each upstream release. Do not edit by hand.
 :release-tag: v0.13.0
