@@ -2,3 +2,6 @@
 // Put values here that differ between builds and apply to all versions of
 // the component. Values for one version go in that version's
 // partials/community-specific/variables.adoc.
+
+// The name of the whole project, used by the landing page.
+:kw-name: {community-project-name}
