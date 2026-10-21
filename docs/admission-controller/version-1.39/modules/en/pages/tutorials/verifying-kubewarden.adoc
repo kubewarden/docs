@@ -187,17 +187,19 @@ Since Helm 3.8.0, Helm has support for OCI registries, but because of
 constraints in them, they can't be searched via `helm`. You can find the
 https://github.com/orgs/kubewarden/packages?tab=packages&q=charts[list of charts in GitHub Container Registry].
 
-The `kubewarden/helm-charts` repository packages the chart, then the shared
-`chart-release.yml` reusable workflow in `kubewarden/github-actions` pushes,
-signs and attests it. The signer identity names that shared workflow.
+The `kubewarden/helm-charts` repository builds, signs and attests the chart
+with its own `chart-release.yml` reusable workflow. The workflow packages the
+chart from the commit that the signature and the attestation name, so no
+step outside the workflow can change it.
 
-To verify a Helm chart, you need `cosign` installed. Then execute the following
-command, for example:
+To verify a Helm chart, you need `cosign` installed. The chart carries two
+signature formats. Run both commands, for example:
 
 [source,console,subs="+attributes"]
 ----
 cosign verify ghcr.io/kubewarden/charts/admission-controller:{chart-version} \
-  --certificate-identity-regexp '^https://github\.com/kubewarden/github-actions/\.github/workflows/chart-release\.yml@' \
+  --new-bundle-format=false \
+  --certificate-identity-regexp '^https://github\.com/kubewarden/helm-charts/\.github/workflows/chart-release\.yml@' \
   --certificate-github-workflow-repository kubewarden/helm-charts \
   --certificate-github-workflow-ref 'refs/heads/main' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
@@ -211,18 +213,39 @@ The following checks were performed on each of these signatures:
 <snipped json>
 ----
 
+[source,console,subs="+attributes"]
+----
+cosign verify-attestation ghcr.io/kubewarden/charts/admission-controller:{chart-version} \
+  --new-bundle-format=true \
+  --type https://sigstore.dev/cosign/sign/v1 \
+  --certificate-identity-regexp '^https://github\.com/kubewarden/helm-charts/\.github/workflows/chart-release\.yml@' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+----
+
 You can then verify that the cert in the returned json contains the correct
 issuer, subject, and `github_workflow_repository` extensions.
 
-The shared workflow also runs `actions/attest` on the chart. That attestation
-gives the chart SLSA Build L3. GitHub stores it in the `kubewarden/helm-charts`
+The workflow also runs `actions/attest` on the chart. That attestation gives
+the chart SLSA Build L3. GitHub stores it in the `kubewarden/helm-charts`
 repository. The GitHub CLI verifies it:
 
 [source,console,subs="+attributes"]
 ----
 gh attestation verify oci://ghcr.io/kubewarden/charts/admission-controller:{chart-version} \
   --repo kubewarden/helm-charts \
-  --signer-workflow kubewarden/github-actions/.github/workflows/chart-release.yml
+  --signer-workflow kubewarden/helm-charts/.github/workflows/chart-release.yml
+----
+
+The workflow also attests the packaged `.tgz` file that the GitHub release
+carries. Download the file from the
+https://github.com/kubewarden/helm-charts/releases[release page], then verify
+it:
+
+[source,console,subs="+attributes"]
+----
+gh attestation verify admission-controller-{chart-version}.tgz \
+  --repo kubewarden/helm-charts \
+  --signer-workflow kubewarden/helm-charts/.github/workflows/chart-release.yml
 ----
 
 {admc-short-name} also follows the usual practices with regards to Helm charts. Hence, one

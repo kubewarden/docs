@@ -183,15 +183,19 @@ Then fetch the manifest by its digest and read each layer with `crane blob`.
 The {ne-short-name} chart is in the Helm repository at
 https://charts.kubewarden.io and, as an OCI artifact, at
 `ghcr.io/kubewarden/charts/network-enforcer`. The OCI copy is signed. The
-`kubewarden/helm-charts` repository packages the chart, then the shared
-`chart-release.yml` reusable workflow in `kubewarden/github-actions` pushes,
-signs and attests it. The signer identity names that shared workflow:
+`kubewarden/helm-charts` repository builds, signs and attests the chart with
+its own `chart-release.yml` reusable workflow. The workflow packages the
+chart from the commit that the signature and the attestation name, so no
+step outside the workflow can change it.
+
+The chart carries two cosign signature formats. Run the following two
+commands to verify them:
 
 [source,console,subs="+attributes"]
 ----
-cosign verify \
+cosign verify --new-bundle-format=false \
   --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-  --certificate-identity-regexp='^https://github\.com/kubewarden/github-actions/\.github/workflows/chart-release\.yml@' \
+  --certificate-identity-regexp='^https://github\.com/kubewarden/helm-charts/\.github/workflows/chart-release\.yml@' \
   --certificate-github-workflow-repository=kubewarden/helm-charts \
   --certificate-github-workflow-ref='refs/heads/main' \
   ghcr.io/kubewarden/charts/network-enforcer:{chart-version}
@@ -205,15 +209,36 @@ The following checks were performed on each of these signatures:
 <snipped json>
 ----
 
-The shared workflow also runs `actions/attest` on the chart. That attestation
-gives the chart SLSA Build L3. GitHub stores it in the `kubewarden/helm-charts`
+[source,console,subs="+attributes"]
+----
+cosign verify-attestation --new-bundle-format=true \
+  --type https://sigstore.dev/cosign/sign/v1 \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --certificate-identity-regexp='^https://github\.com/kubewarden/helm-charts/\.github/workflows/chart-release\.yml@' \
+  ghcr.io/kubewarden/charts/network-enforcer:{chart-version}
+----
+
+The workflow also runs `actions/attest` on the chart. That attestation gives
+the chart SLSA Build L3. GitHub stores it in the `kubewarden/helm-charts`
 repository. The GitHub CLI verifies it:
 
 [source,console,subs="+attributes"]
 ----
 gh attestation verify oci://ghcr.io/kubewarden/charts/network-enforcer:{chart-version} \
   --repo kubewarden/helm-charts \
-  --signer-workflow kubewarden/github-actions/.github/workflows/chart-release.yml
+  --signer-workflow kubewarden/helm-charts/.github/workflows/chart-release.yml
+----
+
+The workflow also attests the packaged `.tgz` file that the GitHub release
+carries. Download the file from the
+https://github.com/kubewarden/helm-charts/releases[release page], then verify
+it:
+
+[source,console,subs="+attributes"]
+----
+gh attestation verify network-enforcer-{chart-version}.tgz \
+  --repo kubewarden/helm-charts \
+  --signer-workflow kubewarden/helm-charts/.github/workflows/chart-release.yml
 ----
 
 To list every image that the chart deploys, render it and extract the image
