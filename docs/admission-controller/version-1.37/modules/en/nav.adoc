@@ -115,13 +115,7 @@ include::partial${build-type}-specific/nav-migrations.adoc[tag=nav]
 *** xref:howtos/telemetry/20-tracing-qs.adoc[]
 *** xref:howtos/telemetry/30-metrics-qs.adoc[]
 *** xref:howtos/telemetry/40-custom-otel-collector.adoc[]
-** Rancher UI extension
-*** xref:howtos/ui-extension/01-install.adoc[Quickstart]
-*** xref:howtos/ui-extension/02-metrics.adoc[]
-*** xref:howtos/ui-extension/03-tracing.adoc[]
-** Rancher Application Collection
-*** xref:howtos/application-collection/01-verify-images.adoc[Verify images]
-** xref:howtos/rancher-backup-operator.adoc[Rancher Backup Operator]
+include::partial${build-type}-specific/nav-howtos-rancher.adoc[tag=nav]
 ** Workarounds
 *** xref:howtos/workarounds/policy-server-certificate-expiry.adoc[Certificate rotation, releases ≥ v1.16]
 ** xref:howtos/contribution-guide/contribution-guide.adoc[]

@@ -1,0 +1,9 @@
+// Community entries for the Rancher how-tos in the How-tos section of
+// nav.adoc. These how-tos exist only in the product build, so this file
+// has no entries.
+//
+// nav.adoc includes only the lines between the tags. vlp.js (from
+// docs-common) prepends an attribute line to every included file. In
+// a list, that line would become part of the list item text.
+// tag::nav[]
+// end::nav[]
