@@ -24,23 +24,37 @@ artifact. Each `cosign` command below passes two values:
 
 * `--certificate-oidc-issuer`: always
   `\https://token.actions.githubusercontent.com`.
-* `--certificate-identity`: the workflow file and the Git ref of the release.
+* `--certificate-identity-regexp`: the workflow file that built the artifact.
 
-{sboms-short-name} builds and signs with two workflows, so the identity
-differs by artifact type:
+{sboms-short-name} builds, signs and attests its images with one shared
+reusable workflow that lives in the `kubewarden/github-actions` repository.
+The signer identity of every image, SBOM and provenance file is:
 
-* Container images:
-  `\https://github.com/kubewarden/sbomscanner/.github/workflows/container-build.yml@refs/tags/{release-tag}`
-* SBOM and provenance files on the release page:
-  `\https://github.com/kubewarden/sbomscanner/.github/workflows/attestation.yml@refs/tags/{release-tag}`
+[source,subs="+attributes"]
+----
+https://github.com/kubewarden/github-actions/.github/workflows/container-release.yml@<ref>
+----
+
+The `<ref>` is the commit of the reusable workflow, not the release tag of
+{sboms-short-name}. For that reason the commands below match the identity
+with `--certificate-identity-regexp`, anchored to the full path of the
+workflow file.
+
+That identity names the builder, not the release. The same builder signs the
+artifacts of every Kubewarden component. So each command also pins the caller
+repository and the release tag, with `--certificate-github-workflow-repository`
+and `--certificate-github-workflow-ref`. A signed file from another repository or
+another release does not pass. The flags do not bind the component. Every
+component of one release shares these certificate values, so a blob and its
+bundle from one component verify under another component's filename. To check
+which image a file describes, read the `subject` field inside the file.
 
 [IMPORTANT]
 ====
-Use the exact identity, with the release tag, as the commands below do. A
-pattern such as `\https://github.com/kubewarden/*` passed to
-`--certificate-identity-regexp` accepts an artifact from any workflow in any
-repository of the organization. The exact identity accepts only an artifact
-that the named workflow built.
+Keep the full path of the workflow file in the pattern, as the commands below
+do. A pattern such as `\https://github.com/kubewarden/*` accepts an artifact
+from any workflow in any repository of the organization. The anchored pattern
+accepts only an artifact that `container-release.yml` built.
 ====
 
 The examples use the release `{release-tag}` and the chart version
@@ -56,14 +70,16 @@ The examples use the release `{release-tag}` and the chart version
 * `storage`
 * `mcp`
 
-The build workflow signs each single-architecture image and the
+The shared workflow signs each single-architecture image and the
 multi-architecture index. To verify the controller image, run:
 
 [source,console,subs="+attributes"]
 ----
 cosign verify \
   --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-  --certificate-identity="https://github.com/kubewarden/sbomscanner/.github/workflows/container-build.yml@refs/tags/{release-tag}" \
+  --certificate-identity-regexp='^https://github\.com/kubewarden/github-actions/\.github/workflows/container-release\.yml@' \
+  --certificate-github-workflow-repository=kubewarden/sbomscanner \
+  --certificate-github-workflow-ref='refs/tags/{release-tag}' \
   ghcr.io/kubewarden/sbomscanner/controller:{release-tag}
 
 Verification for ghcr.io/kubewarden/sbomscanner/controller:{release-tag} --
@@ -78,27 +94,59 @@ The following checks were performed on each of these signatures:
 The same command, with `worker`, `storage`, or `mcp` in place of
 `controller`, verifies the other images.
 
+[#_build_provenance]
+== Build provenance (SLSA Build L3)
+
+The shared workflow runs `actions/attest` on the multi-architecture index of
+each image. GitHub writes the provenance from the OIDC token of the workflow
+job and signs it. No build step can change it. This attestation is what gives
+the images SLSA Build L3.
+
+GitHub stores the attestation in the {sboms-short-name} repository and next to
+the image in the registry. Verify it with the GitHub CLI:
+
+[source,console,subs="+attributes"]
+----
+gh attestation verify oci://ghcr.io/kubewarden/sbomscanner/controller:{release-tag} \
+  --repo kubewarden/sbomscanner \
+  --signer-workflow kubewarden/github-actions/.github/workflows/container-release.yml
+
+Loaded digest sha256:... for oci://ghcr.io/kubewarden/sbomscanner/controller:{release-tag}
+Loaded 1 attestation from GitHub API
+✓ Verification succeeded!
+----
+
+`--repo` names the repository that stores the attestation. `--signer-workflow`
+names the workflow that signed it. The check fails for an attestation signed by
+any other workflow.
+
 [#_sbom_and_provenance]
 == SBOM and provenance attestations
 
-For each image and each architecture, the release workflow extracts an SBOM in
+For each image and each architecture, the shared workflow extracts an SBOM in
 SPDX format and a provenance attestation in SLSA format. It signs each file
-and attaches the files to the GitHub release. The names follow this pattern:
+and the release job attaches the files to the GitHub release. The names follow
+this pattern:
 
 * `SBOMscanner-<component>-attestation-<arch>-provenance.intoto.jsonl`
 * `SBOMscanner-<component>-attestation-<arch>-sbom.json`
 
+These files come from the container build. They carry the layer and build-arg
+detail that `actions/attest` does not. The `actions/attest` attestation above
+is the one that carries the SLSA level.
+
 Each file has a Sigstore bundle with the same name and the suffix
 `.bundle.sigstore`. Download the file and its bundle from the
 https://github.com/kubewarden/sbomscanner/releases[release page], then
-verify the provenance. Note the identity: these files are signed by the
-`attestation.yml` workflow, not by `container-build.yml`.
+verify the provenance:
 
 [source,console,subs="+attributes"]
 ----
 cosign verify-blob \
   --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-  --certificate-identity="https://github.com/kubewarden/sbomscanner/.github/workflows/attestation.yml@refs/tags/{release-tag}" \
+  --certificate-identity-regexp='^https://github\.com/kubewarden/github-actions/\.github/workflows/container-release\.yml@' \
+  --certificate-github-workflow-repository=kubewarden/sbomscanner \
+  --certificate-github-workflow-ref='refs/tags/{release-tag}' \
   --bundle SBOMscanner-controller-attestation-amd64-provenance.intoto.jsonl.bundle.sigstore \
   SBOMscanner-controller-attestation-amd64-provenance.intoto.jsonl
 
@@ -111,7 +159,9 @@ And the SBOM:
 ----
 cosign verify-blob \
   --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-  --certificate-identity="https://github.com/kubewarden/sbomscanner/.github/workflows/attestation.yml@refs/tags/{release-tag}" \
+  --certificate-identity-regexp='^https://github\.com/kubewarden/github-actions/\.github/workflows/container-release\.yml@' \
+  --certificate-github-workflow-repository=kubewarden/sbomscanner \
+  --certificate-github-workflow-ref='refs/tags/{release-tag}' \
   --bundle SBOMscanner-controller-attestation-amd64-sbom.json.bundle.sigstore \
   SBOMscanner-controller-attestation-amd64-sbom.json
 
@@ -140,15 +190,22 @@ Then fetch the manifest by its digest and read each layer with `crane blob`.
 
 The {sboms-short-name} chart is in the Helm repository at
 https://charts.kubewarden.io and, as an OCI artifact, at
-`ghcr.io/kubewarden/charts/sbomscanner`. The OCI copy is signed. The chart
-is released from the `kubewarden/helm-charts` repository, so the identity
-names that workflow:
+`ghcr.io/kubewarden/charts/sbomscanner`. The OCI copy is signed. The
+`kubewarden/helm-charts` repository builds, signs and attests the chart with
+its own `chart-release.yml` reusable workflow. The workflow packages the
+chart from the commit that the signature and the attestation name, so no
+step outside the workflow can change it.
+
+The chart carries two cosign signature formats. Run the following two
+commands to verify them:
 
 [source,console,subs="+attributes"]
 ----
-cosign verify \
+cosign verify --new-bundle-format=false \
   --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-  --certificate-identity="https://github.com/kubewarden/helm-charts/.github/workflows/helm-chart-release.yml@refs/heads/main" \
+  --certificate-identity-regexp='^https://github\.com/kubewarden/helm-charts/\.github/workflows/chart-release\.yml@' \
+  --certificate-github-workflow-repository=kubewarden/helm-charts \
+  --certificate-github-workflow-ref='refs/heads/main' \
   ghcr.io/kubewarden/charts/sbomscanner:{chart-version}
 
 Verification for ghcr.io/kubewarden/charts/sbomscanner:{chart-version} --
@@ -160,13 +217,36 @@ The following checks were performed on each of these signatures:
 <snipped json>
 ----
 
-The chart also has a GitHub build provenance attestation. The GitHub CLI
-verifies it:
+[source,console,subs="+attributes"]
+----
+cosign verify-attestation --new-bundle-format=true \
+  --type https://sigstore.dev/cosign/sign/v1 \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --certificate-identity-regexp='^https://github\.com/kubewarden/helm-charts/\.github/workflows/chart-release\.yml@' \
+  ghcr.io/kubewarden/charts/sbomscanner:{chart-version}
+----
+
+The workflow also runs `actions/attest` on the chart. That attestation gives
+the chart SLSA Build L3. GitHub stores it in the `kubewarden/helm-charts`
+repository. The GitHub CLI verifies it:
 
 [source,console,subs="+attributes"]
 ----
 gh attestation verify oci://ghcr.io/kubewarden/charts/sbomscanner:{chart-version} \
-  --repo kubewarden/helm-charts
+  --repo kubewarden/helm-charts \
+  --signer-workflow kubewarden/helm-charts/.github/workflows/chart-release.yml
+----
+
+The workflow also attests the packaged `.tgz` file that the GitHub release
+carries. Download the file from the
+https://github.com/kubewarden/helm-charts/releases[release page], then verify
+it:
+
+[source,console,subs="+attributes"]
+----
+gh attestation verify sbomscanner-{chart-version}.tgz \
+  --repo kubewarden/helm-charts \
+  --signer-workflow kubewarden/helm-charts/.github/workflows/chart-release.yml
 ----
 
 To list every image that the chart deploys, render it and extract the image
