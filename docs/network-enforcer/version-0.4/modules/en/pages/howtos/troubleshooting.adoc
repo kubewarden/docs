@@ -2,9 +2,12 @@ include::partial$variables.adoc[]
 
 = Troubleshooting
 :description: Troubleshoot common failures by checking logs, verifying configurations, and confirming network and component statuses
-:revdate: 2026-10-08
+:revdate: 2026-10-23
 :page-revdate: {revdate}
 :page-aliases: troubleshooting.adoc
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["operator-manual", "troubleshooting"]
+:doc-type: ["howto"]
 
 This document helps diagnose common {ne-name} failures.
 Failure modes are provider-specific: whether Goldmane is up, whether Hubble Relay
@@ -37,6 +40,59 @@ Then follow the controller logs:
 kubectl logs -n network-enforcer \
   -l app.kubernetes.io/component=controller -c manager -f
 ----
+
+[#_admission_webhook]
+== Admission webhook
+
+A webhook outage blocks `WorkloadNetworkPolicy` creates and updates,
+including mode changes. It does not intercept proposal writes, policy
+deletes, or status updates.
+
+. Check that the controller pods and webhook Service endpoints are ready.
+. Check cert-manager, its CA injector, and `cert-manager-csi-driver`.
+. Check the webhook configuration's `caBundle` and the controller's
+  `webhook-certs` volume for certificate failures.
+. Check that the Kubernetes API server can reach the webhook Service on port 443.
+
+[source,bash]
+----
+kubectl get pods,svc,endpointslices -n network-enforcer
+kubectl get validatingwebhookconfiguration network-enforcer-validating-webhook-configuration -o yaml
+kubectl describe pod -n network-enforcer -l app.kubernetes.io/component=controller
+----
+
+[#_policy_targeting]
+== Policy targeting
+
+Missing `spec.targetRef` or `spec.direction` can cause admission failures.
+
+The controller reports targeting conflicts in `status.conditions` with
+`Ready=False`:
+
+[cols="1,3", options="header"]
+|===
+|Reason |Action
+
+|`DuplicateTarget`
+|Merge the required rules into the oldest policy. Check its mode before you delete the redundant policies.
+
+|`SelectorOverlapsWorkload`
+|Narrow the policy selector or change workload labels so that it matches only the target workload.
+
+|`SelectorDoesNotMatchTarget`
+|Correct the selector to match the target workload's pod template.
+
+|`TargetNotFound`
+|Create the target workload or correct `spec.targetRef`.
+|===
+
+During a duplicate conflict, only the oldest policy renders updates.
+Existing native policies are not deleted automatically. Violations for that
+workload and direction remain unattributed until the conflict ends.
+
+A selector overlap does not stop rendering. `Ready=False` does not mean
+that enforcement stopped. Unattributed observations increment the controller
+metric `network_enforcer_violations_unattributed_total`, not policy status.
 
 [#_no-proposals]
 == No proposals are being created

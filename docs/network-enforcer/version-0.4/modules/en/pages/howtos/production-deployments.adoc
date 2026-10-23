@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Configuring {ne-name} for production
-:revdate: 2026-10-13
+:revdate: 2026-10-23
 :page-revdate: {revdate}
 :description: Configure the controller, the fluent-bit DaemonSet, the PriorityClass, and the telemetry of {ne-name} for high availability, scheduling, and reliable resource use.
 :keywords: ["{ne-name}", kubewarden, kubernetes, production, replicas, poddisruptionbudget, affinity, tolerations, priorityclass, resources, admission policies, pod security admission]
@@ -25,10 +25,14 @@ The {controller-term} runs as a Kubernetes Deployment with leader
 election. One replica is active at a time. It reads {flow-term}s from the
 data plane, writes proposals and policies, and updates the policy status.
 
-{ne-short-name} has no admission webhook. When the controller is down,
-learning stops and the policy status is not updated. The
-{native-policy-object-term}s that the controller already rendered stay in
-place, and the data plane keeps enforcing them.
+The controller also serves a validating admission webhook. An outage blocks
+`WorkloadNetworkPolicy` creates and updates, including mode changes.
+Learning and status updates stop, but existing {native-policy-object-term}s
+remain enforced.
+
+The Kubernetes API server must reach the webhook Service over HTTPS.
+The chart requires cert-manager and its CSI driver for certificates.
+See xref:howtos/troubleshooting.adoc#_admission_webhook[Admission webhook].
 
 [#_controller_replicas]
 === Controller replicas

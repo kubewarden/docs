@@ -2,11 +2,17 @@ include::partial$variables.adoc[]
 
 = {ne-name} phases: learn, monitor, protect
 :description: Learn how to move between the learn, monitor, and protect phases to manage network policies, observe traffic flows, create proposals, and update policies
-:revdate: 2026-10-13
+:revdate: 2026-10-23
 :page-revdate: {revdate}
 :page-aliases: phases.adoc
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["phases"]
+:doc-type: ["explanation"]
 
 This document explains the three *phases* of {ne-short-name} and how to move between them.
+Each policy or proposal identifies its workload with `spec.targetRef`
+and its direction with `spec.direction`. See
+xref:explanations/architecture.adoc#_workload_targeting[Workload targeting].
 
 [#_learn-phase]
 == Learn phase
@@ -56,7 +62,7 @@ Operationally, if you want complete proposals, install {ne-short-name} first and
 * *Traffic is not blocked.*
 * When an observed flow is *not allowed* by the `WorkloadNetworkPolicy`:
 ** the flow still goes through
-** a *violation* is recorded on the policy status with `action: monitor`
+** an attributed *violation* enters the policy status with `action: monitor`
 ** the same event is also exported as an OpenTelemetry log (see <<_otlp-events>>)
 
 NOTE: Monitor evaluation is best-effort. The Istio backend relies on ztunnel dry-run logs, which cover inbound TCP connections through the mesh; UDP and traffic that never hits ztunnel are not observed. The Kubernetes backend reuses the same observed flows that drive learning: if a flow is never seen by the scraper, it is never reported as a violation.
@@ -90,7 +96,7 @@ NOTE: Monitor evaluation is best-effort. The Istio backend relies on ztunnel dry
 
 * *Traffic is blocked* when it violates the allow-list.
 * On a denied flow:
-** a *violation* is recorded on the policy status with `action: protect`
+** an attributed *violation* enters the policy status with `action: protect`
 ** the same event is also exported as an OpenTelemetry log (see <<_otlp-events>>)
 ** the connection fails (timeout, reset, or "connection refused", depending on the CNI or mesh)
 ** depending on what was blocked this can cause application errors, crash loops, or failed jobs
@@ -128,7 +134,7 @@ Promotion is explicit. {ne-short-name} does not turn a proposal into a policy un
 
 * *Promote a proposal*
 ** Set the label `networkenforcer.kubewarden.io/promote=monitor` or `networkenforcer.kubewarden.io/promote=protect` on the `WorkloadNetworkPolicyProposal`.
-** The proposal reconciler copies the backend spec onto a new `WorkloadNetworkPolicy` in the same name and namespace, sets `.spec.mode` from the label value, and adds `networkenforcer.kubewarden.io/promoted-from: <proposal-name>` so the promotion relationship is explicit.
+** The proposal reconciler creates a `WorkloadNetworkPolicy` with the same name and namespace. It copies the target, direction, and backend spec. It sets `.spec.mode` from the label and adds `networkenforcer.kubewarden.io/promoted-from: <proposal-name>`.
 ** The proposal is then deleted.
 * *Leftover proposals*
 ** After promotion, a scraper can recreate a proposal at the same name before caches catch up. If a `WorkloadNetworkPolicy` already exists with `networkenforcer.kubewarden.io/promoted-from=<proposal-name>`, the leftover proposal is deleted. That usually happens as soon as the recreate is watched; if both objects sit idle, it is picked up on the next controller-runtime resync (defaulted to 10h).
@@ -168,7 +174,10 @@ Exactly one of `spec.istio` or `spec.kubernetes` must be populated, matching `sp
 [#_otlp-events]
 == Where OTLP events go
 
-Violations always land on `WorkloadNetworkPolicy` status (`status.violations`).
+Attributed violations enter `WorkloadNetworkPolicy` status (`status.violations`).
+Unattributed observations appear only in controller metrics and, with export
+enabled, OpenTelemetry logs. See
+xref:howtos/troubleshooting.adoc#_policy_targeting[Policy targeting].
 
 When telemetry is enabled, the controller also exports OpenTelemetry logs:
 

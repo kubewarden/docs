@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {ne-name} architecture
-:revdate: 2026-10-14
+:revdate: 2026-10-23
 :page-revdate: {revdate}
 :page-aliases: architecture.adoc
 :description: How {ne-name} is built: one controller that reads flows from the data plane, writes proposals and policies, and renders each policy as a native object on Istio ambient, Calico, or Cilium.
@@ -181,6 +181,15 @@ Policies]. One rejects a promote label whose value is not `monitor` or
 `protect`. One rejects a change to the owner reference of a proposal, so
 that a proposal stays tied to its workload.
 
+[#_admission_webhook]
+=== Validating admission webhook
+
+The controller also serves a webhook that checks policy target uniqueness.
+It fails closed for `WorkloadNetworkPolicy` creates and updates.
+Proposal writes, policy deletes, and status updates are outside its scope.
+An outage does not stop enforcement of existing native policies. See
+xref:howtos/production-deployments.adoc#_controller[Controller availability].
+
 == Providers and backends
 
 The Helm value `controller.provider.name` selects the provider once, at
@@ -228,6 +237,23 @@ Event export.
 the dry-run policy in monitor mode and logs the result.
 |===
 
+[#_workload_targeting]
+== Workload targeting
+
+Policies and proposals require `spec.targetRef` (workload kind and name)
+and `spec.direction`. The target is a Deployment, StatefulSet, or DaemonSet
+in the same namespace. The direction is `Ingress` or `Egress`, with
+`Ingress` only for Istio.
+
+Only one policy can target a workload and direction in a namespace.
+That policy holds all rules for that direction. Its selector still controls
+which pods the native policy selects. It must match the target workload's
+pod template without matching another workload's template.
+
+The controller checks duplicates and selector scope on reconciliation.
+See xref:howtos/troubleshooting.adoc#_policy_targeting[Policy targeting]
+for conditions and corrective actions.
+
 == The journey of a policy
 
 This section follows one workload from the first observed flow to a written
@@ -248,10 +274,9 @@ violation record.
 
 . *You promote the proposal.* You set the promote label to `monitor` or
   `protect`. The proposal reconciler creates a `WorkloadNetworkPolicy` with
-  the same name, namespace, and backend spec. It sets `spec.mode` from the
-  label and sets the promoted-from label. Then it deletes the proposal. If
-  the
-  scraper creates the proposal again, the reconciler deletes it as a
+  the same name, namespace, target, direction, and backend spec. It sets
+  `spec.mode` from the label and sets the promoted-from label. Then it deletes
+  the proposal. If the scraper creates the proposal again, the reconciler deletes it as a
   leftover.
 
 . *The controller renders the native object.* The policy reconciler creates
@@ -317,9 +342,14 @@ observation that the controller scrapes, so it can exceed the number of
 distinct records. The field `activeViolationCount` equals the number of
 records in `status.violations`.
 
-A violation appears in the status up to one status sync interval after the
-data plane sees it. The OpenTelemetry event is sent at once. For a history
-longer than 100 records, use the collector.
+The controller resolves the subject workload through pod owner references.
+It first checks a reported enforcing object's owner against that subject.
+Otherwise, it looks up the policy by target and direction.
+
+Attributed violations appear in status on the next status sync.
+Unattributed observations do not enter policy status. They increment
+`network_enforcer_violations_unattributed_total` and still produce
+OpenTelemetry logs when export is enabled.
 
 On Istio, the destination port of a violation record is always 0, because
 ztunnel does not report it in the policy log.
@@ -327,9 +357,9 @@ ztunnel does not report it in the policy log.
 == Trust boundaries
 
 * One certificate authority, issued by {cert-manager-term}, signs the
-  certificates of the collector and of the OTLP endpoint that receives the
-  fluent-bit logs. The collector and the controller mount their certificates
-  through the cert-manager CSI driver.
+  certificates of the admission webhook, the collector, and the OTLP endpoint
+  that receives the fluent-bit logs. The collector and the controller mount
+  their certificates through the cert-manager CSI driver.
 * The default collector presents a server certificate, and the controller
   verifies it. An external collector can also require a client certificate
   from the controller, which makes the hop mutual TLS.

@@ -2,9 +2,12 @@ include::partial$variables.adoc[]
 
 = {ne-name} Quick Start
 :description: Follow the steps to prepare a cluster, deploy with Helm, and observe network policy proposals and enforcement
-:revdate: 2026-09-18
+:revdate: 2026-10-23
 :page-revdate: {revdate}
 :page-aliases: installation/quickstart.adoc
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["quick-start"]
+:doc-type: ["tutorial"]
 
 Welcome to the {ne-name} Quick Start.
 
@@ -28,14 +31,13 @@ Before you start, you need:
   This guide creates one for you.
 * `kubectl`, `helm` and `curl` installed locally.
 * {cert-manager-term} and `cert-manager-csi-driver` in the cluster.
-  They issue the TLS certificates of the bundled {opentelemetry-collector-term}.
-  With the Istio provider, in the default TLS mode `issuer`, they also issue
-  the certificate of the controller endpoint that receives the ztunnel logs.
+  They supply certificates for the admission webhook and the bundled
+  {opentelemetry-collector-term}. With the Istio provider in TLS mode `issuer`,
+  they also supply certificates for the ztunnel log endpoint.
 
 [NOTE]
 ====
-This page documents the chart in this repository (`charts/network-enforcer`), for
-{ne-short-name} version `0.2.0` and later.
+This page documents the `network-enforcer` chart for {ne-short-name} 0.4.0.
 Every `--set` flag used here exists in `charts/network-enforcer/values.yaml`.
 ====
 
@@ -236,11 +238,9 @@ Relay on port `80` in plain text.
 [#_install-cert-manager-and-cert-manager-csi-driver]
 == Install cert-manager and cert-manager-csi-driver
 
-Two parts of {ne-short-name} receive TLS certificates from
-`cert-manager-csi-driver`. One is the bundled OpenTelemetry collector. The
-other is the controller endpoint that receives the ztunnel logs, with the
-Istio provider in the default TLS mode `issuer`. Install both components
-before the chart:
+The admission webhook requires cert-manager and `cert-manager-csi-driver`,
+regardless of the provider or telemetry configuration. Install both before
+the chart:
 
 [source,bash]
 ----
@@ -262,15 +262,6 @@ helm install cert-manager-csi-driver jetstack/cert-manager-csi-driver \
 ====
 For more information on configuring cert-manager, see the
 link:https://cert-manager.io/docs/installation/helm[cert-manager documentation].
-
-If you do not want to install cert-manager, set
-`telemetry.collectorStrategy=none` to turn the export off. With the Istio
-provider, also set `controller.provider.istio.tls.mode=insecure`, so that the
-log endpoint of the controller does not need a certificate. The Calico and
-Cilium defaults read an existing Secret, so they do not need cert-manager.
-{ne-short-name} then keeps working. Learning, monitor, and protect are not
-affected. Violations stay in the policy status but are not exported as
-OpenTelemetry logs.
 ====
 
 [#_install-the-network-enforcer-chart]
@@ -413,6 +404,10 @@ metadata:
   resourceVersion: "1462"
   uid: f8ed421f-ec9e-4e8e-874b-097500a570df
 spec:
+  targetRef:
+    kind: Deployment
+    name: http-server
+  direction: Ingress
   backend: istio
   istio:
     rules:
@@ -478,6 +473,10 @@ items:
     resourceVersion: "1755"
     uid: db599333-5945-45c0-927e-7290250bd631
   spec:
+    targetRef:
+      kind: Deployment
+      name: http-client
+    direction: Egress
     backend: kubernetes
     kubernetes:
       egress:
@@ -516,6 +515,10 @@ items:
     resourceVersion: "1754"
     uid: 12d6fc70-f49a-4eb8-876b-406ee4b6ae41
   spec:
+    targetRef:
+      kind: Deployment
+      name: http-server
+    direction: Ingress
     backend: kubernetes
     kubernetes:
       ingress:
@@ -596,7 +599,7 @@ $ kubectl get wnpp
 No resources found in default namespace.
 ----
 
-The policy carries the same backend payload as the proposal, plus `spec.mode` and a status:
+The policy copies the proposal's target, direction, and backend rules. It also has `spec.mode` and a status:
 
 [source,bash]
 ----
@@ -617,6 +620,10 @@ metadata:
   resourceVersion: "1549"
   uid: fedfe10f-d9b3-4255-9a51-fd8e41fc1e48
 spec:
+  targetRef:
+    kind: Deployment
+    name: http-server
+  direction: Ingress
   backend: istio
   istio:
     rules:

@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Upgrade path
-:revdate: 2026-10-13
+:revdate: 2026-10-23
 :page-revdate: {revdate}
 :description: Upgrade {ne-name} with the supported version steps, one minor version at a time.
 :doc-persona: ["kubewarden-operator"]
@@ -65,6 +65,25 @@ flowchart LR;
   linkStyle 6 color:red,stroke-width:2px,stroke-dasharray: 3 5
 ....
 
+[#_breaking_changes]
+== Breaking and important changes between versions
+
+[#_v0_3_to_v0_4]
+=== 0.3.x to 0.4.0
+
+* `WorkloadNetworkPolicy` and `WorkloadNetworkPolicyProposal` require
+  `spec.targetRef` and `spec.direction`. The Kubernetes backend requires
+  `spec.kubernetes.policyTypes` to contain only that direction. Istio accepts
+  `Ingress` only.
+* Only one policy can target a workload and direction in a namespace.
+  Platform and application teams must combine their rules in that policy.
+* A new validating webhook fails closed. An outage blocks policy creates
+  and updates, but not proposal writes, policy deletes, or status updates.
+  The chart requires cert-manager and its CSI driver for webhook certificates.
+* The controller checks the policy selector against workload pod templates.
+  Overlapping selectors produce `Ready=False` with reason
+  `SelectorOverlapsWorkload`. They can still affect other workloads.
+
 [#_upgrade_order]
 == Upgrade order
 
@@ -87,9 +106,9 @@ test them.
 == Policies
 
 A `WorkloadNetworkPolicy` carries no version of its own. It holds a mode,
-a backend, and an allow-list, and it stays in the cluster across
-{ne-short-name} upgrades. You do not rewrite or re-apply your policies
-when you upgrade. The `spec.backend` field cannot change after creation,
-in any version. See
+a backend, a target workload, a direction, and an allow-list. It stays in
+the cluster across {ne-short-name} upgrades. A breaking change can require
+manifest updates, as described in xref:#_breaking_changes[Breaking changes].
+The `spec.backend` field cannot change after creation. See
 xref:reference/known_limitations.adoc#_spec-backend-is-immutable[`spec.backend`
 is immutable].
