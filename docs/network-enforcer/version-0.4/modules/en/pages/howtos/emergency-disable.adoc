@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Emergency disable
-:revdate: 2026-10-16
+:revdate: 2026-10-23
 :page-revdate: {revdate}
 :description: Stop {ne-name} from blocking traffic during an incident, and restore it with one command.
 :keywords: ["{ne-name}", kubewarden, emergency, incident, disable]
@@ -21,9 +21,9 @@ in namespace `network-enforcer`. Substitute the names from
 
 The data plane enforces a rendered policy: an Istio
 `AuthorizationPolicy`, or a Kubernetes `NetworkPolicy` on Calico and
-Cilium. The {controller-term} renders one rendered policy for every
-`WorkloadNetworkPolicy`, and it recreates a rendered policy the moment
-it disappears.
+Cilium. The {controller-term} keeps rendered policies in sync with their
+`WorkloadNetworkPolicy` resources. It recreates a rendered policy after
+you delete it.
 
 If the controller stops, every rendered policy stays. See
 xref:explanations/architecture.adoc#_how_network_enforcer_scales[How
@@ -61,10 +61,10 @@ you delete it.
 ====
 
 While the controller is at zero, learning, promotion, status sync, and
-violation events all stop. Nothing else breaks: {ne-short-name} installs
-no admission webhook, so every other API write still works. On Istio,
-the fluent-bit DaemonSet keeps running. It only drops the log records
-that it cannot forward.
+violation events stop. The admission webhook is also unavailable, so
+`WorkloadNetworkPolicy` creates and updates fail. Deletes of rendered
+policies are not subject to this webhook. On Istio, fluent-bit keeps
+running but cannot forward logs.
 
 [#_delete_the_rendered_policies]
 === 2. Delete the rendered policies
@@ -144,11 +144,9 @@ once.
 [#_do_not_patch_spec_mode_while_the_controller_is_down]
 === Do not patch `spec.mode` while the controller is down
 
-The Kubernetes API accepts a patch to `spec.mode` even with the
-controller at zero, because {ne-short-name} installs no admission
-webhook. Only the controller turns that patch into a change on the
-rendered policy. With the controller down, the patch changes nothing,
-and the policy keeps blocking.
+The fail-closed admission webhook rejects the patch while the controller
+is unavailable. Existing rendered policies keep blocking traffic until
+you delete them as described in xref:#_delete_the_rendered_policies[step 2].
 
 [#_see_also]
 == See also

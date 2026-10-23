@@ -2,9 +2,12 @@ include::partial$variables.adoc[]
 
 = Compatibility
 :description: Check which network providers and features work with your cluster by reviewing compatibility information
-:revdate: 2026-10-14
+:revdate: 2026-10-23
 :page-revdate: {revdate}
 :page-aliases: compatibility.adoc
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["compatibility"]
+:doc-type: ["reference"]
 
 [#_overview]
 == Overview
@@ -31,8 +34,8 @@ include::partial$variables.adoc[]
 |The chart sets `kubeVersion: ">= 1.31.0-0"`. It installs two `ValidatingAdmissionPolicy` resources (`admissionregistration.k8s.io/v1`): one guards the promote label, one guards the owner reference of a proposal. The API went GA in 1.30, but 1.31 is the oldest version the project tests against.
 
 |*cert-manager*
-|Required for the default chart install
-|Together with `cert-manager-csi-driver`. The CSI driver mounts the certificates into the pods. The bundled collector always uses them. A provider hop uses them when its TLS mode is `issuer`, the Istio default. The Calico and Cilium defaults read an existing Secret.
+|Required for every chart install
+|Together with `cert-manager-csi-driver`, it supplies the admission webhook certificates. Disabling telemetry or provider TLS does not remove this requirement. The bundled collector and provider hops in TLS mode `issuer` also use it.
 
 |*Linux distribution*
 |To be determined
