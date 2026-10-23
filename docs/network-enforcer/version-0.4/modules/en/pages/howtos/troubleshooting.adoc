@@ -65,8 +65,6 @@ kubectl describe pod -n network-enforcer -l app.kubernetes.io/component=controll
 == Policy targeting
 
 Missing `spec.targetRef` or `spec.direction` can cause admission failures.
-For older manifests, follow
-xref:howtos/migration/0.3-to-0.4.adoc[Upgrade from 0.3.x to 0.4.0].
 
 The controller reports targeting conflicts in `status.conditions` with
 `Ready=False`:

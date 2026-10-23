@@ -84,9 +84,6 @@ flowchart LR;
   Overlapping selectors produce `Ready=False` with reason
   `SelectorOverlapsWorkload`. They can still affect other workloads.
 
-Before the upgrade, follow
-xref:howtos/migration/0.3-to-0.4.adoc[Upgrade from 0.3.x to 0.4.0].
-
 [#_upgrade_order]
 == Upgrade order
 
