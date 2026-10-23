@@ -1,3 +1,6 @@
+SHELL := /bin/bash
+.SHELLFLAGS := -o pipefail -c
+
 .PHONY: all
 all:
 	@echo "Available targets:"
@@ -19,6 +22,7 @@ community-local: tmpdir environment build-community-local
 build-community-local:
 	npx antora --version | tee tmp/build.log
 	npx antora --stacktrace --log-format=pretty --log-level=info \
+		--log-failure-level=error \
 		local-community-playbook.yml \
 		2>&1 | tee -a tmp/build.log
 	cd build/site && ln -sf kubewarden/latest latest
@@ -34,6 +38,7 @@ build-community-local:
 community-remote: tmpdir environment
 	npx antora --version | tee tmp/build.log
 	npx antora --stacktrace --log-format=pretty --log-level=info \
+		--log-failure-level=error \
 		remote-community-playbook.yml \
 		2>&1 | tee -a tmp/build.log
 	cd build/site && ln -sf kubewarden/latest latest
@@ -45,6 +50,7 @@ community-remote: tmpdir environment
 community-netlify-preview: tmpdir environment
 	npx antora --version | tee tmp/build.log
 	npx antora --attribute build-environment=netlify --stacktrace --log-format=pretty --log-level=info \
+		--log-failure-level=error \
 		local-community-playbook.yml \
 		2>&1 | tee -a tmp/build.log
 	cd build/site && ln -sf kubewarden/latest latest
