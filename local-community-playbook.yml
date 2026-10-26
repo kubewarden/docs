@@ -2,7 +2,7 @@
 site:
   url: https://docs.kubewarden.io
   title: Kubewarden
-  start_page: 6.0@kubewarden:en:introduction.adoc
+  start_page: 1.0@kubewarden:en:introduction.adoc
 
 content:
   sources:
