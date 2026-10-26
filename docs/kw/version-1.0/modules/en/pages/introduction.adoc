@@ -87,6 +87,7 @@ Discover network activity and secure the communication between your workloads.
 * xref:latest@network-enforcer:en:installation/quickstart.adoc[Quick start]
 * xref:latest@network-enforcer:en:introduction.adoc[Documentation]
 
+ifeval::["{build-type}" == "community"]
 [.landing-community]
 == Build with the community
 
@@ -96,3 +97,4 @@ Get help, share an idea, or improve these docs.
 * https://kubernetes.slack.com/?redir=%2Fmessages%2Fkubewarden[Join us on Slack]
 * https://www.kubewarden.io/#get-in-touch[Community meetings]
 * https://github.com/kubewarden/docs[Contribute to the docs]
+endif::[]
