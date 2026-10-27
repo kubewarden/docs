@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Secure webhooks with mutual TLS with K3s
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-10-27
 :page-revdate: {revdate}
 :sidebar_label: Enable mTLS with K3s
 :description: Implement mutual Transport Layer Security (mTLS) protocols for secure webhooks with K3s in your SUSE Kubernetes distribution.
@@ -199,3 +199,8 @@ helm install --wait -n kubewarden admission-controller kubewarden/admission-cont
 
 Once this command finishes, mTLS secures the installation of the
 {admc-short-name} stack and its webhooks.
+
+With mTLS, the policy servers also check the client certificate of the audit
+scanner. The controller rotates this certificate. For more information, refer
+to
+xref:explanations/certificates.adoc#_certificates_and_secrets[The certificates and their secrets].
