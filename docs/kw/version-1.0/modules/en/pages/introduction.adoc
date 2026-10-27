@@ -29,63 +29,7 @@ Explore the components, follow a quick start, or find the reference you need.
 
 You can use the components together or independently.
 
-[.component-card.admission-card]
-=== {admc-short-name}
-
-Stop unsafe workloads before they enter your cluster.
-
-++++
-<div data-component-maturity="admission-controller"></div>
-++++
-
-[.card-links]
-* xref:latest@admission-controller:en:quick-start.adoc[Quick start]
-* xref:latest@admission-controller:en:introduction.adoc[Documentation]
-
-[.component-card.sbom-card]
-=== {sboms-short-name}
-
-Find vulnerabilities in the container images running inside your cluster.
-
-++++
-<div data-component-maturity="sbom-scanner"></div>
-++++
-
-[.card-links]
-* xref:latest@sbom-scanner:en:quickstart.adoc[Quick start]
-* xref:latest@sbom-scanner:en:introduction.adoc[Documentation]
-
-[.component-card.runtime-card]
-=== {rte-short-name}
-
-Control what can run inside your Kubernetes pods.
-
-++++
-<div data-component-maturity="runtime-enforcer"></div>
-++++
-
-[.card-links]
-// The quick start moved to quickstart.adoc in the dev version. The old path
-// still resolves through a page alias. Change it to quickstart.adoc when the
-// dev version is promoted to latest.
-* xref:latest@runtime-enforcer:en:installation/quickstart.adoc[Quick start]
-* xref:latest@runtime-enforcer:en:introduction.adoc[Documentation]
-
-[.component-card.network-card]
-=== {ne-short-name}
-
-Discover network activity and secure the communication between your workloads.
-
-++++
-<div data-component-maturity="network-enforcer"></div>
-++++
-
-[.card-links]
-// The quick start moved to quickstart.adoc in the dev version. The old path
-// still resolves through a page alias. Change it to quickstart.adoc when the
-// dev version is promoted to latest.
-* xref:latest@network-enforcer:en:installation/quickstart.adoc[Quick start]
-* xref:latest@network-enforcer:en:introduction.adoc[Documentation]
+include::partial${build-type}-specific/landing-components.adoc[]
 
 ifeval::["{build-type}" == "community"]
 [.landing-community]
