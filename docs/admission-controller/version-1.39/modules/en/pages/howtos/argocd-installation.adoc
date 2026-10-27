@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = ArgoCD Installation
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-10-27
 :page-revdate: {revdate}
 :sidebar_label: ArgoCD Installation
 :sidebar_position: 35
@@ -105,3 +105,32 @@ context on how to configure the ArgoCD application and to provide a complete
 example.
 
 ====
+
+[#_ca_bundle_repair]
+== Repair of the CA bundle
+
+Argo CD renders the Helm chart without access to the cluster. Thus each
+render contains a new random root CA. The random root CA is also in the CA
+bundle (`caBundle`) of the two webhook configurations of the controller. The
+`ignoreDifferences` configuration keeps these values out of the existing
+resources.
+
+When Argo CD creates a webhook configuration again, there is no value to
+keep. Then Argo CD writes the random root CA into the CA bundle. This occurs
+after a sync with the `Replace` or `Force` option, after a prune, or after a
+manual deletion. The API server then cannot call the webhook server of the
+controller.
+
+The controller repairs the CA bundle of its webhook configurations. It
+watches the webhook configurations that have the annotation
+`kubewarden.io/inject-ca-from`. Within seconds, it writes the CA bundle of the
+`kubewarden-ca` secret into them. Until the repair, you cannot create or
+change policies and `PolicyServer` resources. The policies that exist
+continue to run.
+
+Without `RespectIgnoreDifferences=true`, each sync writes the random root CA
+again. Then each sync causes this short interruption. For this reason, keep
+`RespectIgnoreDifferences=true` in the sync options.
+
+For more information, refer to
+xref:explanations/certificates.adoc#_ca_bundles[The CA bundles of the webhook configurations].
