@@ -5,8 +5,13 @@ sourceRepository: "kubewarden/runtime-enforcer"
 component: "runtime-enforcer"
 # Chart name as published by kubewarden/helm-charts, used by updatecli.d/update-release-attributes.yaml
 chartName: "runtime-enforcer"
-# Partial file name used by updatecli.d/update-cli-ref-docs-version.yaml
-cliReferencePartial: "kubectl-plugin-cli-reference.adoc"
+# Partial file names used by updatecli.d/update-cli-ref-docs-version.yaml.
+# The order must match the order of the files list in
+# values.d/update-runtime-enforcer-cli-ref-docs.yaml and
+# values.d/cli-ref-docs-runtime-enforcer.yaml.
+cliReferencePartials:
+  - "kubectl-plugin-cli-reference.adoc"
+  - "wpgen-cli-reference.adoc"
 
 pr:
   title: "Update Kubewarden runtime-enforcer documentation version"
