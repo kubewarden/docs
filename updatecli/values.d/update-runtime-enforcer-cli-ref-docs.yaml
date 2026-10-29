@@ -6,6 +6,8 @@ scm:
 files:
   - src: "docs/kubectl-plugin/cli-docs.adoc"
     dst: docs/runtime-enforcer/version-0.11/modules/en/partials/kubectl-plugin-cli-reference.adoc
+  - src: "docs/wpgen/cli-docs.adoc"
+    dst: docs/runtime-enforcer/version-0.11/modules/en/partials/wpgen-cli-reference.adoc
 src:
   branch: "main"
   url: "https://github.com/kubewarden/runtime-enforcer.git"

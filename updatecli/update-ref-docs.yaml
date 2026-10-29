@@ -37,7 +37,7 @@ policies:
     policy: ghcr.io/updatecli/policies/file:0.2.1
     values:
       - values.d/update-runtime-enforcer-crd-ref-docs.yaml
-  - name: Copy runtime-enforcer kubectl plugin CLI reference documentation files
+  - name: Copy runtime-enforcer CLI reference documentation files
     policy: ghcr.io/updatecli/policies/file:0.2.1
     values:
       - values.d/update-runtime-enforcer-cli-ref-docs.yaml
@@ -47,7 +47,7 @@ policies:
     values:
       - values.d/scm.yaml
       - values.d/crd-ref-docs-runtime-enforcer.yaml
-  - name: Commit runtime-enforcer kubectl plugin CLI reference documentation
+  - name: Commit runtime-enforcer CLI reference documentation
     config:
       - updatecli.d/commit-ref-docs.yaml
     values:
