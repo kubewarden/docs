@@ -1,0 +1,4 @@
+// The last paragraph of the landing page hero in the community build.
+// The product build has its own version of this partial.
+Choose where to start.
+Explore the components, follow a quick start, or find the reference you need.

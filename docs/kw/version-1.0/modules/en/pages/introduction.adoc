@@ -20,14 +20,10 @@ include::partial$variables.adoc[]
 [.landing-tagline]
 from admission to runtime.
 
-Choose where to start.
-Explore the components, follow a quick start, or find the reference you need.
+include::partial${build-type}-specific/landing-hero.adoc[]
 --
 
-[.component-grid]
-== Choose a component
-
-You can use the components together or independently.
+include::partial${build-type}-specific/landing-components-heading.adoc[]
 
 include::partial${build-type}-specific/landing-components.adoc[]
 
