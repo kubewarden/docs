@@ -1,0 +1,6 @@
+// The heading of the component cards on the landing page in the community
+// build. The product build has its own version of this partial.
+[.component-grid]
+== Choose a component
+
+You can use the components together or independently.
