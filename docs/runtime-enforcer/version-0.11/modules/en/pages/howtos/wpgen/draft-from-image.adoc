@@ -1,0 +1,140 @@
+include::partial$variables.adoc[]
+
+= Draft a policy from one image
+:revdate: 2026-10-30
+:page-revdate: {revdate}
+:description: Use wpgen image to draft a WorkloadPolicy for a third-party container image, so that the workload runs in monitor mode from the first day.
+:keywords: ["{rte-name}", "kubewarden", "wpgen", "WorkloadPolicy", "image"]
+:doc-persona: ["kubewarden-operator"]
+:doc-type: ["howto"]
+:doc-topic: ["operator-manual", "cli", "policy-authoring"]
+
+This page is for a platform operator who wants to run a third-party image
+under a `WorkloadPolicy` from the first day. There is no workload file yet,
+or the workload file is not under your control. `wpgen image` scans one image
+and writes a draft policy with one container.
+
+Before you start, xref:howtos/wpgen/index.adoc#_install[install wpgen].
+
+The examples use `docker.io/library/caddy:2.9`. The output was recorded on
+{revdate}. A tag can move to a new image, and then the counts and the paths
+change.
+
+[#_draft-the-policy]
+== Draft the policy
+
+. Find the name of the container that will run the image. The policy applies
+  its rules by container name. If the name in the policy differs from the name
+  in the pod, the rules do not apply to the container.
+. Run `wpgen image` with the container name, the policy name, and the
+  namespace:
++
+[source,console]
+----
+wpgen image docker.io/library/caddy:2.9 \
+  --container-name caddy --name caddy --namespace web \
+  --image-src registry > policy.yaml
+Loading image "docker.io/library/caddy:2.9"...
+Loaded image "docker.io/library/caddy:2.9" from source "registry" (linux/amd64)
+
+┌───────────┬─────────────────────────────┬─────────────┬───────────────────┬───────────────┐
+│ CONTAINER │ IMAGE                       │ EXECUTABLES │ SKIPPED LIBRARIES │ SKIPPED OTHER │
+├───────────┼─────────────────────────────┼─────────────┼───────────────────┼───────────────┤
+│ caddy     │ docker.io/library/caddy:2.9 │          21 │                10 │             0 │
+└───────────┴─────────────────────────────┴─────────────┴───────────────────┴───────────────┘
+Use --include-libraries to keep the skipped shared libraries.
+
+Add this label to the pod template of the workload that runs this image:
+  runtimeenforcer.kubewarden.io/policy: caddy
+----
+
+. Read the policy:
++
+[source,yaml]
+----
+apiVersion: runtimeenforcer.kubewarden.io/v1alpha1
+kind: WorkloadPolicy
+metadata:
+  name: caddy
+  namespace: web
+spec:
+  mode: monitor
+  rulesByContainer:
+    caddy:
+      executables:
+        allowed:
+        - /bin/busybox
+        - /etc/ca-certificates/update.d/certhash
+        - /etc/network/if-up.d/dad
+        - /sbin/apk
+        - /sbin/ldconfig
+        - /usr/bin/c_rehash
+        - /usr/bin/caddy
+        - /usr/bin/getconf
+        - /usr/bin/getent
+        - /usr/bin/iconv
+        - /usr/bin/ldd
+        - /usr/bin/scanelf
+        - /usr/bin/ssl_client
+        - /usr/lib/libcap.so.2.70
+        - /usr/lib/libpsx.so.2.70
+        - /usr/sbin/capsh
+        - /usr/sbin/getcap
+        - /usr/sbin/getpcaps
+        - /usr/sbin/setcap
+        - /usr/sbin/update-ca-certificates
+        - /usr/share/udhcpc/default.script
+----
+
+. Apply the policy. Then add the {policy-label-term} label with the value
+  `caddy` to the pod template of the workload.
+
+The three flags are optional:
+
+* Without `--container-name`, the container is `main`. The summary then
+  reminds you to use the same name in the pod.
+* Without `--name`, the policy name is the last part of the image repository,
+  `caddy` in this example. For an archive or a directory, the repository
+  comes from the tag stored in the image. When `wpgen` cannot find a name,
+  for example for an OCI layout directory without tags, it uses `todo` and
+  prints a warning. Replace this name before you apply the policy.
+* Without `--namespace`, the policy goes to the `default` namespace.
+
+This is the warning for an OCI layout directory made with
+`crane pull --format oci docker.io/library/caddy:2.9 caddy-oci`:
+
+[source,console]
+----
+wpgen image ./caddy-oci --image-src file > policy.yaml
+Loading image "./caddy-oci"...
+Loaded image "./caddy-oci" from source "file" (linux/amd64)
+
+┌───────────┬─────────────┬─────────────┬───────────────────┬───────────────┐
+│ CONTAINER │ IMAGE       │ EXECUTABLES │ SKIPPED LIBRARIES │ SKIPPED OTHER │
+├───────────┼─────────────┼─────────────┼───────────────────┼───────────────┤
+│ main      │ ./caddy-oci │          21 │                10 │             0 │
+└───────────┴─────────────┴─────────────┴───────────────────┴───────────────┘
+Use --include-libraries to keep the skipped shared libraries.
+
+WARNING: cannot derive the policy name from "./caddy-oci": the image has no tags.
+The policy name is "todo". Use --name, or edit metadata.name.
+
+Add this label to the pod template of the workload that runs this image:
+  runtimeenforcer.kubewarden.io/policy: todo
+Make sure that the container is named "main" in the pod, or use --container-name.
+----
+
+[#_next-steps]
+== Next steps
+
+* The draft allows every program and script of the image. For a large base
+  image, `wpgen` prints a warning. Trim the policy before you switch to
+  `protect` mode. See xref:howtos/wpgen/index.adoc#_large-base-images[Large base images]
+  and xref:howtos/wpgen/index.adoc#_trim-the-policy[Trim the policy].
+* To set `protect` mode, to write the policy as JSON, or to apply it without
+  a file, see xref:howtos/wpgen/index.adoc#_output-options[Output options].
+* After an image update, make sure that the policy still matches the image.
+  See xref:howtos/wpgen/check-policy.adoc[].
+* When you have the workload file, `wpgen workload` drafts one policy with
+  all the containers of the pod. See
+  xref:howtos/wpgen/draft-from-workload.adoc[].
