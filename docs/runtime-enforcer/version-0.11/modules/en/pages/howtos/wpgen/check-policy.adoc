@@ -1,0 +1,405 @@
+include::partial$variables.adoc[]
+
+= Check a policy against its images
+:revdate: 2026-10-30
+:page-revdate: {revdate}
+:description: Use wpgen check to find the allowed paths of a WorkloadPolicy that no longer exist in the images of the workload, and fail a CI job when a policy is stale.
+:keywords: ["{rte-name}", "kubewarden", "wpgen", "WorkloadPolicy", "check", "CI"]
+:doc-persona: ["kubewarden-operator", "kubewarden-developer"]
+:doc-type: ["howto"]
+:doc-topic: ["operator-manual", "cli", "policy-authoring"]
+
+This page is for a reviewer who wants to know if a policy still matches the
+images of its workload. A policy that was learned or drafted some months ago
+can allow paths that an image update removed. `wpgen check` compares the
+allowed paths of a policy with the executables of the images. It reports the
+paths that are not in the image. It returns exit code `1` when it finds one,
+or when a container of the workload has no rules in the policy. A CI job can
+use the exit code to stop a pull request.
+
+Before you start, xref:howtos/wpgen/index.adoc#_install[install wpgen].
+
+The examples use `docker.io/library/caddy:2.9` and
+`docker.io/library/caddy:2.10`. The output was recorded on {revdate}. A tag
+can move to a new image, and then the counts and the paths change.
+
+[#_find-stale-paths-after-an-image-update]
+== Find stale paths after an image update
+
+A team drafted a policy for a `Deployment` that runs `caddy:2.9`, as
+xref:howtos/wpgen/draft-from-workload.adoc[] shows. The policy is in
+`policies.yaml`. A pull request now bumps the image to `caddy:2.10`.
+
+. Run `wpgen check` with the policy file and the updated workload file:
++
+[source,console]
+----
+wpgen check policies.yaml --workload caddy-deploy.yaml --image-src registry
+Loading image "docker.io/library/caddy:2.10"...
+Loaded image "docker.io/library/caddy:2.10" from source "registry" (linux/amd64)
+Loading image "docker.io/library/alpine:3.20"...
+Loaded image "docker.io/library/alpine:3.20" from source "registry" (linux/amd64)
+Policy deploy-caddy (namespace web)
+
+┌───────────────────┬────────────────────────────────────────┬────────┬────────────────────────────────┐
+│     CONTAINER     │ PATH                                   │ STATUS │ NOTE                           │
+├───────────────────┼────────────────────────────────────────┼────────┼────────────────────────────────┤
+│                   │ /usr/lib/libcap.so.2.70                │ stale  │ not an executable in the image │
+│                   │ /usr/lib/libpsx.so.2.70                │ stale  │ not an executable in the image │
+│                   │ /bin/busybox                           │ ok     │                                │
+│                   │ /etc/ca-certificates/update.d/certhash │ ok     │                                │
+│                   │ /etc/network/if-up.d/dad               │ ok     │                                │
+│                   │ /sbin/apk                              │ ok     │                                │
+│                   │ /sbin/ldconfig                         │ ok     │                                │
+│                   │ /usr/bin/c_rehash                      │ ok     │                                │
+│                   │ /usr/bin/caddy                         │ ok     │                                │
+│                   │ /usr/bin/getconf                       │ ok     │                                │
+│       caddy       │ /usr/bin/getent                        │ ok     │                                │
+│                   │ /usr/bin/iconv                         │ ok     │                                │
+│                   │ /usr/bin/ldd                           │ ok     │                                │
+│                   │ /usr/bin/scanelf                       │ ok     │                                │
+│                   │ /usr/bin/ssl_client                    │ ok     │                                │
+│                   │ /usr/sbin/capsh                        │ ok     │                                │
+│                   │ /usr/sbin/getcap                       │ ok     │                                │
+│                   │ /usr/sbin/getpcaps                     │ ok     │                                │
+│                   │ /usr/sbin/setcap                       │ ok     │                                │
+│                   │ /usr/sbin/update-ca-certificates       │ ok     │                                │
+│                   │ /usr/share/udhcpc/default.script       │ ok     │                                │
+├───────────────────┼────────────────────────────────────────┼────────┼────────────────────────────────┤
+│                   │ /bin/busybox                           │ ok     │                                │
+│                   │ /etc/network/if-up.d/dad               │ ok     │                                │
+│                   │ /sbin/apk                              │ ok     │                                │
+│                   │ /sbin/ldconfig                         │ ok     │                                │
+│                   │ /usr/bin/getconf                       │ ok     │                                │
+│ fetch-site (init) │ /usr/bin/getent                        │ ok     │                                │
+│                   │ /usr/bin/iconv                         │ ok     │                                │
+│                   │ /usr/bin/ldd                           │ ok     │                                │
+│                   │ /usr/bin/scanelf                       │ ok     │                                │
+│                   │ /usr/bin/ssl_client                    │ ok     │                                │
+│                   │ /usr/share/udhcpc/default.script       │ ok     │                                │
+└───────────────────┴────────────────────────────────────────┴────────┴────────────────────────────────┘
+
+┌───────────────────┬───────────────────────────────┬─────────┬────┬───────┬─────────┬─────────────┐
+│ CONTAINER         │ IMAGE                         │ ALLOWED │ OK │ STALE │ SKIPPED │ NOT ALLOWED │
+├───────────────────┼───────────────────────────────┼─────────┼────┼───────┼─────────┼─────────────┤
+│ caddy             │ docker.io/library/caddy:2.10  │      21 │ 19 │     2 │       0 │           4 │
+│ fetch-site (init) │ docker.io/library/alpine:3.20 │      11 │ 11 │     0 │       0 │           0 │
+└───────────────────┴───────────────────────────────┴─────────┴────┴───────┴─────────┴─────────────┘
+
+2 allowed paths are not executables in the images:
+  caddy: /usr/lib/libcap.so.2.70, /usr/lib/libpsx.so.2.70
+----
+
+. Read the exit code:
++
+[source,console]
+----
+echo $?
+1
+----
+
+The report has two tables:
+
+* The first table has one row for each allowed path. The rows of each
+  container start with the paths that need an action: `stale` first, then
+  `skipped`, then `ok`. Here, `caddy:2.10` ships `libcap` 2.76 in place of
+  2.70, so the two paths with the old version in their name are `stale`.
+  Remove them from the policy.
+* The second table counts the paths of each status for each container. The
+  `NOT ALLOWED` column counts the executables of the image that the policy
+  does not allow. `caddy:2.10` adds `/usr/bin/curl` and `/usr/bin/wcurl`,
+  and the two new `libcap` files. For a learned policy, this number is
+  usually high. This is not a problem. The policy blocks these executables in
+  `protect` mode, which is the goal.
+
+The last lines go to standard error. They are the verdict. They repeat the
+stale paths, so that you see them in a CI log without the table. The verdict
+also counts the allowed paths that `wpgen` skipped, and the containers of
+the policy that it did not check.
+
+The exit code is `1` because at least one path is `stale`. It is `0` in all
+other cases. The init container `fetch-site` has no stale path, so it does
+not change the exit code.
+
+[#_containers-of-the-policy-and-of-the-workload]
+== Containers of the policy and of the workload
+
+The workload file must contain one workload. `wpgen` matches the containers
+of the policy and of the workload by name:
+
+* A container of the workload without rules in the policy, for example a new
+  container, makes the check fail. The {agent-term} does not protect this
+  container. The verdict names it, and the exit code is `1`.
+* A container of the policy that is not in the workload is not checked. Its
+  rules have no effect. `wpgen` prints a notice, and the check does not
+  fail.
+
+If the policy and the workload have no container in common, `wpgen` stops
+with an error. The next example shows a container without rules.
+
+[#_the-status-column]
+== The STATUS column
+
+The `STATUS` column has one of these values:
+
+* `stale`: the path is not an executable in the image. A path can be stale
+  after an image update. It can also come from a volume or a foreign root.
+  In that case, keep it in the policy. The agent needs it, even if `wpgen`
+  cannot see it.
+* `skipped`: the path is a shared library or an unknown file. `wpgen` skips
+  these kinds, unless you use `--include-libraries` or `--include-unknown`.
+  See xref:howtos/wpgen/index.adoc#_which-files-wpgen-allows[Which files wpgen allows].
+  A skipped path does not change the exit code.
+* `ok`: the path is an executable in the image.
+* `not allowed`: an executable of the image that the policy does not allow.
+  The first table shows these rows only with `--list-not-allowed`. See
+  xref:#_find-the-executables-that-the-policy-does-not-allow[Find the executables that the policy does not allow].
+
+[#_find-the-executables-that-the-policy-does-not-allow]
+== Find the executables that the policy does not allow
+
+The second table counts the executables that the policy does not allow. To
+see their paths, use `--list-not-allowed`. The rows appear after the `ok`
+rows of each container.
+
+After an image update, the list shows the executables that the new image
+adds. For `caddy:2.10`, these are `curl`, `wcurl`, and the two new `libcap`
+files:
+
+[source,console]
+----
+wpgen check policies.yaml --workload caddy-deploy.yaml --image-src registry --list-not-allowed
+...
+│                   │ /usr/share/udhcpc/default.script       │ ok          │                                │
+│                   │ /usr/bin/curl                          │ not allowed │                                │
+│                   │ /usr/bin/wcurl                         │ not allowed │                                │
+│                   │ /usr/lib/libcap.so.2.76                │ not allowed │                                │
+│                   │ /usr/lib/libpsx.so.2.76                │ not allowed │                                │
+...
+----
+
+Read the list with the workload in mind:
+
+* If the workload needs one of these executables, add it to the policy. For
+  example, a start script of the new image can call `curl`. In `monitor`
+  mode, the agent reports such a call as a violation.
+* If the workload does not need it, leave it out. The policy blocks it in
+  `protect` mode, which is the goal.
+
+For a learned or trimmed policy, the list is long, because the policy allows
+only what the workload runs. The two rows for `libcap` 2.76 replace the two
+`stale` rows for `libcap` 2.70. If the workload needed the old files, the
+new ones go into the policy.
+
+[#_find-symbolic-links-in-a-hand-written-policy]
+== Find symbolic links in a hand-written policy
+
+The {agent-term} reports the path of the real file, never the path of a
+symbolic link. A policy written by hand often allows a link. In an Alpine
+image, `/bin/sh` is a link to `/bin/busybox`. Such an entry never matches.
+
+This policy has a link and a path that does not exist in the image:
+
+[source,yaml]
+----
+apiVersion: runtimeenforcer.kubewarden.io/v1alpha1
+kind: WorkloadPolicy
+metadata:
+  name: deploy-caddy
+  namespace: web
+spec:
+  mode: protect
+  rulesByContainer:
+    caddy:
+      executables:
+        allowed:
+        - /bin/sh
+        - /usr/bin/caddy
+        - /usr/bin/caddy-reload.sh
+        - /usr/bin/ssl_client
+----
+
+The `NOTE` column shows the real path behind the link. The policy has no
+rules for the init container `fetch-site`. `wpgen` prints a notice before
+the report, and the verdict names the container:
+
+[source,console]
+----
+wpgen check policy.yaml --workload caddy-deploy.yaml --image-src registry
+The policy has no rules for container "fetch-site" of Deployment "caddy".
+
+Loading image "docker.io/library/caddy:2.9"...
+Loaded image "docker.io/library/caddy:2.9" from source "registry" (linux/amd64)
+Policy deploy-caddy (namespace web)
+
+┌───────────┬──────────────────────────┬────────┬────────────────────────────────────────────────────┐
+│ CONTAINER │ PATH                     │ STATUS │ NOTE                                               │
+├───────────┼──────────────────────────┼────────┼────────────────────────────────────────────────────┤
+│           │ /bin/sh                  │ stale  │ symbolic link to /bin/busybox, the enforcer        │
+│           │                          │        │ reports the target                                 │
+│   caddy   │ /usr/bin/caddy-reload.sh │ stale  │ not an executable in the image                     │
+│           │ /usr/bin/caddy           │ ok     │                                                    │
+│           │ /usr/bin/ssl_client      │ ok     │                                                    │
+└───────────┴──────────────────────────┴────────┴────────────────────────────────────────────────────┘
+
+┌───────────┬─────────────────────────────┬─────────┬────┬───────┬─────────┬─────────────┐
+│ CONTAINER │ IMAGE                       │ ALLOWED │ OK │ STALE │ SKIPPED │ NOT ALLOWED │
+├───────────┼─────────────────────────────┼─────────┼────┼───────┼─────────┼─────────────┤
+│ caddy     │ docker.io/library/caddy:2.9 │       4 │  2 │     2 │       0 │          19 │
+└───────────┴─────────────────────────────┴─────────┴────┴───────┴─────────┴─────────────┘
+
+2 allowed paths are not executables in the images:
+  caddy: /bin/sh, /usr/bin/caddy-reload.sh
+
+1 container of the workload has no rules in the policy, so the enforcer does not protect it:
+  fetch-site
+----
+
+Replace `/bin/sh` with `/bin/busybox` in the policy. Remove
+`/usr/bin/caddy-reload.sh`, or keep it if a volume provides it. Then add an
+entry for `fetch-site` to `spec.rulesByContainer`. Without it, the check
+still fails, and the agent does not protect the init container.
+
+[#_check-a-policy-against-one-image]
+== Check a policy against one image
+
+When there is no workload file, give the image with `--image`. If the policy
+has more than one container, name the container with `--container-name`:
+
+[source,console]
+----
+wpgen check policy.yaml --image docker.io/library/caddy:2.9 \
+  --container-name caddy --image-src registry
+Loading image "docker.io/library/caddy:2.9"...
+Loaded image "docker.io/library/caddy:2.9" from source "registry" (linux/amd64)
+Policy deploy-caddy (namespace web)
+
+┌───────────┬────────────────┬────────┬──────┐
+│ CONTAINER │ PATH           │ STATUS │ NOTE │
+├───────────┼────────────────┼────────┼──────┤
+│   caddy   │ /bin/busybox   │ ok     │      │
+│           │ /usr/bin/caddy │ ok     │      │
+└───────────┴────────────────┴────────┴──────┘
+
+┌───────────┬─────────────────────────────┬─────────┬────┬───────┬─────────┬─────────────┐
+│ CONTAINER │ IMAGE                       │ ALLOWED │ OK │ STALE │ SKIPPED │ NOT ALLOWED │
+├───────────┼─────────────────────────────┼─────────┼────┼───────┼─────────┼─────────────┤
+│ caddy     │ docker.io/library/caddy:2.9 │       2 │  2 │     0 │       0 │          19 │
+└───────────┴─────────────────────────────┴─────────┴────┴───────┴─────────┴─────────────┘
+
+No allowed path is stale.
+----
+
+This policy allows `/bin/busybox` and `/usr/bin/caddy`. Both are in the
+image, so the exit code is `0`. The verdict says only what `wpgen` checked.
+When some allowed paths are skipped, or some containers of the policy are
+not in the workload, the verdict counts them.
+
+`wpgen check` also reads a `WorkloadPolicyProposal`. Use `-` as the policy
+file to read from standard input, for example from `kubectl get`:
+
+[source,bash]
+----
+kubectl get workloadpolicy deploy-caddy -n web -o yaml | \
+  wpgen check - --workload caddy-deploy.yaml --image-src registry
+----
+
+[#_output-options]
+== Output options
+
+`wpgen check` writes the report to standard output. The verdict and the
+other messages go to standard error. The default format, `-o table`, is for
+people. For a machine-readable report, use `-o json`. The
+document has one entry for each container. This is the report of the image
+bump above, with `--list-not-allowed`. The `allowed` and `executables` lists
+are cut for this page:
+
+[source,console]
+----
+wpgen check policies.yaml --workload caddy-deploy.yaml --image-src registry \
+  -o json --list-not-allowed 2>/dev/null
+----
+
+[source,json]
+----
+{
+  "policy": {
+    "name": "deploy-caddy",
+    "namespace": "web"
+  },
+  "containers": [
+    {
+      "name": "caddy",
+      "init": false,
+      "image": "docker.io/library/caddy:2.10",
+      "allowed": ["/bin/busybox", "/etc/ca-certificates/update.d/certhash", "..."],
+      "executables": ["/bin/busybox", "/etc/ca-certificates/update.d/certhash", "..."],
+      "stale": [
+        {"path": "/usr/lib/libcap.so.2.70"},
+        {"path": "/usr/lib/libpsx.so.2.70"}
+      ],
+      "skipped": [],
+      "notAllowedCount": 4,
+      "notAllowed": [
+        "/usr/bin/curl",
+        "/usr/bin/wcurl",
+        "/usr/lib/libcap.so.2.76",
+        "/usr/lib/libpsx.so.2.76"
+      ]
+    },
+    {
+      "name": "fetch-site",
+      "init": true,
+      "image": "docker.io/library/alpine:3.20",
+      "allowed": ["/bin/busybox", "/etc/network/if-up.d/dad", "..."],
+      "executables": ["/bin/busybox", "/etc/network/if-up.d/dad", "..."],
+      "stale": [],
+      "skipped": [],
+      "notAllowedCount": 0,
+      "notAllowed": []
+    }
+  ],
+  "containersOnlyInPolicy": [],
+  "containersOnlyInWorkload": []
+}
+----
+
+* `executables` are the allowed paths that are executables in the image.
+* `stale` are the allowed paths that are not. `linkTarget` is set when the
+  path is a symbolic link.
+* `skipped` are the allowed paths that are shared libraries or unknown files,
+  with their `kind`.
+* `notAllowed` is present only with `--list-not-allowed`.
+
+The exit code is the same as with the table report. The messages on standard
+error are the same too. Redirect them, as in the example, when a tool reads
+the JSON.
+
+[#_run-the-check-in-ci]
+== Run the check in CI
+
+A CI job that runs `wpgen check` on each pull request stops an image bump
+that makes the policy stale. It also stops a change that adds a container
+that the policy does not protect. Install `wpgen` in the job as
+xref:howtos/wpgen/index.adoc#_install[Installation] describes. Use
+`--image-src registry`, so that the job reads the image that the cluster
+will pull. The job runs one command:
+
+[source,bash]
+----
+wpgen check deploy/policies.yaml --workload deploy/caddy.yaml \
+  --image-src registry -o json --list-not-allowed > wpgen-report.json
+----
+
+The job fails when the exit code is `1`. Keep `wpgen-report.json` as a build
+artifact, so that a reviewer can read the full report. The stale paths also
+appear in the job log, because `wpgen` repeats them on standard error. If
+the log shows colors, set `CLICOLOR_FORCE=1` to color the verdict. See
+xref:howtos/wpgen/index.adoc#_colors[Colors].
+
+When the check fails, the author of the pull request has three options:
+
+* Remove the stale paths from the policy.
+* Keep a path that comes from a volume or a foreign root, and accept the
+  failure for this run.
+* Add rules for a new container of the workload.

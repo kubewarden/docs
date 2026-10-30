@@ -383,3 +383,15 @@ creates and updates it during the <<_learn-phase,learn phase>>. Its name is the 
 the workload. Nothing is enforced while a workload has only a proposal.
 <<_promotion,Promotion>> replaces it with a
 <<_workloadpolicy,WorkloadPolicy>>.
+
+[#_wpgen]
+=== wpgen
+
+A command-line tool that drafts a xref:#_workloadpolicy[WorkloadPolicy] from the
+executables inside container images. It reads one image or all the images of
+a xref:#_workload[workload] file, and it does not need a cluster. It also
+compares an existing policy with the images and reports the
+xref:#_executable-path[executable paths] that are not in them. Its output is a
+starting point. The xref:#_learn-phase[learn phase] is the better way to build a
+policy for a workload that already runs. See
+xref:howtos/wpgen/index.adoc[].

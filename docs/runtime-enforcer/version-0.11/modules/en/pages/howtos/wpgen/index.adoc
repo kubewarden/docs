@@ -1,0 +1,369 @@
+include::partial$variables.adoc[]
+
+= Draft policies from container images with wpgen
+:revdate: 2026-10-30
+:page-revdate: {revdate}
+:description: Install wpgen, the {rte-name} tool that drafts a WorkloadPolicy from container images, and learn what it can and cannot see.
+:keywords: ["{rte-name}", "kubewarden", "wpgen", "WorkloadPolicy", "cli"]
+:doc-persona: ["kubewarden-operator", "kubewarden-developer"]
+:doc-type: ["howto"]
+:doc-topic: ["operator-manual", "cli", "policy-authoring"]
+
+`wpgen` drafts a `WorkloadPolicy` from the executables found inside container
+images. It also compares an existing policy with the images of a workload.
+`wpgen` does not need a cluster. You can run it on a workstation or in a CI
+pipeline.
+
+`wpgen` has three commands:
+
+[cols="1,2,2"]
+|===
+|Command |Input |Output
+
+|`wpgen workload`
+|A file with Kubernetes workloads
+|One `WorkloadPolicy` per workload
+
+|`wpgen image`
+|One image reference
+|One `WorkloadPolicy`
+
+|`wpgen check`
+|A policy file and its images
+|A report and an exit code
+|===
+
+This section has one page for each command:
+
+* xref:howtos/wpgen/draft-from-workload.adoc[]
+* xref:howtos/wpgen/draft-from-image.adoc[]
+* xref:howtos/wpgen/check-policy.adoc[]
+
+For the full list of commands and flags, see xref:reference/wpgen-cli.adoc[].
+
+The examples in this section use `docker.io/library/alpine:3.20`,
+`docker.io/library/caddy:2.9`, and `docker.io/library/nginx:1.27`. The
+output was recorded on {revdate}. A tag can move to a new image, and then
+the counts and the paths change.
+
+[#_the-output-is-a-draft]
+== The output is a draft
+
+A container image often contains many executables that the workload never
+runs. A policy that allows all of them gives little protection. For example, a
+policy for a Debian or Ubuntu base image allows several hundred executables.
+
+Use the output of `wpgen` as a starting point:
+
+. Apply the policy in `monitor` mode. This is the default mode of the output.
+. Look at the violations and at the list of allowed executables.
+. Remove the executables that the workload does not need.
+. Switch the policy to `protect` mode.
+
+xref:#_trim-the-policy[Trim the policy] describes these steps in detail.
+
+When the workload already runs in a cluster, the
+xref:explanations/phases.adoc#_learn-phase[learn phase] is the better way to
+build a policy. The learn phase records the executables that the workload
+really runs.
+
+[#_large-base-images]
+== Large base images
+
+`wpgen image` and `wpgen workload` print a warning when a container allows
+more than 50 executables. The `nginx:1.27` image is based on Debian, and it
+allows 504:
+
+[source,console]
+----
+wpgen image docker.io/library/nginx:1.27 --image-src registry > policy.yaml
+Loading image "docker.io/library/nginx:1.27"...
+Loaded image "docker.io/library/nginx:1.27" from source "registry" (linux/amd64)
+
+┌───────────┬──────────────────────────────┬─────────────┬───────────────────┬───────────────┐
+│ CONTAINER │ IMAGE                        │ EXECUTABLES │ SKIPPED LIBRARIES │ SKIPPED OTHER │
+├───────────┼──────────────────────────────┼─────────────┼───────────────────┼───────────────┤
+│ main      │ docker.io/library/nginx:1.27 │         504 │                 2 │             0 │
+└───────────┴──────────────────────────────┴─────────────┴───────────────────┴───────────────┘
+Use --include-libraries to keep the skipped shared libraries.
+
+WARNING: container main allows 504 executables. A learned policy is usually
+much smaller. Review the list before you switch the policy to protect mode.
+
+Add this label to the pod template of the workload that runs this image:
+  runtimeenforcer.kubewarden.io/policy: nginx
+Make sure that the container is named "main" in the pod, or use --container-name.
+----
+
+A policy with 504 allowed executables blocks almost nothing. Keep the policy
+in `monitor` mode. Then trim it as the next section describes. To change the
+limit of the warning, use `--warn-threshold`. The value `0` disables it.
+
+[#_trim-the-policy]
+== Trim the policy
+
+A draft allows every program and script of the image. A container usually
+runs a few of them. For example, the policy for `caddy:2.9` allows 21
+executables, and the container runs one program, `/usr/bin/caddy`. The other
+20 paths come from the Alpine base image. In `monitor` mode, the
+{agent-term} reports the executables that the policy does not allow, but it
+does not block them.
+
+. Apply the policy in `monitor` mode, and bind the workload to it with the
+  {policy-label-term} label.
+. Let the workload run for a period that covers its normal activity.
+. Look at the {violation-term} events. The agent exports them through the
+  {opentelemetry-collector-term}. See
+  xref:explanations/phases.adoc#_monitor-phase[Monitor phase] for details.
+. Remove the paths that the workload does not need. The
+  {kubectl-plugin-term} does this for you:
++
+[source,bash]
+----
+kubectl runtime-enforcer policy deny <POLICY> <container> <executable-path> [<executable-path>...] -n <namespace>
+----
+
+. If a violation shows a path that the workload needs, add it:
++
+[source,bash]
+----
+kubectl runtime-enforcer policy allow <POLICY> <container> <executable-path> [<executable-path>...] -n <namespace>
+----
+
+. When the list is correct, switch the policy to `protect` mode:
++
+[source,bash]
+----
+kubectl runtime-enforcer policy protect <POLICY> -n <namespace>
+----
+
+See xref:howtos/kubectl_plugin.adoc[] for the other commands of the plugin.
+
+[#_output-options]
+== Output options
+
+`wpgen image` and `wpgen workload` write the policy to standard output.
+Messages go to standard error. These flags change the output:
+
+* `--mode protect` sets `spec.mode` to `protect`. Use it only for a policy
+  that you have already trimmed and tested in `monitor` mode.
+* `-o json` writes the policy as JSON instead of YAML. `kubectl apply -f`
+  accepts both formats.
+
+When `wpgen workload` writes more than one policy, a `---` line divides them
+in YAML. In JSON, the objects follow each other. `kubectl apply -f` accepts
+both.
+
+To apply a draft without a file, pipe it into `kubectl`. The messages do not
+reach `kubectl`, because they go to standard error:
+
+[source,bash]
+----
+wpgen image docker.io/library/caddy:2.9 \
+  --container-name caddy --name caddy --namespace web \
+  --image-src registry | kubectl apply -f -
+----
+
+[#_install]
+== Installation
+
+[#_download-a-pre-built-binary]
+=== Download a pre-built binary
+
+Pre-built binaries for `linux/amd64`, `linux/arm64`, `darwin/amd64`, and
+`darwin/arm64` are published on each
+https://github.com/kubewarden/runtime-enforcer/releases[GitHub Release].
+Next to each binary, the release has a `.sha256` file with its checksum.
+
+To install the binary for `linux/amd64`:
+
+. Download the binary and its checksum file:
++
+[source,bash,subs="+attributes"]
+----
+VERSION={release-tag}
+BASE_URL="https://github.com/kubewarden/runtime-enforcer/releases/download/$VERSION"
+curl -fLO "$BASE_URL/wpgen-linux-amd64"
+curl -fLO "$BASE_URL/wpgen-linux-amd64.sha256"
+----
++
+To get the latest release, set `BASE_URL` to
+`https://github.com/kubewarden/runtime-enforcer/releases/latest/download`
+instead.
+
+. Make sure that the checksum of the binary is correct:
++
+[source,bash]
+----
+sha256sum --check wpgen-linux-amd64.sha256
+----
++
+If you use macOS, run `shasum -a 256 --check` instead of `sha256sum --check`.
+
+. Make sure that the release workflow of the repository built the binary.
+  The checksum shows only that the file matches what the release page lists.
+  This step needs the GitHub CLI:
++
+[source,bash]
+----
+gh attestation verify wpgen-linux-amd64 --repo kubewarden/runtime-enforcer
+----
+
+. Install the binary with the name `wpgen`:
++
+[source,bash]
+----
+sudo install -m 0755 wpgen-linux-amd64 /usr/local/bin/wpgen
+----
+
+For another platform, replace `linux-amd64` with `linux-arm64`,
+`darwin-amd64`, or `darwin-arm64` in all the commands.
+
+[#_build-from-source]
+=== Build from source
+
+From the root of the {rte-short-name} repository:
+
+[source,bash]
+----
+# Current platform
+make wpgen          # output: bin/wpgen
+# All supported platforms at once
+make wpgen-cross    # output: bin/wpgen-dist/wpgen-<os>-<arch>
+----
+
+[#_verify]
+=== Verify
+
+[source,bash]
+----
+wpgen --version
+wpgen --help
+----
+
+[#_where-wpgen-finds-the-images]
+== Where wpgen finds the images
+
+`wpgen` looks for an image in a list of sources, in order. It uses the first
+source that has the image. The default order is:
+
+. `file`: a tar archive made by `docker save` or `podman save`, an OCI archive,
+  or an OCI layout directory.
+. `docker`: the local Docker daemon.
+. `podman`: the local Podman daemon.
+. `registry`: the remote registry of the image reference.
+
+A daemon source pulls the image into the daemon when the daemon does not have
+it. To read the image directly from the registry, use `--image-src registry`.
+This is useful in CI, where a local image can be out of date. The examples in
+this section use this flag, so that they give the same result on every
+machine.
+
+A multi-platform image has one image per platform. `wpgen` selects `linux`
+with the architecture of the host. To select another platform, use
+`--platform`, for example `--platform linux/arm64`. The set of executables can
+differ between platforms. If the image does not have the selected platform,
+`wpgen` stops with an error. This is true for every image source, local
+archives included:
+
+[source,console]
+----
+wpgen image docker.io/library/caddy:2.9 --platform linux/mips64le --image-src registry
+Loading image "docker.io/library/caddy:2.9"...
+Error: cannot load image "docker.io/library/caddy:2.9": registry: unable to detect input for 'docker.io/library/caddy:2.9', errs: failed to get image from registry: no child with platform linux/mips64le in index docker.io/library/caddy:2.9
+----
+
+[#_which-files-wpgen-allows]
+== Which files wpgen allows
+
+The {ebpf-term} program of the {agent-term} records the path of each
+executable as the kernel sees it. `wpgen` produces the same paths:
+
+* It allows each regular file that has an execute permission bit set.
+* It allows each hard link to such a file.
+* It skips symbolic links. The kernel resolves a symbolic link before the
+  agent sees the path. For example, in an Alpine image `/bin/sh` points to
+  `/bin/busybox`, and the agent reports `/bin/busybox`.
+
+A file with an execute bit is not always a program. `wpgen` reads each file
+and decides what kind of file it is:
+
+* A program: an ELF executable, linked dynamically or statically.
+* A script: a file that starts with `#!`.
+* A shared library: an ELF library, for example `/lib/libz.so.1`. Programs
+  load libraries, but do not run them.
+* An unknown file: any other file, for example a certificate file with mode
+  `0755`.
+
+By default, a policy allows only programs and scripts. The summary of each
+container shows how many files `wpgen` skipped. For `alpine:3.20`, half of
+the files with an execute bit are libraries:
+
+[source,console]
+----
+wpgen image docker.io/library/alpine:3.20 --image-src registry > policy.yaml
+Loading image "docker.io/library/alpine:3.20"...
+Loaded image "docker.io/library/alpine:3.20" from source "registry" (linux/amd64)
+
+┌───────────┬───────────────────────────────┬─────────────┬───────────────────┬───────────────┐
+│ CONTAINER │ IMAGE                         │ EXECUTABLES │ SKIPPED LIBRARIES │ SKIPPED OTHER │
+├───────────┼───────────────────────────────┼─────────────┼───────────────────┼───────────────┤
+│ main      │ docker.io/library/alpine:3.20 │          11 │                10 │             0 │
+└───────────┴───────────────────────────────┴─────────────┴───────────────────┴───────────────┘
+Use --include-libraries to keep the skipped shared libraries.
+
+Add this label to the pod template of the workload that runs this image:
+  runtimeenforcer.kubewarden.io/policy: alpine
+Make sure that the container is named "main" in the pod, or use --container-name.
+----
+
+To keep the skipped files, use `--include-libraries` or `--include-unknown`.
+With `--include-libraries`, the policy for `alpine:3.20` grows from 11 to 21
+paths, and includes files such as `/lib/ld-musl-x86_64.so.1` and
+`/lib/libssl.so.3`. You need these flags in two rare cases:
+
+* The workload starts the dynamic loader directly, for example
+  `/lib64/ld-linux-x86-64.so.2 ./binary`. A normal program does not need the
+  loader in its policy. The kernel starts the loader without an exec event of
+  its own.
+* The workload starts a script without a `#!` line directly from a shell. The
+  agent checks the path of the script before the shell runs it, so the policy
+  must allow the script.
+
+In `monitor` mode, the agent reports these cases as violations.
+
+[#_what-wpgen-does-not-see]
+== What wpgen does not see
+
+`wpgen` only sees the file system of the image. It does not see:
+
+* Files on volumes that the pod mounts over a path of the image.
+* Files that the workload creates at runtime, for example a package that a
+  start script installs.
+* Executables from a foreign root.
+
+In `monitor` mode, the agent reports these executables as violations. Add
+them to the policy by hand, or with the {kubectl-plugin-term} command
+`policy allow`.
+
+[#_colors]
+== Colors
+
+`wpgen` uses colors only for the lines that you must not miss: the verdict of
+`check`, the `WARNING:` word, the notices about containers that are only in
+the policy or only in the workload, and errors. The tables have no colors.
+
+By default, `wpgen` uses colors only when the output is a terminal. To turn
+them off, set the `NO_COLOR` environment variable, or use `--color=never`.
+To force them, for example in a CI log that shows colors, use
+`--color=always` or set `CLICOLOR_FORCE=1`. The `--color` flag wins over both
+variables.
+
+[#_exit-codes]
+== Exit codes
+
+All the commands return `0` on success and `1` on an error. `wpgen check`
+also returns `1` when the policy is stale, as
+xref:howtos/wpgen/check-policy.adoc[] describes. When you stop `wpgen` with
+Ctrl-C, or with the `SIGTERM` signal, it prints `Interrupted` and returns
+`130`.

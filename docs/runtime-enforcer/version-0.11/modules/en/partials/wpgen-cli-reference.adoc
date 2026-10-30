@@ -23,11 +23,18 @@ wpgen only sees the file system of the image. It does not see files on
 volumes, files that the workload creates at runtime, or executables from a
 foreign root.
 
+Colors are used only for the lines that matter: the check verdict, warnings,
+notices and errors. With --color=auto, the default, colors are on only when
+the output is a terminal. The NO_COLOR environment variable turns them off,
+and CLICOLOR_FORCE=1 turns them on. --color=always and --color=never win
+over both.
+
 === Options
 
 ....
-  -h, --help      help for wpgen
-  -v, --version   version for wpgen
+      --color string   When to use colors: auto, always or never. auto follows NO_COLOR and CLICOLOR_FORCE (default "auto")
+  -h, --help           help for wpgen
+  -v, --version        version for wpgen
 ....
 
 === SEE ALSO
@@ -48,7 +55,8 @@ given with --workload, or from --image.
 For each container of the policy, wpgen lists the allowed paths that are not
 executables in the image, and counts the executables of the image that the
 policy does not allow. A learned policy usually does not allow most of the
-executables of the image, so this count is not a problem.
+executables of the image, so this count is not a problem. Use
+--list-not-allowed to list them.
 
 When an allowed path is a symbolic link in the image, wpgen shows its real
 path. The enforcer reports the real path, so the policy must allow it.
@@ -58,7 +66,14 @@ the image. This happens after an image update that removes a file. It also
 happens for a path on a volume or in a foreign root: keep these paths in the
 policy if the workload needs them.
 
-The report goes to standard output. Other messages go to standard error.
+The exit code is also 1 when a container of the workload has no rules in the
+policy, for example a new container. The enforcer does not protect such a
+container.
+
+The report goes to standard output, as a table or as JSON. Other messages go
+to standard error. The last lines on standard error are the verdict. They
+also count the allowed paths that wpgen skipped, and the containers of the
+policy that it did not check.
 
 *Usage:* `wpgen check POLICY_FILE (--workload FILE | --image IMAGE) [flags]`
 
@@ -70,6 +85,9 @@ The report goes to standard output. Other messages go to standard error.
 
   # Compare a policy with a single image
   wpgen check ./policy.yaml --image ghcr.io/example/api:2.3.0 --container-name api
+
+  # Write the report as JSON, with the executables that the policy does not allow
+  wpgen check ./policy.yaml --workload ./deploy/nginx.yaml -o json --list-not-allowed
 ....
 
 === Options
@@ -78,11 +96,19 @@ The report goes to standard output. Other messages go to standard error.
       --container-name string   Container of the policy that runs --image (default: the only container of the policy)
   -h, --help                    help for check
       --image string            Image of one container of the policy
-      --image-src strings       Image sources to try, in order. Valid values: containerd, containers-storage, daemon, dir, docker, docker-archive, file, oci-archive, oci-dir, oci-registry, podman, pull, registry, singularity (default [file,docker,podman,registry])
+      --image-src strings       Image sources to try, in order. Valid values: containerd, daemon, dir, docker, docker-archive, file, oci-archive, oci-dir, oci-registry, podman, pull, registry, singularity (default [file,docker,podman,registry])
       --include-libraries       Count ELF shared libraries as executables. Programs load them, but do not run them
       --include-unknown         Count files that are neither ELF programs nor scripts as executables, for example data files with an execute bit
+      --list-not-allowed        List the executables of the image that the policy does not allow, not only their number
+  -o, --output string           Report format (table or json) (default "table")
       --platform string         Platform to select from a multi-platform image (default: linux/<host architecture>)
       --workload string         File with the workload that uses the policy ("-" for standard input)
+....
+
+=== Options inherited from parent commands
+
+....
+      --color string   When to use colors: auto, always or never. auto follows NO_COLOR and CLICOLOR_FORCE (default "auto")
 ....
 
 === SEE ALSO
@@ -95,8 +121,11 @@ The report goes to standard output. Other messages go to standard error.
 Draft a WorkloadPolicy from a single container image.
 
 The policy has one container. wpgen treats the image as the main container
-of the pod. The policy allows every regular file of the image that has an
-execute permission bit set.
+of the pod. The policy allows the programs and the scripts of the image: the
+regular files that have an execute permission bit set, and that are ELF
+programs or start with "#!". wpgen skips the shared libraries, and the
+files that are neither programs nor scripts. Use --include-libraries and
+--include-unknown to keep them.
 
 wpgen looks for the image in the sources given by --image-src, in order, and
 uses the first source that has it. A daemon source (docker, podman) pulls the
@@ -124,15 +153,21 @@ The policy goes to standard output. Messages go to standard error.
 ....
       --container-name string   Name of the container in spec.rulesByContainer (default "main")
   -h, --help                    help for image
-      --image-src strings       Image sources to try, in order. Valid values: containerd, containers-storage, daemon, dir, docker, docker-archive, file, oci-archive, oci-dir, oci-registry, podman, pull, registry, singularity (default [file,docker,podman,registry])
+      --image-src strings       Image sources to try, in order. Valid values: containerd, daemon, dir, docker, docker-archive, file, oci-archive, oci-dir, oci-registry, podman, pull, registry, singularity (default [file,docker,podman,registry])
       --include-libraries       Count ELF shared libraries as executables. Programs load them, but do not run them
       --include-unknown         Count files that are neither ELF programs nor scripts as executables, for example data files with an execute bit
       --mode string             Policy mode (monitor or protect) (default "monitor")
-      --name string             Name of the policy (default: last path element of the image repository)
+      --name string             Name of the policy (default: last path element of the image repository, or "todo" when wpgen cannot derive it)
       --namespace string        Namespace of the policy (default "default")
   -o, --output string           Output format (yaml or json) (default "yaml")
       --platform string         Platform to select from a multi-platform image (default: linux/<host architecture>)
       --warn-threshold int      Print a warning when a container allows more executables than this value (0 disables the warning) (default 50)
+....
+
+=== Options inherited from parent commands
+
+....
+      --color string   When to use colors: auto, always or never. auto follows NO_COLOR and CLICOLOR_FORCE (default "auto")
 ....
 
 === SEE ALSO
@@ -150,7 +185,10 @@ StatefulSet, Job and CronJob. It skips the other documents, and also bare
 pods, because the learn phase of runtime-enforcer does not cover them.
 
 Each policy has one entry per container and init container. Each image is
-scanned once, also when more containers use it.
+scanned once, also when more containers use it. As with wpgen image, the
+policy allows the programs and the scripts of the image, and skips the
+shared libraries and the other files, unless you use --include-libraries or
+--include-unknown.
 
 The policy name is the value of the runtimeenforcer.kubewarden.io/policy
 label of the pod template. When the label is not there, the name is
@@ -177,13 +215,19 @@ The policies go to standard output. Messages go to standard error.
 
 ....
   -h, --help                 help for workload
-      --image-src strings    Image sources to try, in order. Valid values: containerd, containers-storage, daemon, dir, docker, docker-archive, file, oci-archive, oci-dir, oci-registry, podman, pull, registry, singularity (default [file,docker,podman,registry])
+      --image-src strings    Image sources to try, in order. Valid values: containerd, daemon, dir, docker, docker-archive, file, oci-archive, oci-dir, oci-registry, podman, pull, registry, singularity (default [file,docker,podman,registry])
       --include-libraries    Count ELF shared libraries as executables. Programs load them, but do not run them
       --include-unknown      Count files that are neither ELF programs nor scripts as executables, for example data files with an execute bit
       --mode string          Policy mode (monitor or protect) (default "monitor")
   -o, --output string        Output format (yaml or json) (default "yaml")
       --platform string      Platform to select from a multi-platform image (default: linux/<host architecture>)
       --warn-threshold int   Print a warning when a container allows more executables than this value (0 disables the warning) (default 50)
+....
+
+=== Options inherited from parent commands
+
+....
+      --color string   When to use colors: auto, always or never. auto follows NO_COLOR and CLICOLOR_FORCE (default "auto")
 ....
 
 === SEE ALSO

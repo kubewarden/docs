@@ -12,7 +12,8 @@ include::partial$variables.adoc[]
 This page lists all commands and flags of `wpgen`. `wpgen` drafts a
 `WorkloadPolicy` from the executables found inside container images. It also
 compares an existing policy with the images of a workload. It does not need a
-cluster.
+cluster. For installation steps and common workflows, see
+xref:howtos/wpgen/index.adoc[].
 
 ////
 CLI REFERENCE GOES BELOW.
