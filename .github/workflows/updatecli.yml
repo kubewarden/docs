@@ -4,7 +4,7 @@ name: Bump documentation version on new release
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 8 * * *"
 
 permissions:
   contents: read
@@ -22,22 +22,12 @@ jobs:
       - name: Install Updatecli
         uses: updatecli/updatecli-action@5d180ff09f5204e599bbd6030cd1736009ed5ff2 # v3.9.0
 
-      - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
-        id: generate-token
-        with:
-          app-id: ${{ secrets.APP_ID }} # zizmor: ignore[secrets-outside-env]
-          private-key: ${{ secrets.APP_PRIVATE_KEY }} # zizmor: ignore[secrets-outside-env]
-          owner: ${{ github.repository_owner }} # the default
-          repositories: ${{ github.event.repository.name }}
-          # minimum permissions for updatecli to push a branch and open a PR
-          permission-contents: write
-          permission-pull-requests: write
-
       - name: Promote docs version and update CLI reference paths
         run: "updatecli compose apply --file updatecli/bump-documentation-version.yaml"
         env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          UPDATECLI_GITHUB_APP_CLIENT_ID: ${{ secrets.APP_ID }}
+          UPDATECLI_GITHUB_APP_PRIVATE_KEY: ${{ secrets.APP_PRIV_KEY }}
+          UPDATECLI_GITHUB_APP_INSTALLATION_ID: ${{ secrets.APP_INSTALLATION_ID }}
 
   sbomscanner-docs-update:
     runs-on: ubuntu-latest
@@ -51,22 +41,12 @@ jobs:
       - name: Install Updatecli
         uses: updatecli/updatecli-action@5d180ff09f5204e599bbd6030cd1736009ed5ff2 # v3.9.0
 
-      - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
-        id: generate-token
-        with:
-          app-id: ${{ secrets.APP_ID }} # zizmor: ignore[secrets-outside-env]
-          private-key: ${{ secrets.APP_PRIVATE_KEY }} # zizmor: ignore[secrets-outside-env]
-          owner: ${{ github.repository_owner }} # the default
-          repositories: ${{ github.event.repository.name }}
-          # minimum permissions for updatecli to push a branch and open a PR
-          permission-contents: write
-          permission-pull-requests: write
-
       - name: Promote docs version and update CLI reference paths
         run: "updatecli compose apply --file updatecli/sbomscanner-bump-documentation-version.yaml"
         env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          UPDATECLI_GITHUB_APP_CLIENT_ID: ${{ secrets.APP_ID }}
+          UPDATECLI_GITHUB_APP_PRIVATE_KEY: ${{ secrets.APP_PRIV_KEY }}
+          UPDATECLI_GITHUB_APP_INSTALLATION_ID: ${{ secrets.APP_INSTALLATION_ID }}
 
   runtime-enforcer-docs-update:
     runs-on: ubuntu-latest
@@ -80,22 +60,12 @@ jobs:
       - name: Install Updatecli
         uses: updatecli/updatecli-action@5d180ff09f5204e599bbd6030cd1736009ed5ff2 # v3.9.0
 
-      - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
-        id: generate-token
-        with:
-          app-id: ${{ secrets.APP_ID }} # zizmor: ignore[secrets-outside-env]
-          private-key: ${{ secrets.APP_PRIVATE_KEY }} # zizmor: ignore[secrets-outside-env]
-          owner: ${{ github.repository_owner }} # the default
-          repositories: ${{ github.event.repository.name }}
-          # minimum permissions for updatecli to push a branch and open a PR
-          permission-contents: write
-          permission-pull-requests: write
-
       - name: Promote docs version and update CRD and CLI reference paths
         run: "updatecli compose apply --file updatecli/runtime-enforcer-bump-documentation-version.yaml"
         env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          UPDATECLI_GITHUB_APP_CLIENT_ID: ${{ secrets.APP_ID }}
+          UPDATECLI_GITHUB_APP_PRIVATE_KEY: ${{ secrets.APP_PRIV_KEY }}
+          UPDATECLI_GITHUB_APP_INSTALLATION_ID: ${{ secrets.APP_INSTALLATION_ID }}
 
   network-enforcer-docs-update:
     runs-on: ubuntu-latest
@@ -109,19 +79,9 @@ jobs:
       - name: Install Updatecli
         uses: updatecli/updatecli-action@5d180ff09f5204e599bbd6030cd1736009ed5ff2 # v3.9.0
 
-      - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
-        id: generate-token
-        with:
-          app-id: ${{ secrets.APP_ID }} # zizmor: ignore[secrets-outside-env]
-          private-key: ${{ secrets.APP_PRIVATE_KEY }} # zizmor: ignore[secrets-outside-env]
-          owner: ${{ github.repository_owner }} # the default
-          repositories: ${{ github.event.repository.name }}
-          # minimum permissions for updatecli to push a branch and open a PR
-          permission-contents: write
-          permission-pull-requests: write
-
       - name: Promote docs version and update CRD reference paths
         run: "updatecli compose apply --file updatecli/network-enforcer-bump-documentation-version.yaml"
         env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          UPDATECLI_GITHUB_APP_CLIENT_ID: ${{ secrets.APP_ID }}
+          UPDATECLI_GITHUB_APP_PRIVATE_KEY: ${{ secrets.APP_PRIV_KEY }}
+          UPDATECLI_GITHUB_APP_INSTALLATION_ID: ${{ secrets.APP_INSTALLATION_ID }}

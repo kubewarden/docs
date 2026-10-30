@@ -1,8 +1,3 @@
-# {{ $GitHubUser := env ""}}
-# {{ $GitHubRepositoryList := env "GITHUB_REPOSITORY" | split "/"}}
-# {{ $GitHubPAT := env "GITHUB_TOKEN"}}
-# {{ $GitHubUsername := env "GITHUB_ACTOR"}}
-
 name: 'Bump {{ .component }} version in documentation'
 pipelineid: "{{ .pipelineid }}"
 
@@ -10,14 +5,13 @@ scms:
   default:
     kind: "github"
     spec:
-      user: "{{ default $GitHubUser .scm.user}}"
+      user: "{{ .scm.user}}"
       email: "{{ .scm.email }}"
-      owner: "{{ default $GitHubRepositoryList._0 .scm.owner }}"
-      repository: "{{ default $GitHubRepositoryList._1 .scm.repository}}"
-      token: "{{ default $GitHubPAT .scm.token }}"
-      username: "{{ default $GitHubUsername .scm.username }}"
+      owner: "{{ .scm.owner }}"
+      repository: "{{ .scm.repository}}"
       branch: "{{ .scm.branch }}"
-      commitusingapi: true
+      submodules: false
+      commitusingapi: false
       commitmessage:
         hidecredit: true
         footers: "Signed-off-by: Kubewarden bot <cncf-kubewarden-maintainers@lists.cncf.io>"
@@ -30,8 +24,6 @@ sources:
       # {{ $AppGitHubRepositoryList := .sourceRepository | split "/"}}
       owner: "{{ $AppGitHubRepositoryList._0 }}"
       repository: "{{ $AppGitHubRepositoryList._1 }}"
-      token: "{{ default .scm.token $GitHubPAT }}"
-      username: "{{ default .scm.username $GitHubUsername }}"
       versionfilter:
         kind: "semver"
         pattern: ">0.1"
@@ -53,7 +45,7 @@ conditions:
       changedif:
         kind: "exitcode"
         spec:
-          failure: 1
+          failure: 2
           success: 0
           warning: 1
       # This condition answers one question only: is there a release that is
@@ -161,7 +153,8 @@ actions:
     kind: "github/pullrequest"
     scmid: "default"
     spec:
-      automerge: false
+      merge:
+        strategy: manual
 # {{ if .pr.title }}
       title: "{{ .pr.title }}"
 # {{ end }}
