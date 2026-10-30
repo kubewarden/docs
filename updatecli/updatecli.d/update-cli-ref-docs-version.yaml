@@ -3,11 +3,12 @@
 # {{ $GitHubPAT := env "GITHUB_TOKEN"}}
 # {{ $GitHubUsername := env "GITHUB_ACTOR"}}
 
-# Generic manifest for components that sync a single CLI reference partial.
+# Generic manifest for components that sync one or more CLI reference partials.
 # The values file must define:
-#   component:           the docs component directory name
-#   cliReferencePartial: the partial file name under modules/en/partials/
-# The values files it edits follow the naming used by update-ref-docs.yaml:
+#   component:            the docs component directory name
+#   cliReferencePartials: the list of partial file names under modules/en/partials/
+# The order of the list must match the order of the files list in the two
+# values files it edits, which follow the naming used by update-ref-docs.yaml:
 #   values.d/update-<component>-cli-ref-docs.yaml
 #   values.d/cli-ref-docs-<component>.yaml
 
@@ -67,25 +68,27 @@ sources:
         echo "$DEV_VERSION"
 
 targets:
-  updateCliCopyValuesFile:
-    name: "Update {{ .component }} CLI docs copy target version"
+# {{ range $index, $partial := .cliReferencePartials }}
+  updateCliCopyValuesFile{{ $index }}:
+    name: "Update {{ $.component }} CLI docs copy target version for {{ $partial }}"
     kind: yaml
     sourceid: devVersion
     scmid: default
     spec:
-      file: "updatecli/values.d/update-{{ .component }}-cli-ref-docs.yaml"
-      key: "$.files[0].dst"
-      value: 'docs/{{ .component }}/version-{{ source "devVersion" }}/modules/en/partials/{{ .cliReferencePartial }}'
+      file: "updatecli/values.d/update-{{ $.component }}-cli-ref-docs.yaml"
+      key: "$.files[{{ $index }}].dst"
+      value: 'docs/{{ $.component }}/version-{{ source "devVersion" }}/modules/en/partials/{{ $partial }}'
 
-  updateCliCommitValuesFile:
-    name: "Update {{ .component }} CLI docs commit target version"
+  updateCliCommitValuesFile{{ $index }}:
+    name: "Update {{ $.component }} CLI docs commit target version for {{ $partial }}"
     kind: yaml
     sourceid: devVersion
     scmid: default
     spec:
-      file: "updatecli/values.d/cli-ref-docs-{{ .component }}.yaml"
-      key: "$.files[0].dst"
-      value: 'docs/{{ .component }}/version-{{ source "devVersion" }}/modules/en/partials/{{ .cliReferencePartial }}'
+      file: "updatecli/values.d/cli-ref-docs-{{ $.component }}.yaml"
+      key: "$.files[{{ $index }}].dst"
+      value: 'docs/{{ $.component }}/version-{{ source "devVersion" }}/modules/en/partials/{{ $partial }}'
+# {{ end }}
 
 actions:
   default:

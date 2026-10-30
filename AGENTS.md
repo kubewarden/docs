@@ -284,6 +284,7 @@ Some partials are copies of files that upstream repositories generate. Do not ed
 | `sbom-scanner` | `sbomscanner/docs/crds/CRD-docs-for-docs-repo.adoc` | `partials/crd-reference.adoc` |
 | `runtime-enforcer` | `runtime-enforcer/docs/crds/CRD-docs-for-docs-repo.adoc` | `partials/crd-reference.adoc` |
 | `runtime-enforcer` | `runtime-enforcer/docs/kubectl-plugin/cli-docs.adoc` | `partials/kubectl-plugin-cli-reference.adoc` |
+| `runtime-enforcer` | `runtime-enforcer/docs/wpgen/cli-docs.adoc` | `partials/wpgen-cli-reference.adoc` |
 | `network-enforcer` | `network-enforcer/docs/crds/CRD-docs-for-docs-repo.adoc` | `partials/crd-reference.adoc` |
 
 The partials land in the current dev version only. An hourly updatecli job (`.github/workflows/updatecli.yml`) watches upstream releases. When a new release appears, the job promotes the dev version and points the values files at the next dev version.

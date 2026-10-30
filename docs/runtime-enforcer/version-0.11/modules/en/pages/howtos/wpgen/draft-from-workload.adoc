@@ -1,0 +1,225 @@
+include::partial$variables.adoc[]
+
+= Draft policies from a workload file
+:revdate: 2026-10-30
+:page-revdate: {revdate}
+:description: Use wpgen workload to draft one WorkloadPolicy for each workload in a manifest file or a Helm chart, and ship the policy with the application.
+:keywords: ["{rte-name}", "kubewarden", "wpgen", "WorkloadPolicy", "Deployment", "Helm", "CI"]
+:doc-persona: ["kubewarden-developer"]
+:doc-type: ["howto"]
+:doc-topic: ["cli", "policy-authoring"]
+
+This page is for a developer who wants to ship a `WorkloadPolicy` with the
+application. The workload does not run in a cluster yet, so the
+xref:explanations/phases.adoc#_learn-phase[learn phase] cannot record it.
+`wpgen workload` reads the workload file, scans the image of each container,
+and writes a draft policy. A CI pipeline can run it on each pull request.
+
+Before you start, xref:howtos/wpgen/index.adoc#_install[install wpgen].
+
+The examples use `docker.io/library/caddy:2.9` and
+`docker.io/library/alpine:3.20`. The output was recorded on {revdate}. A tag
+can move to a new image, and then the counts and the paths change.
+
+[#_draft-the-policy]
+== Draft the policy
+
+. Save the workload file. This example has a `Deployment` with one init
+  container and one container:
++
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caddy
+  namespace: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: caddy
+  template:
+    metadata:
+      labels:
+        app: caddy
+    spec:
+      initContainers:
+      - name: fetch-site
+        image: docker.io/library/alpine:3.20
+        command: ["sh", "-c", "wget -O /site/index.html https://example.com"]
+        volumeMounts:
+        - name: site
+          mountPath: /site
+      containers:
+      - name: caddy
+        image: docker.io/library/caddy:2.9
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: site
+          mountPath: /usr/share/caddy
+      volumes:
+      - name: site
+        emptyDir: {}
+----
+
+. Run `wpgen workload`. The policy goes to standard output. The summary goes
+  to standard error:
++
+[source,console]
+----
+wpgen workload caddy-deploy.yaml --image-src registry > policies.yaml
+Loading image "docker.io/library/caddy:2.9"...
+Loaded image "docker.io/library/caddy:2.9" from source "registry" (linux/amd64)
+Loading image "docker.io/library/alpine:3.20"...
+Loaded image "docker.io/library/alpine:3.20" from source "registry" (linux/amd64)
+
+Deployment caddy (namespace web), policy deploy-caddy
+┌───────────────────┬───────────────────────────────┬─────────────┬───────────────────┬───────────────┐
+│ CONTAINER         │ IMAGE                         │ EXECUTABLES │ SKIPPED LIBRARIES │ SKIPPED OTHER │
+├───────────────────┼───────────────────────────────┼─────────────┼───────────────────┼───────────────┤
+│ caddy             │ docker.io/library/caddy:2.9   │          21 │                10 │             0 │
+│ fetch-site (init) │ docker.io/library/alpine:3.20 │          11 │                10 │             0 │
+└───────────────────┴───────────────────────────────┴─────────────┴───────────────────┴───────────────┘
+Use --include-libraries to keep the skipped shared libraries.
+
+Add this label to the pod template of Deployment caddy:
+  runtimeenforcer.kubewarden.io/policy: deploy-caddy
+----
+
+. Read the policy. It has one entry for each container and init container.
+  The key is the container name:
++
+[source,yaml]
+----
+apiVersion: runtimeenforcer.kubewarden.io/v1alpha1
+kind: WorkloadPolicy
+metadata:
+  name: deploy-caddy
+  namespace: web
+spec:
+  mode: monitor
+  rulesByContainer:
+    caddy:
+      executables:
+        allowed:
+        - /bin/busybox
+        - /etc/ca-certificates/update.d/certhash
+        - /etc/network/if-up.d/dad
+        - /sbin/apk
+        - /sbin/ldconfig
+        - /usr/bin/c_rehash
+        - /usr/bin/caddy
+        - /usr/bin/getconf
+        - /usr/bin/getent
+        - /usr/bin/iconv
+        - /usr/bin/ldd
+        - /usr/bin/scanelf
+        - /usr/bin/ssl_client
+        - /usr/lib/libcap.so.2.70
+        - /usr/lib/libpsx.so.2.70
+        - /usr/sbin/capsh
+        - /usr/sbin/getcap
+        - /usr/sbin/getpcaps
+        - /usr/sbin/setcap
+        - /usr/sbin/update-ca-certificates
+        - /usr/share/udhcpc/default.script
+    fetch-site:
+      executables:
+        allowed:
+        - /bin/busybox
+        - /etc/network/if-up.d/dad
+        - /sbin/apk
+        - /sbin/ldconfig
+        - /usr/bin/getconf
+        - /usr/bin/getent
+        - /usr/bin/iconv
+        - /usr/bin/ldd
+        - /usr/bin/scanelf
+        - /usr/bin/ssl_client
+        - /usr/share/udhcpc/default.script
+----
+
+The policy name is `deploy-caddy`. `wpgen` builds the name from the short
+kind and the workload name, in the same way as the learn phase names a
+`WorkloadPolicyProposal`. If the pod template already has the
+{policy-label-term} label, `wpgen` uses its value instead.
+
+The policy has the namespace of the workload. If the workload has no
+namespace, the policy has no namespace either. Then `kubectl apply -n` puts
+the workload and the policy in the same namespace.
+
+[#_bind-the-workload-to-the-policy]
+== Bind the workload to the policy
+
+`wpgen` does not change the workload file. Add the label that the summary
+shows to the pod template:
+
+[source,yaml]
+----
+  template:
+    metadata:
+      labels:
+        app: caddy
+        runtimeenforcer.kubewarden.io/policy: deploy-caddy
+----
+
+Then apply the policy and the workload. Apply the policy first. By default,
+the {rte-short-name} Helm chart blocks a pod whose label points to a policy
+that does not exist yet.
+
+[source,bash]
+----
+kubectl apply -f policies.yaml
+kubectl apply -f caddy-deploy.yaml
+----
+
+[#_draft-policies-for-a-helm-chart]
+== Draft policies for a Helm chart
+
+`wpgen workload` reads from standard input when the file name is `-`. Pipe
+the output of `helm template` into it:
+
+[source,console]
+----
+helm template my-release ./caddy | wpgen workload - --image-src registry > policies.yaml
+Skipping ServiceAccount "my-release-caddy" (v1): not a workload
+Skipping Service "my-release-caddy" (v1): not a workload
+Skipping Pod "my-release-caddy-test-connection" (v1): runtime-enforcer does not learn policies for bare pods
+Loading image "docker.io/library/caddy:2.9"...
+Loaded image "docker.io/library/caddy:2.9" from source "registry" (linux/amd64)
+
+Deployment my-release-caddy (namespace <none>), policy deploy-my-release-caddy
+┌───────────┬─────────────────────────────┬─────────────┬───────────────────┬───────────────┐
+│ CONTAINER │ IMAGE                       │ EXECUTABLES │ SKIPPED LIBRARIES │ SKIPPED OTHER │
+├───────────┼─────────────────────────────┼─────────────┼───────────────────┼───────────────┤
+│ caddy     │ docker.io/library/caddy:2.9 │          21 │                10 │             0 │
+└───────────┴─────────────────────────────┴─────────────┴───────────────────┴───────────────┘
+Use --include-libraries to keep the skipped shared libraries.
+
+Add this label to the pod template of Deployment my-release-caddy:
+  runtimeenforcer.kubewarden.io/policy: deploy-my-release-caddy
+----
+
+`wpgen` reads these kinds: `Deployment`, `ReplicaSet`, `DaemonSet`,
+`StatefulSet`, `Job`, and `CronJob`. It prints a notice for each other
+document and skips it. It also skips bare pods, because the learn phase does
+not cover them.
+
+The chart does not set a namespace, so the policy has none. `helm install -n`
+and `kubectl apply -n` put the policy and the workload in the same namespace.
+When the chart has more than one workload, the file has more than one
+policy. See xref:howtos/wpgen/index.adoc#_output-options[Output options].
+
+[#_next-steps]
+== Next steps
+
+* The draft allows every program and script of the images. Trim it before
+  you switch to `protect` mode. See
+  xref:howtos/wpgen/index.adoc#_trim-the-policy[Trim the policy].
+* To write the policies as JSON, or to apply them without a file, see
+  xref:howtos/wpgen/index.adoc#_output-options[Output options].
+* After an image update, make sure that the policies still match the images.
+  A CI job can run this check on each pull request. See
+  xref:howtos/wpgen/check-policy.adoc[].
