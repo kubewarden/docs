@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Draft policies from a workload file
-:revdate: 2026-10-30
+:revdate: 2026-11-02
 :page-revdate: {revdate}
 :description: Use wpgen workload to draft one WorkloadPolicy for each workload in a manifest file or a Helm chart, and ship the policy with the application.
 :keywords: ["{rte-name}", "kubewarden", "wpgen", "WorkloadPolicy", "Deployment", "Helm", "CI"]
@@ -14,6 +14,8 @@ application. The workload does not run in a cluster yet, so the
 xref:explanations/phases.adoc#_learn-phase[learn phase] cannot record it.
 `wpgen workload` reads the workload file, scans the image of each container,
 and writes a draft policy. A CI pipeline can run it on each pull request.
+xref:howtos/wpgen/index.adoc#_wpgen-or-the-learn-phase[wpgen or the learn
+phase] compares the two methods.
 
 Before you start, xref:howtos/wpgen/index.adoc#_install[install wpgen].
 

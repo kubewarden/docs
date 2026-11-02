@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Draft a policy from one image
-:revdate: 2026-10-30
+:revdate: 2026-11-02
 :page-revdate: {revdate}
 :description: Use wpgen image to draft a WorkloadPolicy for a third-party container image, so that the workload runs in monitor mode from the first day.
 :keywords: ["{rte-name}", "kubewarden", "wpgen", "WorkloadPolicy", "image"]
@@ -13,6 +13,8 @@ This page is for a platform operator who wants to run a third-party image
 under a `WorkloadPolicy` from the first day. There is no workload file yet,
 or the workload file is not under your control. `wpgen image` scans one image
 and writes a draft policy with one container.
+xref:howtos/wpgen/index.adoc#_wpgen-or-the-learn-phase[wpgen or the learn
+phase] explains when a draft is a better start than the learn phase.
 
 Before you start, xref:howtos/wpgen/index.adoc#_install[install wpgen].
 
