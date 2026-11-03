@@ -1,8 +1,3 @@
-# {{ $GitHubUser := env ""}}
-# {{ $GitHubRepositoryList := env "GITHUB_REPOSITORY" | split "/"}}
-# {{ $GitHubPAT := env "GITHUB_TOKEN"}}
-# {{ $GitHubUsername := env "GITHUB_ACTOR"}}
-
 name: Update Kubewarden admission controller CLI documentation target version
 pipelineid: "{{ .pipelineid }}"
 
@@ -10,13 +5,12 @@ scms:
   default:
     kind: "github"
     spec:
-      user: "{{ default $GitHubUser .scm.user}}"
+      user: "{{ .scm.user}}"
       email: "{{ .scm.email }}"
-      owner: "{{ default $GitHubRepositoryList._0 .scm.owner }}"
-      repository: "{{ default $GitHubRepositoryList._1 .scm.repository}}"
-      token: "{{ default $GitHubPAT .scm.token }}"
-      username: "{{ default $GitHubUsername .scm.username }}"
+      owner: "{{ .scm.owner }}"
+      repository: "{{ .scm.repository}}"
       branch: "{{ .scm.branch }}"
+      submodules: false
       commitusingapi: true
       commitmessage:
         hidecredit: true
@@ -104,7 +98,8 @@ actions:
     kind: "github/pullrequest"
     scmid: "default"
     spec:
-      automerge: false
+      merge:
+        strategy: manual
 # {{ if .pr.title }}
       title: "{{ .pr.title }}"
 # {{ end }}
