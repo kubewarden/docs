@@ -16,3 +16,6 @@
 // Default container image tag used in the documentation version. All the admission
 // controller container images share the container tag.
 :default-container-image-tag: v1.38.2
+
+// Published Helm chart version for this release.
+:chart-version: 6.1.0
