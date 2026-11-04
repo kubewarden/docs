@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {rte-name} phases: learn, monitor, protect
 :description: Learn how to move between the learn, monitor, and protect phases to manage workload process execution
-:revdate: 2026-10-13
+:revdate: 2026-11-02
 :page-revdate: {revdate}
 :page-aliases: phases.adoc
 
@@ -38,6 +38,11 @@ This means:
 
 Operationally, if you want complete proposals, enable learning first and then
 *(re)start* the workloads you want to learn.
+
+If the workload does not run in a cluster yet, `wpgen` can draft a policy from
+its container images. See
+xref:howtos/wpgen/index.adoc#_wpgen-or-the-learn-phase[wpgen or the learn
+phase] for a comparison of the two methods.
 
 [#_how-to-enter-and-leave-the-learn-phase]
 === How to enter and leave the `Learn` phase
