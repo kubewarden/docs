@@ -110,7 +110,7 @@ The report has two tables:
   does not allow. `caddy:2.10` adds `/usr/bin/curl` and `/usr/bin/wcurl`,
   and the two new `libcap` files. For a learned policy, this number is
   usually high. This is not a problem. The policy blocks these executables in
-  `protect` mode, which is the goal.
+  {protect-term} mode, which is the goal.
 
 The last lines go to standard error. They are the verdict. They repeat the
 stale paths, so that you see them in a CI log without the table. The verdict
@@ -181,8 +181,8 @@ wpgen check policies.yaml --workload caddy-deploy.yaml --image-src registry --li
 Read the list with the workload in mind:
 
 * If the workload needs one of these executables, add it to the policy. For
-  example, a start script of the new image can call `curl`. In `monitor`
-  mode, the agent reports such a call as a violation.
+  example, a start script of the new image can call `curl`. In {monitor-term}
+  mode, the agent reports such a call as a {violation-term}.
 * If the workload does not need it, leave it out. The policy blocks it in
   `protect` mode, which is the goal.
 
@@ -295,7 +295,7 @@ image, so the exit code is `0`. The verdict says only what `wpgen` checked.
 When some allowed paths are skipped, or some containers of the policy are
 not in the workload, the verdict counts them.
 
-`wpgen check` also reads a `WorkloadPolicyProposal`. Use `-` as the policy
+`wpgen check` also reads a {workloadpolicyproposal-cr}. Use `-` as the policy
 file to read from standard input, for example from `kubectl get`:
 
 [source,bash]

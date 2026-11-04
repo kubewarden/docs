@@ -9,7 +9,7 @@ include::partial$variables.adoc[]
 :doc-type: ["howto"]
 :doc-topic: ["cli", "policy-authoring"]
 
-This page is for a developer who wants to ship a `WorkloadPolicy` with the
+This page is for a developer who wants to ship a {workloadpolicy-cr} with the
 application. The workload does not run in a cluster yet, so the
 xref:explanations/phases.adoc#_learn-phase[learn phase] cannot record it.
 `wpgen workload` reads the workload file, scans the image of each container,
@@ -145,7 +145,7 @@ spec:
 
 The policy name is `deploy-caddy`. `wpgen` builds the name from the short
 kind and the workload name, in the same way as the learn phase names a
-`WorkloadPolicyProposal`. If the pod template already has the
+{workloadpolicyproposal-cr}. If the pod template already has the
 {policy-label-term} label, `wpgen` uses its value instead.
 
 The policy has the namespace of the workload. If the workload has no
@@ -156,7 +156,7 @@ the workload and the policy in the same namespace.
 == Bind the workload to the policy
 
 `wpgen` does not change the workload file. Add the label that the summary
-shows to the pod template:
+shows to the pod template, so that the workload is {binding-term} to the policy:
 
 [source,yaml]
 ----
@@ -218,7 +218,7 @@ policy. See xref:howtos/wpgen/index.adoc#_output-options[Output options].
 == Next steps
 
 * The draft allows every program and script of the images. Trim it before
-  you switch to `protect` mode. See
+  you switch to {protect-term} mode. See
   xref:howtos/wpgen/index.adoc#_trim-the-policy[Trim the policy].
 * To write the policies as JSON, or to apply them without a file, see
   xref:howtos/wpgen/index.adoc#_output-options[Output options].

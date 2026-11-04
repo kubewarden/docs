@@ -10,7 +10,7 @@ include::partial$variables.adoc[]
 :doc-topic: ["operator-manual", "cli", "policy-authoring"]
 
 This page is for a platform operator who wants to run a third-party image
-under a `WorkloadPolicy` from the first day. There is no workload file yet,
+under a {workloadpolicy-cr} from the first day. There is no workload file yet,
 or the workload file is not under your control. `wpgen image` scans one image
 and writes a draft policy with one container.
 xref:howtos/wpgen/index.adoc#_wpgen-or-the-learn-phase[wpgen or the learn
@@ -131,7 +131,7 @@ Make sure that the container is named "main" in the pod, or use --container-name
 
 * The draft allows every program and script of the image. For a large base
   image, `wpgen` prints a warning. Trim the policy before you switch to
-  `protect` mode. See xref:howtos/wpgen/index.adoc#_large-base-images[Large base images]
+  {protect-term} mode. See xref:howtos/wpgen/index.adoc#_large-base-images[Large base images]
   and xref:howtos/wpgen/index.adoc#_trim-the-policy[Trim the policy].
 * To set `protect` mode, to write the policy as JSON, or to apply it without
   a file, see xref:howtos/wpgen/index.adoc#_output-options[Output options].

@@ -9,7 +9,7 @@ include::partial$variables.adoc[]
 :doc-type: ["howto"]
 :doc-topic: ["operator-manual", "cli", "policy-authoring"]
 
-`wpgen` drafts a `WorkloadPolicy` from the executables found inside container
+`wpgen` drafts a {workloadpolicy-cr} from the executables found inside container
 images. It also compares an existing policy with the images of a workload.
 `wpgen` does not need a cluster. You can run it on a workstation or in a CI
 pipeline.
@@ -106,7 +106,7 @@ Use `wpgen` when:
 
 * The workload is not deployed yet, and you want to ship the policy with the
   application. See xref:howtos/wpgen/draft-from-workload.adoc[].
-* You want a third-party image to run in `monitor` mode from the first day,
+* You want a third-party image to run in {monitor-term} mode from the first day,
   without a period in which it runs with no policy. See
   xref:howtos/wpgen/draft-from-image.adoc[].
 * You do not control the cluster, or learning is disabled in it. See
@@ -215,9 +215,9 @@ policy for a Debian or Ubuntu base image allows several hundred executables.
 Use the output of `wpgen` as a starting point:
 
 . Apply the policy in `monitor` mode. This is the default mode of the output.
-. Look at the violations and at the list of allowed executables.
+. Look at the {violation-term} events and at the list of allowed executables.
 . Remove the executables that the workload does not need.
-. Switch the policy to `protect` mode.
+. Switch the policy to {protect-term} mode.
 
 xref:#_trim-the-policy[Trim the policy] describes these steps in detail.
 
@@ -375,10 +375,10 @@ executables, and the container runs one program, `/usr/bin/caddy`. The other
 {agent-term} reports the executables that the policy does not allow, but it
 does not block them.
 
-. Apply the policy in `monitor` mode, and bind the workload to it with the
-  {policy-label-term} label.
+. Apply the policy in `monitor` mode. Add the {policy-label-term} label to the
+  workload, so that the workload is {binding-term} to the policy.
 . Let the workload run for a period that covers its normal activity.
-. Look at the {violation-term} events. The agent exports them through the
+. Look at the violation events. The agent exports them through the
   {opentelemetry-collector-term}. See
   xref:explanations/phases.adoc#_monitor-phase[Monitor phase] for details.
 . Remove the paths that the workload does not need. The
