@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = ArgoCD Installation
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-03
 :page-revdate: {revdate}
 :sidebar_label: ArgoCD Installation
 :sidebar_position: 35
@@ -42,7 +42,6 @@ ignore:
 You do this by adding the `ignoreDifferences` field in the ArgoCD application:
 
 [subs="+attributes", yaml]
-[subs="+attributes", yaml]
 ----
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -54,10 +53,10 @@ spec:
   source:
     repoURL: https://charts.kubewarden.io
     chart: admission-controller
-    targetRevision: 6.0.0
+    targetRevision: {chart-version}
   destination:
     server: https://kubernetes.default.svc
-    namespace: kubewarden-system
+    namespace: kubewarden
   syncPolicy:
     automated:
       prune: true
@@ -71,19 +70,19 @@ spec:
   - group: ""
     kind: "Secret"
     name: kubewarden-ca
-    namespace: kubewarden-system
+    namespace: kubewarden
     jsonPointers:
       - /data
   - group: ""
     kind: "Secret"
     name: kubewarden-webhook-server-cert
-    namespace: kubewarden-system
+    namespace: kubewarden
     jsonPointers:
       - /data
   - group: ""
     kind: "Secret"
     name: kubewarden-audit-scanner-client-cert
-    namespace: kubewarden-system
+    namespace: kubewarden
     jsonPointers:
       - /data
   - group: "admissionregistration.k8s.io"
