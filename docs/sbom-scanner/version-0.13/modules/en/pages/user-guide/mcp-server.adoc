@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = MCP Server (Experimental)
-:revdate: 2026-09-01
+:revdate: 2026-11-04
 :page-revdate: {revdate}
 :description: Enable and use the experimental {sboms-name} MCP server.
 
@@ -66,7 +66,7 @@ kubectl apply -f mcp-auth-secret.yaml
 
 [source,bash]
 ----
-helm upgrade --install sbomscanner sbomscanner/sbomscanner \
+helm upgrade --install sbomscanner kubewarden/sbomscanner \
   --namespace sbomscanner \
   --set mcp.enabled=true \
   --set mcp.auth.secretName=sbomscanner-mcp-auth
@@ -218,7 +218,7 @@ Liz does not currently support TLS for external MCP connections. The MCP server 
 +
 [source,bash]
 ----
-helm upgrade --install sbomscanner sbomscanner/sbomscanner \
+helm upgrade --install sbomscanner kubewarden/sbomscanner \
   --namespace sbomscanner \
   --set mcp.enabled=true \
   --set mcp.disableTLS=true \
@@ -413,7 +413,7 @@ Enable it with:
 
 [source,bash]
 ----
-helm upgrade sbomscanner sbomscanner/sbomscanner \
+helm upgrade sbomscanner kubewarden/sbomscanner \
   --namespace sbomscanner \
   --set mcp.readOnly=true
 ----
@@ -436,7 +436,7 @@ To disable TLS for development or external TLS termination, use this command:
 
 [source,bash]
 ----
-helm upgrade sbomscanner sbomscanner/sbomscanner \
+helm upgrade sbomscanner kubewarden/sbomscanner \
   --namespace sbomscanner \
   --set mcp.disableTLS=true
 ----

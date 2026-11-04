@@ -95,8 +95,8 @@ xref:quick-start.adoc[Quick Start guide]
 By default, the Audit Scanner implementation is as a
 https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs[Cronjob]
 triggered every 60 minutes. You can adjust this and other audit
-scanner settings by changing the kubewarden-controller chart
-https://github.com/kubewarden/helm-charts/blob/main/charts/kubewarden-controller/values.yaml[values.yaml].
+scanner settings by changing the admission-controller chart
+https://github.com/kubewarden/helm-charts/blob/main/charts/admission-controller/values.yaml[values.yaml].
 
 See xref:explanations/audit-scanner/audit-scanner.adoc[here] more information about the Audit
 Scanner.

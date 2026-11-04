@@ -29,7 +29,7 @@ Removing the {admc-short-name} chart will leave around the user-managed custom
 resources and CRDs. See the xref:/quick-start.adoc[Quickstart docs] for more
 information.
 
-{admc-short-name} Kubewarden uses a pre-delete helm hook job in
+{admc-short-name} uses a pre-delete helm hook job in
 `admission-controller` chart that deletes the controller, webhooks, resources
 that enable PolicyServers to process policies, default PolicyServer and
 recommended policies.

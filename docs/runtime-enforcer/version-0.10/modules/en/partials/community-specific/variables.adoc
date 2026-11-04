@@ -1,3 +1,6 @@
 // Here goes version specific, community-specific shared attributes and content
 
 :runtime-enforcer-helm-chart: https://charts.kubewarden.io
+
+// Upstream release tag that this version documents.
+:release-tag: v0.10.1
