@@ -11,6 +11,7 @@ policies:
     config:
       - updatecli.d/commit-ref-docs.yaml
     values:
+      - values.d/scm.yaml
       - values.d/cli-ref-docs.yaml
   - name: Copy admission controller CRD reference documentation files
     policy: ghcr.io/updatecli/policies/file:0.2.1
@@ -24,11 +25,13 @@ policies:
     config:
       - updatecli.d/commit-ref-docs.yaml
     values:
+      - values.d/scm.yaml
       - values.d/crd-ref-docs-admission-controller.yaml
   - name: Commit SBOMscanner CRD reference documentation
     config:
       - updatecli.d/commit-ref-docs.yaml
     values:
+      - values.d/scm.yaml
       - values.d/crd-ref-docs-sbom-scanner.yaml
   - name: Copy runtime-enforcer CRD reference documentation files
     policy: ghcr.io/updatecli/policies/file:0.2.1
@@ -42,11 +45,13 @@ policies:
     config:
       - updatecli.d/commit-ref-docs.yaml
     values:
+      - values.d/scm.yaml
       - values.d/crd-ref-docs-runtime-enforcer.yaml
   - name: Commit runtime-enforcer kubectl plugin CLI reference documentation
     config:
       - updatecli.d/commit-ref-docs.yaml
     values:
+      - values.d/scm.yaml
       - values.d/cli-ref-docs-runtime-enforcer.yaml
   - name: Copy network-enforcer CRD reference documentation files
     policy: ghcr.io/updatecli/policies/file:0.2.1
@@ -56,4 +61,5 @@ policies:
     config:
       - updatecli.d/commit-ref-docs.yaml
     values:
+      - values.d/scm.yaml
       - values.d/crd-ref-docs-network-enforcer.yaml

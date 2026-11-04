@@ -4,7 +4,6 @@ scms:
   target:
     kind: "github"
     spec:
-      # Priority set to the environment variable
       user: "{{ .scm.user}}"
       owner: "{{ .scm.owner }}"
       repository: "{{ .scm.repository}}"

@@ -1,11 +1,16 @@
 policies:
   # The following pipelines are designed to work from GitHub action workflows.
-  # This means that before running any Updatecli command, we need the two following environment variables set:
+  # Updatecli reads its GitHub credentials from the environment. Set either:
   #
-  #   GITHUB_TOKEN: Set to a personal access token
-  #   GITHUB_ACTOR: Set to the username associated with the GITHUB_TOKEN
+  #   UPDATECLI_GITHUB_TOKEN: a personal access token or an installation token
   #
-  # Instruction to retrieve your PAT is documented on https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
+  # or the GitHub App variables:
+  #
+  #   UPDATECLI_GITHUB_APP_CLIENT_ID
+  #   UPDATECLI_GITHUB_APP_PRIVATE_KEY
+  #   UPDATECLI_GITHUB_APP_INSTALLATION_ID
+  #
+  # See https://www.updatecli.io/docs/plugins/scm/github/#_github_app
 
   # Promote the dev Antora version directory to stable and create the next dev
   # version when a new network-enforcer release is detected.
