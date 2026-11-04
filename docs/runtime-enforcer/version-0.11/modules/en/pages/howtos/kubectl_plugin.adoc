@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = kubectl runtime-enforcer
 :description: Use kubectl runtime-enforcer to manage WorkloadPolicyProposal and WorkloadPolicy custom resources by promoting proposals, applying policies, and switching between
-:revdate: 2026-09-22
+:revdate: 2026-11-04
 :page-revdate: {revdate}
 :page-aliases: kubectl_plugin.adoc
 
@@ -22,12 +22,11 @@ Pre-built binaries for `linux/amd64`, `linux/arm64`, `darwin/amd64`, and
 `darwin/arm64` are published on each
 https://github.com/kubewarden/runtime-enforcer/releases[GitHub Release].
 
-[source,bash]
+[source,bash,subs="+attributes"]
 ----
 # Example: linux/amd64
-VERSION=latest
 curl -Lo kubectl-runtime_enforcer \
-  "https://github.com/kubewarden/runtime-enforcer/releases/download/${VERSION}/kubectl-runtime_enforcer-linux-amd64"
+  "https://github.com/kubewarden/runtime-enforcer/releases/download/{release-tag}/kubectl-runtime_enforcer-linux-amd64"
 chmod +x kubectl-runtime_enforcer
 sudo mv kubectl-runtime_enforcer /usr/local/bin/
 ----
