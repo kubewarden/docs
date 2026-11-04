@@ -580,7 +580,7 @@ policies. It does this for {admc-short-name} and other policy engines.
 [CAUTION]
 ====
 
-The AppVia migration tool is out of control of the Kuberwarden maintainers.
+The AppVia migration tool is out of control of the {admc-short-name} maintainers.
 This means that it's possible it generates out-of-date {admc-short-name} policies. Use
 with caution. We need a pull request for AppVia for which work is ongoing.
 Contact us for more information if you need to.
@@ -591,7 +591,7 @@ The script is available in the {admc-short-name}
 https://github.com/kubewarden/utils/blob/main/scripts/psp-to-kubewarden[utils]
 repository. It downloads the AppVia migration tool into the working directory
 to use. It processes the PSPs defined in the `kubectl` default context. Then it
-prints the Kuberwarden policies definitions on the standard output. Users can
+prints the {admc-short-name} policy definitions on the standard output. Users can
 redirect the content to a file or to `kubectl` directly.
 
 [NOTE]

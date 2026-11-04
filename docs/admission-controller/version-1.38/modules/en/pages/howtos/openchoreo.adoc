@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Using {admc-name} with OpenChoreo
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-09-09
+:revdate: 2026-11-04
 :page-revdate: {revdate}
 :sidebar_label: OpenChoreo
 :sidebar_position: 160
@@ -38,7 +38,7 @@ plane.
 helm repo add kubewarden https://charts.kubewarden.io
 helm repo update kubewarden
 
-helm upgrade --install kubewarden kubewarden/admission-controller \
+helm upgrade --install admission-controller kubewarden/admission-controller \
   --namespace kubewarden --create-namespace \
   --wait
 ----

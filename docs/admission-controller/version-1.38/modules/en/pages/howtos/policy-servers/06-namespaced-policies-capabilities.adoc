@@ -107,7 +107,7 @@ kind: PolicyServer
 metadata:
   name: for-namespaced-policies
 spec:
-  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
+  image: {default-policy-server-image-tag}
   replicas: 1
   namespacedPoliciesCapabilities: []
 ----
@@ -124,7 +124,7 @@ kind: PolicyServer
 metadata:
   name: for-namespaced-policies
 spec:
-  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
+  image: {default-policy-server-image-tag}
   replicas: 1
   namespacedPoliciesCapabilities:
     - "oci/v1/verify"
@@ -140,7 +140,7 @@ kind: PolicyServer
 metadata:
   name: for-namespaced-policies
 spec:
-  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
+  image: {default-policy-server-image-tag}
   replicas: 1
   namespacedPoliciesCapabilities:
     - "*"
@@ -268,7 +268,7 @@ metadata:
   name: for-namespaced-policies
   namespace: kubewarden
 spec:
-  image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
+  image: {default-policy-server-image-tag}
   namespacedPoliciesCapabilities: []
 ----
 
