@@ -14,6 +14,10 @@ images. It also compares an existing policy with the images of a workload.
 `wpgen` does not need a cluster. You can run it on a workstation or in a CI
 pipeline.
 
+The output of `wpgen` is a draft, not a finished policy. You must review it
+and test it in {monitor-term} mode before you switch it to {protect-term} mode. See
+xref:#_the-output-is-a-draft[The output is a draft].
+
 `wpgen` has three commands:
 
 [cols="1,2,2"]
@@ -106,7 +110,7 @@ Use `wpgen` when:
 
 * The workload is not deployed yet, and you want to ship the policy with the
   application. See xref:howtos/wpgen/draft-from-workload.adoc[].
-* You want a third-party image to run in {monitor-term} mode from the first day,
+* You want a third-party image to run in `monitor` mode from the first day,
   without a period in which it runs with no policy. See
   xref:howtos/wpgen/draft-from-image.adoc[].
 * You do not control the cluster, or learning is disabled in it. See
@@ -208,16 +212,27 @@ wpgen --help
 [#_the-output-is-a-draft]
 == The output is a draft
 
+[WARNING]
+====
+A draft is not a safe policy. Do not apply a draft in `protect` mode.
+
+The draft allows every executable of the image. The workload needs only a few
+of them, so the draft blocks almost nothing. The draft also misses the executables that
+are not in the image: files on volumes, files that the workload creates at
+run time, and executables from a foreign root. In `protect` mode, the agent
+blocks these executables, and the workload can fail.
+====
+
 A container image often contains many executables that the workload never
 runs. A policy that allows all of them gives little protection. For example, a
 policy for a Debian or Ubuntu base image allows several hundred executables.
 
-Use the output of `wpgen` as a starting point:
+The policy is correct only after you trim it and test it:
 
 . Apply the policy in `monitor` mode. This is the default mode of the output.
 . Look at the {violation-term} events and at the list of allowed executables.
 . Remove the executables that the workload does not need.
-. Switch the policy to {protect-term} mode.
+. Switch the policy to `protect` mode.
 
 xref:#_trim-the-policy[Trim the policy] describes these steps in detail.
 
@@ -412,7 +427,8 @@ See xref:howtos/kubectl_plugin.adoc[] for the other commands of the plugin.
 Messages go to standard error. These flags change the output:
 
 * `--mode protect` sets `spec.mode` to `protect`. Use it only for a policy
-  that you have already trimmed and tested in `monitor` mode.
+  that you trimmed and tested in `monitor` mode. A draft that you did not
+  test must not run in `protect` mode.
 * `-o json` writes the policy as JSON instead of YAML. `kubectl apply -f`
   accepts both formats.
 

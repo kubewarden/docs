@@ -143,6 +143,11 @@ spec:
         - /usr/share/udhcpc/default.script
 ----
 
+WARNING: This policy is a draft. It allows every executable of the two
+images, and it misses the executables that are not in the images. Keep it in
+{monitor-term} mode until you trim it and test it. See
+xref:howtos/wpgen/index.adoc#_the-output-is-a-draft[The output is a draft].
+
 The policy name is `deploy-caddy`. `wpgen` builds the name from the short
 kind and the workload name, in the same way as the learn phase names a
 {workloadpolicyproposal-cr}. If the pod template already has the

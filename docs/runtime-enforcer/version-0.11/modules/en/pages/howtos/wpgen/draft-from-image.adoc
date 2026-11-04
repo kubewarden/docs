@@ -91,6 +91,11 @@ spec:
 . Apply the policy. Then add the {policy-label-term} label with the value
   `caddy` to the pod template of the workload.
 
+WARNING: This policy is a draft. It allows every executable of the image, and
+it misses the executables that are not in the image. Keep it in {monitor-term} mode
+until you trim it and test it. See
+xref:howtos/wpgen/index.adoc#_the-output-is-a-draft[The output is a draft].
+
 The three flags are optional:
 
 * Without `--container-name`, the container is `main`. The summary then
