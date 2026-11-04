@@ -167,7 +167,7 @@ fixtures; the counter is monotonically increasing and never goes +
 negative, so the sign bit is never set in practice. + |  | 
 | *`lastObservedTimestamp`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.35/#time-v1-meta[$$Time$$]__ | lastObservedTimestamp is when the violation was last observed. + |  | 
 | *`occurrences`* __integer__ | occurrences is the number of times this violation (identified by +
-pod, container, executable and action) has been observed since the +
+pod, container, executable, foreign-root flag and action) has been observed since the +
 record was first created. It is a per-record counter, distinct from +
 the policy-level violationCount aggregate: it is only incremented +
 when a scraped event matches this exact record, so consumers can +
@@ -183,6 +183,9 @@ the last occurrence). + |  | Optional +
 | *`podName`* __string__ | podName is the name of the pod where the violation occurred. + |  | 
 | *`containerName`* __string__ | containerName is the container where the unauthorized executable ran. + |  | 
 | *`executablePath`* __string__ | executablePath is the path of the unauthorized executable. + |  | 
+| *`foreignRoot`* __boolean__ | foreignRoot identifies an execution across a mount-namespace boundary. +
+Allow-listing the executable path does not resolve this violation. + |  | Optional +
+
 | *`nodeName`* __string__ | nodeName is the node where the violation occurred. + |  | 
 | *`action`* __string__ | action is the enforcement action taken (monitor or protect). + |  | 
 | *`workloadName`* __string__ | workloadName is the name of the workload that owns the pod, taken +
@@ -354,6 +357,14 @@ WorkloadPolicyProposalSpec defines the desired state of WorkloadPolicyProposal.
 |===
 | Field | Description | Default | Validation
 | *`executables`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyexecutables[$$WorkloadPolicyExecutables$$]__ | executables defines a security policy for executables. + |  | Optional +
+
+| *`options`* __object (keys:string, values:string)__ | options is a free-form map of behavior flags for this container. Each key +
+selects one behavior. The value is a string, like an environment variable. +
+A value of "1" or "true" turns the behavior on. Any other value, or an +
+absent key, leaves the behavior off. The enforcer ignores keys that it does +
+not recognize. It logs a warning for each one. The set of recognized keys +
+depends on the enforcer version. See the runtime-enforcer documentation for +
+the keys that your version supports. + |  | Optional +
 
 |===
 
