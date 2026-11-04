@@ -34,3 +34,12 @@
 :docs-repo-name: kubewarden/docs
 :docs-repo-url: https://github.com/{docs-repo-name}
 :docs-team-url: https://github.com/orgs/kubewarden/teams/kubewarden-documentation
+
+// Deployment values shared by all components: the Helm chart repository
+// and the OCI registry for container images and charts. Component
+// attributes build on these, for example `<key>-chart-location` in
+// <key>-variables.adoc.
+:helm-repo-url: https://charts.kubewarden.io
+:helm-repo-name: kubewarden
+:oci-registry: ghcr.io
+:oci-chart-repo: {oci-registry}/kubewarden/charts
