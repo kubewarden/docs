@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Verifying {admc-name}
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-04
 :page-revdate: {revdate}
 :description: Verify different artifacts produced by the {admc-name} team to ensure a secure supply chain through use of SBOMs and provenance files.
 :doc-persona: ["kubewarden-operator", "kubewarden-policy-developer", "kubewarden-integrator"]
@@ -255,9 +255,8 @@ https://github.com/cvila84/helm-image[helm-image], or with the following script:
 [subs="+attributes",bash]
 ----
 #!/usr/bin/env bash
-helm pull --untar kubewarden/kubewarden-controller && \
-helm pull --untar kubewarden/kubewarden-defaults && \
-{ helm template ./kubewarden-controller; helm template ./kubewarden-defaults } \
+helm pull --untar kubewarden/admission-controller && \
+helm template ./admission-controller \
     | yq '..|.image? | select(.)' \
     | sort -u | sed 's/"//g'
 ----

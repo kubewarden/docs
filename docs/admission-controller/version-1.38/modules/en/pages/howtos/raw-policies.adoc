@@ -137,7 +137,7 @@ spec:
     spec:
       containers:
         - name: policy-server
-          image: ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
+          image: {default-policy-server-image-tag}
           ports:
             - containerPort: 3000
           volumeMounts:
