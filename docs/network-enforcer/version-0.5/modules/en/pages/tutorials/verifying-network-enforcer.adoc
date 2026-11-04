@@ -1,0 +1,268 @@
+include::partial$variables.adoc[]
+
+= Verifying {ne-name}
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:description: Verify the signatures, the SBOM, and the provenance of the {ne-name} container image and Helm chart.
+:doc-persona: kubewarden-operator
+:doc-topic: security
+:doc-type: tutorial
+:keywords: {ne-name}, kubewarden, kubernetes, security, verification, cosign, sbom, provenance
+
+The {ne-name} project signs what it publishes, so that you can check that an
+artifact is the one the project built. For each release, the project
+publishes:
+
+* A signed container image.
+* A signed Software Bill of Materials (SBOM) and a signed provenance
+  attestation for each architecture of the image.
+* A signed Helm chart.
+
+The signatures use https://docs.sigstore.dev[Sigstore] in keyless mode. The
+signing certificate names the GitHub Actions workflow that built the
+artifact. Each `cosign` command below passes two values:
+
+* `--certificate-oidc-issuer`: always
+  `\https://token.actions.githubusercontent.com`.
+* `--certificate-identity-regexp`: the workflow file that built the artifact.
+
+{ne-short-name} builds, signs and attests its image with one shared
+reusable workflow that lives in the `kubewarden/github-actions` repository.
+The signer identity of the image and of the SBOM and provenance files is:
+
+[source,subs="+attributes"]
+----
+https://github.com/kubewarden/github-actions/.github/workflows/container-release.yml@<ref>
+----
+
+The `<ref>` is the commit of the reusable workflow, not the release tag of
+{ne-short-name}. For that reason the commands below match the identity
+with `--certificate-identity-regexp`, anchored to the full path of the
+workflow file.
+
+That identity names the builder, not the release. The same builder signs the
+artifacts of every Kubewarden component. So each command also pins the caller
+repository and the release tag, with `--certificate-github-workflow-repository`
+and `--certificate-github-workflow-ref`. A signed file from another repository or
+another release does not pass. The flags do not bind the component. Every
+component of one release shares these certificate values, so a blob and its
+bundle from one component verify under another component's filename. To check
+which image a file describes, read the `subject` field inside the file.
+
+[IMPORTANT]
+====
+Keep the full path of the workflow file in the pattern, as the commands below
+do. A pattern such as `\https://github.com/kubewarden/*` accepts an artifact
+from any workflow in any repository of the organization. The anchored pattern
+accepts only an artifact that `container-release.yml` built.
+====
+
+The examples use the release `{release-tag}` and the chart version
+`{chart-version}`. Replace them with the versions that you verify.
+
+[#_container_images]
+== Container images
+
+{ne-short-name} publishes one image,
+`ghcr.io/kubewarden/network-enforcer/controller`. The shared workflow signs
+each single-architecture image and the multi-architecture index. To verify
+it, run:
+
+[source,console,subs="+attributes"]
+----
+cosign verify \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --certificate-identity-regexp='^https://github\.com/kubewarden/github-actions/\.github/workflows/container-release\.yml@' \
+  --certificate-github-workflow-repository=kubewarden/network-enforcer \
+  --certificate-github-workflow-ref='refs/tags/{release-tag}' \
+  ghcr.io/kubewarden/network-enforcer/controller:{release-tag}
+
+Verification for ghcr.io/kubewarden/network-enforcer/controller:{release-tag} --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+
+<snipped json>
+----
+
+[#_build_provenance]
+== Build provenance (SLSA Build L3)
+
+The shared workflow runs `actions/attest` on the multi-architecture index of
+the image. GitHub writes the provenance from the OIDC token of the workflow
+job and signs it. No build step can change it. This attestation is what gives
+the image SLSA Build L3.
+
+GitHub stores the attestation in the {ne-short-name} repository and next to
+the image in the registry. Verify it with the GitHub CLI:
+
+[source,console,subs="+attributes"]
+----
+gh attestation verify oci://ghcr.io/kubewarden/network-enforcer/controller:{release-tag} \
+  --repo kubewarden/network-enforcer \
+  --signer-workflow kubewarden/github-actions/.github/workflows/container-release.yml
+
+Loaded digest sha256:... for oci://ghcr.io/kubewarden/network-enforcer/controller:{release-tag}
+Loaded 1 attestation from GitHub API
+✓ Verification succeeded!
+----
+
+`--repo` names the repository that stores the attestation. `--signer-workflow`
+names the workflow that signed it. The check fails for an attestation signed by
+any other workflow.
+
+[#_sbom_and_provenance]
+== SBOM and provenance attestations
+
+For each architecture, the shared workflow extracts an SBOM in SPDX format
+and a provenance attestation in SLSA format. It signs each file and the
+release job attaches the files to the GitHub release. The names follow this
+pattern:
+
+* `NetworkEnforcer-controller-attestation-<arch>-provenance.intoto.jsonl`
+* `NetworkEnforcer-controller-attestation-<arch>-sbom.json`
+
+These files come from the container build. They carry the layer and build-arg
+detail that `actions/attest` does not. The `actions/attest` attestation above
+is the one that carries the SLSA level.
+
+Each file has a Sigstore bundle with the same name and the suffix
+`.bundle.sigstore`. Download the file and its bundle from the
+https://github.com/kubewarden/network-enforcer/releases[release page], then
+verify the provenance:
+
+[source,console,subs="+attributes"]
+----
+cosign verify-blob \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --certificate-identity-regexp='^https://github\.com/kubewarden/github-actions/\.github/workflows/container-release\.yml@' \
+  --certificate-github-workflow-repository=kubewarden/network-enforcer \
+  --certificate-github-workflow-ref='refs/tags/{release-tag}' \
+  --bundle NetworkEnforcer-controller-attestation-amd64-provenance.intoto.jsonl.bundle.sigstore \
+  NetworkEnforcer-controller-attestation-amd64-provenance.intoto.jsonl
+
+Verified OK
+----
+
+And the SBOM:
+
+[source,console,subs="+attributes"]
+----
+cosign verify-blob \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --certificate-identity-regexp='^https://github\.com/kubewarden/github-actions/\.github/workflows/container-release\.yml@' \
+  --certificate-github-workflow-repository=kubewarden/network-enforcer \
+  --certificate-github-workflow-ref='refs/tags/{release-tag}' \
+  --bundle NetworkEnforcer-controller-attestation-amd64-sbom.json.bundle.sigstore \
+  NetworkEnforcer-controller-attestation-amd64-sbom.json
+
+Verified OK
+----
+
+After the check, you can read the files. The SBOM lists the packages in the
+image. The provenance names the source commit, the builder, and the build
+parameters.
+
+The same attestations are also attached to the image in the registry, in the
+format that Docker uses. The signed copies are the release assets. To read
+the registry copy, list the attestation manifest with
+https://github.com/google/go-containerregistry/tree/main/cmd/crane[`crane`]:
+
+[source,console,subs="+attributes"]
+----
+crane manifest ghcr.io/kubewarden/network-enforcer/controller:{release-tag} \
+  | jq '.manifests[] | select(.annotations["vnd.docker.reference.type"]=="attestation-manifest")'
+----
+
+Then fetch the manifest by its digest and read each layer with `crane blob`.
+
+[#_helm_chart]
+== Helm chart
+
+The {ne-short-name} chart is in the Helm repository at
+https://charts.kubewarden.io and, as an OCI artifact, at
+`ghcr.io/kubewarden/charts/network-enforcer`. The OCI copy is signed. The
+`kubewarden/helm-charts` repository builds, signs and attests the chart with
+its own `chart-release.yml` reusable workflow. The workflow packages the
+chart from the commit that the signature and the attestation name, so no
+step outside the workflow can change it.
+
+The chart carries two cosign signature formats. Run the following two
+commands to verify them:
+
+[source,console,subs="+attributes"]
+----
+cosign verify --new-bundle-format=false \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --certificate-identity-regexp='^https://github\.com/kubewarden/helm-charts/\.github/workflows/chart-release\.yml@' \
+  --certificate-github-workflow-repository=kubewarden/helm-charts \
+  --certificate-github-workflow-ref='refs/heads/main' \
+  ghcr.io/kubewarden/charts/network-enforcer:{chart-version}
+
+Verification for ghcr.io/kubewarden/charts/network-enforcer:{chart-version} --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The code-signing certificate was verified using trusted certificate authority certificates
+
+<snipped json>
+----
+
+[source,console,subs="+attributes"]
+----
+cosign verify-attestation --new-bundle-format=true \
+  --type https://sigstore.dev/cosign/sign/v1 \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --certificate-identity-regexp='^https://github\.com/kubewarden/helm-charts/\.github/workflows/chart-release\.yml@' \
+  ghcr.io/kubewarden/charts/network-enforcer:{chart-version}
+----
+
+The workflow also runs `actions/attest` on the chart. That attestation gives
+the chart SLSA Build L3. GitHub stores it in the `kubewarden/helm-charts`
+repository. The GitHub CLI verifies it:
+
+[source,console,subs="+attributes"]
+----
+gh attestation verify oci://ghcr.io/kubewarden/charts/network-enforcer:{chart-version} \
+  --repo kubewarden/helm-charts \
+  --signer-workflow kubewarden/helm-charts/.github/workflows/chart-release.yml
+----
+
+The workflow also attests the packaged `.tgz` file that the GitHub release
+carries. Download the file from the
+https://github.com/kubewarden/helm-charts/releases[release page], then verify
+it:
+
+[source,console,subs="+attributes"]
+----
+gh attestation verify network-enforcer-{chart-version}.tgz \
+  --repo kubewarden/helm-charts \
+  --signer-workflow kubewarden/helm-charts/.github/workflows/chart-release.yml
+----
+
+To list every image that the chart deploys, render it and extract the image
+fields:
+
+[source,bash,subs="+attributes"]
+----
+helm template network-enforcer oci://ghcr.io/kubewarden/charts/network-enforcer \
+  --version {chart-version} \
+  | yq '..|.image? | select(.)' \
+  | sort -u
+----
+
+Verify the {ne-short-name} image in that list as the
+<<_container_images,container images>> section shows.
+
+[#_third_party_images]
+== Third-party images
+
+The chart also deploys images that the {ne-short-name} project does not build
+and does not sign:
+
+* `otel/opentelemetry-collector-contrib`, when `telemetry.collectorStrategy`
+  is `default`.
+* `fluent/fluent-bit`, when `controller.provider.name` is `istio`.
+
+Verify them with the method that their own projects document.
