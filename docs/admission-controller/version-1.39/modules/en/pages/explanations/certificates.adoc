@@ -1,9 +1,9 @@
 include::partial$variables.adoc[]
 = Certificate rotation
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-11-03
+:revdate: 2026-11-05
 :page-revdate: {revdate}
-:description: Learn which certificates the {admc-name} uses, how the controller creates and rotates them, and how to recover from certificate problems.
+:description: Learn which certificates the {admc-name} uses, how the controller creates and rotates them, and how the components load a new certificate.
 :doc-persona: ["kubewarden-operator"]
 :doc-topic: ["explanations", "certificates"]
 :doc-type: ["explanation"]
@@ -148,8 +148,8 @@ A pass does these steps in this order:
 . If the `kubewarden-ca` secret is missing, the controller creates a new root
 CA.
 . If the root CA expires in less than 60 days, the controller rotates the
-root CA. Refer to
-xref:#_root_ca_rotation[Rotation of the root CA].
+root CA. It writes a new root CA to `ca.crt` and `ca.key`, and it moves the
+previous root CA to `old-ca.crt`.
 . If `old-ca.crt` is expired, the controller removes it from `kubewarden-ca`.
 . The controller writes the CA bundle into each webhook configuration with the
 label `app.kubernetes.io/part-of: kubewarden`, if the CA bundle is not
@@ -172,32 +172,17 @@ server.
 Thus a certificate that expired while the cluster was stopped gets a
 replacement at the next start of the controller.
 
-The controller writes the CA bundles before it signs a certificate. A server
-uses a new certificate only after the kubelet copies it into the pod, about
-one minute later. In this time, the API server reads the new CA bundle. Thus
-no server uses a certificate before the API server trusts the root CA that
-signed it.
+After a rotation of the root CA, each CA bundle contains both root CAs. In the
+same pass, the controller signs all the certificates again with the new root
+CA. While some components still use the previous certificates, the API server
+accepts both. At the first pass after the previous root CA expires, up to 60
+days later, the controller removes `old-ca.crt`. Then it writes the CA bundle
+with the new root CA only.
 
-[#_root_ca_rotation]
-== Rotation of the root CA
-
-The controller rotates the root CA 60 days before it expires. The rotation
-occurs in these steps:
-
-. The controller creates a new root CA. It writes the new root CA to `ca.crt`
-and `ca.key`. It moves the previous root CA to `old-ca.crt`.
-. In the same pass, the controller writes the new CA bundle into each webhook
-configuration. The new CA bundle contains both root CAs.
-. In the same pass, the controller signs new server certificates and a new
-client certificate with the new root CA.
-. The components load the new certificates, about one minute later. While
-some components still use the previous certificates, the API server accepts
-both. The reason is that each CA bundle contains both root CAs.
-. At the first pass after the previous root CA expires, up to 60 days later,
-the controller removes `old-ca.crt`. Then it writes the CA bundle with the new
-root CA only.
-
-The order of the steps prevents downtime for the admission requests. No
+The order of the steps prevents downtime for the admission requests. The
+controller writes the CA bundles before it signs a certificate. A server uses
+a new certificate only after the kubelet copies it into the pod, about one
+minute later. In this time, the API server reads the new CA bundle. Thus no
 server uses a certificate before its webhook configuration trusts the root CA
 that signed it.
 
@@ -233,36 +218,16 @@ current certificates.
 new CA bundle has an effect a short time after the change.
 |===
 
-[#_upgrade]
-== Upgrade from an earlier version
 
-Before v1.39, the Helm chart contained the three secrets of the controller and
-the two webhook configurations of the controller. The chart of v1.39 does not
-contain them. Without protection, Helm deletes these objects during the
-upgrade, and Argo CD prunes them.
+[#_history]
+== History
 
-The chart has a pre-upgrade hook. The hook is a `Job` that runs the
-controller binary with `--mode=pre-upgrade` before Helm changes the release.
-It adds these annotations to the five objects:
-
-* `helm.sh/resource-policy: keep`. Helm does not delete an object with this
-annotation.
-* `Prune=false` in `argocd.argoproj.io/sync-options`. Argo CD does not prune
-an object with this option.
-
-After the upgrade, the controller uses the same root CA and the same
-certificates. The trust of the API server does not change.
-
-[CAUTION]
-====
-Do not use `helm upgrade --no-hooks` for an upgrade from a version before
-v1.39. This option skips the pre-upgrade hook. Then Helm deletes the secrets
-and the webhook configurations of the controller. The controller creates a
-new root CA, and the policies with `failurePolicy: Fail` reject requests for
-about one minute. The webhook configurations of the controller come back only
-at the next start of a controller pod. Refer to
-xref:#_recovery_deleted_webhook_configuration[A deleted webhook configuration of the controller].
-====
+Before v1.39, the Helm chart rendered the three secrets of the controller and
+the two webhook configurations of the controller. Since v1.39, the init
+container of the controller creates them. The chart has a pre-upgrade hook
+that protects these objects during the upgrade to v1.39. For the upgrade steps
+and the risk of `helm upgrade --no-hooks`, refer to
+xref:reference/upgrade-path.adoc#_v1_38_to_v1_39[v1.38 to v1.39].
 
 [#_uninstall]
 == Uninstall
@@ -276,111 +241,6 @@ installation creates a new root CA.
 Argo CD before version 3.3 does not run the pre-delete hook. For the objects
 that you must then delete, refer to
 xref:howtos/argocd-installation.adoc#_uninstall_argo_cd[Uninstall with Argo CD].
-
-[#_recovery]
-== Recovery
-
-The commands in this section use the namespace `kubewarden` and the release
-name `admission-controller`. If your installation uses other names, change
-the commands.
-
-If the controller has more than one replica, read the logs of the pod that
-holds the leader `Lease`. This command shows the name of this pod, before the
-`_` character:
-
-[source,console]
-----
-kubectl -n kubewarden get lease a4ddbf36.kubewarden.io -o jsonpath='{.spec.holderIdentity}'
-----
-
-If the controller has more than one replica, replace
-`deployment/admission-controller` in the commands with `pod/<name>`. `<name>`
-is the name of this pod.
-
-[#_recovery_expired_certificates]
-=== Expired certificates
-
-If certificates expired, the API server cannot call the webhook servers. Then
-each webhook with `failurePolicy: Fail` rejects the requests that it matches.
-This can occur after the cluster was stopped for a long time.
-
-You do not have to do a manual step. The first pass after the start of the
-controller rotates the expired certificates. If the root CA is also expired,
-the pass rotates the root CA first. The interruption includes the leader
-election, the first pass, and about one minute until the kubelet copies the
-new certificates.
-
-To make sure that the controller rotated the certificates, read its logs:
-
-[source,console]
-----
-kubectl -n kubewarden logs deployment/admission-controller | grep -E "rotated successfully|Injected the CA bundle"
-----
-
-The controller logs these messages:
-
-* `Certificate rotated successfully`, with the DNS name of the server, for
-each server certificate.
-* `Audit scanner client certificate rotated successfully`.
-* `CA root certificate rotated successfully`, if the root CA was expired.
-* `Injected the CA bundle`, with the name of the webhook configuration, for
-each CA bundle that the controller changed.
-
-[#_recovery_damaged_root_ca]
-=== A damaged or untrusted root CA
-
-If `ca.crt` or `ca.key` of `kubewarden-ca` is missing or empty, the controller
-cannot repair the secret. Each pass fails, and the controller tries again. A
-new controller pod does not start, because its init container fails. The logs
-show the message `failed to extract CA root from secret` or
-`failed to extract the CA root from secret`.
-
-If `ca.crt` and `ca.key` contain data that is not a valid root CA, the
-controller replaces the root CA at the next pass. If the previous `ca.crt` is
-a valid certificate, the controller keeps it in `old-ca.crt` until it expires.
-To remove it, delete the secret.
-
-Use this procedure when the `kubewarden-ca` secret is damaged, or when you do
-not trust the root CA, for example after a leak of `ca.key`.
-
-. Delete the secret:
-+
-[source,console]
-----
-kubectl -n kubewarden delete secret kubewarden-ca
-----
-. Make sure that the controller rotated the certificates:
-+
-[source,console]
-----
-kubectl -n kubewarden logs deployment/admission-controller | grep -E "Created the secret|rotated successfully|Injected the CA bundle"
-----
-
-The controller creates a new root CA. It writes the new CA bundle into each
-webhook configuration. Then it signs all the server certificates and the
-client certificate of the audit scanner again.
-
-The previous root CA is not available, so the CA bundles contain only the new
-root CA. Until the servers load their new certificates, usually within about
-one minute, the policies with `failurePolicy: Fail` reject requests. In this
-time, you also cannot create or change policies and `PolicyServer` resources.
-
-[#_recovery_deleted_webhook_configuration]
-=== A deleted webhook configuration of the controller
-
-The controller does not create its webhook configurations again while it
-runs. Only the init container creates them, when a controller pod starts.
-Until then, the API server does not check and change the {admc-short-name}
-resources.
-
-If `kubewarden-controller-validating-webhook-configuration` or
-`kubewarden-controller-mutating-webhook-configuration` is missing, restart the
-controller:
-
-[source,console]
-----
-kubectl -n kubewarden rollout restart deployment admission-controller
-----
 
 [#_limits]
 == Limits

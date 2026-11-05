@@ -89,6 +89,7 @@ include::partial${build-type}-specific/nav-migrations.adoc[tag=nav]
 ** xref:howtos/policies.adoc[]
 ** xref:howtos/policies-eval-resources-in-controller-namespace.adoc[]
 ** xref:howtos/emergency-disable.adoc[]
+** xref:howtos/certificate-recovery.adoc[]
 ** Configuring Policy Servers
 *** xref:howtos/policy-servers/01-custom-cas.adoc[Using custom CAs]
 *** xref:howtos/policy-servers/02-private-registry.adoc[]
