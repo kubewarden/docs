@@ -41,7 +41,7 @@ This is an [Antora](https://antora.org) multi-component documentation site writt
 |---|---|---|
 | `kubewarden` | `docs/kw/version-*` | Site landing / umbrella component |
 | `admission-controller` | `docs/admission-controller/version-*` | Main product docs, versioned `version-X.Y` |
-| `sbom-scanner` | `docs/sbom-scanner/v*` | SBOM scanner docs, versioned `version-X.Y` |
+| `sbom-scanner` | `docs/sbom-scanner/version-*` | SBOM scanner docs, versioned `version-X.Y` |
 | `runtime-enforcer` | `docs/runtime-enforcer/version-*` | Runtime enforcer docs, versioned `version-X.Y` |
 | `network-enforcer` | `docs/network-enforcer/version-*` | Network enforcer docs, versioned `version-X.Y` |
 | `shared` | `shared/` | Shared partials and variables; no pages |
@@ -51,16 +51,6 @@ This is an [Antora](https://antora.org) multi-component documentation site writt
 - `remote-community-playbook.yml` — fetches from GitHub `main` branch; used by CI and Netlify.
 
 **`docs-common/`** is a git submodule (the `rancher/product-docs-common` repository) providing shared Antora extensions and `global-attributes.yml` (SUSE product names used across all product docs repos).
-
-Each component version directory contains:
-```
-antora.yml
-modules/en/
-  nav.adoc
-  pages/          # .adoc content files
-  partials/       # included fragments, especially variables.adoc
-  images/
-```
 
 ## Key conventions
 
@@ -333,12 +323,6 @@ Run locally with:
 ```bash
 typos .
 ```
-
-### CI checks
-
-- **Spell check**: `typos` via `crate-ci/typos` GitHub Action
-- **Shell scripts**: `shellcheck scripts/*.sh`
-- **Build validation**: `make community-local` on every PR
 
 ### ASD-STE100
 
