@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Recover from certificate problems
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-11-05
+:revdate: 2026-11-06
 :page-revdate: {revdate}
 :description: Recover the {admc-name} from expired certificates, a damaged root CA, or a deleted webhook configuration of the controller.
 :keywords: ["{admc-name}", "kubewarden", "certificate", "root CA", "recovery"]
@@ -62,6 +62,10 @@ each server certificate.
 * `Injected the CA bundle`, with the name of the webhook configuration, for
 each CA bundle that the controller changed.
 
+A pass that changes nothing writes none of these messages. The init container
+writes its own messages, for example `Created the secret`, in the container
+`init`. To read them, add `-c init` to `kubectl logs`.
+
 [#_damaged_root_ca]
 == A damaged or untrusted root CA
 
@@ -74,7 +78,8 @@ show the message `failed to extract CA root from secret` or
 If `ca.crt` and `ca.key` contain data that is not a valid root CA, the
 controller replaces the root CA at the next pass. If the previous `ca.crt` is
 a valid certificate, the controller keeps it in `old-ca.crt` until it expires.
-To remove it, delete the secret.
+To remove it, delete the secret. If the previous `ca.crt` is not a valid
+certificate, the controller removes it in the same pass.
 
 Use this procedure when the `kubewarden-ca` secret is damaged, or when you do
 not trust the root CA, for example after a leak of `ca.key`.

@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Upgrade path
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-11-05
+:revdate: 2026-11-06
 :page-revdate: {revdate}
 :description: Upgrade your {admc-name} stack using supported versioning strategies and compatibility rules among its components.
 :doc-persona: ["kubewarden-operator"]
@@ -116,10 +116,12 @@ you must review before you upgrade to a specific version.
 ====
 Do not use `helm upgrade --no-hooks` for the upgrade to v1.39. This option
 skips the pre-upgrade hook. Then Helm deletes the secrets and the webhook
-configurations of the controller. The controller creates a new root CA, and
-the policies with `failurePolicy: Fail` reject requests for about one minute.
-The webhook configurations of the controller come back only at the next start
-of a controller pod. Refer to
+configurations of the controller. The upgrade starts a new controller pod, and
+its init container creates them again with a new root CA. For about 15
+seconds, you cannot create or change policies and `PolicyServer` resources.
+The policies with `failurePolicy: Fail` reject requests for about one minute.
+If a webhook configuration of the controller is still missing after the
+upgrade, refer to
 xref:howtos/certificate-recovery.adoc#_deleted_webhook_configuration[A deleted webhook configuration of the controller].
 ====
 

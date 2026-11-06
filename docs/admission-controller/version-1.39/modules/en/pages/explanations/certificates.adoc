@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Certificate rotation
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-11-05
+:revdate: 2026-11-06
 :page-revdate: {revdate}
 :description: Learn which certificates the {admc-name} uses, how the controller creates and rotates them, and how the components load a new certificate.
 :doc-persona: ["kubewarden-operator"]
@@ -84,9 +84,10 @@ them to the version of the controller.
 the pod. After 5 minutes, it stops with an error, and the kubelet starts it
 again.
 
-The kubelet copies a secret into a pod about one minute after the creation of
-the secret. For this reason, the first controller pod of a new installation
-takes about one minute more to start.
+On a new installation, the init container creates the secrets before the main
+container starts. It finds the certificate files after a few seconds. The
+kubelet needs about one minute to copy a change of a secret into a pod that
+already mounts it.
 
 After the installation, the controller rotates all these certificates. Only
 the controller instance that holds the leader `Lease` in the namespace of the
