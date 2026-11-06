@@ -6,42 +6,27 @@ include::partial$variables.adoc[]
 :page-revdate: {revdate}
 :sidebar_label: ArgoCD Installation
 :sidebar_position: 35
-:description: Configure your ArgoCD application to manage Kubernetes resources effectively by setting specific configuration options for certificate creation and renewal securely.
+:description: Install {admc-name} with an Argo CD application, upgrade from an earlier version, and remove the objects that stay after an uninstall.
 :keywords: ["{admc-name}", gitops, argocd]
 :doc-persona: [kubewarden-operator]
 :doc-type: [howto]
 :doc-topic: [argocd-installation]
 
-If you're using ArgoCD to manage your Kubernetes resources, you may want to
-install {admc-name} using ArgoCD. This is possible, but there are certain
-considerations. Since {admc-short-name} v1.17.0, the cert-manager dependency
-is removed. There is a new certificate reconciler that automatically renews the
-certificates. This means that the {admc-short-name} controller takes care of
-creating and renewing the certificates for you. This includes both the root CA
-and all webhook certificates.
+You can install {admc-name} with Argo CD. Argo CD renders the Helm chart with
+`helm template`, without access to the cluster.
 
-The initial root CA and webhook certificate creation is during the Helm chart
-installation using the available Helm functions. So, during Helm chart
-rendering, the installation checks if the certificates are already created, and
-if not, it creates them.
+{admc-short-name} v1.17.0 removed the cert-manager dependency. The
+{admc-short-name} controller creates and renews the certificates, the root CA
+included. Since v1.39, the controller also creates the first certificates and
+the webhook configurations of the controller. The Helm chart does not contain
+a certificate, a CA bundle (`caBundle`), or a webhook configuration of the
+controller. Thus each render of the chart is the same, and Argo CD does not
+show the certificates as out of sync. You do not need an `ignoreDifferences`
+configuration or a special sync option for the certificates.
 
-This poses a problem when using ArgoCD, as it uses Helm solely to render the
-templates, with all resource lifecycle management by ArgoCD. Whenever ArgoCD
-renders the Helm chart to check that the cluster application doesn't deviate
-from the chart definition, it attempts certificate creation again. As a
-result, it marks the secrets that store the certificates and the
-webhook configuration as unsynchronized.
+This is an example of an Argo CD application:
 
-To resolve this issue, it's necessary to configure the ArgoCD application to
-ignore:
-
-* the `data` field in secrets
-* the `caBundle` field in the `MutatingWebhookConfiguration`
-* `ValidatingWebhookConfiguration` resources.
-
-You do this by adding the `ignoreDifferences` field in the ArgoCD application:
-
-[subs="+attributes", yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -61,46 +46,130 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:     # Sync options which modifies sync behavior
-      # When syncing changes, respect fields ignored by the ignoreDifferences configuration
-      - RespectIgnoreDifferences=true
-  # ignoreDifferences is the important configuration to avoid ArgoCD marking
-  # the secrets and # webhook configurations as unsynchronized
-  ignoreDifferences:
-  - group: ""
-    kind: "Secret"
-    name: kubewarden-ca
-    namespace: kubewarden
-    jsonPointers:
-      - /data
-  - group: ""
-    kind: "Secret"
-    name: kubewarden-webhook-server-cert
-    namespace: kubewarden
-    jsonPointers:
-      - /data
-  - group: ""
-    kind: "Secret"
-    name: kubewarden-audit-scanner-client-cert
-    namespace: kubewarden
-    jsonPointers:
-      - /data
-  - group: "admissionregistration.k8s.io"
-    kind: "MutatingWebhookConfiguration"
-    jqPathExpressions:
-      - '.webhooks[]?.clientConfig.caBundle'
-  - group: "admissionregistration.k8s.io"
-    kind: "ValidatingWebhookConfiguration"
-    jqPathExpressions:
-      - '.webhooks[]?.clientConfig.caBundle'
 ----
 
-[NOTE]
-====
+For more information about the certificates, refer to
+xref:explanations/certificates.adoc[Certificate rotation].
 
-In the example, the key aspect is the `ignoreDifferences` configuration for the
-{admc-short-name} controller application. The rest of the content provides
-context on how to configure the ArgoCD application and to provide a complete
-example.
+[#_upgrade_argo_cd]
+== Upgrade from an earlier version
 
-====
+Before v1.39, the Helm chart contained the three secrets of the controller and
+the two webhook configurations of the controller. The chart of v1.39 does not
+contain them. These are the objects:
+
+* The secret `kubewarden-ca`.
+* The secret `kubewarden-webhook-server-cert`.
+* The secret `kubewarden-audit-scanner-client-cert`.
+* The `ValidatingWebhookConfiguration` `kubewarden-controller-validating-webhook-configuration`.
+* The `MutatingWebhookConfiguration` `kubewarden-controller-mutating-webhook-configuration`.
+
+Argo CD runs the pre-upgrade hook of the chart before each sync. The hook adds
+`Prune=false` to the `argocd.argoproj.io/sync-options` annotation of these
+objects. Thus Argo CD does not prune them, and the controller keeps the same
+root CA.
+
+After the upgrade, Argo CD can show these objects as out of sync or as
+objects to prune. Argo CD does not prune them, because of `Prune=false`.
+
+The `ignoreDifferences` entries for the certificates and the CA bundles of
+earlier versions have no effect on these objects. You can keep or remove them.
+
+If a person or a tool writes a CA bundle that is not correct into a webhook
+configuration of {admc-short-name}, the controller writes the correct CA
+bundle within seconds. For more information, refer to
+xref:explanations/certificates.adoc#_ca_bundles[The CA bundles of the webhook configurations].
+
+Do not add the label `app.kubernetes.io/part-of: kubewarden` to other webhook
+configurations. The controller replaces their CA bundle, and an uninstall
+deletes them.
+
+[#_uninstall_argo_cd]
+== Uninstall with Argo CD
+
+On `helm uninstall`, a pre-delete hook of the chart runs the controller binary
+with `--mode=cleanup`. Argo CD before version 3.3 does not run this hook when
+you delete the application. Argo CD 3.3 and later run the hook as a
+`PreDelete` hook. We did not test the cleanup with these versions.
+
+Without the hook, these objects stay in the cluster:
+
+* The webhook configurations of the controller,
+`kubewarden-controller-validating-webhook-configuration` and
+`kubewarden-controller-mutating-webhook-configuration`.
+* The webhook configurations of the policies. They have the label
+`app.kubernetes.io/part-of=kubewarden`.
+* The secrets `kubewarden-ca`, `kubewarden-webhook-server-cert`, and
+`kubewarden-audit-scanner-client-cert`.
+* The default `PolicyServer` and the recommended policies. The controller
+creates them, not the chart. They have the label
+`kubewarden.io/managed-by=kubewarden-controller-defaults`.
+* The `Deployment`, `Service`, `Secret`, `ConfigMap`, and
+`PodDisruptionBudget` objects of each policy server. The policy servers
+continue to run.
+* The finalizer `kubewarden.io/finalizer` of each `PolicyServer` and each
+policy. A finalizer is a key that stops the deletion of an object until a
+controller removes it. The controller is gone, so if you delete one of these
+objects later, the deletion does not complete.
+
+A webhook configuration with `failurePolicy: Fail` that calls a deleted
+service rejects the requests that it matches. If your Argo CD version is
+earlier than 3.3, do these steps after you delete the application. The
+commands use the namespace `kubewarden`. If the application uses
+another namespace, change the commands.
+
+. Delete all the webhook configurations of {admc-short-name}. This command
+also deletes the webhook configurations of the controller, because they have
+the same label:
++
+[source,console]
+----
+kubectl delete validatingwebhookconfigurations,mutatingwebhookconfigurations -l app.kubernetes.io/part-of=kubewarden --ignore-not-found
+----
+. Remove the finalizers of the `PolicyServer` resources and of the policies.
+These commands remove all the finalizers of these objects, also the
+finalizers of other tools:
++
+[source,console]
+----
+for kind in policyservers clusteradmissionpolicies clusteradmissionpolicygroups; do
+  kubectl get "$kind.policies.kubewarden.io" -o name |
+    xargs -r -n 1 kubectl patch --type=merge -p '{"metadata":{"finalizers":null}}'
+done
+for kind in admissionpolicies admissionpolicygroups; do
+  kubectl get "$kind.policies.kubewarden.io" -A \
+    -o jsonpath='{range .items[*]}{.metadata.namespace}{"/"}{.metadata.name}{"\n"}{end}' |
+    while IFS=/ read -r namespace name; do
+      kubectl -n "$namespace" patch "$kind.policies.kubewarden.io" "$name" \
+        --type=merge -p '{"metadata":{"finalizers":null}}'
+    done
+done
+----
+. Delete the default `PolicyServer` and the recommended policies:
++
+[source,console]
+----
+kubectl delete policyservers.policies.kubewarden.io,clusteradmissionpolicies.policies.kubewarden.io,clusteradmissionpolicygroups.policies.kubewarden.io,admissionpolicies.policies.kubewarden.io,admissionpolicygroups.policies.kubewarden.io \
+  -A -l kubewarden.io/managed-by=kubewarden-controller-defaults --ignore-not-found
+----
+. Delete the objects of the policy servers:
++
+[source,console]
+----
+kubectl -n kubewarden delete deployments,services,secrets,configmaps,poddisruptionbudgets \
+  -l app.kubernetes.io/part-of=kubewarden,app.kubernetes.io/component=policy-server --ignore-not-found
+----
++
+The `ConfigMap` objects of policy servers that controller v1.36 created can
+have only the label `kubewarden/policy-server`. Delete them too:
++
+[source,console]
+----
+kubectl -n kubewarden delete configmaps -l kubewarden/policy-server --ignore-not-found
+----
+. Delete the secrets of the controller:
++
+[source,console]
+----
+kubectl -n kubewarden delete secret kubewarden-ca kubewarden-webhook-server-cert kubewarden-audit-scanner-client-cert --ignore-not-found
+----
