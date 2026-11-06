@@ -93,7 +93,7 @@ you must review before you upgrade to a specific version.
 === v1.38 to v1.39
 
 * The controller creates its certificates and its two webhook configurations.
-  The Helm chart no longer contains them. For more information, see
+  The Helm chart no longer contains them. For more information, refer to
   xref:explanations/certificates.adoc[].
 
 * The chart has a pre-upgrade hook. The hook is a `Job` that runs the
@@ -106,10 +106,11 @@ you must review before you upgrade to a specific version.
      `kubewarden-controller-validating-webhook-configuration` and
      `kubewarden-controller-mutating-webhook-configuration`.
 
-* Helm does not delete these objects, and Argo CD does not prune them. After
-  the upgrade, the controller uses the same root CA.
++
+Helm does not delete these objects, and Argo CD does not prune them. After
+the upgrade, the controller uses the same root CA.
 
-* If you use Argo CD, see
+* If you use Argo CD, refer to
   xref:howtos/argocd-installation.adoc#_upgrade_argo_cd[Upgrade from an earlier version with Argo CD].
 
 [CAUTION]
@@ -117,8 +118,9 @@ you must review before you upgrade to a specific version.
 Do not use `helm upgrade --no-hooks` for the upgrade to v1.39. This option
 skips the pre-upgrade hook. Then Helm deletes the secrets and the webhook
 configurations of the controller. The upgrade starts a new controller pod, and
-its init container creates them again with a new root CA. For about 15
-seconds, you cannot create or change policies and `PolicyServer` resources.
+its init container creates them again with a new root CA. Until the old
+controller pods stop, you cannot create or change policies and `PolicyServer`
+resources. In a test with one replica, this took about 15 seconds.
 The policies with `failurePolicy: Fail` reject requests for about one minute.
 If a webhook configuration of the controller is still missing after the
 upgrade, refer to

@@ -22,6 +22,9 @@ chart does not create a certificate, a CA bundle, or a webhook configuration
 of the controller. No Helm value configures these certificates. All the
 certificates use ECDSA P-256 keys.
 
+If a certificate, the root CA, or a webhook configuration of the controller
+has a problem, refer to xref:howtos/certificate-recovery.adoc[].
+
 [#_certificates_and_secrets]
 == The certificates and their secrets
 
@@ -173,12 +176,11 @@ server.
 Thus a certificate that expired while the cluster was stopped gets a
 replacement at the next start of the controller.
 
-After a rotation of the root CA, each CA bundle contains both root CAs. In the
-same pass, the controller signs all the certificates again with the new root
-CA. While some components still use the previous certificates, the API server
-accepts both. At the first pass after the previous root CA expires, up to 60
-days later, the controller removes `old-ca.crt`. Then it writes the CA bundle
-with the new root CA only.
+After a rotation of the root CA, each CA bundle contains both root CAs until
+the previous root CA expires, up to 60 days later. Thus the API server accepts
+a certificate that the previous root CA signed and a certificate that the new
+root CA signed. The components can load their new certificates without an
+interruption.
 
 The order of the steps prevents downtime for the admission requests. The
 controller writes the CA bundles before it signs a certificate. A server uses
@@ -219,11 +221,10 @@ current certificates.
 new CA bundle has an effect a short time after the change.
 |===
 
-
 [#_history]
 == History
 
-Before v1.39, the Helm chart rendered the three secrets of the controller and
+Before v1.39, the Helm chart contained the three secrets of the controller and
 the two webhook configurations of the controller. Since v1.39, the init
 container of the controller creates them. The chart has a pre-upgrade hook
 that protects these objects during the upgrade to v1.39. For the upgrade steps

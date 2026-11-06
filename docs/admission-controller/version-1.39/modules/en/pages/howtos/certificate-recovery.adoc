@@ -20,25 +20,24 @@ The commands on this page use the namespace `kubewarden` and the release
 name `admission-controller`. If your installation uses other names, change
 the commands.
 
-If the controller has more than one replica, read the logs of the pod that
-holds the leader `Lease`. This command shows the name of this pod, before the
-`_` character:
+If the controller has more than one replica, use the logs of the pod that
+holds the leader `Lease`. To get the name of this pod, run this command. The
+name is the part before the `_` character:
 
 [source,console]
 ----
 kubectl -n kubewarden get lease a4ddbf36.kubewarden.io -o jsonpath='{.spec.holderIdentity}'
 ----
 
-If the controller has more than one replica, replace
-`deployment/admission-controller` in the commands with `pod/<name>`. `<name>`
-is the name of this pod.
+Then replace `deployment/admission-controller` in the commands on this page
+with `pod/<name>`.
 
 [#_expired_certificates]
 == Expired certificates
 
 If certificates expired, the API server cannot call the webhook servers. Then
 each webhook with `failurePolicy: Fail` rejects the requests that it matches.
-This can occur after the cluster was stopped for a long time.
+This can occur after you stop the cluster for a long time.
 
 You do not have to do a manual step. The first pass after the start of the
 controller rotates the expired certificates. If the root CA is also expired,
@@ -46,8 +45,8 @@ the pass rotates the root CA first. The interruption includes the leader
 election, the first pass, and about one minute until the kubelet copies the
 new certificates.
 
-. Make sure that the controller rotated the certificates. Read its logs:
-+
+To make sure that the controller rotated the certificates, read its logs:
+
 [source,console]
 ----
 kubectl -n kubewarden logs deployment/admission-controller | grep -E "rotated successfully|Injected the CA bundle"
@@ -78,7 +77,8 @@ show the message `failed to extract CA root from secret` or
 If `ca.crt` and `ca.key` contain data that is not a valid root CA, the
 controller replaces the root CA at the next pass. If the previous `ca.crt` is
 a valid certificate, the controller keeps it in `old-ca.crt` until it expires.
-To remove it, delete the secret. If the previous `ca.crt` is not a valid
+The rotation replaces an earlier `old-ca.crt`. To remove `old-ca.crt`, delete
+the secret. If the previous `ca.crt` is not a valid
 certificate, the controller removes it in the same pass.
 
 Use this procedure when the `kubewarden-ca` secret is damaged, or when you do
