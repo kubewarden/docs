@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Private Registries
-:revdate: 2026-06-15
+:revdate: 2026-11-05
 :page-revdate: {revdate}
 :page-aliases: user-guide/private-registries.adoc
 :description: Configure {sboms-name} to scan private container registries.
@@ -74,3 +74,143 @@ This will allow {sboms-name} to scan for images from private registries.
 *Please, note*:
 
 The `Secret` and the `Registry` must be defined inside of the very same `Namespace`.
+
+[#_private_certificate_authority]
+== Registries with a private certificate authority
+
+If the certificate of a registry comes from a private certificate authority (CA), {sboms-short-name} needs the CA certificate to make sure that it connects to the correct registry.
+Put the CA certificates in a ConfigMap or a Secret, in PEM format.
+Then refer to the object in the `spec.caBundleRef` field of the `Registry`.
+
+This example uses a ConfigMap:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: registry-ca
+  namespace: default
+data:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    ...
+    -----END CERTIFICATE-----
+---
+apiVersion: sbomscanner.kubewarden.io/v1alpha1
+kind: Registry
+metadata:
+  name: my-private-ca-registry
+  namespace: default
+spec:
+  uri: dev-registry.default.svc.cluster.local:5000
+  scanInterval: 1h
+  caBundleRef:
+    configMap:
+      name: registry-ca
+      key: ca.crt
+----
+
+This example uses the `ca.crt` key of a Secret of type `kubernetes.io/tls`, for example a Secret that cert-manager creates:
+
+[source,yaml]
+----
+apiVersion: sbomscanner.kubewarden.io/v1alpha1
+kind: Registry
+metadata:
+  name: my-private-ca-registry
+  namespace: default
+spec:
+  uri: dev-registry.default.svc.cluster.local:5000
+  scanInterval: 1h
+  caBundleRef:
+    secret:
+      name: registry-tls
+----
+
+The `caBundleRef` field has these rules:
+
+* Set exactly one of `configMap` or `secret`.
+* `name` is the name of the ConfigMap or the Secret.
+* `key` is the key that holds the CA certificates. If you do not set it, {sboms-short-name} uses `ca.crt`.
+* The ConfigMap or the Secret must be in the namespace of the `Registry`.
+* The value of the key can hold more than one certificate.
+
+A `Registry` cannot set both `caBundle` and `caBundleRef`.
+The API server rejects a `Registry` that sets both, with the message `caBundle and caBundleRef are mutually exclusive`.
+
+[#_inline_ca_bundle]
+=== The deprecated caBundle field
+
+Earlier versions used the `spec.caBundle` field, which holds the CA certificates in the `Registry` itself.
+This field still works, but it is deprecated, and a later version removes it.
+When you create or update a resource that sets `spec.caBundle`, the API server returns this warning:
+
+[source,text]
+----
+spec.caBundle is deprecated and will be removed in the following versions. Use spec.caBundleRef instead.
+----
+
+To move a resource to `caBundleRef`, see xref:howtos/upgrade-to-1.0.adoc#_ca_bundle_migration[Move the CA bundles to caBundleRef].
+
+[#_ca_bundle_errors]
+=== CA bundle errors
+
+If the CA bundle does not contain a valid PEM certificate, the scan fails with this error:
+
+[source,text]
+----
+CA bundle does not contain any valid PEM-encoded certificate
+----
+
+This rule applies to `caBundle` and to `caBundleRef`.
+Earlier versions ignored a CA bundle without a valid certificate, and used the trust store of the system.
+
+The scan also fails when {sboms-short-name} cannot read the CA bundle.
+See xref:howtos/common-problems.adoc#_ca_bundle_errors[Common problems] for each error and its fix.
+
+[#_ca_bundle_workload_scans]
+=== CA bundles for workload scans
+
+The workload scan creates and manages its own `Registry` resources.
+Do not set `caBundleRef` on these resources.
+Set `caBundleRef` on the `WorkloadScanConfiguration` instead.
+The controller copies the value to the `Registry` resources that it manages.
+
+For a workload scan, the ConfigMap or the Secret must be in the namespace where {sboms-short-name} is installed.
+The worker does not read it from the namespace of the `Registry`.
+
+This example creates the ConfigMap in the `sbomscanner` namespace, and sets `caBundleRef` on the `WorkloadScanConfiguration`:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workload-scan-ca
+  namespace: sbomscanner
+data:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    ...
+    -----END CERTIFICATE-----
+---
+apiVersion: sbomscanner.kubewarden.io/v1alpha1
+kind: WorkloadScanConfiguration
+metadata:
+  name: default
+spec:
+  namespaceSelector:
+    matchLabels:
+      sbomscanner.kubewarden.io/workloadscan: "true"
+  artifactsNamespace: sbomscanner
+  caBundleRef:
+    configMap:
+      name: workload-scan-ca
+----
+
+If you already have a `WorkloadScanConfiguration`, add `caBundleRef` to it and keep its other fields.
+`kubectl apply` removes the fields that are not in the file.
+The API server rejects a change of `artifactsNamespace` while the workload scan is enabled.
+
+See xref:tutorials/scanning-workloads.adoc[Scanning Workloads].

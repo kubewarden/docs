@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Common problems
-:revdate: 2026-09-01
+:revdate: 2026-11-05
 :page-revdate: {revdate}
 :page-aliases: troubleshooting/common-problems.adoc
 :description: Resolve common {sboms-name} issues and error conditions.
@@ -42,3 +42,39 @@ in the {sboms-name} installation namespace. Reference the Secret from the
 applicable `Registry` resource. To propagate credentials to managed
 registries, set the `authSecret` field in `WorkloadScanConfiguration`. See
 xref:howtos/private-registries.adoc[Private Registries] for the procedure.
+
+[#_ca_bundle_errors]
+== CA bundle errors
+
+=== Problem
+
+The `ScanJob` of a registry fails.
+The message of its `Failed` condition starts with `cannot resolve CA bundle:`, and then contains one of the errors in the table below.
+To see the message, run this command, with the namespace of the `Registry`:
+
+[source,bash]
+----
+kubectl get scanjobs -n <registry-namespace> -o yaml
+----
+
+{sboms-short-name} reads the CA bundle from the `spec.caBundleRef` or the `spec.caBundle` field of the `Registry`.
+For a `Registry` that the workload scan manages, the namespace in the errors is the {sboms-short-name} installation namespace.
+
+=== Solution
+
+[cols="2,3",options="header"]
+|===
+|Error |Cause and fix
+|`cannot get CA bundle ConfigMap <namespace>/<name>`
+|The ConfigMap does not exist in the namespace that the error shows. Create the ConfigMap in that namespace, or correct the `name` in `caBundleRef`.
+|`CA bundle ConfigMap <namespace>/<name> has no key "<key>"`
+|The ConfigMap has no key with the name in `caBundleRef.configMap.key`. If you do not set `key`, the key is `ca.crt`. Add the key to the ConfigMap, or correct `key`.
+|`cannot get CA bundle Secret <namespace>/<name>`
+|The Secret does not exist in the namespace that the error shows. Create the Secret in that namespace, or correct the `name` in `caBundleRef`.
+|`CA bundle Secret <namespace>/<name> has no key "<key>"`
+|The Secret has no key with the name in `caBundleRef.secret.key`. If you do not set `key`, the key is `ca.crt`. Add the key to the Secret, or correct `key`.
+|`CA bundle does not contain any valid PEM-encoded certificate`
+|The value has no certificate in PEM format. Each certificate must start with `-----BEGIN CERTIFICATE-----` and end with `-----END CERTIFICATE-----`. Put the CA certificates in PEM format in the value. Earlier versions ignored this problem and used the trust store of the system.
+|===
+
+See xref:howtos/private-registries.adoc#_private_certificate_authority[Registries with a private certificate authority].

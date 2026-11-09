@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Configuring {sboms-name} for production
-:revdate: 2026-10-13
+:revdate: 2026-11-05
 :page-revdate: {revdate}
 :page-aliases: installation/production-deployments.adoc
 :description: Configure the controller, the storage API server, the worker, PostgreSQL, and NATS of {sboms-name} for high availability and reliable resource use.
@@ -51,24 +51,74 @@ worker:
   replicas: 5
 ----
 
-[#_scheduling_current_limits]
-== Scheduling: current limits of the chart
+[#_scheduling_and_disruption]
+== Scheduling and disruptions
 
-The chart has no `tolerations`, `nodeSelector`, `affinity`, or
-`priorityClassName` value for the controller, the storage API server, the
-worker, or the MCP server. It has no PodDisruptionBudget for any of them
-either. With three replicas of a component and no anti-affinity, every
-replica of that component can land on one node.
+With three replicas of a component and no scheduling rules, Kubernetes can
+put every replica of that component on one node. If that node fails, the
+component stops. A node drain can also stop all replicas at the same time.
 
-The node scan worker, covered next, has the same gap, and it also reuses
-`worker.resources`, so you cannot size it apart from the worker Deployment.
+Spread the replicas over the nodes with `topologySpreadConstraints`, and
+add a PodDisruptionBudget for each Deployment. A PodDisruptionBudget limits
+the number of pods that a node drain can stop at the same time. This
+example uses the labels that the chart sets on the pods. The value of
+`app.kubernetes.io/instance` is the name of the Helm release, here
+`sbomscanner`:
 
-NATS and PostgreSQL are not affected. The NATS subchart ships its own
+[source,yaml]
+----
+global:
+  priorityClassName: sbomscanner-high
+controller:
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/instance: sbomscanner
+          app.kubernetes.io/component: controller
+  podDisruptionBudget:
+    maxUnavailable: 1
+storage:
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/instance: sbomscanner
+          app.kubernetes.io/component: storage
+  podDisruptionBudget:
+    maxUnavailable: 1
+worker:
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/instance: sbomscanner
+          app.kubernetes.io/component: worker
+  podDisruptionBudget:
+    maxUnavailable: 1
+----
+
+`global.priorityClassName` gives all pods of the chart, including the node
+scan worker, the PriorityClass `sbomscanner-high`. The chart does not
+create the PriorityClass. Create it before you install the chart, or remove
+the key.
+
+The node scan worker has its own resources, in `workerNode.resources`. See
+xref:#_node_scan_worker[Node scan worker].
+
+NATS and PostgreSQL do not use these values. The NATS subchart has its own
 PodDisruptionBudget. The CloudNativePG operator manages its own
 PodDisruptionBudgets for the database pods.
 
-These are limits of the current chart, not a setting you can change today.
-They are going to be addressed in future releases.
+For all scheduling values, see
+xref:howtos/helm-values.adoc#_scheduling[Scheduling] and
+xref:howtos/helm-values.adoc#_pod_disruption_budgets[PodDisruptionBudgets].
 
 [#_storage_api_server_and_kubectl]
 == Storage API server and kubectl
@@ -204,6 +254,27 @@ See
 xref:tutorials/scanning-nodes.adoc#disabling-node-scanning[Disabling node
 scanning] for the difference between this value and disabling scans
 through the `NodeScanConfiguration` resource.
+
+The `workerNode` block configures the node scan worker. The `worker` block
+configures the worker Deployment only. Set the resources of the node scan
+worker in `workerNode.resources`:
+
+[source,yaml]
+----
+workerNode:
+  resources:
+    limits:
+      cpu: "1"
+      memory: 2Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+----
+
+The node scan worker runs one pod on every node, so its requests reserve
+capacity on every node. See
+xref:howtos/helm-values.adoc#_worker_node_values[Worker node] for the other
+values of the `workerNode` block.
 
 [#_admission_policies_and_pod_security_admission]
 == Admission policies and Pod Security Admission
@@ -345,8 +416,18 @@ values file:
 ----
 worker:
   replicas: 5
+  podDisruptionBudget:
+    maxUnavailable: 1
+
+controller:
+  podDisruptionBudget:
+    maxUnavailable: 1
+  nodeScan:
+    enabled: true
 
 storage:
+  podDisruptionBudget:
+    maxUnavailable: 1
   postgres:
     cnpg:
       storage:
@@ -361,14 +442,20 @@ storage:
         backup:
           retentionPolicy: "30d"
 
+workerNode:
+  resources:
+    limits:
+      cpu: "1"
+      memory: 2Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+
 otel:
   endpoint: "https://otel-collector.observability.svc.cluster.local:4317"
   caSecretName: "sbomscanner-otel-ca"
   clientCertificateSecretName: "sbomscanner-otel-client"
 
-controller:
-  nodeScan:
-    enabled: true
 mcp:
   enabled: false
 ----
