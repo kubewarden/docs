@@ -741,6 +741,8 @@ stringData:
 ----
 storage:
   postgres:
+    cnpg:
+      enabled: false
     authSecretName: "my-postgres-credentials"
     caSecretName: "my-postgres-ca"
 ----
