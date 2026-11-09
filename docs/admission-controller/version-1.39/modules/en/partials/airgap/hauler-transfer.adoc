@@ -1,4 +1,5 @@
-// The community and product bodies share this partial.
+// The community and the product air gap pages include this partial. Do not
+// add text that is true for only one build.
 
 == Transfer the tarball into your isolated environment
 

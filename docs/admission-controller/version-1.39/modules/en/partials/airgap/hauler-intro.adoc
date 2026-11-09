@@ -1,4 +1,5 @@
-// The community and product bodies share this partial.
+// The community and the product air gap pages include this partial. Do not
+// add text that is true for only one build.
 
 This guide shows you how to install {admc-name} in air-gapped environments using
 link:https://docs.hauler.dev/docs/intro[Hauler]. Hauler is a tool that helps

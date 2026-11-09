@@ -1,4 +1,5 @@
-// The community and product bodies share this partial.
+// The community and the product air gap pages include this partial. Do not
+// add text that is true for only one build.
 
 == Generate the tarball file with all {admc-short-name} resources
 
@@ -17,7 +18,7 @@ hauler store save --filename kubewarden-resources.tar.zst
 when you save the resource into the file, you may see warning messages like
 these:
 
-[source,shell,subs="attributes+"]
+[source,shell,subs="+attributes"]
 ----
 2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/kyverno/policy-reporter:3.8.1]
 2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/kyverno/policy-reporter-ui:2.6.1]

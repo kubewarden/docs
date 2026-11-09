@@ -1,4 +1,5 @@
-// The community and product bodies share this partial.
+// The community and the product air gap pages include this partial. Do not
+// add text that is true for only one build.
 
 == Populate private registry
 
@@ -15,7 +16,7 @@ You can also run Hauler to start a registry with all the resources from the
 store. This registry is insecure, and you need to adapt the cluster
 configuration:
 
-[source,shell]
+[source,shell,subs="+attributes"]
 ----
 # Find IP address of your host
 # hostname -I
@@ -31,7 +32,7 @@ configuration:
 #       insecure_skip_verify: true
 
 # Configure policy-server to allow pulling policies from insecure sources
-# helm install .. admission-controller .. --set policyServer.insecureSources[0]=<HOST_IP:5000>
+# helm install .. {admc-release} .. --set policyServer.insecureSources[0]=<HOST_IP:5000>
 
 hauler store serve registry
 ----

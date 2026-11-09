@@ -12,4 +12,4 @@ include::partial$variables.adoc[]
 :sidebar_label: Requirements
 :current-version: {page-origin-branch}
 
-include::partial${build-type}-specific/airgap-requirements.adoc[tag=list]
+include::partial${build-type}-specific/airgap-requirements.adoc[]

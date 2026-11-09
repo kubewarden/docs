@@ -1,4 +1,5 @@
-// The community and product bodies share this partial.
+// The community and the product air gap pages include this partial. Do not
+// add text that is true for only one build.
 
 == Install {admc-short-name}
 
@@ -10,7 +11,7 @@ Helm charts from OCI artifacts.
 
 Install the {admc-short-name} stack:
 
-[source,shell,subs="attributes+"]
+[source,shell,subs="+attributes"]
 ----
 helm install --wait -n {admc-namespace} {admc-release} --create-namespace \
     --set "global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>" \
@@ -24,7 +25,7 @@ To use the PolicyReporter sub-chart available in the `admission-controller`
 chart you need to define other values specific for the sub-chart in an
 air-gapped environment. See an example below:
 
-[source,shell,subs="attributes+"]
+[source,shell,subs="+attributes"]
 ----
 helm install --wait -n {admc-namespace} {admc-release} oci://<REGISTRY.YOURDOMAIN.COM:PORT>/hauler/admission-controller \
     --set global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \
@@ -77,7 +78,7 @@ EOF
 `PolicyServer` resources must use the image available in your private registry.
 For example:
 
-[source,yaml,subs="attributes+"]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
