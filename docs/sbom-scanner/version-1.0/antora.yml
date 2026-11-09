@@ -1,6 +1,6 @@
 name: sbom-scanner
 title: SBOM Scanner
-version: "0.14"
+version: "1.0"
 prerelease: -dev
 start_page: en:introduction.adoc
 nav:
