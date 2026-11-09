@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Air Gap Support
-:revdate: 2026-09-01
+:revdate: 2026-11-09
 :page-revdate: {revdate}
 :page-aliases: user-guide/airgap-support.adoc
 :description: Run {sboms-name} in air-gapped environments with mirrored dependencies.
@@ -30,8 +30,8 @@ with these values:
 [source,shell]
 ----
 helm install sbomscanner ./chart \
-    --set worker.trivyDBRepository="yourlocalregistry.example/sbomscanner/trivy-db" \
-    --set worker.trivyJavaDBRepository="yourlocalregistry.example/sbomscanner/trivy-java-db"
+    --set scanner.trivyDBRepository="yourlocalregistry.example/sbomscanner/trivy-db" \
+    --set scanner.trivyJavaDBRepository="yourlocalregistry.example/sbomscanner/trivy-java-db"
 ----
 
 [#self-hosting-vex-hub]

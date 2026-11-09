@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Upgrade to 1.0
-:revdate: 2026-11-05
+:revdate: 2026-11-09
 :page-revdate: {revdate}
 :description: Upgrade {sboms-name} from 0.13 to 1.0, map the Helm values to the new values contract, and move the CA bundles to caBundleRef.
 :keywords: ["{sboms-name}", kubewarden, upgrade, helm, values, caBundleRef]
@@ -60,6 +60,24 @@ If you set `worker.resources`, `worker.logLevel`, or a `worker.image` value, and
 To keep the same configuration for both workers, set the value in `worker` and in `workerNode`.
 For the log level and the pull policy, you can also set the value in `global`.
 
+[#_breaking_trivy_db]
+=== The Trivy database values moved to the scanner block
+
+Chart 1.0 reads `trivyDBRepository` and `trivyJavaDBRepository` in the new `scanner` block, not in the `worker` block.
+The worker Deployment and the node scan DaemonSet both use these two values.
+
+If you set `worker.trivyDBRepository` or `worker.trivyJavaDBRepository` and do nothing, the chart ignores them.
+For each value that you leave in the `worker` block, the scans use the default public repository.
+In an air-gapped cluster, a scan fails when it must download a database from a public repository.
+Move the two values to the `scanner` block:
+
+[source,yaml]
+----
+scanner:
+  trivyDBRepository: "my-registry.example.com/aquasecurity/trivy-db"
+  trivyJavaDBRepository: "my-registry.example.com/aquasecurity/trivy-java-db"
+----
+
 [#_breaking_log_levels]
 === Log levels
 
@@ -108,9 +126,11 @@ Use this table to change your 0.13 values to 1.0 values.
 Or `global.logLevel` for both.
 |`worker.resources`
 |`worker.resources` for the worker Deployment, and `workerNode.resources` for the node scan DaemonSet.
+|`worker.trivyDBRepository`, `worker.trivyJavaDBRepository`
+|`scanner.trivyDBRepository` and `scanner.trivyJavaDBRepository`. Both workers use them.
 |===
 
-The other values of 0.13 keep their names, for example `controller.replicas`, `storage.postgres`, and `worker.trivyDBRepository`.
+The other values of 0.13 keep their names, for example `controller.replicas` and `storage.postgres`.
 For all values of 1.0, see xref:howtos/helm-values.adoc[Helm Values Configuration].
 
 This example shows values of 0.13:

@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Configuring {sboms-name} for production
-:revdate: 2026-11-05
+:revdate: 2026-11-09
 :page-revdate: {revdate}
 :page-aliases: installation/production-deployments.adoc
 :description: Configure the controller, the storage API server, the worker, PostgreSQL, and NATS of {sboms-name} for high availability and reliable resource use.
@@ -392,7 +392,7 @@ default VEX feeds:
 
 [source,yaml]
 ----
-worker:
+scanner:
   trivyDBRepository: "my-registry.example.com/aquasecurity/trivy-db"
   trivyJavaDBRepository: "my-registry.example.com/aquasecurity/trivy-java-db"
 controller:
