@@ -186,8 +186,8 @@ See xref:#_postgresql_values[PostgreSQL values].
 [cols="2,1,3",options="header"]
 |===
 |Key |Default |Description
-|`worker.image.repository` |`kubewarden/sbomscanner/worker` |Image repository, without the registry. The `workerNode` DaemonSet also uses this repository.
-|`worker.image.tag` |`appVersion` of the chart |Image tag. The `workerNode` DaemonSet also uses this tag.
+|`worker.image.repository` |`kubewarden/sbomscanner/worker` |Image repository, without the registry.
+|`worker.image.tag` |`appVersion` of the chart |Image tag.
 |`worker.image.registry` |`ghcr.io` |Registry for the image of the worker Deployment. `global.imageRegistry` replaces it when set.
 |`worker.image.pullPolicy` |`""` |Pull policy for the image of the worker Deployment. If it is empty, the chart uses `global.imagePullPolicy`.
 |`worker.replicas` |`3` |Number of pods.
@@ -225,11 +225,12 @@ To configure the node scan DaemonSet, use the `workerNode` block or the `global`
 === Worker node
 
 The `workerNode` block configures the DaemonSet that scans the nodes.
-The DaemonSet uses the repository and the tag from `worker.image`, with the registry and the pull policy from `workerNode.image`.
 
 [cols="2,1,3",options="header"]
 |===
 |Key |Default |Description
+|`workerNode.image.repository` |`kubewarden/sbomscanner/worker` |Image repository of the DaemonSet, without the registry.
+|`workerNode.image.tag` |`appVersion` of the chart |Image tag of the DaemonSet.
 |`workerNode.image.registry` |`ghcr.io` |Registry for the image of the DaemonSet. `global.imageRegistry` replaces it when set.
 |`workerNode.image.pullPolicy` |`""` |Pull policy for the image of the DaemonSet. If it is empty, the chart uses `global.imagePullPolicy`.
 |`workerNode.resources` |See the YAML example |CPU and memory for the main container. See xref:#_resources[Resource limits and requests].

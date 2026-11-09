@@ -37,7 +37,7 @@ If your installation uses other names, change the commands.
 The upgrade then renders image references without a registry and with the 0.13 tags, for example `kubewarden/sbomscanner/controller:v0.13.0`.
 The kubelet cannot pull these images, so the new pods do not start.
 The NATS pods keep the NATS images of chart 0.13.
-The node scan DaemonSet gets no resource requests or limits, and no log level.
+The node scan DaemonSet gets an empty image reference, no resource requests or limits, and no log level.
 
 The render does not fail, so Helm does not show an error before the upgrade.
 Use `--reset-values` with a values file, or `--reset-then-reuse-values`.
@@ -48,15 +48,15 @@ See xref:#_upgrade_procedure[Upgrade procedure].
 
 Chart 0.13 configured the worker Deployment and the node scan DaemonSet with the `worker` block.
 Chart 1.0 adds the `workerNode` block for the node scan DaemonSet.
-The `worker` block configures the worker Deployment only, with one exception: the DaemonSet still uses the repository and the tag of `worker.image`.
+The `worker` block configures the worker Deployment only.
 
 The DaemonSet reads these values from `workerNode`, or from `global`:
 
+* The image, from `workerNode.image`: `repository`, `tag`, `registry`, and `pullPolicy`. If `workerNode.image.pullPolicy` is empty, the chart uses `global.imagePullPolicy`.
 * The resources, from `workerNode.resources`. `global` has no resources.
 * The log level, from `workerNode.logLevel` or `global.logLevel`.
-* The pull policy, from `workerNode.image.pullPolicy` or `global.imagePullPolicy`.
 
-If you set `worker.resources`, `worker.logLevel`, or `worker.image.pullPolicy` and do nothing, the DaemonSet uses the default values after the upgrade.
+If you set `worker.resources`, `worker.logLevel`, or a `worker.image` value, and do nothing, the DaemonSet uses the default values after the upgrade.
 To keep the same configuration for both workers, set the value in `worker` and in `workerNode`.
 For the log level and the pull policy, you can also set the value in `global`.
 
@@ -99,8 +99,8 @@ Use this table to change your 0.13 values to 1.0 values.
 [cols="2,3",options="header"]
 |===
 |Value in 0.13 |Value in 1.0
-|`worker.image.pullPolicy`
-|`worker.image.pullPolicy` for the worker Deployment, and `workerNode.image.pullPolicy` for the node scan DaemonSet.
+|`worker.image.repository`, `worker.image.tag`, `worker.image.pullPolicy`
+|The same keys in `worker.image` for the worker Deployment, and in `workerNode.image` for the node scan DaemonSet.
 |`controller.logLevel`, `storage.logLevel`, `mcp.logLevel`
 |No change. You can also use `global.logLevel` for all workloads.
 |`worker.logLevel`
