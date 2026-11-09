@@ -1,0 +1,41 @@
+// The community and product bodies share this partial.
+
+== Populate private registry
+
+To use the resources from your Hauler store, it's necessary to make them
+available in an internal registry. You can use Hauler commands to copy them
+into your private registry.
+
+[source,shell]
+----
+hauler store copy registry://localhost:5000
+----
+
+You can also run Hauler to start a registry with all the resources from the
+store. This registry is insecure, and you need to adapt the cluster
+configuration:
+
+[source,shell]
+----
+# Find IP address of your host
+# hostname -I
+
+# Update registries.yaml for k3s based cluster to allow insecure access
+# mirrors:
+#   "<HOST_IP>:5000":
+#     endpoint:
+#       - "http://<HOST_IP>:5000"
+# configs:
+#   "<HOST_IP>:5000":
+#     tls:
+#       insecure_skip_verify: true
+
+# Configure policy-server to allow pulling policies from insecure sources
+# helm install .. admission-controller .. --set policyServer.insecureSources[0]=<HOST_IP:5000>
+
+hauler store serve registry
+----
+
+This starts a registry at the `localhost:5000` address. From this point, you
+can use other commands like Skopeo to copy all the container images, policy
+modules and Helm charts used by {admc-short-name} into your private registry.

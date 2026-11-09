@@ -1,0 +1,7 @@
+// tag::list[]
+. Private registry that supports OCI artifacts. It is needed for storing
+  container images and policies. There is a list of supported Open Container
+  Initiative (OCI) registries xref:reference/oci-registries-support.adoc[here].
+. link:https://docs.hauler.dev/docs/intro[Hauler]
+. Helm
+// end::list[]
