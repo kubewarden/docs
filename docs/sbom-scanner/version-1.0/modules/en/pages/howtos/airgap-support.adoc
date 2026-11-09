@@ -59,7 +59,7 @@ To configure a VEX Hub in {sboms-name}, create a `VEXHub` resource with your loc
 apiVersion: sbomscanner.kubewarden.io/v1alpha1
 kind: VEXHub
 metadata:
-  name: local_vexhub
+  name: local-vexhub
 spec:
   url: "https://yourlocalrepo.example/"
   enabled: true
