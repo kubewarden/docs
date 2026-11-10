@@ -30,7 +30,7 @@ has a problem, refer to xref:howtos/certificate-recovery.adoc[].
 
 The stack uses one root CA. The root CA is the certificate authority that
 signs all the other certificates. Each certificate is in a secret in the
-namespace of the {admc-short-name} stack, for example `kubewarden`.
+namespace of the {admc-short-name} stack, for example `{admc-namespace}`.
 
 Each controller pod has an init container. An init container runs to its end
 before the other containers of the pod start.
