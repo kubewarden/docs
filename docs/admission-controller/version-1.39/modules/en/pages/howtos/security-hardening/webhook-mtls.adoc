@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Secure webhooks with mutual TLS with K3s
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-03
 :page-revdate: {revdate}
 :sidebar_label: Enable mTLS with K3s
 :description: Implement mutual Transport Layer Security (mTLS) protocols for secure webhooks with K3s in your SUSE Kubernetes distribution.
@@ -199,3 +199,22 @@ helm install --wait -n kubewarden admission-controller kubewarden/admission-cont
 
 Once this command finishes, mTLS secures the installation of the
 {admc-short-name} stack and its webhooks.
+
+With mTLS, the policy servers trust two CAs: the CA of the `ConfigMap`, and
+the root CA of {admc-short-name} in `ca.crt` of the `kubewarden-ca` secret. A
+policy server accepts a client certificate that one of these CAs signed. The
+API server uses a client certificate from the first CA. The audit scanner uses
+a client certificate from the second CA. The controller creates and
+rotates the client certificate of the audit scanner. For more information,
+refer to
+xref:explanations/certificates.adoc#_certificates_and_secrets[The certificates and their secrets].
+
+The controller does not create or rotate the CA of the `ConfigMap`. If you
+change the `ConfigMap`, the policy servers load the new CA. The webhook server
+of the controller reads the CA only when it starts. Thus, after a change of the
+`ConfigMap`, restart the controller:
+
+[source,console]
+----
+kubectl -n kubewarden rollout restart deployment admission-controller
+----
