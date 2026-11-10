@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Air Gap Support
-:revdate: 2026-11-09
+:revdate: 2026-11-10
 :page-revdate: {revdate}
 :page-aliases: user-guide/airgap-support.adoc
 :description: Run {sboms-name} in air-gapped environments with mirrored dependencies.
@@ -16,6 +16,7 @@ To run the scans, {sboms-name} currently needs the following external sources:
 
 These external sources can be self-hosted in your private infrastructure to make the whole environment air-gapped.
 
+[#_self_hosting_vulnerability_databases]
 == Self-Hosting Vulnerability Databases
 
 The following Vulnerability Databases are OCI images. You can host them in
@@ -24,15 +25,23 @@ your registry:
 * https://github.com/aquasecurity/trivy-db/pkgs/container/trivy-db[`trivy-db`]
 * https://github.com/aquasecurity/trivy-java-db/pkgs/container/trivy-java-db[`trivy-java-db`]
 
-After you mirror the databases in your OCI registry, install {sboms-name}
+After you mirror the databases in your OCI registry, install {sboms-short-name}
 with these values:
 
 [source,shell]
 ----
 helm install sbomscanner ./chart \
+    --namespace sbomscanner \
+    --create-namespace \
     --set scanner.trivyDBRepository="yourlocalregistry.example/sbomscanner/trivy-db" \
-    --set scanner.trivyJavaDBRepository="yourlocalregistry.example/sbomscanner/trivy-java-db"
+    --set scanner.trivyJavaDBRepository="yourlocalregistry.example/sbomscanner/trivy-java-db" \
+    --set controller.defaultVEXHubResources=false
 ----
+
+`./chart` is the path of the {sboms-short-name} chart that you copied to the air-gapped environment.
+
+The command also disables the default VEX Hub resources.
+See xref:#self-hosting-vex-hub[Self-Hosting VEX Hub].
 
 [#self-hosting-vex-hub]
 == Self-Hosting VEX Hub
@@ -44,13 +53,8 @@ registry.
 
 Configure an HTTP server that provides the VEX files.
 
-By default, {sboms-name} seeds two `VEXHub` resources pointing to the public `github.com/rancher/vexhub` and `github.com/aquasecurity/vexhub` repositories, which are unreachable in an air-gapped environment. Disable this seeding at install time by setting `controller.defaultVEXHubResources` to `false`:
-
-[source,shell]
-----
-helm install sbomscanner ./chart \
-    --set controller.defaultVEXHubResources=false
-----
+By default, {sboms-short-name} creates two `VEXHub` resources, `rancher` and `aquasecurity`. They point to the public `github.com/rancher/vexhub` and `github.com/aquasecurity/vexhub` repositories, which are unreachable in an air-gapped environment.
+The install command in xref:#_self_hosting_vulnerability_databases[Self-Hosting Vulnerability Databases] sets `controller.defaultVEXHubResources` to `false`, so the chart does not create them.
 
 To configure a VEX Hub in {sboms-name}, create a `VEXHub` resource with your local repository URL and apply it:
 
