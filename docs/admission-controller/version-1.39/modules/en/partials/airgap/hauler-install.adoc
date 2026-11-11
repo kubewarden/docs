@@ -1,0 +1,93 @@
+// The community and the product air gap pages include this partial. Do not
+// add text that is true for only one build.
+
+== Install {admc-short-name}
+
+Now that your private registry has everything required, you can install
+{admc-short-name}. The difference from a standard {admc-short-name}
+installation is that you need to change the registry in the container images
+and policies to be the private registry. Additionally, you need to install the
+Helm charts from OCI artifacts.
+
+Install the {admc-short-name} stack:
+
+[source,shell,subs="+attributes"]
+----
+helm install --wait -n {admc-namespace} {admc-release} --create-namespace \
+    --set "global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT>" \
+    oci://<REGISTRY.YOURDOMAIN.COM:PORT>/hauler/admission-controller
+----
+
+[CAUTION]
+====
+
+To use the PolicyReporter sub-chart available in the `admission-controller`
+chart you need to define other values specific for the sub-chart in an
+air-gapped environment. See an example below:
+
+[source,shell,subs="+attributes"]
+----
+helm install --wait -n {admc-namespace} {admc-release} oci://<REGISTRY.YOURDOMAIN.COM:PORT>/hauler/admission-controller \
+    --set global.cattle.systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \
+    --set auditScanner.policyReporter=true \
+    --set policy-reporter.image.registry=<REGISTRY.YOURDOMAIN.COM:PORT> \
+    --set policy-reporter.image.repository=kyverno/policy-reporter \
+    --set policy-reporter.ui.image.registry=<REGISTRY.YOURDOMAIN.COM:PORT> \
+    --set policy-reporter.ui.image.repository=kyverno/policy-reporter-ui
+----
+
+It's necessary to define `auditScanner.policyReporter` and four other values to
+enable the sub-chart and to configure the registry and repository with the
+location of the Policy Reporter image store. For more information about the
+policy report sub-chart values, refer to
+link:https://kyverno.github.io/policy-reporter-docs/getting-started/helm.html[Policy
+Reporter documentation].
+
+====
+
+
+Finally, configure each Policy Server to fetch policies from your private
+registry. See the xref:/howtos/policy-servers/02-private-registry.adoc[using
+private registry] section of the documentation.
+
+Now create {admc-short-name} policies in your cluster. Policies must be
+available in your private registry.
+
+[source,yaml]
+----
+kubectl apply -f - <<EOF
+apiVersion: policies.kubewarden.io/v1
+kind: ClusterAdmissionPolicy
+metadata:
+  name: privileged-pods
+spec:
+  module: registry://<REGISTRY.YOURDOMAIN.COM:PORT>/kubewarden/policies/pod-privileged:v1.0.11
+  rules:
+  - apiGroups: [""]
+    apiVersions: ["v1"]
+    resources: ["pods"]
+    operations:
+    - CREATE
+  mutating: false
+EOF
+----
+
+[CAUTION]
+====
+
+`PolicyServer` resources must use the image available in your private registry.
+For example:
+
+[source,yaml,subs="+attributes"]
+----
+apiVersion: policies.kubewarden.io/v1
+kind: PolicyServer
+metadata:
+  name: reserved-instance-for-tenant-a
+spec:
+  image: <REGISTRY.YOURDOMAIN.COM:PORT>/{default-oci-admcontroller-container-namespace}/policy-server:{release-tag}
+  replicas: 2
+  serviceAccountName: sa
+----
+
+====

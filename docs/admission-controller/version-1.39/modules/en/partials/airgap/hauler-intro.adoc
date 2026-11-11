@@ -1,0 +1,12 @@
+// The community and the product air gap pages include this partial. Do not
+// add text that is true for only one build.
+
+This guide shows you how to install {admc-name} in air-gapped environments using
+link:https://docs.hauler.dev/docs/intro[Hauler]. Hauler is a tool that helps
+users run workloads in air-gapped environments. It moves the required resources
+for apps into those air-gapped environments.
+
+{admc-short-name} provides a manifest file with all the
+required resources to run {admc-short-name} in a private environment. This
+documentation describes how you can use it. Refer to the Hauler documentation
+to learn more about it.

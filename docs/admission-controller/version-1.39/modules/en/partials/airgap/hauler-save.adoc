@@ -1,0 +1,34 @@
+// The community and the product air gap pages include this partial. Do not
+// add text that is true for only one build.
+
+== Generate the tarball file with all {admc-short-name} resources
+
+Run the Hauler command to export all the resources previously loaded in the
+store to a file:
+
+[source,shell]
+----
+hauler store save --filename kubewarden-resources.tar.zst
+----
+
+[NOTE]
+====
+
+{admc-short-name} container images support x86_64 and Arm architectures. Therefore,
+when you save the resource into the file, you may see warning messages like
+these:
+
+[source,shell,subs="+attributes"]
+----
+2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/kyverno/policy-reporter:3.8.1]
+2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/kyverno/policy-reporter-ui:2.6.1]
+2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [{default-oci-registry}/{default-oci-admcontroller-container-namespace}/policy-server:{release-tag}]
+2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [{default-oci-registry}/{default-oci-admcontroller-container-namespace}/audit-scanner:{release-tag}]
+2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [ghcr.io/rancher/kuberlr-kubectl:v8.1.1]
+2025-08-12 18:55:54 WRN specify an export platform to prevent potential platform mismatch on import of index [{default-oci-registry}/{default-oci-admcontroller-container-namespace}/controller:{release-tag}]
+----
+
+To avoid this warning message, you can set the `--platform` CLI flag to define
+which platform architecture you want to save into the file.
+
+====

@@ -1,0 +1,18 @@
+// The community and the product air gap pages include this partial. Do not
+// add text that is true for only one build.
+
+== Transfer the tarball into your isolated environment
+
+Now that you have all the {admc-short-name} resources in
+`kubewarden-resources.tar.zst`, copy it into your air-gapped environment and
+load it into the Hauler store there:
+
+[source,shell]
+----
+hauler store load --filename kubewarden-resources.tar.zst
+# Check if the resources are loaded
+hauler store info
+----
+
+Now all the resources required to install {admc-short-name} are in the Hauler store in
+your isolated environment.

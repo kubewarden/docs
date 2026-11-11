@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Requirements for installing {admc-name} in an air-gapped installation
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-09
 :page-revdate: {revdate}
 :description: Learn about installation requirements for {admc-name} in air-gapped environments, including supported private registries and compatibility details.
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
@@ -12,8 +12,4 @@ include::partial$variables.adoc[]
 :sidebar_label: Requirements
 :current-version: {page-origin-branch}
 
-. Private registry that supports OCI artifacts. It's needed for storing
-  container images and policies. There is a list of supported Open Container
-  Initiative (OCI) registries xref:reference/oci-registries-support.adoc[here].
-. xref:/howtos/install-kwctl.adoc[`kwctl`] 1.3.1 or later.
-. docker v20.10.6 or later.
+include::partial${build-type}-specific/airgap-requirements.adoc[]

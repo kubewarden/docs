@@ -1,0 +1,5 @@
+. A private registry that supports OCI artifacts. The registry stores the
+  container images and the policies. See the
+  xref:reference/oci-registries-support.adoc[list of supported Open Container Initiative (OCI) registries].
+. link:https://docs.hauler.dev/docs/intro[Hauler]
+. link:https://helm.sh/docs/intro/install/[Helm]

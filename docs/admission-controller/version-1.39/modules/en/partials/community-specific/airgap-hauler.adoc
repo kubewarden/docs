@@ -1,0 +1,37 @@
+// The product repository provides its own product-specific/airgap-hauler.adoc.
+// It can reuse the shared partials in partials/airgap/.
+include::partial$airgap/hauler-intro.adoc[]
+
+The basic workflow using the Hauler manifest is:
+
+. Get it from a {admc-short-name} release page
+. Load all the resources required to run {admc-short-name} into a local store
+. Export them into a file
+. Move the file into the private environment
+. Load the resources into Hauler running inside the private environment
+. Copy everything into a registry, to be used in the installation process, in
+  your air-gapped environment
+
+== Download Hauler manifest from Helm chart release page
+
+Download `hauler_manifest.yaml` from the {admc-short-name}
+link:https://github.com/kubewarden/helm-charts/releases/[release page].
+
+Synchronize the resources defined in the manifest to your Hauler store:
+
+[source,shell]
+----
+hauler store sync --filename hauler_manifest.yaml
+----
+
+Hauler downloads all the resources from the manifest to the local store. This
+process takes a few minutes. When complete, you can see the synchronized
+resources with the `hauler store info` command.
+
+include::partial$airgap/hauler-save.adoc[]
+
+include::partial$airgap/hauler-transfer.adoc[]
+
+include::partial$airgap/hauler-populate-registry.adoc[]
+
+include::partial$airgap/hauler-install.adoc[]
