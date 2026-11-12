@@ -144,6 +144,21 @@ true for all published versions. Otherwise, put it in the version.
 - If the two builds differ only in a value, such as a URL, use an attribute
   instead of a partial. For example, the contribution guide uses
   `{docs-repo-url}`.
+  An attribute can only replace text. It cannot add a list item, a heading,
+  or another block: Asciidoctor finds the blocks first and replaces the
+  attributes after that. An attribute value of `. cosign` does not make a
+  new list item. It becomes text of the item above it.
+- List items that exist in only one build go in a partial with a tag. Put
+  the include directly after the last shared item, with no blank line:
+
+  ```asciidoc
+  . docker v20.10.6 or later.
+  include::partial${build-type}-specific/airgap-extra-requirements.adoc[tag=items]
+  ```
+
+  The partial puts its items between `// tag::items[]` and
+  `// end::items[]`. If a build has no items, the partial holds only the
+  two tag lines.
 - Nav entries that exist in only one build go in a nav fragment,
   `partials/{build-type}-specific/nav-<section>.adoc`. The `nav.adoc`
   includes the fragment with a tag:
@@ -167,6 +182,8 @@ before the include does not help, because it ends the list.
 - Do not use `ifeval::["{build-type}" == ...]`. Some older versions and
   pages, and the legacy `kubewarden-variables-*.adoc` partials, still use
   it. Replace it when you edit that content.
+- Do not use `ifeval` or `ifdef` on an attribute that only one build sets,
+  to show content in only one build. Use a build specific partial.
 - Do not set name attributes in `antora.yml`. Antora gives `antora.yml` and
   playbook attributes priority over values that a page sets, and does not
   warn.
