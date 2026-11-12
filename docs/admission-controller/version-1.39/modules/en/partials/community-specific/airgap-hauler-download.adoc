@@ -1,7 +1,3 @@
-// The product repository provides its own product-specific/airgap-hauler.adoc.
-// It can reuse the shared partials in partials/airgap/.
-include::partial$airgap/hauler-intro.adoc[]
-
 The basic workflow using the Hauler manifest is:
 
 . Get it from a {admc-short-name} release page
@@ -27,11 +23,3 @@ hauler store sync --filename hauler_manifest.yaml
 Hauler downloads all the resources from the manifest to the local store. This
 process takes a few minutes. When complete, you can see the synchronized
 resources with the `hauler store info` command.
-
-include::partial$airgap/hauler-save.adoc[]
-
-include::partial$airgap/hauler-transfer.adoc[]
-
-include::partial$airgap/hauler-populate-registry.adoc[]
-
-include::partial$airgap/hauler-install.adoc[]
