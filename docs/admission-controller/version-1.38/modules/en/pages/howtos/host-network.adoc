@@ -3,7 +3,7 @@ include::partial$variables.adoc[]
 = Running Kubewarden in host network mode
 :description: How to enable and configure host network mode for the Kubewarden stack.
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-05-14
+:revdate: 2026-11-12
 :page-revdate: {revdate}
 :keywords: ["kubewarden", "kubernetes", "hostnetwork", "host network", "policyserver", "ports", "affinity", "networking"]
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
@@ -28,7 +28,7 @@ helm install --wait -n kubewarden admission-controller kubewarden/admission-cont
     --set hostNetwork=true
 ----
 
-This sets `hostNetwork: true` on both the *admission-controller* Deployment
+This sets `hostNetwork: true` on both the controller Deployment
 and on every *PolicyServer* Deployment managed by it. The controller also
 automatically sets `dnsPolicy: ClusterFirstWithHostNet` so that in-cluster DNS
 resolution keeps working.
@@ -86,7 +86,7 @@ metadata:
 spec:
   image: {default-policy-server-image-tag}
   replicas: 2
-  webhookPort: 9443
+  webhookPort: 9444
   readinessProbePort: 9081
 ----
 
@@ -99,7 +99,7 @@ anti-affinity rules:
 
 * Two PolicyServer replicas using the same ports could be scheduled on the same
   node, causing one to crash.
-* A PolicyServer pod and the admission-controller could be scheduled on the
+* A PolicyServer pod and the controller could be scheduled on the
   same node, conflicting on port `8081` because both use it for readiness
   probes by default.
 
@@ -127,7 +127,7 @@ affinity:
               operator: In
               values:
                 - policy-server
-                - kubewarden-controller
+                - controller
         topologyKey: kubernetes.io/hostname
 policyServer:
   affinity:
@@ -139,7 +139,7 @@ policyServer:
                 operator: In
                 values:
                   - policy-server
-                  - kubewarden-controller
+                  - controller
           topologyKey: kubernetes.io/hostname
 ----
 
@@ -173,7 +173,7 @@ spec:
                 operator: In
                 values:
                   - policy-server
-                  - kubewarden-controller
+                  - controller
           topologyKey: kubernetes.io/hostname
 ----
 
