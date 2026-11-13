@@ -1,0 +1,364 @@
+include::partial$variables.adoc[]
+= Upgrade to 1.0
+:revdate: 2026-11-09
+:page-revdate: {revdate}
+:description: Upgrade {sboms-name} from 0.13 to 1.0, map the Helm values to the new values contract, and move the CA bundles to caBundleRef.
+:keywords: ["{sboms-name}", kubewarden, upgrade, helm, values, caBundleRef]
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["operator-manual", "upgrade"]
+:doc-type: ["howto"]
+
+This page explains how to upgrade {sboms-name} from version 0.13 to version 1.0.
+
+Version 1.0 changes the Helm values of the chart.
+The chart now has a `global` block for all workloads, and one block for each workload.
+Some values of 0.13 have new names, and the chart ignores the old names.
+Version 1.0 also adds the `caBundleRef` field, and deprecates the `caBundle` field.
+
+[#_before_you_start]
+== Before you start
+
+* You must run {sboms-short-name} 0.13.x.
+If you run 0.12 or earlier, upgrade one minor version at a time to 0.13.x first.
+See xref:reference/upgrade-path.adoc[Upgrade path].
+* Back up the database.
+See xref:howtos/production-deployments.adoc#_postgresql_backups[Back up the database].
+* You need Helm 3.14 or later if you use `--reset-then-reuse-values`.
+* The commands on this page use the release name `sbomscanner` and the namespace `sbomscanner`.
+If your installation uses other names, change the commands.
+
+[#_breaking_changes]
+== Breaking changes
+
+[#_breaking_reuse_values]
+=== The upgrade does not work with --reuse-values
+
+`helm upgrade --reuse-values` keeps the default values of chart 0.13, and does not use the default values of chart 1.0.
+The upgrade then renders image references without a registry and with the 0.13 tags, for example `kubewarden/sbomscanner/controller:v0.13.0`.
+The kubelet cannot pull these images, so the new pods do not start.
+The NATS pods keep the NATS images of chart 0.13.
+The node scan DaemonSet gets an empty image reference, no resource requests or limits, and no log level.
+
+The render does not fail, so Helm does not show an error before the upgrade.
+Use `--reset-values` with a values file, or `--reset-then-reuse-values`.
+See xref:#_upgrade_procedure[Upgrade procedure].
+
+[#_breaking_worker_node]
+=== The node scan DaemonSet has its own block
+
+Chart 0.13 configured the worker Deployment and the node scan DaemonSet with the `worker` block.
+Chart 1.0 adds the `workerNode` block for the node scan DaemonSet.
+The `worker` block configures the worker Deployment only.
+
+The DaemonSet reads these values from `workerNode`, or from `global`:
+
+* The image, from `workerNode.image`: `repository`, `tag`, `registry`, and `pullPolicy`. If `workerNode.image.pullPolicy` is empty, the chart uses `global.imagePullPolicy`.
+* The resources, from `workerNode.resources`. `global` has no resources.
+* The log level, from `workerNode.logLevel` or `global.logLevel`.
+
+If you set `worker.resources`, `worker.logLevel`, or a `worker.image` value, and do nothing, the DaemonSet uses the default values after the upgrade.
+To keep the same configuration for both workers, set the value in `worker` and in `workerNode`.
+For the log level and the pull policy, you can also set the value in `global`.
+
+[#_breaking_trivy_db]
+=== The Trivy database values moved to the scanner block
+
+Chart 1.0 reads `trivyDBRepository` and `trivyJavaDBRepository` in the new `scanner` block, not in the `worker` block.
+The worker Deployment and the node scan DaemonSet both use these two values.
+
+If you set `worker.trivyDBRepository` or `worker.trivyJavaDBRepository` and do nothing, the chart ignores them.
+For each value that you leave in the `worker` block, the scans use the default public repository.
+In an air-gapped cluster, a scan fails when it must download a database from a public repository.
+Move the two values to the `scanner` block:
+
+[source,yaml]
+----
+scanner:
+  trivyDBRepository: "my-registry.example.com/aquasecurity/trivy-db"
+  trivyJavaDBRepository: "my-registry.example.com/aquasecurity/trivy-java-db"
+----
+
+[#_breaking_log_levels]
+=== Log levels
+
+`controller.logLevel`, `storage.logLevel`, and `mcp.logLevel` work as before.
+`worker.logLevel` now sets the log level of the worker Deployment only.
+The new `global.logLevel` sets the log level of all workloads.
+A `logLevel` in a workload block wins over `global.logLevel`.
+
+[#_breaking_ca_bundle]
+=== CA bundles without a valid certificate fail the scan
+
+In 0.13, if `spec.caBundle` contained no valid PEM certificate, the scan used the trust store of the system.
+In 1.0, the scan fails with this error:
+
+[source,text]
+----
+CA bundle does not contain any valid PEM-encoded certificate
+----
+
+The `spec.caBundle` field of the `Registry` and the `WorkloadScanConfiguration` is deprecated.
+When you create or update a resource that sets it, the API server returns this warning:
+
+[source,text]
+----
+spec.caBundle is deprecated and will be removed in the following versions. Use spec.caBundleRef instead.
+----
+
+Use `spec.caBundleRef` instead.
+See xref:#_ca_bundle_migration[Move the CA bundles to caBundleRef].
+
+[#_values_mapping]
+== Values mapping
+
+Use this table to change your 0.13 values to 1.0 values.
+`<workload>` is `controller`, `storage`, `worker`, or `mcp`.
+
+[cols="2,3",options="header"]
+|===
+|Value in 0.13 |Value in 1.0
+|`worker.image.repository`, `worker.image.tag`, `worker.image.pullPolicy`
+|The same keys in `worker.image` for the worker Deployment, and in `workerNode.image` for the node scan DaemonSet.
+|`controller.logLevel`, `storage.logLevel`, `mcp.logLevel`
+|No change. You can also use `global.logLevel` for all workloads.
+|`worker.logLevel`
+|`worker.logLevel` for the worker Deployment, and `workerNode.logLevel` for the node scan DaemonSet.
+Or `global.logLevel` for both.
+|`worker.resources`
+|`worker.resources` for the worker Deployment, and `workerNode.resources` for the node scan DaemonSet.
+|`worker.trivyDBRepository`, `worker.trivyJavaDBRepository`
+|`scanner.trivyDBRepository` and `scanner.trivyJavaDBRepository`. Both workers use them.
+|===
+
+The other values of 0.13 keep their names, for example `controller.replicas` and `storage.postgres`.
+For all values of 1.0, see xref:howtos/helm-values.adoc[Helm Values Configuration].
+
+This example shows values of 0.13:
+
+[source,yaml]
+----
+worker:
+  logLevel: debug
+  image:
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: 600m
+      memory: 1200Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+controller:
+  image:
+    pullPolicy: Always
+----
+
+These are the same values for 1.0:
+
+[source,yaml]
+----
+worker:
+  logLevel: debug
+  image:
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: 600m
+      memory: 1200Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+workerNode:
+  logLevel: debug
+  image:
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: 600m
+      memory: 1200Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+controller:
+  image:
+    pullPolicy: Always
+----
+
+The `worker` and `controller` values do not change.
+The `workerNode` block repeats the `worker` values for the node scan DaemonSet.
+
+[#_upgrade_procedure]
+== Upgrade procedure
+
+. Export the values that you set on the current installation:
++
+[source,bash]
+----
+helm get values sbomscanner -n sbomscanner -o yaml > values-0.13.yaml
+----
+. Copy `values-0.13.yaml` to `values-1.0.yaml`.
+Change the values in `values-1.0.yaml` with the table in xref:#_values_mapping[Values mapping].
+. If a `Registry` or the `WorkloadScanConfiguration` sets `spec.caBundle`, make sure that each CA bundle contains a valid PEM certificate.
+Since 1.0, a CA bundle without a valid certificate fails the scan.
+Do not change these resources yet, because 0.13 does not know the `caBundleRef` field.
+.. List the resources that set `spec.caBundle`:
++
+[source,bash]
+----
+kubectl get registries -A \
+  -o jsonpath='{range .items[?(@.spec.caBundle)]}{.metadata.namespace}/{.metadata.name}{"\n"}{end}'
+kubectl get workloadscanconfigurations \
+  -o jsonpath='{range .items[?(@.spec.caBundle)]}{.metadata.name}{"\n"}{end}'
+----
++
+The list can also show `Registry` resources with names that start with `workloadscan-`.
+The workload scan manages these resources, and copies the CA bundle of the `WorkloadScanConfiguration` to them.
+.. For each resource, save the CA bundle to a file, and list the certificates in the file.
+This example uses a `Registry` with the name `my-registry` in the `default` namespace:
++
+[source,bash]
+----
+kubectl get registry my-registry -n default \
+  -o jsonpath='{.spec.caBundle}' > my-registry-ca.crt
+openssl crl2pkcs7 -nocrl -certfile my-registry-ca.crt \
+  | openssl pkcs7 -print_certs -noout
+----
++
+The `openssl` command prints a `subject=` line for each certificate.
+If it prints no `subject=` line or an error, the file has no valid certificate.
+Correct the CA bundle of the resource before you upgrade.
+. Select the chart version.
+Update the Helm repository, and list the chart versions:
++
+[source,bash]
+----
+helm repo update
+helm search repo kubewarden/sbomscanner --versions --devel
+----
++
+The `--devel` flag shows pre-release versions.
+You need it only while version 1.0 is a pre-release.
+Set `SBOMSCANNER_VERSION` to the 1.x chart version that you install, for example:
++
+[source,bash]
+----
+SBOMSCANNER_VERSION=1.0.0-alpha.1
+----
+. Upgrade the chart with your new values file.
++
+[WARNING]
+====
+Do not use `--reuse-values`.
+The new pods do not start, because Helm keeps the default values of chart 0.13.
+See xref:#_breaking_reuse_values[The upgrade does not work with --reuse-values].
+====
++
+[source,bash]
+----
+helm upgrade sbomscanner kubewarden/sbomscanner \
+  --namespace sbomscanner \
+  --version "$SBOMSCANNER_VERSION" \
+  --reset-values \
+  -f values-1.0.yaml \
+  --wait --timeout 15m
+----
++
+`--reset-values` uses the default values of chart 1.0 and the values in `values-1.0.yaml` only.
++
+You can also use `--reset-then-reuse-values` instead of `--reset-values`.
+Helm then uses the default values of chart 1.0, the values of the current installation, and the values in `values-1.0.yaml`.
+The 0.13 keys that the chart ignores stay in the stored values of the release, but they have no effect.
+. Make sure that the upgrade is complete:
+.. Make sure that all pods are ready:
++
+[source,bash]
+----
+kubectl get pods -n sbomscanner
+----
+.. Make sure that the images have the correct registry and tag, and the correct pull policy:
++
+[source,bash]
+----
+kubectl get deployments,daemonsets -n sbomscanner \
+  -o custom-columns='NAME:.metadata.name,IMAGE:.spec.template.spec.containers[*].image,PULL:.spec.template.spec.containers[*].imagePullPolicy'
+----
+.. Make sure that the node scan DaemonSet has the log level and the resources that you expect:
++
+[source,bash]
+----
+kubectl get daemonset sbomscanner-worker-node -n sbomscanner \
+  -o jsonpath='{.spec.template.spec.containers[0].args}{"\n"}{.spec.template.spec.containers[0].resources}{"\n"}'
+----
++
+The DaemonSet exists only when `controller.nodeScan.enabled` is `true`.
+. Move the CA bundles to `caBundleRef`.
+See xref:#_ca_bundle_migration[Move the CA bundles to caBundleRef].
+This step is optional in 1.0, because the `caBundle` field still works.
+
+[#_ca_bundle_migration]
+== Move the CA bundles to caBundleRef
+
+Do these steps after the upgrade to 1.0.
+In 0.13, the API server does not know the `caBundleRef` field.
+
+. Save the CA bundle of each resource to a ConfigMap or a Secret:
+* For a `Registry`, create the object in the namespace of the `Registry`.
+* For the `WorkloadScanConfiguration`, create the object in the {sboms-short-name} installation namespace.
++
+This example saves the CA bundle of the `Registry` `my-registry` to a ConfigMap in the `default` namespace:
++
+[source,bash]
+----
+kubectl get registry my-registry -n default \
+  -o jsonpath='{.spec.caBundle}' > my-registry-ca.crt
+kubectl create configmap my-registry-ca -n default \
+  --from-file=ca.crt=my-registry-ca.crt
+----
++
+This example saves the CA bundle of the `WorkloadScanConfiguration` to a ConfigMap in the `sbomscanner` namespace:
++
+[source,bash]
+----
+kubectl get workloadscanconfiguration default \
+  -o jsonpath='{.spec.caBundle}' > workload-scan-ca.crt
+kubectl create configmap workload-scan-ca -n sbomscanner \
+  --from-file=ca.crt=workload-scan-ca.crt
+----
+. In one update of each resource, remove `spec.caBundle` and add `spec.caBundleRef`.
+The two fields are mutually exclusive, so the API server rejects a resource that sets both.
++
+[source,bash]
+----
+kubectl patch registry my-registry -n default --type merge \
+  -p '{"spec":{"caBundle":null,"caBundleRef":{"configMap":{"name":"my-registry-ca"}}}}'
+kubectl patch workloadscanconfiguration default --type merge \
+  -p '{"spec":{"caBundle":null,"caBundleRef":{"configMap":{"name":"workload-scan-ca"}}}}'
+----
++
+If you keep the resources in files, edit the files in the same way, and apply them.
+. Do not edit the `Registry` resources that the workload scan manages.
+These resources have the label `app.kubernetes.io/managed-by=sbomscanner`.
+When you change the `WorkloadScanConfiguration`, the controller updates them.
+To make sure that the controller updated them, run:
++
+[source,bash]
+----
+kubectl get registries -A -l app.kubernetes.io/managed-by=sbomscanner \
+  -o jsonpath='{range .items[*]}{.metadata.namespace}/{.metadata.name}{"\t"}{.spec.caBundleRef}{"\n"}{end}'
+----
+
+For the `caBundleRef` rules, see xref:howtos/private-registries.adoc#_private_certificate_authority[Registries with a private certificate authority].
+
+[#_other_changes]
+== Other changes
+
+* The upgrade deletes the controller metrics ClusterRoles and ClusterRoleBinding.
+The controller did not use them.
+* The new `namespaceOverride` value installs the chart in a namespace that is not the namespace of the Helm release.
+If you set it, set `nats.namespaceOverride` to the same value.
+See xref:howtos/helm-values.adoc#_namespace_override[Names and namespace].
+* Only the {sboms-short-name} controller can add the `app.kubernetes.io/managed-by=sbomscanner` label to an existing `Registry`.
+The API server rejects this change from other users.
+* Only the {sboms-short-name} controller can set or change the `sbomscanner.kubewarden.io/registry` annotation of a `ScanJob`.
+* The chart now includes the NATS chart 2.15, with new NATS images.
+The upgrade replaces the NATS pods.

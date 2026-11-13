@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Glossary
-:revdate: 2026-09-30
+:revdate: 2026-11-05
 :page-revdate: {revdate}
 :description: Terms used in the {sboms-name} documentation: custom resources, components, and the standards and formats that the scanner works with.
 :doc-persona: kubewarden-all
@@ -191,8 +191,9 @@ platforms of a multi-platform image. The `platforms` field exists on the
 
 A registry that needs credentials. You store the credentials in a
 `kubernetes.io/dockerconfigjson` Secret and refer to it in the `authSecret`
-field of the <<_registry,Registry>>. The `caBundle` field adds a private
-certificate authority.
+field of the <<_registry,Registry>>. The `caBundleRef` field refers to a
+ConfigMap or a Secret with the certificates of a private certificate
+authority.
 
 [#_purl]
 === PURL

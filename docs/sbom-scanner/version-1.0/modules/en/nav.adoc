@@ -13,6 +13,7 @@ include::partial$variables.adoc[]
 * Howtos
 include::partial${build-type}-specific/nav-howtos.adoc[tag=nav]
 ** xref:howtos/uninstall.adoc[Uninstall]
+** xref:howtos/upgrade-to-1.0.adoc[Upgrade to 1.0]
 ** xref:howtos/helm-values.adoc[Helm Values]
 ** xref:howtos/production-deployments.adoc[Production deployments]
 ** xref:howtos/private-registries.adoc[Private Registries]
