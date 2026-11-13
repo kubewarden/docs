@@ -20,8 +20,7 @@ monitor mode first, and prefer the learn phase of runtime-enforcer to build
 a policy from the real behavior of the workload.
 
 wpgen only sees the file system of the image. It does not see files on
-volumes, files that the workload creates at runtime, or executables from a
-foreign root.
+volumes, or files that the workload creates at runtime.
 
 Colors are used only for the lines that matter: the check verdict, warnings,
 notices and errors. With --color=auto, the default, colors are on only when
@@ -62,9 +61,7 @@ When an allowed path is a symbolic link in the image, wpgen shows its real
 path. The enforcer reports the real path, so the policy must allow it.
 
 The exit code is 1 when at least one allowed path is not an executable in
-the image. This happens after an image update that removes a file. It also
-happens for a path on a volume or in a foreign root: keep these paths in the
-policy if the workload needs them.
+the image. This happens after an image update that removes a file.
 
 The exit code is also 1 when a container of the workload has no rules in the
 policy, for example a new container. The enforcer does not protect such a
@@ -126,6 +123,9 @@ regular files that have an execute permission bit set, and that are ELF
 programs or start with "#!". wpgen skips the shared libraries, and the
 files that are neither programs nor scripts. Use --include-libraries and
 --include-unknown to keep them.
+
+The output is a draft. Review the allowed paths, and remove the ones that the
+workload does not run.
 
 wpgen looks for the image in the sources given by --image-src, in order, and
 uses the first source that has it. A daemon source (docker, podman) pulls the
@@ -190,12 +190,19 @@ policy allows the programs and the scripts of the image, and skips the
 shared libraries and the other files, unless you use --include-libraries or
 --include-unknown.
 
+The output is a draft. Review the allowed paths of each policy, and remove the
+ones that the workload does not run.
+
 The policy name is the value of the runtimeenforcer.kubewarden.io/policy
 label of the pod template. When the label is not there, the name is
 <short kind>-<workload name>, for example deploy-nginx, as for the
 WorkloadPolicyProposal that the learn phase creates. The policy has the
 namespace of the workload. When the workload has no namespace, the policy
 has none either, so that "kubectl apply -n" puts both in the same namespace.
+
+Two workloads cannot use the same policy name in the same namespace. A
+workload without a namespace can go to any namespace, so its policy name must
+be unique in the file.
 
 The policies go to standard output. Messages go to standard error.
 
