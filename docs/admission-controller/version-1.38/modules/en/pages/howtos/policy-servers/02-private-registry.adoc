@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Configuring PolicyServers to use private registries
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-12
 :page-revdate: {revdate}
 :description: Configure PolicyServers to use private registries by creating a Docker configuration secret and configuring the spec.imagePullSecret field in the configuration.
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
@@ -87,7 +87,5 @@ your private registry as well:
 ----
 # values file example
 policyServer:
-  telemetry:
-    enabled: False
   imagePullSecret: secret-ghcr-docker
 ----

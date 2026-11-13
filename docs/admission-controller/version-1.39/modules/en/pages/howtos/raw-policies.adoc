@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Raw policies
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-12
 :page-revdate: {revdate}
 :description: Configure raw policies as a generic policy evaluation engine using {admc-name}.
 :doc-persona: ["kubewarden-distributor", "kubewarden-integrator", "kubewarden-operator", "kubewarden-policy-developer"]
@@ -74,7 +74,7 @@ To start the policy server:
 docker volume create --driver local \
                 --opt type=tmpfs \
                 --opt device=tmpfs \
-                --opt o=ui=65533 \
+                --opt o=uid=65533 \
                 policy-store
 
 # Start the policy server
@@ -83,7 +83,7 @@ docker run --rm -it \
     -v $(pwd)/policies.yml:/policies.yml \
     -v policy-store:/registry \
     ghcr.io/kubewarden/adm-controller/policy-server \
-    --ignore-kubernetes-connection-failure=true
+    --ignore-kubernetes-connection-failure
 ----
 
 [NOTE]
@@ -241,6 +241,9 @@ The request will be not accepted, since `alice` has not been granted access to t
   "response": {
     "uid": "",
     "allowed": false,
+    "status": {
+      "message": "this request is not accepted"
+    },
     "auditAnnotations": null,
     "warnings": null
   }
