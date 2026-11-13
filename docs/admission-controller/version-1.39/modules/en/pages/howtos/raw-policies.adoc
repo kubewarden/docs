@@ -83,7 +83,9 @@ docker run --rm -it \
     -v $(pwd)/policies.yml:/policies.yml \
     -v policy-store:/registry \
     ghcr.io/kubewarden/adm-controller/policy-server \
-    --ignore-kubernetes-connection-failure
+    --ignore-kubernetes-connection-failure \
+    --policies /policies.yml \
+    --policies-download-dir /registry
 ----
 
 [NOTE]
@@ -103,7 +105,9 @@ docker run --rm -it \
     -v $(pwd)/policies.yml:/policies.yml \
     -v $(pwd)/registry:/registry \
     ghcr.io/kubewarden/adm-controller/policy-server \
-    --ignore-kubernetes-connection-failure
+    --ignore-kubernetes-connection-failure \
+    --policies /policies.yml \
+    --policies-download-dir /registry
 ----
 
 However, it is possible to start the Policy Server with/inside Kubernetes and use the raw validation endpoint.
