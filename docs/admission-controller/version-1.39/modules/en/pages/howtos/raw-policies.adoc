@@ -144,6 +144,9 @@ spec:
       containers:
         - name: policy-server
           image: {default-policy-server-image-tag}
+          args:
+            - --policies=/policies.yml
+            - --policies-download-dir=/registry
           ports:
             - containerPort: 3000
           volumeMounts:
