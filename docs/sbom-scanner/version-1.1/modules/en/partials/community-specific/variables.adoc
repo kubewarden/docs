@@ -1,0 +1,6 @@
+// Here goes version specific, community-specific shared attributes and content
+
+// Current upstream release tag and published Helm chart version.
+// Bumped by updatecli on each upstream release. Do not edit by hand.
+:release-tag: v0.13.0
+:chart-version: 0.13.0

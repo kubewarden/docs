@@ -1,0 +1,59 @@
+include::partial$variables.adoc[]
+= Documentation organization
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:sidebar_label: Organization
+:sidebar_position: 75
+:description: How the {sboms-name} documentation is organized: introduction, quick start, user guide, explanations, how-tos, reference, and the pages about the project itself.
+:keywords: {sboms-name}, kubewarden, documentation, organization
+:doc-persona: kubewarden-all
+:doc-type: explanation
+:doc-topic: explanation
+
+The {sboms-name} documentation has these parts:
+
+* xref:introduction.adoc[Introduction]: what {sboms-short-name} is.
+* xref:quickstart.adoc[Quick start]: install {sboms-short-name} and run a
+  first scan.
+* _Tutorials_: how to verify the signatures of the release, and the user
+  guide, with one page per feature, from registry scans to the MCP server.
+* _Explanations_: how {sboms-short-name} is built and why.
+* _How-tos_: tasks for the operator, such as Helm values, uninstall, and
+  troubleshooting.
+* _Reference_: the cluster requirements, the custom resource definitions,
+  and the OpenTelemetry signals.
+* xref:personas.adoc[For who?]: the people who use {sboms-short-name}.
+* xref:use-cases.adoc[Use cases]: what each persona does with it.
+* Organization: this page.
+* xref:glossary.adoc[Glossary]: the terms used in these pages.
+* xref:disclosure.adoc[Security disclosure]: how to report a vulnerability.
+
+Most of the content is in the _Tutorials_, _Explanations_, _How-tos_, and
+_Reference_ sections. The sections can overlap. The {sboms-short-name}
+project follows the link:https://diataxis.fr/[Diátaxis] documentation
+framework where it can.
+
+== Navigation
+
+The menu on the left shows your position in the documentation. The menu on
+the right lists the sections of the current page. A breadcrumb trail at the
+top of the page shows the path to the current page.
+
+== Search
+
+Each page has a search box in the header.
+
+== Editing
+
+Each page has a link to its source on GitHub at the bottom.
+
+== Other resources
+
+The project also maintains:
+
+* The link:https://github.com/kubewarden/sbomscanner/tree/main/docs/rfc[RFCs]
+  that describe the design decisions of {sboms-short-name}.
+* The link:https://github.com/kubewarden/sbomscanner[source repository] of
+  {sboms-short-name}.
+* The link:https://github.com/kubewarden/community[community repository] of
+  the Kubewarden project, with its governance and security policy.

@@ -1,0 +1,372 @@
+include::partial$variables.adoc[]
+= Glossary
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:description: Terms used in the {sboms-name} documentation: custom resources, components, and the standards and formats that the scanner works with.
+:doc-persona: kubewarden-all
+:doc-topic: glossary
+:doc-type: explanation
+:keywords: {sboms-name}, kubewarden, glossary
+:sidebar_label: Glossary
+:sidebar_position: 90
+
+== A
+
+[#_air-gapped-cluster]
+=== Air-gapped cluster
+
+A cluster with no connection to the internet. To scan in such a cluster, you
+mirror the <<_vulnerability-database,vulnerability databases>> and the
+<<_vex-hub,VEX Hub>> repositories to servers inside the cluster network.
+
+[#_artifactsnamespace]
+=== artifactsNamespace
+
+A field of the <<_workloadscanconfiguration,WorkloadScanConfiguration>>. It
+names one namespace that holds the <<_managed-resource,managed resources>> for
+all workloads. If the field is empty, each workload namespace holds its own
+managed resources. The <<_workloadscanreport,WorkloadScanReport>> always stays
+in the workload namespace.
+
+== C
+
+[#_catalog]
+=== Catalog
+
+The list of repositories in a registry. The `catalogType` field of a
+<<_registry,Registry>> tells the scanner how to get this list. The default
+reads the `_catalog` endpoint of the registry. The `NoCatalog` value is for
+registries that do not expose this endpoint. With `NoCatalog`, you list the
+repositories in the `Registry` resource.
+
+[#_cel]
+=== CEL
+
+Common Expression Language. The language of the expressions in a
+<<_match-condition,match condition>>. The Kubernetes API uses CEL for
+validation rules.
+
+[#_cloudnativepg]
+=== CloudNativePG
+
+A Kubernetes operator for PostgreSQL. Also written CNPG. The Helm chart uses
+it by default to run the database of the <<_storage-component,storage
+component>>. You can use an external PostgreSQL instance instead.
+
+[#_controller]
+=== Controller
+
+The component that reconciles the custom resources. It creates scheduled
+<<_scanjob,ScanJob>> and <<_nodescanjob,NodeScanJob>> resources, serves the
+admission webhooks, and runs the workload scan and node scan features.
+
+[#_cve]
+=== CVE
+
+Common Vulnerabilities and Exposures. The public identifier of a
+vulnerability, for example `CVE-2024-1234`. Each entry in a
+<<_vulnerabilityreport,VulnerabilityReport>> has a CVE identifier.
+
+[#_cvss]
+=== CVSS
+
+Common Vulnerability Scoring System. A number from 0 to 10 that rates the
+severity of a vulnerability. A <<_vulnerabilityreport,VulnerabilityReport>>
+records the CVSS score and vector from each vendor that published one.
+
+== D
+
+[#_digest]
+=== Digest
+
+The SHA256 hash that identifies one image manifest. Two tags that point to the
+same digest are the same image. Images with the same digest share one
+<<_sbom,SBOM>>. The `indexDigest` field holds the digest of the multi-platform
+index that referenced the image.
+
+== I
+
+[#_image]
+=== Image
+
+A record of one container image that the scanner discovered. It holds the
+image metadata, the image layers, and the list of workloads that use the
+image. Namespaced. The scanner creates it. One multi-platform image produces
+one `Image` resource per platform.
+
+== M
+
+[#_managed-resource]
+=== Managed resource
+
+A resource that the workload scan feature creates and owns. This includes the
+<<_registry,Registry>>, <<_scanjob,ScanJob>>, <<_image,Image>>,
+<<_sbom,SBOM>>, and <<_vulnerabilityreport,VulnerabilityReport>> resources for
+the images of a workload. Managed resources carry the label
+`sbomscanner.kubewarden.io/workloadscan: "true"`. Webhooks reject changes from
+users.
+
+[#_match-condition]
+=== Match condition
+
+A named <<_cel,CEL>> expression on a repository of a <<_registry,Registry>>.
+It selects the image tags to scan. The `matchOperator` field combines several
+conditions with `And` or `Or`. A <<_scanjob,ScanJob>> can refer to a match
+condition by name to scan a subset of tags.
+
+[#_mcp-server]
+=== MCP server
+
+An optional component that speaks the Model Context Protocol. It lets an AI
+assistant query vulnerability data and manage scan resources. It is
+experimental.
+
+== N
+
+[#_nats]
+=== NATS
+
+The message broker between the <<_controller,controller>> and the
+<<_worker,workers>>. The Helm chart deploys it as a StatefulSet.
+
+[#_nodesbom]
+=== NodeSBOM
+
+The <<_sbom,SBOM>> of the file system of one node, in <<_spdx,SPDX>> format.
+Cluster-scoped. The node <<_worker,worker>> creates it.
+
+[#_nodescanconfiguration]
+=== NodeScanConfiguration
+
+The resource that enables node scanning. It holds the node selector, the
+<<_scan-interval,scan interval>>, the skip patterns, and the
+<<_platform-filter,platform filter>>. Cluster-scoped. One instance, named
+`default`. You create it. Without it, no node is scanned.
+
+[#_nodescanjob]
+=== NodeScanJob
+
+A request to scan one node. Cluster-scoped. The <<_controller,controller>>
+creates it on the <<_scan-interval,scan interval>> or after a
+<<_rescan-annotation,rescan annotation>>. You can create one for a scan on
+demand.
+
+[#_nodevulnerabilityreport]
+=== NodeVulnerabilityReport
+
+The vulnerability scan result for one node. It has the same report structure
+as a <<_vulnerabilityreport,VulnerabilityReport>>. Cluster-scoped. The node
+<<_worker,worker>> creates it.
+
+== O
+
+[#_oci]
+=== OCI
+
+Open Container Initiative. The standards for container images, registries,
+and artifacts. The scanner catalogs OCI images only. It skips other OCI
+artifacts, for example signatures, attestations, and Helm charts.
+
+[#_opentelemetry]
+=== OpenTelemetry
+
+The framework that the scanner uses to export traces and metrics. The export
+uses the OTLP protocol over gRPC. It is off until you set a collector
+endpoint.
+
+== P
+
+[#_platform-filter]
+=== Platform filter
+
+A list of operating system, architecture, and variant entries. It limits the
+scan to the platforms that you run. Without a filter, the scanner scans all
+platforms of a multi-platform image. The `platforms` field exists on the
+<<_registry,Registry>>, the
+<<_workloadscanconfiguration,WorkloadScanConfiguration>>, and the
+<<_nodescanconfiguration,NodeScanConfiguration>>.
+
+[#_private-registry]
+=== Private registry
+
+A registry that needs credentials. You store the credentials in a
+`kubernetes.io/dockerconfigjson` Secret and refer to it in the `authSecret`
+field of the <<_registry,Registry>>. The `caBundle` field adds a private
+certificate authority.
+
+[#_purl]
+=== PURL
+
+Package URL. A string that identifies one package in one ecosystem, for
+example `pkg:deb/debian/openssl@3.0.11`. Each vulnerability in a
+<<_vulnerabilityreport,VulnerabilityReport>> names the PURL of the affected
+package.
+
+== R
+
+[#_registry]
+=== Registry
+
+The resource that describes a container registry to scan. It holds the URI,
+the <<_catalog,catalog>> type, the repositories and
+<<_match-condition,match conditions>>, the credentials, the
+<<_platform-filter,platform filter>>, and the <<_scan-interval,scan
+interval>>. Namespaced. You create it. The workload scan feature also creates
+<<_managed-resource,managed>> `Registry` resources. If you delete a
+`Registry`, the scanner deletes its images, SBOMs, reports, and scan jobs.
+
+[#_rescan-annotation]
+=== Rescan annotation
+
+The annotation `sbomscanner.kubewarden.io/node-rescan-requested: "true"` on
+the <<_nodescanconfiguration,NodeScanConfiguration>>. It starts a scan of all
+matching nodes at once, without a wait for the <<_scan-interval,scan
+interval>>. The <<_controller,controller>> removes the annotation after it
+creates the <<_nodescanjob,NodeScanJob>> resources.
+
+== S
+
+[#_sbom]
+=== SBOM
+
+Software Bill of Materials. The list of packages in an image or on a node.
+The scanner generates one <<_spdx,SPDX>> document per image and stores it in
+an `SBOM` resource. Namespaced. The <<_worker,worker>> creates it. When the
+<<_vulnerability-database,vulnerability database>> changes, the scanner reads
+the stored SBOM again. It does not pull the image again.
+
+[#_scan-interval]
+=== Scan interval
+
+A duration that turns on scheduled scans. The `scanInterval` field exists on
+the <<_registry,Registry>>, the
+<<_workloadscanconfiguration,WorkloadScanConfiguration>>, and the
+<<_nodescanconfiguration,NodeScanConfiguration>>. If the field is not set,
+the scanner does not scan on a schedule. You then create a
+<<_scanjob,ScanJob>> or a <<_nodescanjob,NodeScanJob>> by hand.
+
+[#_scanjob]
+=== ScanJob
+
+A request to scan one <<_registry,Registry>>. It works like a Kubernetes
+`Job`. Its status conditions report the stages: scheduled, in progress,
+complete, or failed. Namespaced, in the namespace of the `Registry`. You
+create it for a scan on demand. The <<_controller,controller>> creates it on
+the <<_scan-interval,scan interval>>.
+
+[#_spdx]
+=== SPDX
+
+System Package Data Exchange. The document format of each <<_sbom,SBOM>> and
+<<_nodesbom,NodeSBOM>>. The scanner stores SPDX as JSON.
+
+[#_storage-component]
+=== Storage component
+
+A Kubernetes extension API server. It serves the
+`storage.sbomscanner.kubewarden.io` API group: <<_image,Image>>,
+<<_sbom,SBOM>>, <<_vulnerabilityreport,VulnerabilityReport>>,
+<<_workloadscanreport,WorkloadScanReport>>, <<_nodesbom,NodeSBOM>>, and
+<<_nodevulnerabilityreport,NodeVulnerabilityReport>>. It stores these
+resources in PostgreSQL instead of etcd.
+
+[#_suppressed-vulnerability]
+=== Suppressed vulnerability
+
+A vulnerability that a <<_vex,VEX>> statement marks as not applicable. The
+report keeps the entry with `suppressed: true` and the VEX status. The
+severity counts in the report summary do not include suppressed
+vulnerabilities.
+
+== T
+
+[#_traceparent-annotation]
+=== traceparent annotation
+
+The annotation `sbomscanner.kubewarden.io/traceparent` on a
+<<_scanjob,ScanJob>> or <<_nodescanjob,NodeScanJob>>. It carries a W3C trace
+context. A client that already has a trace, for example a CI pipeline, sets
+it so that the scan becomes part of that trace.
+
+[#_trivy]
+=== Trivy
+
+The scanner engine inside the <<_worker,worker>>. It generates the
+<<_sbom,SBOM>> and matches it against the
+<<_vulnerability-database,vulnerability database>>.
+
+== V
+
+[#_vex]
+=== VEX
+
+Vulnerability Exploitability eXchange. A document in which a software vendor
+states whether a <<_cve,CVE>> affects a product. The scanner applies VEX
+statements during a scan and marks the matched entries as
+<<_suppressed-vulnerability,suppressed>>.
+
+[#_vex-hub]
+=== VEX Hub
+
+A repository that collects <<_vex,VEX>> documents from many projects. The
+scanner reads the repositories that you configure with
+<<_vexhub,VEXHub>> resources.
+
+[#_vexhub]
+=== VEXHub
+
+The resource that points at one <<_vex-hub,VEX Hub>> repository. It holds the
+URL and an `enabled` flag. The scanner applies all enabled `VEXHub` resources
+to every scan. Cluster-scoped. You create it. The Helm chart creates two by
+default, for the Rancher and the Aqua Security repositories.
+
+[#_vulnerability-database]
+=== Vulnerability database
+
+The data that <<_trivy,Trivy>> matches an <<_sbom,SBOM>> against. The
+<<_worker,worker>> pulls two <<_oci,OCI>> artifacts: the main database and
+the Java database. In an <<_air-gapped-cluster,air-gapped cluster>>, you
+mirror both to an internal registry.
+
+[#_vulnerabilityreport]
+=== VulnerabilityReport
+
+The scan result for one <<_image,Image>> on one platform. It holds a summary
+with the count per severity, and the list of vulnerabilities per target. Each
+vulnerability names the <<_cve,CVE>>, the package and its <<_purl,PURL>>, the
+installed and fixed versions, the layer, the severity, and the
+<<_cvss,CVSS>> scores. Namespaced. The <<_worker,worker>> creates it.
+
+== W
+
+[#_worker]
+=== Worker
+
+The component that does the scan work. It reads scan messages from
+<<_nats,NATS>>, catalogs the registry, generates the <<_sbom,SBOM>>, and
+scans it with <<_trivy,Trivy>>. For node scans, a worker runs on each node as
+a DaemonSet and reads the host file system.
+
+[#_workload]
+=== Workload
+
+The top-level owner of a Pod. The workload scan feature follows the owner
+references of a Pod up to the Deployment, StatefulSet, DaemonSet, Job, or
+CronJob. It creates one <<_workloadscanreport,WorkloadScanReport>> per
+workload.
+
+[#_workloadscanconfiguration]
+=== WorkloadScanConfiguration
+
+The resource that enables workload scanning. It holds the namespace selector,
+the <<_artifactsnamespace,artifactsNamespace>>, the <<_scan-interval,scan
+interval>>, the credentials, and the <<_platform-filter,platform filter>>.
+Cluster-scoped. One instance, named `default`. You create it.
+
+[#_workloadscanreport]
+=== WorkloadScanReport
+
+The vulnerability view of one <<_workload,workload>>. It lists the containers
+of the workload, their images, and the vulnerabilities of each image. It has
+one summary for the whole workload. Namespaced, in the namespace of the
+workload. The <<_controller,controller>> creates it. Users cannot change it.
