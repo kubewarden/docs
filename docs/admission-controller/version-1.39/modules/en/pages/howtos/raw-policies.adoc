@@ -98,6 +98,8 @@ You can also use a bind mount to store the policies modules in a persistent way:
 [,bash]
 ----
 mkdir -p ./registry
+# The policy server runs as uid 65533 and must write to this directory
+sudo chown 65533:65533 ./registry
 
 # start the policy server
 docker run --rm -it \
