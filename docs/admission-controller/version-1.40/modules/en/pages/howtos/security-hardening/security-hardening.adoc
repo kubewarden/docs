@@ -1,0 +1,192 @@
+include::partial$variables.adoc[]
+
+= Security hardening
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-09-10
+:page-revdate: {revdate}
+:sidebar_label: Security hardening
+:sidebar_position: 50
+:description: Secure {admc-name}'s with hardening tips and best practices to mitigate threats.
+:keywords: ["{admc-name}", kubewarden, kubernetes, security]
+:doc-persona: kubewarden-operator, kubewarden-integrator
+:doc-type: howto
+:doc-topic: operator-manual, security
+
+{admc-name} strives to be secure with little configuration. In this
+section and its subpages, you can find hardening tips (with their trade-offs)
+to secure {admc-short-name} itself.
+
+Please refer to the xref:/reference/threat-model.adoc[threat model] for more
+information.
+
+== `admission-controller` Helm chart
+
+Operators can obtain a secure deployment by installing all the {admc-short-name} Helm
+charts. It's recommended to enable its recommended policies with:
+
+[source,console]
+----
+helm install --wait -n kubewarden admission-controller kubewarden/admission-controller \
+  --set recommendedPolicies.enabled=True \
+  --set recommendedPolicies.defaultPolicyMode=protect
+----
+
+This provides a default PolicyServer and default policies, in protect mode, to
+ensure the {admc-short-name} stack is safe from other workloads.
+
+== Verifying {admc-short-name} artifacts
+
+Refer to the xref:/tutorials/verifying-kubewarden.adoc[Verifying
+{admc-short-name}] tutorial.
+
+== RBAC
+
+{admc-short-name} describes RBAC configurations in different _Explanations_
+sections. Users can fine-tune the needed permissions for the
+xref:/explanations/audit-scanner/audit-scanner.adoc#_permissions_and_serviceaccounts[Audit
+Scanner] feature, as well as xref:/explanations/context-aware-policies.adoc[per
+Policy Server] Service Account for the context-aware feature.
+
+To view all Roles:
+
+[source,console]
+----
+kubectl get clusterroles,roles -A | grep kubewarden
+----
+
+== Per-policy permissions
+
+For context-aware policies, operators specify fine-grained permissions per
+policy under its `spec.contextAwareResources`, and those work in conjunction
+with the Service Account configured for the Policy Server where the policy
+runs.
+
+== Workload coverage
+
+By default, {admc-short-name} excludes specific Namespaces from
+{admc-short-name} coverage. This is done to simplify first-time use and
+interoperability with other workloads.
+
+Security-conscious operators can tune these Namespaces list via the
+`.global.skipNamespaces` value for both the `kubewarden-controller` and
+`kubewarden-defaults` Helm charts.
+
+== Pod Security Admission
+
+From 1.23, {admc-short-name}'s stack is able to run in a Namespace where the
+https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted[`restricted``
+Pod Security Standards] are in place, with current Pod hardening best
+practices.
+
+To do that, you need to add the `pod-security.kubernetes.io/enforce:
+restricted` label to the {admc-short-name} deployment Namespace.
+
+```console
+kubectl label namespace kubewarden pod-security.kubernetes.io/enforce=restricted --overwrite
+```
+
+See the
+https://kubernetes.io/docs/concepts/security/pod-security-admission/[official
+documentation] of Kubernetes' Pod Security Admission for more details.
+
+=== SecurityContexts
+
+The `admission-controller` Helm chart configures the SecurityContexts and
+exposes them in its `values.yaml`.
+
+The `admission-controller` Helm chart also allows for configuring the default
+Policy Server `.spec.securityContexts` under
+`.Values.policyServer.securityContexts`.
+
+For Policy Servers managed by operators, you can configure them via their
+xref:/reference/CRDs.adoc#_policyserversecurity[`spec.securityContexts`].
+
+=== Namespaced policy host capabilities
+
+Namespaced policies (`AdmissionPolicy` and `AdmissionPolicyGroup`) cannot
+access Kubernetes resources via `contextAwareResources`, but they can exercise
+other host capabilities: OCI registry queries, Kubernetes `can_i` checks, DNS
+lookups, and certificate verification. These capabilities could be exploited by
+a low-privileged user for information disclosure or reconnaissance (see our
+xref:/reference/threat-model.adoc[threat model]).
+
+Each `PolicyServer` exposes a `spec.namespacedPoliciesCapabilities` field that
+lists which host capability API call paths are available to its namespaced
+policies. By default, all PolicyServers allow all host capability calls for
+namespaced policies. This includes the PolicyServer `default` (installed with
+the `kubewarden-defaults` Helm chart), and custom PolicyServers.
+
+Cluster operators need to configure each PolicyServer's
+`spec.namespacedPoliciesCapabilities` by setting it to `[]` to deny all, or
+provide an explicit allowlist.
+
+For a full walkthrough, including an example on secure self-service Namespaces
+and policies useful for teams, see
+xref:/howtos/policy-servers/06-namespaced-policies-capabilities.adoc[Controlling host capabilities for namespaced policies].
+
+[#_namespaced_policy_allowed_resources]
+=== Namespaced policy allowed resources
+
+A user with permission to create an `AdmissionPolicy` or an
+`AdmissionPolicyGroup` in a Namespace can target all the resources in
+that Namespace. If there is no limit, that user can target
+`ServiceAccount` objects or RBAC objects in the Namespace. These
+resources are more than a namespaced policy must control.
+
+To prevent this problem, {admc-short-name} uses a resource allow list.
+This list controls the resources that a namespaced policy can target.
+The Helm value `namespacedPoliciesAllowedResources` sets this list.
+
+You can review the default list in the Helm chart values:
+
+[source,yaml]
+----
+namespacedPoliciesAllowedResources:
+  - apiGroups: [""]
+    resources:
+      - pods
+      - replicationcontrollers
+      - configmaps
+      - secrets
+      - services
+      - persistentvolumeclaims
+  - apiGroups: ["apps"]
+    resources:
+      - deployments
+      - statefulsets
+      - replicasets
+      - daemonsets
+  - apiGroups: ["batch"]
+    resources:
+      - jobs
+      - cronjobs
+  - apiGroups: ["autoscaling"]
+    resources:
+      - horizontalpodautoscalers
+  - apiGroups: ["policy"]
+    resources:
+      - poddisruptionbudgets
+----
+
+The controller accepts a namespaced policy that targets a resource that is not
+in this list but it does not deploy it. The policy stays with `rejected` status
+and no admission request is sent to it.
+
+When the list of resources namespaced policies are allowed to
+interact with is changed, the controller reconciles all the
+namespaced policies. Some of them might become active, others
+might switch to the rejected status depending on what they target
+and what is now part of the updated allow list. See
+xref:/explanations/policy-lifecycle.adoc#_rejected[Policy lifecycle] for
+the full description of the statuses of a policy.
+
+The allow list has these constraints:
+
+* You cannot use a wildcard (`*`) as an entry.
+* You cannot use a subresource, for example `pods/exec`, as an entry.
+But a policy rule can target a subresource of a permitted resource.
+* An empty list rejects all namespaced policies.
+
+This list does not apply to `ClusterAdmissionPolicy` and
+`ClusterAdmissionPolicyGroup`. A user already needs cluster-wide
+privileges to create a cluster-wide policy.

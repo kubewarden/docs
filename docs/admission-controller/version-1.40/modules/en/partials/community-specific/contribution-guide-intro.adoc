@@ -1,0 +1,3 @@
+// Community only: the link to the community contributing guide. The product
+// repository has a product-specific/contribution-guide-intro.adoc.
+Please review the contributing guide https://github.com/kubewarden/community/blob/main/CONTRIBUTING.md[here].
