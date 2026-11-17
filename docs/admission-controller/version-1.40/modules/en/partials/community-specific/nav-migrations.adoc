@@ -1,0 +1,10 @@
+// Community entries for the Migrations section of nav.adoc.
+//
+// nav.adoc includes only the lines between the tags. vlp.js (from
+// docs-common) prepends an attribute line to every included file. In
+// a list, that line would become part of the list item text.
+// tag::nav[]
+*** Migrations to v1.37
+**** xref:community-specific/howtos/migration/app136-to-app137-migration.adoc[]
+**** xref:community-specific/howtos/migration/fleet-migration-1.37.adoc[]
+// end::nav[]

@@ -1,0 +1,13 @@
+include::partial$variables.adoc[]
+
+= Enterprise support
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-10-14
+:page-revdate: {revdate}
+:description: Access centralized information on enterprise support for {admc-name} solutions through various interfaces.
+:keywords: [ {admc-name}, kubewarden, support, ]
+:doc-persona: [kubewarden-all]
+:doc-type: [explanation]
+:doc-topic: [support]
+
+include::partial${build-type}-specific/enterprise-support.adoc[]

@@ -1,0 +1,77 @@
+include::partial$variables.adoc[]
+= Using `cel-policy`
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-10-08
+:page-revdate: {revdate}
+:description: Learn how the {admc-name} cel-policy runs CEL expressions as an interpreter, extends Kubernetes CEL with host capabilities, and compares with ValidatingAdmissionPolicies.
+:doc-persona: ["kubewarden-policy-developer", "kubewarden-operator"]
+:doc-topic: ["kubewarden", "writing-policies", "cel", "cel-policy", "introduction"]
+:doc-type: ["tutorial"]
+:keywords: ["kubewarden", "kubernetes", "writing policies", "cel", "cel-policy", "introduction"]
+:sidebar_label: Using cel-policy
+:current-version: {page-origin-branch}
+
+This page describes `cel-policy`, the {admc-short-name} policy that runs CEL
+expressions as an interpreter. You write the CEL code in the policy settings,
+and `cel-policy` evaluates it. No build step is necessary.
+
+[#_cel_in_kubewarden_cel_policy]
+== CEL in {admc-name}: `cel-policy`
+
+{admc-short-name} provides https://github.com/kubewarden/cel-policy[cel-policy].
+This is a policy that builds and bundles the upstream
+https://pkg.go.dev/github.com/google/cel-go[cel-go] interpreter, and also the
+different libraries available for CEL in Kubernetes from
+`apiextensions-apiserver`. See
+xref:tutorials/writing-policies/CEL/01-intro-cel.adoc#_kubernetes_function_libraries[Kubernetes function libraries]
+for the list.
+
+In addition, `cel-policy` bundles an *{admc-short-name} CEL extension library* that exposes
+{admc-short-name}'s https://github.com/kubewarden/cel-policy?tab=readme-ov-file#host-capabilities[host capabilities as native
+CEL]:
+
+* Sigstore verification
+* OCI interaction
+* Cryptographic functions
+* Network operations
+* Access to Kubernetes resources
+
+This means that `cel-policy` is a superset of Kubernetes CEL,
+and backwards-compatible. One can reuse CEL written for vanilla Kubernetes, and/or
+make use of the features added by {admc-short-name}.
+
+The `cel-policy` is shipped compiled and behaves as a CEL interpreter. Users of
+the policy pass the desired CEL expressions in the `spec.settings` of the
+(Cluster)AdmissionPolicy, and thanks to CEL features, the expression gets
+compiled and typed-checked for correctness when creating or updating the
+(Cluster)AdmissionPolicy. This means there's no need for custom builds of the
+`cel-policy`.
+
+[#_benefits_of_kubewardens_cel_policy_in_comparison_with_validatingadmissionpolicies]
+=== Benefits of {admc-short-name}'s `cel-policy` in comparison with ValidatingAdmissionPolicies
+
+The {admc-short-name} `cel-policy`:
+
+* It's CEL code is backwards-compatible with ValidatingAdmissionPolicies.
+* Contrary to ValidatingAdmissionPolicies, it doesn't need a binding such as
+ValidatingAdmissionPolicyBinding, as this is included in {admc-short-name}'s
+(Cluster)Admissionpolicies definitions.
+* Can be deployed to clusters that lack ValidatingAdmissionPolicies support.
+* Is context-aware, and makes use of {admc-short-name}'s fine-grained permissions
+for xref:reference/spec/05-context-aware-policies.adoc[context awareness].
+* Is deployed as (Cluster)AdmissionPolicy.
+* Benefits from {admc-short-name}'s tracing and telemetry on policies.
+* It will be taken into account by the Audit Scanner.
+* Can be developed and tested out-of-cluster thanks to kwctl.
+
+[#_next_steps]
+== Next steps
+
+The tutorials that follow show `cel-policy` in use:
+
+* xref:tutorials/writing-policies/CEL/cel-policy/02-reusing-vap.adoc[]: how to
+run an existing ValidatingAdmissionPolicy with `cel-policy`.
+* xref:tutorials/writing-policies/CEL/cel-policy/03-context-aware.adoc[]: how
+to read other cluster resources from a CEL expression.
+* xref:tutorials/writing-policies/CEL/cel-policy/04-example-sigstore.adoc[]:
+how to verify container image signatures from a CEL expression.

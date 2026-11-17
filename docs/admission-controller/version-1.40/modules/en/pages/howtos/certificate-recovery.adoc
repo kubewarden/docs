@@ -1,0 +1,129 @@
+include::partial$variables.adoc[]
+= Recover from certificate problems
+:page-languages: [en, de, es, fr, ja, pt, zh]
+:revdate: 2026-11-06
+:page-revdate: {revdate}
+:description: Recover the {admc-name} from expired certificates, a damaged root CA, or a deleted webhook configuration of the controller.
+:keywords: ["{admc-name}", "kubewarden", "certificate", "root CA", "recovery"]
+:doc-persona: ["kubewarden-operator"]
+:doc-type: ["howto"]
+:doc-topic: ["operator-manual", "certificates"]
+
+This page tells you how to recover from problems with the certificates of the
+{admc-short-name} stack. For how the controller creates and rotates the
+certificates, refer to xref:explanations/certificates.adoc[].
+
+[#_before_you_start]
+== Before you start
+
+The commands on this page use the namespace `kubewarden` and the release
+name `admission-controller`. If your installation uses other names, change
+the commands.
+
+If the controller has more than one replica, use the logs of the pod that
+holds the leader `Lease`. To get the name of this pod, run this command. The
+name is the part before the `_` character:
+
+[source,console]
+----
+kubectl -n kubewarden get lease a4ddbf36.kubewarden.io -o jsonpath='{.spec.holderIdentity}'
+----
+
+Then replace `deployment/admission-controller` in the commands on this page
+with `pod/<name>`.
+
+[#_expired_certificates]
+== Expired certificates
+
+If certificates expired, the API server cannot call the webhook servers. Then
+each webhook with `failurePolicy: Fail` rejects the requests that it matches.
+This can occur after you stop the cluster for a long time.
+
+You do not have to do a manual step. The first pass after the start of the
+controller rotates the expired certificates. If the root CA is also expired,
+the pass rotates the root CA first. The interruption includes the leader
+election, the first pass, and about one minute until the kubelet copies the
+new certificates.
+
+To make sure that the controller rotated the certificates, read its logs:
+
+[source,console]
+----
+kubectl -n kubewarden logs deployment/admission-controller | grep -E "rotated successfully|Injected the CA bundle"
+----
+
+The controller logs these messages:
+
+* `Certificate rotated successfully`, with the DNS name of the server, for
+each server certificate.
+* `Audit scanner client certificate rotated successfully`.
+* `CA root certificate rotated successfully`, if the root CA was expired.
+* `Injected the CA bundle`, with the name of the webhook configuration, for
+each CA bundle that the controller changed.
+
+A pass that changes nothing writes none of these messages. The init container
+writes its own messages, for example `Created the secret`, in the container
+`init`. To read them, add `-c init` to `kubectl logs`.
+
+[#_damaged_root_ca]
+== A damaged or untrusted root CA
+
+If `ca.crt` or `ca.key` of `kubewarden-ca` is missing or empty, the controller
+cannot repair the secret. Each pass fails, and the controller tries again. A
+new controller pod does not start, because its init container fails. The logs
+show the message `failed to extract CA root from secret` or
+`failed to extract the CA root from secret`.
+
+If `ca.crt` and `ca.key` contain data that is not a valid root CA, the
+controller replaces the root CA at the next pass. If the previous `ca.crt` is
+a valid certificate, the controller keeps it in `old-ca.crt` until it expires.
+The rotation replaces an earlier `old-ca.crt`. To remove `old-ca.crt`, delete
+the secret. If the previous `ca.crt` is not a valid
+certificate, the controller removes it in the same pass.
+
+Use this procedure when the `kubewarden-ca` secret is damaged, or when you do
+not trust the root CA, for example after a leak of `ca.key`.
+
+. Delete the secret:
++
+[source,console]
+----
+kubectl -n kubewarden delete secret kubewarden-ca
+----
+. Make sure that the controller rotated the certificates:
++
+[source,console]
+----
+kubectl -n kubewarden logs deployment/admission-controller | grep -E "Created the secret|rotated successfully|Injected the CA bundle"
+----
+
+The controller creates a new root CA. It writes the new CA bundle into each
+webhook configuration. Then it signs all the server certificates and the
+client certificate of the audit scanner again.
+
+The previous root CA is not available, so the CA bundles contain only the new
+root CA. Until the servers load their new certificates, usually within about
+one minute, the policies with `failurePolicy: Fail` reject requests. In this
+time, you also cannot create or change policies and `PolicyServer` resources.
+
+[#_deleted_webhook_configuration]
+== A deleted webhook configuration of the controller
+
+The controller does not create its webhook configurations again while it
+runs. Only the init container creates them, when a controller pod starts.
+Until then, the API server does not check and change the {admc-short-name}
+resources.
+
+Use this procedure if
+`kubewarden-controller-validating-webhook-configuration` or
+`kubewarden-controller-mutating-webhook-configuration` is missing.
+
+. Restart the controller:
++
+[source,console]
+----
+kubectl -n kubewarden rollout restart deployment admission-controller
+----
+
+The init container of each new controller pod creates the missing webhook
+configurations.
