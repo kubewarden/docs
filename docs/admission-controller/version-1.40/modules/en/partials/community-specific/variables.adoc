@@ -17,4 +17,4 @@
 // admission controller container images share the release tag.
 // Bumped by updatecli on each upstream release. Do not edit by hand.
 :release-tag: v1.39.0
-:chart-version: 6.1.0
+:chart-version: 6.2.0
