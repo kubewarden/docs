@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Configuring {rte-name} for production
-:revdate: 2026-10-13
+:revdate: 2026-11-19
 :page-revdate: {revdate}
 :description: Configure the controller, the agent, and the PriorityClass of {rte-name} for high availability, scheduling, and reliable resource use.
 :keywords: ["{rte-name}", kubewarden, kubernetes, production, poddisruptionbudget, affinity, tolerations, priorityclass, resources, admission policies, pod security admission]
@@ -19,6 +19,54 @@ by cluster size, see
 xref:reference/resource-consumption.adoc[Resource consumption]. For how the
 components work together, see
 xref:explanations/architecture.adoc[Architecture].
+
+[#_chart_values_layers]
+== The layers of the chart values
+
+The chart deploys three workloads: the controller, the agent, and the
+optional debugger. Each workload has its own block in the values:
+`controller`, `agent`, and `debugger`.
+
+The `global` block holds the values for all three workloads. Each workload
+block accepts the same keys, for that workload only. For example,
+`global.tolerations` applies to every workload, and `agent.tolerations`
+applies to the agent only.
+
+If more than one block sets a key, the chart uses these rules:
+
+[cols="2,3", options="header"]
+|===
+|Keys |Rule
+
+|`logLevel`, `priorityClassName`, `tolerations`,
+`topologySpreadConstraints`, `extraEnvFrom`
+|The value of the workload block replaces the value of `global`.
+
+|`labels`, `annotations`, `podLabels`, `podAnnotations`, `nodeSelector`,
+`affinity`, `serviceAccount.annotations`
+|The chart merges the maps. The workload block wins on a duplicate key.
+
+|`imagePullSecrets`, `extraEnv`, `extraVolumes`, `extraVolumeMounts`
+|The chart adds the list of the workload block to the list of `global`.
+
+|`imagePullPolicy`
+|The `image.pullPolicy` of a workload block replaces
+`global.imagePullPolicy`.
+
+|`imageRegistry`
+|`global.imageRegistry` replaces the `image.registry` of every workload
+block.
+|===
+
+An empty value (`""`, `[]`, or `{}`) counts as not set.
+
+The chart also accepts a `common` block with the keys of `global`, except
+`imageRegistry`. A value in `common` wins over `global`, and a workload
+block wins over `common`. Use `common` when {rte-short-name} is a subchart
+and the parent chart sets `global`.
+
+The xref:howtos/telemetry.adoc#_where_to_set_the_values[telemetry values]
+have their own rule.
 
 [#_controller]
 == Controller
@@ -51,32 +99,37 @@ controller:
 
 A PodDisruptionBudget (PDB) limits how many pods a voluntary disruption can
 remove at the same time, for example a node drain or a cluster upgrade. The
-chart ships a PDB template for the controller, off by default.
+chart creates no PDB by default.
 
-Set `controller.pdb.enabled` to `true`. Set `minAvailable` or
-`maxUnavailable` under `controller.pdb`, in the same way as a PDB `spec`:
+To create a PDB for the controller, set `minAvailable` or `maxUnavailable`
+under `controller.podDisruptionBudget`, in the same way as a PDB `spec`:
 
 [source,yaml]
 ----
 controller:
-  pdb:
-    enabled: true
+  podDisruptionBudget:
     minAvailable: 1
 ----
 
+The chart copies each key of `controller.podDisruptionBudget` into the
+`spec` of the PDB, and it adds the `selector`. The block has no `enabled`
+key. An empty block creates no PDB.
+
 [WARNING]
 ====
-If `controller.replicas` is `1` and `controller.pdb.minAvailable` is `1`,
-the PodDisruptionBudget blocks every voluntary disruption of the controller
-pod, including `kubectl drain`. Before you turn on the PodDisruptionBudget,
+If `controller.replicas` is `1` and
+`controller.podDisruptionBudget.minAvailable` is `1`, the
+PodDisruptionBudget blocks every voluntary disruption of the controller
+pod, including `kubectl drain`. Before you add the PodDisruptionBudget,
 set `controller.replicas` to `2` or more.
 ====
 
 [#_schedule_the_controller]
 === Schedule the controller
 
-Use `controller.tolerations`, `controller.nodeSelector`, and
-`controller.affinity` to control where the controller pods run. For
+Use `controller.tolerations`, `controller.nodeSelector`,
+`controller.affinity`, and `controller.topologySpreadConstraints` to
+control where the controller pods run. For
 example, spread controller replicas across different nodes with
 `podAntiAffinity`:
 
@@ -156,6 +209,14 @@ agent:
   nodeSelector:
     kubernetes.io/os: linux
 ----
+
+[WARNING]
+====
+Do not put a scheduling value for the controller in the `global` block.
+`global.nodeSelector` and `global.affinity` also apply to the agent, and
+the agent then leaves the nodes that they exclude. Pods on those nodes
+run without enforcement.
+====
 
 [#_agent_rolling_updates]
 === Agent rolling updates
@@ -253,6 +314,11 @@ priorityClass:
   name: system-node-critical
 ----
 
+A workload can also name its own class. Set `priorityClassName` in the
+`global` block or in a workload block. For that workload, this value
+overrides `priorityClass.name`. The chart still creates its own
+PriorityClass, unless `priorityClass.enabled` is `false`.
+
 [WARNING]
 ====
 If you delete a PriorityClass, running pods that use it keep running. New
@@ -262,25 +328,43 @@ pods that name the deleted class do not start.
 [#_telemetry]
 == Telemetry
 
-By default, the chart deploys its own OpenTelemetry collector, as a single
-Deployment replica with no `tolerations`, `nodeSelector`, or `affinity`
-value. This default is enough for a basic setup, but it is a single point of
-failure for the {violation-term} metrics.
+The chart does not deploy an OpenTelemetry collector, and the telemetry
+export is off by default. Without the export, you see a {violation-term}
+only in the status of its policy. The status holds the 100 most recent
+records.
 
-For production, point {rte-short-name} at an OpenTelemetry collector that
-your own platform operates and schedules for high availability:
+For production, send the violation events and the metrics to an
+OpenTelemetry collector that your own platform operates and schedules for
+high availability:
 
 [source,yaml]
 ----
-telemetry:
-  collectorStrategy: external
-  externalCollector:
-    protocol: grpc
+global:
+  otel:
     endpoint: https://otel-collector.observability.svc.cluster.local:4317
 ----
 
-See xref:quickstart.adoc#_use-an-external-collector[Use an external
-collector] for the full set of values.
+See xref:howtos/telemetry.adoc[Export telemetry to an OpenTelemetry
+collector] for the TLS values and for a collector configuration.
+
+[#_use_a_private_registry]
+== Use a private registry
+
+By default, the chart pulls its images from `{oci-registry}`. To pull every image
+from your own registry, set `global.imageRegistry`. The chart keeps the
+path of each image, for example `kubewarden/runtime-enforcer/agent`.
+
+If the registry needs credentials, add the name of the pull Secret to
+`global.imagePullSecrets`. The Secret must be in the namespace of
+{rte-short-name}:
+
+[source,yaml]
+----
+global:
+  imageRegistry: registry.example.com
+  imagePullSecrets:
+    - registry-credentials
+----
 
 [#_restrict_the_learning_scope]
 == Restrict the learning scope
@@ -360,10 +444,13 @@ values file:
 
 [source,yaml]
 ----
+global:
+  otel:
+    endpoint: https://otel-collector.observability.svc.cluster.local:4317
+
 controller:
   replicas: 2
-  pdb:
-    enabled: true
+  podDisruptionBudget:
     minAvailable: 1
   affinity:
     podAntiAffinity:
@@ -380,12 +467,6 @@ agent:
     - key: "node-role.kubernetes.io/control-plane"
       operator: "Exists"
       effect: "NoSchedule"
-
-telemetry:
-  collectorStrategy: external
-  externalCollector:
-    protocol: grpc
-    endpoint: https://otel-collector.observability.svc.cluster.local:4317
 
 learning:
   namespaceSelector:

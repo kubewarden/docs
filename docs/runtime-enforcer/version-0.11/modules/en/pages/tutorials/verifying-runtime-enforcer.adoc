@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Verifying {rte-name}
-:revdate: 2026-09-30
+:revdate: 2026-11-19
 :page-revdate: {revdate}
 :description: Verify the signatures, the SBOMs, and the provenance of the {rte-name} container images and Helm chart, and check the integrity of the kubectl plugin.
 :doc-persona: kubewarden-operator
@@ -249,29 +249,23 @@ gh attestation verify runtime-enforcer-{chart-version}.tgz \
 ----
 
 To list every image that the chart deploys, render it and extract the image
-fields:
+fields. The `debugger.enabled` value adds the image of the optional debugger
+to the list:
 
 [source,bash,subs="+attributes"]
 ----
 helm template runtime-enforcer oci://ghcr.io/kubewarden/charts/runtime-enforcer \
   --version {chart-version} \
+  --set debugger.enabled=true \
   | yq '..|.image? | select(.)' \
   | sort -u
 ----
 
 Verify each {rte-short-name} image in that list as the
-<<_container_images,container images>> section shows.
+xref:#_container_images[container images] section shows.
 
-[#_third_party_images]
-== Third-party images
-
-The chart also deploys one image that the {rte-short-name} project does not
-build and does not sign:
-
-* `otel/opentelemetry-collector-contrib`, when `telemetry.collectorStrategy`
-  is `default`.
-
-Verify it with the method that its own project documents.
+The chart deploys only images that the {rte-short-name} project builds and
+signs.
 
 [#_kubectl_plugin]
 == kubectl plugin

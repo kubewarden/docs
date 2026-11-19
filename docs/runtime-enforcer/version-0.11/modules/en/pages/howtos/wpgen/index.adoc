@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Draft policies from container images with wpgen
-:revdate: 2026-11-02
+:revdate: 2026-11-19
 :page-revdate: {revdate}
 :description: Install wpgen, the {rte-name} tool that drafts a WorkloadPolicy from container images, and learn what it can and cannot see.
 :keywords: ["{rte-name}", "kubewarden", "wpgen", "WorkloadPolicy", "cli"]
@@ -393,8 +393,9 @@ does not block them.
 . Apply the policy in `monitor` mode. Add the {policy-label-term} label to the
   workload, so that the workload is {binding-term} to the policy.
 . Let the workload run for a period that covers its normal activity.
-. Look at the violation events. The agent exports them through the
-  {opentelemetry-collector-term}. See
+. Look at the violations. The status of the policy lists them. If the
+  xref:howtos/telemetry.adoc[telemetry export] is on, the agent also sends
+  them to your {opentelemetry-collector-term}. See
   xref:explanations/phases.adoc#_monitor-phase[Monitor phase] for details.
 . Remove the paths that the workload does not need. The
   {kubectl-plugin-term} does this for you:

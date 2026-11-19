@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = {rte-name} use cases
-:revdate: 2026-09-30
+:revdate: 2026-11-19
 :page-revdate: {revdate}
 :description: Example use cases for {rte-name}. Learn which executables a workload runs, review the allow-list, monitor it, and enforce it in the kernel.
 :keywords: {rte-name}, documentation, use cases
@@ -135,13 +135,13 @@ The policy status holds the 100 most recent {violation-record-term}s. The
 {controller-term} updates it every 30 seconds. For a longer history and for
 alerts, I use the telemetry pipeline. The agent emits a `policy_violation`
 event for each violation, and a `policy_violation_acknowledged` event for each
-acknowledgement. The events go to the {opentelemetry-collector-term} that
-{rte-short-name} installs, or to my own collector. The collector exports a
-Prometheus counter for violations. The controller exports a gauge for active
-violations. I set alerts on these metrics.
+acknowledgement. I turn on the telemetry export, and the events go to my
+{opentelemetry-collector-term}. The collector counts the events and exports
+a Prometheus counter for violations. The controller exports a gauge for
+active violations. I set alerts on these metrics.
 
 See xref:howtos/troubleshooting.adoc#_quick-overview-with-the-kubectl-plugin[Quick overview with the kubectl plugin]
-and xref:quickstart.adoc#_use-an-external-collector[Use an external collector].
+and xref:howtos/telemetry.adoc[Export telemetry to an OpenTelemetry collector].
 
 == Case E: As a platform team with many clusters, I want the same policy in every cluster, managed as code.
 

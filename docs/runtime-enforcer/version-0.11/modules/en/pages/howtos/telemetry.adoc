@@ -1,0 +1,324 @@
+include::partial$variables.adoc[]
+= Export telemetry to an OpenTelemetry collector
+:revdate: 2026-11-19
+:page-revdate: {revdate}
+:description: Send the violation events and the active violation metric of {rte-name} to your own OpenTelemetry collector, with or without TLS.
+:keywords: ["{rte-name}", kubewarden, kubernetes, telemetry, opentelemetry, otlp, collector, prometheus, violations]
+:doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
+:doc-topic: ["operator-manual", "telemetry", "opentelemetry"]
+:doc-type: ["howto"]
+
+{rte-name} can export its {violation-term} events and one metric with
+OTLP (OpenTelemetry Protocol). The export is off by default.
+
+The Helm chart does not deploy an {opentelemetry-collector-term}. You
+deploy the collector, and you give its address to the chart.
+
+[NOTE]
+====
+{rte-short-name} shows violations without telemetry. The status of each
+{workloadpolicy-cr} holds the most recent {violation-record-term}s. See
+xref:quickstart.adoc#_workloadpolicy-monitor-mode[WorkloadPolicy (monitor
+mode)].
+====
+
+[#_what_rte_exports]
+== What {rte-short-name} exports
+
+The {agent-term} and the {controller-term} export telemetry. The debugger
+does not.
+
+[cols="1,1,2,3", options="header"]
+|===
+|Component |Signal |Name |When
+
+|Agent
+|Event
+|`policy_violation`
+|At each violation, in `monitor` mode and in `protect` mode.
+
+|Controller
+|Event
+|`policy_violation_acknowledged`
+|When you {acknowledge-term} a violation.
+
+|Controller
+|Metric (gauge)
+|`runtime_enforcer_active_violations`
+|On each xref:glossary.adoc#_status-sync-interval[status sync]. The value
+is the `activeViolationCount` of each policy.
+|===
+
+{rte-short-name} sends each event as an OpenTelemetry log record. The body
+of the record is the name of the event.
+
+[#_event_attributes]
+=== Event attributes
+
+Each `policy_violation` event has these attributes:
+
+[cols="1,3", options="header"]
+|===
+|Attribute |Value
+
+|`policy.name`
+|The name of the `WorkloadPolicy`.
+
+|`k8s.namespace.name`
+|The namespace of the policy and of the pod.
+
+|`k8s.pod.name`
+|The name of the pod.
+
+|`container.name`
+|The name of the container.
+
+|`proc.exepath`
+|The path of the executable.
+
+|`proc.foreign_root`
+|`true` when the process ran across a mount namespace boundary.
+
+|`node.name`
+|The name of the node.
+
+|`action`
+|`monitor` or `protect`.
+|===
+
+A `policy_violation_acknowledged` event has the same attributes, and
+these:
+
+[cols="1,3", options="header"]
+|===
+|Attribute |Value
+
+|`id`
+|The `id` of the violation record.
+
+|`reason`
+|The reason that you gave for the acknowledgement.
+
+|`lastObservedTimestamp`
+|The time of the most recent occurrence of the violation.
+
+|`workload.name`
+|The name of the workload.
+
+|`workload.kind`
+|The kind of the workload, for example `Deployment`.
+|===
+
+The `runtime_enforcer_active_violations` metric has the `policy.name` and
+`k8s.namespace.name` attributes.
+
+[#_prerequisites]
+== Prerequisites
+
+You need an OpenTelemetry collector with an OTLP receiver for gRPC. The
+controller pods and the agent pods must be able to connect to this
+receiver. See the
+https://opentelemetry.io/docs/collector/install/[OpenTelemetry
+documentation] for how to install a collector.
+
+[#_turn_on_the_export]
+== Turn on the export
+
+. In your Helm values file, set the `global.otel.endpoint` value to the
+  URL of the receiver:
++
+[source,yaml]
+----
+global:
+  otel:
+    endpoint: https://otel-collector.observability.svc.cluster.local:4317
+----
+
+. Apply the values file:
++
+[source,bash]
+----
+helm upgrade --install runtime-enforcer kubewarden/runtime-enforcer \
+  --namespace runtime-enforcer \
+  -f values.yaml \
+  --wait
+----
+
+The scheme of the URL selects the transport:
+
+* `https://` uses TLS.
+* `http://` uses no TLS.
+
+The URL must start with one of these two schemes. If it does not, the
+controller and the agent do not start.
+
+A change to a `global.otel` value restarts the controller pods and the
+agent pods.
+
+[#_use_a_private_ca]
+== Use TLS with a private certificate authority
+
+With an `https://` endpoint, the controller and the agent trust only
+public certificate authorities (CAs). If a private CA signed the
+certificate of the collector, give this CA to the chart.
+
+. Create a Secret with the CA certificate, in PEM format, under the
+  `ca.crt` key. Create it in the namespace of {rte-short-name}:
++
+[source,bash]
+----
+kubectl create secret generic otel-collector-ca \
+  --namespace runtime-enforcer \
+  --from-file=ca.crt=./ca.crt
+----
+
+. Set the `global.otel.caSecretName` value to the name of the Secret:
++
+[source,yaml]
+----
+global:
+  otel:
+    endpoint: https://otel-collector.observability.svc.cluster.local:4317
+    caSecretName: otel-collector-ca
+----
+
+[#_use_mutual_tls]
+== Use mutual TLS
+
+If the collector requires a client certificate, give the certificate to
+the chart.
+
+. Create a TLS Secret with the client certificate and its key. The Secret
+  must have the `tls.crt` and `tls.key` keys:
++
+[source,bash]
+----
+kubectl create secret tls otel-collector-client-tls \
+  --namespace runtime-enforcer \
+  --cert=./client.crt \
+  --key=./client.key
+----
+
+. Set the `global.otel.clientCertificateSecretName` value to the name of
+  the Secret:
++
+[source,yaml]
+----
+global:
+  otel:
+    endpoint: https://otel-collector.observability.svc.cluster.local:4317
+    caSecretName: otel-collector-ca
+    clientCertificateSecretName: otel-collector-client-tls
+----
+
+[#_where_to_set_the_values]
+== Where to set the values
+
+The chart reads the `endpoint`, `caSecretName`, and
+`clientCertificateSecretName` keys from four places. For each key, the
+chart uses the first place that has a value:
+
+. The top-level `otel` block.
+. The `controller.otel` block or the `agent.otel` block.
+. The `common.otel` block.
+. The `global.otel` block.
+
+Use `global.otel` for a usual installation. A parent chart can also set
+the `global` values. If a parent chart sets `global.otel` and this chart
+needs a different value, use the top-level `otel` block.
+
+[#_make_sure_that_the_export_works]
+== Make sure that the export works
+
+The controller and the agent write a log line when the export is on.
+Look for this line in the controller log:
+
+[source,bash]
+----
+kubectl logs -n runtime-enforcer deployment/runtime-enforcer-controller-manager \
+  | grep "OTLP telemetry enabled"
+----
+
+Then cause a violation, as the
+xref:quickstart.adoc#_workloadpolicy-monitor-mode[Quick Start] shows. The
+`policy_violation` event arrives at the collector in a few seconds.
+
+[#_count_the_violations]
+== Count the violations in the collector
+
+{rte-short-name} exports no counter of violations. The collector can
+count the events and export the result as a Prometheus counter. This
+configuration needs the `count` connector, the `deltatocumulative`
+processor, and the
+`prometheus` exporter. The `otel/opentelemetry-collector-contrib` image
+has all three.
+
+This collector configuration counts the two events. It also writes each
+event to the log of the collector, with the `debug` exporter:
+
+[source,yaml]
+----
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+connectors:
+  count:
+    logs:
+      runtime_enforcer_violations:
+        description: "Total policy violations detected by runtime-enforcer"
+        conditions:
+          - 'body == "policy_violation"'
+        attributes:
+          - key: policy.name
+          - key: k8s.namespace.name
+          - key: action
+          - key: node.name
+      runtime_enforcer_acknowledge:
+        description: "Total acknowledged violations by runtime-enforcer"
+        conditions:
+          - 'body == "policy_violation_acknowledged"'
+        attributes:
+          - key: policy.name
+          - key: k8s.namespace.name
+          - key: action
+          - key: node.name
+processors:
+  deltatocumulative: {}
+exporters:
+  debug:
+    verbosity: normal
+  prometheus:
+    endpoint: 0.0.0.0:9090
+service:
+  pipelines:
+    logs:
+      receivers: [otlp]
+      exporters: [count, debug]
+    metrics:
+      receivers: [count, otlp]
+      processors: [deltatocumulative]
+      exporters: [prometheus]
+----
+
+This receiver uses no TLS, so the endpoint for the chart starts with
+`http://`. For TLS, add a `tls` block to the receiver. See the
+https://opentelemetry.io/docs/collector/configuration/[collector
+configuration documentation].
+
+The collector then serves the metrics on port 9090. After a violation,
+the `runtime_enforcer_violations_total` counter looks like this:
+
+----
+runtime_enforcer_violations_total{action="monitor",k8s_namespace_name="default",node_name="node-1",policy_name="deploy-opensuse-deployment"} 1
+----
+
+The same endpoint serves the `runtime_enforcer_acknowledge_total` counter
+and the `runtime_enforcer_active_violations` gauge.
+
+[#_turn_off_the_export]
+== Turn off the export
+
+To turn off the export, set `global.otel.endpoint` to an empty string.
+This change restarts the controller pods and the agent pods.
