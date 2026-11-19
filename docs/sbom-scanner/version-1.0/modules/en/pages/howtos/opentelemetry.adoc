@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = OpenTelemetry
-:revdate: 2026-08-19
+:revdate: 2026-11-05
 :page-revdate: {revdate}
 :page-aliases: user-guide/opentelemetry.adoc
 :description: Export traces and metrics from {sboms-name} with OpenTelemetry.
@@ -40,9 +40,13 @@ Set the `otel.endpoint` value to the URL of your OTLP endpoint:
 
 [source,bash]
 ----
-helm upgrade sbomscanner ./chart \
+helm upgrade sbomscanner kubewarden/sbomscanner \
+  --namespace sbomscanner \
+  --reuse-values \
   --set otel.endpoint=https://otel-collector.telemetry.svc.cluster.local:4317
 ----
+
+The `otel` values apply to all components that export telemetry.
 
 The URL scheme controls the connection security.
 An `https://` URL makes the components connect with TLS.
@@ -97,7 +101,9 @@ Set all three values:
 
 [source,bash]
 ----
-helm upgrade sbomscanner ./chart \
+helm upgrade sbomscanner kubewarden/sbomscanner \
+  --namespace sbomscanner \
+  --reuse-values \
   --set otel.endpoint=https://otel-collector.telemetry.svc.cluster.local:4317 \
   --set otel.caSecretName=sbomscanner-otel-client \
   --set otel.clientCertificateSecretName=sbomscanner-otel-client

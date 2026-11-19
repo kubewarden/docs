@@ -1,0 +1,844 @@
+include::partial$variables.adoc[]
+
+= Helm Values Configuration
+:revdate: 2026-11-09
+:page-revdate: {revdate}
+:page-aliases: installation/helm-values.adoc
+:description: Configure {sboms-name} Helm chart values for deployment and storage.
+
+This document describes the available configuration options for the {sboms-name} Helm chart.
+
+[#_set_values]
+== How to set values
+
+Set the values in one of these ways:
+
+[arabic]
+. Create a values file, for example `my-values.yaml`. Add your values to the file and give the file to Helm:
++
+[source,bash]
+----
+helm install sbomscanner kubewarden/sbomscanner \
+  --namespace sbomscanner \
+  --create-namespace \
+  -f my-values.yaml
+----
+. Use `--set` flags to set specific values:
++
+[source,bash]
+----
+helm install sbomscanner kubewarden/sbomscanner \
+  --namespace sbomscanner \
+  --create-namespace \
+  --set controller.replicas=5 \
+  --set storage.postgres.cnpg.instances=5
+----
+
+For more information, see the https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing[Helm documentation].
+
+Helm merges your values with the default values of the chart.
+If you set one key of a map, for example `controller.resources.limits.memory`, the other keys of the map keep their default values.
+To remove a default key, set it to `null`.
+
+[#_value_levels]
+== How the chart reads a value
+
+The chart reads most values from two levels:
+
+* The `global` block applies to all workloads of the chart.
+A parent chart that includes {sboms-short-name} as a dependency can also set the `global` keys.
+* A workload block applies to one workload.
+
+The chart has five workload blocks:
+
+[cols="1,3",options="header"]
+|===
+|Block |Workload
+|`controller` |The controller Deployment.
+|`storage` |The storage Deployment. It is the API server that keeps the reports in PostgreSQL.
+|`worker` |The worker Deployment. It scans the registries.
+|`workerNode` |The node scan DaemonSet. It scans the nodes. The chart creates it when `controller.nodeScan.enabled` is `true`.
+|`mcp` |The MCP server Deployment. The chart creates it when `mcp.enabled` is `true`.
+|===
+
+The `scanner` block is not a workload block.
+It holds the scanner engine configuration that the worker Deployment and the node scan DaemonSet share.
+See xref:#_scanner_values[Scanner engine].
+
+[#_global_values]
+== Global values
+
+The keys of the `global` block apply to all workloads.
+The `workerNode` DaemonSet also uses them.
+For example, if you set `global.nodeSelector`, the node scan runs only on the nodes that match.
+
+[cols="2,1,3",options="header"]
+|===
+|Key |Default |Description
+|`global.imageRegistry` |`""` |Registry for all chart images. If you set it, it replaces the `image.registry` of every workload block.
+|`global.imagePullSecrets` |`[]` |Secrets that the kubelet uses to pull the chart images. Each item is a Secret name or a map with a `name` key.
+|`global.imagePullPolicy` |`IfNotPresent` |Pull policy for the chart images: `Always`, `IfNotPresent`, or `Never`. The `image.pullPolicy` of a workload block wins over it.
+|`global.logLevel` |`info` |Log level of the workloads: `debug`, `info`, `warn`, or `error`.
+|`global.labels` |`{}` |Labels for the workload objects (the Deployments and the DaemonSet). The bundled NATS chart also adds these labels to all its resources.
+|`global.annotations` |`{}` |Annotations for the workload objects (the Deployments and the DaemonSet).
+|`global.podLabels` |`{}` |Labels for the pods.
+|`global.podAnnotations` |`{}` |Annotations for the pods.
+|`global.nodeSelector` |`{}` |Node labels that a node must have to run the pods.
+|`global.tolerations` |`[]` |Tolerations for the pods.
+|`global.affinity` |`{}` |Affinity rules for the pods.
+|`global.topologySpreadConstraints` |`[]` |Topology spread constraints for the pods.
+|`global.priorityClassName` |`""` |Name of the PriorityClass for the pods.
+|`global.extraEnv` |`[]` |Extra environment variables for all containers.
+|`global.extraEnvFrom` |`[]` |Extra `envFrom` sources (ConfigMaps or Secrets) for all containers.
+|`global.extraVolumes` |`[]` |Extra volumes for the pods.
+|`global.extraVolumeMounts` |`[]` |Extra volume mounts for all containers.
+|`global.serviceAccount.annotations` |`{}` |Annotations for the ServiceAccounts of the workloads.
+|`global.otel.endpoint` |`""` |OTLP/gRPC endpoint for the telemetry export. See xref:#_opentelemetry[OpenTelemetry].
+|`global.otel.caSecretName` |`""` |Name of the Secret with the CA certificate of the telemetry endpoint.
+|`global.otel.clientCertificateSecretName` |`""` |Name of the Secret with the client certificate for the telemetry endpoint.
+|===
+
+[#_scanner_values]
+== Scanner engine
+
+The `scanner` block holds the scanner engine configuration.
+The worker Deployment and the node scan DaemonSet both read it, so registry scans and node scans use the same Trivy vulnerability databases.
+
+[cols="2,1,3",options="header"]
+|===
+|Key |Default |Description
+|`scanner.trivyDBRepository` |`public.ecr.aws/aquasecurity/trivy-db` |OCI repository of the Trivy vulnerability database.
+|`scanner.trivyJavaDBRepository` |`public.ecr.aws/aquasecurity/trivy-java-db` |OCI repository of the Trivy Java database.
+|===
+
+To use a mirror in an air-gapped cluster, see xref:howtos/airgap-support.adoc[Air Gap Support].
+
+[#_workload_values]
+== Workload values
+
+Each table lists all the keys of one workload block.
+A key with the same name as a `global` key changes that value for the workload only.
+The `image.tag` default is the `appVersion` of the chart, for example `v1.0.0-alpha.1`.
+
+[#_controller_values]
+=== Controller
+
+[cols="2,1,3",options="header"]
+|===
+|Key |Default |Description
+|`controller.image.repository` |`kubewarden/sbomscanner/controller` |Image repository, without the registry.
+|`controller.image.tag` |`appVersion` of the chart |Image tag.
+|`controller.image.registry` |`ghcr.io` |Registry for the image. `global.imageRegistry` replaces it when set.
+|`controller.image.pullPolicy` |`""` |Pull policy for the image. If it is empty, the chart uses `global.imagePullPolicy`.
+|`controller.replicas` |`3` |Number of pods.
+|`controller.pprof` |`false` |If `true`, the controller serves the Go pprof profiling data on port 8082.
+|`controller.workloadScan.enabled` |`true` |If `false`, the controller does not scan the images of the workloads.
+|`controller.nodeScan.enabled` |`true` |If `true`, the chart creates the `workerNode` DaemonSet, which scans the nodes. If `false`, the controller does not scan the nodes.
+|`controller.defaultVEXHubResources` |`true` |If `true`, the chart creates the default `VEXHub` resources at install. See xref:#_default_vexhub_resources[Default VEXHub resources].
+|`controller.resources` |See the YAML example |CPU and memory for the container. See xref:#_resources[Resource limits and requests].
+|`controller.podSecurityContext` |`{}` |Security context for the pod. See xref:#_security_contexts[Security contexts].
+|`controller.containerSecurityContext` |See the YAML example |Security context for the containers. See xref:#_security_contexts[Security contexts].
+|`controller.podDisruptionBudget` |`{}` |PodDisruptionBudget for the pods. See xref:#_pod_disruption_budgets[PodDisruptionBudgets].
+|`controller.imagePullSecrets` |Not set |Pull secrets for the pods. The chart adds them after the entries of `global.imagePullSecrets`.
+|`controller.logLevel` |Not set |Log level. If it is empty, the chart uses `global.logLevel`.
+|`controller.labels` |Not set |Labels for the workload object, merged with `global.labels`.
+|`controller.annotations` |Not set |Annotations for the workload object, merged with `global.annotations`.
+|`controller.podLabels` |Not set |Labels for the pods, merged with `global.podLabels`.
+|`controller.podAnnotations` |Not set |Annotations for the pods, merged with `global.podAnnotations`.
+|`controller.nodeSelector` |Not set |Node labels that a node must have to run the pods, merged with `global.nodeSelector`.
+|`controller.tolerations` |Not set |Tolerations for the pods. If you set it, it replaces `global.tolerations`.
+|`controller.affinity` |Not set |Affinity rules for the pods, merged with `global.affinity`.
+|`controller.topologySpreadConstraints` |Not set |Topology spread constraints for the pods. If you set it, it replaces `global.topologySpreadConstraints`.
+|`controller.priorityClassName` |Not set |Name of the PriorityClass for the pods. If it is empty, the chart uses `global.priorityClassName`.
+|`controller.extraEnv` |Not set |Extra environment variables. The chart adds them after the entries of `global.extraEnv`.
+|`controller.extraEnvFrom` |Not set |Extra `envFrom` sources. If you set it, it replaces `global.extraEnvFrom`.
+|`controller.extraVolumes` |Not set |Extra volumes. The chart adds them after the entries of `global.extraVolumes`.
+|`controller.extraVolumeMounts` |Not set |Extra volume mounts. The chart adds them after the entries of `global.extraVolumeMounts`.
+|`controller.serviceAccount.annotations` |Not set |Annotations for the ServiceAccount, merged with `global.serviceAccount.annotations`.
+|`controller.otel.endpoint` |Not set |Telemetry endpoint for this workload. See xref:#_opentelemetry[OpenTelemetry].
+|`controller.otel.caSecretName` |Not set |Name of the Secret with the CA certificate of the telemetry endpoint, for this workload.
+|`controller.otel.clientCertificateSecretName` |Not set |Name of the Secret with the client certificate for the telemetry endpoint, for this workload.
+|===
+
+[#_storage_values]
+=== Storage
+
+[cols="2,1,3",options="header"]
+|===
+|Key |Default |Description
+|`storage.image.repository` |`kubewarden/sbomscanner/storage` |Image repository, without the registry.
+|`storage.image.tag` |`appVersion` of the chart |Image tag.
+|`storage.image.registry` |`ghcr.io` |Registry for the image. `global.imageRegistry` replaces it when set.
+|`storage.image.pullPolicy` |`""` |Pull policy for the image. If it is empty, the chart uses `global.imagePullPolicy`.
+|`storage.replicas` |`3` |Number of pods.
+|`storage.resources` |See the YAML example |CPU and memory for the container. See xref:#_resources[Resource limits and requests].
+|`storage.podSecurityContext` |`{}` |Security context for the pod. See xref:#_security_contexts[Security contexts].
+|`storage.containerSecurityContext` |See the YAML example |Security context for the containers. See xref:#_security_contexts[Security contexts].
+|`storage.podDisruptionBudget` |`{}` |PodDisruptionBudget for the pods. See xref:#_pod_disruption_budgets[PodDisruptionBudgets].
+|`storage.imagePullSecrets` |Not set |Pull secrets for the pods. The chart adds them after the entries of `global.imagePullSecrets`.
+|`storage.logLevel` |Not set |Log level. If it is empty, the chart uses `global.logLevel`.
+|`storage.labels` |Not set |Labels for the workload object, merged with `global.labels`.
+|`storage.annotations` |Not set |Annotations for the workload object, merged with `global.annotations`.
+|`storage.podLabels` |Not set |Labels for the pods, merged with `global.podLabels`.
+|`storage.podAnnotations` |Not set |Annotations for the pods, merged with `global.podAnnotations`.
+|`storage.nodeSelector` |Not set |Node labels that a node must have to run the pods, merged with `global.nodeSelector`.
+|`storage.tolerations` |Not set |Tolerations for the pods. If you set it, it replaces `global.tolerations`.
+|`storage.affinity` |Not set |Affinity rules for the pods, merged with `global.affinity`.
+|`storage.topologySpreadConstraints` |Not set |Topology spread constraints for the pods. If you set it, it replaces `global.topologySpreadConstraints`.
+|`storage.priorityClassName` |Not set |Name of the PriorityClass for the pods. If it is empty, the chart uses `global.priorityClassName`.
+|`storage.extraEnv` |Not set |Extra environment variables. The chart adds them after the entries of `global.extraEnv`.
+|`storage.extraEnvFrom` |Not set |Extra `envFrom` sources. If you set it, it replaces `global.extraEnvFrom`.
+|`storage.extraVolumes` |Not set |Extra volumes. The chart adds them after the entries of `global.extraVolumes`.
+|`storage.extraVolumeMounts` |Not set |Extra volume mounts. The chart adds them after the entries of `global.extraVolumeMounts`.
+|`storage.serviceAccount.annotations` |Not set |Annotations for the ServiceAccount, merged with `global.serviceAccount.annotations`.
+|`storage.otel.endpoint` |Not set |Telemetry endpoint for this workload. See xref:#_opentelemetry[OpenTelemetry].
+|`storage.otel.caSecretName` |Not set |Name of the Secret with the CA certificate of the telemetry endpoint, for this workload.
+|`storage.otel.clientCertificateSecretName` |Not set |Name of the Secret with the client certificate for the telemetry endpoint, for this workload.
+|===
+
+The `storage.postgres` keys configure the database.
+See xref:#_postgresql_values[PostgreSQL values].
+
+[#_worker_values]
+=== Worker
+
+[cols="2,1,3",options="header"]
+|===
+|Key |Default |Description
+|`worker.image.repository` |`kubewarden/sbomscanner/worker` |Image repository, without the registry.
+|`worker.image.tag` |`appVersion` of the chart |Image tag.
+|`worker.image.registry` |`ghcr.io` |Registry for the image of the worker Deployment. `global.imageRegistry` replaces it when set.
+|`worker.image.pullPolicy` |`""` |Pull policy for the image of the worker Deployment. If it is empty, the chart uses `global.imagePullPolicy`.
+|`worker.replicas` |`3` |Number of pods.
+|`worker.resources` |See the YAML example |CPU and memory for the container of the worker Deployment. See xref:#_resources[Resource limits and requests].
+|`worker.podSecurityContext` |`{}` |Security context for the pod. See xref:#_security_contexts[Security contexts].
+|`worker.containerSecurityContext` |See the YAML example |Security context for the containers. See xref:#_security_contexts[Security contexts].
+|`worker.podDisruptionBudget` |`{}` |PodDisruptionBudget for the pods. See xref:#_pod_disruption_budgets[PodDisruptionBudgets].
+|`worker.imagePullSecrets` |Not set |Pull secrets for the pods. The chart adds them after the entries of `global.imagePullSecrets`.
+|`worker.logLevel` |Not set |Log level. If it is empty, the chart uses `global.logLevel`.
+|`worker.labels` |Not set |Labels for the workload object, merged with `global.labels`.
+|`worker.annotations` |Not set |Annotations for the workload object, merged with `global.annotations`.
+|`worker.podLabels` |Not set |Labels for the pods, merged with `global.podLabels`.
+|`worker.podAnnotations` |Not set |Annotations for the pods, merged with `global.podAnnotations`.
+|`worker.nodeSelector` |Not set |Node labels that a node must have to run the pods, merged with `global.nodeSelector`.
+|`worker.tolerations` |Not set |Tolerations for the pods. If you set it, it replaces `global.tolerations`.
+|`worker.affinity` |Not set |Affinity rules for the pods, merged with `global.affinity`.
+|`worker.topologySpreadConstraints` |Not set |Topology spread constraints for the pods. If you set it, it replaces `global.topologySpreadConstraints`.
+|`worker.priorityClassName` |Not set |Name of the PriorityClass for the pods. If it is empty, the chart uses `global.priorityClassName`.
+|`worker.extraEnv` |Not set |Extra environment variables. The chart adds them after the entries of `global.extraEnv`.
+|`worker.extraEnvFrom` |Not set |Extra `envFrom` sources. If you set it, it replaces `global.extraEnvFrom`.
+|`worker.extraVolumes` |Not set |Extra volumes. The chart adds them after the entries of `global.extraVolumes`.
+|`worker.extraVolumeMounts` |Not set |Extra volume mounts. The chart adds them after the entries of `global.extraVolumeMounts`.
+|`worker.serviceAccount.annotations` |Not set |Annotations for the ServiceAccount, merged with `global.serviceAccount.annotations`.
+|`worker.otel.endpoint` |Not set |Telemetry endpoint for this workload. See xref:#_opentelemetry[OpenTelemetry].
+|`worker.otel.caSecretName` |Not set |Name of the Secret with the CA certificate of the telemetry endpoint, for this workload.
+|`worker.otel.clientCertificateSecretName` |Not set |Name of the Secret with the client certificate for the telemetry endpoint, for this workload.
+|===
+
+The `worker` block configures the worker Deployment only.
+To configure the node scan DaemonSet, use the `workerNode` block or the `global` block.
+
+[#_worker_node_values]
+=== Worker node
+
+The `workerNode` block configures the DaemonSet that scans the nodes.
+
+[cols="2,1,3",options="header"]
+|===
+|Key |Default |Description
+|`workerNode.image.repository` |`kubewarden/sbomscanner/worker` |Image repository of the DaemonSet, without the registry.
+|`workerNode.image.tag` |`appVersion` of the chart |Image tag of the DaemonSet.
+|`workerNode.image.registry` |`ghcr.io` |Registry for the image of the DaemonSet. `global.imageRegistry` replaces it when set.
+|`workerNode.image.pullPolicy` |`""` |Pull policy for the image of the DaemonSet. If it is empty, the chart uses `global.imagePullPolicy`.
+|`workerNode.resources` |See the YAML example |CPU and memory for the main container. See xref:#_resources[Resource limits and requests].
+|`workerNode.podSecurityContext` |`{}` |Security context for the pod. See xref:#_security_contexts[Security contexts].
+|`workerNode.containerSecurityContext` |See the YAML example |Security context for the main container. The container runs as root with the `DAC_READ_SEARCH` capability, to read the files of the node. See xref:#_security_contexts[Security contexts].
+|`workerNode.imagePullSecrets` |Not set |Pull secrets for the pods. The chart adds them after the entries of `global.imagePullSecrets`.
+|`workerNode.logLevel` |Not set |Log level. If it is empty, the chart uses `global.logLevel`.
+|`workerNode.labels` |Not set |Labels for the workload object, merged with `global.labels`.
+|`workerNode.annotations` |Not set |Annotations for the workload object, merged with `global.annotations`.
+|`workerNode.podLabels` |Not set |Labels for the pods, merged with `global.podLabels`.
+|`workerNode.podAnnotations` |Not set |Annotations for the pods, merged with `global.podAnnotations`.
+|`workerNode.nodeSelector` |Not set |Node labels that a node must have to run the pods, merged with `global.nodeSelector`.
+|`workerNode.tolerations` |Not set |Tolerations for the pods. If you set it, it replaces `global.tolerations`.
+|`workerNode.affinity` |Not set |Affinity rules for the pods, merged with `global.affinity`.
+|`workerNode.topologySpreadConstraints` |Not set |Topology spread constraints for the pods. If you set it, it replaces `global.topologySpreadConstraints`.
+|`workerNode.priorityClassName` |Not set |Name of the PriorityClass for the pods. If it is empty, the chart uses `global.priorityClassName`.
+|`workerNode.extraEnv` |Not set |Extra environment variables. The chart adds them after the entries of `global.extraEnv`.
+|`workerNode.extraEnvFrom` |Not set |Extra `envFrom` sources. If you set it, it replaces `global.extraEnvFrom`.
+|`workerNode.extraVolumes` |Not set |Extra volumes. The chart adds them after the entries of `global.extraVolumes`.
+|`workerNode.extraVolumeMounts` |Not set |Extra volume mounts. The chart adds them after the entries of `global.extraVolumeMounts`.
+|`workerNode.serviceAccount.annotations` |Not set |Annotations for the ServiceAccount, merged with `global.serviceAccount.annotations`.
+|`workerNode.otel.endpoint` |Not set |Telemetry endpoint for this workload. See xref:#_opentelemetry[OpenTelemetry].
+|`workerNode.otel.caSecretName` |Not set |Name of the Secret with the CA certificate of the telemetry endpoint, for this workload.
+|`workerNode.otel.clientCertificateSecretName` |Not set |Name of the Secret with the client certificate for the telemetry endpoint, for this workload.
+|===
+
+The DaemonSet has no `replicas` key, because it runs one pod on each node.
+It has no `podDisruptionBudget` key.
+
+[#_mcp_values]
+=== MCP server
+
+[cols="2,1,3",options="header"]
+|===
+|Key |Default |Description
+|`mcp.enabled` |`false` |If `true`, the chart creates the MCP server. See xref:howtos/mcp-server.adoc[MCP server].
+|`mcp.image.repository` |`kubewarden/sbomscanner/mcp` |Image repository, without the registry.
+|`mcp.image.tag` |`appVersion` of the chart |Image tag.
+|`mcp.image.registry` |`ghcr.io` |Registry for the image. `global.imageRegistry` replaces it when set.
+|`mcp.image.pullPolicy` |`""` |Pull policy for the image. If it is empty, the chart uses `global.imagePullPolicy`.
+|`mcp.replicas` |`1` |Number of pods.
+|`mcp.resources` |See the YAML example |CPU and memory for the container. See xref:#_resources[Resource limits and requests].
+|`mcp.podSecurityContext` |`{}` |Security context for the pod. See xref:#_security_contexts[Security contexts].
+|`mcp.containerSecurityContext` |See the YAML example |Security context for the containers. See xref:#_security_contexts[Security contexts].
+|`mcp.podDisruptionBudget` |`{}` |PodDisruptionBudget for the pods. See xref:#_pod_disruption_budgets[PodDisruptionBudgets].
+|`mcp.readOnly` |`false` |If `true`, the MCP server gives read-only tools only.
+|`mcp.disableTLS` |`false` |If `true`, the MCP server serves plain HTTP instead of HTTPS.
+|`mcp.auth.secretName` |`""` |Name of a Secret with `username` and `password` keys. You must set it when `mcp.enabled` is `true`.
+|`mcp.imagePullSecrets` |Not set |Pull secrets for the pods. The chart adds them after the entries of `global.imagePullSecrets`.
+|`mcp.logLevel` |Not set |Log level. If it is empty, the chart uses `global.logLevel`.
+|`mcp.labels` |Not set |Labels for the workload object, merged with `global.labels`.
+|`mcp.annotations` |Not set |Annotations for the workload object, merged with `global.annotations`.
+|`mcp.podLabels` |Not set |Labels for the pods, merged with `global.podLabels`.
+|`mcp.podAnnotations` |Not set |Annotations for the pods, merged with `global.podAnnotations`.
+|`mcp.nodeSelector` |Not set |Node labels that a node must have to run the pods, merged with `global.nodeSelector`.
+|`mcp.tolerations` |Not set |Tolerations for the pods. If you set it, it replaces `global.tolerations`.
+|`mcp.affinity` |Not set |Affinity rules for the pods, merged with `global.affinity`.
+|`mcp.topologySpreadConstraints` |Not set |Topology spread constraints for the pods. If you set it, it replaces `global.topologySpreadConstraints`.
+|`mcp.priorityClassName` |Not set |Name of the PriorityClass for the pods. If it is empty, the chart uses `global.priorityClassName`.
+|`mcp.extraEnv` |Not set |Extra environment variables. The chart adds them after the entries of `global.extraEnv`.
+|`mcp.extraEnvFrom` |Not set |Extra `envFrom` sources. If you set it, it replaces `global.extraEnvFrom`.
+|`mcp.extraVolumes` |Not set |Extra volumes. The chart adds them after the entries of `global.extraVolumes`.
+|`mcp.extraVolumeMounts` |Not set |Extra volume mounts. The chart adds them after the entries of `global.extraVolumeMounts`.
+|`mcp.serviceAccount.annotations` |Not set |Annotations for the ServiceAccount, merged with `global.serviceAccount.annotations`.
+|===
+
+[#_log_levels]
+== Log levels
+
+The log level controls the detail of the logs.
+The values are `debug`, `info`, `warn`, and `error`.
+`global.logLevel` sets the log level of all workloads.
+The `logLevel` of a workload block sets the log level of one workload.
+
+This example sets `info` for all workloads, and `debug` for the worker Deployment and the node scan DaemonSet:
+
+[source,yaml]
+----
+global:
+  logLevel: info
+worker:
+  logLevel: debug
+workerNode:
+  logLevel: debug
+----
+
+[#_resources]
+== Resource limits and requests
+
+Each workload has default resource limits and requests.
+Change them for the capacity of your cluster and for your workload.
+The storage component usually needs more memory, because it processes the SBOMs.
+The `resources` key applies to one workload only.
+`global` has no `resources` key.
+
+These are the default values:
+
+[source,yaml]
+----
+controller:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 2Gi
+    requests:
+      cpu: 250m
+      memory: 300Mi
+storage:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 3Gi
+    requests:
+      cpu: 250m
+      memory: 300Mi
+worker:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 300Mi
+workerNode:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 300Mi
+mcp:
+  resources:
+    limits:
+      cpu: 250m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+----
+
+`worker.resources` applies to the worker Deployment only.
+To change the resources of the node scan DaemonSet, set `workerNode.resources`.
+
+For more information, see the https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/[Kubernetes documentation on resource requests and limits].
+
+[#_scheduling]
+== Scheduling
+
+These keys control the nodes that run the pods:
+
+* `nodeSelector`: the node labels that a node must have.
+* `tolerations`: the node taints that the pods tolerate.
+* `affinity`: the node affinity and the pod affinity rules.
+* `topologySpreadConstraints`: the rules that spread the pods over nodes or zones.
+* `priorityClassName`: the PriorityClass of the pods.
+
+Set them in `global` for all workloads, or in a workload block for one workload.
+
+This example spreads the storage pods over the nodes, and gives them a PriorityClass.
+The label selector uses the labels that the chart sets on the storage pods.
+The value of `app.kubernetes.io/instance` is the name of the Helm release, here `sbomscanner`.
+
+[source,yaml]
+----
+storage:
+  priorityClassName: sbomscanner-high
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: sbomscanner
+          app.kubernetes.io/instance: sbomscanner
+          app.kubernetes.io/component: storage
+----
+
+The chart does not create the PriorityClass.
+Create the PriorityClass `sbomscanner-high` before you install the chart.
+
+This example lets the node scan DaemonSet run on the control plane nodes:
+
+[source,yaml]
+----
+workerNode:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+----
+
+[#_pod_disruption_budgets]
+== PodDisruptionBudgets
+
+A PodDisruptionBudget limits the number of pods that a voluntary disruption can stop at the same time.
+A node drain is an example of a voluntary disruption.
+The chart creates a PodDisruptionBudget for a Deployment when you set `minAvailable` or `maxUnavailable` in its `podDisruptionBudget` key.
+Only the four Deployments support it: `controller`, `storage`, `worker`, and `mcp`.
+`global` has no `podDisruptionBudget` key.
+
+[source,yaml]
+----
+controller:
+  podDisruptionBudget:
+    maxUnavailable: 1
+storage:
+  podDisruptionBudget:
+    maxUnavailable: 1
+worker:
+  podDisruptionBudget:
+    maxUnavailable: 1
+----
+
+Set only one of the two keys. Kubernetes rejects a PodDisruptionBudget that sets both.
+If a Deployment has one replica, do not set `minAvailable: 1`.
+That value blocks every node drain.
+
+[#_security_contexts]
+== Security contexts
+
+`podSecurityContext` sets the security context of the pod.
+`containerSecurityContext` sets the security context of the containers.
+Both keys apply to one workload only.
+`global` has no security context keys.
+
+The default `podSecurityContext` is empty for all workloads.
+This is the default `containerSecurityContext` of `controller`, `storage`, `worker`, and `mcp`:
+
+[source,yaml]
+----
+controller:
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 65532
+    seccompProfile:
+      type: RuntimeDefault
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - "ALL"
+----
+
+The main container of the node scan DaemonSet reads the files of the node.
+For this reason, it runs as root with the `DAC_READ_SEARCH` capability.
+This is its default `containerSecurityContext`:
+
+[source,yaml]
+----
+workerNode:
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    runAsNonRoot: false
+    runAsUser: 0
+    seccompProfile:
+      type: RuntimeDefault
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - "ALL"
+      add:
+        - "DAC_READ_SEARCH"
+----
+
+The init container of the DaemonSet does not need root.
+It always uses the restricted security context of the other workloads, and `workerNode.containerSecurityContext` does not change it.
+
+[#_labels_annotations]
+== Labels and annotations
+
+These keys add labels and annotations:
+
+* `labels` and `annotations`: for the Deployments and the DaemonSet.
+The bundled NATS chart also adds the `global.labels` labels to all its resources, for example the NATS StatefulSet and Services.
+It does not read the other keys of this section.
+* `podLabels` and `podAnnotations`: for the pods.
+* `serviceAccount.annotations`: for the ServiceAccounts of the workloads.
+
+The chart merges the `global` maps and the workload maps.
+The labels of the chart, for example `app.kubernetes.io/name` and `app.kubernetes.io/component`, always win over your labels.
+For this reason, your labels cannot change the selectors of the workloads.
+
+[source,yaml]
+----
+global:
+  podLabels:
+    team: security
+storage:
+  podAnnotations:
+    example.com/backup: "false"
+----
+
+[#_extra_env_volumes]
+== Extra environment variables and volumes
+
+These keys add environment variables and volumes to the workloads:
+
+* `extraEnv`: environment variables for all containers of the workload, including the init containers.
+* `extraEnvFrom`: `envFrom` sources, for example a ConfigMap or a Secret.
+* `extraVolumes`: volumes for the pod.
+* `extraVolumeMounts`: volume mounts for all containers of the workload.
+
+For `extraEnv`, `extraVolumes`, and `extraVolumeMounts`, the chart uses the `global` entries, then the workload entries.
+For `extraEnvFrom`, the workload list replaces the `global` list.
+
+[source,yaml]
+----
+worker:
+  extraEnv:
+    - name: EXAMPLE_VARIABLE
+      value: "example"
+  extraVolumes:
+    - name: extra-config
+      configMap:
+        name: my-extra-config
+  extraVolumeMounts:
+    - name: extra-config
+      mountPath: /etc/extra-config
+      readOnly: true
+----
+
+The ConfigMap `my-extra-config` must be in the namespace of the {sboms-short-name} pods.
+This is the `namespaceOverride` namespace if you set it, or else the namespace of the Helm release.
+
+[#_namespace_override]
+== Names and namespace
+
+[cols="2,1,3",options="header"]
+|===
+|Key |Default |Description
+|`nameOverride` |`""` |Replaces the chart name in the names of the resources. The release name stays as a prefix.
+|`fullnameOverride` |`""` |Replaces the full prefix (`<release-name>-<chart-name>`) of the names of the resources.
+|`namespaceOverride` |`""` |Namespace for all namespaced resources of the chart. If it is empty, the chart uses the namespace of the Helm release.
+|`nats.namespaceOverride` |`""` |Namespace for the NATS resources. It must have the same value as `namespaceOverride`.
+|===
+
+If you set `namespaceOverride`, set `nats.namespaceOverride` to the same value.
+A parent chart cannot give a computed value to the NATS chart, so you set both keys.
+The namespace must exist before you install the chart.
+
+[source,yaml]
+----
+namespaceOverride: sbomscanner-system
+nats:
+  namespaceOverride: sbomscanner-system
+----
+
+If the two values are different, the render fails with an error like this one:
+
+[source,text]
+----
+namespaceOverride ("sbomscanner-system") and nats.namespaceOverride ("") must have the same value
+----
+
+== PostgreSQL Configuration
+
+{sboms-name} requires a PostgreSQL database to store SBOM data. You have two options: use the built-in https://cloudnative-pg.io/[CloudNativePG (CNPG) operator] or connect to an external PostgreSQL instance.
+
+[#backups]
+[IMPORTANT]
+.Backups
+====
+The chart does not configure backups for the PostgreSQL database.
+
+PostgreSQL holds the `Image`, `SBOM`, `VulnerabilityReport`,
+`WorkloadScanReport`, `NodeSBOM`, and `NodeVulnerabilityReport` resources.
+The configuration resources (`Registry`, `WorkloadScanConfiguration`,
+`NodeScanConfiguration`, `VEXHub`) live in etcd and are not affected.
+
+If you lose the database, {sboms-short-name} rebuilds the current reports
+the next time it scans. It cannot rebuild the history of past reports, or
+the SBOM of an image that has since been removed from its registry.
+
+If you need to keep past reports, for example for audit evidence, back up
+the database:
+
+* With the built-in CNPG cluster, configure a
+  https://cloudnative-pg.io/documentation/current/backup/[CNPG backup] on the
+  `Cluster` resource. Use `storage.postgres.cnpg.merge` to add the backup configuration.
+* With an external PostgreSQL instance, use the backup tooling of that instance.
+====
+
+[#using-cloudnativepg-recommended]
+=== Using CloudNativePG (Recommended)
+
+By default, {sboms-name} deploys a PostgreSQL cluster using the CloudNativePG operator. This is the easiest way to get started.
+
+[source,yaml]
+----
+storage:
+  postgres:
+    cnpg:
+      enabled: true
+      instances: 3
+      imageName: ""
+      storage:
+        size: 1Gi
+        resizeInUseVolumes: true
+        storageClass: ""
+        pvcTemplate: {}
+----
+
+*Configuration options:*
+
+* `instances`: Number of PostgreSQL replicas (default: 3)
+* `imageName`: Full image reference for the PostgreSQL container, for example `my-registry.example.com/postgresql:18.1`. Use this value when the default CNPG operand image is unavailable. If empty, CNPG uses its default operand image.
+* `storage.size`: Size of the persistent volume. You can increase this value later. CNPG applies the change to existing PVCs. You cannot decrease this value. See the https://cloudnative-pg.io/documentation/current/storage/#volume-expansion[CNPG documentation].
+* `storage.resizeInUseVolumes`: Automatically resize PVCs (default: true)
+* `storage.storageClass`: Specify a storage class. If empty, uses the cluster's default storage class.
+* `storage.pvcTemplate`: Custom PVC template if you need advanced configuration
+* `merge`: Fields that the chart adds to the `spec` of the CNPG `Cluster`. See xref:#_cnpg_merge[Other CNPG Cluster fields].
+
+For more configuration options, refer to the https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-ClusterSpec[CloudNativePG Cluster configuration documentation].
+
+[#_cnpg_merge]
+==== Other CNPG Cluster fields
+
+The chart does not have a value for every field of the CNPG `Cluster`.
+To set another field, for example `backup`, `plugins`, `postgresql.parameters`, or `resources`, add it to `storage.postgres.cnpg.merge`.
+The chart merges this map into the `spec` of the `Cluster`.
+A key in `merge` wins over the value that the chart sets.
+A list in `merge` replaces the list of the chart.
+
+This example sets a PostgreSQL parameter and the resources of the database pods:
+
+[source,yaml]
+----
+storage:
+  postgres:
+    cnpg:
+      merge:
+        postgresql:
+          parameters:
+            max_connections: "200"
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+----
+
+The name of the `Cluster` is `<release-name>-sbomscanner-cnpg-cluster`.
+
+[#using-an-external-postgresql-instance]
+=== Using an External PostgreSQL Instance
+
+If you already have a PostgreSQL instance or prefer to manage it separately, disable CNPG and provide connection details.
+
+[source,yaml]
+----
+storage:
+  postgres:
+    cnpg:
+      enabled: false
+    authSecretName: "my-postgres-credentials"
+    caSecretName: "my-postgres-ca"
+----
+
+*Steps to configure external PostgreSQL:*
+
+The two Secrets must be in the namespace of the {sboms-short-name} pods.
+This is the `namespaceOverride` namespace if you set it, or else the namespace of the Helm release.
+The examples on this page install the chart in the `sbomscanner` namespace.
+
+[arabic]
+. Create a `Secret` with the PostgreSQL connection URI:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-postgres-credentials
+  namespace: sbomscanner
+stringData:
+  uri: "postgresql://user:password@postgres.example.com:5432/sbomscanner?sslmode=require"
+----
+
+The URI format follows the https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING-URIS[PostgreSQL connection URI specification].
+
+[NOTE]
+====
+Any `sslmode` or other `ssl*` parameters in the URI are ignored. +
+{sboms-name} always enforces CA verification when connecting to the database, +
+using the CA certificate specified in the `caSecretName` secret.
+====
+
+[arabic, start=2]
+. Create a `Secret` with the CA certificate used to verify the PostgreSQL server certificate:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-postgres-ca
+  namespace: sbomscanner
+stringData:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    ...
+    -----END CERTIFICATE-----
+----
+
+[arabic, start=3]
+. Reference the secrets in your Helm values:
+
+[source,yaml]
+----
+storage:
+  postgres:
+    cnpg:
+      enabled: false
+    authSecretName: "my-postgres-credentials"
+    caSecretName: "my-postgres-ca"
+----
+
+When you use an external PostgreSQL instance, make sure that the database
+exists and is accessible from your Kubernetes cluster.
+
+[#_postgresql_values]
+=== PostgreSQL values
+
+[cols="2,1,3",options="header"]
+|===
+|Key |Default |Description
+|`storage.postgres.authSecretName` |`""` |Name of a Secret with a `uri` key, for an external PostgreSQL instance. The chart ignores it when CNPG is on.
+|`storage.postgres.caSecretName` |`""` |Name of a Secret with a `ca.crt` key, for an external PostgreSQL instance. The chart ignores it when CNPG is on.
+|`storage.postgres.cnpg.enabled` |`true` |If `true`, the chart creates a CNPG `Cluster` for the database.
+|`storage.postgres.cnpg.instances` |`3` |Number of PostgreSQL instances.
+|`storage.postgres.cnpg.imageName` |`""` |Full image reference for the PostgreSQL container. If it is empty, CNPG uses its default image.
+|`storage.postgres.cnpg.storage.size` |`1Gi` |Size of each persistent volume. You can increase it later, but you cannot decrease it.
+|`storage.postgres.cnpg.storage.resizeInUseVolumes` |`true` |If `true`, CNPG resizes the PVCs that are in use.
+|`storage.postgres.cnpg.storage.storageClass` |`""` |StorageClass for the PVCs. If it is empty, the PVCs use the default StorageClass of the cluster.
+|`storage.postgres.cnpg.storage.pvcTemplate` |`{}` |Template for the PVCs.
+|`storage.postgres.cnpg.merge` |`{}` |Fields that the chart merges into the `spec` of the CNPG `Cluster`. See xref:#_cnpg_merge[Other CNPG Cluster fields].
+|===
+
+[#_default_vexhub_resources]
+== Default VEXHub Resources
+
+When you install the chart, {sboms-name} seeds two `VEXHub` resources.
+They point to the public `github.com/rancher/vexhub` and
+`github.com/aquasecurity/vexhub` repositories. A `post-install` hook
+creates these resources. Helm does not track them. You can modify,
+disable, or delete them. Helm does not revert these changes during
+upgrades.
+
+[source,yaml]
+----
+controller:
+  defaultVEXHubResources: true
+----
+
+Set this to `false` to prevent default-resource seeding. Use this setting
+in air-gapped environments. See xref:howtos/airgap-support.adoc#self-hosting-vex-hub[Air Gap Support]
+to configure a self-hosted VEX Hub.
+
+[#_opentelemetry]
+== OpenTelemetry
+
+Three values configure the telemetry export.
+Telemetry export is off when the endpoint is empty.
+Set the values in the `otel` block:
+
+[source,yaml]
+----
+otel:
+  endpoint: "https://otel-collector.telemetry.svc.cluster.local:4317"
+  caSecretName: "sbomscanner-otel-client"
+  clientCertificateSecretName: "sbomscanner-otel-client"
+----
+
+* `endpoint` is the OTLP/gRPC endpoint that receives the telemetry.
+  If the URL starts with `https://`, the components connect with TLS.
+* `caSecretName` names a Secret with a `ca.crt` key.
+  The components use this CA certificate to verify the certificate of the endpoint.
+* `clientCertificateSecretName` names a Secret with `tls.crt` and `tls.key` keys.
+  The components use this certificate to authenticate to the endpoint (mTLS).
+
+Both Secrets must exist in the namespace where {sboms-short-name} is installed.
+
+The `controller`, `storage`, `worker`, and `workerNode` workloads export telemetry.
+The MCP server does not.
+
+[cols="2,1,3",options="header"]
+|===
+|Key |Default |Description
+|`otel.endpoint` |`""` |OTLP/gRPC endpoint for the telemetry export of all workloads. If it is set, it wins over the workload and `global` values.
+|`otel.caSecretName` |`""` |Name of the Secret with the CA certificate of the telemetry endpoint. If it is set, it wins over the workload and `global` values.
+|`otel.clientCertificateSecretName` |`""` |Name of the Secret with the client certificate for the telemetry endpoint. If it is set, it wins over the workload and `global` values.
+|===
+
+See xref:howtos/opentelemetry.adoc[OpenTelemetry] for the full setup and xref:reference/opentelemetry-reference.adoc[OpenTelemetry Reference] for the exported traces and metrics.

@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Scanning Workloads
-:revdate: 2026-09-11
+:revdate: 2026-11-05
 :page-revdate: {revdate}
 :page-aliases: user-guide/scanning-workloads.adoc
 :description: Configure workload scanning and understand workload vulnerability reports.
@@ -122,8 +122,12 @@ a|A standard https://kubernetes.io/docs/concepts/overview/working-with-objects/l
 a|Name of a secret in the {sboms-name} installation namespace containing registry credentials in `kubernetes.io/dockerconfigjson` format. These credentials are propagated to all managed `Registry` resources. See xref:howtos/private-registries.adoc[Private Registries].
 |-
 
+|`caBundleRef`
+a|A reference to a ConfigMap (`configMap`) or a Secret (`secret`) that holds the PEM-encoded CA certificates for registries with a private certificate authority. Set exactly one of the two. The object must be in the {sboms-short-name} installation namespace. The default key is `ca.crt`. The controller copies this value to all managed `Registry` resources. See xref:howtos/private-registries.adoc#_ca_bundle_workload_scans[CA bundles for workload scans].
+|-
+
 |`caBundle`
-a|PEM-encoded CA certificate bundle for registries using a custom certificate authority.
+a|Deprecated: use `caBundleRef`. PEM-encoded CA certificate bundle for registries using a custom certificate authority. You cannot set `caBundle` and `caBundleRef` together.
 |-
 
 |`insecure`

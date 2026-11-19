@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Collecting logs for debugging
-:revdate: 2026-10-13
+:revdate: 2026-11-05
 :page-revdate: {revdate}
 :page-aliases: troubleshooting/collecting-logs.adoc
 :description: Collect {sboms-name} logs and support bundles for troubleshooting.
@@ -19,14 +19,15 @@ The `sbomscanner-debug.sh` script additionally requires:
 
 == Install or upgrade an existing installation with debug logging activated
 
+This command sets the log level of all {sboms-short-name} components to `debug`:
+
 [source,bash]
 ----
 helm repo add kubewarden https://charts.kubewarden.io
 helm repo update
 helm upgrade --install sbomscanner kubewarden/sbomscanner \
-  --set=controller.logLevel=debug \
-  --set=storage.logLevel=debug \
-  --set=worker.logLevel=debug \
+  --reuse-values \
+  --set=global.logLevel=debug \
   --namespace sbomscanner \
   --create-namespace \
   --wait
