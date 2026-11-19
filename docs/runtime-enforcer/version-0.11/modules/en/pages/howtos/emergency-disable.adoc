@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Emergency disable
-:revdate: 2026-10-14
+:revdate: 2026-11-19
 :page-revdate: {revdate}
 :description: Stop {rte-name} from blocking a process during an incident, and keep track of which policies to restore afterward.
 :keywords: ["{rte-name}", kubewarden, emergency, incident, "monitor mode", disable]
@@ -105,9 +105,10 @@ kubectl patch daemonset runtime-enforcer-agent \
 
 [NOTE]
 ====
-This command clears the whole `nodeSelector` field. If
-`agent.nodeSelector` already held a value before the incident, patch in
-that value instead of `null`, so that you do not lose it.
+This command clears the whole `nodeSelector` field. If the agent already
+had a `nodeSelector` before the incident, patch in that value instead of
+`null`, so that you do not lose it. The Helm values `agent.nodeSelector`
+and `global.nodeSelector` set this field.
 ====
 
 The new agent pod on each node
@@ -205,8 +206,8 @@ policy shows at most its 100 most recent distinct violations. Each
 comes with an `occurrences` count, so nothing floods the status. Once
 you restore protection, set `controller.wpStatusUpdateInterval` back to
 its usual value. See
-xref:howtos/production-deployments.adoc#_keep_the_status_sync_interval[Keep
-the status sync interval] for the default value.
+xref:glossary.adoc#_status-sync-interval[Status sync interval] for the
+default value.
 
 [#_opentelemetry_events]
 ===== OpenTelemetry events
@@ -217,8 +218,9 @@ your collector instead. Match on the label that you added in
 xref:#_mark_protect_policies[Mark the policies that are in protect
 mode], or on the time window of the incident.
 
-Do not turn off telemetry with `telemetry.collectorStrategy=none`
-during the incident. That value change restarts every agent.
+Do not turn off telemetry during the incident. Telemetry stops when you
+clear the `global.otel.endpoint` Helm value. This change restarts all
+agent pods and all controller pods.
 
 [#_restore_protection]
 ==== Restore protection

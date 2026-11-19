@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Troubleshooting
 :description: Troubleshoot issues by checking WorkloadPolicy status, node issue codes, controller logs, and using the kubectl plugin or debugger
-:revdate: 2026-09-22
+:revdate: 2026-11-19
 :page-revdate: {revdate}
 :page-aliases: troubleshooting.adoc
 
@@ -11,15 +11,20 @@ This document provides guidance for diagnosing issues with {rte-name}.
 [#_enable-verbose-logs]
 == Enable verbose logs
 
-To enable more verbose logs in each container via Helm values:
+To enable more verbose logs in the controller and the agent, set the
+`global.logLevel` Helm value:
+
 [source,bash]
 ----
 helm upgrade --install runtime-enforcer kubewarden/runtime-enforcer \
   --namespace runtime-enforcer \
-  --set agent.logLevel=debug \
-  --set controller.logLevel=debug \
+  --set global.logLevel=debug \
   --reuse-values
 ----
+
+The levels are `debug`, `info`, `warn`, and `error`. To change the level of
+one component only, set `controller.logLevel` or `agent.logLevel`. The
+debugger has no log level.
 
 [#_workloadpolicy-status-failures]
 == WorkloadPolicy status failures

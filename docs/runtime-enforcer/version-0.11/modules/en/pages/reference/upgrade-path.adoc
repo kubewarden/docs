@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Upgrade path
-:revdate: 2026-10-13
+:revdate: 2026-11-19
 :page-revdate: {revdate}
 :description: Upgrade {rte-name} with the supported version steps, and keep the chart and the kubectl plugin on the same version.
 :doc-persona: ["kubewarden-operator"]
@@ -68,6 +68,77 @@ flowchart LR;
   linkStyle 5 color:brown,stroke-width:2px,stroke-dasharray: 3 5
   linkStyle 6 color:red,stroke-width:2px,stroke-dasharray: 3 5
 ....
+
+[#_breaking_and_important_changes_between_versions]
+== Breaking and important changes between versions
+
+This section records breaking changes and other important changes that
+you must review before you upgrade to a specific version.
+
+[#_v0_10_to_v0_11]
+=== v0.10 to v0.11
+
+* The Helm chart no longer deploys an OpenTelemetry collector. The upgrade
+  removes the collector and its Prometheus endpoint on port 9090. The
+  telemetry export is then off until you set `global.otel.endpoint`. To
+  keep the violation events and the `runtime_enforcer_violations_total`
+  counter, deploy your own collector before the upgrade. For more
+  information, refer to
+  xref:howtos/telemetry.adoc[Export telemetry to an OpenTelemetry collector].
+
+* The `global.otel` block replaces the `telemetry` block:
+  ** `global.otel.endpoint` replaces `telemetry.externalCollector.endpoint`.
+  ** `global.otel.caSecretName` replaces
+     `telemetry.externalCollector.otelCollectorCertificateSecret`.
+  ** `global.otel.clientCertificateSecretName` replaces
+     `telemetry.externalCollector.otelCollectorClientCertificateSecret`.
+  ** The chart no longer has the `telemetry.collectorStrategy`,
+     `telemetry.externalCollector.protocol`, and
+     `telemetry.defaultCollector` values. The export uses gRPC.
+
+* The telemetry endpoint must be a URL that starts with `http://` or
+  `https://`. With a value such as `collector:4317`, the controller and
+  the agent do not start.
+
+* An `https://` endpoint without a CA Secret trusts only public certificate
+  authorities. In v0.10, the chart turned off TLS verification when you set
+  no CA Secret. If a private CA signed the certificate of the collector, set
+  `global.otel.caSecretName`.
+
+* The chart has a new `global` block that holds the values for all
+  workloads. These values moved or changed:
+  ** `global.imagePullSecrets` replaces the top-level `imagePullSecrets`.
+  ** `controller.podDisruptionBudget` replaces `controller.pdb`. The new
+     block has no `enabled` key. Set `minAvailable` or `maxUnavailable` in
+     it.
+  ** `extraEnv` replaces `env` in the `controller`, `agent`, and `debugger`
+     blocks.
+  ** The chart no longer has the `controller.args` and `agent.args` values.
+  ** `image.registry` holds the registry of each image, for example
+     `{oci-registry}`. `image.repository` holds the path without the registry, for
+     example `kubewarden/runtime-enforcer/agent`.
+  ** `image.pullPolicy` is empty by default. The chart then uses
+     `global.imagePullPolicy`.
+
++
+For more information, refer to
+xref:howtos/production-deployments.adoc#_chart_values_layers[The layers of the chart values].
+
+* The chart gives no error for a value that it does not know. After the
+  upgrade, an old value has no effect. Update your Helm values file before
+  you upgrade.
+
+* The controller no longer serves a metrics endpoint on port 8443. The
+  chart no longer creates the `metrics-auth` and `metrics-reader`
+  ClusterRoles.
+
+[CAUTION]
+====
+Do not use `helm upgrade --reuse-values` for the upgrade to v0.11. With this
+option, Helm keeps every value of the old release, and this includes the
+image tags. The pods then run the v0.10 images with the v0.11 chart. Give
+your updated values file to Helm with the `-f` option instead.
+====
 
 [#_upgrade_order]
 == Upgrade order

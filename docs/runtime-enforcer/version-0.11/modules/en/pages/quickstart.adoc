@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {rte-name} Quick Start
 :description: Start by deploying the application in a Kubernetes cluster, then create a WorkloadPolicyProposal based on observed processes and convert it to a WorkloadPolicy
-:revdate: 2026-10-13
+:revdate: 2026-11-19
 :page-revdate: {revdate}
 :page-aliases: installation/quickstart.adoc
 
@@ -60,10 +60,9 @@ link:https://cert-manager.io/docs/installation/helm[cert-manager documentation].
 ====
 
 The `cert-manager-csi-driver` is used to automatically provision and mount TLS
-certificates directly inside {rte-short-name} pods ({agent-term} and OTEL
-collector) without creating intermediate Secret resources. To install it, run
-the following
-commands:
+certificates directly inside {rte-short-name} pods ({controller-term},
+{agent-term}, and debugger). It does not create intermediate Secret
+resources. To install it, run the following commands:
 
 [source,bash]
 ----
@@ -80,8 +79,11 @@ Follow these simple steps from your local machine to get {rte-short-name} up and
 [#_install-the-helm-chart]
 === Install the Helm chart
 
-{rte-short-name} ships with a standalone {opentelemetry-collector-term} Deployment that handles {violation-term} metrics and events forwarding.
-No external OpenTelemetry Collector is needed for a basic setup.
+The chart does not deploy an {opentelemetry-collector-term}, and this guide
+does not need one. {rte-short-name} records each {violation-term} in the
+status of the policy. To export the violation events and metrics to your own
+collector, see xref:howtos/telemetry.adoc[Export telemetry to an
+OpenTelemetry collector].
 
 [subs="+attributes",console]
 ----
@@ -109,31 +111,6 @@ Example output:
 ----
 runtime-enforcer   runtime-enforcer-controller-manager-bfbd8774d-bvjjn   1/1     Running
 runtime-enforcer   runtime-enforcer-agent-lsxt4                          1/1     Running
-runtime-enforcer   runtime-enforcer-otel-collector-7f8b4c6d9-xk2mv      1/1     Running
-----
-
-[NOTE]
-====
-The OTEL collector runs as a standalone Deployment (one replica per cluster)
-rather than as a sidecar in each agent pod.
-====
-
-[#_verify-violation-metrics]
-=== Verify violation metrics
-
-The OTEL collector Deployment exposes Prometheus metrics on port 9090. To
-verify:
-
-[source,bash]
-----
-kubectl port-forward -n runtime-enforcer deployment/runtime-enforcer-otel-collector 9090:9090
-curl localhost:9090/metrics | grep runtime_enforcer_violations
-----
-
-Once violations occur, you will see a counter like:
-
-----
-runtime_enforcer_violations_total{action="monitor",k8s_namespace_name="default",node_name="node-1",policy_name="deploy-opensuse-deployment"} 1
 ----
 
 [#_summary]
@@ -291,7 +268,7 @@ The syntax is similar to the proposal, but there is one important
 difference: the `spec.mode: monitor` field. `monitor` is a passive mode:
 violations of the executable list are reported but not blocked. This means that
 if a process other than `bash`, `ls`, or `sleep` is executed, it's reported as
-an OTEL event, but it isn't blocked.
+a violation, but the policy does not block it.
 Here the proposal is promoted in `monitor` mode but you can
 promote a proposal directly in `protect` mode. In that case the enforcement
 is applied immediately, blocking any disallowed executables from running.
@@ -332,21 +309,14 @@ you should put the label on the workload at creation time.
 
 After the rollout, the policy will be applied. Let's test it.
 
-In one terminal, check the OTEL collector logs:
-
-[source,bash]
-----
-kubectl logs -n runtime-enforcer deployment/runtime-enforcer-otel-collector -f
-----
-
-In another terminal, run an allowed command:
+Run an allowed command:
 
 [source,bash]
 ----
 kubectl exec -n default deployment/opensuse-deployment -- ls
 ----
 
-Nothing should be reported.
+The policy allows `ls`, so {rte-short-name} reports nothing.
 
 Now, run a command that is not in the allowlist:
 
@@ -355,16 +325,12 @@ Now, run a command that is not in the allowlist:
 kubectl exec -n default deployment/opensuse-deployment -- ps
 ----
 
-In the OTEL collector logs you should see an event for the `ps` command being executed.
+The command runs, because the policy is in `monitor` mode. {rte-short-name}
+records a violation for it.
 
-[source,txt]
-----
-monitor 3f3235e0e92e6143965d46b967691cc1 9a6b46fa3165e86d evt.time=2026-01-14T10:39:01Z evt.rawtime=1768387141935180372 policy.name=deploy-opensuse-deployment k8s.ns.name=default k8s.workload.name=opensuse-deployment k8s.workload.kind=Deployment k8s.pod.name=opensuse-deployment-f69df6b94-7s7f4 container.full_id=2f6eb089830e2c281551274e8d0e94bdb182a5444fc1a4ab7316f33dff8a5017 container.name=opensuse proc.exepath=/usr/bin/ps action=monitor
-----
-
-Violations are also visible directly on the WorkloadPolicy status. After the
-{controller-term}'s next sync tick (up to 30 seconds), you can inspect them
-with `kubectl`:
+Violations are visible directly on the WorkloadPolicy status. The
+controller updates the status at each status sync, at intervals of up to
+30 seconds. Then you can see the violations with `kubectl`:
 
 [source,bash]
 ----
@@ -400,7 +366,9 @@ At this point, both are 1 because a single violation has been recorded.
 The controller scrapes violation records from agents via gRPC during its
 periodic status sync and stores the most recent 100 entries in the
 WorkloadPolicy status. No external observability stack is required to view
-violations.
+violations. If you turn on the
+xref:howtos/telemetry.adoc[telemetry export], the agent also sends a
+`policy_violation` event to your collector for each violation.
 ====
 
 [#_add-a-binary-to-the-allowed-list]
@@ -475,8 +443,9 @@ Now run an allowed binary again; nothing should be reported.
 kubectl exec -n default deployment/opensuse-deployment -- ls
 ----
 
-This time, if you run a non-permitted binary, you should see not only a report
-but also the process being blocked.
+This time, if you run a command that the policy does not allow,
+{rte-short-name} reports the
+violation and also blocks the process.
 
 [source,bash]
 ----
@@ -491,14 +460,7 @@ exec /usr/bin/cat: operation not permitted
 command terminated with exit code 255
 ----
 
-And there is a log entry for it:
-
-[source,txt]
-----
-protect 37298bcde8726ade2516b5d3c63aa663 cb28aa0b03259160 evt.time=2026-01-14T10:49:11Z evt.rawtime=1768387751471907924 policy.name=deploy-opensuse-deployment k8s.ns.name=default k8s.workload.name=opensuse-deployment k8s.workload.kind=Deployment k8s.pod.name=opensuse-deployment-f69df6b94-7s7f4 container.full_id=2f6eb089830e2c281551274e8d0e94bdb182a5444fc1a4ab7316f33dff8a5017 container.name=opensuse proc.exepath=/usr/bin/cat action=protect
-----
-
-Looking at the status shows that a new violation has been detected.
+The status of the policy shows the new violation:
 
 [source,yaml]
 ----
@@ -558,16 +520,19 @@ The active violation is no longer listed. Instead, it appears under
 == Advanced Configuration
 
 [#_use-an-external-collector]
-=== Use an external collector
+=== Export telemetry
 
-If you already have an OTEL collector deployed in your cluster, you can use the
-`external` collector strategy to point the agent directly at it:
+{rte-short-name} can send the violation events and one metric to an
+OpenTelemetry collector that you deploy. The export is off by default. To turn
+it on, set the `global.otel.endpoint` Helm value to the address of your
+collector:
 
 [source,bash]
 ----
 helm upgrade runtime-enforcer kubewarden/runtime-enforcer \
   --namespace runtime-enforcer \
-  --set telemetry.collectorStrategy=external \
-  --set telemetry.externalCollector.protocol=grpc \
-  --set telemetry.externalCollector.endpoint=https://otel-collector.otel-collector.svc.cluster.local:4317
+  --set global.otel.endpoint=https://otel-collector.otel-collector.svc.cluster.local:4317
 ----
+
+See xref:howtos/telemetry.adoc[Export telemetry to an OpenTelemetry
+collector] for the TLS values and for a collector configuration.
