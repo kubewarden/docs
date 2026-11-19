@@ -1,0 +1,312 @@
+include::partial$variables.adoc[]
+= Emergency disable
+:revdate: 2026-10-14
+:page-revdate: {revdate}
+:description: Stop {rte-name} from blocking a process during an incident, and keep track of which policies to restore afterward.
+:keywords: ["{rte-name}", kubewarden, emergency, incident, "monitor mode", disable]
+:doc-persona: kubewarden-operator
+:doc-type: howto
+:doc-topic: operator-manual, emergency, incident-response, monitor-mode
+
+During an incident, a {rte-short-name} policy can block a process that
+your team needs to run. This page gives two ways to stop the blocking,
+and how to restore protection afterward without losing track of what
+changed.
+
+The commands on this page use `jq` to filter JSON output. Install it
+from https://jqlang.org/ if you do not already have it.
+
+[IMPORTANT]
+====
+Do not scale the {controller-term} to zero to stop a policy from
+blocking. The controller takes no part in enforcement, so this does not
+work, and it stops other things that you need during an incident. See
+xref:#_do_not_scale_the_controller_to_zero[Do not scale the controller
+to zero].
+====
+
+[#_what_enforcement_depends_on]
+== What enforcement depends on
+
+{rte-short-name} enforces a policy in two places. Each agent loads the
+policy into the kernel, on its own node. The `spec.mode` field of the
+policy, `monitor` or `protect`, decides whether the kernel blocks a
+violation. The controller takes no part in enforcement. A controller
+that is down does not change what the kernel blocks.
+
+[#_stop_blocking]
+== Stop blocking
+
+{rte-short-name} gives you two ways to stop a policy from blocking.
+Both are reversible, and both leave every `WorkloadPolicy` in place.
+
+[cols="1,2", options="header"]
+|===
+|Way |Use it when
+
+|xref:#_remove_the_agent_from_every_node[Remove the agent from every
+node]
+|You want enforcement and monitoring to stop at once, on every node,
+with one command.
+
+|xref:#_switch_protect_policies_to_monitor_mode[Switch protect policies
+to monitor mode]
+|A pod in your cluster carries the
+xref:howtos/troubleshooting.adoc#_required-plugins[required-plugins
+annotation]. Such a pod cannot start without the agent, so keep the
+agent running and change the policies instead.
+|===
+
+[#_remove_the_agent_from_every_node]
+=== Remove the agent from every node
+
+Patch the agent DaemonSet with a `nodeSelector` that matches no node in
+your cluster. Replace `runtime-enforcer` and its namespace with your
+release name, if you installed under another name:
+
+[source,bash]
+----
+kubectl patch daemonset runtime-enforcer-agent \
+  -n runtime-enforcer \
+  --type merge \
+  -p '{"spec":{"template":{"spec":{"nodeSelector":{"kubewarden.io/emergency-disable":"true"}}}}}'
+----
+
+The DaemonSet controller removes every agent pod at once, because no
+node carries that label. The eBPF program is not pinned to the kernel,
+so it is removed with the agent process. Enforcement and monitoring
+both stop, on every node, at once.
+
+While the agent is gone:
+
+* {rte-short-name} learns nothing, so a {workloadpolicyproposal-cr}
+  does not grow.
+* A pod that starts runs without a policy, because the runtime does
+  not call an agent that is not connected.
+* A pod whose spec carries the
+  xref:howtos/troubleshooting.adoc#_required-plugins[required-plugins
+  annotation] cannot start at all. If that applies to any workload in
+  your cluster, use
+  xref:#_switch_protect_policies_to_monitor_mode[Switch protect
+  policies to monitor mode] instead.
+
+[#_restore_the_agent]
+==== Restore the agent
+
+To restore, remove the key that you added:
+
+[source,bash]
+----
+kubectl patch daemonset runtime-enforcer-agent \
+  -n runtime-enforcer \
+  --type merge \
+  -p '{"spec":{"template":{"spec":{"nodeSelector": null}}}}'
+----
+
+[NOTE]
+====
+This command clears the whole `nodeSelector` field. If
+`agent.nodeSelector` already held a value before the incident, patch in
+that value instead of `null`, so that you do not lose it.
+====
+
+The new agent pod on each node
+xref:explanations/architecture.adoc#_an_agent_upgrade[binds every
+running pod again] before it reports ready. Protection resumes node by
+node, as each agent passes its startup probe.
+
+[#_switch_protect_policies_to_monitor_mode]
+=== Switch protect policies to monitor mode
+
+Use this way when you keep the agent running. A policy in `monitor`
+mode reports a violation but does not block it. The agent applies the
+change xref:explanations/architecture.adoc#_a_mode_change[without
+restarting any pod].
+
+Mark each policy that you switch, so that you switch back only those
+policies, and no others, once the incident is over.
+
+[#_mark_protect_policies]
+==== Mark the policies that are in protect mode
+
+[NOTE]
+====
+`emergency.kubewarden.io/restore-mode` is a convention for this page.
+It is not a label that {rte-short-name} reads, and the agent and the
+controller ignore it. Use any key that you want, as long as every step
+below uses the same one.
+====
+
+List every policy whose `spec.mode` is `protect`, and add the label to
+each one:
+
+[source,bash]
+----
+kubectl get workloadpolicy -A -o json \
+  | jq -r '.items[] | select(.spec.mode=="protect") | "\(.metadata.namespace) \(.metadata.name)"' \
+  | while read -r ns name; do
+      kubectl label workloadpolicy -n "$ns" "$name" emergency.kubewarden.io/restore-mode=protect
+    done
+----
+
+[#_switch_to_monitor]
+==== Switch the marked policies to monitor mode
+
+Patch every policy that carries the label:
+
+[source,bash]
+----
+kubectl get workloadpolicy -A -l emergency.kubewarden.io/restore-mode=protect -o json \
+  | jq -r '.items[] | "\(.metadata.namespace) \(.metadata.name)"' \
+  | while read -r ns name; do
+      kubectl patch workloadpolicy -n "$ns" "$name" --type merge -p '{"spec":{"mode":"monitor"}}'
+    done
+----
+
+This command selects policies by the label, not by mode, so you can run
+it again without harm.
+
+[#_confirm_monitor_mode]
+==== Make sure every policy is in monitor mode
+
+Check the mode of every policy:
+
+[source,bash]
+----
+kubectl runtime-enforcer policy show protection -A
+----
+
+Every policy that you marked now shows `Monitor`. A policy in `monitor`
+mode still reports a violation, so you keep a record of what ran during
+the incident.
+
+[#_reduce_noise]
+==== Reduce the noise during the incident
+
+This section is optional. A policy in `monitor` mode still reports
+every violation, through two channels: the policy status, and
+OpenTelemetry, when telemetry is on.
+
+[#_policy_status]
+===== Policy status
+
+The controller reads the violation buffer of each agent on a timer.
+Raise `controller.wpStatusUpdateInterval` to read it less often:
+
+[source,yaml]
+----
+controller:
+  wpStatusUpdateInterval: 12h
+----
+
+A longer interval stops the status from being a live view: it does not
+change until the next read. When the controller reads again, each
+policy shows at most its 100 most recent distinct violations. Each
+comes with an `occurrences` count, so nothing floods the status. Once
+you restore protection, set `controller.wpStatusUpdateInterval` back to
+its usual value. See
+xref:howtos/production-deployments.adoc#_keep_the_status_sync_interval[Keep
+the status sync interval] for the default value.
+
+[#_opentelemetry_events]
+===== OpenTelemetry events
+
+This interval does not change the OpenTelemetry events. The agent sends
+each one as it happens, regardless of the controller. Filter them at
+your collector instead. Match on the label that you added in
+xref:#_mark_protect_policies[Mark the policies that are in protect
+mode], or on the time window of the incident.
+
+Do not turn off telemetry with `telemetry.collectorStrategy=none`
+during the incident. That value change restarts every agent.
+
+[#_restore_protection]
+==== Restore protection
+
+Once the incident is over, switch the marked policies back to
+`protect`, make sure that the switch worked, then remove the label.
+
+Patch every policy that carries the label back to `protect`:
+
+[source,bash]
+----
+kubectl get workloadpolicy -A -l emergency.kubewarden.io/restore-mode=protect -o json \
+  | jq -r '.items[] | "\(.metadata.namespace) \(.metadata.name)"' \
+  | while read -r ns name; do
+      kubectl patch workloadpolicy -n "$ns" "$name" --type merge -p '{"spec":{"mode":"protect"}}'
+    done
+----
+
+Wait for every policy to report `Ready`:
+
+[source,bash]
+----
+kubectl runtime-enforcer policy show protection -A
+----
+
+A policy that still shows `Transitioning` has not reached every agent
+yet. See xref:explanations/architecture.adoc#_a_mode_change[A mode
+change] for what the two states mean.
+
+Once every policy is `Ready`, remove the label:
+
+[source,bash]
+----
+kubectl get workloadpolicy -A -l emergency.kubewarden.io/restore-mode=protect -o json \
+  | jq -r '.items[] | "\(.metadata.namespace) \(.metadata.name)"' \
+  | while read -r ns name; do
+      kubectl label workloadpolicy -n "$ns" "$name" emergency.kubewarden.io/restore-mode-
+    done
+----
+
+[WARNING]
+====
+Remove the label only after every policy is back to `protect` mode. If
+the restore step fails partway, the label still names the policies that
+you have not finished restoring.
+====
+
+[#_do_not]
+== Do not
+
+Two actions look like they disable {rte-short-name}, but do not.
+
+[#_do_not_scale_the_controller_to_zero]
+=== Do not scale the controller to zero
+
+The controller takes no part in enforcement. The agent reads
+`WorkloadPolicy` objects directly, so every policy keeps blocking while
+the controller is down.
+
+A controller that is down also blocks other work. Every admission
+webhook of {rte-short-name} fails closed, so a policy deletion, a
+proposal, or a promotion waits until the controller returns.
+
+If you restart an agent while the controller is down, the restart does
+not finish. Learning is on by default, and each agent waits for the
+controller's admission webhook before it starts. If an agent must
+restart during the incident, restore the controller first.
+
+[#_do_not_delete_a_workloadpolicy]
+=== Do not delete a WorkloadPolicy
+
+A validating webhook rejects the deletion of a `WorkloadPolicy` while
+any pod in its namespace still carries the {policy-label-term}. There
+is no bypass for this check.
+
+Forcing the deletion, for example by removing the webhook configuration
+first, leaves pods with a label that names a policy that no longer
+exists. A pod like that does not start on its next restart, unless
+`agent.nriFailopen` is `true`.
+
+[#_see_also]
+== See also
+
+* xref:explanations/architecture.adoc#_a_mode_change[A mode change]
+  explains what `Transitioning` means and when a policy becomes
+  `Ready`.
+* xref:howtos/production-deployments.adoc[Configuring {rte-name} for
+  production] covers the controller replicas and the
+  PodDisruptionBudget that keep the webhooks available during an
+  incident.
+* {fail-open-term} defines what `agent.nriFailopen` changes.
