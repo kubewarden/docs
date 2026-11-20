@@ -324,7 +324,9 @@ httpbin-demo   Gateway       httpbin-gateway   Detection   True       True      
 +
 The condition `Accepted` shows that the policy is valid and that its target
 exists. The condition `Programmed` shows that the gateway sends the traffic
-to the processor and that the WAF is active.
+to the processor and that the WAF is active. If a condition is not `True`,
+see xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the
+status of a policy].
 
 . Send the attack again.
 +

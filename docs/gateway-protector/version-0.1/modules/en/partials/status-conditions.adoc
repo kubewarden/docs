@@ -1,0 +1,60 @@
+// The status conditions of a WAFPolicy: the meaning of each reason and what
+// to do. The architecture page and the troubleshooting page include this
+// table, so that the two pages cannot disagree.
+[cols="2,1,2,4,4", options="header"]
+|===
+|Condition |Status |Reason |Meaning |What to do
+
+|`Accepted`
+|`True`
+|`Accepted`
+|The target exists, each referenced `WAFRuleSet` exists, and no older
+policy has the same target.
+|Nothing.
+
+|`Accepted`
+|`False`
+|`TargetNotFound`
+|The target does not exist, or `sectionName` matches no listener or rule.
+|Make sure that the kind, the name, the namespace, and the `sectionName` of
+`spec.targetRef` are correct. When the target exists, the controller
+accepts the policy without a change to the policy.
+
+|`Accepted`
+|`False`
+|`Invalid`
+|A `customRulesRefs` entry names a `WAFRuleSet` that does not exist in the
+namespace of the policy.
+|Create the `WAFRuleSet`, or correct the reference.
+
+|`Accepted`
+|`False`
+|`Conflicted`
+|An older policy has the same target. The message gives the name of this
+policy.
+|Delete one of the two policies, or change the target of one of them.
+
+|`Programmed`
+|`False`
+|`Pending`
+|The policy is not accepted, or the controller did not process it yet.
+|If `Accepted` is `False`, correct the cause that `Accepted` gives.
+`Programmed` then changes without other action. If `Accepted` is `True` and
+`Programmed` does not change, read the log of the controller.
+
+|`Programmed`
+|`True`
+|`Programmed`
+|The rules compiled, and they are in the configuration that the controller
+sent to the processor. The message gives the number of routes that the
+policy covers.
+|Nothing. If the message gives 0 routes, the target has no routes yet.
+
+|`Programmed`
+|`False`
+|`CompileFailed`
+|The rules did not compile. The message gives the error of the compiler.
+The WAF does not inspect the traffic that the policy covers.
+|Correct the rule that the message names. The cause is usually a custom
+rule in a referenced `WAFRuleSet`.
+|===

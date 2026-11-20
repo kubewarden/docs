@@ -411,47 +411,7 @@ The processor writes one log line for each rule that matches.
 Each policy reports two conditions. They follow the convention of the
 Gateway API.
 
-[cols="1,1,1,3", options="header"]
-|===
-|Condition |Status |Reason |Meaning
-
-|`Accepted`
-|`True`
-|`Accepted`
-|The target exists, each referenced `WAFRuleSet` exists, and no older policy
-has the same target.
-
-|`Accepted`
-|`False`
-|`TargetNotFound`
-|The target does not exist, or `sectionName` matches no listener or rule.
-
-|`Accepted`
-|`False`
-|`Invalid`
-|A `customRulesRefs` entry names a `WAFRuleSet` that does not exist.
-
-|`Accepted`
-|`False`
-|`Conflicted`
-|An older policy has the same target.
-
-|`Programmed`
-|`False`
-|`Pending`
-|The policy is not accepted, or the controller did not process it yet.
-
-|`Programmed`
-|`True`
-|`Programmed`
-|The rules compiled, and they are in the configuration that the controller
-sent to the processor.
-
-|`Programmed`
-|`False`
-|`CompileFailed`
-|The rules did not compile. The message holds the error.
-|===
+include::partial$status-conditions.adoc[]
 
 A policy with `Programmed=True` on a `Gateway` with no routes is active. It
 only has no traffic to inspect yet.
@@ -460,6 +420,10 @@ The status does not record the rules that match, or the requests that the
 WAF blocks. This information is in the log of the processor. The status also
 does not show the state of each processor replica. See
 xref:reference/known_limitations.adoc#_programmed_does_not_show_each_replica[`Programmed` does not show the state of each processor replica].
+
+The
+xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the status
+of a policy] section tells you how to read the conditions of a policy.
 
 [#_trust_boundaries]
 == Trust boundaries

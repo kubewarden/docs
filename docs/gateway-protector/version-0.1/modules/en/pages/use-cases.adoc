@@ -38,6 +38,7 @@ WAF is active.
 
 See xref:quickstart.adoc[Quick start],
 xref:introduction.adoc#_how_a_policy_selects_traffic[How a policy selects traffic],
+xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the status of a policy],
 and
 xref:reference/known_limitations.adoc#_only_httproute_objects_are_protected[Only HTTPRoute objects are protected].
 
@@ -135,8 +136,9 @@ See
 xref:reference/crd.adoc#k8s-api-github-com-kubewarden-gateway-protector-api-v1alpha1-wafexclusion[WAFExclusion],
 xref:reference/crd.adoc#k8s-api-github-com-kubewarden-gateway-protector-api-v1alpha1-wafruleset[WAFRuleSet],
 xref:reference/known_limitations.adoc#_a_policy_that_does_not_compile_protects_nothing[A policy that does not compile protects nothing],
+xref:reference/known_limitations.adoc#_the_order_of_customrulesrefs_has_no_effect[The order of customRulesRefs has no effect],
 and
-xref:reference/known_limitations.adoc#_the_order_of_customrulesrefs_has_no_effect[The order of customRulesRefs has no effect].
+xref:howtos/troubleshooting.adoc#_unexpected_responses[Unexpected responses].
 
 [#_case_f]
 == Case F: As an application team, I want my application to get the protection with no work.
@@ -212,7 +214,9 @@ the target exists, the controller accepts the policy. I do not change the
 policy.
 
 See
-xref:reference/known_limitations.adoc#_errors_show_only_in_the_status_conditions[Errors show only in the status conditions].
+xref:reference/known_limitations.adoc#_errors_show_only_in_the_status_conditions[Errors show only in the status conditions]
+and
+xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the status of a policy].
 
 [#_non_goals]
 == Non-goals

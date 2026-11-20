@@ -4,6 +4,8 @@ include::partial$variables.adoc[]
 * xref:quickstart.adoc[Quick start]
 * Explanations
 ** xref:explanations/architecture.adoc[Architecture]
+* Howtos
+** xref:howtos/troubleshooting.adoc[Troubleshooting]
 * Reference
 ** xref:reference/compatibility.adoc[Compatibility]
 ** xref:reference/upgrade-path.adoc[Upgrade path]
