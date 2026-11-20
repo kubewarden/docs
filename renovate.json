@@ -1,5 +1,34 @@
 {
   "extends": [
     "github>kubewarden/github-actions//renovate-config/default"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update the Mermaid version that the community site loads from the jsDelivr CDN",
+      "managerFilePatterns": [
+        "/^kw-community-docs-supp-files/js/mermaid-init\\.js$/"
+      ],
+      "matchStrings": [
+        "cdn\\.jsdelivr\\.net/npm/(?<depName>mermaid)@(?<currentValue>\\d+\\.\\d+\\.\\d+)/"
+      ],
+      "datasourceTemplate": "npm"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Put a Mermaid update in its own pull request. A new Mermaid version can change the layout and the labels of every diagram of the site, so a person must look at the diagrams before the merge",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchPackageNames": [
+        "mermaid"
+      ],
+      "groupName": "Mermaid",
+      "groupSlug": "mermaid",
+      "prBodyNotes": [
+        "> [!WARNING]\n> A new Mermaid version can change the layout and the labels of every diagram of the site. Before you merge, build the site and look at the diagrams. `AGENTS.md` has the list of things to check, in the section \"Mermaid diagrams\"."
+      ]
+    }
   ]
 }

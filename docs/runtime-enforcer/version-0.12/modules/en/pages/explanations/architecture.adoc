@@ -67,7 +67,6 @@ cluster and apply it to another.
 .Architecture
 [mermaid,subs="attributes"]
 ....
-%%{init: { "themeVariables": { "fontSize": "24px" } }}%%
 graph LR
     accTitle: {rte-short-name} architecture
     accDescr: A diagram showing the components of {rte-short-name} and the flow of data between them.

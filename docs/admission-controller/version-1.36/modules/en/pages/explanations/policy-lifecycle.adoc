@@ -122,11 +122,11 @@ stateDiagram-v2
     scheduled --> unscheduled : spec.policyServer cleared
 
     scheduled --> pending : PolicyServer CR created
-    pending --> scheduled : PolicyServer CR deleted\n(webhook removed)
-    active --> scheduled : PolicyServer CR deleted\n(webhook removed)
+    pending --> scheduled : PolicyServer CR deleted<br/>(webhook removed)
+    active --> scheduled : PolicyServer CR deleted<br/>(webhook removed)
 
-    pending --> active : PolicyServer ready\n(pods healthy, webhook created)
-    active --> pending : PolicyServer updating\n(rolling update / config change)
+    pending --> active : PolicyServer ready<br/>(pods healthy, webhook created)
+    active --> pending : PolicyServer updating<br/>(rolling update / config change)
 ....
 
 == Conditions

@@ -1,4 +1,4 @@
-import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.6/dist/mermaid.esm.min.mjs';
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.3.0/dist/mermaid.esm.min.mjs';
 
 const diagrams = [...document.querySelectorAll('.mermaid')].map(element => ({ element, source: element.textContent }));
 let pending = Promise.resolve();
@@ -29,7 +29,10 @@ function render() {
       },
       themeCSS: `.policy > polygon.label-container { fill: ${color('--surface-tint')}; }
         .cluster.container > rect { fill: ${color('--surface-muted')}; }`,
-      flowchart: { htmlLabels: false },
+      htmlLabels: false,
+      // The labels of the diagrams have explicit line breaks. With the default
+      // width, Mermaid breaks a long word such as "OpenTelemetry" in two.
+      flowchart: { wrappingWidth: 400 },
     });
     for (const { element, source } of diagrams) {
       element.removeAttribute('data-processed');
