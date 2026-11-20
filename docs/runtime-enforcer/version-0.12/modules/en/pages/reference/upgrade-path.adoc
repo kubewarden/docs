@@ -75,6 +75,21 @@ flowchart LR;
 This section records breaking changes and other important changes that
 you must review before you upgrade to a specific version.
 
+[#_v0_11_to_v0_12]
+=== v0.11 to v0.12
+
+* The `options` field of a `WorkloadPolicy` and of a `WorkloadPolicyProposal`
+  no longer exists. The `executables.foreignRoot` field replaces the
+  `ALLOW_FOREIGN_ROOT_EXEC` option. The field accepts `Allow` and `Deny`. The
+  default value is `Deny`.
+
+* The API server removes the `options` field from stored objects. A
+  container that had `options.ALLOW_FOREIGN_ROOT_EXEC: "1"` then does not
+  allow foreign root executions anymore. Before you upgrade, set
+  `executables.foreignRoot: Allow` in each policy and proposal that needs
+  this behavior. For more information, refer to
+  xref:howtos/learning_mode_configuration.adoc#_foreign_root_executions[Foreign root executions].
+
 [#_v0_10_to_v0_11]
 === v0.10 to v0.11
 
