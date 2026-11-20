@@ -2,3 +2,5 @@ include::partial$variables.adoc[]
 
 * xref:introduction.adoc[Introduction]
 * xref:quickstart.adoc[Quick start]
+* Reference
+** xref:reference/crd.adoc[CRD API reference]

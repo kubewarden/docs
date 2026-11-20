@@ -272,7 +272,7 @@ Each component must always have **exactly one** version directory with `prerelea
 
 Never remove `prerelease:` from a version directory by hand without adding `display: 'X.Y-latest'` to it and removing that line from the previous latest. Doing so stalls the automatic version bump. Use the release script instead, which handles both edits.
 
-`gateway-protector` is an exception until its first release. It has one version directory, with `prerelease:` and no `-latest` version. It is not in `scripts/check-docs-versions.sh`, `scripts/make-new-release.sh`, or `updatecli/`. The landing page links it with `dev@` xrefs, because `latest@` resolves only to a released version. At the first release, promote the version by hand, create the next dev directory, add the component to the scripts and to `updatecli/`, and change the landing page xrefs to `latest@`.
+`gateway-protector` is an exception until its first release. It has one version directory, with `prerelease:` and no `-latest` version. It is not in `scripts/check-docs-versions.sh`, `scripts/make-new-release.sh`, or the version promotion in `.github/workflows/updatecli.yml`. Its CRD reference sync in `updatecli/update-ref-docs.yaml` works without a release, because it copies from the upstream `main` branch into the `prerelease:` directory. The landing page links it with `dev@` xrefs, because `latest@` resolves only to a released version. At the first release, promote the version by hand, create the next dev directory, add the component to the scripts and to the version promotion, and change the landing page xrefs to `latest@`.
 
 The component repository defines the version number. The `prerelease:` directory is a placeholder for the next release, and its number is a guess made by the previous promotion. When a release appears, the promotion renames that directory to the published version. The placeholder number carries no meaning until that rename happens, so a placeholder whose number differs from the next release is normal.
 
@@ -298,6 +298,7 @@ Some partials are copies of files that upstream repositories generate. Do not ed
 | `runtime-enforcer` | `runtime-enforcer/docs/kubectl-plugin/cli-docs.adoc` | `partials/kubectl-plugin-cli-reference.adoc` |
 | `runtime-enforcer` | `runtime-enforcer/docs/wpgen/cli-docs.adoc` | `partials/wpgen-cli-reference.adoc` |
 | `network-enforcer` | `network-enforcer/docs/crds/CRD-docs-for-docs-repo.adoc` | `partials/crd-reference.adoc` |
+| `gateway-protector` | `gateway-protector/docs/crds/CRD-docs-for-docs-repo.adoc` | `partials/crd-reference.adoc` |
 
 The partials land in the current dev version only. An hourly updatecli job (`.github/workflows/updatecli.yml`) watches upstream releases. When a new release appears, the job promotes the dev version and points the values files at the next dev version.
 

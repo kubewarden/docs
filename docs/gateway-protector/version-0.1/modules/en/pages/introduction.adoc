@@ -94,7 +94,9 @@ WAF with Kubernetes objects.
 
 Start with the xref:quickstart.adoc[quick start]. It installs
 {gp-short-name} in a test cluster and protects a sample application. Then it
-shows how the WAF finds and blocks an attack.
+shows how the WAF finds and blocks an attack. The
+xref:reference/crd.adoc[CRD API reference] describes each field of the
+`WAFPolicy` and `WAFRuleSet` kinds.
 
 [#_how_a_policy_selects_traffic]
 == How a policy selects traffic
