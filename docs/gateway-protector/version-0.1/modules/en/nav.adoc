@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 * xref:introduction.adoc[Introduction]
 * xref:quickstart.adoc[Quick start]
 * Reference
+** xref:reference/compatibility.adoc[Compatibility]
 ** xref:reference/known_limitations.adoc[Known limitations]
 ** xref:reference/crd.adoc[CRD API reference]
 * xref:personas.adoc[For who?]

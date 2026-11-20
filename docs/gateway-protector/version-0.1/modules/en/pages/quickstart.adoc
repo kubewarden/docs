@@ -172,13 +172,13 @@ spec:
     spec:
       containers:
         - name: httpbin
-          image: docker.io/mccutchen/go-httpbin:v2.15.0
+          image: docker.io/mccutchen/go-httpbin:2.26.0
           command: [go-httpbin]
           args: ["-port", "8080"]
           ports:
             - containerPort: 8080
         - name: curl
-          image: curlimages/curl:8.11.0
+          image: curlimages/curl:8.23.0
           command: ["tail", "-f", "/dev/null"]
 EOF
 ----

@@ -73,21 +73,21 @@ directly.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`group`* __xref:{anchor_prefix}-sigs-k8s-io-gateway-api-apis-v1-group[$$Group$$]__ | group is the group of the target resource. + |  | Required: \{} +
+| *`group`* __link:https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/#group[$$Group$$]__ | group is the group of the target resource. + |  | Required: \{} +
 
-| *`kind`* __xref:{anchor_prefix}-sigs-k8s-io-gateway-api-apis-v1-kind[$$Kind$$]__ | kind is the kind of the target resource. Only "Gateway" and "HTTPRoute" +
+| *`kind`* __link:https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/#kind[$$Kind$$]__ | kind is the kind of the target resource. Only "Gateway" and "HTTPRoute" +
 (group gateway.networking.k8s.io) are supported. + |  | Enum: [Gateway HTTPRoute] +
 Required: \{} +
 
-| *`name`* __xref:{anchor_prefix}-sigs-k8s-io-gateway-api-apis-v1-objectname[$$ObjectName$$]__ | name is the name of the target resource. + |  | Required: \{} +
+| *`name`* __link:https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/#objectname[$$ObjectName$$]__ | name is the name of the target resource. + |  | Required: \{} +
 
-| *`namespace`* __xref:{anchor_prefix}-sigs-k8s-io-gateway-api-apis-v1-namespace[$$Namespace$$]__ | namespace is the namespace of the target resource. WAFPolicy/DLPPolicy +
+| *`namespace`* __link:https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/#namespace[$$Namespace$$]__ | namespace is the namespace of the target resource. WAFPolicy/DLPPolicy +
 objects live in the platform-owned namespace (e.g. +
 gateway-protector-system) while the targeted Gateway/HTTPRoute usually +
 lives elsewhere, so this field is required to let the controller +
 resolve cross-namespace targets unambiguously. + |  | Required: \{} +
 
-| *`sectionName`* __xref:{anchor_prefix}-sigs-k8s-io-gateway-api-apis-v1-sectionname[$$SectionName$$]__ | sectionName targets a specific listener (when kind is Gateway) or a +
+| *`sectionName`* __link:https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/#sectionname[$$SectionName$$]__ | sectionName targets a specific listener (when kind is Gateway) or a +
 specific route rule (when kind is HTTPRoute). When unset, the policy +
 applies to the whole Gateway/HTTPRoute. + |  | Optional: \{} +
 
@@ -138,7 +138,7 @@ WAFBodyInspectionSpec toggles and bounds request/response body inspection.
 | Field | Description | Default | Validation
 | *`enabled`* __boolean__ | enabled toggles body inspection for this phase. + |  | Required: \{} +
 
-| *`maxSize`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#quantity-resource-api[$$Quantity$$]__ | maxSize caps the number of bytes buffered for inspection (e.g. "1Mi"). +
+| *`maxSize`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#quantity-resource-api[$$Quantity$$]__ | maxSize caps the number of bytes buffered for inspection (e.g. "1Mi"). +
 Bodies larger than this are handled per the engine's configured +
 behavior for oversized bodies. Only meaningful when enabled is true. + |  | Optional: \{} +
 
@@ -278,7 +278,7 @@ routes) or to a single HTTPRoute (as an override of the Gateway default).
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `gateway-protector.kubewarden.io/v1alpha1` | |
 | *`kind`* __string__ | `WAFPolicy` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
  |  | Optional: \{} +
 
 | *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicyspec[$$WAFPolicySpec$$]__ | spec defines the desired state of WAFPolicy + |  | Required: \{} +
@@ -304,7 +304,7 @@ WAFPolicyList contains a list of WAFPolicy
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `gateway-protector.kubewarden.io/v1alpha1` | |
 | *`kind`* __string__ | `WAFPolicyList` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
  |  | 
 | *`items`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicy[$$WAFPolicy$$] array__ |  |  | 
 |===
@@ -388,7 +388,7 @@ WAFPolicyStatus defines the observed state of WAFPolicy.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#condition-v1-meta[$$Condition$$] array__ | conditions represent the current state of the WAFPolicy resource, using +
+| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#condition-v1-meta[$$Condition$$] array__ | conditions represent the current state of the WAFPolicy resource, using +
 the Gateway API status-conditions convention: Accepted (valid, target +
 resolves, not conflicted - see ConditionReasonConflicted) and +
 Programmed (gateway wired, engine live in the data plane). + |  | Optional: \{} +
@@ -417,7 +417,7 @@ in the same namespace via customRulesRefs.
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `gateway-protector.kubewarden.io/v1alpha1` | |
 | *`kind`* __string__ | `WAFRuleSet` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
  |  | Optional: \{} +
 
 | *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafrulesetspec[$$WAFRuleSetSpec$$]__ | spec defines the desired state of WAFRuleSet + |  | Required: \{} +
@@ -443,7 +443,7 @@ WAFRuleSetList contains a list of WAFRuleSet
 | Field | Description | Default | Validation
 | *`apiVersion`* __string__ | `gateway-protector.kubewarden.io/v1alpha1` | |
 | *`kind`* __string__ | `WAFRuleSetList` | |
-| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
  |  | 
 | *`items`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafruleset[$$WAFRuleSet$$] array__ |  |  | 
 |===
@@ -491,7 +491,7 @@ WAFRuleSetStatus defines the observed state of WAFRuleSet.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.36/#condition-v1-meta[$$Condition$$] array__ | conditions represent the current state of the WAFRuleSet resource. + |  | Optional: \{} +
+| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#condition-v1-meta[$$Condition$$] array__ | conditions represent the current state of the WAFRuleSet resource. + |  | Optional: \{} +
 
 |===
 
