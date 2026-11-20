@@ -1,0 +1,249 @@
+include::partial$variables.adoc[]
+
+= Known limitations
+:revdate: 2026-11-20
+:page-revdate: {revdate}
+:description: Understand the known limitations of {gp-name}, and how they affect the protection of your routes.
+:keywords: {gp-name}, kubewarden, known limitations, waf, gateway api, agentgateway, owasp core rule set
+:doc-persona: ["kubewarden-operator"]
+:doc-type: ["reference"]
+:doc-topic: ["operator-manual", "limitations"]
+
+This page lists the known limitations of {gp-name}. Some limitations are
+design decisions. Others come from the first version of {gp-short-name},
+from agentgateway, or from Coraza and the OWASP Core Rule Set (CRS). Each
+section gives one limitation and its impact on your routes.
+
+[#_scope]
+== Scope
+
+[#_only_agentgateway_is_supported]
+=== Only agentgateway is supported
+
+{gp-short-name} works with one implementation of the Gateway API,
+agentgateway. The controller writes `AgentgatewayPolicy` objects, and only
+agentgateway reads them.
+
+* *Impact*: You cannot use {gp-short-name} with another implementation of
+  the Gateway API. There is no plan to support other implementations.
+
+[#_only_httproute_objects_are_protected]
+=== Only HTTPRoute objects are protected
+
+The controller reads only `HTTPRoute` objects. A policy on a `Gateway`
+applies to the `HTTPRoute` objects that attach to this gateway.
+
+* *Impact*: The WAF does not inspect the traffic of other route kinds, for
+  example a `GRPCRoute`, even when a policy targets their `Gateway`.
+
+[#_no_data_loss_prevention]
+=== No data loss prevention
+
+Data loss prevention (DLP) is planned, but it is not in the first version.
+The WAF can block a response, but it cannot change one.
+
+* *Impact*: {gp-short-name} cannot hide sensitive data in a response.
+
+[#_one_crs_version_and_no_crs_plugins]
+=== One CRS version in each release, and no CRS plugins
+
+Each processor image contains one version of the CRS. The processor writes
+this version in the field `crs-version` of its log line `Processor ready`.
+{gp-short-name} does not support CRS plugins. A CRS plugin is an optional
+package of extra rules.
+
+* *Impact*: You cannot select the CRS version or add a CRS plugin.
+
+[#_policy_selection]
+== Policy selection
+
+[#_a_route_policy_replaces_the_gateway_policy]
+=== A route policy replaces the gateway policy in full
+
+The most specific policy governs a route rule. {gp-short-name} never merges
+two policies.
+
+* *Impact*: A policy on an `HTTPRoute` keeps no value of the policy on its
+  `Gateway`. To keep a value, for example the paranoia level, write it again
+  in the route policy.
+
+[#_regular_expression_path_matches_are_not_protected]
+=== Regular expression path matches are not protected
+
+The processor selects the rules for a request by its host and the prefix of
+its path. It cannot use a `RegularExpression` path match of an `HTTPRoute`
+rule.
+
+* *Impact*: The WAF does not inspect a rule that has only
+  `RegularExpression` path matches. A request of this rule is inspected only
+  when it also matches the path prefix of another rule, for example `/`.
+
+[#_a_route_with_more_than_one_gateway_gets_one_policy]
+=== A route with more than one gateway gets one policy
+
+An `HTTPRoute` can attach to more than one `Gateway`. If no policy targets
+the route itself, the first `Gateway` in `spec.parentRefs` that has a policy
+gives the policy for the route.
+
+* *Impact*: You cannot give one route a different policy for each
+  `Gateway`.
+
+[#_a_policy_for_one_rule_depends_on_the_rule_name]
+=== A policy for one rule depends on the name of the rule
+
+A policy can target one rule of an `HTTPRoute` with `sectionName`. The
+application team owns the route, and it can change the name of the rule.
+
+* *Impact*: After a change of the name, the traffic of the rule falls under
+  the next broader policy, and this policy can be weaker. The policy for the
+  rule then reports `Accepted=False` with reason `TargetNotFound`.
+
+[#_errors_show_only_in_the_status_conditions]
+=== Errors show only in the status conditions
+
+{gp-short-name} has no admission webhook. The Kubernetes API rejects only
+the errors that it can find in the policy alone, for example an unknown
+mode. It accepts a policy with a target that does not exist, or with a
+reference to a `WAFRuleSet` that does not exist.
+
+* *Impact*: `kubectl apply` succeeds for such a policy. Read the conditions
+  `Accepted` and `Programmed` of each policy after you apply it.
+
+[#_failure_behavior]
+== Failure behavior
+
+[#_protected_routes_fail_closed]
+=== Protected routes fail closed
+
+If no processor replica is ready, agentgateway blocks the traffic of every
+protected route. A policy has no field to change this behavior. The Helm
+chart installs one processor replica.
+
+* *Impact*: An outage of the processor stops every protected application.
+  To keep the protection available, increase `processor.replicas`.
+
+[#_a_new_processor_replica_needs_the_controller]
+=== A new processor replica needs the controller
+
+A processor replica is not ready until it gets its first configuration from
+the controller. After that, the replica keeps its last good configuration
+when the controller is not available.
+
+* *Impact*: When the controller is not available, a new processor replica
+  cannot serve traffic, for example after a node failure.
+
+[#_a_policy_that_does_not_compile_protects_nothing]
+=== A policy that does not compile protects nothing
+
+The controller compiles the rules of each policy before it sends them to the
+processor. If the rules do not compile, the policy reports
+`Programmed=False` with reason `CompileFailed`. The message of the condition
+holds the error.
+
+* *Impact*: The WAF does not inspect the traffic that this policy covers.
+  This traffic does not fall back to a broader policy.
+
+[#_programmed_does_not_show_each_replica]
+=== `Programmed` does not show the state of each processor replica
+
+The condition `Programmed=True` shows that the controller sent the rules to
+the processor replicas. It does not show that each replica applied them.
+
+* *Impact*: If a replica rejects a configuration, only the logs of the
+  controller and of the processor show it. The replica keeps its last good
+  configuration.
+
+[#_your_own_agentgatewaypolicy_can_stop_the_inspection]
+=== Your own `AgentgatewayPolicy` can stop the inspection
+
+The controller writes one `AgentgatewayPolicy` for each protected route.
+This object sends the traffic of the route to the processor. A
+`Gateway`-level `AgentgatewayPolicy` with `strategy.inheritance: Override`
+locks the `extProc` section. agentgateway then ignores the generated
+objects of the routes of this gateway, and it does not report this.
+
+* *Impact*: The WAF does not inspect the traffic of these routes. Do not
+  write an `extProc` section in your own `AgentgatewayPolicy` objects for a
+  protected `Gateway` or a protected route.
+
+[#_inspection]
+== Inspection
+
+[#_large_request_bodies_are_rejected]
+=== Large request bodies are rejected in Blocking mode
+
+In `Blocking` mode, the WAF rejects a request with a body larger than the
+limit. The response has status `413`. The default limit is 13107200 bytes
+(12.5 MiB). The field `requestBody.maxSize` of the policy changes the limit.
+In `Detection` mode, the WAF inspects only the first part of a large body,
+and it lets the request through.
+
+* *Impact*: An upload larger than the limit fails in `Blocking` mode, but
+  not in `Detection` mode. As a result, `Detection` mode does not show this
+  problem before you change the mode. The processor holds the body in memory
+  until the verdict, so a larger limit uses more memory.
+
+[#_response_bodies_are_inspected_in_part]
+=== Response bodies are inspected only in part
+
+The WAF inspects the body of a response only when its content type is
+`text/plain`, `text/html`, or `text/xml`. It inspects the first 524288 bytes
+(512 KiB) of the body. The rest of the body goes to the client without
+inspection. The field `responseBody.maxSize` of the policy changes this
+size.
+
+* *Impact*: The WAF does not inspect the body of other responses, for
+  example the JSON responses of an API, images, or server-sent events.
+
+[#_agentgateway_changes_some_requests]
+=== agentgateway rejects or changes some requests before the WAF
+
+agentgateway handles each request before it sends the request to the
+processor. It rejects a request target that contains a raw `<` or `>`
+character, with status `400`. It also removes `Cookie` header values that are
+not valid, or cuts them short.
+
+* *Impact*: The WAF does not see these requests, and the processor does not
+  log them. The WAF and the application get the same cookie values. An
+  attack that is percent-encoded gets to the WAF, and the WAF decodes it.
+
+[#_an_anomaly_threshold_of_zero_is_not_possible]
+=== An anomaly threshold of 0 is not possible
+
+The fields `anomalyThreshold.inbound` and `anomalyThreshold.outbound` use
+the value `0` for "not set".
+
+* *Impact*: If you set a threshold to `0`, the default of the CRS applies:
+  5 for requests and 4 for responses.
+
+[#_the_order_of_customrulesrefs_has_no_effect]
+=== The order of `customRulesRefs` has no effect
+
+The controller applies the referenced `WAFRuleSet` objects in the order of
+their namespace and name. The rules inside one `WAFRuleSet` keep their
+order.
+
+* *Impact*: Put rules that depend on each other in the same `WAFRuleSet`.
+
+[#_performance]
+== Performance
+
+[#_the_added_latency_is_not_measured]
+=== The added latency is not measured
+
+For each protected request, agentgateway calls the processor. The processor
+holds the body of the request until the verdict. The cost of these steps is
+not measured yet.
+
+* *Impact*: Measure the latency of your routes before and after you attach
+  a policy.
+
+[#_unprotected_rules_of_a_protected_route]
+=== Rules without a policy go through the processor
+
+The generated `AgentgatewayPolicy` targets the full `HTTPRoute`. If a policy
+covers only one rule of a route, the traffic of the other rules also goes to
+the processor. The processor does not inspect this traffic.
+
+* *Impact*: These requests also get the added latency. When no processor
+  replica is ready, agentgateway also blocks them.

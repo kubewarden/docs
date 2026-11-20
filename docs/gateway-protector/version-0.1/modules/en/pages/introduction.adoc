@@ -89,6 +89,9 @@ WAF with Kubernetes objects.
   valid request that a rule rejects). A `WAFRuleSet` object adds your own
   rules.
 
+There is further documentation of use cases on the xref:use-cases.adoc[use
+cases] page.
+
 [#_new_to_gateway_protector]
 == New to {gp-short-name}?
 
@@ -96,7 +99,9 @@ Start with the xref:quickstart.adoc[quick start]. It installs
 {gp-short-name} in a test cluster and protects a sample application. Then it
 shows how the WAF finds and blocks an attack. The
 xref:reference/crd.adoc[CRD API reference] describes each field of the
-`WAFPolicy` and `WAFRuleSet` kinds.
+`WAFPolicy` and `WAFRuleSet` kinds. The
+xref:reference/known_limitations.adoc[known limitations] page lists what
+the first version of {gp-short-name} cannot do.
 
 [#_how_a_policy_selects_traffic]
 == How a policy selects traffic
