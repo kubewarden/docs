@@ -78,6 +78,21 @@ rule.
   `RegularExpression` path matches. A request of this rule is inspected only
   when it also matches the path prefix of another rule, for example `/`.
 
+[#_rules_with_the_same_host_and_path_share_one_policy]
+=== Rules with the same host and path share one policy
+
+The processor selects the rules for a request by its host and the prefix of
+its path only. It does not use the other matches of an `HTTPRoute` rule,
+such as a header, a query parameter, or the method. It also uses the value
+of an `Exact` path match as a path prefix.
+
+* *Impact*: Two rules with the same host and path, but with different
+  policies, get the same policy for their requests. For example, a rule for
+  `GET /api` and a rule for `POST /api` share one policy. An `Exact` match
+  for `/admin` also covers `/admin/users`, unless a longer prefix exists for
+  this host. To give two rules different policies, give them different
+  paths.
+
 [#_a_route_with_more_than_one_gateway_gets_one_policy]
 === A route with more than one gateway gets one policy
 

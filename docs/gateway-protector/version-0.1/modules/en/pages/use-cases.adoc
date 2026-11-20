@@ -14,8 +14,8 @@ meets that goal.
 
 A policy has one of three modes: `Detection`, `Blocking`, and `Off`. The use
 cases that follow use these modes. See
-xref:introduction.adoc#_how_a_policy_selects_traffic[How a policy selects
-traffic] for the rules that select the policy of each route.
+xref:explanations/policy-attachment.adoc[Policy attachment] for the rules
+that select the policy of each route.
 
 [#_case_a]
 == Case A: As a platform engineer, I want to protect every application behind a gateway, without writing rules.
@@ -37,7 +37,7 @@ the policy is valid and that its target exists. `Programmed` shows that the
 WAF is active.
 
 See xref:quickstart.adoc[Quick start],
-xref:introduction.adoc#_how_a_policy_selects_traffic[How a policy selects traffic],
+xref:howtos/attach-a-policy.adoc#_protect_every_route_of_a_gateway[Protect every route of a gateway],
 xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the status of a policy],
 and
 xref:reference/known_limitations.adoc#_only_httproute_objects_are_protected[Only HTTPRoute objects are protected].
@@ -109,7 +109,8 @@ again. Two policies with the same target are a conflict. The oldest policy
 wins, and the other policy reports `Accepted=False` with reason `Conflicted`.
 
 See
-xref:introduction.adoc#_how_a_policy_selects_traffic[How a policy selects traffic],
+xref:howtos/attach-a-policy.adoc[Attach a policy to a gateway or a route],
+xref:explanations/policy-attachment.adoc[Policy attachment],
 xref:reference/known_limitations.adoc#_a_route_policy_replaces_the_gateway_policy[A route policy replaces the gateway policy in full],
 and
 xref:reference/known_limitations.adoc#_a_policy_for_one_rule_depends_on_the_rule_name[A policy for one rule depends on the name of the rule].

@@ -132,6 +132,10 @@ result, exactly one policy governs each route rule.
 If no policy targets a `Gateway` or its routes, the WAF does not inspect the
 traffic.
 
+The xref:explanations/policy-attachment.adoc[Policy attachment] page gives
+the full rules. The xref:howtos/attach-a-policy.adoc[Attach a policy to a
+gateway or a route] page gives a manifest for each target.
+
 [#_components]
 == Components
 

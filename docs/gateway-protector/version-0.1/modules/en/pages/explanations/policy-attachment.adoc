@@ -1,0 +1,210 @@
+include::partial$variables.adoc[]
+
+= Policy attachment
+:revdate: 2026-11-20
+:page-revdate: {revdate}
+:description: Learn how {gp-name} finds the policy that governs each rule of an HTTPRoute, and how it turns the rules into the hosts and paths that the WAF inspects.
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["policy-attachment"]
+:doc-type: ["explanation"]
+:keywords: {gp-name}, kubewarden, wafpolicy, policy attachment, gateway api, httproute, sectionName
+
+A `WAFPolicy` has exactly one target. More than one policy can apply to the
+same request, for example a policy on a `Gateway` and a policy on one of its
+routes. This page explains which policy governs each request. It also
+explains how {gp-name} finds the requests that a policy covers.
+
+The xref:howtos/attach-a-policy.adoc[Attach a policy to a gateway or a
+route] page gives a manifest for each kind of target.
+
+[#_targets]
+== Targets
+
+The field `spec.targetRef` names the target of a policy. It always has the
+group `gateway.networking.k8s.io`, a kind, a name, and a namespace. The
+optional field `sectionName` narrows the target to one part of it. Four
+targets are possible:
+
+[cols="2,2,3", options="header"]
+|===
+|Target |`targetRef` |Scope
+
+|A `Gateway`
+|`kind: Gateway`, no `sectionName`
+|Every route that attaches to this gateway.
+
+|A listener of a `Gateway`
+|`kind: Gateway`, `sectionName` is the name of the listener
+|Every route that names this listener in its `parentRefs`.
+
+|An `HTTPRoute`
+|`kind: HTTPRoute`, no `sectionName`
+|Every rule of this route.
+
+|A rule of an `HTTPRoute`
+|`kind: HTTPRoute`, `sectionName` is the name of the rule
+|This rule only.
+|===
+
+[#_selection_order]
+== Selection order
+
+The controller finds the policy of each rule of each `HTTPRoute`. It tries
+four levels, from the most specific to the least specific. It stops at the
+first level that has a policy:
+
+. A policy on this rule of the route. This level applies only to a rule that
+  has a name.
+. A policy on the full route.
+. A policy on the listener that the route names in `parentRefs`.
+. A policy on the full gateway.
+
+If no level has a policy, the WAF does not inspect the rule.
+
+.The selection order
+[mermaid]
+....
+flowchart TD
+    accTitle: The selection order of a policy
+    accDescr: A flowchart showing the four levels that the controller tries, from a policy on one rule of a route to a policy on the full gateway.
+    start(["One HTTPRoute rule"]) --> l1{"Does a policy target<br/>this rule of the route?"}
+    l1 -->|"yes"| p1["Route rule policy"]
+    l1 -->|"no"| l2{"Does a policy target<br/>the full route?"}
+    l2 -->|"yes"| p2["Route policy"]
+    l2 -->|"no"| l3{"Does a policy target<br/>the listener of the gateway?"}
+    l3 -->|"yes"| p3["Listener policy"]
+    l3 -->|"no"| l4{"Does a policy target<br/>the full gateway?"}
+    l4 -->|"yes"| p4["Gateway policy"]
+    l4 -->|"no"| none["No policy. The WAF does not inspect this rule."]
+    p1 --> out["This policy governs the rule.<br/>No other policy applies."]
+    p2 --> out
+    p3 --> out
+    p4 --> out
+....
+
+[#_one_policy_governs_a_rule]
+== One policy governs a rule
+
+The policy that the selection finds governs the rule in full. {gp-short-name}
+never merges two policies, and policies have no priorities.
+
+For example, a policy on a route replaces the policy on its gateway for the
+rules of the route. The route policy keeps no value of the gateway policy,
+such as the paranoia level or the exclusions. To keep a value, write it again
+in the route policy.
+
+This design has one reason: the result for a rule depends on one object
+only. You can read one policy and know how the WAF treats the rule.
+
+[#_listener_policies]
+== Listener policies
+
+A route attaches to a `Gateway` through an entry in its `spec.parentRefs`.
+The entry can name one listener of the gateway with `sectionName`. The
+controller knows the listener of a route only from this field.
+
+As a result, a policy on a listener covers only the routes that name the
+listener in `parentRefs`. A route that attaches to the gateway without
+`sectionName` gets the policy of the full gateway, not the listener policy.
+
+[#_rule_policies]
+== Rule policies
+
+A policy can target one rule of an `HTTPRoute`. The `sectionName` of the
+policy is the `name` of the rule. A rule without a name cannot be the target
+of a policy.
+
+The application team owns the route, so it can change the name of a rule.
+After the change, the policy reports `Accepted=False` with the reason
+`TargetNotFound`. The traffic of the rule then falls under the next broader
+policy, and this policy can be weaker. See
+xref:reference/known_limitations.adoc#_a_policy_for_one_rule_depends_on_the_rule_name[A
+policy for one rule depends on the name of the rule].
+
+[#_two_policies_with_the_same_target]
+== Two policies with the same target
+
+Two policies have the same target when they have the same kind, namespace,
+name, and `sectionName`. This is a conflict. The oldest policy wins. If the
+two policies were created in the same second, the order of their namespace
+and name decides.
+
+The other policy reports `Accepted=False` with the reason `Conflicted`. The
+message of the condition gives the name of the policy that wins. When you
+delete the policy that wins, the next oldest policy wins.
+
+A policy on a gateway and a policy on one of its routes are not a conflict.
+They have different targets, and the selection order decides between them.
+
+[#_a_route_with_more_than_one_gateway]
+== A route with more than one gateway
+
+An `HTTPRoute` can attach to more than one `Gateway`. The first two levels of
+the selection order, the rule and the route, do not depend on the gateway.
+
+For the last two levels, the controller tries each entry of
+`spec.parentRefs` in the order of the list. The first gateway that has a
+listener policy or a gateway policy gives the policy for the rule. As a
+result, a route gets the same policy on every gateway.
+
+[#_policies_in_another_namespace]
+== Policies in another namespace
+
+A policy can be in a namespace that is different from the namespace of its
+target. The field `targetRef.namespace` is required for this reason.
+
+As a result, the platform team can keep every policy in one namespace, for
+example the namespace of {gp-short-name}. With Kubernetes RBAC (role-based
+access control), it gives the application teams no write access to this
+namespace. The application teams publish their routes, and the policies of
+the platform team protect them.
+
+A policy and the `WAFRuleSet` objects that it references must be in the same
+namespace.
+
+[#_from_rules_to_hosts_and_paths]
+== From rules to hosts and paths
+
+The processor does not know routes. It knows a table that maps a host and a
+path prefix to a set of rules. For each rule of each route, the controller
+adds one entry for each host and each path of the rule.
+
+The hosts of a route come from the first source in this list that gives a
+value:
+
+. The `spec.hostnames` of the route.
+. The `hostname` of the listener that the route names in `parentRefs`.
+. The `hostname` of the listener of the gateway, if the gateway has exactly
+  one listener.
+. The catch-all host `*`.
+
+A listener without a `hostname` also gives the catch-all host `*`.
+
+The paths of a rule come from its matches:
+
+* A `PathPrefix` match or an `Exact` match gives its value as a path prefix.
+* A match without a path, or a rule without matches, gives the prefix `/`.
+* A `RegularExpression` match gives no entry. See
+  xref:reference/known_limitations.adoc#_regular_expression_path_matches_are_not_protected[Regular
+  expression path matches are not protected].
+
+For each request, the processor first finds the host. An exact host wins
+over a wildcard host such as `*.example.com`. A wildcard host matches the
+subdomains of `example.com`, but not `example.com` itself. A wildcard host
+wins over the catch-all host `*`. Then the longest path prefix of this host
+wins. If no entry matches, the WAF does not inspect the request.
+
+The table has only hosts and path prefixes. It cannot tell apart two rules
+that differ only in other matches, such as a header or the method. See
+xref:reference/known_limitations.adoc#_rules_with_the_same_host_and_path_share_one_policy[Rules
+with the same host and path share one policy].
+
+[#_when_an_object_changes]
+== When an object changes
+
+The controller finds the policy of each rule again when a policy, a
+`Gateway`, an `HTTPRoute`, or a `WAFRuleSet` changes. For example, a new
+route on a protected gateway gets the gateway policy without other action.
+The
+xref:explanations/architecture.adoc#_a_related_object_changes[Architecture]
+page lists the effect of each change.

@@ -17,9 +17,9 @@ The proxy is agentgateway. It is not a part of {gp-short-name}. It sends the
 traffic of each protected route to the processor, and it blocks the traffic
 that the processor rejects.
 
-The xref:introduction.adoc[introduction] explains what a policy is and
-xref:introduction.adoc#_how_a_policy_selects_traffic[how a policy selects
-traffic]. This page explains how the parts fit together.
+The xref:introduction.adoc[introduction] explains what a policy is. The
+xref:explanations/policy-attachment.adoc[Policy attachment] page explains how
+a policy selects traffic. This page explains how the parts fit together.
 
 [#_design_principles]
 == Design principles
@@ -272,6 +272,7 @@ This section follows one policy from `kubectl apply` to an active WAF.
 . *The controller builds the table.* For each rule of each `HTTPRoute`, it
   finds the policy that governs the rule. Then it adds one entry for each
   host and each path prefix of the rule. The entry names the engine key.
+  See xref:explanations/policy-attachment.adoc[Policy attachment].
 
 . *The controller sends the configuration.* Each processor replica compiles
   it and starts to use it. Requests in progress finish with the old engines.

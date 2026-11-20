@@ -446,9 +446,9 @@ it.
 
 A policy with the mode `Off` stops the inspection of its target. A policy
 can also target one `HTTPRoute`, and then it replaces the policy of the
-`Gateway` for this route. The section
-xref:introduction.adoc#_how_a_policy_selects_traffic[How a policy selects
-traffic] gives the rules. The xref:reference/crd.adoc[CRD API reference]
+`Gateway` for this route. The
+xref:howtos/attach-a-policy.adoc[Attach a policy to a gateway or a route]
+page shows how. The xref:reference/crd.adoc[CRD API reference]
 describes each field of a policy, for example the exclusions of CRS rules
 and the limits for body inspection.
 

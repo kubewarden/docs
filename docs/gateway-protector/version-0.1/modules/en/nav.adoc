@@ -4,7 +4,9 @@ include::partial$variables.adoc[]
 * xref:quickstart.adoc[Quick start]
 * Explanations
 ** xref:explanations/architecture.adoc[Architecture]
+** xref:explanations/policy-attachment.adoc[Policy attachment]
 * Howtos
+** xref:howtos/attach-a-policy.adoc[Attach a policy]
 ** xref:howtos/troubleshooting.adoc[Troubleshooting]
 * Reference
 ** xref:reference/compatibility.adoc[Compatibility]
