@@ -343,9 +343,18 @@ In `monitor` mode, the agent reports these cases as violations.
   start script installs.
 * Executables from a foreign root.
 
-In `monitor` mode, the agent reports these executables as violations. Add
-them to the policy by hand, or with the {kubectl-plugin-term} command
-`policy allow`.
+In `monitor` mode, the agent reports these executables as violations.
+For executions on the container's own root file system, you can add paths
+by hand or with the {kubectl-plugin-term} command `policy allow`.
+
+Foreign-root executions use
+`spec.rulesByContainer[<container>].executables.foreignRoot`, which defaults
+to `Deny`. With `Deny`, the agent blocks these executions in `protect` mode
+and reports but does not block them in `monitor` mode. An entry in
+`executables.allowed` does not override this rule. With `Allow`, the agent
+permits all foreign-root executions for that container and does not check
+`executables.allowed`. This exception does not change the allow-list checks
+for executables on the container's own root file system.
 
 
 [#_large-base-images]
