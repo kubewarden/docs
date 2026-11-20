@@ -242,6 +242,19 @@ order.
 
 * *Impact*: Put rules that depend on each other in the same `WAFRuleSet`.
 
+[#_a_rule_set_can_turn_off_the_waf]
+=== A rule set can turn off the WAF
+
+The directives of a `WAFRuleSet` are raw SecLang, and nothing limits them.
+For example, the directive `SecRuleEngine Off` in a rule set turns off the
+WAF of every policy that references the rule set.
+
+* *Impact*: The policy still shows the mode `Blocking` and the condition
+  `Programmed=True`. Give write access to rule sets only to the people who
+  can write policies. See
+  xref:howtos/custom-rules.adoc#_a_rule_set_can_weaken_a_policy[A rule set
+  can weaken a policy].
+
 [#_performance]
 == Performance
 

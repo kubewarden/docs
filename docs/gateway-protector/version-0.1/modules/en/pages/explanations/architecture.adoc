@@ -135,7 +135,8 @@ Gateway API CRDs and agentgateway must be in the cluster first.
 
 `WAFPolicy` and `WAFRuleSet` are the user-facing API. A `WAFPolicy` attaches
 one set of WAF rules to one `Gateway` or `HTTPRoute`. A `WAFRuleSet` holds
-custom rules that policies in the same namespace reference by name. The
+custom rules that policies in the same namespace reference by name. See
+xref:howtos/custom-rules.adoc[Write your own rules]. The
 xref:reference/crd.adoc[CRD API reference] describes each field.
 
 [#_controller]

@@ -56,5 +56,7 @@ policy covers.
 |The rules did not compile. The message gives the error of the compiler.
 The WAF does not inspect the traffic that the policy covers.
 |Correct the rule that the message names. The cause is usually a custom
-rule in a referenced `WAFRuleSet`.
+rule in a referenced `WAFRuleSet`. See
+xref:howtos/custom-rules.adoc#_if_the_rules_do_not_compile[If the rules do
+not compile].
 |===

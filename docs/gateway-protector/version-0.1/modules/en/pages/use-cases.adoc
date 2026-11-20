@@ -134,6 +134,7 @@ not compile, the policy reports `Programmed=False` with reason
 `CompileFailed`.
 
 See
+xref:howtos/custom-rules.adoc[Write your own rules],
 xref:reference/crd.adoc#k8s-api-github-com-kubewarden-gateway-protector-api-v1alpha1-wafexclusion[WAFExclusion],
 xref:reference/crd.adoc#k8s-api-github-com-kubewarden-gateway-protector-api-v1alpha1-wafruleset[WAFRuleSet],
 xref:reference/known_limitations.adoc#_a_policy_that_does_not_compile_protects_nothing[A policy that does not compile protects nothing],
