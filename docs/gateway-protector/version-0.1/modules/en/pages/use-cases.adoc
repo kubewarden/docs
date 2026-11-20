@@ -62,7 +62,8 @@ change the mode, I make sure that the body limit is large enough for my
 applications.
 
 See xref:quickstart.adoc#_detect_attacks[Detect attacks],
-xref:quickstart.adoc#_block_attacks[Block attacks], and
+xref:quickstart.adoc#_block_attacks[Block attacks],
+xref:howtos/tune-false-positives.adoc[Tune false positives], and
 xref:reference/known_limitations.adoc#_large_request_bodies_are_rejected[Large request bodies are rejected in Blocking mode].
 
 [#_case_c]
@@ -88,6 +89,7 @@ but it also causes more false positives. `anomalyThreshold` sets the scores
 that reject a request and a response.
 
 See xref:quickstart.adoc#_block_attacks[Block attacks],
+xref:explanations/modes-and-scoring.adoc[Modes and anomaly scoring],
 xref:reference/crd.adoc#k8s-api-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicyspec[WAFPolicySpec],
 and
 xref:reference/known_limitations.adoc#_response_bodies_are_inspected_in_part[Response bodies are inspected only in part].
@@ -134,6 +136,7 @@ not compile, the policy reports `Programmed=False` with reason
 `CompileFailed`.
 
 See
+xref:howtos/tune-false-positives.adoc[Tune false positives],
 xref:howtos/custom-rules.adoc[Write your own rules],
 xref:reference/crd.adoc#k8s-api-github-com-kubewarden-gateway-protector-api-v1alpha1-wafexclusion[WAFExclusion],
 xref:reference/crd.adoc#k8s-api-github-com-kubewarden-gateway-protector-api-v1alpha1-wafruleset[WAFRuleSet],

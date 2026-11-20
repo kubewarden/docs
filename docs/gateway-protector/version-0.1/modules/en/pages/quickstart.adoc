@@ -300,7 +300,8 @@ The policy is in the namespace of {gp-short-name}, and its target is in the
 namespace `httpbin`. A policy on a `Gateway` applies to every route of this
 gateway. The field `paranoiaLevel` selects the paranoia level of the OWASP
 Core Rule Set (CRS), from 1 to 4. A higher level enables more rules and
-causes more false positives.
+causes more false positives. See
+xref:explanations/modes-and-scoring.adoc#_paranoia_levels[Paranoia levels].
 
 . Wait until the policy is active.
 +
@@ -451,6 +452,9 @@ xref:howtos/attach-a-policy.adoc[Attach a policy to a gateway or a route]
 page shows how. The xref:reference/crd.adoc[CRD API reference]
 describes each field of a policy, for example the exclusions of CRS rules
 and the limits for body inspection.
+
+Before you block the traffic of a real application, tune the policy. See
+xref:howtos/tune-false-positives.adoc[Tune false positives].
 
 [#_clean_up]
 == Clean up

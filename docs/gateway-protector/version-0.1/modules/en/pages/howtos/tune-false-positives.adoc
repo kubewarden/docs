@@ -1,0 +1,322 @@
+include::partial$variables.adoc[]
+
+= Tune false positives
+:revdate: 2026-11-20
+:page-revdate: {revdate}
+:description: Find the {gp-name} rules that reject valid requests, stop them with the smallest change, and move a policy from Detection mode to Blocking mode.
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["false-positives", "tuning"]
+:doc-type: ["howto"]
+:keywords: {gp-name}, kubewarden, false positive, exclusions, owasp core rule set, crs, tuning, detection mode
+
+A false positive is a valid request that the WAF rejects. Each application
+sends some requests that look like attacks, so each policy needs some
+tuning. This page shows how to find the rules that reject valid requests,
+and how to stop them with the smallest change.
+
+The xref:explanations/modes-and-scoring.adoc[Modes and anomaly scoring] page
+explains how the OWASP Core Rule Set (CRS) decides that a request is an
+attack.
+
+[#_prerequisites]
+== Prerequisites
+
+* A policy that protects the route. See
+  xref:howtos/attach-a-policy.adoc[Attach a policy to a gateway or a route].
+* The `jq` command on your computer. The commands on this page use it to
+  read the JSON log of the processor.
+* The log level of the processor is `info`, the default, or `debug`. At a
+  higher level, the log does not show the total score of a request.
+
+[#_find_the_rules_that_reject_valid_requests]
+== Find the rules that reject valid requests
+
+. Set the mode of the policy to `Detection`:
++
+[source,bash]
+----
+kubectl patch wafpolicy shared-gw-default -n gateway-protector-system \
+  --type=merge -p '{"spec":{"engine":{"mode":"Detection"}}}'
+----
++
+In this mode, the WAF blocks nothing. It writes each rule that matches to
+the log of the processor.
+
+. Let the normal traffic of the application go through the route. Use real
+  users or your tests.
+
+. List the rules that match most often:
++
+[source,bash]
+----
+kubectl logs -n gateway-protector-system -l app.kubernetes.io/component=processor --tail=-1 \
+  | jq -r 'select(.msg == "WAF rule triggered" and .rule_id != 949110) | "\(.rule_id)\t\(.message)"' \
+  | sort | uniq -c | sort -rn
+----
++
+The first column gives the number of matches. Rule 949110 only adds up the
+score, so the command leaves it out.
+
+. List the rules of the requests to one path. Replace `/forum/post` with the
+  path:
++
+[source,bash]
+----
+kubectl logs -n gateway-protector-system -l app.kubernetes.io/component=processor --tail=-1 \
+  | jq -r 'select(.msg == "WAF rule triggered" and (.uri | startswith("/forum/post"))) | "\(.transaction_id)\t\(.rule_id)\t\(.severity)\t\(.message)"'
+----
++
+The first column identifies one request. For example:
++
+[source,text]
+----
+gmomWCxcIIizKNNwqJd	930120	critical	OS File Access Attempt
+gmomWCxcIIizKNNwqJd	932160	critical	Remote Command Execution: Unix Shell Code Found
+gmomWCxcIIizKNNwqJd	949110	unknown	Inbound Anomaly Score Exceeded (Total Score: 10)
+----
+
+. Decide for each request if it is valid.
+
+In the examples on this page, a forum for system administrators gets this
+valid post in the parameter `comment`:
+
+[source,text]
+----
+To list the users, run cat /etc/passwd on the server
+----
+
+Two critical rules match it, and the score of 10 is above the threshold of
+5. In `Blocking` mode, the WAF rejects the post.
+
+[#_choose_the_smallest_change]
+== Choose the smallest change
+
+Each change stops a false positive, but it also stops the WAF from finding
+some attacks. Choose the change with the smallest scope:
+
+[cols="3,3,2", options="header"]
+|===
+|Change |Scope |Section
+
+|Remove the rules for one parameter, on one path.
+|Smallest.
+|xref:#_remove_rules_for_one_parameter_of_one_path[One parameter, one path]
+
+|Remove the rules for one parameter, on every path.
+|One parameter.
+|xref:#_remove_rules_for_one_parameter_on_every_path[One parameter, every path]
+
+|Remove rules in the policy of one route.
+|One route.
+|xref:#_remove_rules_for_one_route_or_one_policy[One route or one policy]
+
+|Remove rules in the policy of a gateway.
+|Every route of the gateway.
+|xref:#_remove_rules_for_one_route_or_one_policy[One route or one policy]
+
+|Lower the paranoia level, or raise the inbound threshold.
+|Every rule, every route of the policy.
+|xref:#_change_the_paranoia_level_or_the_threshold[Paranoia level and threshold]
+|===
+
+A test sent the text of the forum post in four places, and the attack of the
+xref:quickstart.adoc[quick start] in a fifth request:
+
+* Forum `comment`: the parameter `comment` on the path `/forum/post`.
+* Forum `title`: the parameter `title` on the path `/forum/post`.
+* Blog `comment`: the parameter `comment` on the path `/blog/comment`.
+* Search `q`: the parameter `q` on the path `/search`.
+
+Each change gave these results:
+
+[cols="3,1,1,1,1,1", options="header"]
+|===
+|Change |Forum `comment` |Forum `title` |Blog `comment` |Search `q` |Attack
+
+|None
+|Blocked
+|Blocked
+|Blocked
+|Blocked
+|Blocked
+
+|Remove the rules for `comment` on `/forum/post`
+|Passes
+|Blocked
+|Blocked
+|Blocked
+|Blocked
+
+|Remove the rules for `comment` on every path
+|Passes
+|Blocked
+|Passes
+|Blocked
+|Blocked
+
+|Exclude rules 930120 and 932160 in the policy
+|Passes
+|Passes
+|Passes
+|Passes
+|Blocked
+
+|Inbound threshold of 11
+|Passes
+|Passes
+|Passes
+|Passes
+|Blocked
+|===
+
+[#_remove_rules_for_one_parameter_of_one_path]
+== Remove rules for one parameter of one path
+
+. Add a rule to a `WAFRuleSet`. It removes the two rules from the parameter
+  `comment`, on the paths that start with `/forum/post` only:
++
+[source,yaml]
+----
+apiVersion: gateway-protector.kubewarden.io/v1alpha1
+kind: WAFRuleSet
+metadata:
+  name: forum-exclusions
+  namespace: gateway-protector-system
+spec:
+  rules:
+    - id: 10200
+      directive: |
+        SecRule REQUEST_URI "@beginsWith /forum/post" \
+          "id:10200,phase:1,pass,nolog,\
+          ctl:ruleRemoveTargetById=930120;ARGS:comment,\
+          ctl:ruleRemoveTargetById=932160;ARGS:comment"
+----
++
+Use `phase:1`. A rule of your own runs after the CRS rules of the same
+phase, so a rule in a later phase acts too late.
+
+. Add the rule set to `customRulesRefs` of the policy, and apply the two
+  objects. See
+  xref:howtos/custom-rules.adoc#_reference_the_rule_set_from_a_policy[Reference
+  the rule set from a policy].
+
+[#_remove_rules_for_one_parameter_on_every_path]
+== Remove rules for one parameter on every path
+
+. Add the directive `SecRuleUpdateTargetById` to a `WAFRuleSet`. It changes
+  the targets of a CRS rule for every request:
++
+[source,yaml]
+----
+    - id: 10210
+      directive: |
+        SecRuleUpdateTargetById 930120 "!ARGS:comment"
+        SecRuleUpdateTargetById 932160 "!ARGS:comment"
+----
++
+The directive has no `id` action, but the field `id` is required. Use a
+number that no other rule of the policy uses.
+
+. Add the rule set to `customRulesRefs` of the policy, and apply the two
+  objects.
+
+[#_remove_rules_for_one_route_or_one_policy]
+== Remove rules for one route or one policy
+
+The field `exclusions` of a policy removes CRS rules for every request that
+the policy covers.
+
+. Add the IDs of the rules to `exclusions`:
++
+[source,yaml]
+----
+spec:
+  exclusions:
+    - byId: [930120, 932160]
+----
+
+. To remove the rules for one route only, put the exclusions in a policy for
+  this route. See
+  xref:howtos/attach-a-policy.adoc#_give_one_route_a_different_policy[Give
+  one route a different policy]. The route policy replaces the gateway
+  policy in full, so copy the other values of the gateway policy too.
+
+You can also remove all the rules with one tag, with `byTag`. A tag covers a
+class of attacks, so it removes many rules. For example, rule 930120 has the
+tag `attack-lfi`, and rule 932160 has the tag `attack-rce`. To find the
+class of a rule, read the field `rule_file` of its log line, for example
+`REQUEST-930-APPLICATION-ATTACK-LFI.conf`.
+
+[#_allow_more_http_methods]
+== Allow more HTTP methods
+
+With its default settings, the CRS permits only the methods `GET`, `HEAD`,
+`POST`, and `OPTIONS`. For the other methods, rule 911100 ("Method is not
+allowed by policy") adds 5 points. The WAF then rejects the `PUT`, `PATCH`,
+and `DELETE` requests of a REST API.
+
+. Add rule 911100 to the `exclusions` of the policy that protects the API:
++
+[source,yaml]
+----
+spec:
+  exclusions:
+    - byId: [911100]
+----
+
+. Put this exclusion in a policy for the API route only. Without rule 911100,
+  the WAF permits every method on the routes of the policy, for example
+  `TRACE`.
+
+A rule set cannot do this in a smaller way. It cannot change the list of
+permitted methods, and it cannot remove rule 911100 in time. See
+xref:reference/known_limitations.adoc#_custom_rules_cannot_change_the_crs_settings[Custom
+rules cannot change the CRS settings].
+
+[#_change_the_paranoia_level_or_the_threshold]
+== Change the paranoia level or the threshold
+
+A lower paranoia level or a higher inbound threshold affects every rule.
+Use these changes only when the other changes are not possible.
+
+* An inbound threshold of 11 stops the false positive of the forum. It also
+  lets through every request that matches two critical rules or fewer, in
+  any parameter.
+* A higher paranoia level finds more attacks, and it causes more false
+  positives. Raise the level in `Detection` mode first, and tune again.
+
+See xref:explanations/modes-and-scoring.adoc[Modes and anomaly scoring].
+
+[#_move_to_blocking_mode]
+== Move to Blocking mode
+
+. Make sure that the log shows no false positives for the normal use of the
+  application.
+
+. Set the mode of the policy to `Blocking`:
++
+[source,bash]
+----
+kubectl patch wafpolicy shared-gw-default -n gateway-protector-system \
+  --type=merge -p '{"spec":{"engine":{"mode":"Blocking"}}}'
+----
+
+. Watch the blocked requests:
++
+[source,bash]
+----
+kubectl logs -n gateway-protector-system -l app.kubernetes.io/component=processor --tail=-1 \
+  | jq -r 'select(.msg == "WAF blocked traffic") | "\(.path)\t\(.rule_id)"'
+----
++
+A block by the score gives the rule 949110. Find the rules of the request
+with the command in
+xref:#_find_the_rules_that_reject_valid_requests[Find the rules that reject
+valid requests].
+
+. If the WAF rejects a valid request, set the mode back to `Detection`. Then
+  tune the policy again.
+
+The CRS project has more advice on tuning in its
+https://coreruleset.org/docs/concepts/false_positives_tuning/[false positives
+and tuning] guide.

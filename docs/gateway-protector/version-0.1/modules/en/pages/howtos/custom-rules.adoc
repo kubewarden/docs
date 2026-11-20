@@ -207,7 +207,8 @@ paths that start with `/search` only.
 === Turn off CRS rules for one path
 
 The `exclusions` of a policy remove CRS rules for every request that the
-policy covers. To remove CRS rules for one path only, use a rule with the
+policy covers. The xref:howtos/tune-false-positives.adoc[Tune false
+positives] page compares the ways to remove CRS rules. To remove CRS rules for one path only, use a rule with the
 action `ctl:ruleRemoveByTag` or `ctl:ruleRemoveById`.
 
 For example, the editor of a content management system sends HTML in its

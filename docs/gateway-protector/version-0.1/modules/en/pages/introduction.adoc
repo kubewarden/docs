@@ -52,6 +52,9 @@ A policy has one of three modes:
 * `Blocking`: The WAF rejects the traffic that a rule matches.
 * `Off`: The WAF is off for the target of the policy.
 
+The xref:explanations/modes-and-scoring.adoc[Modes and anomaly scoring] page
+explains how the WAF decides that a request is an attack.
+
 [#_how_does_gateway_protector_help]
 == How does {gp-name} help?
 

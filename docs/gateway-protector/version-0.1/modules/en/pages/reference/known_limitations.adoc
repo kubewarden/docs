@@ -255,6 +255,21 @@ WAF of every policy that references the rule set.
   xref:howtos/custom-rules.adoc#_a_rule_set_can_weaken_a_policy[A rule set
   can weaken a policy].
 
+[#_custom_rules_cannot_change_the_crs_settings]
+=== Custom rules cannot change the CRS settings
+
+The CRS reads its settings in phase 1, and the rules of a `WAFRuleSet` run
+after the CRS rules of the same phase. As a result, a rule set cannot change
+a CRS setting, such as `tx.allowed_methods`. A rule set also cannot remove a
+CRS rule of phase 1 in time, because the rule already ran.
+
+* *Impact*: With the default settings, the CRS rejects the `PUT`, `PATCH`,
+  and `DELETE` requests of a REST API. The only way to permit them is to
+  exclude rule 911100 in the policy. This exclusion permits every method on
+  the routes of the policy. See
+  xref:howtos/tune-false-positives.adoc#_allow_more_http_methods[Allow more
+  HTTP methods].
+
 [#_performance]
 == Performance
 
