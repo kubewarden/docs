@@ -150,6 +150,9 @@ is not a part of
 of {gp-short-name}. {gp-short-name} does not support other implementations
 of the Gateway API.
 
+The xref:explanations/architecture.adoc[Architecture] page explains how the
+parts fit together, and it follows a policy and a request through them.
+
 A second protection, data loss prevention (DLP), is planned. DLP finds
 sensitive data in a response and hides it before the response leaves the
 cluster.

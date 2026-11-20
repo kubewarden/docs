@@ -184,7 +184,8 @@ the certificates, and the controller rotates them. {gp-short-name} does not
 need cert-manager.
 
 See
-xref:reference/known_limitations.adoc#_protected_routes_fail_closed[Protected routes fail closed]
+xref:explanations/architecture.adoc#_fail_closed_at_each_layer[Fail closed at each layer],
+xref:reference/known_limitations.adoc#_protected_routes_fail_closed[Protected routes fail closed],
 and
 xref:reference/known_limitations.adoc#_a_new_processor_replica_needs_the_controller[A new processor replica needs the controller].
 
