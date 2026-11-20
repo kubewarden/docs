@@ -73,3 +73,8 @@ policies:
     values:
       - values.d/scm.yaml
       - values.d/crd-ref-docs-gateway-protector.yaml
+  - name: Update gateway-protector prerequisite versions
+    config:
+      - updatecli.d/update-gateway-protector-prerequisites.yaml
+    values:
+      - values.d/scm.yaml

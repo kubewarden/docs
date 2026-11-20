@@ -272,7 +272,7 @@ Each component must always have **exactly one** version directory with `prerelea
 
 Never remove `prerelease:` from a version directory by hand without adding `display: 'X.Y-latest'` to it and removing that line from the previous latest. Doing so stalls the automatic version bump. Use the release script instead, which handles both edits.
 
-`gateway-protector` is an exception until its first release. It has one version directory, with `prerelease:` and no `-latest` version. It is not in `scripts/check-docs-versions.sh`, `scripts/make-new-release.sh`, or the version promotion in `.github/workflows/updatecli.yml`. Its CRD reference sync in `updatecli/update-ref-docs.yaml` works without a release, because it copies from the upstream `main` branch into the `prerelease:` directory. The landing page links it with `dev@` xrefs, because `latest@` resolves only to a released version. At the first release, promote the version by hand, create the next dev directory, add the component to the scripts and to the version promotion, and change the landing page xrefs to `latest@`.
+`gateway-protector` is an exception until its first release. It has one version directory, with `prerelease:` and no `-latest` version. It is not in `scripts/check-docs-versions.sh`, `scripts/make-new-release.sh`, or the version promotion in `.github/workflows/updatecli.yml`. It has no `:release-tag:` and `:chart-version:` attributes yet. Its CRD reference sync and its prerequisite versions sync in `updatecli/update-ref-docs.yaml` work without a release, because they read the upstream `main` branch and write into the `prerelease:` directory. The landing page links it with `dev@` xrefs, because `latest@` resolves only to a released version. At the first release, promote the version by hand, create the next dev directory, add the component to the scripts and to the version promotion, add the two release version attributes, and change the landing page xrefs to `latest@`.
 
 The component repository defines the version number. The `prerelease:` directory is a placeholder for the next release, and its number is a guess made by the previous promotion. When a release appears, the promotion renames that directory to the published version. The placeholder number carries no meaning until that rename happens, so a placeholder whose number differs from the next release is normal.
 
@@ -314,6 +314,19 @@ Each component's dev version defines two AsciiDoc attributes in `partials/commun
 Use `{release-tag}` for the upstream release tag (image tags, cosign certificate identities) and `{chart-version}` for the published Helm chart version. Inside a `[source]` block, add `subs="+attributes"` or the attribute is printed literally.
 
 Do not bump these by hand. The hourly updatecli job runs `updatecli/updatecli.d/update-release-attributes.yaml` for each component. It reads the latest GitHub release of the component repository and the latest `<chart name>-X.Y.Z` release of `kubewarden/helm-charts`, and rewrites the two attributes in the dev version. The chart name per component is `chartName` in `updatecli/values.d/`.
+
+### Prerequisite versions of gateway-protector
+
+The dev version of `gateway-protector` defines two more attributes in `partials/variables.adoc`:
+
+```asciidoc
+:gateway-api-version: v1.7.0
+:agentgateway-version: v1.7.0
+```
+
+The quick start and the compatibility page use them. The values are the same in the community and the product builds, so they are not in a `community-specific/` file.
+
+Do not bump these by hand. The scheduled job in `.github/workflows/update-ref-docs.yml` runs `updatecli/updatecli.d/update-gateway-protector-prerequisites.yaml`. The job reads two files on the `main` branch of `kubewarden/gateway-protector`: the version of `sigs.k8s.io/gateway-api` in `go.mod`, and the `agentgateway_version` line of the `Tiltfile`. When a version changes, the job opens a pull request.
 
 ### Mermaid diagrams
 
