@@ -1,0 +1,7 @@
+name: gateway-protector
+title: Gateway Protector
+version: "0.1"
+prerelease: -dev
+start_page: en:introduction.adoc
+nav:
+  - modules/en/nav.adoc

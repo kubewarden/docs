@@ -14,7 +14,8 @@ content:
         docs/admission-controller/version-*,
         docs/sbom-scanner/version-*,
         docs/runtime-enforcer/version-*,
-        docs/network-enforcer/version-*
+        docs/network-enforcer/version-*,
+        docs/gateway-protector/version-*
         ]
 
 ui:

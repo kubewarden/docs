@@ -24,6 +24,11 @@
 :co-community-short-name: Compliance Operator
 :co-community-abbrev: KWCO
 
+// Gateway Protector.
+:gp-community-name: {community-project-name} Gateway Protector
+:gp-community-short-name: Gateway Protector
+:gp-community-abbrev: KWGP
+
 // Network Enforcer.
 :ne-community-name: {community-project-name} Network Enforcer
 :ne-community-short-name: Network Enforcer

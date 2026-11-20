@@ -1,0 +1,150 @@
+include::partial$variables.adoc[]
+
+= {gp-name}
+:revdate: 2026-11-20
+:page-revdate: {revdate}
+:description: Learn what {gp-name} is, how it protects the HTTP traffic of a Kubernetes gateway with a web application firewall, and how a policy selects traffic.
+:keywords: {gp-name}, kubewarden, cncf, kubernetes, gateway api, waf, web application firewall, coraza, owasp core rule set
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["introduction"]
+:doc-type: ["explanation"]
+
+{gp-name} is a Kubernetes security tool. It protects the HTTP traffic that a
+gateway exposes from a cluster. The gateway is a proxy that implements the
+https://gateway-api.sigs.k8s.io[Kubernetes Gateway API].
+
+{intro-paragraph}
+
+[WARNING]
+====
+{gp-short-name} is experimental and under active development. It is not
+ready for production.
+====
+
+The first protection is a web application firewall (WAF). A WAF inspects HTTP
+requests and responses and blocks attacks such as SQL injection. The WAF uses
+https://coraza.io[Coraza] and the https://coreruleset.org[OWASP Core Rule
+Set] (CRS). The CRS is a set of ready-to-use rules that find generic attacks.
+
+A platform team attaches a `WAFPolicy` object to a `Gateway` or to an
+`HTTPRoute`. In this documentation, a policy is a `WAFPolicy` object.
+
+[source,yaml]
+----
+apiVersion: gateway-protector.kubewarden.io/v1alpha1
+kind: WAFPolicy
+metadata:
+  name: shared-gw-default
+  namespace: gateway-protector-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: shared-gw
+    namespace: infra
+  engine:
+    mode: Detection
+----
+
+A policy has one of three modes:
+
+* `Detection`: The WAF logs each rule that matches and blocks nothing.
+* `Blocking`: The WAF rejects the traffic that a rule matches.
+* `Off`: The WAF is off for the target of the policy.
+
+[#_how_does_gateway_protector_help]
+== How does {gp-name} help?
+
+{gp-short-name} adds a WAF to the routes of a gateway. A team operates the
+WAF with Kubernetes objects.
+
+[#_benefits_and_value]
+=== Benefits and value
+
+* {gp-short-name} includes the CRS. You do not write rules by hand.
+* One policy on a `Gateway` protects every route of this gateway.
+* A policy targets only Gateway API objects. An application team publishes
+  an `HTTPRoute` and changes nothing else.
+* A policy can target an object in another namespace. As a result, the
+  platform team can keep every policy in one restricted namespace.
+* `Detection` mode shows the rules that match before the WAF blocks
+  traffic.
+* Protection does not stop silently. If a component of {gp-short-name}
+  fails, the protected routes reject traffic. The name of this behavior is
+  fail closed.
+* Each response that the WAF blocks has the header `x-waf-violation: 1`.
+  You can tell a WAF block from an application error.
+* {gp-short-name} is part of a CNCF project, with an open community.
+
+[#_use_cases]
+=== Use cases
+
+* Default protection. One policy on a `Gateway` gives every route of this
+  gateway the same protection.
+* Stricter rules for one application. A second policy on one `HTTPRoute`
+  replaces the gateway policy for this route.
+* No WAF for one route. A policy with the mode `Off` stops the inspection
+  of one route, for example a public status page.
+* Tuning. A policy can exclude a CRS rule that causes a false positive (a
+  valid request that a rule rejects). A `WAFRuleSet` object adds your own
+  rules.
+
+[#_new_to_gateway_protector]
+== New to {gp-short-name}?
+
+Start with the xref:quickstart.adoc[quick start]. It installs
+{gp-short-name} in a test cluster and protects a sample application. Then it
+shows how the WAF finds and blocks an attack.
+
+[#_how_a_policy_selects_traffic]
+== How a policy selects traffic
+
+A policy has exactly one target. Four target shapes are possible:
+
+[cols="1,2"]
+|===
+| Target | Scope
+
+| A `Gateway`
+| Every route that attaches to this gateway.
+
+| A `Gateway` and a listener
+| Every route that attaches to this listener.
+
+| An `HTTPRoute`
+| Every rule of this route.
+
+| An `HTTPRoute` and a rule
+| This rule only.
+|===
+
+The most specific policy wins. It replaces every broader policy for the
+traffic that it covers. {gp-short-name} never merges two policies. As a
+result, exactly one policy governs each route rule.
+
+If no policy targets a `Gateway` or its routes, the WAF does not inspect the
+traffic.
+
+[#_components]
+== Components
+
+{gp-short-name} has two programs:
+
+* The controller reads the `WAFPolicy` and `WAFRuleSet` objects. It builds
+  the configuration of the processor. It also writes one `AgentgatewayPolicy`
+  object for each protected route.
+* The processor inspects the traffic with Coraza and the CRS.
+
+{gp-short-name} works with one gateway,
+https://agentgateway.dev[agentgateway]. An `AgentgatewayPolicy` object tells
+agentgateway to send the traffic of a route to the processor. agentgateway
+is not a part of
+{gp-short-name}. It must be in the cluster before you install the Helm chart
+of {gp-short-name}. {gp-short-name} does not support other implementations
+of the Gateway API.
+
+A second protection, data loss prevention (DLP), is planned. DLP finds
+sensitive data in a response and hides it before the response leaves the
+cluster.
+
+include::partial${build-type}-specific/vendor-neutrality.adoc[]

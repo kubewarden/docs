@@ -9,6 +9,7 @@ const components = {
   'sbom-scanner': { default: 'beta', versions: {} },
   'runtime-enforcer': { default: 'beta', versions: {} },
   'network-enforcer': { default: 'experimental', versions: { '0.2': 'experimental' } },
+  'gateway-protector': { default: 'experimental', versions: {} },
 }
 
 const labels = { stable: 'Stable', beta: 'Beta', experimental: 'Experimental' }

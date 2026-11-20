@@ -31,6 +31,9 @@ component_hierarchy:
       - component: network-enforcer
         expanded: false
         include_versions: true
+      - component: gateway-protector
+        expanded: false
+        include_versions: true
 
 hidden_components:
   - shared

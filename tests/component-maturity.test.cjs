@@ -50,6 +50,7 @@ test('Handlebars helper uses current defaults for documented components', () => 
   assert.equal(helper('sbom-scanner', { hash: { version: '0.12' } }).label, 'Beta');
   assert.equal(helper('admission-controller', { hash: { version: '1.37' } }).label, 'Stable');
   assert.match(helper('<div data-component-maturity="network-enforcer"></div>', { hash: { landing: true } }), /Experimental/);
+  assert.match(helper('<div data-component-maturity="gateway-protector"></div>', { hash: { landing: true } }), /Experimental/);
 });
 
 test('toolbar template passes the page version and omits unconfigured components', () => {

@@ -29,7 +29,7 @@ test('the repository configuration loads and names every live component', () => 
   const names = [];
   const walk = nodes => nodes.forEach(node => { names.push(node.component); walk(node.children || []); });
   walk(repoConfig.nodes);
-  for (const name of ['kubewarden', 'admission-controller', 'sbom-scanner', 'runtime-enforcer', 'network-enforcer']) {
+  for (const name of ['kubewarden', 'admission-controller', 'sbom-scanner', 'runtime-enforcer', 'network-enforcer', 'gateway-protector']) {
     assert.ok(names.includes(name), `${name} is missing from component-hierarchy.yml`);
   }
   assert.deepEqual(repoConfig.hidden, ['shared']);

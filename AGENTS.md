@@ -44,6 +44,7 @@ This is an [Antora](https://antora.org) multi-component documentation site writt
 | `sbom-scanner` | `docs/sbom-scanner/version-*` | SBOM scanner docs, versioned `version-X.Y` |
 | `runtime-enforcer` | `docs/runtime-enforcer/version-*` | Runtime enforcer docs, versioned `version-X.Y` |
 | `network-enforcer` | `docs/network-enforcer/version-*` | Network enforcer docs, versioned `version-X.Y` |
+| `gateway-protector` | `docs/gateway-protector/version-*` | Gateway protector docs, versioned `version-X.Y` |
 | `shared` | `shared/` | Shared partials and variables; no pages |
 
 **Playbooks**:
@@ -86,6 +87,7 @@ Do not hardcode a product name. Use the name attributes:
 | `sbom-scanner` | `{sboms-name}` | `{sboms-short-name}` |
 | `runtime-enforcer` | `{rte-name}` | `{rte-short-name}` |
 | `network-enforcer` | `{ne-name}` | `{ne-short-name}` |
+| `gateway-protector` | `{gp-name}` | `{gp-short-name}` |
 
 - Use the full name for the first mention on a page and in `:description:`.
   Use the short name after that.
@@ -108,7 +110,7 @@ Do not hardcode a product name. Use the name attributes:
 | All versions of one component | `shared/modules/en/partials/<key>-variables.adoc` | `shared/modules/en/partials/community-specific/<key>-variables.adoc` |
 | One component version | `partials/variables.adoc` | `partials/community-specific/variables.adoc` |
 
-The component keys are `admc`, `ne`, `rte`, `sboms`, and `kw`. The product
+The component keys are `admc`, `gp`, `ne`, `rte`, `sboms`, and `kw`. The product
 repository has the same files with `product-specific/` in place of
 `community-specific/`.
 
@@ -258,6 +260,7 @@ with the heading defined as:
 - **`sbom-scanner`** versions: directories named `version-X.Y`
 - **`runtime-enforcer`** versions: directories named `version-X.Y`
 - **`network-enforcer`** versions: directories named `version-X.Y`
+- **`gateway-protector`** versions: directories named `version-X.Y`
 - Prerelease (dev) versions have `prerelease: -dev` in `antora.yml`
 - The current latest release has `display: 'X.Y-latest'` in `antora.yml`; the previous latest loses the `display:` line
 - The landing page in `docs/kw/` links each component with `latest@` xrefs. When you promote a version, check that those xrefs use the page paths of the newly promoted layout. A page alias keeps an old path working through a redirect, but the link should point at the page directly.
@@ -268,6 +271,8 @@ Each component must always have **exactly one** version directory with `prerelea
 - The reference documentation manifests read the dev version from the directory marked `prerelease:` to decide where generated partials are written.
 
 Never remove `prerelease:` from a version directory by hand without adding `display: 'X.Y-latest'` to it and removing that line from the previous latest. Doing so stalls the automatic version bump. Use the release script instead, which handles both edits.
+
+`gateway-protector` is an exception until its first release. It has one version directory, with `prerelease:` and no `-latest` version. It is not in `scripts/check-docs-versions.sh`, `scripts/make-new-release.sh`, or `updatecli/`. The landing page links it with `dev@` xrefs, because `latest@` resolves only to a released version. At the first release, promote the version by hand, create the next dev directory, add the component to the scripts and to `updatecli/`, and change the landing page xrefs to `latest@`.
 
 The component repository defines the version number. The `prerelease:` directory is a placeholder for the next release, and its number is a guess made by the previous promotion. When a release appears, the promotion renames that directory to the published version. The placeholder number carries no meaning until that rename happens, so a placeholder whose number differs from the next release is normal.
 
