@@ -1,0 +1,70 @@
+include::partial$variables.adoc[]
+
+= VEX Support
+:revdate: 2026-09-01
+:page-revdate: {revdate}
+:description: Use VEX hubs to enrich {sboms-name} vulnerability findings.
+
+VEX communicates vulnerability exploitability information. Software
+projects can share VEX documents with scanning tools.
+
+VEX can reduce false-positive vulnerability findings in the final report.
+
+If you want to know more about VEX, take a look https://github.com/openvex/spec[here].
+
+== VEX Hub
+
+VEX Hub is a place where VEX (Vulnerability Exploitability eXchange) documents from different open-source projects are collected and organized. It helps people and security tools find and use important information about software vulnerabilities more easily.
+
+If you want to know more about VEX Hub, take a look https://github.com/aquasecurity/vexhub[here].
+
+== Getting Started
+
+To scan `Registries` with VEX, create one or more `VEXHub` resources.
+
+This is a `VEXHub` resource example. See https://github.com/kubewarden/sbomscanner/blob/main/examples/vexhub.yaml[`examples/vexhub.yaml`].
+
+[source,yaml]
+----
+apiVersion: sbomscanner.kubewarden.io/v1alpha1
+kind: VEXHub
+metadata:
+  name: kubewarden
+spec:
+  url: "https://github.com/rancher/vexhub"
+  enabled: true
+----
+
+Apply the resource with:
+
+[source,bash]
+----
+kubectl apply -f examples/vexhub.yaml
+----
+
+Apply a https://github.com/kubewarden/sbomscanner/blob/main/examples/scanjob.yaml[`ScanJob`] that scans the target registry.
+
+{sboms-name} automatically detects `VEXHub` resources and includes them in
+the scan.
+
+The `VEXHub` custom resource is cluster-scoped. You can use the same
+configuration for multiple registries.
+
+=== Managing Multiple VEX Hub Repositories
+
+You can configure an arbitrary number of `VEXHub` repositories within your cluster.
+
+To disable a VEX Hub, set `spec.enabled` to `false`.
+
+This will let {sboms-name} exclude the `VEXHub` resource when scanning the registries.
+
+Here's the command to disable a `VEXHub` resource:
+
+[source,bash]
+----
+kubectl patch vexhub <vexhub-name> -p '{"spec":{"enabled":false}}'
+----
+
+== Air Gap
+
+Air Gap support for VEX Hub is described xref:user-guide/airgap-support.adoc#self-hosting-vex-hub[here].
