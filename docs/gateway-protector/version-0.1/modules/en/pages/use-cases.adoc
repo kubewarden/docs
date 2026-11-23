@@ -63,7 +63,8 @@ applications.
 
 See xref:quickstart.adoc#_detect_attacks[Detect attacks],
 xref:quickstart.adoc#_block_attacks[Block attacks],
-xref:howtos/tune-false-positives.adoc[Tune false positives], and
+xref:howtos/tune-false-positives.adoc[Tune false positives],
+xref:howtos/emergency-disable.adoc#_stop_the_blocking[Stop the blocking], and
 xref:reference/known_limitations.adoc#_large_request_bodies_are_rejected[Large request bodies are rejected in Blocking mode].
 
 [#_case_c]
@@ -192,11 +193,16 @@ agentgateway connects to the processor with mTLS too. The Helm chart creates
 the certificates, and the controller rotates them. {gp-short-name} does not
 need cert-manager.
 
+If the processor fails and I cannot fix it quickly, I take the WAF out of
+the path of the traffic by hand. Then I put it back when the processor works
+again.
+
 See
 xref:explanations/architecture.adoc#_fail_closed_at_each_layer[Fail closed at each layer],
 xref:reference/known_limitations.adoc#_protected_routes_fail_closed[Protected routes fail closed],
+xref:reference/known_limitations.adoc#_a_new_processor_replica_needs_the_controller[A new processor replica needs the controller],
 and
-xref:reference/known_limitations.adoc#_a_new_processor_replica_needs_the_controller[A new processor replica needs the controller].
+xref:howtos/emergency-disable.adoc[Turn off the WAF in an emergency].
 
 [#_case_h]
 == Case H: As a platform engineer with many clusters, I want the same policies in every cluster, managed as code.

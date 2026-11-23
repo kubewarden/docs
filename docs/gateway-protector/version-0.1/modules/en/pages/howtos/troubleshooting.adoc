@@ -156,12 +156,15 @@ request without its identity fails].
 contains a raw `<` or `>` character.
 |Nothing. The response comes from agentgateway, not from the WAF.
 
-|Every protected route fails.
+|Each request to a protected route gets status `500` with the body
+`external processing failed`.
 |No processor replica is ready, and agentgateway blocks the traffic of the
 protected routes.
 |Make sure that the processor pods are ready. A new replica is ready only
 after it gets its first configuration, so make sure that the controller runs
-too.
+too. If you cannot fix the processor quickly, see
+xref:howtos/emergency-disable.adoc#_take_the_waf_out_of_the_path[Take the
+WAF out of the path].
 |===
 
 To find the processor pods that are not ready, run this command:

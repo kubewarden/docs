@@ -97,25 +97,36 @@ reference to a `WAFRuleSet` that does not exist.
 === Protected routes fail closed
 
 If no processor replica is ready, agentgateway blocks the traffic of every
-protected route. A policy has no field to change this behavior. The Helm
-chart installs one processor replica.
+protected route. A policy has no field to change this behavior, and the mode
+`Off` does not help: agentgateway still sends the traffic to the processor.
+The Helm chart installs one processor replica.
 
 * *Impact*: An outage of the processor stops every protected application.
   To keep the protection available, increase `processor.replicas`. See
   xref:howtos/production-deployments.adoc#_run_more_than_one_processor_replica[Run
-  more than one processor replica].
+  more than one processor replica]. No switch takes the WAF out of the path
+  of the traffic. In an emergency, do it by hand. See
+  xref:howtos/emergency-disable.adoc#_take_the_waf_out_of_the_path[Take the
+  WAF out of the path].
 
 [#_a_new_processor_replica_needs_the_controller]
 === A new processor replica needs the controller
 
 A processor replica is not ready until it gets its first configuration from
 the controller. After that, the replica keeps its last good configuration
-when the controller is not available.
+when the controller is not available. The liveness probe of a replica
+without a configuration also fails, so Kubernetes restarts the replica about
+once a minute. After each restart, Kubernetes waits longer before the next
+one.
 
 * *Impact*: When the controller is not available, a new processor replica
-  cannot serve traffic, for example after a node failure. See
+  cannot serve traffic, for example after a node failure. When the
+  controller is back, such a replica can need some minutes to become ready.
+  To make it ready at once, restart the processor. See
   xref:howtos/production-deployments.adoc#_run_a_second_controller_replica[Run
-  a second controller replica].
+  a second controller replica] and
+  xref:howtos/emergency-disable.adoc#_after_you_took_the_waf_out_of_the_path[After
+  you took the WAF out of the path].
 
 [#_only_the_controller_leader_serves_the_configuration]
 === Only the controller leader serves the configuration
