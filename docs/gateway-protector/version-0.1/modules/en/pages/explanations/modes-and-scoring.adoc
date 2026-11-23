@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Modes and anomaly scoring
-:revdate: 2026-11-20
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :description: Learn how the OWASP Core Rule Set decides that a request is an attack in {gp-name}, and what the modes, the paranoia level, and the anomaly thresholds of a policy change.
 :doc-persona: ["kubewarden-all"]
@@ -50,7 +50,7 @@ A policy with the mode `Off` is not the same as no policy. It replaces the
 broader policies for its target, so it can turn the WAF off for one route of
 a protected gateway. See
 xref:explanations/policy-attachment.adoc#_one_policy_governs_a_rule[One
-policy governs a rule].
+policy governs a request].
 
 [#_anomaly_scoring]
 == Anomaly scoring

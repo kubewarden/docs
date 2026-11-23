@@ -10,6 +10,7 @@ include::partial$variables.adoc[]
 ** xref:howtos/attach-a-policy.adoc[Attach a policy]
 ** xref:howtos/custom-rules.adoc[Write your own rules]
 ** xref:howtos/tune-false-positives.adoc[Tune false positives]
+** xref:howtos/production-deployments.adoc[Production deployments]
 ** xref:howtos/troubleshooting.adoc[Troubleshooting]
 * Reference
 ** xref:reference/compatibility.adoc[Compatibility]

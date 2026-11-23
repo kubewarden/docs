@@ -183,7 +183,9 @@ The Helm chart installs one replica of the controller and one replica of the
 processor. I increase the number of processor replicas, so that one failure
 does not stop the protected routes. A processor replica keeps its last good
 configuration when the controller is not available. A new replica needs the
-controller for its first configuration.
+controller for its first configuration. I follow
+xref:howtos/production-deployments.adoc[Configure {gp-short-name} for production]
+for the replicas, the scheduling, and the memory.
 
 The controller and the processor connect with mutual TLS (mTLS), and
 agentgateway connects to the processor with mTLS too. The Helm chart creates
@@ -218,8 +220,13 @@ The policy then reports `Accepted=False` with reason `TargetNotFound`. When
 the target exists, the controller accepts the policy. I do not change the
 policy.
 
+I install the chart with a tool that runs Helm against the cluster. A tool
+that renders the chart without access to the cluster replaces the
+certificates at each render.
+
 See
-xref:reference/known_limitations.adoc#_errors_show_only_in_the_status_conditions[Errors show only in the status conditions]
+xref:reference/known_limitations.adoc#_errors_show_only_in_the_status_conditions[Errors show only in the status conditions],
+xref:reference/known_limitations.adoc#_a_render_without_the_cluster_replaces_the_certificates[A render without the cluster replaces the certificates],
 and
 xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the status of a policy].
 

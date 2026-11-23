@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {gp-name}
-:revdate: 2026-11-20
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :description: Learn what {gp-name} is, how it protects the HTTP traffic of a Kubernetes gateway with a web application firewall, and how a policy selects traffic.
 :keywords: {gp-name}, kubewarden, cncf, kubernetes, gateway api, waf, web application firewall, coraza, owasp core rule set
@@ -116,10 +116,10 @@ A policy has exactly one target. Four target shapes are possible:
 | Target | Scope
 
 | A `Gateway`
-| Every route that attaches to this gateway.
+| Every request that this gateway accepts.
 
 | A `Gateway` and a listener
-| Every route that attaches to this listener.
+| Every request that this listener accepts.
 
 | An `HTTPRoute`
 | Every rule of this route.

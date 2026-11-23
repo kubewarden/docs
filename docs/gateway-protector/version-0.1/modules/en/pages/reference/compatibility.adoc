@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Compatibility
 :description: Check which gateway, Gateway API version, and platforms {gp-name} works with.
-:revdate: 2026-11-20
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :doc-persona: ["kubewarden-operator"]
 :doc-topic: ["compatibility"]
@@ -28,7 +28,11 @@ before you install {gp-short-name}.
 |agentgateway is the only supported implementation of the Gateway API.
 {gp-short-name} is tested with this version. The controller writes
 `AgentgatewayPolicy` objects, so it depends on the API of agentgateway.
-Other versions are not tested.
+Other versions are not tested. The generated objects use the
+`metadataContext` field of ext_proc. They also use the Common Expression
+Language (CEL) variables for the route that agentgateway selects.
+agentgateway versions before v1.4.0 do not have this field and these
+variables.
 
 |*Gateway API*
 |{gateway-api-version}, standard channel

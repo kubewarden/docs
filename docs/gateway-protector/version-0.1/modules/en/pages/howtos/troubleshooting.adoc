@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Troubleshooting
-:revdate: 2026-11-20
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :description: Find out why a {gp-name} policy does not protect a route, and what an unexpected response from a protected route means.
 :doc-persona: ["kubewarden-operator"]
@@ -63,8 +63,8 @@ does not block an attack:
   processor.
 
 . Read the message of the condition `Programmed`. It gives the number of
-  routes that the policy covers. If the number is 0, make sure that the
-  route attaches to the target of the policy.
+  routes that the policy can apply to. If the number is 0, make sure that
+  the route attaches to the target of the policy.
 
 . Make sure that the route has a generated `AgentgatewayPolicy`. Its name is
   `gateway-protector-<route name>`. Replace `<route namespace>` with the
@@ -81,9 +81,12 @@ If the object does not exist, read the log of the controller.
   See
   xref:reference/known_limitations.adoc#_your_own_agentgatewaypolicy_can_stop_the_inspection[Your own `AgentgatewayPolicy` can stop the inspection].
 
-. Make sure that the rule of the route does not use only `RegularExpression`
-  path matches. See
-  xref:reference/known_limitations.adoc#_regular_expression_path_matches_are_not_protected[Regular expression path matches are not protected].
+. Make sure that a more specific policy does not govern the request. For
+  example, look for a policy with the mode `Off` on the rule or on the
+  route. agentgateway selects the rule with all the matches of the route.
+  See
+  xref:explanations/policy-attachment.adoc#_selection_order[Selection
+  order].
 
 . Make sure that the processor applied the latest configuration. Each
   processor replica writes the line `Applied config from controller` when it
@@ -104,9 +107,9 @@ kubectl logs -n gateway-protector-system deploy/gateway-protector-controller | g
 
 . If the request still passes, set the chart value `processor.logLevel` to
   `debug`. The processor then writes the line
-  `No route matched, request is unprotected` for each request that matches
-  no entry of its table. The line gives the host and the path of the
-  request.
+  `No WAFPolicy applies, request is unprotected` for each request that no
+  policy covers. The field `identity` of the line gives the gateway, the
+  listener, the route, and the rule of the request.
 
 [#_unexpected_responses]
 == Unexpected responses
@@ -137,6 +140,16 @@ that it does not pass without inspection. The log line
 `Failed to process request body` or `Failed to process response body` gives
 the error.
 |Read the error in the log of the processor.
+
+|Status `500` without the header `x-waf-violation`, and the log line
+`Request has no valid identity in the ext_proc metadata, failing closed`.
+|agentgateway sent the request without its identity. For example, your own
+`AgentgatewayPolicy` sends traffic to the processor. The field `error` of
+the line gives the missing value.
+|In your own `AgentgatewayPolicy`, remove the `extProc` section that points
+at the processor. See
+xref:reference/known_limitations.adoc#_a_request_without_its_identity_fails[A
+request without its identity fails].
 
 |Status `400`, and the processor writes no log line for the request.
 |agentgateway rejected the request before the WAF. For example, the URL
@@ -202,12 +215,18 @@ the details. In `Detection` mode, this line is the only result of a match.
 |Processor
 |`WAF blocked traffic`
 |The WAF blocked a request or a response. The fields `path` and `rule_id`
-give the details.
+give the details. The field `identity` gives the gateway, the listener, the
+route, and the rule of the request.
 
 |Processor
-|`No route matched, request is unprotected`
-|No entry of the table matches the host and the path of the request. The
-processor writes this line only at the log level `debug`.
+|`No WAFPolicy applies, request is unprotected`
+|No policy covers the gateway, the listener, the route, and the rule of the
+request. The processor writes this line only at the log level `debug`.
+
+|Processor
+|`Request has no valid identity in the ext_proc metadata, failing closed`
+|agentgateway sent a request without its identity, and the processor
+answered with status `500`.
 
 |Processor
 |`Failed to process request body` or `Failed to process response body`
@@ -217,6 +236,13 @@ processor writes this line only at the log level `debug`.
 |Controller
 |`Processor applied config` or `Processor rejected config`
 |The answer of one processor replica to a configuration.
+
+|Controller
+|`Rejected a processor subscription: the controller and the processor have incompatible versions`
+|A processor replica supports another version of the configuration format.
+The controller sends it no configuration. See
+xref:reference/upgrade-path.adoc#_version_compatibility_among_components[Version
+compatibility among components].
 
 |Controller
 |`WAFPolicy conflicts with an earlier WAFPolicy targeting the same attachment point`

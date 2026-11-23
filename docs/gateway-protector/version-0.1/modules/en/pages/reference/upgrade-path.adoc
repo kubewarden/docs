@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Upgrade path
-:revdate: 2026-11-20
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :description: Upgrade {gp-name} with the supported version steps, and read the changes of the target version before you upgrade.
 :doc-persona: ["kubewarden-operator"]
@@ -41,9 +41,11 @@ Keep the two images on the same version. Do not change the image tag of only
 one of them.
 
 The controller sends its configuration to the processor in a format that the
-two programs share. A processor of another version can reject the
-configuration. It then keeps its last good configuration, and it does not
-apply the changes to your policies.
+two programs share. The format has a version. The controller sends no
+configuration to a processor that supports another version of the format.
+A processor also rejects a configuration of another version of the format.
+This processor keeps its last good configuration, and it does not apply the
+changes to your policies.
 
 Each version of {gp-short-name} is tested with one version of agentgateway
 and one version of the Gateway API. The

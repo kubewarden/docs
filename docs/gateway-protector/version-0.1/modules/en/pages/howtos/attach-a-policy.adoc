@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Attach a policy to a gateway or a route
-:revdate: 2026-11-20
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :description: Attach a {gp-name} WAFPolicy to a Gateway, a listener, an HTTPRoute, or one rule of an HTTPRoute, and turn the WAF off for one route.
 :doc-persona: ["kubewarden-operator"]
@@ -136,10 +136,10 @@ kubectl apply -f shared-gw-default.yaml
   correct policy governs a route].
 
 [#_protect_the_routes_of_one_listener]
-== Protect the routes of one listener
+== Protect the traffic of one listener
 
-A policy on a listener protects only the routes that name the listener in
-their `parentRefs`.
+A policy on a listener protects each request that this listener accepts.
+The other listeners of the gateway keep the gateway policy.
 
 . Create a policy with the `Gateway` as its target. Put the name of the
   listener in `sectionName`:
@@ -162,23 +162,13 @@ spec:
     mode: Blocking
 ----
 
-. Make sure that each route of the listener names it in `parentRefs`, with
-  `sectionName`:
-+
-[source,yaml]
-----
-spec:
-  parentRefs:
-    - name: shared-gw
-      namespace: infra
-      sectionName: internal
-----
-+
-A route without `sectionName` in `parentRefs` gets the policy of the full
-gateway. It does not get the listener policy. If a route does not name the
-listener, ask the application team to add `sectionName`.
-
 . Apply the policy and make sure that it governs the routes.
+
+A route does not need `sectionName` in `parentRefs` to get the listener
+policy. The example routes attach to `shared-gw` without `sectionName`, so
+they get traffic through both listeners. Their requests through `internal`
+get the listener policy, and their requests through `public` get the gateway
+policy.
 
 [#_give_one_route_a_different_policy]
 == Give one route a different policy
@@ -299,12 +289,13 @@ kubectl get wafpolicy -A -o custom-columns='NAME:.metadata.name,KIND:.spec.targe
 
 . For each rule of the route, find the policy that governs it. Try the rule,
   the route, the listener, and the gateway, in this order. The first policy
-  that you find governs the rule.
+  that you find governs the rule. If the route gets traffic through more
+  than one listener, do this step for each listener.
 
 . Make sure that this policy is accepted and programmed. See
   xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the
   status of a policy]. The message of `Programmed` gives the number of
-  routes that the policy covers.
+  routes that the policy can apply to.
 
 . Send a request with an attack to the route. Replace `<gateway address>`
   with the address of the gateway. The command

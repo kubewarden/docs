@@ -47,8 +47,9 @@ policy.
 |`Programmed`
 |The rules compiled, and they are in the configuration that the controller
 sent to the processor. The message gives the number of routes that the
-policy covers.
-|Nothing. If the message gives 0 routes, the target has no routes yet.
+policy can apply to.
+|Nothing. If the message gives 0 routes, the target has no routes yet, or
+more specific policies govern all its routes.
 
 |`Programmed`
 |`False`
