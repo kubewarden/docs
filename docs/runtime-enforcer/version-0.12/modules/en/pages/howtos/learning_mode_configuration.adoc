@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {rte-name} Learning Mode Configuration
 :description: Configure learning mode to observe process executions and generate a WorkloadPolicyProposal with observed executable paths
-:revdate: 2026-09-22
+:revdate: 2026-11-19
 :page-revdate: {revdate}
 :page-aliases: learning_mode_configuration.adoc
 
@@ -47,3 +47,69 @@ helm upgrade --install runtime-enforcer kubewarden/runtime-enforcer \
   --namespace runtime-enforcer \
   --set-json 'learning.namespaceSelector={"matchLabels":{"env":"prod"}}'
 ----
+
+[#_foreign_root_executions]
+== Foreign root executions
+
+A privileged container can open files on another root file system, such as the
+host. For example, the container has `CAP_SYS_ADMIN` or `CAP_SYS_CHROOT`, or it
+uses `hostPID`. With `hostPID`, the container sees the processes of the host and
+can read their files through `/proc/<pid>/root`.
+
+This is a problem for the allow-list. {rte-short-name} sees only the path of the
+file. A file on another root file system can have the same path as an allowed
+file. The two files are different.
+
+For example, a process in the container runs `/proc/1/root/usr/bin/sleep`. This is
+the `sleep` binary of the host. The path that {rte-short-name} resolves is
+`/usr/bin/sleep`. If `/usr/bin/sleep` is in the allow-list, a path-only check
+permits the exec. The file is not the `sleep` binary of the container.
+
+{rte-short-name} detects this case:
+
+. Every container has its own mount namespace. The mount namespace defines which
+  file systems the container sees.
+. When a process runs a file, {rte-short-name} compares the mount namespace of the
+  file with the mount namespace of the container.
+. If the two are different, the file is on a *foreign* root file system.
+  {rte-short-name} does not trust the path. It does not check the allow-list.
+. In `protect` mode, {rte-short-name} denies the exec. In `monitor` mode, it
+  reports a violation.
+
+Processes usually reach a foreign root file system through these procfs links:
+
+* `/proc/<pid>/root`, which is the root file system of another process.
+* `/proc/<pid>/exe`, which is the executable of another process.
+* `/proc/<pid>/fd/<N>`, which is an open file of another process.
+
+=== Learning mode
+
+{rte-short-name} does not learn the path of a foreign root binary. The path is
+relative to a different root file system, so it is not valid in the policy
+of the container. Instead, the learning controller sets
+`executables.foreignRoot` to `Allow` for that container in the
+`WorkloadPolicyProposal`. The controller adds no path to the allow-list.
+
+=== The `foreignRoot` field
+
+By default, {rte-short-name} denies foreign root executions. Some privileged
+containers must run binaries from the host. For example, node agents run host
+tools through `/proc/1/root/...`. For these containers, set
+`executables.foreignRoot` to `Allow`. The setting applies only to the container
+that you set it on. Use `Allow` only for trusted, privileged workloads.
+
+[source,yaml]
+----
+spec:
+  rulesByContainer:
+    main:
+      executables:
+        allowed:
+          - /usr/bin/sleep
+        foreignRoot: Allow
+----
+
+Review the `foreignRoot` value of each container before you promote a
+proposal. Set it to `Deny` if the container must not run foreign root
+binaries. For more information, refer to
+xref:reference/crd.adoc[CRD API reference].

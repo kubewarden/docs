@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Known limitations
 :description: Understand the known limitations of the system, including design decisions and constraints from upstream components
-:revdate: 2026-09-21
+:revdate: 2026-11-19
 :page-revdate: {revdate}
 :page-aliases: known_limitations.adoc
 
@@ -11,6 +11,99 @@ are explicit design decisions, some are constraints inherited from upstream
 components (kernel/eBPF, Kubernetes, container runtimes). The goal is to help
 you understand the limitations and make informed decisions about your
 {rte-short-name} deployment.
+
+[#_privileged-containers-can-run-code-outside-their-allow-list]
+== Privileged containers can run code outside their allow-list
+
+{rte-short-name} checks each executable against the allow-list of the container.
+The allow-list holds paths, for example `/usr/bin/sleep`. The check is valid only
+for files on the root file system of the container itself. {rte-short-name} trusts
+the pod spec. It assumes that host volumes, mount propagation, and OCI mounts are
+intentional.
+
+A privileged container can open files on another root file system, such as the
+host. {rte-short-name} detects this case and denies it by default. For details,
+refer to
+xref:howtos/learning_mode_configuration.adoc#_foreign_root_executions[Foreign root executions].
+
+This check covers only one bypass. Other bypasses remain, and the sections below
+list them. Standard container hardening is the main defense against them.
+{rte-short-name} adds a layer on top of it.
+
+[#_bypass_categories_left_to_other_layers]
+=== Bypass categories left to other layers
+
+{rte-short-name} checks the *path* of each executable. It does not check what
+the file contains, and it does not see what a running program does. An attacker
+can use this in many ways, including the categories below. {rte-short-name} does
+not stop these ways. You must stop them with other controls.
+
+Mount and root manipulation::
+The attacker changes which file a path points to.
++
+A container with `CAP_SYS_ADMIN` can mount its own file over an allowed path, for
+example over `/usr/bin/sleep`. The path stays the same, but the file is now the
+file of the attacker. The container can also change its root directory or create
+a new mount namespace. Then a crafted file can match an allowed path.
++
+Syscalls and tools that do this: `mount --bind`, `mount_setattr`, `pivot_root`,
+`chroot`, `setns`, and `unshare` or `clone` with `CLONE_NEWNS`.
++
+Mitigation: drop `CAP_SYS_ADMIN` and `CAP_SYS_CHROOT`. A seccomp deny-list helps,
+but it cannot filter the arguments of `clone3` or `setns`.
+
+Interpreter and loader abuse::
+The attacker runs code that is not an executable file.
++
+An interpreter is an allowed executable that runs any code that you give to it.
+For example, if `python` is in the allow-list, the container can run any Python
+script. {rte-short-name} sees only that `python` started. It does not see the
+script.
++
+Examples: `bash`, `sh`, `python`, and the loader `ld.so`.
++
+Mitigation: put only your application binaries in the allow-list. Refrain from
+adding interpreters or shells to it.
+
+Host volumes and host file system access::
+The attacker replaces the content of a file that the allow-list trusts.
++
+{rte-short-name} matches the path of an executed file. It does not check the
+content. A file in the container can also be reachable from outside the container.
+For example, it is on a `hostPath` volume or on a volume that another pod shares.
+Anybody who can write to the file from outside can replace it. The path stays the
+same, but the content is different. The replaced file still runs.
++
+Mitigation: mount such volumes read-only. Limit who can write to the host path.
+Review each `hostPath`.
+
+Direct tampering with {rte-short-name}::
+The attacker turns off the enforcement.
++
+Some privileged operations let a process disable {rte-short-name} or run code that
+the policy does not cover. Each operation needs one capability.
++
+[cols="2,1",options="header"]
+|===
+| Operation | Capability
+
+| `bpf`
+| `CAP_BPF`
+
+| `init_module`, `finit_module`
+| `CAP_SYS_MODULE`
+
+| `ptrace`
+| `CAP_SYS_PTRACE`
+
+| `open_by_handle_at`
+| `CAP_DAC_READ_SEARCH`
+
+| `mknod`
+| `CAP_MKNOD`
+|===
++
+Mitigation: drop unnecessary capabilities.
 
 [#_learning-cap-100-allowed-executables-per-proposal]
 == Learning cap: 100 allowed executables per proposal
