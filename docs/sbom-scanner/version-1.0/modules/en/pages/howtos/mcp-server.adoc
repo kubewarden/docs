@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = MCP Server (Experimental)
-:revdate: 2026-11-04
+:revdate: 2026-11-05
 :page-revdate: {revdate}
 :page-aliases: user-guide/mcp-server.adoc
 :description: Enable and use the experimental {sboms-name} MCP server.
@@ -86,7 +86,7 @@ The commands show the MCP pod and a Service on port 8222.
 [#_configuration]
 == 3. Configuration
 
-All MCP-related Helm values are under the `mcp` key:
+The MCP server values are under the `mcp` key:
 
 [cols=",,",options="header",]
 |===
@@ -94,7 +94,7 @@ All MCP-related Helm values are under the `mcp` key:
 |`mcp.enabled` |`false` |Enable the MCP server deployment
 |`mcp.readOnly` |`false` |Restrict to read-only tools (no create/update/delete)
 |`mcp.disableTLS` |`false` |Disable TLS (serve plain HTTP)
-|`mcp.logLevel` |`"info"` |Log level (`debug`, `info`, `warn`, `error`)
+|`mcp.logLevel` |The value of `global.logLevel` (`info`) |Log level (`debug`, `info`, `warn`, `error`)
 |`mcp.replicas` |`1` |Number of MCP server replicas
 |`mcp.auth.secretName` |`""` |Name of the Secret containing `username` and `password` keys (required)
 |`mcp.resources.limits.cpu` |`250m` |CPU limit
@@ -102,6 +102,9 @@ All MCP-related Helm values are under the `mcp` key:
 |`mcp.resources.requests.cpu` |`100m` |CPU request
 |`mcp.resources.requests.memory` |`128Mi` |Memory request
 |===
+
+The `mcp` block also accepts the keys of the `global` block, for example `nodeSelector` and `priorityClassName`.
+For all the keys of the `mcp` block, see xref:howtos/helm-values.adoc#_mcp_values[MCP server values].
 
 Example `values.yaml` snippet:
 

@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Upgrade path
-:revdate: 2026-10-13
+:revdate: 2026-11-05
 :page-revdate: {revdate}
 :description: Upgrade {sboms-name} with the supported version steps, one minor version at a time, and keep the database and its operator in mind.
 :doc-persona: ["kubewarden-operator"]
@@ -51,8 +51,8 @@ cannot upgrade across more than one `MINOR` or `MAJOR` version in one
 operation.
 
 For example, you can upgrade from `0.13.0` to `0.13.2` in one step. You
-cannot upgrade from `0.12.0` to `0.14.0` in one step. Upgrade from
-`0.12.0` to `0.13.x` first, then from `0.13.x` to `0.14.0`. To move
+cannot upgrade from `0.12.0` to `1.0.0` in one step. Upgrade from
+`0.12.0` to `0.13.x` first, then from `0.13.x` to `1.0.0`. To move
 across a `MAJOR` version, apply every `MINOR` version between the two.
 
 .Example upgrade path support graph
@@ -65,12 +65,20 @@ flowchart LR;
   0.12.1-->0.13.0(0.13.0);
   0.13.0-->0.13.1(0.13.1);
   0.12.0-->0.13.0;
-  0.13.1-->0.14.0(0.14.0);
-  0.13.0-->|Not recommended|0.14.0;
-  0.12.1-->|Not supported|0.14.0;
+  0.13.1-->1.0.0(1.0.0);
+  0.13.0-->|Not recommended|1.0.0;
+  0.12.1-->|Not supported|1.0.0;
   linkStyle 5 color:brown,stroke-width:2px,stroke-dasharray: 3 5
   linkStyle 6 color:red,stroke-width:2px,stroke-dasharray: 3 5
 ....
+
+[#_upgrade_to_1_0]
+=== Upgrade from 0.x to 1.0
+
+Version 1.0 changes the Helm values of the chart, and deprecates the
+`caBundle` field. Upgrade to the latest 0.13.x first. Then follow
+xref:howtos/upgrade-to-1.0.adoc[Upgrade to 1.0]. Do not use
+`helm upgrade --reuse-values` for this upgrade.
 
 [#_upgrade_order]
 == Upgrade order

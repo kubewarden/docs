@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = {sboms-name} use cases
-:revdate: 2026-09-30
+:revdate: 2026-11-05
 :page-revdate: {revdate}
 :description: Example use cases for {sboms-name}. Registry, workload, and node scanning, noise reduction, and integration with other tools.
 :keywords: {sboms-name}, documentation, use cases
@@ -38,7 +38,7 @@ again. It does not pull the image again. Images with the same digest share
 one SBOM.
 
 My registries can require credentials or a private certificate authority. I
-set `spec.authSecret` and `spec.caBundle` on the `Registry`. In an air-gapped
+set `spec.authSecret` and `spec.caBundleRef` on the `Registry`. In an air-gapped
 cluster, I mirror the vulnerability databases and the {vex-term} repositories
 to internal servers.
 
