@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Upgrade path
-:revdate: 2026-10-23
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :description: Upgrade {ne-name} with the supported version steps, one minor version at a time.
 :doc-persona: ["kubewarden-operator"]
@@ -16,8 +16,7 @@ follows the `MAJOR.MINOR.PATCH` pattern. The supported version is the
 latest release.
 
 One deliverable follows this version: the `network-enforcer` Helm chart,
-in its `appVersion` field. The controller image carries this version as
-its tag. {ne-short-name} has no separate CLI or plugin to keep in step.
+in its `appVersion` field. The controller and agent images carry this version as their tag. {ne-short-name} has no separate CLI or plugin to keep in step.
 
 [#_helm_chart_versions]
 == Helm chart versions
@@ -29,12 +28,6 @@ describes changes to the chart templates and to `values.yaml`.
 
 The two fields do not move together. When you plan an upgrade, read
 the `appVersion` of the target chart.
-
-The chart also ships two third-party images that follow their own
-versions. One is fluent-bit, with the Istio provider. The other is the
-OpenTelemetry collector, with the default telemetry strategy. A chart
-upgrade can move these images. The chart `version` field records such a
-change.
 
 [#_upgrade_paths]
 == Upgrade paths
@@ -68,6 +61,11 @@ flowchart LR;
 [#_breaking_changes]
 == Breaking and important changes between versions
 
+=== 0.5: Istio log collection
+
+The controller leader now polls a {ne-short-name} agent on each ztunnel node.
+See xref:explanations/architecture.adoc#_ztunnel_log_reader[ztunnel log reader] for how the agent handles events during a restart.
+
 [#_v0_3_to_v0_4]
 === 0.3.x to 0.4.0
 
@@ -87,9 +85,7 @@ flowchart LR;
 [#_upgrade_order]
 == Upgrade order
 
-Upgrade the `network-enforcer` Helm chart. There is no other component to
-upgrade. The chart upgrades the controller and, with the Istio provider,
-the fluent-bit DaemonSet together.
+The `network-enforcer` Helm chart updates the controller and, on Istio, the agent DaemonSet.
 
 The native policy objects that the controller rendered stay in place
 during the upgrade. The data plane keeps enforcing them while the

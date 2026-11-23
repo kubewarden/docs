@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = {ne-name} use cases
-:revdate: 2026-09-30
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :description: Example use cases for {ne-name}. Learn network policies from traffic, review them, monitor them, and enforce them on Istio ambient, Calico, or Cilium.
 :keywords: {ne-name}, documentation, use cases
@@ -34,12 +34,11 @@ covers one workload and one {direction-term}. The proposal contains the
 is the {allow-list-term}. Learning continues until I {promotion-term} the
 proposal.
 
-Learning starts when the {controller-term} starts. Traffic from before that
-moment is not in the proposals. If a workload is quiet, I exercise it or
-restart it so that its flows are observed.
+The proposal reflects observed traffic, not every connection a workload can make.
+If a workload is quiet, I send it a request so that the connection appears in the proposal.
 
 See xref:explanations/phases.adoc#_learn-phase[Learn phase] and
-xref:reference/known_limitations.adoc#_learning-starts-when-the-controller-starts[Learning starts when the controller starts].
+xref:reference/known_limitations.adoc#_learning-starts-when-the-controller-starts[Learning does not reconstruct past traffic].
 
 == Case B: As a namespace owner, I want to review what my workload talks to, and approve it myself.
 
@@ -105,9 +104,7 @@ record.
 violation. Each event has a fixed set of attributes: the source workload, the
 destination workload, the protocol, the port, the mode, and the policy.
 
-I send the events to the {opentelemetry-collector-term} that {ne-short-name}
-installs, or to my own collector. From there they go to my dashboards or my
-SIEM. The attribute names do not change between providers. One query covers
+I send the events to my {opentelemetry-collector-term}. From there they go to my dashboards or my SIEM. The attribute names do not change between providers. One query covers
 Istio, Calico, and Cilium clusters.
 
 See xref:explanations/architecture.adoc#_opentelemetry-collector[OpenTelemetry collector],
@@ -150,7 +147,7 @@ xref:reference/known_limitations.adoc#_istio-learns-and-enforces-ingress-only[Is
 {ne-short-name} does not intend to:
 
 * Observe traffic on its own. It reads the flows that the data plane already
-  produces. It does not install a node agent or an eBPF probe.
+  produces. The Istio agent reads logs, not packets.
 * Replace the CNI or the service mesh. It needs one of them in place.
 * Detect attacks or tell good traffic from bad traffic. If an attacker is
   active when learning starts, the flows of the attacker become rules. Review

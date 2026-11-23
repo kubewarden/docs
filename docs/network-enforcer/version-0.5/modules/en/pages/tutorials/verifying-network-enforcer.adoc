@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Verifying {ne-name}
-:revdate: 2026-09-30
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :description: Verify the signatures, the SBOM, and the provenance of the {ne-name} container image and Helm chart.
 :doc-persona: kubewarden-operator
@@ -13,9 +13,9 @@ The {ne-name} project signs what it publishes, so that you can check that an
 artifact is the one the project built. For each release, the project
 publishes:
 
-* A signed container image.
+* Signed controller and agent images.
 * A signed Software Bill of Materials (SBOM) and a signed provenance
-  attestation for each architecture of the image.
+  attestation for each architecture of each image.
 * A signed Helm chart.
 
 The signatures use https://docs.sigstore.dev[Sigstore] in keyless mode. The
@@ -26,7 +26,7 @@ artifact. Each `cosign` command below passes two values:
   `\https://token.actions.githubusercontent.com`.
 * `--certificate-identity-regexp`: the workflow file that built the artifact.
 
-{ne-short-name} builds, signs and attests its image with one shared
+{ne-short-name} builds, signs and attests both images with one shared
 reusable workflow that lives in the `kubewarden/github-actions` repository.
 The signer identity of the image and of the SBOM and provenance files is:
 
@@ -63,10 +63,9 @@ The examples use the release `{release-tag}` and the chart version
 [#_container_images]
 == Container images
 
-{ne-short-name} publishes one image,
-`ghcr.io/kubewarden/network-enforcer/controller`. The shared workflow signs
-each single-architecture image and the multi-architecture index. To verify
-it, run:
+The shared workflow signs each image and its multi-architecture index.
+The example checks `ghcr.io/kubewarden/network-enforcer/controller`.
+For the Istio log reader, run the same command with `ghcr.io/kubewarden/network-enforcer/agent` and its matching tag:
 
 [source,console,subs="+attributes"]
 ----
@@ -120,8 +119,10 @@ and a provenance attestation in SLSA format. It signs each file and the
 release job attaches the files to the GitHub release. The names follow this
 pattern:
 
-* `NetworkEnforcer-controller-attestation-<arch>-provenance.intoto.jsonl`
-* `NetworkEnforcer-controller-attestation-<arch>-sbom.json`
+* `NetworkEnforcer-<component>-attestation-<arch>-provenance.intoto.jsonl`
+* `NetworkEnforcer-<component>-attestation-<arch>-sbom.json`
+
+Use `controller` or `agent` for `<component>`.
 
 These files come from the container build. They carry the layer and build-arg
 detail that `actions/attest` does not. The `actions/attest` attestation above
@@ -252,17 +253,4 @@ helm template network-enforcer oci://ghcr.io/kubewarden/charts/network-enforcer 
   | sort -u
 ----
 
-Verify the {ne-short-name} image in that list as the
-<<_container_images,container images>> section shows.
-
-[#_third_party_images]
-== Third-party images
-
-The chart also deploys images that the {ne-short-name} project does not build
-and does not sign:
-
-* `otel/opentelemetry-collector-contrib`, when `telemetry.collectorStrategy`
-  is `default`.
-* `fluent/fluent-bit`, when `controller.provider.name` is `istio`.
-
-Verify them with the method that their own projects document.
+Verify each {ne-short-name} image in the list as described in xref:#_container_images[Container images].

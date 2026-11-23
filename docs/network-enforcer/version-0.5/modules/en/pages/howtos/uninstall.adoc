@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {ne-name} Uninstall
 :description: Uninstall the Helm chart, then delete the two CRDs to remove the policies and the generated native policy objects
-:revdate: 2026-09-18
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :page-aliases: installation/uninstall.adoc
 
@@ -44,8 +44,8 @@ You can remove {ne-short-name} by uninstalling the Helm chart:
 helm uninstall network-enforcer --namespace network-enforcer
 ----
 
-That removes the controller, the collector, the admission policies, and the
-RBAC objects. It does *not* remove the two CRDs. They carry the annotation
+Helm removes the controller, the admission policies, and the RBAC objects.
+On Istio it also removes the chart's agent DaemonSet. It does *not* remove the two CRDs. They carry the annotation
 `helm.sh/resource-policy: keep`, so that an uninstall does not delete every
 `WorkloadNetworkPolicy` and `WorkloadNetworkPolicyProposal` in the cluster by
 accident. The policies, the proposals, and the generated `NetworkPolicy` and

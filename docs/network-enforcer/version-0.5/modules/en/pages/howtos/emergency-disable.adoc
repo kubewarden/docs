@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Emergency disable
-:revdate: 2026-10-23
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :description: Stop {ne-name} from blocking traffic during an incident, and restore it with one command.
 :keywords: ["{ne-name}", kubewarden, emergency, incident, disable]
@@ -63,8 +63,8 @@ you delete it.
 While the controller is at zero, learning, promotion, status sync, and
 violation events stop. The admission webhook is also unavailable, so
 `WorkloadNetworkPolicy` creates and updates fail. Deletes of rendered
-policies are not subject to this webhook. On Istio, fluent-bit keeps
-running but cannot forward logs.
+policies are not subject to this webhook. On Istio, each agent keeps the most recent
+10,000 events in memory until a controller leader polls it. If an agent restarts, it loses those events.
 
 [#_delete_the_rendered_policies]
 === 2. Delete the rendered policies

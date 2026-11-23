@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {ne-name}
-:revdate: 2026-10-14
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :description: Learn what {ne-name} is, how it learns an allow-list per workload from east-west traffic, and why it reads the data plane instead of asking you to write rules.
 :keywords: {ne-name}, kubewarden, cncf, kubernetes, network policy, istio, calico, cilium
@@ -41,8 +41,7 @@ anything.
   or a `NetworkPolicy`. You read it with the tools that you already use.
 * Each violation is a record in the policy status and an event with a fixed
   schema. One query covers all your clusters.
-* {ne-short-name} installs one controller. It does not add a node agent or
-  an eBPF probe.
+* On Istio, a node agent reads ztunnel logs. On Calico and Cilium, the controller reads the provider API directly.
 * {ne-short-name} is part of a CNCF project, with an open community.
 
 === Use cases
@@ -91,9 +90,7 @@ team knows the cluster, but not each application. {ne-short-name} reads the
 flow records and writes them down as a proposal. The people who know the
 application then review a list instead of a blank page.
 
-Because {ne-short-name} reads flows from the data plane that already runs in
-the cluster, it needs no agent of its own on each node. For the same reason,
-it writes policy in the format of that data plane. The policy that protects
+{ne-short-name} writes policy in the format of the existing data plane. The policy that protects
 a workload is a standard object that the mesh or the CNI understands, not a
 format that only {ne-short-name} can read.
 
