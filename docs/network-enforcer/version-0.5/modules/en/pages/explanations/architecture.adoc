@@ -146,7 +146,7 @@ The chart does not install a collector. Leaving `otel.endpoint` empty turns off 
 
 The {flow-source-term} depends on the provider:
 
-* {istio-ambient-term}: the agent reads the JSON access and authorization logs of ztunnel. Learning sees inbound TCP only, so it creates
+* {istio-ambient-term}: the agent reads the JSON access and authorization logs of ztunnel. Ztunnel sees inbound TCP only, so it creates
   ingress proposals.
 * {calico-term}: the {goldmane-term} flow service, over gRPC with mutual
   TLS. Goldmane reports both ends of a connection, so learning creates an

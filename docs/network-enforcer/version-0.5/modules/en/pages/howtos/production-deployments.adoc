@@ -226,7 +226,7 @@ Security Admission] for the three levels.
 == Telemetry
 
 To export violations, set `otel.endpoint` to your collector's OTLP/gRPC endpoint.
-The chart does not install a collector. The Istio agents do not use this endpoint.
+The chart does not install a collector. Only the controller will use this endpoint.
 
 [source,yaml]
 ----
