@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Compatibility
 :description: Check which network providers and features work with your cluster by reviewing compatibility information
-:revdate: 2026-10-23
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :page-aliases: compatibility.adoc
 :doc-persona: ["kubewarden-operator"]
@@ -35,7 +35,7 @@ include::partial$variables.adoc[]
 
 |*cert-manager*
 |Required for every chart install
-|Together with `cert-manager-csi-driver`, it supplies the admission webhook certificates. Disabling telemetry or provider TLS does not remove this requirement. The bundled collector and provider hops in TLS mode `issuer` also use it.
+|Together with `cert-manager-csi-driver`, it supplies the admission webhook certificates. Disabling telemetry or provider TLS does not remove this requirement. The chart uses the same CSI driver for the Istio agents.
 
 |*Linux distribution*
 |To be determined
@@ -53,9 +53,9 @@ include::partial$variables.adoc[]
 
 |*Istio (ambient)*
 |1.30.3
-|OTLP gRPC mutual TLS to the controller. Default listen port `4317`. Default TLS mode `issuer`.
+|The controller polls each agent pod over gRPC with mutual TLS. Default agent port: `50052`.
 |`spec.backend: istio` (Istio `AuthorizationPolicy`). +
-ztunnel access logs via fluent-bit.
+The agent reads ztunnel access logs.
 
 |*Calico*
 |v3.32.1
@@ -73,10 +73,12 @@ Hubble Relay flow stream.
 [#_istio-ambient-install-flags]
 === Istio ambient install flags
 
-Monitor and protect depend on ztunnel emitting JSON authorization logs that fluent-bit can parse:
+Set these values on the *Istio* Helm charts, not on the {ne-short-name} chart:
 
-* istiod: `profile=ambient` and `pilot.env.AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY=true`
-* ztunnel: `env.AUTHZ_POLICY_INFO_LOGGING=true` and `logAsJson=true`
+* `ztunnel`: set `logAsJson=true` so the agent can read the logs. Set `env.AUTHZ_POLICY_INFO_LOGGING=true` so ztunnel logs authorization decisions.
+* `istiod`: use `profile=ambient` and set `pilot.env.AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY=true` for monitor mode.
+
+For the equivalent `istioctl` command, see xref:quickstart.adoc#_option-1-istio-ambient[Install Istio ambient].
 
 [#_provider-tls]
 === Provider TLS
@@ -85,21 +87,17 @@ Mutual TLS means both peers present a certificate.
 A hop is one connection between {ne-short-name} and the provider.
 TLS mode says where the certificates for that hop come from.
 
-Set TLS under `controller.provider.istio.tls`, `controller.provider.cilium.tls`, or `controller.provider.calico.tls`.
-Only the active provider is applied.
+The chart configures mutual TLS for Istio agents. For Cilium and Calico, use `controller.provider.cilium.tls` or `controller.provider.calico.tls`.
 
 [cols="1,3,2,2,3"]
 |===
 | Provider | Hop | Direction | Default mode | What you supply
 
 | Istio
-| fluent-bit to Service `<fullname>-istio-otlp` on port `4317` (`controller.provider.istio.endpoint`)
-| Controller is the server. fluent-bit is the client. Mutual TLS.
-| `issuer`
-| Nothing, when cert-manager and `cert-manager-csi-driver` are installed. +
-The chart CA Issuer `<fullname>-ca` issues the certificates into `/etc/provider/certs`. +
-`existingSecret` must name a Secret in the release namespace. Leave `existingSecret.namespace` empty. The Secret needs `tls.crt`, `tls.key`, and `ca.crt`. +
-`insecure` turns TLS off.
+| Controller to each agent pod IP on port `50052` (`controller.provider.istio.agent.grpcPort`). No Service.
+| Controller is the client. Each agent is a server.
+| Chart-managed mutual TLS
+| Install cert-manager and its CSI driver. The chart uses its CA to issue a certificate per agent and a separate controller certificate.
 
 | Calico
 | Controller to Goldmane at `goldmane.calico-system.svc:7443` (`controller.provider.calico.endpoint`)
@@ -121,7 +119,7 @@ The server name is `ui.hubble-relay.cilium.io` (`tls.serverName`). +
 `insecure` is plaintext. Clear `tls.serverName`. If the endpoint is still the default `:443`, the chart automatically overwrites the port to `80`.
 |===
 
-The chart renders `--provider-tls-mode` and the matching `--provider-tls-*` flags on the controller.
+For Calico and Cilium, the chart sets `--provider-tls-mode` and the matching `--provider-tls-*` flags on the controller.
 A cross-namespace Secret also renders a Role and a RoleBinding in that namespace.
 The Role allows `get` on that Secret, and on the CA ConfigMap when one is set.
 

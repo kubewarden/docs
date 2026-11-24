@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {ne-name} Quick Start
 :description: Follow the steps to prepare a cluster, deploy with Helm, and observe network policy proposals and enforcement
-:revdate: 2026-10-23
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :page-aliases: installation/quickstart.adoc
 :doc-persona: ["kubewarden-operator"]
@@ -27,18 +27,14 @@ This guide walks you through the following steps:
 
 Before you start, you need:
 
-* A Kubernetes cluster you can throw away, for example a link:https://kind.sigs.k8s.io/[kind] cluster.
-  This guide creates one for you.
-* `kubectl`, `helm` and `curl` installed locally.
+* link:https://kind.sigs.k8s.io/[kind] to create a disposable Kubernetes cluster.
+* `kubectl`, `helm`, `curl`, and `git` installed locally.
 * {cert-manager-term} and `cert-manager-csi-driver` in the cluster.
-  They supply certificates for the admission webhook and the bundled
-  {opentelemetry-collector-term}. With the Istio provider in TLS mode `issuer`,
-  they also supply certificates for the ztunnel log endpoint.
+  They supply certificates for the admission webhook. On Istio, they also supply certificates for the controller and the node agents.
 
 [NOTE]
 ====
-This page documents the `network-enforcer` chart for {ne-short-name} 0.4.0.
-Every `--set` flag used here exists in `charts/network-enforcer/values.yaml`.
+This quick start uses the development chart with the ztunnel log reader. For release 0.4, use the xref:0.4@network-enforcer:en:quickstart.adoc[0.4 quick start].
 ====
 
 [#_choose-your-provider]
@@ -54,7 +50,7 @@ Pick one provider and follow only its section.
 
 | Istio ambient
 | `istio` (default)
-| {ztunnel-term} access logs, tailed by the `istio-fluent-bit` DaemonSet and pushed to the controller over OTLP
+| {ztunnel-term} access logs. The controller polls the node agents over gRPC.
 | Istio {authorizationpolicy-term}
 | `backend: istio`
 
@@ -71,10 +67,8 @@ Pick one provider and follow only its section.
 | `backend: kubernetes`
 |===
 
-Each provider has its own endpoint value: `controller.provider.istio.endpoint`,
-`controller.provider.calico.endpoint`, and `controller.provider.cilium.endpoint`.
-The defaults are the values listed above. For `istio`, the value is the local
-OTLP port, `4317`.
+The Istio agent listens on port `50052` by default. `controller.provider.istio.agent.grpcPort` sets the port for both ends.
+Calico and Cilium use `controller.provider.calico.endpoint` and `controller.provider.cilium.endpoint`.
 
 [#_option-1-istio-ambient]
 === Option 1: Istio ambient
@@ -105,9 +99,8 @@ These `--set` flags are not optional for {ne-short-name}:
 
 * `AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY` lets `ztunnel` evaluate the {dry-run-term} `AuthorizationPolicy`
   that `monitor` mode installs, without blocking traffic.
-* `AUTHZ_POLICY_INFO_LOGGING` makes `ztunnel` log the policy decision of every connection.
-* `logAsJson` makes `ztunnel` emit JSON access logs, which is the format the `istio-fluent-bit` pipeline
-  shipped with the chart parses.
+* `AUTHZ_POLICY_INFO_LOGGING` makes authorization decisions visible in the ztunnel logs.
+* `logAsJson` gives the agent JSON records it can parse.
 
 The `values.cni.ambient.ipv6=false` flag is not required by {ne-short-name}, but `istio-cni` programs
 IPv6 redirection rules by default and fails on IPv4-only nodes, which is what a default kind cluster
@@ -267,19 +260,17 @@ link:https://cert-manager.io/docs/installation/helm[cert-manager documentation].
 [#_install-the-network-enforcer-chart]
 == Install the {ne-short-name} chart
 
-[source,bash]
-----
-helm repo add kubewarden https://charts.kubewarden.io
-helm repo update
-----
-
-Install the chart with the provider you prepared above (`istio`, `calico` or `cilium`):
+For this development install, use the chart from the `network-enforcer` repository and the controller and agent images from `main`.
+Set `controller.provider.name` to the provider you prepared (`istio`, `calico` or `cilium`):
 
 [source,bash]
 ----
-helm install network-enforcer kubewarden/network-enforcer \
+git clone https://github.com/kubewarden/network-enforcer.git
+helm install network-enforcer ./network-enforcer/charts/network-enforcer \
   --namespace network-enforcer \
   --create-namespace \
+  --set controller.image.tag=latest \
+  --set controller.provider.istio.agent.image.tag=latest \
   --set controller.provider.name=istio \
   --set controller.wnpStatusUpdateInterval=3s \
   --wait
@@ -290,12 +281,6 @@ the status of every `WorkloadNetworkPolicy`.
 It is lowered from its default (`30s`) to make this demo responsive; in production you rarely need to
 change it.
 
-[NOTE]
-====
-If you cloned the repository you can install the very same chart from your checkout with
-`helm install network-enforcer ./charts/network-enforcer ...`.
-====
-
 [#_verify-the-deployment]
 == Verify the deployment
 
@@ -304,28 +289,16 @@ If you cloned the repository you can install the very same chart from your check
 kubectl get pods -n network-enforcer
 ----
 
-With the `istio` provider, the release runs the controller, the OpenTelemetry collector and the
-`istio-fluent-bit` DaemonSet that ships `ztunnel` access logs to the controller:
+With `istio`, look for a controller pod and an agent pod on each node that runs ztunnel. For example, on a single-node cluster:
 
 [source,bash]
 ----
 NAME                                                   READY   STATUS    RESTARTS   AGE
 network-enforcer-controller-manager-6b5c5f86b4-m7frg   1/1     Running   0          3m30s
-network-enforcer-istio-fluent-bit-hrk4x                1/1     Running   0          3m30s
-network-enforcer-otel-collector-b9554b8c6-95xr7        1/1     Running   0          3m30s
+network-enforcer-agent-hrk4x                           1/1     Running   0          3m30s
 ----
 
-With `calico` or `cilium` there is no `istio-fluent-bit`, because the controller scrapes the provider API
-directly:
-
-[source,bash]
-----
-NAME                                                   READY   STATUS    RESTARTS   AGE
-network-enforcer-controller-manager-585c57cc67-s7rw7   1/1     Running   0          4m30s
-network-enforcer-otel-collector-b9554b8c6-8hhff        1/1     Running   0          4m30s
-----
-
-{ne-short-name} is now running and ready to learn.
+With `calico` or `cilium`, only the controller pod is expected. It reads the provider API directly.
 
 [#_learn-generate-workloadnetworkpolicyproposal-resources]
 == Learn: generate WorkloadNetworkPolicyProposal resources
@@ -1091,24 +1064,8 @@ status:
 [#_where-violations-are-exported]
 == Where violations are exported
 
-Besides the policy status, every violation is emitted as an OpenTelemetry log record to the collector
-deployed with the chart (`telemetry.collectorStrategy=default`).
-Tail the collector to see them:
-
-[source,bash]
-----
-kubectl logs -n network-enforcer deploy/network-enforcer-otel-collector --tail=20
-----
-
-[source,bash]
-----
-ResourceLog #0 [https://opentelemetry.io/schemas/1.41.0] service.name=unknown_service:controller telemetry.sdk.language=go telemetry.sdk.name=opentelemetry telemetry.sdk.version=1.44.0
-ScopeLog #0 network-enforcer
- enforcement.provider=istio action=monitor source.workload.name=http-client source.workload.namespace=default source.workload.kind=Deployment source.workload.identity=cluster.local/ns/default/sa/http-client-sa destination.workload.name=http-server destination.workload.namespace=default destination.workload.kind=Deployment destination.workload.identity=cluster.local/ns/default/sa/http-server-sa network.transport=TCP policy.ref.namespace=default policy.ref.name=deployment-http-server-ingress destination.port=0
-----
-
-To send the signals to your own collector instead, set `telemetry.collectorStrategy=external` and
-configure `telemetry.externalCollector.*`.
+This install records violations in policy status. It does not install a collector or export logs.
+To send violation events to your own OpenTelemetry collector, see xref:howtos/production-deployments.adoc#_telemetry[Telemetry].
 
 [#_clean-up]
 == Clean up

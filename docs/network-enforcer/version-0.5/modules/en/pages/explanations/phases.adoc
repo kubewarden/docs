@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {ne-name} phases: learn, monitor, protect
 :description: Learn how to move between the learn, monitor, and protect phases to manage network policies, observe traffic flows, create proposals, and update policies
-:revdate: 2026-10-23
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :page-aliases: phases.adoc
 :doc-persona: ["kubewarden-all"]
@@ -179,11 +179,8 @@ Unattributed observations appear only in controller metrics and, with export
 enabled, OpenTelemetry logs. See
 xref:howtos/troubleshooting.adoc#_policy_targeting[Policy targeting].
 
-When telemetry is enabled, the controller also exports OpenTelemetry logs:
-
-* *Default Helm chart* (`telemetry.collectorStrategy=default`): an in-cluster OTEL collector. The controller sends OTLP/gRPC to `https://<fullname>-otel-collector.<namespace>.svc.cluster.local:4317`. The collector's logs pipeline dumps records with the debug exporter.
-* *External collector* (`telemetry.collectorStrategy=external`): the same exporter points at `telemetry.externalCollector.endpoint`.
-* *Disabled* (`telemetry.collectorStrategy=none`): no OTLP export; status still records violations.
+By default, the controller does not export OpenTelemetry logs. To send them to your collector, set `otel.endpoint` to its OTLP/gRPC endpoint.
+This setting does not affect how the controller collects events from Istio agents.
 
 Event names:
 

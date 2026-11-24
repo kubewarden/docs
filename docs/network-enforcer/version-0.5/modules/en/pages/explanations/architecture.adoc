@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {ne-name} architecture
-:revdate: 2026-10-23
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :page-aliases: architecture.adoc
 :description: How {ne-name} is built: one controller that reads flows from the data plane, writes proposals and policies, and renders each policy as a native object on Istio ambient, Calico, or Cilium.
@@ -10,12 +10,10 @@ include::partial$variables.adoc[]
 :doc-type: explanation
 :keywords: {ne-name}, kubewarden, kubernetes, architecture, istio, calico, cilium
 
-{ne-name} is one controller. It does not add an agent to the nodes. It reads
-{flow-term} records from the {data-plane-term} that already runs in the
-cluster, and writes what it sees as a proposal. When you promote the
-proposal, it renders a policy in the format of that data plane. The data
-plane enforces the policy. The controller watches the result and reports each
-{violation-term}.
+The {ne-name} controller learns from {flow-term} records that the {data-plane-term} already produces.
+On Istio, a node agent reads the ztunnel logs. On Calico and Cilium, the controller reads the provider API directly.
+The controller writes a proposal for the traffic it sees. When you promote the proposal, the controller creates a native policy.
+The data plane enforces the policy in protect mode.
 
 The xref:introduction.adoc[introduction] explains why the enforcer learns
 from the data plane. The xref:explanations/phases.adoc[Phases] page explains
@@ -32,8 +30,7 @@ you set on one resource. Nothing blocks traffic until you ask.
 === Learn from the data plane, do not add one
 
 The flow records already exist. ztunnel, Goldmane, and Hubble Relay produce
-them. The controller reads them. It does not install an eBPF probe, a
-sidecar, or a node agent of its own.
+them. {ne-short-name} does not add a proxy or an eBPF probe to the traffic path.
 
 === One model, three providers
 
@@ -54,13 +51,6 @@ In protect mode, the thing that blocks traffic is an
 {authorizationpolicy-term} or a {networkpolicy-term}. You read it, diff it,
 and debug it with the tools of the data plane. {ne-short-name} owns the
 object and keeps it in sync, but it adds no format of its own.
-
-=== Two telemetry paths, kept apart
-
-On Istio, the controller receives flow logs over OTLP. On every provider,
-the controller sends violation events over OTLP. The first path is the flow
-source. The second path is telemetry about policies. They use different
-ports, different certificates, and different settings.
 
 == The {ne-name} stack
 
@@ -88,15 +78,14 @@ graph LR
       end
       subgraph kw["`**{ne-short-name}**`"]
         direction LR
-        fluentbit["fluent-bit DaemonSet
+        agent["ztunnel log reader
         (Istio only)"]
         controller("`**Controller**`")
-        collector["OpenTelemetry
-        collector"]
       end
+      collector["OpenTelemetry collector (optional)"]
     end
-    ztunnel -->|"tails log files"| fluentbit
-    fluentbit -->|"OTLP logs"| controller
+    ztunnel -->|"JSON logs"| agent
+    controller -->|"polls over gRPC"| agent
     goldmane -->|"gRPC, mTLS"| controller
     hubble -->|"gRPC"| controller
     controller -->|"writes proposals
@@ -134,35 +123,30 @@ is active at a time. The active replica runs five parts in one process.
 The controller also exports the violation events to the OpenTelemetry
 collector, when the export is on.
 
-=== fluent-bit DaemonSet
+[#_ztunnel_log_reader]
+=== ztunnel log reader
 
-With the `istio` provider, the chart deploys
-xref:glossary.adoc#_fluent-bit[fluent-bit] on each node. It reads the JSON
-log files of {ztunnel-term}, parses them, and sends them to the controller
-as OTLP logs on port 4317. The other providers do not need it, because
-Goldmane and Hubble Relay are services that the controller calls.
+On Istio, the chart runs a {ne-short-name} agent on each node that runs {ztunnel-term}.
+The agent reads new JSON log lines and keeps learning events and policy violations in memory.
+The controller leader finds the agent pods by label in its namespace. It polls each pod IP over gRPC with mutual TLS.
+The default port is `50052`. After a successful poll, the leader waits about five seconds before it polls that agent again.
+
+Each agent holds up to 10,000 events. If the buffer fills, new events replace the oldest ones.
+A scrape drains the buffer before the agent replies. If the reply is lost, the agent cannot send those events again.
+Restarting the agent also clears its buffer. Neither a missed scrape nor an agent restart changes what ztunnel enforces.
 
 [#_opentelemetry-collector]
 === OpenTelemetry collector
 
-The {opentelemetry-collector-term} receives the violation events. The Helm
-value `telemetry.collectorStrategy` selects one of three setups. With
-`default`, the chart deploys a collector that prints each event and exports
-the Prometheus counter `network_enforcer_policy_denies`. With `external`,
-the controller sends the events to a collector that you run. With `none`,
-nothing is exported, and the violations stay in the policy status.
-
-The collector is not the flow source. On Istio, the controller receives
-flows on one port and sends events to the collector on another.
+The controller can send violation events to your {opentelemetry-collector-term} over OTLP.
+The chart does not install a collector. Leaving `otel.endpoint` empty turns off export, not learning or policy status updates.
 
 [#_flow_sources]
 === Flow sources
 
-The {flow-source-term} is a service of the data plane. The controller reads
-it with a client that matches the provider.
+The {flow-source-term} depends on the provider:
 
-* {istio-ambient-term}: the JSON access and authorization log of ztunnel,
-  delivered by fluent-bit. Learning sees inbound TCP only, so it creates
+* {istio-ambient-term}: the agent reads the JSON access and authorization logs of ztunnel. Ztunnel sees inbound TCP only, so it creates
   ingress proposals.
 * {calico-term}: the {goldmane-term} flow service, over gRPC with mutual
   TLS. Goldmane reports both ends of a connection, so learning creates an
@@ -200,7 +184,7 @@ installation. The provider selects the flow source and the backend.
 |Provider |Flow source |Backend and native object
 
 |`istio` (default)
-|ztunnel logs, through fluent-bit, OTLP on port 4317
+|ztunnel logs from the node agent, gRPC on port `50052`
 |`spec.backend: istio`, rendered as an Istio `AuthorizationPolicy`
 
 |`calico`
@@ -212,10 +196,8 @@ installation. The provider selects the flow source and the backend.
 |`spec.backend: kubernetes`, rendered as a Kubernetes `NetworkPolicy`
 |===
 
-The endpoint of each flow source has a default that matches a standard
-installation. The Helm values `controller.provider.istio.endpoint`,
-`controller.provider.calico.endpoint`, and
-`controller.provider.cilium.endpoint` override it.
+`controller.provider.istio.agent.grpcPort` sets the port on both the agent and the controller.
+Calico and Cilium use `controller.provider.calico.endpoint` and `controller.provider.cilium.endpoint` respectively.
 The `spec.backend` field of a proposal or policy cannot change after
 creation.
 
@@ -230,7 +212,7 @@ creation.
 Event export.
 
 |Every node, Istio provider only
-|fluent-bit reads the ztunnel log and forwards it.
+|The agent reads local ztunnel logs and holds events until the leader polls it.
 
 |Data plane
 |Enforcement of the native policy object. On Istio, ztunnel also evaluates
@@ -306,8 +288,7 @@ ztunnel evaluates it and logs the decision. Traffic is not blocked.
   monitor mode and a denial in protect mode. On Calico and Cilium, the
   scraper sees a flow that the policy does not allow, or a dropped flow with
   a policy as the reason. In each case the scraper emits a violation
-  observation. The controller buffers it and sends a
-  `policy_violation_observed` event to the collector.
+  observation. The controller buffers it. If export is on, it also sends a `policy_violation_observed` event to the collector.
 
 . *The status is written.* On the next status sync, the controller merges
   the buffered observations into the policy status. It gives each new record
@@ -356,20 +337,15 @@ ztunnel does not report it in the policy log.
 
 == Trust boundaries
 
-* One certificate authority, issued by {cert-manager-term}, signs the
-  certificates of the admission webhook, the collector, and the OTLP endpoint
-  that receives the fluent-bit logs. The collector and the controller mount
-  their certificates through the cert-manager CSI driver.
-* The default collector presents a server certificate, and the controller
-  verifies it. An external collector can also require a client certificate
-  from the controller, which makes the hop mutual TLS.
+* The chart uses {cert-manager-term} and its CSI driver for the admission webhook and the Istio agent connection.
+  Each agent checks the controller's certificate. The controller checks the agent's certificate against the pod name and namespace.
+* The OpenTelemetry collector uses separate credentials. Its certificate does not authenticate an Istio agent.
 * Goldmane requires mutual TLS. The controller reads the client key pair and
   the CA bundle that Calico creates in its own namespace. There is no
   plain-text option.
 * Hubble Relay uses TLS by default, with a client certificate that Cilium
   creates. A plain-text connection is a choice that you make at installation.
-* Each provider hop has a TLS mode: `issuer`, `existingSecret`, or
-  `insecure`. The mode says where the certificates for that hop come from.
+* For Calico and Cilium, the TLS mode selects how the controller authenticates the provider.
   With `issuer`, cert-manager writes them into the pod. With
   `existingSecret`, the controller reads a Secret that already exists, in
   its own namespace or in the namespace of the provider. The
@@ -383,13 +359,11 @@ ztunnel does not report it in the policy log.
 [#_how_network_enforcer_scales]
 == How {ne-name} scales
 
-One controller replica is active. It reads one flow stream and handles all
-the workloads of the cluster. The rate of flows that the data plane produces
-is the main load. On Istio, the fluent-bit DaemonSet spreads the log reading
-across the nodes, and the controller receives one merged stream.
+On Istio, the agents read logs in parallel on their nodes. The leader polls up to two agents at a time by default.
+Adding a controller replica gives the leader a standby. It does not increase the number of events the leader can process.
 
 The status of each policy is capped at 100 records, so a loud workload does
-not grow the API object without bound. The collector keeps the full history.
+not grow the API object without bound. For a longer history, export events to a collector with persistent storage.
 
 The controller adds no cost to the data path. In protect mode, the data plane
 enforces the native object on its own. If the controller stops, the policies

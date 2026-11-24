@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = Glossary
-:revdate: 2026-10-13
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :description: Terms used in the {ne-name} documentation: custom resources, labels, providers and backends, phases, and the data plane features that the enforcer depends on.
 :doc-persona: kubewarden-all
@@ -30,6 +30,12 @@ A <<_violation-record,violation record>> that is still in
 `status.violations`. It is not <<_acknowledged-violation,acknowledged>>. The
 field `status.activeViolationCount` holds the number of active violations.
 This is the number that needs a decision.
+
+[#_agent]
+=== Agent (Istio provider)
+
+The {ne-short-name} log reader. One agent per node reads new JSON records from xref:#_ztunnel[ztunnel].
+The controller polls each agent for events. This agent is not Istio's `istio-agent` process.
 
 [#_allow-list]
 === Allow-list
@@ -84,9 +90,7 @@ A <<_cni,CNI>>. A <<_provider,provider>> of {ne-name}. The
 [#_cert-manager]
 === cert-manager
 
-A prerequisite. Together with the cert-manager CSI driver, it issues the TLS
-certificates for the <<_opentelemetry-collector,OpenTelemetry collector>> and
-for the OTLP ingestion endpoint of the <<_controller,controller>>.
+The certificate manager for the admission webhook. With its CSI driver, it also supplies the certificates for the controller and the Istio agents.
 
 [#_cilium]
 === Cilium
@@ -108,8 +112,7 @@ its own <<_data-plane,data plane>> on top.
 [#_controller]
 === Controller
 
-The only component that {ne-short-name} installs, as a Deployment with one
-replica. It runs the <<_scraper,scraper>> and four reconcilers. The learning
+The Deployment that runs the xref:#_scraper[scraper] and reconciles policies. It has one replica by default. The learning
 reconciler writes proposals. The proposal reconciler handles
 <<_promotion,promotion>>. The policy reconciler writes the
 <<_native-policy-object,native policy object>>. The
@@ -183,14 +186,6 @@ depends on the <<_provider,provider>>: <<_ztunnel,ztunnel>> logs for Istio
 ambient, <<_goldmane,Goldmane>> for Calico, <<_hubble-relay,Hubble Relay>>
 for Cilium.
 
-[#_fluent-bit]
-=== fluent-bit
-
-A log forwarder. With the `istio` <<_provider,provider>>, the Helm chart
-deploys it as the `istio-fluent-bit` DaemonSet. It reads the
-<<_ztunnel,ztunnel>> log files on each node, parses the JSON, and sends the
-records to the <<_controller,controller>> as OTLP logs on port 4317.
-
 == G
 
 [#_goldmane]
@@ -218,7 +213,7 @@ with `hubble.enabled=true` and `hubble.relay.enabled=true`.
 
 The sidecar-free mode of Istio. The default <<_provider,provider>> of
 {ne-short-name}. The <<_flow-source,flow source>> is the log of
-<<_ztunnel,ztunnel>>, forwarded by <<_fluent-bit,fluent-bit>>. The
+xref:#_ztunnel[ztunnel], which the xref:#_agent[agent] reads on each node. The
 <<_backend,backend>> is `istio`. Enforcement happens at the destination
 ztunnel, inbound, for TCP only. A namespace joins the mesh with the label
 `istio.io/dataplane-mode=ambient`. The label must be present before the pods
@@ -233,8 +228,7 @@ The first <<_phase,phase>>. The <<_scraper,scraper>> observes
 <<_flow,flows>>. The <<_controller,controller>> writes them to a
 <<_workloadnetworkpolicyproposal,WorkloadNetworkPolicyProposal>> for each
 workload and <<_direction,direction>>. Nothing is blocked. Learning is
-cluster-wide and starts when the controller starts. It does not reconstruct
-flows from before that moment. Learning stops for a workload and direction
+cluster-wide. On Istio, the controller learns from events that the node agents collect, not from past log files. Learning stops for a workload and direction
 when a <<_workloadnetworkpolicy,WorkloadNetworkPolicy>> with the same name
 exists.
 
@@ -286,14 +280,10 @@ deletes it when the mode returns to <<_monitor,monitor>>.
 === OpenTelemetry collector
 
 The service that receives the <<_violation,violation>> events from the
-<<_controller,controller>>. The Helm value `telemetry.collectorStrategy`
-selects it: `default` deploys a collector, `external` points at your own,
-`none` turns the export off. The controller emits a
+<<_controller,controller>>. Set `otel.endpoint` to your collector's OTLP/gRPC endpoint to turn on export. The controller emits a
 `policy_violation_observed` event for each violation and a
 `policy_violation_acknowledged` event for each
-<<_acknowledged-violation,acknowledgement>>. The bundled collector exports
-the Prometheus counter `network_enforcer_policy_denies`. This export path is
-separate from the OTLP ingestion path that <<_fluent-bit,fluent-bit>> uses.
+<<_acknowledged-violation,acknowledgement>>. The collector does not read ztunnel logs.
 
 == P
 

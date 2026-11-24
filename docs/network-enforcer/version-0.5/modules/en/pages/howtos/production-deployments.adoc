@@ -1,17 +1,12 @@
 include::partial$variables.adoc[]
 = Configuring {ne-name} for production
-:revdate: 2026-10-23
+:revdate: 2026-11-23
 :page-revdate: {revdate}
-:description: Configure the controller, the fluent-bit DaemonSet, the PriorityClass, and the telemetry of {ne-name} for high availability, scheduling, and reliable resource use.
+:description: Configure controller replicas, schedule the Istio log reader, and export violation events with {ne-name}.
 :keywords: ["{ne-name}", kubewarden, kubernetes, production, replicas, poddisruptionbudget, affinity, tolerations, priorityclass, resources, admission policies, pod security admission]
 :doc-persona: kubewarden-operator, kubewarden-integrator
 :doc-type: howto
 :doc-topic: operator-manual, production, replicas, poddisruptionbudget, affinity, tolerations, priorityclass, resources, admission-policies, pod-security-admission
-
-This page gives configuration for {ne-short-name} in a production cluster.
-It covers the {controller-term}, the fluent-bit DaemonSet of the Istio
-{provider-term}, the PriorityClass, the telemetry, and the other chart
-values that matter at scale.
 
 For the provider and Kubernetes requirements, see
 xref:reference/compatibility.adoc[Compatibility]. For how the components
@@ -41,11 +36,7 @@ See xref:howtos/troubleshooting.adoc#_admission_webhook[Admission webhook].
 extra replica is a warm standby. It shortens the failover time, and it
 does not add throughput.
 
-With the Istio provider, keep `controller.replicas` at `1`. The controller
-is the OTLP server that receives the {ztunnel-term} logs from fluent-bit,
-and only the leader listens on that port.
-
-With the Calico or the Cilium provider, you can run two replicas:
+On Istio, only the leader polls the agents. To keep a standby replica with any provider, set:
 
 [source,yaml]
 ----
@@ -115,96 +106,58 @@ A PodDisruptionBudget (PDB) limits how many pods a voluntary disruption can
 remove at the same time, for example a node drain or a cluster upgrade. The
 chart ships a PDB template for the controller, off by default.
 
-Set `controller.pdb.enabled` to `true`. Set `minAvailable` or
-`maxUnavailable` under `controller.pdb`, in the same way as a PDB `spec`:
+Set `minAvailable` or `maxUnavailable` under `controller.podDisruptionBudget`:
 
 [source,yaml]
 ----
 controller:
-  pdb:
-    enabled: true
+  podDisruptionBudget:
     minAvailable: 1
 ----
 
 [WARNING]
 ====
-If `controller.replicas` is `1` and `controller.pdb.minAvailable` is `1`,
+If `controller.replicas` is `1` and `controller.podDisruptionBudget.minAvailable` is `1`,
 the PodDisruptionBudget blocks every voluntary disruption of the controller
 pod, including `kubectl drain`. Before you turn on the PodDisruptionBudget,
-set `controller.replicas` to `2` or more. With the Istio provider, where
-the controller must stay at one replica, leave the PodDisruptionBudget off.
+set `controller.replicas` to `2` or more.
 ====
 
-[#_fluent_bit_daemonset_istio_provider]
-== fluent-bit DaemonSet, Istio provider
+[#_istio_agent]
+== Istio agent DaemonSet
 
-With `controller.provider.name: istio`, the chart deploys fluent-bit as a
-DaemonSet. One pod runs on each node. It reads the log files of
-{ztunnel-term} and sends the records to the controller. A node without a
-fluent-bit pod produces no proposals and no monitor-mode {violation-term}s
-for the pods on that node. Protect mode still blocks traffic there,
-because ztunnel enforces the policy on its own.
+Schedule an agent on every {ztunnel-term} node, including tainted nodes.
+Without an agent, the controller misses connections and violations on that node. Ztunnel still enforces existing policies.
 
-[#_fluent_bit_scheduling]
-=== fluent-bit scheduling
+Set `resources`, `tolerations`, `nodeSelector`, and `affinity` under `controller.provider.istio.agent`.
+By default the agent tolerates all taints. If you narrow its placement, compare the nodes for both DaemonSets.
+The cert-manager CSI driver must also run on those nodes.
 
-`controller.provider.istio.fluentBit` has its own `resources`,
-`tolerations`, `nodeSelector`, and `affinity` keys. The pod also gets the
-shared xref:#_priorityclass[PriorityClass].
+Allow the controller to reach agent pod IPs on TCP port `50052`, or the port in `controller.provider.istio.agent.grpcPort`.
+The chart does not restrict that port with a NetworkPolicy.
 
-fluent-bit must run on every node where ztunnel runs. The chart sets a
-toleration that matches every taint by default, the same default that
-ztunnel itself uses. If you set
-`controller.provider.istio.fluentBit.tolerations` to `[]`, fluent-bit
-stops tolerating taints. The pod is then missing from each tainted node
-that still runs ztunnel. The chart loses the ztunnel logs from that node,
-together with the proposals and the monitor-mode violations of its
-workloads.
+`controller.provider.istio.agent.enabled: false` disables the chart's DaemonSet, not polling or mutual TLS.
+For agents that you manage separately, match the chart's namespace, discovery labels, port, and certificate identities.
 
-If you restrict fluent-bit with `nodeSelector` or `affinity`, make sure
-that the selection still matches every node where ztunnel runs.
+The controller flags `--agent-poll-interval` (default `5s`) and `--agent-scrape-timeout` (`30s`) control polling.
+`--agent-max-in-flight` limits concurrent scrapes and event processing. The default is `2`.
 
-In the default TLS mode `issuer`, each fluent-bit pod receives its
-certificate from the cert-manager CSI driver. Make sure that the CSI
-driver runs on every node. See
-xref:reference/compatibility.adoc#_provider-tls[Provider TLS] for the
-other modes.
+=== Agent log access
 
-[#_fluent_bit_security_context]
-=== fluent-bit security context
+The agent runs as root to read the node's logs. It mounts `/var/log/pods` and `/var/log/containers` read-only.
+It reads `.log` files under `/var/log/pods/istio-system_ztunnel-*/`, in the `ztunnel` or `istio-proxy` container directory.
+If your ztunnel runs outside `istio-system`, its logs do not match these paths.
 
-fluent-bit runs as root (`runAsUser: 0`) and mounts two read-only
-`hostPath` volumes, `/var/log` and `/var/lib/docker/containers`, to read
-the container logs of the node. It is not privileged, it does not allow
-privilege escalation, and it drops all capabilities.
-
-These two requirements come from the job, not from a gap in the chart.
-Every log shipper that tails node log files needs the same two
-requirements.
-
-The container runtime writes the log files under `/var/log/pods` with
-mode `0640` and owner `root:root`. A pod's `fsGroup` does not change the
-ownership of a `hostPath` volume, so it cannot open the files to a
-non-root user. The capability `CAP_DAC_READ_SEARCH` is not an option
-either. The `baseline` and the `restricted` Pod Security Admission
-levels both forbid it. The kernel also does not activate it for a
-non-root process. Reading the files needs UID `0`.
-
-The DaemonSet mounts `/var/log` and `/var/lib/docker/containers` to reach
-those files from the host. No Pod Security Admission level below
-`privileged` admits a `hostPath` volume. So the fluent-bit pod needs the
-`privileged` level, and the two
-xref:#_admission_policies_and_pod_security_admission[recommended
-policies] that this page excludes next.
+The agent drops all Linux capabilities and does not mount a service account token.
+The host mounts still require a Pod Security Admission exemption or the `privileged` level for the namespace.
+See xref:#_admission_policies_and_pod_security_admission[Admission policies and Pod Security Admission].
 
 [#_priorityclass]
 == PriorityClass
 
 The chart creates a PriorityClass named `network-enforcer-priorityclass`,
-with value `1000000`, and applies it to the controller, the fluent-bit,
-and the collector pods. This makes the Kubernetes scheduler prefer these
-pods over most application pods, and keeps the kubelet from evicting them
-first under node pressure.
+with value `1000000`, and applies it to the controller and agent pods.
+The scheduler gives these pods priority over most application pods.
 
 To reuse an existing PriorityClass, for example `system-cluster-critical`,
 turn off the chart-managed one and point `priorityClass.name` at the
@@ -228,23 +181,22 @@ pods that name the deleted class do not start.
 
 What an admission policy accepts depends on the provider.
 
-With the Calico or the Cilium provider, the chart deploys the controller
-and the collector only. Both pods run as non-root, drop all capabilities,
-and use no host namespace and no `hostPath` volume. They meet the
+With Calico or Cilium, the chart deploys only the controller. Its pods run as non-root, drop all capabilities,
+and use no host namespace or `hostPath` volume. They meet the
 `restricted` Pod Security Admission level, and none of the {admc-name}
 recommended policies rejects them. The {ne-short-name} namespace can
 carry `pod-security.kubernetes.io/enforce: restricted`.
 
-With the Istio provider, the fluent-bit pod fails both the `baseline` and
+With the Istio provider, the agent pod fails both the `baseline` and
 the `restricted` level. In `protect` mode, two of the {admc-short-name}
 recommended policies reject it:
 
 [cols="1,2", options="header"]
 |===
-|Policy |Rejects fluent-bit because
+|Policy |Why it rejects the agent
 
 |`do-not-share-host-paths`
-|`/var/log` and `/var/lib/docker/containers` are not under `/tmp`.
+|The agent mounts `/var/log/pods` and `/var/log/containers` from the host.
 
 |`do-not-run-as-root`
 |`runAsUser` is `0` and `runAsNonRoot` is `false`.
@@ -273,39 +225,18 @@ Security Admission] for the three levels.
 [#_telemetry]
 == Telemetry
 
-By default, the chart deploys its own {opentelemetry-collector-term}, as
-a single Deployment replica. `telemetry.defaultCollector` has
-`tolerations`, `nodeSelector`, and `affinity` values, but the replica
-count stays fixed at one. The collector keeps its counters in memory, so
-a restart resets them. This default is enough for a basic setup, but it
-is a single point of failure for the violation metrics.
-
-For production, point {ne-short-name} at an OpenTelemetry collector that
-your own platform operates and schedules for high availability:
+To export violations, set `otel.endpoint` to your collector's OTLP/gRPC endpoint.
+The chart does not install a collector. Only the controller will use this endpoint.
 
 [source,yaml]
 ----
-telemetry:
-  collectorStrategy: external
-  externalCollector:
-    protocol: grpc
-    endpoint: otel-collector.observability.svc.cluster.local:4317
-    otelCollectorCertificateSecret: otel-collector-ca
+otel:
+  endpoint: https://otel-collector.observability.svc.cluster.local:4317
+  caSecretName: otel-collector-ca
 ----
 
-The Secret in `otelCollectorCertificateSecret` holds the CA certificate
-of your collector in the key `ca.crt`. Without it, the controller sends
-the events without TLS verification. The Secret must be in the
-{ne-short-name} namespace.
-
-[NOTE]
-====
-This collector receives the violation events. It is not the OTLP endpoint
-that receives the ztunnel logs on the Istio provider. The two hops use
-different ports and different certificates. See
-xref:explanations/architecture.adoc#_opentelemetry-collector[OpenTelemetry
-collector].
-====
+If the collector uses a private CA, put its certificate in the `ca.crt` key of `otel.caSecretName` in the release namespace.
+For a collector that requires mutual TLS, set `otel.clientCertificateSecretName` to a Secret with `tls.crt` and `tls.key`.
 
 [#_learning_scope]
 == Learning scope
@@ -328,8 +259,7 @@ writes a {workloadnetworkpolicyproposal-cr} only for the workloads that
 have no policy yet.
 
 See
-xref:reference/known_limitations.adoc#_learning-starts-when-the-controller-starts[Learning
-starts when the controller starts] for what learning does not record.
+xref:reference/known_limitations.adoc#_learning-starts-when-the-controller-starts[Learning does not reconstruct past traffic] for what learning does not record.
 
 [#_keep_the_flow_dumper_off]
 == Keep the flow dumper off
@@ -353,7 +283,9 @@ values file, for the Istio provider:
 controller:
   provider:
     name: istio
-  replicas: 1
+  replicas: 2
+  podDisruptionBudget:
+    minAvailable: 1
   resources:
     limits:
       cpu: 250m
@@ -365,30 +297,16 @@ controller:
   flowDumper:
     enabled: false
 
-telemetry:
-  collectorStrategy: external
-  externalCollector:
-    protocol: grpc
-    endpoint: otel-collector.observability.svc.cluster.local:4317
-    otelCollectorCertificateSecret: otel-collector-ca
+otel:
+  endpoint: https://otel-collector.observability.svc.cluster.local:4317
+  caSecretName: otel-collector-ca
 ----
 
-With the Calico or the Cilium provider, set `controller.provider.name` to
-`calico` or `cilium`. You can then raise `controller.replicas` to `2` and
-turn on the PodDisruptionBudget:
+For Calico or Cilium, change `controller.provider.name` to `calico` or `cilium`.
 
-[source,yaml]
-----
-controller:
-  provider:
-    name: calico
-  replicas: 2
-  pdb:
-    enabled: true
-    minAvailable: 1
-----
-
-Apply the file at install or upgrade time:
+Use a chart that includes `controller.provider.istio.agent` in its values.
+For the development chart, see xref:quickstart.adoc#_install-the-network-enforcer-chart[Install the chart].
+For a published chart with the agent, apply the values file at install time:
 
 [source,bash]
 ----

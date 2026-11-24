@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Troubleshooting
 :description: Troubleshoot common failures by checking logs, verifying configurations, and confirming network and component statuses
-:revdate: 2026-10-23
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :page-aliases: troubleshooting.adoc
 :doc-persona: ["kubewarden-operator"]
@@ -105,48 +105,29 @@ metric `network_enforcer_violations_unattributed_total`, not policy status.
   `calico`, or `cilium`).
 * Workloads are a supported owner kind: `Deployment`, `StatefulSet`, or
   `DaemonSet`.
-* Traffic happened after the controller started. Learning does not
-  reconstruct historical flows; restart workloads or generate traffic while
-  {ne-short-name} is running.
+* Generate fresh traffic between the workloads. Learning does not reconstruct past connections.
 
 [#_istio]
 === Istio
 
-. Namespace labeled `istio.io/dataplane-mode=ambient` before the pods were
-  created. `istio-cni` decides redirection at pod creation time; labeling later
-  does not enroll existing pods.
-. ztunnel and istiod flags required for usable access logs:
-  * ztunnel: `AUTHZ_POLICY_INFO_LOGGING=true` and `logAsJson=true`
-  * istiod: `AMBIENT_ENABLE_DRY_RUN_AUTHORIZATION_POLICY=true`
-  (also required for monitor-mode dry-run evaluation)
-. DaemonSet `<fullname>-istio-fluent-bit` is running. It tails
-  `/var/log/containers/*ztunnel*.log` and ships OTLP/gRPC to the controller
-  Service `<fullname>-istio-otlp` on port `4317`.
-. The hop from fluent-bit to the controller uses TLS by default. Both ends
-  get their certificates from `cert-manager-csi-driver`. A TLS handshake
-  error in the fluent-bit log, or a certificate error in the controller log,
-  points at this hop. Check that cert-manager and the CSI driver are healthy.
-  Then check that the CSI volume of each pod was provisioned:
+. Check that the workload namespace has the `istio.io/dataplane-mode=ambient` label and that the workloads are in the mesh.
+. Check the xref:reference/compatibility.adoc#_istio-ambient-install-flags[Istio logging settings]. The agent cannot parse plain-text ztunnel logs.
+. Compare the `NODE` column for the ztunnel and agent pods. Each node that runs ztunnel needs a running agent:
 +
 [source,bash]
 ----
-kubectl get pods -n cert-manager
-kubectl describe pod -n network-enforcer -l app.kubernetes.io/component=controller | grep -A3 provider-tls
+kubectl get pods -n istio-system -l app=ztunnel -o wide
+kubectl get pods -n network-enforcer -l app.kubernetes.io/component=agent -o wide
 ----
-. Confirm fluent-bit pods and the OTLP Service:
-+
-[source,bash]
-----
-kubectl get ds,pods -n network-enforcer -l app.kubernetes.io/component=istio-fluent-bit
-kubectl get svc -n network-enforcer network-enforcer-istio-otlp
-----
+. If a node has no agent, check DaemonSet scheduling and admission errors with `kubectl describe ds/network-enforcer-agent -n network-enforcer`.
+. Generate a new inbound TCP connection and close it. The agent reads new log lines, not the log history.
+. If the controller logs `Istio agent poll failed, retrying`, check connectivity from the controller to the reported pod IP and port.
+  For certificate errors, see xref:#_istio-handshake[Istio TLS].
 
 NOTE: UDP never goes through ztunnel, so it never produces proposals.
 Istio learning creates *ingress* proposals on the destination only.
 
-Do not confuse the Istio ingestion port (`<fullname>-istio-otlp:4317`) with the
-violation-export collector (`<fullname>-otel-collector:4317`). They are separate
-OTLP hops.
+The controller connects directly to each agent on port `50052` by default. There is no agent Service to troubleshoot.
 
 [#_calico]
 === Calico
@@ -196,7 +177,7 @@ kubectl get role,rolebinding -n kube-system -l app.kubernetes.io/name=network-en
 [#_provider-tls-handshake]
 == Provider TLS handshake
 
-Read the active mode from the controller arguments:
+For Calico and Cilium, read the TLS mode from the controller arguments. For Istio, see xref:#_istio-handshake[Istio TLS].
 
 [source,bash]
 ----
@@ -217,27 +198,18 @@ The commands are in <<_enable-verbose-logs>>.
 [#_istio-handshake]
 === Istio
 
-The controller is the TLS server.
-fluent-bit is the client.
-The default mode is `issuer`.
+The controller is the client. Each agent serves gRPC with mutual TLS.
 
-. If the controller pod or a fluent-bit pod stays `Pending`, describe the pod.
-  A missing `cert-manager-csi-driver` fails the `provider-tls` volume.
-. If the controller log says `failed to load TLS credentials for OTLP logs server`,
-  `/etc/provider/certs` is missing `tls.crt`, `tls.key`, or `ca.crt`.
-. If the controller log says `OTLP Istio scraper running in insecure mode`, TLS is off.
-  fluent-bit uses the same mode.
-  A mismatch fails the client handshake.
-. If the controller is running and proposals stay empty, read the fluent-bit logs:
-+
+. If a pod cannot mount `grpc-certs`, check its events and the cert-manager CSI driver on that node.
+. If a poll fails certificate validation, check the DNS names on both certificates.
+  The agent certificate must name `<pod-name>.<namespace>`. The controller certificate must name `<fullname>-controller`.
+
 [source,bash]
 ----
-kubectl logs -n network-enforcer \
-  -l app.kubernetes.io/component=istio-fluent-bit --tail=100
+kubectl describe pod -n network-enforcer -l app.kubernetes.io/component=agent
+kubectl logs -n network-enforcer -l app.kubernetes.io/component=controller -c manager --tail=100
+kubectl logs -n network-enforcer -l app.kubernetes.io/component=agent -c agent --tail=100
 ----
-+
-fluent-bit sets `Tls.verify_hostname On` unless the mode is `insecure`.
-A certificate name that does not match Service `<fullname>-istio-otlp` shows up in those logs.
 
 [#_calico-handshake]
 === Calico
@@ -292,7 +264,7 @@ The flow dumper is an optional debug tool, disabled by default.
 [#_dump-ingested-flows]
 ==== Dump ingested flows
 
-Each scraper (Istio OTLP logs, Goldmane, Hubble) writes marshaled records into
+Each scraper (Istio agent, Goldmane, or Hubble) writes flow records into
 an in-memory ring buffer. `GET /flow` drains that buffer and returns
 newline-delimited JSON (`application/jsonl`).
 
@@ -368,50 +340,16 @@ enabled, are also exported as OpenTelemetry logs.
 [#_tail-the-opentelemetry-collector]
 === Tail the OpenTelemetry collector
 
-With `telemetry.collectorStrategy=default`, the release deploys
-`<fullname>-otel-collector`. Its logs pipeline uses the debug exporter
-(default verbosity `normal`).
-
-For richer dumps while troubleshooting, set the exporter to `detailed` by
-editing the collector ConfigMap, then restart the collector pod:
-
-[source,bash]
-----
-kubectl -n network-enforcer edit configmap network-enforcer-otel-collector
-# under exporters.debug, set: verbosity: detailed
-
-kubectl -n network-enforcer rollout restart deploy/network-enforcer-otel-collector
-----
-
-Then follow the collector logs:
-
-[source,bash]
-----
-kubectl logs -n network-enforcer \
-  -l app.kubernetes.io/component=otel-collector -f
-----
-
-Look for `policy_violation_observed` and `policy_violation_acknowledged`.
-
-With `telemetry.collectorStrategy=none` or `external`, this in-cluster
-collector is not deployed. Status still records violations when export is off.
+If violations appear in policy status but not in your collector, check `otel.endpoint`.
+It must point to the OTLP/gRPC receiver on your collector, not to an Istio agent.
+Check that the receiver belongs to a logs pipeline. With a debug exporter, look in the collector logs for
+`policy_violation_observed` and `policy_violation_acknowledged`.
 
 [#_scrape-prometheus-metrics-on-9090]
-=== Scrape Prometheus metrics on `:9090`
+=== Collector metrics
 
-The collector exposes Prometheus metrics on port
-`9090`. Port-forward the collector Service and scrape:
-
-[source,bash]
-----
-kubectl -n network-enforcer port-forward \
-  svc/network-enforcer-otel-collector 9090:9090
-
-curl -sS http://127.0.0.1:9090/metrics | grep network_enforcer_policy_denies
-----
-
-The count connector feeds `network_enforcer_policy_denies`. Empty metrics are
-expected when the default collector is not installed.
+The chart does not install a collector or expose port `9090`.
+If your collector converts violation logs to Prometheus metrics, use the endpoint configured on that collector.
 
 The controller's own metrics bind is HTTPS `:8443` with auth; that is a
 different endpoint.

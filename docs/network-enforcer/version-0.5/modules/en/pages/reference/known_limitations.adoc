@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Known limitations
 :description: Understand the current known limitations of {ne-name} and how they affect deployment and policy enforcement
-:revdate: 2026-10-13
+:revdate: 2026-11-23
 :page-revdate: {revdate}
 :page-aliases: known_limitations.adoc
 
@@ -68,12 +68,11 @@ affects learning and violation reporting, not enforcement by an existing policy.
   may never show up on `WorkloadNetworkPolicy` status.
 
 [#_learning-starts-when-the-controller-starts]
-== Learning starts when the controller starts
+== Learning does not reconstruct past traffic
 
-{ne-short-name} does not reconstruct pre-existing traffic.
-It only records flows seen after the controller is running, so long-lived
-idle workloads yield thin or empty proposals until you generate traffic
-or restart them.
+On Istio, an agent starts at the end of the existing ztunnel log. It does not learn from older log lines.
+During a controller outage, the agent keeps new events until its buffer fills or the agent restarts.
+See xref:explanations/architecture.adoc#_ztunnel_log_reader[ztunnel log reader].
 
 * *Impact*: installing {ne-short-name} onto an already-running cluster does
   not produce a complete historical allow list. Generate the traffic you care
