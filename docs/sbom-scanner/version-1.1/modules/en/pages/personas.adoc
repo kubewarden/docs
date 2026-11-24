@@ -1,0 +1,45 @@
+include::partial$variables.adoc[]
+= Who is this project for? The personas.
+:revdate: 2026-09-30
+:page-revdate: {revdate}
+:description: Who is this project for? The personas of {sboms-name}.
+:keywords: {sboms-name}, kubewarden, documentation, personas
+:doc-persona: kubewarden-all
+:doc-type: explanation
+:doc-topic: explanation
+
+This page lists the people who use {sboms-name}, and what each of them does
+with it. The xref:use-cases.adoc[use cases] refer to these personas.
+
+== {sboms-name} personas
+
+[cols="1,2", options="header"]
+|===
+|Persona |Description
+
+|**Operator**
+|Installs {sboms-short-name} in a cluster and keeps it running. Sizes the
+workers, configures the database and the telemetry collector. In an
+air-gapped cluster, mirrors the vulnerability databases.
+
+|**Platform engineer**
+|Decides what the scanner looks at. Creates the `Registry` resources, sets the
+scan schedule and the filters. Enables workload scanning and node scanning for
+selected namespaces and nodes.
+
+|**Application team**
+|Owns one or more workloads. Reads the workload scan reports for its
+namespaces. Updates the images that have known vulnerabilities.
+
+|**Security engineer**
+|Owns the risk decisions. Reads the vulnerability reports and selects the VEX
+repositories that the scanner trusts. Sets the priority for remediation.
+
+|**Integrator**
+|Builds tools on top of {sboms-short-name}. Reads the SBOMs and the reports
+with `kubectl`, the MCP server, or the OpenTelemetry events. Examples are a
+dashboard, a CI pipeline, or an admission policy.
+
+|**Developer**
+|Works on {sboms-short-name} itself.
+|===
