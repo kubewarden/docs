@@ -1,0 +1,545 @@
+include::partial$variables.adoc[]
+
+= Glossary
+:revdate: 2026-11-24
+:page-revdate: {revdate}
+:description: Terms used in the {gp-name} documentation: custom resources, Gateway API objects, components, WAF rules and scoring, modes, and status conditions.
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["glossary"]
+:doc-type: ["reference"]
+:keywords: {gp-name}, kubewarden, glossary, waf, owasp core rule set, gateway api, agentgateway
+
+[#_a]
+== A
+
+[#_accepted]
+=== Accepted
+
+A status condition of a xref:#_wafpolicy[WAFPolicy]. `Accepted=True` means
+that the xref:#_target[target] exists, that each referenced
+xref:#_wafruleset[WAFRuleSet] exists, and that no older policy has the same
+target. If the condition is `False`, its reason gives the cause:
+`TargetNotFound`, `Invalid`, or `Conflicted`. See
+xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the
+status of a policy].
+
+[#_agentgateway]
+=== agentgateway
+
+The implementation of the xref:#_gateway-api[Gateway API] that
+{gp-short-name} works with. agentgateway reads the xref:#_gateway[Gateway]
+and xref:#_httproute[HTTPRoute] objects and routes the traffic. For each
+request of a xref:#_protected-route[protected route], it calls the
+xref:#_processor[processor] with xref:#_ext-proc[ext_proc]. {gp-short-name}
+supports no other gateway. See
+xref:reference/compatibility.adoc[Compatibility].
+
+[#_agentgatewaypolicy]
+=== AgentgatewayPolicy
+
+A custom resource of xref:#_agentgateway[agentgateway], in the API group
+`agentgateway.dev`. It adds settings of agentgateway to a Gateway API
+object. The xref:#_controller[controller] writes one AgentgatewayPolicy for
+each xref:#_protected-route[protected route]. See
+xref:#_generated-object[Generated object].
+
+[#_anomaly-score]
+=== Anomaly score
+
+The sum of the points of the xref:#_core-rule-set[CRS] rules that a request
+or a response matches. The xref:#_severity[severity] of each rule gives its
+points: 5 for critical, 4 for error, 3 for warning, and 2 for notice. When
+the score reaches the xref:#_anomaly-threshold[anomaly threshold], the CRS
+blocks the request or the response. See
+xref:explanations/modes-and-scoring.adoc#_anomaly_scoring[Anomaly scoring].
+
+[#_anomaly-threshold]
+=== Anomaly threshold
+
+The xref:#_anomaly-score[anomaly score] at which the
+xref:#_core-rule-set[CRS] blocks. The inbound threshold applies to requests,
+and its default is 5. The outbound threshold applies to responses, and its
+default is 4. The field `spec.anomalyThreshold` of a policy changes them. A
+lower threshold blocks more. See
+xref:explanations/modes-and-scoring.adoc#_anomaly_thresholds[Anomaly
+thresholds].
+
+[#_b]
+== B
+
+[#_blocking]
+=== Blocking
+
+A xref:#_mode[mode]. The WAF applies the rules, and it rejects the traffic
+that they block. By default, the client gets the status `403` and the
+header xref:#_x-waf-violation[x-waf-violation]. See
+xref:explanations/modes-and-scoring.adoc#_modes[Modes].
+
+[#_body-inspection]
+=== Body inspection
+
+The inspection of the body of a request or a response. The fields
+`spec.requestBody` and `spec.responseBody` of a policy turn it on or off,
+and they set the largest size that the WAF inspects. By default, the WAF
+inspects request bodies up to 12.5 MiB. It inspects the first 512 KiB of a
+response, if the content type is `text/plain`, `text/html`, or `text/xml`.
+The xref:#_processor[processor] holds a request body until the WAF has
+inspected it. See
+xref:reference/known_limitations.adoc#_large_request_bodies_are_rejected[Large
+request bodies are rejected in Blocking mode] and
+xref:reference/known_limitations.adoc#_response_bodies_are_inspected_in_part[Response
+bodies are inspected only in part].
+
+[#_c]
+== C
+
+[#_configuration-stream]
+=== Configuration stream
+
+The gRPC connection between the xref:#_controller[controller] and each
+replica of the xref:#_processor[processor], on port 9002, with
+xref:#_mtls[mTLS]. The controller sends the configuration on this stream:
+the WAF rules of each accepted policy, and its target. The processor answers
+with the result. See
+xref:explanations/architecture.adoc#_configuration_stream[Configuration
+stream].
+
+[#_conflict]
+=== Conflict
+
+Two policies with the same xref:#_target[target]: the same kind, namespace,
+name, and xref:#_sectionname[sectionName]. The oldest policy wins. The other
+policy reports `Accepted=False` with the reason `Conflicted`. See
+xref:explanations/policy-attachment.adoc#_two_policies_with_the_same_target[Two
+policies with the same target].
+
+[#_controller]
+=== Controller
+
+The component that reads the xref:#_wafpolicy[WAFPolicy],
+xref:#_wafruleset[WAFRuleSet], xref:#_gateway[Gateway], and
+xref:#_httproute[HTTPRoute] objects. It checks each policy and writes its
+status. It writes the xref:#_generated-object[generated objects], and it
+sends the configuration to the xref:#_processor[processor]. It also renews
+the certificates. It runs as a Deployment with
+xref:#_leader-election[leader election]. It is not in the path of the
+requests. See xref:explanations/architecture.adoc#_controller[Controller].
+
+[#_coraza]
+=== Coraza
+
+The open source WAF library that the xref:#_processor[processor] uses. It
+applies rules in xref:#_seclang[SecLang]. One instance of Coraza with one set
+of rules is an xref:#_engine[engine]. See link:https://coraza.io[the Coraza
+website].
+
+[#_core-rule-set]
+=== Core Rule Set (CRS)
+
+The OWASP Core Rule Set. It is a set of generic rules in
+xref:#_seclang[SecLang] that detect common attacks, such as SQL injection and
+cross-site scripting. Its rules add to an xref:#_anomaly-score[anomaly
+score]. The image of the xref:#_processor[processor] contains one CRS
+version. See
+xref:reference/compatibility.adoc#_rule_engine_and_rule_set[Rule engine and
+rule set] and link:https://coreruleset.org[the CRS website].
+
+[#_custom-rule]
+=== Custom rule
+
+A rule that you write in xref:#_seclang[SecLang], in a
+xref:#_wafruleset[WAFRuleSet]. A policy applies the rules of the rule sets
+that its field `customRulesRefs` names. The xref:#_rule-id[ID] of a custom
+rule must be from 1 to 99999. See xref:howtos/custom-rules.adoc[Write your
+own rules].
+
+[#_d]
+== D
+
+[#_data-loss-prevention]
+=== Data loss prevention (DLP)
+
+The inspection of responses for sensitive data, such as card numbers. DLP is
+planned, but it is not in this version. See
+xref:reference/known_limitations.adoc#_no_data_loss_prevention[No data loss
+prevention].
+
+[#_detection]
+=== Detection
+
+A xref:#_mode[mode]. The WAF applies the rules, and it blocks nothing. The
+xref:#_processor[processor] writes one log line for each rule that matches.
+Use this mode to find xref:#_false-positive[false positives] before you
+block traffic. See
+xref:explanations/modes-and-scoring.adoc#_modes[Modes].
+
+[#_directive]
+=== Directive
+
+One instruction in xref:#_seclang[SecLang]. For example, `SecRule` defines a
+rule, `SecAction` runs actions without a condition, and `SecRuleEngine` sets
+the mode of the WAF. A xref:#_custom-rule[custom rule] contains one or more
+directives.
+
+[#_e]
+== E
+
+[#_engine]
+=== Engine
+
+One instance of xref:#_coraza[Coraza] with one set of rules. The
+xref:#_processor[processor] holds one engine for each different set of
+rules, so policies with the same rules share one engine. The memory of the
+processor grows with the number of engines. See
+xref:explanations/architecture.adoc#_policies_with_the_same_rules_share_one_engine[Policies
+with the same rules share one engine] and
+xref:howtos/production-deployments.adoc#_set_the_memory_of_the_processor[Set
+the memory of the processor].
+
+[#_exclusion]
+=== Exclusion
+
+An entry of the field `spec.exclusions` of a policy. It removes
+xref:#_core-rule-set[CRS] rules for each request that the policy covers, by
+xref:#_rule-id[rule ID] with `byId`, or by xref:#_tag[tag] with `byTag`. Use
+an exclusion to stop a xref:#_false-positive[false positive]. See
+xref:howtos/tune-false-positives.adoc[Tune false positives].
+
+[#_ext-proc]
+=== ext_proc
+
+The external processing protocol of the Envoy proxy, on gRPC.
+xref:#_agentgateway[agentgateway] uses it to send the headers and the bodies
+of each request and response of a xref:#_protected-route[protected route] to
+the xref:#_processor[processor], on port 9000, with xref:#_mtls[mTLS]. The
+processor answers with a verdict: let the traffic continue, or block it. See
+xref:explanations/architecture.adoc#_processor[Processor].
+
+[#_f]
+== F
+
+[#_fail-closed]
+=== Fail closed
+
+The behavior of {gp-short-name} when a part fails: the traffic stops, and it
+does not pass without inspection. For example, when no replica of the
+xref:#_processor[processor] is ready, agentgateway answers each request of a
+xref:#_protected-route[protected route] with the status `500`. See
+xref:explanations/architecture.adoc#_fail_closed_at_each_layer[Fail closed
+at each layer] and xref:howtos/emergency-disable.adoc[Turn off the WAF in an
+emergency].
+
+[#_false-positive]
+=== False positive
+
+A valid request that a WAF rule rejects. Each application sends some
+requests that look like attacks. See
+xref:howtos/tune-false-positives.adoc[Tune false positives].
+
+[#_g]
+== G
+
+[#_gateway]
+=== Gateway
+
+A xref:#_gateway-api[Gateway API] resource. It describes one instance of a
+gateway and its xref:#_listener[listeners]. A policy can target a Gateway, or
+one listener of a Gateway. See
+xref:explanations/policy-attachment.adoc#_targets[Targets].
+
+[#_gateway-api]
+=== Gateway API
+
+The Kubernetes API for the routing of traffic into a cluster. Its resources
+include xref:#_gateway[Gateway] and xref:#_httproute[HTTPRoute].
+{gp-short-name} uses the standard channel of the Gateway API. See
+xref:reference/compatibility.adoc[Compatibility].
+
+[#_generated-object]
+=== Generated object
+
+An xref:#_agentgatewaypolicy[AgentgatewayPolicy] that the
+xref:#_controller[controller] writes for each
+xref:#_protected-route[protected route]. Its name is
+`gateway-protector-<route name>`, and it has the label
+`gateway-protector.kubewarden.io/managed: "true"`. It tells
+xref:#_agentgateway[agentgateway] to send the traffic of the route to the
+xref:#_processor[processor], together with the xref:#_identity[identity] of
+each request. Do not change it. See
+xref:explanations/architecture.adoc#_generated_objects[Generated objects].
+
+[#_h]
+== H
+
+[#_httproute]
+=== HTTPRoute
+
+A xref:#_gateway-api[Gateway API] resource. It attaches to one or more
+xref:#_gateway[Gateway] objects, and its xref:#_rule-of-a-route[rules] send
+HTTP requests to backends. A policy can target an HTTPRoute, or one rule of
+an HTTPRoute. {gp-short-name} protects no other kind of route. See
+xref:reference/known_limitations.adoc#_only_httproute_objects_are_protected[Only
+HTTPRoute objects are protected].
+
+[#_i]
+== I
+
+[#_identity]
+=== Identity of a request
+
+The xref:#_gateway[gateway], the xref:#_listener[listener], the route, and
+the xref:#_rule-of-a-route[rule] that xref:#_agentgateway[agentgateway]
+selected for a request. agentgateway sends the identity to the
+xref:#_processor[processor] with each request, because the
+xref:#_generated-object[generated object] asks for it in its field
+`metadataContext`. The processor uses the identity to find the policy of the
+request. A client cannot change it. See
+xref:explanations/policy-attachment.adoc#_how_the_processor_finds_the_policy[How
+the processor finds the policy of a request].
+
+[#_l]
+== L
+
+[#_leader-election]
+=== Leader election
+
+A lock that the replicas of the xref:#_controller[controller] share. Only
+the replica that holds the lock, the leader, does the work. The other
+replicas wait, and one of them takes over when the leader stops. See
+xref:howtos/production-deployments.adoc#_run_a_second_controller_replica[Run
+a second controller replica].
+
+[#_listener]
+=== Listener
+
+One entry of the field `spec.listeners` of a xref:#_gateway[Gateway]. It has
+a name, a port, a protocol, and an optional hostname. A policy targets one
+listener with the kind `Gateway` and the name of the listener in
+xref:#_sectionname[sectionName]. See
+xref:explanations/policy-attachment.adoc#_listener_policies[Listener
+policies].
+
+[#_m]
+== M
+
+[#_mode]
+=== Mode
+
+The field `spec.engine.mode` of a policy. Its value is
+xref:#_blocking[Blocking], xref:#_detection[Detection], or xref:#_off[Off].
+See xref:explanations/modes-and-scoring.adoc#_modes[Modes].
+
+[#_mtls]
+=== mTLS
+
+Mutual TLS. Each side of a connection shows a certificate, and each side
+checks the certificate of the other side. The
+xref:#_configuration-stream[configuration stream] and the
+xref:#_ext-proc[ext_proc] connection use mTLS. The Helm chart creates the
+certificate authority and the certificates, and the
+xref:#_controller[controller] renews them. See
+xref:explanations/architecture.adoc#_trust_boundaries[Trust boundaries].
+
+[#_o]
+== O
+
+[#_off]
+=== Off
+
+A xref:#_mode[mode]. The WAF applies no rules. A policy with the mode `Off`
+replaces the broader policies for its target. As a result, it can turn the
+WAF off for one route or one rule of a protected gateway.
+xref:#_agentgateway[agentgateway] still sends the traffic of the route to the
+xref:#_processor[processor]. See
+xref:howtos/attach-a-policy.adoc#_turn_the_waf_off_for_one_route[Turn the
+WAF off for one route].
+
+[#_p]
+== P
+
+[#_paranoia-level]
+=== Paranoia level
+
+A level of the xref:#_core-rule-set[CRS], from 1 to 4. The field
+`spec.paranoiaLevel` of a policy selects it, and the default is 1. The WAF
+applies the CRS rules of the selected level and of the lower levels. A
+higher level finds more attacks, and it causes more
+xref:#_false-positive[false positives]. See
+xref:explanations/modes-and-scoring.adoc#_paranoia_levels[Paranoia levels].
+
+[#_phase]
+=== Phase
+
+One step of the inspection in xref:#_coraza[Coraza]. Phase 1 inspects the
+request headers, phase 2 the request body, phase 3 the response headers, and
+phase 4 the response body. Phase 5 writes the logs. Each rule runs in one
+phase. The xref:#_core-rule-set[CRS] compares the
+xref:#_anomaly-score[anomaly score] of a request at the end of phase 2. See
+xref:howtos/custom-rules.adoc#_how_the_waf_applies_your_rules[How the WAF
+applies your rules].
+
+[#_policy-attachment]
+=== Policy attachment
+
+The way a xref:#_wafpolicy[WAFPolicy] connects to the traffic. The policy
+names its xref:#_target[target] in the field `spec.targetRef`. The
+xref:#_gateway[Gateway] and the xref:#_httproute[HTTPRoute] have no field
+for the WAF, and they do not change. See
+xref:explanations/policy-attachment.adoc[Policy attachment].
+
+[#_processor]
+=== Processor
+
+The component that inspects the traffic. xref:#_agentgateway[agentgateway]
+calls it with xref:#_ext-proc[ext_proc] for each request of a
+xref:#_protected-route[protected route]. The processor holds the
+xref:#_engine[engines] and one entry for each accepted policy. It gets them
+from the xref:#_controller[controller] on the
+xref:#_configuration-stream[configuration stream]. It runs as its own
+Deployment. See xref:explanations/architecture.adoc#_processor[Processor].
+
+[#_programmed]
+=== Programmed
+
+A status condition of a xref:#_wafpolicy[WAFPolicy]. `Programmed=True`
+means that the rules of the policy compiled, and that they are in the
+configuration that the xref:#_controller[controller] sent to the
+xref:#_processor[processor]. It does not show that each processor replica
+applied the configuration. If the rules do not compile, the condition is
+`False` with the reason `CompileFailed`. See
+xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the
+status of a policy].
+
+[#_protected-route]
+=== Protected route
+
+An xref:#_httproute[HTTPRoute] that at least one accepted policy can apply
+to, through its gateway, its listener, the route itself, or one of its
+rules. The xref:#_controller[controller] writes a
+xref:#_generated-object[generated object] for the route, and
+xref:#_agentgateway[agentgateway] sends its traffic to the
+xref:#_processor[processor]. This is also true when the policy has the mode
+xref:#_off[Off].
+
+[#_r]
+== R
+
+[#_rule-id]
+=== Rule ID
+
+The number in the action `id` of a WAF rule. The log of the
+xref:#_processor[processor] gives it in the field `rule_id` for each rule
+that matches. The ranges have owners: 1 to 99999 for
+xref:#_custom-rule[custom rules], 900000 to 999999 for the
+xref:#_core-rule-set[CRS], and 10000000 to 10000099 for the directives that
+{gp-short-name} generates. See
+xref:howtos/custom-rules.adoc#_rule_ids[Rule IDs].
+
+[#_rule-of-a-route]
+=== Rule of a route
+
+One entry of the field `spec.rules` of an xref:#_httproute[HTTPRoute]. It has
+matches and backends, and it can have a name. A policy can target one rule
+by its name, with xref:#_sectionname[sectionName]. A rule without a name
+cannot be a target. See
+xref:explanations/policy-attachment.adoc#_rule_policies[Rule policies].
+
+[#_s]
+== S
+
+[#_seclang]
+=== SecLang
+
+The rule language of ModSecurity, which xref:#_coraza[Coraza] also uses. The
+xref:#_core-rule-set[CRS] and the xref:#_custom-rule[custom rules] are in
+SecLang. A rule is a xref:#_directive[directive] with variables, an
+operator, and actions. See
+link:https://coraza.io/docs/seclang/[the SecLang documentation of Coraza].
+
+[#_sectionname]
+=== sectionName
+
+A field of `spec.targetRef` of a policy. It narrows the
+xref:#_target[target] to one part: the name of a
+xref:#_listener[listener] for a xref:#_gateway[Gateway], or the name of a
+xref:#_rule-of-a-route[rule] for an xref:#_httproute[HTTPRoute].
+
+[#_selection-order]
+=== Selection order
+
+The order in which the xref:#_processor[processor] looks for the policy of a
+request: the rule, the route, the listener, and then the gateway. The first
+policy that it finds governs the request in full. Policies never merge. See
+xref:explanations/policy-attachment.adoc#_selection_order[Selection order].
+
+[#_severity]
+=== Severity
+
+The importance of a xref:#_core-rule-set[CRS] rule: critical, error, warning,
+or notice. It gives the points that the rule adds to the
+xref:#_anomaly-score[anomaly score]. The log of the
+xref:#_processor[processor] gives it in the field `severity` for each rule
+that matches.
+
+[#_t]
+== T
+
+[#_tag]
+=== Tag
+
+A label on a WAF rule, in its action `tag`. The
+xref:#_core-rule-set[CRS] tags its rules with the class of attack, for
+example `attack-xss` or `attack-rce`. An xref:#_exclusion[exclusion] with
+`byTag` removes all the rules that have one tag.
+
+[#_target]
+=== Target
+
+The Gateway API object that a policy applies to: a xref:#_gateway[Gateway],
+a xref:#_listener[listener] of a Gateway, an xref:#_httproute[HTTPRoute], or
+a xref:#_rule-of-a-route[rule] of an HTTPRoute. The field `spec.targetRef`
+of the policy names it. See
+xref:explanations/policy-attachment.adoc#_targets[Targets].
+
+[#_w]
+== W
+
+[#_waf]
+=== WAF
+
+Web application firewall. A WAF inspects HTTP requests and responses, and it
+blocks the ones that look like attacks. In {gp-short-name}, the
+xref:#_processor[processor] runs the WAF, with xref:#_coraza[Coraza] and the
+xref:#_core-rule-set[CRS].
+
+[#_wafpolicy]
+=== WAFPolicy
+
+The custom resource that attaches WAF rules to one xref:#_target[target]. It
+sets the xref:#_mode[mode], the xref:#_paranoia-level[paranoia level], the
+xref:#_anomaly-threshold[anomaly thresholds], the
+xref:#_exclusion[exclusions], the xref:#_body-inspection[body inspection],
+and the references to xref:#_wafruleset[WAFRuleSet] objects. Its API group
+is `gateway-protector.kubewarden.io`, version `v1alpha1`. See
+xref:reference/crd.adoc#k8s-api-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicy[WAFPolicy].
+
+[#_wafruleset]
+=== WAFRuleSet
+
+The custom resource that holds xref:#_custom-rule[custom rules]. A
+xref:#_wafpolicy[WAFPolicy] in the same namespace references it by name, in
+the field `customRulesRefs`. Many policies can use one rule set. See
+xref:howtos/custom-rules.adoc[Write your own rules] and
+xref:reference/crd.adoc#k8s-api-github-com-kubewarden-gateway-protector-api-v1alpha1-wafruleset[WAFRuleSet].
+
+[#_x]
+== X
+
+[#_x-waf-violation]
+=== x-waf-violation
+
+A response header with the value `1`. The xref:#_processor[processor] adds it
+when the WAF blocks a request or a response. It separates a block of the WAF
+from an error of the application or of agentgateway. See
+xref:howtos/troubleshooting.adoc#_unexpected_responses[Unexpected
+responses].
