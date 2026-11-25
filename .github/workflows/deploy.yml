@@ -6,13 +6,9 @@ on:
       - main
 permissions:
   contents: read
-  id-token: write
-  pages: write
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main docs repo
@@ -32,6 +28,18 @@ jobs:
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: ./build/site
+
+  # deploy-pages lists the run artifacts as soon as it starts. In the same job
+  # as the upload, the list can still be empty (actions/deploy-pages#451).
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      pages: write
+    steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
         with:
