@@ -44,10 +44,5 @@
 :sboms-community-short-name: SBOM Scanner
 :sboms-community-abbrev: KWSBOMS
 
-// Web Application Firewall.
-:waf-community-name: {community-project-name} Web Application Firewall
-:waf-community-short-name: Web Application Firewall
-:waf-community-abbrev: KWWAF
-
 // Pull in the build specific global attributes.
 include::{build-type}-specific/globals.adoc[]
