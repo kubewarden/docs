@@ -1,6 +1,6 @@
 include::partial$variables.adoc[]
 = {gp-name} use cases
-:revdate: 2026-11-20
+:revdate: 2026-11-24
 :page-revdate: {revdate}
 :description: Example use cases for {gp-name}. Protect the routes of a gateway with a web application firewall, tune the rules, and keep the protection in the hands of the platform team.
 :keywords: {gp-name}, documentation, use cases
@@ -34,7 +34,7 @@ not write rules.
 I keep the policy in the namespace of {gp-short-name}. The `Gateway` stays in
 its own namespace. The policy reports two conditions. `Accepted` shows that
 the policy is valid and that its target exists. `Programmed` shows that the
-WAF is active.
+rules compiled and that the controller sent them to the processor.
 
 See xref:quickstart.adoc[Quick start],
 xref:howtos/attach-a-policy.adoc#_protect_every_route_of_a_gateway[Protect every route of a gateway],
@@ -104,7 +104,9 @@ stricter rules. A public status page needs no WAF.
 I attach a second policy to the `HTTPRoute` of the admin portal, with a
 higher paranoia level. With `sectionName`, the policy can target one rule of
 the route, for example the rule for the `/admin` path. For the status page, I
-attach a policy with the mode `Off` to its route.
+attach a policy with the mode `Off` to its route. The traffic of the status
+page still goes through the processor, so the status page also fails when no
+processor replica is ready.
 
 The most specific policy wins, and it replaces the gateway policy in full. A
 route policy keeps no value of the gateway policy, so I write each value

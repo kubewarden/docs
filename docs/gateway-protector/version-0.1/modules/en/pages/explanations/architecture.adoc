@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {gp-name} architecture
-:revdate: 2026-11-23
+:revdate: 2026-11-24
 :page-revdate: {revdate}
 :description: How {gp-name} is built: the controller, the processor, and agentgateway, and the path of a policy and of a request through them.
 :doc-persona: ["kubewarden-all"]
@@ -63,6 +63,9 @@ Protection does not stop silently at any layer:
   configuration.
 * A conflict between two policies has one defined winner.
 
+If a component fails and you cannot fix it quickly, see
+xref:howtos/emergency-disable.adoc[Turn off the WAF in an emergency].
+
 [#_the_cluster_state_is_the_only_input]
 === The cluster state is the only input
 
@@ -91,12 +94,12 @@ rules.
 == The {gp-short-name} stack
 
 .Architecture
-[mermaid]
+[mermaid,subs="attributes"]
 ....
 %%{init: { "themeVariables": { "fontSize": "24px" } }}%%
 flowchart LR
-    accTitle: Gateway Protector architecture
-    accDescr: A diagram showing the components of Gateway Protector, the objects that each team writes, and the flow of data between them.
+    accTitle: {gp-short-name} architecture
+    accDescr: A diagram showing the components of {gp-short-name}, the objects that each team writes, and the flow of data between them.
     platform["Platform team"]
     app["Application team"]
     client["HTTP client"]
@@ -303,8 +306,10 @@ This section follows one policy from `kubectl apply` to an active WAF.
   for each route that the policy can apply to. agentgateway then sends the
   traffic of each protected route to the processor.
 
-. *The controller sets `Programmed=True`.* The WAF is active for the routes
-  that the policy covers.
+. *The controller sets `Programmed=True`.* The condition shows that the
+  rules compiled and that they are in the configuration that the controller
+  sent. It does not show that each processor replica applied this
+  configuration.
 
 [#_a_related_object_changes]
 === A related object changes
@@ -442,8 +447,8 @@ Gateway API.
 
 include::partial$status-conditions.adoc[]
 
-A policy with `Programmed=True` on a `Gateway` with no routes is active. It
-only has no traffic to inspect yet.
+A policy with `Programmed=True` on a `Gateway` with no routes has no error.
+It only has no traffic to inspect yet.
 
 The status does not record the rules that match, or the requests that the
 WAF blocks. This information is in the log of the processor. The status also
@@ -505,8 +510,9 @@ its memory also grows with the size of the bodies in progress. The field
 `requestBody.maxSize` of a policy sets the limit for one body.
 
 The controller builds the full configuration after each change. It compiles
-each set of rules only once and keeps the result, because one compilation of
-the CRS takes tens of milliseconds. A change that only updates the status of
+each set of rules only once and keeps the result. In a test, the first
+compilation of the CRS took 270 milliseconds, and each later compilation
+took about 40 milliseconds. A change that only updates the status of
 a `Gateway` or an `HTTPRoute` does not start a build.
 
 The controller writes one `AgentgatewayPolicy` for each protected route, so

@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Known limitations
-:revdate: 2026-11-23
+:revdate: 2026-11-24
 :page-revdate: {revdate}
 :description: Understand the known limitations of {gp-name}, and how they affect the protection of your routes.
 :keywords: {gp-name}, kubewarden, known limitations, waf, gateway api, agentgateway, owasp core rule set
@@ -43,6 +43,18 @@ Data loss prevention (DLP) is planned, but it is not in the first version.
 The WAF can block a response, but it cannot change one.
 
 * *Impact*: {gp-short-name} cannot hide sensitive data in a response.
+
+[#_no_export_of_telemetry]
+=== No export of telemetry
+
+{gp-short-name} does not send telemetry to an OpenTelemetry collector yet.
+The processor has no metrics. The chart has the `global.otel` values of the
+other Kubewarden charts, but they have no effect.
+
+* *Impact*: The log of the processor is the only record of the rules that
+  match and of the requests that the WAF blocks. The status of a policy does
+  not count them. See
+  xref:howtos/production-deployments.adoc#_telemetry[Telemetry].
 
 [#_one_crs_version_and_no_crs_plugins]
 === One CRS version in each release, and no CRS plugins

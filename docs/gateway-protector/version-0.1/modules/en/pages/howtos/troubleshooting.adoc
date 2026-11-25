@@ -1,17 +1,17 @@
 include::partial$variables.adoc[]
 
 = Troubleshooting
-:revdate: 2026-11-23
+:revdate: 2026-11-24
 :page-revdate: {revdate}
-:description: Find out why a {gp-name} policy does not protect a route, and what an unexpected response from a protected route means.
+:description: Find out why a {gp-name} policy does not protect a route, what an unexpected response from a protected route means, and why a processor pod restarts.
 :doc-persona: ["kubewarden-operator"]
 :doc-topic: ["troubleshooting"]
 :doc-type: ["howto"]
 :keywords: {gp-name}, kubewarden, troubleshooting, waf, wafpolicy, status conditions, logs
 
 This page helps you find why a {gp-name} policy does not protect a route,
-and why a protected route gives an unexpected response. Start with the
-status of the policy. It shows most problems.
+why a protected route gives an unexpected response, and why a processor pod
+restarts. Start with the status of the policy. It shows most problems.
 
 The commands on this page use the release name and the namespace of the
 xref:quickstart.adoc[quick start]: `gateway-protector` and
@@ -21,7 +21,8 @@ xref:quickstart.adoc[quick start]: `gateway-protector` and
 == Read the status of a policy
 
 Each policy reports two conditions. `Accepted` shows that the policy is
-valid. `Programmed` shows that the WAF uses the rules of the policy.
+valid. `Programmed` shows that the rules of the policy compiled, and that
+the controller sent them to the processor.
 
 . List the policies and their conditions.
 +
@@ -94,7 +95,8 @@ If the object does not exist, read the log of the controller.
 +
 [source,bash]
 ----
-kubectl logs -n gateway-protector-system deploy/gateway-protector-processor | grep 'Applied config from controller'
+kubectl logs -n gateway-protector-system -l app.kubernetes.io/component=processor \
+  --prefix --tail=-1 | grep 'Applied config from controller'
 ----
 +
 The controller writes `Processor rejected config` for each replica that
@@ -102,7 +104,8 @@ rejects a configuration:
 +
 [source,bash]
 ----
-kubectl logs -n gateway-protector-system deploy/gateway-protector-controller | grep 'Processor rejected config'
+kubectl logs -n gateway-protector-system -l app.kubernetes.io/component=controller \
+  --prefix --tail=-1 | grep 'Processor rejected config'
 ----
 
 . If the request still passes, set the chart value `processor.logLevel` to
@@ -125,8 +128,10 @@ agentgateway stopped the request.
 |A rule rejected the request or the response. The log line
 `WAF blocked traffic` of the processor gives the path and the ID of the
 rule.
-|If the request is valid, the cause is a false positive. Exclude the rule
-with `exclusions` in the policy of the route.
+|If the request is valid, the cause is a false positive. See
+xref:howtos/tune-false-positives.adoc[Tune false positives]. To stop the
+blocking at once, see
+xref:howtos/emergency-disable.adoc#_stop_the_blocking[Stop the blocking].
 
 |Status `413` with the header `x-waf-violation: 1`.
 |The request body is larger than the limit of the policy. This happens only
@@ -173,6 +178,51 @@ To find the processor pods that are not ready, run this command:
 ----
 kubectl get pods -n gateway-protector-system
 ----
+
+[#_a_processor_pod_restarts_again_and_again]
+== A processor pod restarts again and again
+
+A processor pod gets its configuration from the controller. Until it has a
+configuration, the pod is not ready, and its liveness probe also fails.
+Kubernetes then restarts the pod about once a minute. After each restart,
+Kubernetes waits longer before the next start.
+
+. Look for the events of the failed probes:
++
+[source,bash]
+----
+kubectl get events -n gateway-protector-system --field-selector reason=Unhealthy
+----
++
+The message of these events is
+`Liveness probe failed: service unhealthy (responded with "NOT_SERVING")`,
+or the same message for the readiness probe.
+
+. Make sure that a controller pod runs and is ready:
++
+[source,bash]
+----
+kubectl get pods -n gateway-protector-system \
+  -l app.kubernetes.io/component=controller
+----
++
+If no controller pod is ready, read the log and the events of the
+controller.
+
+. When a controller pod is ready, restart the processor:
++
+[source,bash]
+----
+kubectl rollout restart deployment gateway-protector-processor \
+  -n gateway-protector-system
+----
++
+A new pod gets its configuration at once. An old pod can wait some minutes
+for its next start.
+
+See
+xref:reference/known_limitations.adoc#_a_new_processor_replica_needs_the_controller[A
+new processor replica needs the controller].
 
 [#_read_the_logs]
 == Read the logs

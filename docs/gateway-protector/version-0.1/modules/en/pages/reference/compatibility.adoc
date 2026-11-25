@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Compatibility
 :description: Check which gateway, Gateway API version, and platforms {gp-name} works with.
-:revdate: 2026-11-23
+:revdate: 2026-11-24
 :page-revdate: {revdate}
 :doc-persona: ["kubewarden-operator"]
 :doc-topic: ["compatibility"]
@@ -46,8 +46,9 @@ targets `Gateway` and `HTTPRoute` objects of the API version
 two architectures.
 
 |*Kubernetes*
-|To be determined
-|
+|1.31 or later
+|The Helm chart does not install on an older version. The end-to-end tests
+of {gp-short-name} use Kubernetes 1.37.
 
 |*cert-manager*
 |Not required

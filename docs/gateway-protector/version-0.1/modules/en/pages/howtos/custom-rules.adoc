@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Write your own rules
-:revdate: 2026-11-20
+:revdate: 2026-11-24
 :page-revdate: {revdate}
 :description: Add your own SecLang rules to a {gp-name} policy with a WAFRuleSet, make sure that they work, and turn off CRS rules for one path.
 :doc-persona: ["kubewarden-operator"]
@@ -141,7 +141,8 @@ The response has the status `400` and the header `x-waf-violation: 1`.
 +
 [source,bash]
 ----
-kubectl logs -n gateway-protector-system deploy/gateway-protector-processor | grep '"rule_id":10011'
+kubectl logs -n gateway-protector-system -l app.kubernetes.io/component=processor \
+  --tail=-1 | grep '"rule_id":10011'
 ----
 +
 The line `WAF rule triggered` gives the `msg` of the rule in the field
@@ -208,8 +209,9 @@ paths that start with `/search` only.
 
 The `exclusions` of a policy remove CRS rules for every request that the
 policy covers. The xref:howtos/tune-false-positives.adoc[Tune false
-positives] page compares the ways to remove CRS rules. To remove CRS rules for one path only, use a rule with the
-action `ctl:ruleRemoveByTag` or `ctl:ruleRemoveById`.
+positives] page compares the ways to remove CRS rules. To remove CRS rules
+for one path only, use a rule with the action `ctl:ruleRemoveByTag` or
+`ctl:ruleRemoveById`.
 
 For example, the editor of a content management system sends HTML in its
 requests, and the CRS rules for cross-site scripting reject it:

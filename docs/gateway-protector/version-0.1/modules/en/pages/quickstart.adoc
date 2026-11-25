@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = {gp-name} Quick Start
 :description: Follow the steps to prepare a cluster, install {gp-name} with Helm, protect a sample application with a WAFPolicy, and block an attack.
-:revdate: 2026-11-20
+:revdate: 2026-11-24
 :page-revdate: {revdate}
 :doc-persona: ["kubewarden-operator"]
 :doc-topic: ["quick-start"]
@@ -303,7 +303,7 @@ Core Rule Set (CRS), from 1 to 4. A higher level enables more rules and
 causes more false positives. See
 xref:explanations/modes-and-scoring.adoc#_paranoia_levels[Paranoia levels].
 
-. Wait until the policy is active.
+. Wait until the policy reports the condition `Programmed`.
 +
 [source,bash]
 ----
@@ -324,9 +324,10 @@ httpbin-demo   Gateway       httpbin-gateway   Detection   True       True      
 ----
 +
 The condition `Accepted` shows that the policy is valid and that its target
-exists. The condition `Programmed` shows that the gateway sends the traffic
-to the processor and that the WAF is active. If a condition is not `True`,
-see xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the
+exists. The condition `Programmed` shows that the rules of the policy
+compiled, and that the controller sent them to the processor. If a
+condition is not `True`, see
+xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the
 status of a policy].
 
 . Send the attack again.
@@ -361,7 +362,8 @@ kubectl get agentgatewaypolicies -n httpbin
 [#_block_attacks]
 == Block attacks
 
-In `Blocking` mode, the WAF rejects the traffic that a rule matches.
+In `Blocking` mode, the WAF rejects a request or a response when its rules
+find an attack.
 
 . Change the mode of the policy.
 +
@@ -445,16 +447,22 @@ it.
 [#_next_steps]
 == Next steps
 
-A policy with the mode `Off` stops the inspection of its target. A policy
-can also target one `HTTPRoute`, and then it replaces the policy of the
-`Gateway` for this route. The
-xref:howtos/attach-a-policy.adoc[Attach a policy to a gateway or a route]
-page shows how. The xref:reference/crd.adoc[CRD API reference]
-describes each field of a policy, for example the exclusions of CRS rules
-and the limits for body inspection.
-
-Before you block the traffic of a real application, tune the policy. See
-xref:howtos/tune-false-positives.adoc[Tune false positives].
+* To give one route, one listener, or one rule a different policy, or to
+  turn the WAF off for one route, see
+  xref:howtos/attach-a-policy.adoc[Attach a policy to a gateway or a route].
+* Before you block the traffic of a real application, tune the policy. See
+  xref:howtos/tune-false-positives.adoc[Tune false positives].
+* To add rules of your own, see xref:howtos/custom-rules.adoc[Write your own
+  rules].
+* Before you install {gp-short-name} in a cluster with real traffic, read
+  xref:howtos/production-deployments.adoc[Configure {gp-name} for
+  production] and xref:reference/compatibility.adoc[Compatibility].
+* To prepare for an outage of the processor, or for a policy that blocks
+  valid traffic, read xref:howtos/emergency-disable.adoc[Turn off the WAF in
+  an emergency].
+* To learn each field of a policy, for example the exclusions of CRS rules
+  and the limits for body inspection, see the
+  xref:reference/crd.adoc[CRD API reference].
 
 [#_clean_up]
 == Clean up

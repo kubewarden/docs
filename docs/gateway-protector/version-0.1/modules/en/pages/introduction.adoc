@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = {gp-name}
-:revdate: 2026-11-23
+:revdate: 2026-11-24
 :page-revdate: {revdate}
 :description: Learn what {gp-name} is, how it protects the HTTP traffic of a Kubernetes gateway with a web application firewall, and how a policy selects traffic.
 :keywords: {gp-name}, kubewarden, cncf, kubernetes, gateway api, waf, web application firewall, coraza, owasp core rule set
@@ -49,7 +49,8 @@ spec:
 A policy has one of three modes:
 
 * `Detection`: The WAF logs each rule that matches and blocks nothing.
-* `Blocking`: The WAF rejects the traffic that a rule matches.
+* `Blocking`: The WAF rejects a request or a response when its rules find an
+  attack.
 * `Off`: The WAF is off for the target of the policy.
 
 The xref:explanations/modes-and-scoring.adoc[Modes and anomaly scoring] page
@@ -83,14 +84,21 @@ WAF with Kubernetes objects.
 === Use cases
 
 * Default protection. One policy on a `Gateway` gives every route of this
-  gateway the same protection.
+  gateway the same protection. See
+  xref:howtos/attach-a-policy.adoc#_protect_every_route_of_a_gateway[Protect
+  every route of a gateway].
 * Stricter rules for one application. A second policy on one `HTTPRoute`
-  replaces the gateway policy for this route.
+  replaces the gateway policy for this route. See
+  xref:howtos/attach-a-policy.adoc#_give_one_route_a_different_policy[Give
+  one route a different policy].
 * No WAF for one route. A policy with the mode `Off` stops the inspection
-  of one route, for example a public status page.
+  of one route, for example a public status page. See
+  xref:howtos/attach-a-policy.adoc#_turn_the_waf_off_for_one_route[Turn the
+  WAF off for one route].
 * Tuning. A policy can exclude a CRS rule that causes a false positive (a
   valid request that a rule rejects). A `WAFRuleSet` object adds your own
-  rules.
+  rules. See xref:howtos/tune-false-positives.adoc[Tune false positives] and
+  xref:howtos/custom-rules.adoc[Write your own rules].
 
 There is further documentation of use cases on the xref:use-cases.adoc[use
 cases] page.
@@ -130,7 +138,7 @@ A policy has exactly one target. Four target shapes are possible:
 
 The most specific policy wins. It replaces every broader policy for the
 traffic that it covers. {gp-short-name} never merges two policies. As a
-result, exactly one policy governs each route rule.
+result, exactly one policy governs each request.
 
 If no policy targets a `Gateway` or its routes, the WAF does not inspect the
 traffic.

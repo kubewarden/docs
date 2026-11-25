@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Configure {gp-name} for production
-:revdate: 2026-11-23
+:revdate: 2026-11-24
 :page-revdate: {revdate}
 :description: Configure the replicas, the scheduling, the memory, and the certificates of {gp-name}, so that the protected routes stay available in a production cluster.
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
@@ -22,11 +22,13 @@ replica is ready, agentgateway blocks the traffic of every protected route.
 The chart installs one processor replica, so one failure of this replica
 stops every protected route. See
 xref:explanations/architecture.adoc#_fail_closed_at_each_layer[Fail closed
-at each layer].
+at each layer]. If the processor fails and you cannot fix it quickly, see
+xref:howtos/emergency-disable.adoc[Turn off the WAF in an emergency].
 
 The controller is not in the path of the requests. A processor replica
 keeps its last good configuration when the controller is not available.
-But a new processor replica needs the controller to get its first configuration.
+But a new processor replica needs the controller to get its first
+configuration.
 
 [#_chart_values_layers]
 == The layers of the chart values
@@ -80,8 +82,8 @@ chart sets `global`, use `common`.
 
 The chart value `processor.replicas` defaults to `1`. With one replica, the
 protected routes stop each time that the processor pod stops, for example
-during a node drain. When a node fails, Kubernetes waits 5 minutes by default before
-it replaces the pods of that node.
+during a node drain. When a node fails, Kubernetes waits 5 minutes by
+default before it replaces the pods of that node.
 
 Run at least two processor replicas, on different nodes. If the cluster has
 nodes in three zones, run three replicas, one in each zone:
@@ -170,8 +172,8 @@ progress.
 The processor compiles one WAF engine for each different set of policy
 settings. The rules of the rule sets that a policy references are part of
 its settings. The target of a policy is not part of its settings. Policies
-with the same settings share one engine. All the policies with the mode `Off` share
-one small engine. See
+with the same settings share one engine. All the policies with the mode
+`Off` share one small engine. See
 xref:explanations/architecture.adoc#_policies_with_the_same_rules_share_one_engine[Policies
 with the same rules share one engine].
 
@@ -277,8 +279,8 @@ replica is available:
 The chart value `controller.replicas` defaults to `1`. The controller always
 uses leader election (the replicas select one leader to do the work), so you
 can run more than one replica. When the leader stops, another replica
-becomes the leader in about 15 seconds. With one replica, a node failure can stop the controller for 5
-minutes or more.
+becomes the leader in about 15 seconds. With one replica, a node failure can
+stop the controller for 5 minutes or more.
 
 Set `controller.replicas` to `2`:
 
@@ -376,8 +378,8 @@ not start.
 
 The connections between agentgateway, the processor, and the controller use
 mutual TLS. The chart creates a certificate authority (CA), valid for 10
-years, and four certificates, valid for one year. It keeps them in Secrets in the namespace
-of {gp-short-name}. You do not need cert-manager.
+years, and four certificates, valid for one year. It keeps them in Secrets
+in the namespace of {gp-short-name}. You do not need cert-manager.
 
 The controller leader examines the certificates every 12 hours. It renews a
 certificate 60 days before the certificate expires. The processor and the
@@ -399,8 +401,10 @@ render without the cluster replaces the certificates].
 == Telemetry
 
 {gp-short-name} does not export telemetry yet. The chart accepts the
-`global.otel` values, but they have no effect. To follow the blocked requests, read the log of the processor. See
-xref:howtos/tune-false-positives.adoc#_move_to_blocking_mode[Move to
+`global.otel` values, but they have no effect. See
+xref:reference/known_limitations.adoc#_no_export_of_telemetry[No export of
+telemetry]. To follow the blocked requests, read the log of the processor.
+See xref:howtos/tune-false-positives.adoc#_move_to_blocking_mode[Move to
 Blocking mode].
 
 [#_use_a_private_registry]

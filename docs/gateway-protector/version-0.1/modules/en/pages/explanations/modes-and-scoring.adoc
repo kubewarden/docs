@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Modes and anomaly scoring
-:revdate: 2026-11-23
+:revdate: 2026-11-24
 :page-revdate: {revdate}
 :description: Learn how the OWASP Core Rule Set decides that a request is an attack in {gp-name}, and what the modes, the paranoia level, and the anomaly thresholds of a policy change.
 :doc-persona: ["kubewarden-all"]
@@ -51,6 +51,10 @@ broader policies for its target, so it can turn the WAF off for one route of
 a protected gateway. See
 xref:explanations/policy-attachment.adoc#_one_policy_governs_a_rule[One
 policy governs a request].
+
+agentgateway still sends the traffic of a route with the mode `Off` to the
+processor. As a result, this route also fails when no processor replica is
+ready.
 
 [#_anomaly_scoring]
 == Anomaly scoring
@@ -165,8 +169,8 @@ bodies are inspected only in part].
 [#_what_you_see]
 == What you see
 
-* A blocked request gets the status `403`, an empty body, and the header
-  `x-waf-violation: 1`.
+* A blocked request gets the status `403` by default, an empty body, and
+  the header `x-waf-violation: 1`.
 * The line `WAF blocked traffic` gives the rule that blocked the request.
   For a request that the score blocks, this rule is 949110, not the rules
   that found the attack.

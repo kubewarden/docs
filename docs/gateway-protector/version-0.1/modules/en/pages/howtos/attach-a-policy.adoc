@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Attach a policy to a gateway or a route
-:revdate: 2026-11-23
+:revdate: 2026-11-24
 :page-revdate: {revdate}
 :description: Attach a {gp-name} WAFPolicy to a Gateway, a listener, an HTTPRoute, or one rule of an HTTPRoute, and turn the WAF off for one route.
 :doc-persona: ["kubewarden-operator"]
@@ -276,6 +276,11 @@ boolean value.
 
 To turn the WAF off for one rule only, put the name of the rule in
 `sectionName`.
+
+The traffic of the route still goes through the processor. When no processor
+replica is ready, agentgateway also blocks this route. To take the WAF out
+of the path of every route in an emergency, see
+xref:howtos/emergency-disable.adoc[Turn off the WAF in an emergency].
 
 [#_make_sure_that_the_correct_policy_governs_a_route]
 == Make sure that the correct policy governs a route
