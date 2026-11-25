@@ -333,6 +333,39 @@ Do not use `subs="+attributes"`. The normal substitutions escape `>`, and
 this breaks mermaid arrows. An attribute value that contains `"` or `]`
 breaks the diagram syntax.
 
+#### Labels
+
+- Use `<br/>` for a line break in a label. A line break inside a quoted
+  label also works in a flowchart. `\n` does not work in a state diagram.
+- Mermaid wraps the label of an edge at a fixed width of 200 pixels. It
+  breaks a word that is wider than this in two. The site turns off the
+  automatic wrap of node labels, with `flowchart.wrappingWidth` in
+  `mermaid-init.js`.
+- The directive
+  `%%{init: { "themeVariables": { "fontSize": "24px" } }}%%` on the first
+  line of a flowchart makes the text larger when the browser scales a wide
+  diagram down. Do not use it when an edge label has a long word, such as
+  `WorkloadPolicyProposal`. With the larger font, Mermaid breaks the word.
+
+#### Mermaid version
+
+`mermaid-init.js` pins the Mermaid version in the CDN URL. Do not bump it by
+hand. Renovate updates it with the custom manager in `renovate.json`, in a
+pull request of its own.
+
+A new Mermaid version can change the layout and the labels of every diagram.
+Before you merge the update, build the site and look at each different
+diagram in the light and the dark theme. Make sure that:
+
+- Each diagram renders, and no diagram shows a syntax error.
+- No label shows `\n` or `<br/>` as text.
+- No word is broken in two.
+- The settings in `mermaid.initialize()` still exist. Mermaid 11 and 12
+  renamed some settings.
+
+Mermaid 12 needs a browser that supports ES2024, for example Safari 17.4 or
+later.
+
 ### Spell checking
 
 `typos` checks `.adoc` files in `docs/` and `shared/`. Configuration is in `typos.toml`. Add intentional exceptions to `[default.extend-words]` or `[default.extend-identifiers]`, or use an inline `# adn:ignore` comment to suppress a specific line.

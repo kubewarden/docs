@@ -65,7 +65,6 @@ into an annotation of the job. The workers read that copy. A change to the
 .Architecture
 [mermaid,subs="attributes"]
 ....
-%%{init: { "themeVariables": { "fontSize": "24px" } }}%%
 graph LR
     accTitle: {sboms-short-name} architecture
     accDescr: A diagram showing the components of {sboms-short-name} and the flow of data between them.
