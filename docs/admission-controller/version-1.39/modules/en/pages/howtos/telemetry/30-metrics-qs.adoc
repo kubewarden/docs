@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Metrics quickstart
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :description: Configure metrics reporting on the Policy Server using Prometheus and {admc-name} enabled through Helm charts for data collection.
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
@@ -39,13 +39,13 @@ https://github.com/prometheus-operator/prometheus-operator/blob/master/Documenta
 Monitors], to define which services Prometheus monitors.
 
 In your case, you are adding a ServiceMonitor targeting the `kubewarden`
-namespace for services that match labels `app=kubewarden-policy-server-default`
-and `app.kubernetes.io/name: kubewarden-controller`. This configures the
+namespace for services that match labels `kubewarden/policy-server: default`
+and `app.kubernetes.io/component: controller`. This configures the
 Prometheus Operator to inspect which Kubernetes Endpoints belong to services
 matching these conditions.
 
-You can create the two ServiceMonitors named `kubewarden-controller` and
-`kubewarden-policy-server` for use by the default Prometheus instance installed
+You can create the two ServiceMonitors named `kubewarden` and
+`kubewarden-controller` for use by the default Prometheus instance installed
 by the Helm chart.
 
 To do that, you should create the following values file:
@@ -58,7 +58,7 @@ prometheus:
     - name: kubewarden
       selector:
         matchLabels:
-          app: kubewarden-policy-server-default
+          kubewarden/policy-server: default
       namespaceSelector:
         matchNames:
           - kubewarden
@@ -68,7 +68,7 @@ prometheus:
     - name: kubewarden-controller
       selector:
         matchLabels:
-          app.kubernetes.io/name: kubewarden-controller
+          app.kubernetes.io/component: controller
       namespaceSelector:
         matchNames:
           - kubewarden
