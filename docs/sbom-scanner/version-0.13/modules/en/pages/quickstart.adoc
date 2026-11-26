@@ -45,6 +45,7 @@ sbomscanner           sbomscanner-worker-d9d68c5c-tlpgm             1/1     Runn
 
 The {sboms-short-name} deployment is running. You can scan images and generate
 reports.
+
 == Run a Scan
 
 This section explains how to create a registry source and trigger an
@@ -75,7 +76,7 @@ spec:
 kubectl apply -f registry.yaml
 ----
 
-=== Prepare a `scan-job.yaml`
+=== Prepare a `scanjob.yaml` file
 
 The {scanjob-cr} CR tells {sboms-short-name} which registry to scan.
 
