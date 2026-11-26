@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Audit Scanner
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :description: Verify the compliance state of your clusters using the Audit Scanner feature within {admc-name}, to ensure their proper configuration.
 :doc-persona: ["kubewarden-operator", "kubewarden-distributor", "kubewarden-integrator"]
@@ -79,7 +79,7 @@ To store the results of policy reports, you need to have the PolicyReport
 Custom Resource Definitions (CRDs) available. If the necessary
 PolicyReport CRDs are already in the cluster, you can't install them
 using the `admission-controller` chart. In that case, you can disable the
-installation of OpenReport CRDs by setting `installOpenReportCRDs` to
+installation of OpenReport CRDs by setting `installOpenReportsCRDs` to
 `false` in the chart (or `installPolicyReportCRDs` to `false` if using the
 deprecated PolicyReports).
 This means that the Kubewarden stack won't manage those CRDs, but the
@@ -95,8 +95,8 @@ xref:quick-start.adoc[Quick Start guide]
 By default, the Audit Scanner implementation is as a
 https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs[Cronjob]
 triggered every 60 minutes. You can adjust this and other audit
-scanner settings by changing the admission-controller chart
-https://github.com/kubewarden/helm-charts/blob/main/charts/admission-controller/values.yaml[values.yaml].
+scanner settings by changing the values of the `admission-controller` chart.
+To list them, run `helm show values {admc-chart-location}`.
 
 See xref:explanations/audit-scanner/audit-scanner.adoc[here] more information about the Audit
 Scanner.
@@ -106,7 +106,7 @@ Scanner.
 The `admission-controller` chart comes with a subchart of the
 https://kyverno.github.io/policy-reporter[Policy Reporter]. It's disabled by
 default, and enabled by setting `auditScanner.policyReporter=true`. The Policy
-Reporter subchart values are under the `.Values.policyReporter` key.
+Reporter subchart values are under the `.Values.policy-reporter` key.
 
 This installs only part of the Policy Reporter upstream chart, the UI, which
 provides a visualization of the PolicyReports and ClusterPolicyReports in a
@@ -114,14 +114,16 @@ cluster. See xref:explanations/audit-scanner/audit-scanner.adoc[Audit Scanner]
 for more information about the Policy Reporter UI.
 
 By default, the Policy Reporter UI is only exposed as a ClusterIP service with
-name `admission-controller-ui` in the installation namespace of
-
-`admission-controller` chart was installed.
+name `policy-reporter-ui` in the namespace where the `admission-controller`
+chart was installed.
 
 ==== Ingress
 
-Users can provide their own Ingress configuration, or enable an Ingress via the subchart configuration 
-https://github.com/kyverno/policy-reporter/blob/policy-reporter-2.19.4/charts/policy-reporter/charts/ui/values.yaml#L172-L189[here].
+Users can provide their own Ingress configuration, or enable an Ingress with
+the `ui.ingress` values of the Policy Reporter subchart. The chart includes
+Policy Reporter 3.10.0. For the available values, refer to the
+https://github.com/kyverno/policy-reporter/blob/policy-reporter-3.10.0/charts/policy-reporter/values.yaml#L1303[Policy
+Reporter 3.10.0 `values.yaml`].
 
 See this example of an Ingress configuration via the subchart:
 
@@ -147,7 +149,7 @@ For a quick look or debugging, one can setup a port-forwarding to the service wi
 
 [subs="+attributes",console]
 ----
-kubectl port-forward service/admission-controller-ui 8082:8080 -n kubewarden
+kubectl port-forward service/policy-reporter-ui 8082:8080 -n kubewarden
 ----
 
 Which makes the Policy Reporter UI available at `\http://localhost:8082`.
