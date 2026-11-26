@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Security hardening
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-09-10
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :sidebar_label: Security hardening
 :sidebar_position: 50
@@ -118,7 +118,9 @@ the `kubewarden-defaults` Helm chart), and custom PolicyServers.
 
 Cluster operators need to configure each PolicyServer's
 `spec.namespacedPoliciesCapabilities` by setting it to `[]` to deny all, or
-provide an explicit allowlist.
+provide an explicit allowlist. An empty list needs an extra step after you
+create the PolicyServer. Refer to
+xref:/howtos/policy-servers/06-namespaced-policies-capabilities.adoc#_example_deny_all_host_capabilities[Example: deny all host capabilities].
 
 For a full walkthrough, including an example on secure self-service Namespaces
 and policies useful for teams, see
