@@ -82,6 +82,10 @@ spec:
 EOF
 ----
 
+This configuration scans only the workloads in namespaces that have the
+`sbomscanner.kubewarden.io/workloadscan: "true"` label. To add the label to a
+namespace, refer to <<_enabling_scanning_for_a_namespace>>.
+
 === Fields
 
 [cols="1,3,1",options="header"]
