@@ -83,7 +83,8 @@ EOF
 
 This configuration scans only the workloads in namespaces that have the
 `sbomscanner.kubewarden.io/workloadscan: "true"` label. To add the label to a
-namespace, refer to <<_enabling_scanning_for_a_namespace>>.
+namespace, refer to
+xref:#_enabling_scanning_for_a_namespace[Enabling scanning for a namespace].
 
 === Fields
 
@@ -192,6 +193,7 @@ controller:
 Use this setting when explicit `Registry` configurations handle scanning. It is
 also useful when additional controllers use too many resources.
 
+[#_enabling_scanning_for_a_namespace]
 == Enabling scanning for a namespace
 
 The example configuration above uses a namespace selector that matches the label `sbomscanner.kubewarden.io/workloadscan: "true"`. Scanning is not active in any namespace until you apply this label.

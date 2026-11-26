@@ -45,9 +45,10 @@ spec:
 EOF
 ----
 
-To select nodes, change the scan interval or exclude paths, refer to
-<<_configuration,Configuration>>.
+For how to select nodes, change the scan interval or exclude paths, refer to
+xref:#_configuration[Configuration].
 
+[#_configuration]
 == Configuration
 
 `NodeScanConfiguration` is a cluster-scoped singleton resource named
