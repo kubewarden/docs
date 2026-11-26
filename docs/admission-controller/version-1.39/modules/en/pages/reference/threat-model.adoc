@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Threat Model
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-09-10
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :description: Read and understand the Admission Control Threat Model to devise your own circumstance-specific threat model, ensuring secure defaults within Kubernetes.
 :doc-persona: ["kubewarden-all"]
@@ -333,7 +333,9 @@ Cluster operators should apply one or more of the following mitigations:
   rights to `AdmissionPolicy` and `AdmissionPolicyGroup` resources accordingly.
 * Deploy a dedicated PolicyServer for namespaced policies with a restricted
   `spec.namespacedPoliciesCapabilities` field (for example, set it to `[]` to
-  deny all host capabilities).
+  deny all host capabilities). An empty list needs an extra step after you
+  create the PolicyServer. Refer to
+  xref:/howtos/policy-servers/06-namespaced-policies-capabilities.adoc#_example_deny_all_host_capabilities[Example: deny all host capabilities].
 * Restrict the resources that namespaced policies can target. Use the
   `namespacedPoliciesAllowedResources` Helm value. See
   xref:/howtos/security-hardening/security-hardening.adoc#_namespaced_policy_allowed_resources[Namespaced

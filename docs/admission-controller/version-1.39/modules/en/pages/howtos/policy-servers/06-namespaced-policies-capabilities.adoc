@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Controlling host capabilities for namespaced policies
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :sidebar_label: Namespaced policy host capabilities
 :sidebar_position: 60
@@ -115,6 +115,31 @@ spec:
 Any namespaced policy scheduled on this PolicyServer will have all host
 capability calls blocked.
 
+[IMPORTANT]
+====
+The controller can remove an empty list. When it reconciles a new
+PolicyServer for the first time, it removes `namespacedPoliciesCapabilities: []`.
+Without the field, the PolicyServer allows all host capabilities. This is a
+known issue: link:https://github.com/kubewarden/adm-controller/issues/2180[kubewarden/adm-controller#2180].
+
+After you create the PolicyServer, set the empty list again:
+
+[subs="+attributes",console]
+----
+kubectl patch policyserver for-namespaced-policies --type=merge \
+  -p '{"spec":{"namespacedPoliciesCapabilities":[]}}'
+----
+
+Make sure that the field is set. This command must print `[]`. If it prints
+nothing, run the `kubectl patch` command again:
+
+[subs="+attributes",console]
+----
+kubectl get policyserver for-namespaced-policies \
+  -o jsonpath='{.spec.namespacedPoliciesCapabilities}'
+----
+====
+
 === Example: allow only OCI signature verification
 
 [subs="+attributes",yaml]
@@ -154,19 +179,48 @@ The `admission-controller` Helm chart exposes
 (backwards-compatible default).
 
 To lock down the `default` PolicyServer so namespaced policies have no host
-capability access:
+capability access, set the Helm value to an empty list, and then set the empty
+list on the PolicyServer:
 
 [subs="+attributes",console]
 ----
-helm upgrade --wait -n kubewarden admission-controller kubewarden/admission-controller \
-  --set 'policyServer.namespacedPoliciesCapabilities={}'
+helm upgrade --wait -n {admc-namespace} {admc-release} {admc-chart-location} \
+  --reuse-values \
+  --set-json 'policyServer.namespacedPoliciesCapabilities=[]'
+
+kubectl patch policyserver default --type=merge \
+  -p '{"spec":{"namespacedPoliciesCapabilities":[]}}'
 ----
+
+The chart cannot set an empty list. With an empty value, the chart does not
+set the field, and the PolicyServer allows all host capabilities. The
+`kubectl patch` command sets the empty list. Do not use
+`--set 'policyServer.namespacedPoliciesCapabilities={}'`: it sets a list with
+one empty string, which the values schema of the chart rejects, so
+`helm upgrade` fails. For the known issue, refer to
+<<_example_deny_all_host_capabilities>>.
+
+Make sure that the field is set. This command must print `[]`. If it prints
+nothing, run the `kubectl patch` command again:
+
+[subs="+attributes",console]
+----
+kubectl get policyserver default \
+  -o jsonpath='{.spec.namespacedPoliciesCapabilities}'
+----
+
+Keep `policyServer.namespacedPoliciesCapabilities` set to `[]` in all later
+Helm upgrades, for example in your values file. If a later upgrade does not
+set it, the chart can set its default, `["*"]`, on the `default` PolicyServer
+again, and all host capabilities are allowed. After each upgrade, run the
+check command again.
 
 To allow only OCI and DNS capabilities:
 
 [subs="+attributes",console]
 ----
-helm upgrade --wait -n kubewarden admission-controller kubewarden/admission-controller \
+helm upgrade --wait -n {admc-namespace} {admc-release} {admc-chart-location} \
+  --reuse-values \
   --set 'policyServer.namespacedPoliciesCapabilities={oci/*,net/v1/dns_lookup_host}'
 ----
 
@@ -266,10 +320,28 @@ apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
 metadata:
   name: for-namespaced-policies
-  namespace: kubewarden
 spec:
   image: {default-policy-server-image-tag}
+  replicas: 1
   namespacedPoliciesCapabilities: []
+----
+
+After you create the PolicyServer, set the empty list again, as described in
+<<_example_deny_all_host_capabilities>>:
+
+[subs="+attributes",console]
+----
+kubectl patch policyserver for-namespaced-policies --type=merge \
+  -p '{"spec":{"namespacedPoliciesCapabilities":[]}}'
+----
+
+Make sure that the field is set. This command must print `[]`. If it prints
+nothing, run the `kubectl patch` command again:
+
+[subs="+attributes",console]
+----
+kubectl get policyserver for-namespaced-policies \
+  -o jsonpath='{.spec.namespacedPoliciesCapabilities}'
 ----
 
 === 2. Deploy the `ns-policyserver-mapper` policy
@@ -300,7 +372,7 @@ Wait for the policy to become active:
 
 [subs="+attributes",console]
 ----
-kubectl wait --for=condition=PolicyActive clusteradmissionpolicy/ns-to-policyserver
+kubectl wait --for=condition=PolicyActive clusteradmissionpolicy/ns-to-policyserver --timeout=5m
 ----
 
 === 3. Label team Namespaces
@@ -324,9 +396,25 @@ exercising host capabilities:
 
 [subs="+attributes",console]
 ----
-helm upgrade --wait -n kubewarden admission-controller kubewarden/admission-controller \
-  --set 'policyServer.namespacedPoliciesCapabilities={}'
+helm upgrade --wait -n {admc-namespace} {admc-release} {admc-chart-location} \
+  --reuse-values \
+  --set-json 'policyServer.namespacedPoliciesCapabilities=[]'
+
+kubectl patch policyserver default --type=merge \
+  -p '{"spec":{"namespacedPoliciesCapabilities":[]}}'
 ----
+
+Make sure that the field is set. This command must print `[]`. If it prints
+nothing, run the `kubectl patch` command again:
+
+[subs="+attributes",console]
+----
+kubectl get policyserver default \
+  -o jsonpath='{.spec.namespacedPoliciesCapabilities}'
+----
+
+Keep the value in all later Helm upgrades, as described in
+<<_configuring_default_policyserver_via_helm>>.
 
 == Upgrade considerations
 
