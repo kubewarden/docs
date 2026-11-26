@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Collecting logs for debugging
-:revdate: 2026-10-13
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :description: Collect {sboms-name} logs and support bundles for troubleshooting.
 
@@ -23,6 +23,7 @@ The `sbomscanner-debug.sh` script additionally requires:
 helm repo add kubewarden https://charts.kubewarden.io
 helm repo update
 helm upgrade --install sbomscanner kubewarden/sbomscanner \
+  --reuse-values \
   --set=controller.logLevel=debug \
   --set=storage.logLevel=debug \
   --set=worker.logLevel=debug \
@@ -86,7 +87,7 @@ configured. For example image pull secrets, registry auth, or any value passed
 via `--set`. Review the bundle contents before sharing.
 ====
 
-Using https://github.com/kubewarden/sbomscanner/blob/main/hack/sbomscanner-debug.sh[the script found in the sbomscanner repository]:
+Using https://github.com/kubewarden/sbomscanner/blob/v0.13.0/hack/sbomscanner-debug.sh[the script found in the sbomscanner repository]:
 
 [source,bash]
 ----

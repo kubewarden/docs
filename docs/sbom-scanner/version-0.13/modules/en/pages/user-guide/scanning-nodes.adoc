@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Scanning Nodes
-:revdate: 2026-09-01
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :description: Configure node scanning and understand node vulnerability reports.
 
@@ -30,13 +30,23 @@ Node scanning is inactive until you create a `NodeScanConfiguration`
 resource. Without it, no scans run and manually created `NodeScanJob`
 resources fail with the reason `NodeScanConfigurationMissing`.
 
-To enable node scanning, apply the sample configuration from the
-https://github.com/kubewarden/sbomscanner/blob/main/examples/nodescanconfiguration.yaml[examples folder]:
+To enable node scanning, create a `NodeScanConfiguration` resource. This
+example scans all the nodes in the cluster once a day:
 
 [source,bash]
 ----
-kubectl apply -f https://raw.githubusercontent.com/kubewarden/sbomscanner/main/examples/nodescanconfiguration.yaml
+kubectl apply -f - <<EOF
+apiVersion: sbomscanner.kubewarden.io/v1alpha1
+kind: NodeScanConfiguration
+metadata:
+  name: default
+spec:
+  scanInterval: 24h
+EOF
 ----
+
+To select nodes, change the scan interval or exclude paths, refer to
+<<_configuration,Configuration>>.
 
 == Configuration
 

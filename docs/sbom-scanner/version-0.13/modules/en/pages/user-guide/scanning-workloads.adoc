@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Scanning Workloads
-:revdate: 2026-09-11
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :description: Configure workload scanning and understand workload vulnerability reports.
 
@@ -51,8 +51,7 @@ walked up; every other owner kind is used as-is.
 
 When you install {sboms-name} with the Helm chart, WorkloadScan reconcilers are
 enabled by default. Workload scanning becomes active after you create a
-`WorkloadScanConfiguration` resource. A sample configuration is in the
-https://github.com/kubewarden/sbomscanner/blob/main/examples/workloadscanconfiguration.yaml[examples folder].
+`WorkloadScanConfiguration` resource.
 
 == Configuration
 
@@ -62,13 +61,7 @@ To activate workload scanning after installation, create the configuration:
 
 [source,bash]
 ----
-kubectl apply -f https://raw.githubusercontent.com/kubewarden/sbomscanner/main/examples/workloadscanconfiguration.yaml
-----
-
-Or create your own configuration:
-
-[source,yaml]
-----
+kubectl apply -f - <<EOF
 apiVersion: sbomscanner.kubewarden.io/v1alpha1
 kind: WorkloadScanConfiguration
 metadata:
@@ -85,6 +78,7 @@ spec:
       os: linux
     - arch: arm64
       os: linux
+EOF
 ----
 
 === Fields
