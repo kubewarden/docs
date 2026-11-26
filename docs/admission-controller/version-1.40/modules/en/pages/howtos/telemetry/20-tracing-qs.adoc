@@ -87,8 +87,8 @@ EOF
 
 [NOTE]
 ====
-The Jaeger Operator webhook can need some seconds to become ready. If the
-command fails with `failed calling webhook "mjaeger.kb.io"`, wait some
+The Jaeger Operator webhook can take a few seconds to become ready. If the
+command fails with `failed calling webhook "mjaeger.kb.io"`, wait a few
 seconds, and then run the command again.
 ====
 
