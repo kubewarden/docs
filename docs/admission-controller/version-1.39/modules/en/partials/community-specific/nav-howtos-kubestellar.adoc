@@ -1,0 +1,9 @@
+// Community entry for the KubeStellar Console how-to in the Installation
+// how-tos of nav.adoc.
+//
+// nav.adoc includes only the lines between the tags. vlp.js (from
+// docs-common) prepends an attribute line to every included file. In
+// a list, that line would become part of the list item text.
+// tag::nav[]
+*** xref:community-specific/howtos/kubestellar-console.adoc[KubeStellar Console guided installation]
+// end::nav[]
