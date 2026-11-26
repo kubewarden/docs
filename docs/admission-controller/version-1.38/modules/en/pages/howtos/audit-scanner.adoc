@@ -114,8 +114,8 @@ cluster. See xref:explanations/audit-scanner/audit-scanner.adoc[Audit Scanner]
 for more information about the Policy Reporter UI.
 
 By default, the Policy Reporter UI is only exposed as a ClusterIP service with
-name `policy-reporter-ui` in the namespace where the `admission-controller`
-chart was installed.
+name `policy-reporter-ui` in the namespace of the `admission-controller`
+chart.
 
 ==== Ingress
 
