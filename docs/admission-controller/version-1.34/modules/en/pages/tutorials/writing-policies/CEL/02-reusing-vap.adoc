@@ -36,7 +36,7 @@ It's bound with a `ValidatingAdmissionPolicyBinding`. So, it only affects
 Namespaces that have a label `environment` set to `test`.
 
 ../vap-policy-example.yaml
-[,yaml]
+[source,yaml]
 ----
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
@@ -99,7 +99,7 @@ Here, we've an equivalent {short-project-name} policy:
 ### {short-project-name}'s `cel-policy`
 
 ../cel-policy-example.yaml
-[,yaml]
+[source,yaml]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
@@ -209,14 +209,14 @@ protection].
 
 As usual, we can deploy our policy by instantiating its manifest:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl apply -f ./cel-policy-example.yaml
 ----
 
 And then test it by instantiating a deployment:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: v1

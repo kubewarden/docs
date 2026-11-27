@@ -16,7 +16,7 @@ The policy also validates certain labels using a regular expression provided by 
 
 To summarize, the policy settings should look like this:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 # List of labels that cannot be used
 denied_labels:
@@ -31,7 +31,7 @@ constrained_labels:
 
 The policy rejects the creation of this Pod:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: v1
 kind: Pod
@@ -47,7 +47,7 @@ spec:
 
 It also rejects the creation of this Pod:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: v1
 kind: Pod
@@ -63,7 +63,7 @@ spec:
 
 You can use the policy's settings to force using a label specification, regardless of content:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 constrained_labels:
   mandatory-label: ".*" # <- this label must be present, we don't care about its value
@@ -78,7 +78,7 @@ and follow GitHub's wizard.
 
 Clone the repository locally and set the `module` directive in the `go.mod` file to look like:
 
-[,go]
+[source,go]
 ----
 module <path to your repository>
 ----
@@ -101,7 +101,7 @@ After cloning the `go-policy-template`, running these commands checks you have t
 [%collapsible]
 ======
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 make test
 docker run \
@@ -150,7 +150,7 @@ ok      github.com/kubewarden/go-policy-template        0.004s
 
 and
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 make e2e-tests
 bats e2e.bats

@@ -27,7 +27,7 @@ Please refer to the xref:tutorials/writing-policies/metadata.adoc[metadata] spec
 
 Let's write a policy that accepts a request in the following format:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "request": {
@@ -50,7 +50,7 @@ First, we define the types that represent the payload of the request.
 We will declare a custom `RawValidationRequest` type that contains the `Request` and the `Settings`,
 instead of using the `ValidationRequest` type that is provided by the SDK:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 /// RawValidationRequest represents the request that is sent to the validate function by the Policy Server.
 #[derive(Deserialize)]
@@ -70,7 +70,7 @@ pub(crate) struct Request {
 
 Then we need to define the `Settings` type and implement the `Validatable` trait:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 /// Settings represents the settings of the policy.
 #[derive(Serialize, Deserialize, Default, Debug)]
@@ -104,7 +104,7 @@ impl kubewarden::settings::Validatable for Settings {
 
 Finally, we define the `validate` function:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 fn validate(payload: &[u8]) -> CallResult {
     let validation_request: RawValidationRequest =
@@ -148,7 +148,7 @@ In this case, the settings will contain the `defaultUser`, `defaultAction` and `
 
 We need to update the `Settings` type with the new fields:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 /// Settings represents the settings of the policy.
 #[derive(Serialize, Deserialize, Default, Debug)]
@@ -197,7 +197,7 @@ impl kubewarden::settings::Validatable for Settings {
 
 and the `validate` function to introduce the mutation:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 fn validate(payload: &[u8]) -> CallResult {
     let validation_request: RawValidationRequest =

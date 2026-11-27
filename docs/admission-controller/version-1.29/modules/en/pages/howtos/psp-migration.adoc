@@ -43,7 +43,7 @@ The YAML definition of this PSP is:
 [%collapsible]
 ======
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
@@ -88,7 +88,7 @@ You can deploy a policy as shown below:
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1
@@ -123,7 +123,7 @@ the parent container.
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: v1
@@ -152,7 +152,7 @@ link:https://github.com/kubewarden/user-group-psp-policy[user-group-psp policy].
 .`kubectl` command to use user-group-psp-policy
 [%collapsible]
 ======
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1
@@ -195,7 +195,7 @@ So, now users cannot deploy pods running as root:
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: v1
@@ -219,7 +219,7 @@ Error from server: error when creating "STDIN": admission webhook "clusterwide-p
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -247,7 +247,7 @@ despite it not being defined by us.
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -281,7 +281,7 @@ not need any settings. Once running, it will block privileged pods.
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1
@@ -313,7 +313,7 @@ To test the policy, we can try running a pod with privileged configuration enabl
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: v1
@@ -349,7 +349,7 @@ IP.
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1
@@ -388,7 +388,7 @@ The pod should not be able to share host namespaces:
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: v1
@@ -411,7 +411,7 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-hostnamespaces.kubewarden.admission" denied the request: Pod has IPC enabled, but this is not allowed
 ----
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: v1
@@ -433,7 +433,7 @@ EOF
 Error from server: error when creating "STDIN": admission webhook "clusterwide-psp-hostnamespaces.kubewarden.admission" denied the request: Pod has host network enabled, but this is not allowed
 ----
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: v1
@@ -464,7 +464,7 @@ If other ports are configured in `hostPorts` then an error should happen.
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: v1
@@ -617,7 +617,7 @@ The following YAML could be used.
 [%collapsible]
 ======
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
@@ -671,7 +671,7 @@ spec:
 
 Kubewarden policies can be applied directly to a cluster using the following command:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ ./psp-to-kubewarden | kubectl apply -f -
 Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
@@ -693,7 +693,7 @@ To store the generated policies and view them:
 .`./psp-to-kubewarden > policies.yaml && cat policies.yaml`
 [%collapsible]
 ======
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ ./psp-to-kubewarden > policies.yaml
 $ cat policies.yaml

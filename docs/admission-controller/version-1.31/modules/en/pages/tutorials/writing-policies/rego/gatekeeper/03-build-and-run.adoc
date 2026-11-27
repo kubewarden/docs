@@ -27,7 +27,7 @@ The structure of your project is:
 
 Build the policy by running the `opa` command:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ opa build -t wasm -e policy/violation policy.rego
 ----
@@ -42,7 +42,7 @@ rule inside the `policy` package.
 The earlier command generates a `bundle.tar.gz` file.
 You can extract the Wasm module from it:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ tar -xf bundle.tar.gz /policy.wasm
 ----
@@ -77,7 +77,7 @@ This is your resource created in the namespace called `other`, it's accepted, as
 
 Now you can run a request that is rejected by the policy:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl run -e gatekeeper --request-path data/default-ns.json policy.wasm | jq
 {

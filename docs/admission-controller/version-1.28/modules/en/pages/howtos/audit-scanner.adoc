@@ -31,7 +31,7 @@ higher.
 . Install the `kubewarden-crds` Helm chart. The chart install the needed
 `PolicyReport` CRDs by default.
 +
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm install kubewarden-crds kubewarden/kubewarden-crds
 ----
@@ -54,7 +54,7 @@ repository]
 
 . Install the `kubewarden-controller` Helm chart.
 +
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm install kubewarden-controller kubewarden/kubewarden-controller
 ----
@@ -101,7 +101,7 @@ https://github.com/kyverno/policy-reporter/blob/policy-reporter-2.19.4/charts/po
 
 See this example of an Ingress configuration via the subchart:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 auditScanner:
   policyReporter: true
@@ -121,7 +121,7 @@ policy-reporter: # subchart values settings
 
 For a quick look or debugging, one can setup a port-forwarding to the service with:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl port-forward service/kubewarden-controller-ui 8082:8080 -n kubewarden
 ----
@@ -132,7 +132,7 @@ Which will make the Policy Reporter UI available at `\http://localhost:8082`.
 
 The audit scanner is implemented as a Cronjob that runs every 60 minutes by default. It's possible to trigger a manual run by running the following command:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 kubectl create job \
     --namespace kubewarden \
@@ -142,7 +142,7 @@ kubectl create job \
 
 The status of the job can be checked with:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl get -n kubewarden jobs
 ----

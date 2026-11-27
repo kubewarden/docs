@@ -16,7 +16,7 @@ In this file you can find a function called `validate`.
 
 This is the scaffolding provided function:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 fn validate(payload: &[u8]) -> CallResult {
     let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?; <1>
@@ -74,7 +74,7 @@ You just have to remove the hard-coded value and use the values provided by the 
 
 You can do by replacing the scaffolding `validate` function, in `src/lib.rs`, with this one:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 fn validate(payload: &[u8]) -> CallResult {
     let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
@@ -127,7 +127,7 @@ admission requests to write your unit tests.
 
 Change the contents of the test section at the end of `src/lib.rs` to look like this:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 #[cfg(test)]
 mod tests {
@@ -218,7 +218,7 @@ You now have three unit tests defined in `lib.rs`:
 
 You can run the unit tests again:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ cargo test
    Compiling demo v0.1.0 (/home/flavio/hacking/kubernetes/kubewarden/demo)

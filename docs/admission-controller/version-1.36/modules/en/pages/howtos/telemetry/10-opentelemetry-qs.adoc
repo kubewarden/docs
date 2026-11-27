@@ -61,14 +61,14 @@ which relies on libvirt.
 Assuming `libvirtd` is correctly running on your machine, issue the
 following command:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 minikube start --driver=kvm2
 ----
 
 The command produces an output similar to the following:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ minikube start --driver=kvm2
 😄  minikube v1.23.2 on Opensuse-Leap 15.3
@@ -95,7 +95,7 @@ resources.
 
 Install Traefik by using its Helm chart:
 
-[,console]
+[source,console]
 ----
 helm repo add traefik https://traefik.github.io/charts
 helm repo update
@@ -130,7 +130,7 @@ The OpenTelemetry Operator requires installation of
 https://cert-manager.io/docs/installation/[cert-manager] in the cluster.
 
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add jetstack https://charts.jetstack.io
 
@@ -153,7 +153,7 @@ version is `0.65.0`
 
 ====
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 

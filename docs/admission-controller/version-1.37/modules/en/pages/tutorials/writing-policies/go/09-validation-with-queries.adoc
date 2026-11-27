@@ -32,7 +32,7 @@ You can instead use the https://github.com/tidwall/gjson[`gjson`] library to ext
 Firstly, you need to change the requirement section.
 This is how the code should look:
 
-[,go]
+[source,go]
 ----
 import (
     "encoding/json"
@@ -51,7 +51,7 @@ Change the `validate` function to look like:
 [%collapsible]
 ======
 
-[,go]
+[source,go]
 ----
 func validate(payload []byte) ([]byte, error) {
     // Create a ValidationRequest instance from the incoming payload
@@ -131,12 +131,12 @@ The code has been slightly changed to make use of the previously populated `maps
 
 The unit tests and the end-to-end tests don't need any change, you can run them as before:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 make test
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 go test -v
 === RUN   TestParseValidSettings
@@ -155,12 +155,12 @@ PASS
 ok      github.com/kubewarden/go-policy-template    0.002s
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 make e2e-tests
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 bats e2e.bats
 e2e.bats

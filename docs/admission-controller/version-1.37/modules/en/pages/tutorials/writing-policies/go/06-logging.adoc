@@ -31,7 +31,7 @@ you can log from the two main policy entry points: `validate` and
 
 In the main package, `main.go` there is initialization for the logger:
 
-[,go]
+[source,go]
 ----
 var (
     logWriter = kubewarden.KubewardenLogWriter{}
@@ -46,7 +46,7 @@ var (
 
 Now, you can use the `logger` object to log from wherever required your policy:
 
-[,go]
+[source,go]
 ----
 func validate(payload []byte) ([]byte, error) {
     // ...
@@ -57,7 +57,7 @@ func validate(payload []byte) ([]byte, error) {
 
 You can add structured logging:
 
-[,go]
+[source,go]
 ----
 func validate(payload []byte) ([]byte, error) {
     // ...

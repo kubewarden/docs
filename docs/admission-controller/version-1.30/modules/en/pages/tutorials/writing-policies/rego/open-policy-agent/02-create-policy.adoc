@@ -42,7 +42,7 @@ so you can focus on the bits that matter.
 
 Create a `default-ns.json` file with the following contents inside the `data` directory:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "apiVersion": "admission.k8s.io/v1",
@@ -66,7 +66,7 @@ Create a `default-ns.json` file with the following contents inside the `data` di
 This simulates a pod operation creation inside the `default` namespace.
 Now, create another request example in `other-ns.json` inside the `data` directory:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "apiVersion": "admission.k8s.io/v1",
@@ -100,7 +100,7 @@ it lets you simplify your policy code and reuse this common part across differen
 
 The contents are:
 
-[,rego]
+[source,rego]
 ----
 package policy
 
@@ -145,7 +145,7 @@ This is just the shell of the policy, the utility.
 Now, you create another file, called, for example,
 `policy.rego` inside our `opa-policy` folder with these contents:
 
-[,rego]
+[source,rego]
 ----
 package kubernetes.admission
 
@@ -165,7 +165,7 @@ so we can inspect it conveniently.
 
 If everything went well, your tree should look like the following:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 .
 ├── data

@@ -56,7 +56,7 @@ To verify the keyless-signed container images produced by the Kubewarden team,
 you can use the `cosign` CLI tool. For example, to verify the
 `kubewarden/policy-server` image, you can execute the following command:
 
-[source, console]
+[source,console]
 ----
 cosign verify ghcr.io/kubewarden/policy-server:v1.18.0 \
   --certificate-identity-regexp 'https://github.com/kubewarden/*' \
@@ -95,7 +95,7 @@ When downloading the tarball with attestation files from the release page of
 the Kubewarden components, extract them, verify the signature for the checksum
 file, and then check the attestation files:
 
-[,console]
+[source,console]
 ----
 $ tar -xvf attestation-amd64.tar.gz
 
@@ -156,7 +156,7 @@ Kubewarden also follows the usual practices with regards to Helm charts. Hence, 
 can also find all the images in the Helm charts with a plugin such as
 https://github.com/cvila84/helm-image[helm-image], or with the following script:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 #!/usr/bin/env bash
 helm pull --untar kubewarden/kubewarden-controller && \

@@ -29,7 +29,7 @@ Please refer to the xref:tutorials/writing-policies/metadata.adoc[metadata] spec
 [%collapsible]
 ======
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 rules:
 - apiGroups: [""]
@@ -74,7 +74,7 @@ annotations:
 
 You want to write a policy that accepts a request in the following format:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "request": {
@@ -101,7 +101,7 @@ You need to declare a custom `RawValidationRequest` type (create a file `request
 containing the `RawValidationRequest` and the `Settings` structures,
 instead of using the `ValidationRequest` type provided by the SDK:
 
-[,go]
+[source,go]
 ----
 // RawValidationRequest represents the request that is sent to the validate function by the Policy Server.
 type RawValidationRequest struct {
@@ -124,7 +124,7 @@ Then you need to define the `Settings` type and the `Valid` and `validateSetting
 [%collapsible]
 ======
 
-[,go]
+[source,go]
 ----
 // Settings represents the settings of the policy.
 type Settings struct {
@@ -181,7 +181,7 @@ Finally, you replace the `validate` function (in `validate.go`):
 [%collapsible]
 ======
 
-[,go]
+[source,go]
 ----
 func validate(payload []byte) ([]byte, error) {
     // Unmarshal the payload into a RawValidationRequest instance
@@ -218,7 +218,7 @@ You can set up a test in `e2e.bats`:
 [%collapsible]
 ======
 
-[,bash]
+[source,bash]
 ----
 #!/usr/bin/env bats
 
@@ -242,7 +242,7 @@ Then the outputs of `make`, `make test` and `make e2e` are:
 [%collapsible]
 ======
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 make && make test && make e2e-tests
 docker run \
@@ -284,7 +284,7 @@ to use to mutate the request if the user, the action or the resource isn't valid
 
 You need to update the `Settings` type with the new fields:
 
-[,go]
+[source,go]
 ----
 // Settings defines the settings of the policy.
 type Settings struct {
@@ -328,7 +328,7 @@ func (s *Settings) Valid() (bool, error) {
 
 Also, the `validate` function to introduce the mutation:
 
-[,go]
+[source,go]
 ----
 func validate(payload []byte) ([]byte, error) {
     // Unmarshal the payload into a RawValidationRequest instance

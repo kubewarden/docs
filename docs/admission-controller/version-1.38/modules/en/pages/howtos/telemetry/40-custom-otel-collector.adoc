@@ -142,7 +142,7 @@ EOF
 If you installed Traefik in the OpenTelemetry quickstart, expose the Jaeger
 Query UI with this `Ingress`:
 
-[yaml]
+[source,yaml]
 ----
 kubectl apply -f - <<EOF
 apiVersion: networking.k8s.io/v1

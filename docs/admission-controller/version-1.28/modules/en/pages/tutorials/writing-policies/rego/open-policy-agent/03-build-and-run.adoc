@@ -12,7 +12,7 @@
 In the previous section you wrote your Rego policy.
 The structure looks like:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 .
 ├── data
@@ -28,7 +28,7 @@ The structure looks like:
 
 To build:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ opa build -t wasm -e policy/main policy.rego request.rego
 ----
@@ -47,14 +47,14 @@ Build and include the `request.rego` file.
 After the build completes, `opa build` has generated a `bundle.tar.gz` file.
 You can extract it:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ tar -xf bundle.tar.gz /policy.wasm
 ----
 
 Now the tree looks like the following:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 .
 ├── bundle.tar.gz
@@ -70,7 +70,7 @@ Now the tree looks like the following:
 
 You have your `policy.wasm` file:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ file policy.wasm
 policy.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)
@@ -82,7 +82,7 @@ Now you run it.
 
 Use `kwctl` to run the policy:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl run -e opa --request-path data/other-ns.json policy.wasm | jq
 {
@@ -102,7 +102,7 @@ The location of the recorded request that `kwctl` sends the policy to for evalua
 
 Now try to evaluate the request that creates the pod inside the `default` namespace:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl run -e opa --request-path data/default-ns.json policy.wasm | jq
 {

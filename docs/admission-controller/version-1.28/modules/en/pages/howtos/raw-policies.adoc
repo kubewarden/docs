@@ -25,7 +25,7 @@ For this guide, we will use the following raw policies:
 Please ensure that the policy author has marked the policy as `policyType: raw` in the metadata.
 You can inspect the metadata by using `kwctl`
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 kwctl inspect ghcr.io/kubewarden/tests/raw-mutation-policy:v0.1.0
 ----
@@ -38,7 +38,7 @@ The Policy Server can be run outside Kubernetes as a standalone container.
 
 First, create a `policies.yml` file with the following content:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 raw-validation:
   module: ghcr.io/kubewarden/tests/raw-validation-policy:v0.1.0
@@ -65,7 +65,7 @@ raw-mutation:
 
 To start the policy server:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 # Create a docker volume to store the policies
 docker volume create --driver local \
@@ -96,7 +96,7 @@ Because of that, a dedicated Policy Server has to be started.
 
 Create a `policy-server.yaml` file with the following content:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 ---
 apiVersion: apps/v1
@@ -173,7 +173,7 @@ data:
 
 Apply the configuration:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 kubectl apply -f policy-server.yaml
 ----
@@ -197,7 +197,7 @@ Since we have deployed a service, we can set a port-forward to access it with
 
 Let's try to validate a JSON document against the `raw-validation` policy:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 curl -X POST \
   http://localhost:3000/validate_raw/raw-validation \
@@ -213,7 +213,7 @@ curl -X POST \
 
 The request will be not accepted, since `alice` has not been granted access to the `customers` resource:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "response": {
@@ -227,7 +227,7 @@ The request will be not accepted, since `alice` has not been granted access to t
 
 Let's try again with a valid resource:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 curl -X POST \
   http://localhost:3000/validate_raw/raw-validation \
@@ -243,7 +243,7 @@ curl -X POST \
 
 This time, the request will be accepted:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "response": {
@@ -265,7 +265,7 @@ If the `uid` field is provided in the request payload, it will be returned as pa
 
 Now, let's try to mutate a JSON document against the `raw-mutation` policy:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 curl -X POST \
   http://localhost:3000/validate_raw/raw-mutation \
@@ -281,7 +281,7 @@ curl -X POST \
 
 The request will be mutated and the response will contain a JSONPatch:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "response": {

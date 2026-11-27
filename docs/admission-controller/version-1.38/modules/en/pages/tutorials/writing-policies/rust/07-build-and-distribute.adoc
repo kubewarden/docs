@@ -19,7 +19,7 @@ It's now time to build the policy as a WebAssembly binary, a `.wasm` file.
 
 You use the command:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 make policy.wasm
 ----
@@ -28,7 +28,7 @@ This command builds the code in release mode, with a WebAssembly compilation tar
 
 The build produces a `policy.wasm` file:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ file policy.wasm
 policy.wasm: WebAssembly (wasm) binary module version 0x1 (MVP)

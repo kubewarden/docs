@@ -81,7 +81,7 @@ https://ghcr.io. You need authentication to use the repository with the
 documentation guides you through creating one if you haven't already done so.
 Then you authenticate with a command like:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 echo $PAT | docker login ghcr.io --username <my-gh-username> --password-stdin
 ----
@@ -91,12 +91,12 @@ echo $PAT | docker login ghcr.io --username <my-gh-username> --password-stdin
 
 Deploy the {admc-short-name} stack using `helm` charts as follows:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add kubewarden https://charts.kubewarden.io
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo update kubewarden
 ----
@@ -122,17 +122,17 @@ installation xref:howtos/audit-scanner.adoc[documentation page].
   `default`. It can also install a set of recommended policies to secure your
   cluster by enforcing well known best practices.
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm install --wait -n kubewarden --create-namespace kubewarden-crds kubewarden/kubewarden-crds
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm install --wait -n kubewarden kubewarden-controller kubewarden/kubewarden-controller
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm install --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults
 ----
@@ -159,7 +159,7 @@ policies against them.
 
 This is the default `PolicyServer` configuration:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
@@ -229,7 +229,7 @@ resources. The operations available are `CREATE`, `UPDATE`, `DELETE` and
 
 Default {cluster-admission-policy} configuration:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
@@ -355,7 +355,7 @@ We want to prevent the creation of privileged containers inside our Kubernetes c
 
 Let's define a {cluster-admission-policy} to do that:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1
@@ -377,7 +377,7 @@ EOF
 
 This produces the following output:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
 ----
@@ -387,14 +387,14 @@ and it forces a rollout of the targeted `PolicyServer`. In the example, it's
 the `PolicyServer` named `default`. You can monitor the rollout by running the
 following command:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl get clusteradmissionpolicy.policies.kubewarden.io/privileged-pods
 ----
 
 You should see the following output:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 NAME              POLICY SERVER   MUTATING   STATUS
 privileged-pods   default         false      pending
@@ -409,14 +409,14 @@ The {cluster-admission-policy} status becomes `active` once the Deployment
 completes for every `PolicyServer` instance. Show
 {validating-webhook-configuration}s with the following command:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kubewarden
 ----
 
 You should see the following output:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 NAME                          WEBHOOKS   AGE
 clusterwide-privileged-pods   1          9s
@@ -427,7 +427,7 @@ Once the {cluster-admission-policy} is active and the
 
 First, you can create a Pod with a Container _not_ in `privileged` mode:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -443,7 +443,7 @@ EOF
 
 This produces the following output:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 pod/unprivileged-pod created
 ----
@@ -452,7 +452,7 @@ The Pod is successfully created.
 
 Now, you can create a Pod with at least one Container `privileged` flag:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -470,7 +470,7 @@ EOF
 
 The policy denies creation of the Pod and you should see the following message:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 Error from server: error when creating "STDIN": admission webhook "clusterwide-privileged-pods.kubewarden.admission" denied the request: Privileged container is not allowed
 ----
@@ -491,17 +491,17 @@ not targeting a specific namespace.
 You can remove the resources created by uninstalling the `helm` charts as
 follows:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm uninstall --namespace kubewarden kubewarden-defaults
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm uninstall --namespace kubewarden kubewarden-controller
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm uninstall --namespace kubewarden kubewarden-crds
 ----
@@ -509,7 +509,7 @@ helm uninstall --namespace kubewarden kubewarden-crds
 After removal of the `helm` charts remove the Kubernetes namespace used to
 deploy the {admc-short-name} stack:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl delete namespace kubewarden
 ----
@@ -528,12 +528,12 @@ kubectl delete namespace kubewarden
 {admc-short-name} deletes {validating-webhook-configuration}s and
 {mutating-webhook-configuration}s. Check this with:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io -l "kubewarden"
 ----
@@ -541,12 +541,12 @@ kubectl get mutatingwebhookconfigurations.admissionregistration.k8s.io -l "kubew
 If these resources aren't automatically removed, remove them manually using the
 following command:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl delete -l "kubewarden" validatingwebhookconfigurations.admissionregistration.k8s.io
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl delete -l "kubewarden" mutatingwebhookconfigurations.admissionregistration.k8s.io
 ----

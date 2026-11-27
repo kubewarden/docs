@@ -92,7 +92,7 @@ You can migrate the policy to Kubewarden by following these steps:
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kwctl scaffold vap \
     -p vap.yml \
@@ -107,7 +107,7 @@ The command produces output similar to this:
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 2024-06-24T16:00:16.516062Z  WARN kwctl::scaffold: Using the 'latest' version of the CEL policy could lead to unexpected behavior. It is recommended to use a specific version to avoid breaking changes.
 apiVersion: policies.kubewarden.io/v1
@@ -152,7 +152,7 @@ It is recommended to use a specific version to avoid breaking changes.
 
 This can be done using the `--cel-policy` flag, like this:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kwctl scaffold vap \
     --cel-policy ghcr.io/kubewarden/policies/cel-policy:v1.0.1 \

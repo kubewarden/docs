@@ -45,14 +45,14 @@ Users need to generate a private-public key-pair for this.
 The generated keys help to verify if the signed artifacts came from the expected user.
 To generate this key-pair use this `cosign generate-key-pair` command:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 cosign generate-key-pair
 ----
 
 Resulting in a prompt to type and verify a password:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 Enter password for private key: ●●●●●●●●
 Enter password for private key again: ●●●●●●●●
@@ -67,14 +67,14 @@ This is a secret file only for use by the key owner for signing policies.
 
 To sign a policy you can use `cosign sign` passing the `--key` command line argument with your private key file:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 cosign sign --key cosign.key ghcr.io/kubewarden/policies/user-group-psp:latest
 ----
 
 Resulting in a prompt for the password, for the specified private key:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 an error occurred: no provider found for that key reference, will try to load key from disk...
 Enter password for private key: ●●●●●●●●
@@ -105,7 +105,7 @@ Sigstore's Fulcio public infrastructure is used for the chain of trust.
 
 Signing uses Sigstore's cosign utility.
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 $ cosign sign ghcr.io/kubewarden/policies/user-group-psp:latest
 ----
@@ -114,7 +114,7 @@ $ cosign sign ghcr.io/kubewarden/policies/user-group-psp:latest
 [%collapsible]
 ======
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 Generating ephemeral keys...
 Retrieving signed certificate...
@@ -144,7 +144,7 @@ This is an example of how the Kubewarden project signs its policies:
 [%collapsible]
 ======
 
-[,yaml]
+[source,yaml]
 ----
 # ... beginning of the workflow file ...
 jobs:
@@ -195,7 +195,7 @@ This shows the information about the policy and its signatures as shown below:
 [%collapsible]
 ======
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl inspect registry://ghcr.io/kubewarden/policies/user-group-psp:v0.2.0
 Details
@@ -281,7 +281,7 @@ You can check if a policy is correctly signed with  `cosign` or `kwctl`.
 They have similar command line options for checking policy signatures.
 To check if the binary is signed with a key, use `kwctl` like this:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl verify -k cosign.pub ghcr.io/kubewarden/policies/user-group-psp:latest
 2022-03-29T14:49:31.878180Z  INFO kwctl::verify: Policy successfully verified
@@ -289,7 +289,7 @@ $ kwctl verify -k cosign.pub ghcr.io/kubewarden/policies/user-group-psp:latest
 
 Or `cosign` :
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ cosign verify --key cosign.pub ghcr.io/kubewarden/policies/user-group-psp:latest
 
@@ -315,7 +315,7 @@ For example, you want to run policies signed by the Kubewarden GitHub organizati
 [%collapsible]
 ======
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ cat kubewarden_signatures.yaml
 apiVersion: v1
@@ -347,7 +347,7 @@ metadata:
 
 You can use `kwctl scaffold verification-config` to generate a default verification configuration file for the `ConfigMap`:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl scaffold verification-config > verification_config.yaml
 ----
@@ -356,7 +356,7 @@ $ kwctl scaffold verification-config > verification_config.yaml
 [%collapsible]
 ======
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl scaffold verification-config > verification_config.yaml
 $ cat verification_config.yaml
@@ -384,7 +384,7 @@ anyOf: ~
 
 You can use this `verification_config.yml` to create the `ConfigMap`.
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl create configmap my-signatures-configuration --from-file==verification_config.yaml
 configmap/my-signatures-configuration created
@@ -396,7 +396,7 @@ Then we can inspect with `get configmap`.
 [%collapsible]
 ======
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl get configmap -o yaml my-signatures-configuration
 apiVersion: v1
@@ -435,7 +435,7 @@ metadata:
 After creating the `ConfigMap` to store the signature requirements, you can configure a Policy Server.
 To start validating policy signatures by setting the `ConfigMap` name in the field `verificationConfig` (marked ➀).
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1alpha2
 kind: PolicyServer
@@ -474,7 +474,7 @@ You can validate signature requirements contained in a file. Here is an example:
 .A file of signature requirements
 [%collapsible]
 ======
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: v1
 
@@ -544,7 +544,7 @@ To check a policy is signed with the correct public key, you specify the key dat
 In this example, `kind` is set to `pubKey` and the `key` has the public key.
 The owner field is optional, but can be useful to clarify who owns the key.
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
   - kind: pubKey
     owner: bob # optional
@@ -581,7 +581,7 @@ Both the `cosign verify` and the `kwctl inspect` can show information about keyl
 
 For example, this configuration means the policy must have a keyless signature from Alice using the GitHub OIDC:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 - kind: genericIssuer
   issuer: https://github.com/login/oauth
@@ -592,7 +592,7 @@ For example, this configuration means the policy must have a keyless signature f
 This configuration needs the policy to be signed in GitHub actions,
 from a repository owned by the GitHub user `flavio`:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 - kind: genericIssuer
   issuer: https://token.actions.githubusercontent.com
@@ -612,7 +612,7 @@ To simplify the signature requirement process, use two extra fields for `githubA
 
 For example, the last snippet, using `genericIssuer`, could be rewritten as:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 - kind: githubAction
   owner: flavio
@@ -632,7 +632,7 @@ The next validation checks 2 conditions for the policy:
 * that it's signed with a specific key
 * it has a production environment annotation.
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 - kind: pubKey
   key: |
@@ -650,7 +650,7 @@ The next validation checks 2 conditions for the policy:
 You can test if a policy passes verification using the verification config file.
 Use the `--verification-config-path`  flag of the `kwctl verify` command
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ cat signatures_requirements.yaml
 apiVersion: v1
@@ -668,7 +668,7 @@ $ kwctl verify --verification-config-path signatures_requirements.yaml ghcr.io/k
 
 This last example tests if a given policy came from the Kubewarden organization:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ cat kubewarden_signatures.yaml
 apiVersion: v1

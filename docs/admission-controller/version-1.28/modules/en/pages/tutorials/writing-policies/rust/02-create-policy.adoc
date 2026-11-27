@@ -16,7 +16,7 @@ It's list of invalid names should be configurable by end users of the policy.
 
 The policy settings look something like:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 invalid_names:
 - bad_name1
@@ -25,7 +25,7 @@ invalid_names:
 
 The policy should accept the creation of a Pod like the following one:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: v1
 kind: Pod
@@ -39,7 +39,7 @@ spec:
 
 It should reject the creation of a Pod like:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: v1
 kind: Pod
@@ -58,14 +58,14 @@ https://github.com/kubewarden/rust-policy-template[template project].
 
 First, install `cargo-generate`. This requires https://pkgs.org/download/openssl-devel[openssl-devel].
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 cargo install cargo-generate
 ----
 
 Now scaffold the project as follows:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 cargo generate --git https://github.com/kubewarden/rust-policy-template \
                --branch main \
@@ -74,7 +74,7 @@ cargo generate --git https://github.com/kubewarden/rust-policy-template \
 
 The command produces output like:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 🔧   Creating project called `demo`...
 ✨   Done! New project created /<some-path-name>/demo
@@ -94,14 +94,14 @@ https://docs.github.com/en/packages/working-with-a-github-packages-registry/enab
 
 You can try:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 cargo test
 ----
 
 This tests the generated scaffolding. If everything is correctly in place you'll see a series of compilation messages ending with output like:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 running 4 tests
 test settings::tests::validate_settings ... ok

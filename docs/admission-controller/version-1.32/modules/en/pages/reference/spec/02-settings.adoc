@@ -30,7 +30,7 @@ response a `SettingsValidationResponse` object.
 
 The structure of the `SettingsValidationResponse` object is:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 {
   # mandatory
@@ -62,7 +62,7 @@ As an example, consider the
 https://github.com/kubewarden/psp-capabilities[psp-capabilities] policy which
 has the following configuration format:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 allowed_capabilities:
 - CHOWN
@@ -76,7 +76,7 @@ default_add_capabilities:
 
 The `validate_settings` function receives as input the following JSON document:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "allowed_capabilities": [

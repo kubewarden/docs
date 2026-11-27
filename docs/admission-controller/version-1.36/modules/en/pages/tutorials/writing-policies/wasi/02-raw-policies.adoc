@@ -30,7 +30,7 @@ Please refer to the xref:tutorials/writing-policies/metadata.adoc[metadata] spec
 
 As an example you can write a policy that accepts a request in the following format:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "request": {
@@ -54,7 +54,7 @@ First, you need to define the types that represent the payload of the request.
 
 You should declare a custom `RawValidationRequest` type containing the `Request` and the `Settings`, instead of using the `ValidationRequest` type provided by the `kw_sdk.go`:
 
-[,go]
+[source,go]
 ----
 // RawValidationRequest represents the request that is sent to the validate function by the Policy Server.
 type RawValidationRequest struct {
@@ -73,7 +73,7 @@ type Request struct {
 
 Then you define the `Settings` type and the `validateSettings` function in the `settings.go` file:
 
-[,go]
+[source,go]
 ----
 // Settings represents the settings of the policy.
 type Settings struct {
@@ -121,7 +121,7 @@ func validateCliSettings(settings *Settings) SettingsValidationResponse {
 
 Finally, you update the validation logic in `validate.go`:
 
-[,go]
+[source,go]
 ----
 func validate(input []byte) []byte {
     var validationRequest RawValidationRequest
@@ -169,7 +169,7 @@ In this case, the settings should contain the `defaultUser`, `defaultAction` and
 
 You need to update the `Settings` type with the new fields:
 
-[,go]
+[source,go]
 ----
 // Settings represents the settings of the policy.
 type Settings struct {
@@ -218,7 +218,7 @@ func validateCliSettings(settings *Settings) SettingsValidationResponse {
 
 You also need to update the `ValidationResponse` struct and the `MutateRequest` function in `kw_sdk.go` to remove the Kubernetes-specific types and use {admc-short-name} types instead:
 
-[,go]
+[source,go]
 ----
 // ValidationResponse defines the response given when validating a request
 type ValidationResponse struct {
@@ -243,7 +243,7 @@ func MutateRequest(mutatedObject *Request) ValidationResponse {
 
 Now you can update the `validate` function to mutate the request if not valid:
 
-[,go]
+[source,go]
 ----
 func validateRequest(settings Settings, request Request) ValidationResponse {
     if slices.Contains(settings.ValidUsers, request.User) &&

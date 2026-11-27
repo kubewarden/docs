@@ -33,7 +33,7 @@ specification for more information.
 
 You're going to write a policy that accepts a request in the following format:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "request": {
@@ -51,7 +51,7 @@ https://github.com/kubewarden/opa-policy-template[OPA policy template].
 
 First you need to change the `policy.rego` file to look like this:
 
-[,rego]
+[source,rego]
 ----
 package validation
 
@@ -64,7 +64,7 @@ deny[msg] {
 
 The `utility/policy.rego` module needs modification to remove Kubernetes-specific code:
 
-[,rego]
+[source,rego]
 ----
 package policy
 

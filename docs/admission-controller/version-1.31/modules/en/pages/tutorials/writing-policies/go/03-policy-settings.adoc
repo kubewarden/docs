@@ -20,7 +20,7 @@ and add the `RegularExpression` structure.
 
 It should match the following code:
 
-[,go]
+[source,go]
 ----
 import (
     "encoding/json"
@@ -58,7 +58,7 @@ the list of denied labels.
 Since `regexp.Regexp` doesn't handle deserialization,
 you need to define custom functions to handle marshaling and unmarshaling of regular expressions:
 
-[,go]
+[source,go]
 ----
 // UnmarshalText satisfies the encoding.TextMarshaler interface,
 // also used by json.Unmarshal.
@@ -84,7 +84,7 @@ func (r *RegularExpression) MarshalText() ([]byte, error) {
 
 Also, you need the `UnmarshalJSON` method to handle the deserialization of the `Settings` struct:
 
-[,go]
+[source,go]
 ----
 func (s *Settings) UnmarshalJSON(data []byte) error {
     rawSettings := struct {
@@ -117,7 +117,7 @@ The function receives the policy settings as input and checks validity.
 
 You need to create a helper function that creates a `Settings` object starting from the JSON payload:
 
-[,go]
+[source,go]
 ----
 func NewSettingsFromValidationReq(validationReq *kubewarden_protocol.ValidationRequest) (Settings, error) {
     settings := Settings{}
@@ -147,7 +147,7 @@ All {short-project-name} policies have to implement settings validation.
 
 You do this by adding a `Valid` method to the `Settings` instances:
 
-[,go]
+[source,go]
 ----
 func (s *Settings) Valid() (bool, error) {
     constrainedLabels := mapset.NewThreadUnsafeSet[string]()
@@ -180,7 +180,7 @@ Finally, you need the `validateSettings` function,
 provided by the scaffolding,
 to change to look like this:
 
-[,go]
+[source,go]
 ----
 func validateSettings(payload []byte) ([]byte, error) {
     settings := Settings{}
@@ -212,7 +212,7 @@ You have to change the contents of this file to reflect the new behavior of the 
 
 Include the Go packages you are using:
 
-[,go]
+[source,go]
 ----
 import (
     "testing"
@@ -226,7 +226,7 @@ import (
 You can start by writing a unit test that ensures you can assign a `Settings`
 instance from a `ValidationRequest` object:
 
-[,go]
+[source,go]
 ----
 func TestParseValidSettings(t *testing.T) {
     settingsJSON := []byte(`
@@ -265,7 +265,7 @@ func TestParseValidSettings(t *testing.T) {
 
 Next, you need a test that checks a `Settings` instance isn't generated when the user provides a broken regular expression:
 
-[,go]
+[source,go]
 ----
 func TestParseSettingsWithInvalidRegexp(t *testing.T) {
     settingsJSON := []byte(`
@@ -288,7 +288,7 @@ Now, you can define a test that checks the behavior of the
 
 You look at the `SettingsValidationResponse` object returned by your `validateSettings` function:
 
-[,go]
+[source,go]
 ----
 func TestDetectValidSettings(t *testing.T) {
     settingsJSON := []byte(`
@@ -317,7 +317,7 @@ func TestDetectValidSettings(t *testing.T) {
 
 Finally, you write two more tests to check the `validateSettings` function rejects invalid settings with the right messages:
 
-[,go]
+[source,go]
 ----
 func TestDetectNotValidSettingsDueToBrokenRegexp(t *testing.T) {
     settingsJSON := []byte(`
@@ -378,14 +378,14 @@ func TestDetectNotValidSettingsDueToConflictingLabels(t *testing.T) {
 
 Now you can run the tests that you have defined so far by using the following command:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 go test -v settings.go settings_test.go
 ----
 
 All the tests will pass with the following output:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 === RUN   TestParseValidSettings
 --- PASS: TestParseValidSettings (0.00s)

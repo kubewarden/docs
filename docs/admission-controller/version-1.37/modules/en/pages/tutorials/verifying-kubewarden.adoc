@@ -52,7 +52,7 @@ To verify the keyless-signed container images produced by the {admc-short-name} 
 you can use the `cosign` CLI tool. For example, to verify the
 `kubewarden/adm-controller/policy-server` image, you can execute the following command:
 
-[source, console]
+[source,console]
 ----
 cosign verify ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0 \
   --certificate-identity-regexp 'https://github.com/kubewarden/adm-controller/.github/workflows/release.ya?ml@refs/tags/v1.36.0' \
@@ -73,7 +73,7 @@ correct issuer, subject, and `github_workflow_repository` extensions.
 You can also verify with link:https://github.com/rancherlabs/slsactl[`slsactl`].
 For example, for version 1.36.0:
 
-[source, console]
+[source,console]
 ----
 slsactl verify ghcr.io/kubewarden/policy-server:v1.30.0
 ----
@@ -99,7 +99,7 @@ files from the registry.
 When downloading the attestation files from the release page of
 the {admc-short-name} components, check them:
 
-[,console]
+[source,console]
 ----
 $ cosign verify-blob --bundle audit-scanner-attestation-amd64-checksum-cosign.bundle \
     --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
@@ -112,7 +112,7 @@ Now that the files integrity is verified, you can inspect the SBOM and Provenanc
 You can get these from the container image, using link:https://github.com/rancherlabs/slsactl[`slsactl].
 For example, for version 1.36.0:
 
-[,console]
+[source,console]
 ----
 slsactl download provenance ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
 slsactl download sbom ghcr.io/kubewarden/adm-controller/policy-server:v1.36.0
@@ -168,7 +168,7 @@ The chart attestations are pushed to the OCI registry as an artifact layer. See 
 can also find all the images in the Helm chart with a plugin such as
 https://github.com/cvila84/helm-image[helm-image], or with the following script:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 #!/usr/bin/env bash
 helm pull --untar kubewarden/kubewarden-controller && \
@@ -220,7 +220,7 @@ The provenance attestation for `kwctl` is verified by using
 https://cli.github.com/manual/gh_attestation_verify[`gh attestation verify`]. For
 example
 
-[console]
+[source,console]
 ----
 $ gh attestation verify kwctl-linux-x86_64 --repo kubewarden/adm-controller
 Loaded digest sha256:b22755eeac497614b8ab6d182c2337a5de7c74080297a29b1d68434883bb36ff for file://kwctl-linux-x86_64

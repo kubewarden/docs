@@ -89,7 +89,7 @@ policies against them.
 
 This is the default `PolicyServer` configuration:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
@@ -152,7 +152,7 @@ resources. The operations available are `CREATE`, `UPDATE`, `DELETE` and
 
 Default {cluster-admission-policy} configuration:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
@@ -282,7 +282,7 @@ We want to prevent the creation of privileged containers inside our Kubernetes c
 
 Let's define a {cluster-admission-policy} to do that:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1
@@ -304,7 +304,7 @@ EOF
 
 This produces the following output:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created
 ----
@@ -314,14 +314,14 @@ and it forces a rollout of the targeted `PolicyServer`. In the example, it's
 the `PolicyServer` named `default`. You can monitor the rollout by running the
 following command:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl get clusteradmissionpolicy.policies.kubewarden.io/privileged-pods
 ----
 
 You should see the following output:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 NAME              POLICY SERVER   MUTATING   STATUS
 privileged-pods   default         false      pending
@@ -336,14 +336,14 @@ The {cluster-admission-policy} status becomes `active` once the Deployment
 completes for every `PolicyServer` instance. Show
 {validating-webhook-configuration}s with the following command:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl get validatingwebhookconfigurations.admissionregistration.k8s.io -l kubewarden
 ----
 
 You should see the following output:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 NAME                          WEBHOOKS   AGE
 clusterwide-privileged-pods   1          9s
@@ -354,7 +354,7 @@ Once the {cluster-admission-policy} is active and the
 
 First, you can create a Pod with a Container _not_ in `privileged` mode:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -370,7 +370,7 @@ EOF
 
 This produces the following output:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 pod/unprivileged-pod created
 ----
@@ -379,7 +379,7 @@ The Pod is successfully created.
 
 Now, you can create a Pod with at least one Container `privileged` flag:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -397,7 +397,7 @@ EOF
 
 The policy denies creation of the Pod and you should see the following message:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 Error from server: error when creating "STDIN": admission webhook "clusterwide-privileged-pods.kubewarden.admission" denied the request: Privileged container is not allowed
 ----
@@ -417,7 +417,7 @@ not targeting a specific namespace.
 
 Uninstall the Helm chart as follows:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm uninstall --namespace {admc-namespace} {admc-release}
 ----
@@ -438,7 +438,7 @@ deploys the controller, which reconciles them, and activates them back.
 
 To remove all user-managed custom resources and the CRDs do:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl delete crd policyservers.policies.kubewarden.io
 kubectl delete crd clusteradmissionpolicies.policies.kubewarden.io

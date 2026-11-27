@@ -50,7 +50,7 @@ The SDKs provide functions similar to the following:
 
 * {blank}
 +
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 verify_pub_keys_image(
     image_url: string,
@@ -62,7 +62,7 @@ verify_pub_keys_image(
 
 * {blank}
 +
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 verify_keyless_exact_match(
     image_url: string,
@@ -105,7 +105,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstorePubKeyVerify` input
 
-[,hcl]
+[source,hcl]
 ----
 {
   type: "SigstorePubKeyVerify",
@@ -129,7 +129,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstorePubKeyVerify` output
 
-[,hcl]
+[source,hcl]
 ----
 {
    # true if image verified
@@ -141,7 +141,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstoreKeylessVerify` input
 
-[,hcl]
+[source,hcl]
 ----
 {
   type: "SigstoreKeylessVerify",
@@ -170,7 +170,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstoreKeylessVerify` output
 
-[,hcl]
+[source,hcl]
 ----
 {
    # true if image verified
@@ -182,7 +182,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstoreKeylessPrefixVerify` input
 
-[,hcl]
+[source,hcl]
 ----
 {
   type: "SigstoreKeylessPrefixVerify",
@@ -211,7 +211,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstoreKeylessPrefixVerify` output
 
-[,hcl]
+[source,hcl]
 ----
 {
    # true if image verified
@@ -223,7 +223,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstoreGithubActionsVerify` input
 
-[,hcl]
+[source,hcl]
 ----
 {
   type: "SigstoreGithubActionsVerify",
@@ -247,7 +247,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstoreGithubActionsVerify` output
 
-[,hcl]
+[source,hcl]
 ----
 {
    # true if image verified
@@ -259,7 +259,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstoreCertificateVerify` input
 
-[,hcl]
+[source,hcl]
 ----
 {
   type: "SigstoreCertificateVerify",
@@ -305,7 +305,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstoreCertificateVerify` output
 
-[,hcl]
+[source,hcl]
 ----
 {
    # true if image verified
@@ -319,7 +319,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstorePubKeyVerify` input
 
-[,hcl]
+[source,hcl]
 ----
 {
   "SigstorePubKeyVerify": {
@@ -343,7 +343,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstorePubKeyVerify` output
 
-[,hcl]
+[source,hcl]
 ----
 {
    # true if image verified
@@ -355,7 +355,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstoreKeylessVerify` input
 
-[,hcl]
+[source,hcl]
 ----
 {
   "SigstoreKeylessVerify": {
@@ -384,7 +384,7 @@ these are the functions a policy, that verifies signatures, can use:
 
 ==== `SigstoreKeylessVerify` output
 
-[,hcl]
+[source,hcl]
 ----
 {
    # true if image verified

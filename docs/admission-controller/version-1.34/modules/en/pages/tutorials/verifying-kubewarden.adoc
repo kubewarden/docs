@@ -56,7 +56,7 @@ To verify the keyless-signed container images produced by the {short-project-nam
 you can use the `cosign` CLI tool. For example, to verify the
 `kubewarden/policy-server` image, you can execute the following command:
 
-[source, console]
+[source,console]
 ----
 cosign verify ghcr.io/kubewarden/policy-server:v1.30.0 \
   --certificate-identity-regexp 'https://github.com/kubewarden/*' \
@@ -77,7 +77,7 @@ correct issuer, subject, and `github_workflow_repository` extensions.
 You can also verify with link:https://github.com/rancherlabs/slsactl[`slsactl`].
 For example, for version 1.30.0:
 
-[source, console]
+[source,console]
 ----
 slsactl verify ghcr.io/kubewarden/policy-server:v1.30.0
 ----
@@ -103,7 +103,7 @@ files from the registry.
 When downloading the attestation files from the release page of
 the {short-project-name} components, check them:
 
-[,console]
+[source,console]
 ----
 $ cosign verify-blob --bundle audit-scanner-attestation-amd64-checksum-cosign.bundle \
     --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
@@ -116,7 +116,7 @@ Now that the files integrity is verified, you can inspect the SBOM and Provenanc
 You can get these from the container image, using link:https://github.com/rancherlabs/slsactl[`slsactl].
 For example, for version 1.30.0:
 
-[,console]
+[source,console]
 ----
 slsactl download provenance ghcr.io/kubewarden/policy-server:v1.30.0
 slsactl download sbom ghcr.io/kubewarden/policy-server:v1.30.0
@@ -176,7 +176,7 @@ to verify the consumed container images and policies.
 can also find all the images in the Helm charts with a plugin such as
 https://github.com/cvila84/helm-image[helm-image], or with the following script:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 #!/usr/bin/env bash
 helm pull --untar kubewarden/kubewarden-controller && \

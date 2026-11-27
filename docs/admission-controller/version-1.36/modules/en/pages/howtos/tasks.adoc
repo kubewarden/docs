@@ -98,7 +98,7 @@ need a https://www.rust-lang.org/tools/install[Rust] development environment.
 You can list all the `kwctl` options and sub-commands by running the following
 command:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kwctl --help
 kwctl 0.2.5
@@ -137,7 +137,7 @@ Here are a few command usage examples:
   store
  ** Command: `kwctl pull <policy URI>`
 +
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kwctl pull registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
 
@@ -151,7 +151,7 @@ $ kwctl policies
 * _Understand how the policy works_: inspect the policy metadata
  ** Command: `kwctl inspect <policy URI>`
 +
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
   $ kwctl inspect registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
   Details
@@ -196,7 +196,7 @@ https://kubernetes.io/docs/reference/[Kubernetes REST APIs].
  ** Scenario 1:
   *** Request for evaluation: Create a pod with no 'privileged' container
 +
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kwctl run registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 -r unprivileged-pod-request.json
 {"uid":"C6E115F4-A789-49F8-B0C9-7F84C5961FDE","allowed":true,"status":{"message":""}}
@@ -204,7 +204,7 @@ $ kwctl run registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 -r unpr
 
   *** Equivalent command with the policy binary downloaded:
 +
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 `$ kwctl run file://$PWD/pod-privileged-policy.wasm -r unprivileged-pod-request.json
 {"uid":"C6E115F4-A789-49F8-B0C9-7F84C5961FDE","allowed":true,"status":{"message":""}}
@@ -215,7 +215,7 @@ $ kwctl run registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 -r unpr
   *** Request for evaluation: Create a pod with at least one 'privileged' container
   *** Command:
 +
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kwctl run registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 -r privileged-pod-request.json
 ----
@@ -223,7 +223,7 @@ kwctl run registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9 -r privil
   *** Equivalent command with the policy binary downloaded: `kwctl run file://$PWD/pod-privileged-policy.wasm -r privileged-pod-request.json`
   *** Output:
 +
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "uid": "8EE6AF8C-C8C8-45B0-9A86-CB52A70EC50D",
@@ -252,7 +252,7 @@ xref:quick-start.adoc#_example_enforce_your_first_policy[Quick Start] below:
 * Generate the `ClusterAdmissionPolicy` from the policy `manifest` and save it to a file
  ** Command: `kwctl scaffold manifest -t ClusterAdmissionPolicy <policy URI> > <"policy name".yaml>`
 +
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kwctl scaffold manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/pod-privileged:v0.1.9
 ---
@@ -287,7 +287,7 @@ The name in the previous example is set to `privileged-pods`.
 * Deploy the `ClusterAdmissionPolicy` to your Kubernetes cluster
  ** Command: `kubectl apply -f <"policy name".yaml>`
 +
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kubectl apply -f pod-privileged-policy.yaml
 clusteradmissionpolicy.policies.kubewarden.io/privileged-pods created

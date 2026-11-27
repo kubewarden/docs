@@ -36,7 +36,7 @@ Once the Jaeger operator creates all the resources, there is a Service under
 
 The Jaeger Query UI is reachable at the following address:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 https://<CLUSTER_IP>/api/v1/namespaces/jaeger/services/http:my-open-telemetry-query:16686/proxy/search
 ----
@@ -50,7 +50,7 @@ You'll need to edit the `rancher-kubewarden-controller` resource to add the Jaeg
 
 For instance:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 telemetry:
   tracing: true

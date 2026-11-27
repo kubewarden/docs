@@ -59,14 +59,14 @@ which relies on libvirt.
 Assuming `libvirtd` is correctly running on your machine, issue the
 following command:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 minikube start --driver=kvm2
 ----
 
 The command produces an output similar to the following:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ minikube start --driver=kvm2
 😄  minikube v1.23.2 on Opensuse-Leap 15.3
@@ -85,14 +85,14 @@ $ minikube start --driver=kvm2
 
 Now you need to enable the Ingress add-on:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 minikube addons enable ingress
 ----
 
 This produces an output similar to the following one:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ minikube addons enable ingress
     ▪ Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.0
@@ -126,7 +126,7 @@ At the time of writing (2024-07-17) the latest cert-manager chart version is `v1
 ====
 
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add jetstack https://charts.jetstack.io
 
@@ -149,7 +149,7 @@ version is `0.65.0`
 
 ====
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 

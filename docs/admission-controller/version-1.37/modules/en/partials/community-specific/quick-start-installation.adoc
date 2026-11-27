@@ -10,7 +10,7 @@ https://ghcr.io. You need authentication to use the repository with the
 documentation guides you through creating one if you haven't already done so.
 Then you authenticate with a command like:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 echo $PAT | docker login ghcr.io --username <my-gh-username> --password-stdin
 ----
@@ -20,12 +20,12 @@ echo $PAT | docker login ghcr.io --username <my-gh-username> --password-stdin
 
 Deploy the {admc-short-name} stack using `helm` charts as follows:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add kubewarden https://charts.kubewarden.io
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo update kubewarden
 ----
@@ -50,7 +50,7 @@ installation xref:howtos/audit-scanner.adoc[documentation page].
   `default`. You can also install a set of recommended policies to secure your
   cluster by enforcing well known best practices.
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm install --wait -n {admc-namespace} --create-namespace {admc-release} {admc-chart-location}
 ----

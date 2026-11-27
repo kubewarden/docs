@@ -56,7 +56,7 @@ publishing as `ghcr.io/kubewarden/policies/safe-labels`.
 The contents of the `jobs.push-to-oci-registry.env` section of `ci.yml` should
 look like:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 jobs:
   push-to-oci-registry:

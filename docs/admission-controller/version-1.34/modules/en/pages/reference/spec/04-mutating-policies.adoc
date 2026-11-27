@@ -20,7 +20,7 @@ The structure of mutating policies is the same as validating ones:
 Mutating policies accept a request and can propose a mutation of the incoming
 object by returning a `ValidationResponse` object that looks like this:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "accepted": true,
@@ -35,7 +35,7 @@ in the Kubernetes cluster, serialized to JSON.
 
 Assume the policy received this `ValidationRequest`:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "settings": {},
@@ -76,7 +76,7 @@ Only important fields are in the `request` object for this example.
 This request generation happens because someone tried to create a Pod that
 would look like this:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: v1
 kind: Pod
@@ -95,7 +95,7 @@ spec:
 
 Assume the policy replies with the following `ValidationResponse`:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "accepted": true,
@@ -130,7 +130,7 @@ Assume the policy replies with the following `ValidationResponse`:
 
 That would lead to request acceptance, but the final Pod would look like this:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: v1
 kind: Pod

@@ -52,7 +52,7 @@ depending on the external data.
 Both the `AdmissionPolicy` and the `ClusterAdmissionPolicy` custom resources
 have the following fields:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 spec:
   rules:

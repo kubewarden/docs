@@ -49,7 +49,7 @@ after removing the Fleet Bundle:
 * Manually delete the remaining CRDs, which will also remove the user-managed
   custom resources on each targeted cluster:
 +
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl delete crd policyservers.policies.kubewarden.io
 kubectl delete crd clusteradmissionpolicies.policies.kubewarden.io

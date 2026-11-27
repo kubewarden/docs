@@ -100,7 +100,7 @@ separately via `spec.contextAwareResources`.
 
 === Example: deny all host capabilities
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
@@ -117,7 +117,7 @@ capability calls blocked.
 
 === Example: allow only OCI signature verification
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
@@ -133,7 +133,7 @@ spec:
 
 === Example: allow all capabilities (explicit)
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
@@ -156,7 +156,7 @@ The `kubewarden-defaults` Helm chart exposes
 To lock down the `default` PolicyServer so namespaced policies have no host
 capability access:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm upgrade --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults \
   --set 'policyServer.namespacedPoliciesCapabilities={}'
@@ -164,7 +164,7 @@ helm upgrade --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defa
 
 To allow only OCI and DNS capabilities:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm upgrade --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults \
   --set 'policyServer.namespacedPoliciesCapabilities={oci/*,net/v1/dns_lookup_host}'
@@ -201,14 +201,14 @@ intercepts `CREATE` and `UPDATE` requests for `AdmissionPolicy` and
 Label each Namespace with the name of the PolicyServer that should handle its
 namespaced policies:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl label namespace my-team-ns admission.kubewarden.io/policy-server=for-namespaced-policies
 ----
 
 Or declare it in the Namespace manifest:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: v1
 kind: Namespace
@@ -222,7 +222,7 @@ metadata:
 
 Deploy the policy as a `ClusterAdmissionPolicy`:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
@@ -260,7 +260,7 @@ without elevated privileges.
 
 === 1. Create a dedicated PolicyServer with restricted capabilities
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: PolicyServer
@@ -274,7 +274,7 @@ spec:
 
 === 2. Deploy the `ns-policyserver-mapper` policy
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
@@ -298,14 +298,14 @@ spec:
 
 Wait for the policy to become active:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl wait --for=condition=PolicyActive clusteradmissionpolicy/ns-to-policyserver
 ----
 
 === 3. Label team Namespaces
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl label namespace team-alpha admission.kubewarden.io/policy-server=for-namespaced-policies
 kubectl label namespace team-beta admission.kubewarden.io/policy-server=for-namespaced-policies
@@ -322,7 +322,7 @@ additional permissions to the PolicyServer.
 If the `default` PolicyServer should also prevent namespaced policies from
 exercising host capabilities:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm upgrade --wait -n kubewarden kubewarden-defaults kubewarden/kubewarden-defaults \
   --set 'policyServer.namespacedPoliciesCapabilities={}'
@@ -354,7 +354,7 @@ Policy authors can self-report a list of host capabilities that a policy uses
 using the policy metadata (see xref:/tutorials/writing-policies/metadata.adoc[metadata documentation page]).
 For example:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 [...]
 hostCapabilities:
@@ -381,7 +381,7 @@ Here is an example output when the metadata declares `oci/v1/verify` but the
 binary actually uses `kubernetes/get_resource` and
 `kubernetes/list_resources_by_namespace`:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kwctl annotate -m metadata.yml -o annotated-policy.wasm policy.wasm
 
@@ -411,7 +411,7 @@ authoritative proof of what capabilities a policy exercises.
 `--allowed-host-capabilities`. This flag sets the host capabilities the policy
 is allowed to use and can be repeated many times. For example:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kwctl run \
   --allowed-host-capabilities 'oci/*' \

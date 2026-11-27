@@ -34,7 +34,7 @@ To create a policy in `monitor mode` you need to include the statement `mode:
 monitor` as part of the specification of the resource. For example, in the
 `spec` section (marked ➀), of this `ClusterAdmissionPolicy`:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1alpha2
 kind: ClusterAdmissionPolicy

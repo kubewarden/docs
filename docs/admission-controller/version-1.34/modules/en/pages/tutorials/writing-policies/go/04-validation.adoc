@@ -53,7 +53,7 @@ You need to make few changes to it for this tutorial.
 
 This is how the function should be when complete:
 
-[,go]
+[source,go]
 ----
 func validate(payload []byte) ([]byte, error) {
     // NOTE 1
@@ -119,7 +119,7 @@ You use a new function called `validateLabel` to identify labels violating the p
 
 You also need to define the `validateLabel` function in the `validate.go` file:
 
-[,go]
+[source,go]
 ----
 func validateLabel(label, value string, settings *Settings) error {
     if settings.DeniedLabels.Contains(label) {
@@ -149,7 +149,7 @@ You should replace the contents of the scaffolding file to match this:
 [%collapsible]
 ======
 
-[,go]
+[source,go]
 ----
 package main
 
@@ -294,7 +294,7 @@ func TestValidateLabel(t *testing.T) {
 The test uses a "test-case driven" approach.
 You start by defining a `struct` that holds the data needed by a test case, see `NOTE 1`:
 
-[,go]
+[source,go]
 ----
 struct {
         podLabels         map[string]string
@@ -311,7 +311,7 @@ For example,
 you should consider a Pod that has no labels to be valid.
 You can test this with these input values:
 
-[,go]
+[source,go]
 ----
 {
   podLabels:         map[string]string{},
@@ -335,7 +335,7 @@ You can now run all the unit tests,
 including the one defined in `settings_test.go`,
 by using:
 
-[,console]
+[source,console]
 ----
 make test
 ----
@@ -346,7 +346,7 @@ This produces the following output:
 [%collapsible]
 ======
 
-[,shell]
+[source,shell]
 ----
 make test
 go test -v
@@ -390,7 +390,7 @@ make: *** [Makefile:29: test] Error 1
 As you can see all the `Settings` tests are passing, but there's one test case of the
 `TestValidateLabel` that isn't:
 
-[,console]
+[source,console]
 ----
 validate_test.go:126: Unexpected acceptance with pod labels: map[owner:team-kubewarden], denied labels: Set{hello}, constrained labels: map[cc-center:team-\d+]
 ----
@@ -419,7 +419,7 @@ To fix the broken test you discovered you have to make a change in your validati
 
 Currently, the core of your validation logic is the following lines:
 
-[,go]
+[source,go]
 ----
 for label, value := range pod.Metadata.Labels {
     if err := validateLabel(label, value, &settings); err != nil {
@@ -436,7 +436,7 @@ However, you're not making sure that the Pod has all the labels specified in `Se
 
 Add the new code, right after the `for` loop:
 
-[,go]
+[source,go]
 ----
 for requiredLabel := range settings.ConstrainedLabels {
     _, found := pod.Metadata.Labels[requiredLabel]
@@ -453,7 +453,7 @@ for requiredLabel := range settings.ConstrainedLabels {
 
 Run the unit tests again:
 
-[,console]
+[source,console]
 ----
 make test
 ----
@@ -464,7 +464,7 @@ This outputs:
 [%collapsible]
 ======
 
-[,console]
+[source,console]
 ----
 make test
 go test -v

@@ -129,7 +129,7 @@ The format of the `SettingsValidationResponse` and the settings validation proce
 Each Kubewarden policy must be annotated via the `kwctl annotate` command.
 The policy metadata of a plain WASI policy must have this value:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 executionMode: wasi
 ----

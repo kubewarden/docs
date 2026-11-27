@@ -63,7 +63,7 @@ The mission guides you through the following Helm chart installations in order:
 
 === 1. Install CRDs
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add kubewarden https://charts.kubewarden.io
 helm repo update kubewarden
@@ -78,7 +78,7 @@ before proceeding.
 
 === 2. Install the controller
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm install --wait \
   -n kubewarden \
@@ -89,7 +89,7 @@ The mission validates that the controller pod reaches `Running` status.
 
 === 3. Install defaults
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm install --wait \
   -n kubewarden \

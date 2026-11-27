@@ -40,7 +40,7 @@ ignore:
 
 You do this by adding the `ignoreDifferences` field in the ArgoCD application:
 
-[subs="+attributes", yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: argoproj.io/v1alpha1
 kind: Application

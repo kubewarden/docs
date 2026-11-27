@@ -33,7 +33,7 @@ scaffolding of your policy.
 
 See the following example of a `metadata.yaml`:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 rules:
   - apiGroups: [""]
@@ -91,7 +91,7 @@ users can define which Kubernetes resources the policy can access.
 For example, if the policy needs access to the `Namespace` resource.
 The policy author can define the `contextAwareResources` as:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 [...]
 contextAwareResources:
@@ -106,7 +106,7 @@ users can define which
 xref:/howtos/policy-servers/06-namespaced-policies-capabilities.adoc[host capability calls]
 the policy intends to use. For example:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 [...]
 hostCapabilities:

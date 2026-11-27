@@ -38,7 +38,7 @@ to install it.
 
 This is adapted from xref:howtos/telemetry/30-metrics-qs.adoc[here]:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -79,7 +79,7 @@ spec:
 * Select the `Edit/Upgrade` action for your `rancher-kubewarden-controller` resource.
 * Edit the YAML for `telemetry` to be `enabled: "true"` and ensure the metrics port is correct.
 
-[,yml]
+[source,yml]
 ----
 telemetry:
   metrics:

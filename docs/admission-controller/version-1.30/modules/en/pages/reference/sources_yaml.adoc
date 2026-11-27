@@ -31,7 +31,7 @@ load the `sources.yaml` file from these folders:
 
 Its structure is as follows:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 insecure_sources:
   - "registry-dev.example.com"
@@ -53,14 +53,14 @@ source_authorities:
 This file is in either YAML or JSON format. All keys are optional, so the
 following is a valid `sources.yaml` file:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 insecure_sources: ["dev.registry.example.com"]
 ----
 
 As is:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
     "source_authorities": {
@@ -111,7 +111,7 @@ certificates you use a path to a file containing the certificate. In PEM format
 you specify either a path to the certificate file, or a string with the actual
 certificate. You specify both with a `type` key:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 source_authorities:
   "registry-pre.example.com":
