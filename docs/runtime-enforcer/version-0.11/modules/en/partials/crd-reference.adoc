@@ -45,6 +45,24 @@ Package v1alpha1 contains API Schema definitions for the runtimeenforcer v1alpha
 |===
 
 
+[id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-foreignrootpolicy"]
+==== ForeignRootPolicy
+
+_Underlying type:_ _string_
+
+ForeignRootPolicy defines whether a container can run binaries on a foreign
+root file system.
+
+.Validation:
+- Enum: [Allow Deny]
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyexecutables[$$WorkloadPolicyExecutables$$]
+****
+
+
+
 [id="{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-phase"]
 ==== Phase
 
@@ -245,6 +263,10 @@ WorkloadPolicy is the Schema for the workloadpolicies API.
 | *`allowed`* __string array__ | allowed defines a list of executables that are allowed to run + |  | items:Pattern: `^/.*$` +
 Optional +
 
+| *`foreignRoot`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-foreignrootpolicy[$$ForeignRootPolicy$$]__ | foreignRoot defines if the container can run binaries on a foreign root +
+file system. The default value is "Deny". + | Deny | Enum: [Allow Deny] +
+Optional +
+
 |===
 
 
@@ -357,14 +379,6 @@ WorkloadPolicyProposalSpec defines the desired state of WorkloadPolicyProposal.
 |===
 | Field | Description | Default | Validation
 | *`executables`* __xref:{anchor_prefix}-github-com-kubewarden-runtime-enforcer-api-v1alpha1-workloadpolicyexecutables[$$WorkloadPolicyExecutables$$]__ | executables defines a security policy for executables. + |  | Optional +
-
-| *`options`* __object (keys:string, values:string)__ | options is a free-form map of behavior flags for this container. Each key +
-selects one behavior. The value is a string, like an environment variable. +
-A value of "1" or "true" turns the behavior on. Any other value, or an +
-absent key, leaves the behavior off. The enforcer ignores keys that it does +
-not recognize. It logs a warning for each one. The set of recognized keys +
-depends on the enforcer version. See the runtime-enforcer documentation for +
-the keys that your version supports. + |  | Optional +
 
 |===
 
