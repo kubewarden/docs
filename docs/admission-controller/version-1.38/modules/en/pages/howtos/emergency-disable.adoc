@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Emergency disable
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :sidebar_label: Emergency disable
 :sidebar_position: 31
@@ -67,5 +67,31 @@ kubectl scale deployment admission-controller \
   there's only one replica of the controller running.
 ====
 Once the controller is running, it reconciles the deployed
-policies. The `ValidatingWebhookConfiguration` and `MutatingWebhookConfiguration` resources,
-previously deleted, are recreated, thus enforcing the policies.
+policies. The `ValidatingWebhookConfiguration` and `MutatingWebhookConfiguration` resources
+of the policies, previously deleted, are recreated, thus enforcing the policies.
+
+The controller does not recreate its own webhook configurations,
+`kubewarden-controller-validating-webhook-configuration` and
+`kubewarden-controller-mutating-webhook-configuration`. The Helm chart installs
+them. To recreate them, roll back the Helm release to its current revision.
+Get the revision number:
+
+[source,console,subs="+attributes"]
+----
+helm history {admc-release} -n {admc-namespace} --max 1
+----
+
+Then roll back to it. Replace `<revision>` with the number in the `REVISION`
+column:
+
+[source,console,subs="+attributes"]
+----
+helm rollback {admc-release} <revision> -n {admc-namespace} --wait
+----
+
+[WARNING]
+====
+A rollback applies all the resources of the stored release again. It removes
+the changes that you made to these resources outside Helm, for example a
+manual change of the number of controller replicas.
+====
