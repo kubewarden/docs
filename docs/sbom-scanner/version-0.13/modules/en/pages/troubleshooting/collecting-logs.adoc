@@ -87,7 +87,7 @@ configured. For example image pull secrets, registry auth, or any value passed
 via `--set`. Review the bundle contents before sharing.
 ====
 
-Using https://github.com/kubewarden/sbomscanner/blob/v0.13.0/hack/sbomscanner-debug.sh[the script found in the sbomscanner repository]:
+Using https://github.com/kubewarden/sbomscanner/blob/{release-tag}/hack/sbomscanner-debug.sh[the script found in the sbomscanner repository]:
 
 [source,bash]
 ----

@@ -133,7 +133,7 @@ processors:
 [#_example_dashboard]
 == Example dashboard
 
-The {sboms-name} repository contains an example Grafana dashboard at https://github.com/kubewarden/sbomscanner/blob/v0.13.0/examples/dashboards/sbomscanner.json[examples/dashboards/sbomscanner.json].
+The {sboms-name} repository contains an example Grafana dashboard at https://github.com/kubewarden/sbomscanner/blob/{release-tag}/examples/dashboards/sbomscanner.json[examples/dashboards/sbomscanner.json].
 The dashboard shows the scan counters, the stage durations, the storage metrics, and the resource usage of each replica.
 The latency panels show exemplars.
 An exemplar connects one point on a latency panel to the trace that produced it.
