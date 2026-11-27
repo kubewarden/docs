@@ -1,8 +1,8 @@
 ---
 name: "Updates runtime-enforcer CLI reference documentation files"
 files:
-  - dst: docs/runtime-enforcer/version-0.11/modules/en/partials/kubectl-plugin-cli-reference.adoc
-  - dst: docs/runtime-enforcer/version-0.11/modules/en/partials/wpgen-cli-reference.adoc
+  - dst: docs/runtime-enforcer/version-0.13/modules/en/partials/kubectl-plugin-cli-reference.adoc
+  - dst: docs/runtime-enforcer/version-0.13/modules/en/partials/wpgen-cli-reference.adoc
 scm:
   branch: "main"
 pr:
