@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Managing {admc-name} with Rancher Fleet
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :description: Manage {admc-name} Helm chart using Rancher Fleet and Kubernetes Custom Resource Definitions (CRDs) to implement a GitOps approach.
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
@@ -13,15 +13,15 @@ include::partial$variables.adoc[]
 :current-version: {page-origin-branch}
 
 You can manage {admc-name} Helm chart,
-like other Helm charts, with https://fleet.rancher.io/[Rancher Fleet].
+like other Helm charts, with {fleet-url}[Rancher Fleet].
 Rancher Fleet uses Kubernetes CRDs
 to define a GitOps approach to managing Kubernetes clusters.
-It does this by defining https://fleet.rancher.io/concepts[Fleet Bundles].
+It does this by defining {fleet-concepts-url}[Fleet Bundles].
 
+[#_installing]
 == Installing
 
-The {admc-short-name} chart is a standard chart. See the
-xref:/quick-start.adoc[Quickstart docs] for more information.
+include::partial${build-type}-specific/rancher-fleet.adoc[tag=install]
 
 == Removing
 
@@ -29,10 +29,9 @@ Removing the {admc-short-name} chart will leave around the user-managed custom
 resources and CRDs. See the xref:/quick-start.adoc[Quickstart docs] for more
 information.
 
-{admc-short-name} uses a pre-delete helm hook job in
-`admission-controller` chart that deletes the controller, webhooks, resources
-that enable PolicyServers to process policies, default PolicyServer and
-recommended policies.
+{admc-short-name} uses a pre-delete helm hook job in its chart that deletes
+the controller, webhooks, resources that enable PolicyServers to process
+policies, default PolicyServer and recommended policies.
 
 Uninstalling CRDs automatically isn't normally supported by any tooling, and
 Rancher Fleet is no exception.
@@ -44,7 +43,7 @@ after removing the Fleet Bundle:
   delete it directly with `kubectl delete bundle`, and let Fleet reconcile the
   removal of the Helm release from the target clusters.
 * Confirm the Helm release is uninstalled and the pre-delete hook completed,
-  by checking that the `kubewarden-controller` Deployment and webhooks are
+  by checking that the controller Deployment and webhooks are
   gone from the targeted clusters.
 * Manually delete the remaining CRDs, which will also remove the user-managed
   custom resources on each targeted cluster:
@@ -58,6 +57,15 @@ kubectl delete crd clusteradmissionpolicygroups.policies.kubewarden.io
 kubectl delete crd admissionpolicygroups.policies.kubewarden.io
 ----
 +
+If no other tool in the cluster uses the OpenReports CRDs, also delete the
+CRDs that the chart installs:
++
+[source,console,subs="+attributes"]
+----
+kubectl delete crd reports.openreports.io
+kubectl delete crd clusterreports.openreports.io
+----
++
 [NOTE]
 ====
 
@@ -69,5 +77,4 @@ Bundle deployed {admc-short-name}.
 
 == Example
 
-For an example of Fleet bundle definitions see
-https://github.com/kubewarden/fleet-example[github.com/kubewarden/fleet-example].
+include::partial${build-type}-specific/rancher-fleet.adoc[tag=example]

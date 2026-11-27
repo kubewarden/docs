@@ -1,0 +1,12 @@
+// Community passages of howtos/Rancher-Fleet.adoc. The page includes
+// each passage with a tag.
+
+// tag::install[]
+The {admc-short-name} chart is a standard chart. See the
+xref:/quick-start.adoc[Quickstart docs] for more information.
+// end::install[]
+
+// tag::example[]
+For an example of Fleet bundle definitions see
+https://github.com/kubewarden/fleet-example[github.com/kubewarden/fleet-example].
+// end::example[]

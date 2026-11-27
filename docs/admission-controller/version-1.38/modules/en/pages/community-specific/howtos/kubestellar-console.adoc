@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-06-18
 :page-revdate: {revdate}
+:page-aliases: howtos/kubestellar-console.adoc
 :sidebar_label: KubeStellar Console
 :sidebar_position: 150
 :description: How to install {admc-name} using the KubeStellar Console guided install mission.
