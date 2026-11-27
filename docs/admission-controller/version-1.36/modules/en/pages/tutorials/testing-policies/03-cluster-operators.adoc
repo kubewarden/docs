@@ -59,7 +59,7 @@ You can create a file named `pod-req-no-specific-apparmor-profile.json` with the
 [%collapsible]
 ======
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "uid": "1299d386-525b-4032-98ae-1949f69f9cfc",
@@ -103,7 +103,7 @@ following contents:
 [%collapsible]
 ======
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "uid": "1299d386-525b-4032-98ae-1949f69f9cfc",
@@ -150,7 +150,7 @@ Now you can create a file named
 [%collapsible]
 ======
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "uid": "1299d386-525b-4032-98ae-1949f69f9cfc",
@@ -197,7 +197,7 @@ Only the fields relevant to our testing of the policy are used.
 
 Now you can use `kwctl` to test the creation of a Pod not specifying an AppArmor profile:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl run \
     --request-path pod-req-no-specific-apparmor-profile.json \
@@ -207,7 +207,7 @@ $ kwctl run \
 
 The policy accepts the request and produces output like:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 {
   "uid": "1299d386-525b-4032-98ae-1949f69f9cfc",
@@ -217,7 +217,7 @@ The policy accepts the request and produces output like:
 
 The policy rejects the creation of a Pod with an `unconfined` AppArmor profile:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl run \
     --request-path pod-req-apparmor-unconfined.json \
@@ -239,7 +239,7 @@ states, this results in preventing the usage of non-default profiles.
 
 The Pod using a custom `nginx` profile gets rejected by the policy too:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl run \
     --request-path pod-req-apparmor-custom.json \
@@ -256,7 +256,7 @@ $ kwctl run \
 
 You can change the default behavior, allowing chosen AppArmor profiles to be used:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl run \
     --request-path pod-req-apparmor-custom.json \
@@ -267,7 +267,7 @@ $ kwctl run \
 
 Now the request succeeds:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 {
   "uid": "1299d386-525b-4032-98ae-1949f69f9cfc",
@@ -288,7 +288,7 @@ The commands can be "wrapped" into a `bats` test:
 [%collapsible]
 ======
 
-[,bash]
+[source,bash]
 ----
 @test "all is good" {
   run kwctl run \
@@ -319,7 +319,7 @@ The commands can be "wrapped" into a `bats` test:
 
 If the `bats` code is in the file `e2e.bats`, you can run the test as:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ bats e2e.bats
  ✓ all is good

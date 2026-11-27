@@ -45,7 +45,7 @@ For the end-to-end tests, you use the same test fixtures files you used in the G
 
 The first test ensures request approval when there are no settings provided:
 
-[,bash]
+[source,bash]
 ----
 @test "accept when no settings are provided" {
   run kwctl run -r test_data/pod.json policy.wasm
@@ -60,14 +60,14 @@ The first test ensures request approval when there are no settings provided:
 
 You execute the end-to-end tests by using this command:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 make e2e-tests
 ----
 
 This produces the following output:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 bats e2e.bats
  ✓ accept when no settings are provided
@@ -77,7 +77,7 @@ bats e2e.bats
 
 You should write a test ensuring request approval when respecting a user-defined constraint:
 
-[,bash]
+[source,bash]
 ----
 @test "accept because label is satisfying a constraint" {
   run kwctl run annotated-policy.wasm \
@@ -94,7 +94,7 @@ You should write a test ensuring request approval when respecting a user-defined
 
 Next, you can write a test checking request acceptance when none of the labels is on the deny list:
 
-[,bash]
+[source,bash]
 ----
 @test "accept labels are not on deny list" {
   run kwctl run \
@@ -111,7 +111,7 @@ Next, you can write a test checking request acceptance when none of the labels i
 
 You can improve the test coverage by adding a test that rejects a request because one of the labels is on the deny list:
 
-[,bash]
+[source,bash]
 ----
 @test "reject because label is on deny list" {
   run kwctl run annotated-policy.wasm \
@@ -130,7 +130,7 @@ You can improve the test coverage by adding a test that rejects a request becaus
 The following test ensures a request rejection when one of its labels doesn't
 satisfy the constraint provided by the user.
 
-[,bash]
+[source,bash]
 ----
 @test "reject because label is not satisfying a constraint" {
   run kwctl run annotated-policy.wasm \
@@ -149,7 +149,7 @@ satisfy the constraint provided by the user.
 Now you can make sure the validation fails if one of the constrained labels is
 not found:
 
-[,bash]
+[source,bash]
 ----
 @test "reject because constrained label is missing" {
   run kwctl run annotated-policy.wasm \
@@ -168,7 +168,7 @@ not found:
 You want to check settings validation is working correctly.
 You can do this with the following tests:
 
-[,bash]
+[source,bash]
 ----
 @test "fail settings validation because of conflicting labels" {
   run kwctl run \
@@ -201,7 +201,7 @@ You can do this with the following tests:
 
 The eight end-to-end tests now give a good level of coverage, you can run them all:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ make e2e-tests
 bats e2e.bats

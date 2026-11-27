@@ -50,7 +50,7 @@ by the Helm chart.
 
 To do that, you should create the following values file:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 cat <<EOF > kube-prometheus-stack-values.yaml
 prometheus:
@@ -86,7 +86,7 @@ At the time of writing (2023-11-17) the latest chart version is `51.5.3`
 ====
 
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
@@ -113,7 +113,7 @@ installed it in a previous section of this documentation.
 
 First, you should add the Helm repository that contains {admc-short-name}:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add kubewarden https://charts.kubewarden.io
 ----
@@ -121,7 +121,7 @@ helm repo add kubewarden https://charts.kubewarden.io
 Then you install the Custom Resource Definitions (CRDs) defined by
 {admc-short-name}:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm install --wait \
   --namespace kubewarden --create-namespace \
@@ -134,7 +134,7 @@ Helm chart creates a PolicyServer named `default`.
 You should configure the Helm chart so that you have metrics enabled
 in {admc-short-name}. The `kubewarden-values.yaml` file should have the following contents:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 telemetry:
   mode: sidecar
@@ -146,7 +146,7 @@ telemetry:
 
 Now, install the Helm charts:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm install --wait \
   --namespace kubewarden \
@@ -164,7 +164,7 @@ helm install --wait \
 
 This creates the `default` instance of `PolicyServer`:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl get policyservers.policies.kubewarden.io
 NAME      AGE
@@ -180,7 +180,7 @@ different components within your Kubernetes cluster.
 
 You can forward the Prometheus port so you can access it.
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl port-forward -n prometheus --address 0.0.0.0 svc/prometheus-operated 9090
 ----
@@ -193,7 +193,7 @@ evaluations grows over time as more requests go through the policy.
 
 You can forward the Grafana service so you can access it.
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl port-forward -n prometheus --address 0.0.0.0 svc/prometheus-grafana 8080:80
 ----
@@ -213,7 +213,7 @@ file] or at the https://grafana.com/grafana/dashboards/15314[Grafana website].
 To import the dashboard into your environment, you can download the JSON file
 from the Grafana website or the repository:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 curl https://github.com/kubewarden/policy-server/releases/latest/download/kubewarden-dashboard.json
 ----

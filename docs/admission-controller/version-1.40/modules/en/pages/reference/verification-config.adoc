@@ -73,7 +73,7 @@ key-values, that must be present in the signature.
 This is an example of a configuration for verifying signatures using the
 Sigstore workflow:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 ---
 apiVersion: v1
@@ -122,7 +122,7 @@ example:
 .A file of signature requirements
 [%collapsible]
 ====
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: v1
 
@@ -198,7 +198,7 @@ data and the owner of the key. In this example, you set `kind` to `pubKey` and
 the `key` has the public key. The owner field is optional, but can be useful to
 clarify who owns the key.
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
   - kind: pubKey
     owner: bob # optional
@@ -242,7 +242,7 @@ keyless signatures.
 For example, this configuration means the policy must have a keyless signature
 from Alice using the GitHub OIDC:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 - kind: genericIssuer
   issuer: https://github.com/login/oauth
@@ -253,7 +253,7 @@ from Alice using the GitHub OIDC:
 This configuration needs the policy signed in GitHub actions, from a repository
 owned by the GitHub user `flavio`:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 - kind: genericIssuer
   issuer: https://token.actions.githubusercontent.com
@@ -272,7 +272,7 @@ signature requirement process, use two extra fields for `githubAction`:
 
 For example, the last snippet, using `genericIssuer`, could be rewritten as:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 - kind: githubAction
   owner: flavio
@@ -291,7 +291,7 @@ The next validation checks two conditions for the policy:
 * that it's signed with a specific key
 * it has a production environment annotation.
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 - kind: pubKey
   key: |
@@ -309,7 +309,7 @@ You can test if a policy passes verification using the verification
 configuration file. Use the `--verification-config-path`  flag of the `kwctl
 verify` command.
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ cat signatures_requirements.yaml
 apiVersion: v1
@@ -328,7 +328,7 @@ $ kwctl verify --verification-config-path signatures_requirements.yaml ghcr.io/k
 This last example tests if a given policy came from the {admc-short-name}
 organization:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ cat kubewarden_signatures.yaml
 apiVersion: v1

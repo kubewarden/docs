@@ -53,7 +53,7 @@ This file is usually located in the root project folder of your policy.
 
 For example, you can save this file as `metadata.yml` in the current directory:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 rules:
 - apiGroups: ["*"]
@@ -83,7 +83,7 @@ annotations:
 
 Now, let's annotate the policy:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kwctl annotate policy.wasm \
     --metadata-path metadata.yml \
@@ -101,7 +101,7 @@ the toolchain used to produce the original Wasm object.
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kwctl inspect annotated-policy.wasm
 2023-08-24T12:06:27.986401Z  INFO sigstore::cosign::client_builder: Rekor public key not provided. Rekor integration disabled
@@ -157,7 +157,7 @@ Cannot determine if the policy has been signed. There was an error while attempt
 
 You can push an annotated policy like this:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ kwctl push annotated-policy.wasm \
      <oci-registry>/kubewarden-policies/palindromify-policy:v0.0.1

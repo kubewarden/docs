@@ -180,14 +180,14 @@ protection].
 
 As normal, we can deploy our policy by instantiating its manifest:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl apply -f ./cel-policy-example.yaml
 ----
 
 And then test it by instantiating a deployment:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: v1

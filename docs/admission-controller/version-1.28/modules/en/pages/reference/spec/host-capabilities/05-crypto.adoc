@@ -23,7 +23,7 @@ these are the functions performing cryptographic checks exposed by the host:
 [discrete]
 ==== waPC function - `v1/is_certificate_trusted` input
 
-[,hcl]
+[source,hcl]
 ----
 # Certificate:
 {
@@ -60,7 +60,7 @@ these are the functions performing cryptographic checks exposed by the host:
 [discrete]
 ==== waPC function - `v1/is_certificate_trusted` output
 
-[,hcl]
+[source,hcl]
 ----
 {
    # true if certificate verified:

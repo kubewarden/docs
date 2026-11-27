@@ -29,7 +29,7 @@ For that, we declare that the policy is context-aware. We also declare the fine-
 permissions we need to read other Ingress resources. This is achieved with
 `spec.contextAwareResources` (1). We can get a starting point as usual by using `kwctl`:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl scaffold manifest -t ClusterAdmissionPolicy \
   registry://ghcr.io/kubewarden/policies/cel-policy:v1.0.0` \
@@ -38,7 +38,7 @@ $ kwctl scaffold manifest -t ClusterAdmissionPolicy \
 
 Which then we can edit to be relevant to our Ingress resources:
 
-[subs="+attributes", yaml, title="./cel-policy-ingress.yaml"]
+[source,yaml,subs="+attributes",title="./cel-policy-ingress.yaml"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
@@ -90,7 +90,7 @@ Then, we build a list of hosts from those Ingresses. Note that there can be
 several hosts per Ingress, so this expression holds an array of arrays (which
 is a current limitation of the CEL language):
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 variables:
   - name: knownHosts
@@ -105,7 +105,7 @@ With this, UPDATE operations are correctly checked. This also means that the
 policy will correctly report results to the Audit Scanner, too. It will look
 like this:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 variables:
   - name: knownHosts
@@ -117,7 +117,7 @@ variables:
 
 We also need a list of hosts in the current Ingress request to compare against:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 variables:
   - name: desiredHosts
@@ -128,7 +128,7 @@ variables:
 With those 2 variables, we can do a set intersection between the known hosts and
 the desired hosts, and if there's any, we reject:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 validations:
   - expression: |
@@ -188,7 +188,7 @@ $ kubectl apply -f ./cel-policy-example.yaml
 Now we can test it by instantiating Ingresses. The first one will succeed as
 there's no other targeting that host:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: networking.k8s.io/v1
@@ -212,7 +212,7 @@ EOF
 
 But the second one will result in a rejection:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: networking.k8s.io/v1

@@ -59,7 +59,7 @@ https://console.kubestellar.io/missions/install-kubewarden
 
 == Install the Helm chart
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add kubewarden https://charts.kubewarden.io
 helm repo update kubewarden

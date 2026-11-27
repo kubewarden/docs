@@ -44,7 +44,7 @@ defines which Kubernetes resources each context aware policy can read.
 The following example deploys a policy that requires access to the `Deployment`
 and `Pod` resources:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
@@ -104,13 +104,13 @@ name, `<api>`. They should only define the `<version>` (for example, `v1`).
 
 For a core resource, the first won't work, the second will.
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 - apiVersion: "core/v1"
   kind: "pod"
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 - apiVersion: "v1"
   kind: "pod"

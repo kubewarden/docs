@@ -34,7 +34,7 @@ https://docs.apps.rancher.io/get-started/authentication/[Application Collection
 documentation], create an access token and configure the cluster to pull
 from the Application Collection registry, with a Docker Config Secret:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl create secret docker-registry application-collection \
   --docker-server=dp.apps.rancher.io \
@@ -55,7 +55,7 @@ contents as the previous `application-collection`.
 For PolicyServer `default`, installed with the `kubewarden-defaults` Helm chart
 under the `kubewarden` namespace, it would be:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl create secret docker-registry application-collection-kw -n kubewarden \
   --docker-server=dp.apps.rancher.io \
@@ -69,7 +69,7 @@ If using the PolicyServer `default` from the `kubewarden-defaults` Helm chart,
 configure it with the imagePullSecret `application-collection-kw`. This in the
 same namespace and is done by setting the following values for the chart:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ helm upgrade -i --wait --namespace kubewarden \
   --create-namespace kubewarden-defaults kubewarden/kubewarden-defaults \
@@ -94,7 +94,7 @@ https://docs.apps.rancher.io/howto-guides/verify-signatures-with-kubewarden/[pub
 key] from Application Collection (at the time of writing) in the `pubKeys`
 array.
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1
@@ -150,7 +150,7 @@ spec:
 EOF
 ----
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl apply -f mypolicy.yml
 $ kubectl get admissionpolicies -n default # wait for status active
@@ -158,7 +158,7 @@ $ kubectl get admissionpolicies -n default # wait for status active
 
 To test it, deploy a Pod with a signed image from Application Collection:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl run nginx --image dp.apps.rancher.io/containers/nginx:1.24.0 --overrides='{"spec": {"imagePullSecrets":[{"name": "application-collection"}]}}'
  pod/nginx created

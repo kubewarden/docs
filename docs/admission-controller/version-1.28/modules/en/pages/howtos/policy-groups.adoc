@@ -21,7 +21,7 @@ xref:explanations/policy-groups.adoc[explanation].
 Using the example from the xref:../explanations/policy-groups.adoc[explanation of Policy Groups],
 use these commands to implement it.
 
-[,shell]
+[source,shell]
 ----
 kubectl apply -f group-policy-demo.yaml
 ----
@@ -29,7 +29,7 @@ kubectl apply -f group-policy-demo.yaml
 .A `ClusterAdmissionPolicyGroup` that rejects Pods that use images with the `latest` tag, unless the images are signed by two trusted parties: Alice and Bob.
 [%collapsible]
 ======
-[,yaml]
+[source,yaml]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicyGroup # or AdmissionPolicyGroup
@@ -83,7 +83,7 @@ Once the policy is active, the creation of a non-compliant Pod will be rejected.
 To obtain more information about the evaluation of the policies that are part of the
 group, increase the verbosity level of `kubectl`:
 
-[,console]
+[source,console]
 ----
 kubectl -v4 apply -f signed-pod.yml
 I0919 18:29:40.251332    4330 helpers.go:246] server response object: [{

@@ -34,7 +34,7 @@ documentation], create an access token and configure the cluster so it can pull
 from the Application Collection registry, with a Docker Config Secret, such as
 this one:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl create secret docker-registry application-collection \
   --docker-server=dp.apps.rancher.io \
@@ -55,7 +55,7 @@ contents as the previous `application-collection`.
 For PolicyServer `default`, installed with the `kubewarden-defaults` Helm chart
 under the `kubewarden` namespace, it would be:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl create secret docker-registry application-collection-kw -n kubewarden \
   --docker-server=dp.apps.rancher.io \
@@ -69,7 +69,7 @@ If using the PolicyServer `default` from the `kubewarden-defaults` Helm chart,
 configure it with the imagePullSecret `application-collection-kw`. This in the
 same namespace and is done by setting the following values for the chart:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ helm upgrade -i --wait --namespace kubewarden \
   --create-namespace kubewarden-defaults kubewarden/kubewarden-defaults \
@@ -94,7 +94,7 @@ https://docs.apps.rancher.io/howto-guides/verify-signatures-with-kubewarden/[pub
 key] from Application Collection (at the time of writing) in the `pubKeys`
 array.
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1

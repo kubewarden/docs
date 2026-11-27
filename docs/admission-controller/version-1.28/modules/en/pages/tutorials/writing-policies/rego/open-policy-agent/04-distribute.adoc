@@ -24,7 +24,7 @@ that describe what kind of resources this policy understands and evaluates.
 
 To annotate your policy you need to write a `metadata.yaml` file:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 rules:
 - apiGroups: [""]
@@ -65,7 +65,7 @@ This policy is written in the `opa` style, returning a whole `AdmissionReview` o
 
 Go ahead and annotate your policy:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl annotate policy.wasm --metadata-path metadata.yaml --output-path annotated-policy.wasm
 ----
@@ -76,7 +76,7 @@ Now you can inspect the policy by running `kwctl inspect annotated-policy.wasm`.
 
 Now that the policy is annotated you can push it to an OCI registry.
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl push annotated-policy.wasm registry.my-company.com/kubewarden/no-default-namespace:v0.0.1
 Policy successfully pushed
@@ -88,7 +88,7 @@ by creating a `ClusterAdmissionPolicy`.
 You can prepare that as well.
 First you need to pull the policy into the `kwctl` local store:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl pull registry://registry.my-company.com/kubewarden/no-default-namespace:v0.0.1
 pulling policy...
@@ -97,7 +97,7 @@ pulling policy...
 Create a `ClusterAdmissionPolicy` from it.
 This operation takes into account the metadata it has about the policy:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl manifest registry://registry.my-company.com/kubewarden/no-default-namespace:v0.0.1 --type ClusterAdmissionPolicy
 ---

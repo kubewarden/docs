@@ -18,7 +18,7 @@ Annotating and distributing a Gatekeeper policy is similar to distributing an Op
 
 You're going to write a `metadata.yaml` file in your policy directory with contents:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 rules:
 - apiGroups: [""]
@@ -47,7 +47,7 @@ except for the `executionMode: gatekeeper` bit.
 
 Go ahead and annotate the policy:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl annotate policy.wasm --metadata-path metadata.yaml --output-path annotated-policy.wasm
 ----
@@ -57,7 +57,7 @@ $ kwctl annotate policy.wasm --metadata-path metadata.yaml --output-path annotat
 
 Push your policy to an OCI registry:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl push annotated-policy.wasm registry.my-company.com/kubewarden/no-default-namespace-gatekeeper:v0.0.1
 Policy successfully pushed
@@ -67,7 +67,7 @@ Policy successfully pushed
 
 You have to pull your policy to your `kwctl` local store first:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl pull registry://registry.my-company.com/kubewarden/no-default-namespace-gatekeeper:v0.0.1
 pulling policy...
@@ -75,7 +75,7 @@ pulling policy...
 
 You can now create a scaffold `ClusterAdmissionPolicy` resource:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl scaffold manifest registry://registry.my-company.com/kubewarden/no-default-namespace-gatekeeper:v0.0.1 --type ClusterAdmissionPolicy
 ---

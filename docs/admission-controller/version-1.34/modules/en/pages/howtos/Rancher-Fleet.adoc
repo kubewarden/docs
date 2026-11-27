@@ -33,7 +33,7 @@ Using Rancher Fleet, you can code the chart dependencies using
 
 You may see transient errors until the charts are ready, such as:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 ErrApplied(1) [Cluster fleet-local/local: dependent bundle(s) are not ready:
 [kubewarden-example-helm-kubewarden-controller]]

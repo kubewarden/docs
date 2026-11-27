@@ -75,7 +75,7 @@ https://doc.crds.dev/github.com/kubewarden/kubewarden-controller/policies.kubewa
 Kubernetes Custom Resource Definition, you can set these environment variables
 as follows:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 # A Policy Server that has policy evaluation timeout disabled
 apiVersion: policies.kubewarden.io/v1

@@ -42,7 +42,7 @@ next sections to explain the different fields:
 .A `ClusterAdmissionPolicyGroup` that rejects Pods that use images with the `latest` tag, unless the images are signed by two trusted parties: Alice and Bob.
 [%collapsible]
 ======
-[,yaml]
+[source,yaml]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicyGroup # or AdmissionPolicyGroup
@@ -109,7 +109,7 @@ A unique name identifies each policy of the group policy. For example,
 the following snippet defines three policies: `signed_by_alice`, `signed_by_bob`
 and `reject_latest_tag`.
 
-[,yaml]
+[source,yaml]
 ----
 policies:
   signed_by_alice:
@@ -153,7 +153,7 @@ You can use round brackets `( )` to define evaluation priorities.
 
 For example, given the following expression:
 
-[,console]
+[source,console]
 ----
 reject_latest() || (signed_by_alice() && signed_by_bob())
 ----
@@ -174,7 +174,7 @@ Evaluation of policies that belong to the group takes place only if necessary.
 
 For example, given the following expression:
 
-[,console]
+[source,console]
 ----
 reject_latest() || (signed_by_alice() && signed_by_bob())
 ----
@@ -197,7 +197,7 @@ rejection.
 You can obtain full details of a rejected admission request by increasing the
 verbosity level of `kubectl`:
 
-[,shell]
+[source,shell]
 ----
 kubectl -v4 apply -f signed-pod.yml
 I0919 18:29:40.251332    4330 helpers.go:246] server response object: [{
@@ -243,7 +243,7 @@ documentation.
 .An example of a policy group that makes use of a context-aware policy.
 [%collapsible]
 ======
-[,yaml]
+[source,yaml]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicyGroup # or AdmissionPolicyGroup

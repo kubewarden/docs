@@ -44,7 +44,7 @@ policies can retrieve the Kubernetes cluster information by calling the host in 
 
 ==== Input
 
-[,hcl]
+[source,hcl]
 ----
 # API Group version. Use `v1` for the `core` group and
   # `groupName/groupVersion` for all other groups
@@ -78,7 +78,7 @@ Use this API function to fetch cluster-wide resources (e.g. namespaces)
 
 ==== Input
 
-[,hcl]
+[source,hcl]
 ----
 {
   # API Group version. Use `v1` for the `core` group and
@@ -124,7 +124,7 @@ Use the `disable_cache` field to bypass the cache when fresh data is required.
 
 ==== Input
 
-[,hcl]
+[source,hcl]
 ----
 {
   # API Group version. Use `v1` for the `core` group

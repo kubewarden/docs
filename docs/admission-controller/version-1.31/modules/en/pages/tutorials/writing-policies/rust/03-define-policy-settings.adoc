@@ -17,7 +17,7 @@ Firstly, define the structure that holds the policy settings.
 Open the `demo/src/settings.rs` file and change the definition of the `Settings`
 `struct` to look like:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 pub(crate) struct Settings {
     pub invalid_names: HashSet<String>,
@@ -34,7 +34,7 @@ You do this by changing the implementation of the `Validatable` trait.
 
 Change the scaffolding implementation defined in `src/settings.rs` to look like:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 impl kubewarden::settings::Validatable for Settings {
     fn validate(&self) -> Result<(), String> {
@@ -55,7 +55,7 @@ You can do this in the https://doc.rust-lang.org/stable/book/ch11-00-testing.htm
 There are already a few default tests at the bottom of the `src/settings.rs`
 file. Replace the automatically generated code to look like this:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 #[cfg(test)]
 mod tests {
@@ -88,14 +88,14 @@ mod tests {
 
 You can now run the unit tests by doing:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 cargo test
 ----
 
 This produces an output similar to the following:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
    Compiling demo v0.1.0 (/home/jhk/projects/suse/tmp/demo)
     Finished test [unoptimized + debuginfo] target(s) in 0.59s

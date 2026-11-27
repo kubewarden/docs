@@ -252,7 +252,7 @@ gh attestation verify admission-controller-{chart-version}.tgz \
 can also find all the images in the Helm chart with a plugin such as
 https://github.com/cvila84/helm-image[helm-image], or with the following script:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 #!/usr/bin/env bash
 helm pull --untar kubewarden/admission-controller && \

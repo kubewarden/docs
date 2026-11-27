@@ -30,7 +30,7 @@ but it also adds an annotation to all the Pods that have a valid name.
 
 Attempting to create a Pod like this:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: v1
 kind: Pod
@@ -44,7 +44,7 @@ spec:
 
 Leads to the creation of this Pod:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: v1
 kind: Pod
@@ -68,7 +68,7 @@ https://docs.rs/kubewarden-policy-sdk/0.1.0/kubewarden_policy_sdk/fn.accept_requ
 
 This is how the `validate` function in `lib.rs` should look:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 fn validate(payload: &[u8]) -> CallResult {
     let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
@@ -127,7 +127,7 @@ adds the new one, and finally puts the updated `annotations` object back into th
 
 Having done these changes, it's time to run unit tests again:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ cargo test
    Compiling demo-a v0.1.0 (/home/jhk/projects/suse/tmp/demo)
@@ -163,7 +163,7 @@ It looks like our code is working.
 
 You can update the `accept_pod_with_valid_name` in `lib.rs` to look like this:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 #[test]
 fn accept_pod_with_valid_name() -> Result<(), ()> {
@@ -210,7 +210,7 @@ Assert the mutated Pod object has the right `metadata.annotations`.
 
 Run the tests again, this time all shall pass:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 $ cargo test
    Compiling demo-a v0.1.0 (/home/jhk/projects/suse/tmp/demo)

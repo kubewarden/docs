@@ -41,7 +41,7 @@ PolicyServers validate OCI artifacts, from different registries, independently.
 
 You create this Secret for the PolicyServer with the following command:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl --namespace kubewarden create secret docker-registry secret-ghcr-docker \
   --docker-username=myuser \
@@ -61,7 +61,7 @@ Once you have the Secret created, it's necessary to configure the PolicyServer
 instance. Set the `spec.imagePullSecret` field with the name of the Secret that
 contains the credentials:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 # Example of a PolicyServer using a private registry
 apiVersion: policies.kubewarden.io/v1
@@ -83,7 +83,7 @@ When deployed from the `kubewarden-defaults` Helm chart, you can set the
 the created default policy server is able to download policies from your
 private registry as well:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 # values file example
 policyServer:

@@ -44,7 +44,7 @@ This is the description of the waPC protocol used to expose this capability:
 
 ==== waPC function - `v1/manifest_digest` input
 
-[,hcl]
+[source,hcl]
 ----
 # OCI URI - JSON encoded string
 string
@@ -52,7 +52,7 @@ string
 
 ==== waPC function - `v1/manifest_digest` output
 
-[,hcl]
+[source,hcl]
 ----
 {
   # digest of the OCI object
@@ -92,7 +92,7 @@ This is the description of the waPC protocol used to expose this capability:
 
 ==== waPC function - `v1/oci_manifest` input
 
-[,hcl]
+[source,hcl]
 ----
 # OCI URI - JSON encoded string
 string
@@ -100,7 +100,7 @@ string
 
 ==== waPC function - `v1/oci_manifest` output
 
-[,hcl]
+[source,hcl]
 ----
 {
     "schemaVersion": 2,
@@ -224,7 +224,7 @@ This is the description of the waPC protocol used to expose this capability:
 
 ==== waPC function - `v1/oci_manifest_config` input
 
-[,hcl]
+[source,hcl]
 ----
 # OCI URI - JSON encoded string
 string
@@ -232,7 +232,7 @@ string
 
 ==== waPC function - `v1/oci_manifest_config` output
 
-[,hcl]
+[source,hcl]
 ----
 {
   "manifest": {

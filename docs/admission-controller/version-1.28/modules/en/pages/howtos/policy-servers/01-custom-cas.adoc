@@ -28,7 +28,7 @@ To configure the PolicyServer to accept insecure connections to specific
 registries, use the `spec.insecureSources` field of PolicyServer. This field
 accepts a list of URIs to be regarded as insecure. Example:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 spec:
   insecureSources:
@@ -47,7 +47,7 @@ certificates for a specific URI, use the field `spec.sourceAuthorities`.
 This field is a map of URIs, each with its own list of strings that contain PEM
 encoded certificates. Example:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 spec:
   sourceAuthorities:

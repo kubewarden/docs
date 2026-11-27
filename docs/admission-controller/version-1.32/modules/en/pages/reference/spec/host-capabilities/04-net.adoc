@@ -28,7 +28,7 @@ This is the description of the waPC protocol used to expose this capability:
 
 ==== waPC function - `v1/dns_lookup_host` input
 
-[,hcl]
+[source,hcl]
 ----
 # hostname - JSON encoded string
 string
@@ -36,7 +36,7 @@ string
 
 ==== waPC function - `v1/dns_lookup_host` output
 
-[,hcl]
+[source,hcl]
 ----
 
 {

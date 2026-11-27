@@ -23,7 +23,7 @@ on whether the namespace for that object matches the selector.
 
 For example, here is a policy that only targets the `kube-system` and `my-namespace` Namespaces:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 ---
 apiVersion: policies.kubewarden.io/v1
@@ -52,7 +52,7 @@ spec:
 
 Here is a policy that targets all the Namespaces besides the `kube-system` and `my-namespace`:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 ---
 apiVersion: policies.kubewarden.io/v1
@@ -99,7 +99,7 @@ The `message` field allows cluster operators to define a custom reject message
 that overrides the one returned by the policy. When using this configuration,
 the original rejection message can be found in the `causes` field of the response.
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
@@ -163,7 +163,7 @@ inside of the cluster except for one of the following ones: `low-priority`,
 
 Currently the policy settings allows to express only the list of allowed priority classes. The following group policy overcomes this limitation.
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: AdmissionPolicyGroup

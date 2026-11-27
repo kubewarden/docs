@@ -49,7 +49,7 @@ the compatibility chart].
 
 To install the Helm Chart:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 
@@ -72,7 +72,7 @@ documentation].
 
 To create a Jaeger resource:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: jaegertracing.io/v1
@@ -92,7 +92,7 @@ After creation of Jaeger Operator resources, you have a Service under
 `my-open-telemetry-collector.jaeger.svc.cluster.local`. The Jaeger Query UI is
 reachable at the following address:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 echo http://`minikube ip`
 ----
@@ -112,7 +112,7 @@ installed it in a previous section of this documentation.
 As a first step, you add the Helm repository that contains
 {short-project-name}:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add kubewarden https://charts.kubewarden.io
 ----
@@ -120,7 +120,7 @@ helm repo add kubewarden https://charts.kubewarden.io
 Then you install the Custom Resource Definitions (CRDs) defined by
 {short-project-name}:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm install --wait \
   --namespace kubewarden \
@@ -136,7 +136,7 @@ To do that, you need to specify some extra values for the
 `kubewarden-controller` chart. You should create a `values.yaml` file with the
 following contents:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 telemetry:
   mode: sidecar
@@ -162,7 +162,7 @@ https://www.jaegertracing.io/docs/latest/kubernetes/[official documentation].
 
 Then you can proceed with the installation of the helm charts:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm install --wait --namespace kubewarden --create-namespace \
   --values values.yaml \
@@ -174,7 +174,7 @@ helm install --wait --namespace kubewarden --create-namespace \
 
 This creates the `default` instance of `PolicyServer`:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl get policyservers.policies.kubewarden.io
 NAME      AGE
@@ -195,7 +195,7 @@ with a value of `production`.
 
 To a Namespace that has such a label:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -209,7 +209,7 @@ EOF
 
 Next, you can define a ClusterAdmissionPolicy:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1
@@ -242,14 +242,14 @@ EOF
 
 You need to wait for the policy to become active:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl wait --for=condition=PolicyActive clusteradmissionpolicy/safe-labels
 ----
 
 Once the policy is active, you can try it:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: apps/v1
@@ -282,7 +282,7 @@ the policy.
 
 The policy blocks this Deployment object:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: apps/v1
@@ -312,7 +312,7 @@ The policy isn't enforced in another Namespace.
 
 This command creates a new Namespace called `team-alpha-staging`:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -327,7 +327,7 @@ EOF
 The policy permits the creation of a Deployment resource,
 without any labels, in the `team-alpha-staging` Namespace:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: apps/v1

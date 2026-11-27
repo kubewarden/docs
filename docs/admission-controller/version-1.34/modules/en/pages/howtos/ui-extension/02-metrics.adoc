@@ -38,7 +38,7 @@ instructions] to install it.
 These steps are an adaptation from the
 xref:howtos/telemetry/30-metrics-qs.adoc[telemetry metrics instructions].
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -81,7 +81,7 @@ spec:
 * Edit the YAML for `telemetry` to be `enabled: "true"` and verify that the metrics
   port is correct.
 
-[,yml]
+[source,yml]
 ----
 telemetry:
   metrics: true

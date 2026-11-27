@@ -71,7 +71,7 @@ Perform the mutation against:
 You can see a mutating policy at work. Create the following
 `ClusterAdmissionPolicy` with the `mutating` field set to `true`:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 # Command
 kubectl apply -f - <<EOF
@@ -115,7 +115,7 @@ container `securityContext` section.
 
 As the `mutating` field is `true`, the following request succeeds:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 # Command
 kubectl apply -f - <<EOF
@@ -135,7 +135,7 @@ pod/pause-user-group created
 
 You can see the results of the container's `securityContext`:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 # Command
 kubectl get pods pause-user-group -o jsonpath='{ .spec.containers[].securityContext }'
@@ -146,7 +146,7 @@ kubectl get pods pause-user-group -o jsonpath='{ .spec.containers[].securityCont
 
 Now, modify the `ClusterAdmissionPolicy` by setting the field `mutating` to `false`:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 # Command
 kubectl apply -f - <<EOF
@@ -184,7 +184,7 @@ clusteradmissionpolicy.policies.kubewarden.io/psp-user-group configured
 
 As the `mutating` field is `false`, the following request fail:
 
-[subs="+attributes",bash]
+[source,bash,subs="+attributes"]
 ----
 # Command
 kubectl apply -f - <<EOF

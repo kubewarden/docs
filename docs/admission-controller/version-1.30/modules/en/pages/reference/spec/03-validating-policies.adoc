@@ -41,7 +41,7 @@ a `ValidationResponse` JSON object.
 The `ValidationRequest` is a JSON object received by the `validate` function.
 It looks like:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 {
   "request": <AdmissionReview.request data> | <RawReviewRequest.request data>,
@@ -63,7 +63,7 @@ Given the following Kubernetes `AdmissionReview`:
 [%collapsible]
 ======
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 {
   "apiVersion": "admission.k8s.io/v1",
@@ -141,7 +141,7 @@ The `ValidationRequest` object would look like:
 [%collapsible]
 ======
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 {
   "request": {
@@ -221,7 +221,7 @@ The `validate` function returns the outcome of its validation using a
 
 The `ValidationResponse` has this structure:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 {
   # mandatory

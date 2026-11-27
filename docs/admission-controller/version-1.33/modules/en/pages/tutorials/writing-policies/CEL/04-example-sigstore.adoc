@@ -33,7 +33,7 @@ function].
 
 As always, we can start with `kwctl`:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ kwctl scaffold manifest -t ClusterAdmissionPolicy \
   registry://ghcr.io/kubewarden/policies/cel-policy:v1.0.0`
@@ -41,7 +41,7 @@ $ kwctl scaffold manifest -t ClusterAdmissionPolicy \
 
 Which then we can edit to be relevant to our container verification policy:
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy
@@ -63,7 +63,7 @@ Now, let's to the CEL part. We will obtain a list of container images in the
 current Pod object, and then check that they are verified by a signature
 matching our organization of choosing (in this case, github.com/opencontainers):
 
-[subs="+attributes",yaml]
+[source,yaml,subs="+attributes"]
 ----
 apiVersion: policies.kubewarden.io/v1
 kind: ClusterAdmissionPolicy

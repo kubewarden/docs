@@ -45,7 +45,7 @@ However, the goal of this article is to show how Kubewarden can complement the n
 
 In this example we're creating a namespace and applying restrictive PSA policies:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -69,7 +69,7 @@ So, the following resource won't reach its desired state:
 .`kubectl` command configuring a resource with `runAsUser: 0` (marked as ➀)
 [%collapsible]
 =====
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl apply -n my-namespace -f - <<EOF
 apiVersion: apps/v1
@@ -109,7 +109,7 @@ EOF
 
 If we check the deployment, we can see the PSA prevents the pod creation:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl get deploy -n my-namespace nginx-deployment -o json | jq ".status.conditions[] | select(.reason == \"FailedCreate\")"
 {
@@ -127,7 +127,7 @@ You can fix this by removing the `runAsUser: 0` from the container definition:
 .`kubectl` command configuring a resource without `runAsUser: 0`
 [%collapsible]
 =====
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl apply -n my-namespace -f - <<EOF
 apiVersion: apps/v1
@@ -166,7 +166,7 @@ EOF
 
 Now PSA allows an attempt at pod creation but it still fails.
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl get pods -n my-namespace
 NAME                                READY   STATUS                       RESTARTS   AGE
@@ -177,7 +177,7 @@ It's because the container definition didn't specify a user to be used when star
 The default is to run as the root user if this is the case.
 That's not allowed by the `runAsNonRoot` directive:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl get pods -n my-namespace nginx-deployment-57d8568bbb-h4bx7 -o json | jq ".status.containerStatuses"
 [
@@ -217,7 +217,7 @@ It's possible to enforce a user ID range, for example, 1000--2000 and 4000--5000
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl apply -f - <<EOF
 apiVersion: policies.kubewarden.io/v1
@@ -255,7 +255,7 @@ EOF
 
 Check the policy is active before continuing:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl get clusteradmissionpolicy.policies.kubewarden.io/user-group-psp
 ----
@@ -266,7 +266,7 @@ When the policy is active, re-create the deployment:
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl delete deployment -n my-namespace nginx-deployment && \
 kubectl apply -n my-namespace -f - <<EOF
@@ -308,7 +308,7 @@ EOF
 Now the deployment is mutated by Kubewarden's policy which allows the Pod to be started.
 The container defined inside the Pod has a default `runAsUser` value:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl get pods -n my-namespace nginx-deployment-57d8568bbb-nv8fj -o json | jq ".spec.containers[].securityContext"
 {
@@ -335,7 +335,7 @@ This resource is rejected by the Kubewarden policy from earlier:
 [%collapsible]
 ======
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl apply -n my-namespace -f - <<EOF
 apiVersion: apps/v1
@@ -375,7 +375,7 @@ EOF
 
 It's rejected because the `runAsUser` value is set to `7000`, which is outside the ranges allowed by the policy:
 
-[subs="+attributes",shell]
+[source,shell,subs="+attributes"]
 ----
 kubectl get deploy -n my-namespace nginx-deployment -o json | jq ".status.conditions[] | select(.reason == \"FailedCreate\")"
 {

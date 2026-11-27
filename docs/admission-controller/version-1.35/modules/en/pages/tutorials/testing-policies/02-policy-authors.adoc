@@ -52,7 +52,7 @@ After the test `kwctl`, prints the `ValidationResponse` object to standard outpu
 
 This is how you use `kwctl` to test the Wasm binary of the https://github.com/kubewarden/ingress-policy[`ingress-policy`] mentioned previously:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ curl https://raw.githubusercontent.com/kubewarden/ingress-policy/v0.1.8/test_data/ingress-wildcard.json 2> /dev/null | \
     kwctl run \
@@ -70,7 +70,7 @@ Using `bats` you can write a test that runs this command and looks for the expec
 [%collapsible]
 ======
 
-[,bash]
+[source,bash]
 ----
 @test "all is good" {
   run kwctl run \
@@ -93,7 +93,7 @@ Using `bats` you can write a test that runs this command and looks for the expec
 
 You can put the code in a file, `e2e.bats`, for example, and then invoke `bats` by:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 $ bats e2e.bats
  ✓ all is good

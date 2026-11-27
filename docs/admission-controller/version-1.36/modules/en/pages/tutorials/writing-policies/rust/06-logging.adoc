@@ -23,7 +23,7 @@ It's a popular, well known crate and integrates cleanly with {admc-name}.
 The project recommends you create a global sink you can log to, from where needed in your policy.
 For this, use the `lazy_static` crate:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 use slog::{o, Logger};
 
@@ -40,7 +40,7 @@ lazy_static! {
 Now, from within the `validate`, or `validate_settings` functions,
 you can log using the macros exported by `slog` that match each supported logging level:
 
-[subs="+attributes",rust]
+[source,rust,subs="+attributes"]
 ----
 use slog::{info, o, warn, Logger};
 

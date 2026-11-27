@@ -37,7 +37,7 @@ If one, or more violations are reported, the request is rejected.
 Create a new folder, named `rego-policy`.
 In it, create a `policy.rego` file with the contents:
 
-[,rego]
+[source,rego]
 ----
 package policy
 
@@ -64,7 +64,7 @@ Now, you can create the requests to evaluate in the next section.
 
 You first create a `default-ns.json` file with the following contents inside the `data` directory:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "apiVersion": "admission.k8s.io/v1",
@@ -90,7 +90,7 @@ is targeting a namespace different to the `default` one.
 Name this file `other-ns.json`.
 It has the following contents:
 
-[subs="+attributes",json]
+[source,json,subs="+attributes"]
 ----
 {
   "apiVersion": "admission.k8s.io/v1",

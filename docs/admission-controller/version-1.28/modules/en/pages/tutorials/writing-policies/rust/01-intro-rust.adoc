@@ -27,7 +27,7 @@ Refer to the rustup https://rust-lang.github.io/rustup/installation/index.html[i
 
 Once you have installed `rustup` add the WebAssembly System Interface (WASI) target:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 rustup target add wasm32-wasip1
 ----
@@ -37,7 +37,7 @@ rustup target add wasm32-wasip1
 To use `cargo-generate` you need to add the Xcode tool set.
 If it isn't installed through Xcode the following command gives you the dependencies needed:
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 xcode-select --install
 ----
