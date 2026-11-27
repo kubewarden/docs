@@ -81,7 +81,7 @@ Follow these simple steps from your local machine to get {rte-short-name} up and
 {rte-short-name} ships with a standalone OTEL collector Deployment that handles violation metrics and events forwarding.
 No external OpenTelemetry Collector is needed for a basic setup.
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add runtime-enforcer {runtime-enforcer-helm-chart}
 helm repo update
