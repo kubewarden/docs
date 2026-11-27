@@ -85,7 +85,7 @@ status of the policy. To export the violation events and metrics to your own
 collector, see xref:howtos/telemetry.adoc[Export telemetry to an
 OpenTelemetry collector].
 
-[subs="+attributes",console]
+[source,console,subs="+attributes"]
 ----
 helm repo add kubewarden {runtime-enforcer-helm-chart}
 helm repo update
