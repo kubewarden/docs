@@ -2,7 +2,7 @@ include::partial$variables.adoc[]
 
 = Custom OpenTelemetry Collector
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :description: Configure the {admc-name} to securely send telemetry data to a custom OpenTelemetry Collector deployed within the cluster.
 :keywords: kubewarden, kubernetes, metrics, tracing, opentelemetry
@@ -82,8 +82,8 @@ spec:
   - kubewarden.kubewarden.svc
   - kubewarden.kubewarden.svc.cluster.local
   issuerRef:
-  kind: Issuer
-  name: my-selfsigned-issuer
+    kind: Issuer
+    name: my-selfsigned-issuer
   secretName: my-client-cert
 ---
 apiVersion: cert-manager.io/v1
@@ -96,8 +96,8 @@ spec:
   - my-collector-collector.kubewarden.svc
   - my-collector-collector.kubewarden.svc.cluster.local
   issuerRef:
-  kind: Issuer
-  name: my-selfsigned-issuer
+    kind: Issuer
+    name: my-selfsigned-issuer
   secretName: my-server-cert
 ---
 apiVersion: cert-manager.io/v1
@@ -139,6 +139,13 @@ spec: {}
 EOF
 ----
 
+[NOTE]
+====
+The Jaeger Operator webhook can take a few seconds to become ready. If the
+command fails with `failed calling webhook "mjaeger.kb.io"`, wait a few
+seconds, and then run the command again.
+====
+
 If you installed Traefik in the OpenTelemetry quickstart, expose the Jaeger
 Query UI with this `Ingress`:
 
@@ -174,14 +181,14 @@ prometheus:
   additionalServiceMonitors:
   - name: kubewarden
     selector:
-    matchLabels:
-      app.kubernetes.io/instance: kubewarden.my-collector
+      matchLabels:
+        app.kubernetes.io/instance: kubewarden.my-collector
     namespaceSelector:
-    matchNames:
-      - kubewarden
+      matchNames:
+        - kubewarden
     endpoints:
     - port: prometheus
-    interval: 10s
+      interval: 10s
 EOF
 
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -218,10 +225,10 @@ spec:
   volumes:
   - name: server-certificate
     secret:
-    secretName: my-server-cert
+      secretName: my-server-cert
   - name: client-certificate
     secret:
-    secretName: my-client-cert
+      secretName: my-client-cert
   volumeMounts:
   - name: server-certificate
     mountPath: /tmp/etc/ssl/certs/my-server-cert
@@ -230,34 +237,34 @@ spec:
     mountPath: /tmp/etc/ssl/certs/my-client-cert
     readOnly: true
   config:
-  receivers:
-    otlp:
-    protocols:
-      grpc:
-      tls:
-        cert_file: /tmp/etc/ssl/certs/my-server-cert/tls.crt
-        key_file: /tmp/etc/ssl/certs/my-server-cert/tls.key
-        client_ca_file: /tmp/etc/ssl/certs/my-client-cert/ca.crt
-  processors: {}
-  exporters:
-    debug:
-    verbosity: normal
-    prometheus:
-    endpoint: ":8080"
-    otlp/jaeger:
-    endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:4317"
-    tls:
-      insecure: true
-  service:
-    pipelines:
-    metrics:
-      receivers: [otlp]
-      processors: []
-      exporters: [debug, prometheus]
-    traces:
-      receivers: [otlp]
-      processors: []
-      exporters: [debug, otlp/jaeger]
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            tls:
+              cert_file: /tmp/etc/ssl/certs/my-server-cert/tls.crt
+              key_file: /tmp/etc/ssl/certs/my-server-cert/tls.key
+              client_ca_file: /tmp/etc/ssl/certs/my-client-cert/ca.crt
+    processors: {}
+    exporters:
+      debug:
+        verbosity: normal
+      prometheus:
+        endpoint: ":8080"
+      otlp/jaeger:
+        endpoint: "my-open-telemetry-collector.jaeger.svc.cluster.local:4317"
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        metrics:
+          receivers: [otlp]
+          processors: []
+          exporters: [debug, prometheus]
+        traces:
+          receivers: [otlp]
+          processors: []
+          exporters: [debug, otlp/jaeger]
 ----
 Apply the manifest:
 [source,console]
@@ -290,10 +297,10 @@ telemetry:
   metrics: True
   tracing: True
   custom:
-  endpoint: "https://my-collector-collector.kubewarden.svc:4317"
-  insecure: false
-  otelCollectorCertificateSecret: "my-server-cert"
-  otelCollectorClientCertificateSecret: "my-client-cert"
+    endpoint: "https://my-collector-collector.kubewarden.svc:4317"
+    insecure: false
+    otelCollectorCertificateSecret: "my-server-cert"
+    otelCollectorClientCertificateSecret: "my-client-cert"
 ----
 
 The Secret referenced by the `otelCollectorCertificateSecret` key must have an

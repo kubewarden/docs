@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 = Tracing quickstart
 :page-languages: [en, de, es, fr, ja, pt, zh]
-:revdate: 2026-06-18
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :description: Enable tracing support for the Policy Server using this quickstart guide to collect fine-grained details about policy evaluations, which can be used to debug {admc-short-name} issues.
 :doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
@@ -84,6 +84,13 @@ metadata:
 spec: {}
 EOF
 ----
+
+[NOTE]
+====
+The Jaeger Operator webhook can take a few seconds to become ready. If the
+command fails with `failed calling webhook "mjaeger.kb.io"`, wait a few
+seconds, and then run the command again.
+====
 
 After creation of Jaeger Operator resources, you have a Service under
 `my-open-telemetry-collector.jaeger.svc.cluster.local`. The Jaeger Query UI is
@@ -213,7 +220,7 @@ You need to wait for the policy to become active:
 
 [subs="+attributes",console]
 ----
-kubectl wait --for=condition=PolicyActive clusteradmissionpolicy/safe-labels
+kubectl wait --for=condition=PolicyActive clusteradmissionpolicy/safe-labels --timeout=5m
 ----
 
 Once the policy is active, you can try it:
