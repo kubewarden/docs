@@ -1,0 +1,325 @@
+include::partial$variables.adoc[]
+
+= Attach a policy to a gateway or a route
+:revdate: 2026-11-24
+:page-revdate: {revdate}
+:description: Attach a {gp-name} WAFPolicy to a Gateway, a listener, an HTTPRoute, or one rule of an HTTPRoute, and turn the WAF off for one route.
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["policy-attachment"]
+:doc-type: ["howto"]
+:keywords: {gp-name}, kubewarden, wafpolicy, gateway, httproute, listener, sectionName
+
+A `WAFPolicy` protects the traffic of its target. This page shows how to
+attach a policy to each kind of target. It also shows how to turn the WAF
+off for one route.
+
+When more than one policy applies to a request, one policy governs it. The
+xref:explanations/policy-attachment.adoc[Policy attachment] page explains
+which one.
+
+[#_prerequisites]
+== Prerequisites
+
+* {gp-short-name} is installed. See the xref:quickstart.adoc[quick start].
+* You have write access to the namespace of the policies. The examples use
+  the namespace `gateway-protector-system`.
+
+[#_example_objects]
+== Example objects
+
+The examples on this page use these objects:
+
+* The platform team owns the `Gateway` `shared-gw` in the namespace
+  `infra`. The gateway has two listeners, `public` and `internal`.
+* The application team owns two routes in the namespace `team-shop`. The
+  first rule of the route `admin-portal` has the name `admin`.
+
+[source,yaml]
+----
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: shared-gw
+  namespace: infra
+spec:
+  gatewayClassName: agentgateway
+  listeners:
+    - name: public
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: internal
+      protocol: HTTP
+      port: 8080
+      allowedRoutes:
+        namespaces:
+          from: All
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: admin-portal
+  namespace: team-shop
+spec:
+  parentRefs:
+    - name: shared-gw
+      namespace: infra
+  hostnames:
+    - shop.example.com
+  rules:
+    - name: admin
+      matches:
+        - path:
+            type: PathPrefix
+            value: /admin
+      backendRefs:
+        - name: admin-portal
+          port: 8080
+    - backendRefs:
+        - name: shop
+          port: 8080
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: status-page
+  namespace: team-shop
+spec:
+  parentRefs:
+    - name: shared-gw
+      namespace: infra
+  hostnames:
+    - status.example.com
+  rules:
+    - backendRefs:
+        - name: status-page
+          port: 8080
+----
+
+[#_protect_every_route_of_a_gateway]
+== Protect every route of a gateway
+
+A policy on a `Gateway` protects every route of the gateway. It also
+protects the routes that the teams add later.
+
+. Create a policy with the `Gateway` as its target:
++
+[source,yaml]
+----
+apiVersion: gateway-protector.kubewarden.io/v1alpha1
+kind: WAFPolicy
+metadata:
+  name: shared-gw-default
+  namespace: gateway-protector-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: shared-gw
+    namespace: infra
+  engine:
+    mode: Detection
+  paranoiaLevel: 1
+----
+
+. Apply the policy:
++
+[source,bash]
+----
+kubectl apply -f shared-gw-default.yaml
+----
+
+. Make sure that the policy governs the routes. See
+  xref:#_make_sure_that_the_correct_policy_governs_a_route[Make sure that the
+  correct policy governs a route].
+
+[#_protect_the_routes_of_one_listener]
+== Protect the traffic of one listener
+
+A policy on a listener protects each request that this listener accepts.
+The other listeners of the gateway keep the gateway policy.
+
+. Create a policy with the `Gateway` as its target. Put the name of the
+  listener in `sectionName`:
++
+[source,yaml]
+----
+apiVersion: gateway-protector.kubewarden.io/v1alpha1
+kind: WAFPolicy
+metadata:
+  name: shared-gw-internal
+  namespace: gateway-protector-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: shared-gw
+    namespace: infra
+    sectionName: internal
+  engine:
+    mode: Blocking
+----
+
+. Apply the policy and make sure that it governs the routes.
+
+A route does not need `sectionName` in `parentRefs` to get the listener
+policy. The example routes attach to `shared-gw` without `sectionName`, so
+they get traffic through both listeners. Their requests through `internal`
+get the listener policy, and their requests through `public` get the gateway
+policy.
+
+[#_give_one_route_a_different_policy]
+== Give one route a different policy
+
+A policy on an `HTTPRoute` replaces the gateway policy for every rule of the
+route. The other routes of the gateway keep the gateway policy.
+
+. Create a policy with the `HTTPRoute` as its target:
++
+[source,yaml]
+----
+apiVersion: gateway-protector.kubewarden.io/v1alpha1
+kind: WAFPolicy
+metadata:
+  name: admin-portal-blocking
+  namespace: gateway-protector-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: admin-portal
+    namespace: team-shop
+  engine:
+    mode: Blocking
+  paranoiaLevel: 1
+----
+
+. Copy the values of the gateway policy that you want to keep, for example
+  `paranoiaLevel` and `exclusions`. The route policy keeps no value of the
+  gateway policy.
+
+. Apply the policy and make sure that it governs the route.
+
+[#_give_one_rule_of_a_route_a_different_policy]
+== Give one rule of a route a different policy
+
+A policy on one rule replaces every broader policy for this rule only. The
+other rules of the route keep their policy.
+
+. Make sure that the rule has a name. In the example route `admin-portal`,
+  the first rule has the name `admin`. If the rule has no name, ask the
+  application team to add one.
+
+. Create a policy with the `HTTPRoute` as its target. Put the name of the
+  rule in `sectionName`:
++
+[source,yaml]
+----
+apiVersion: gateway-protector.kubewarden.io/v1alpha1
+kind: WAFPolicy
+metadata:
+  name: admin-portal-strict
+  namespace: gateway-protector-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: admin-portal
+    namespace: team-shop
+    sectionName: admin
+  engine:
+    mode: Blocking
+  paranoiaLevel: 3
+  anomalyThreshold:
+    inbound: 5
+    outbound: 4
+----
+
+. Apply the policy and make sure that it governs the rule.
+
+If the application team changes the name of the rule, change `sectionName`
+too. Until then, the policy reports `Accepted=False` with the reason
+`TargetNotFound`, and the rule gets the next broader policy.
+
+[#_turn_the_waf_off_for_one_route]
+== Turn the WAF off for one route
+
+A policy with the mode `Off` stops the inspection of its target. Use it for
+a route that a false positive must never block, for example a public status
+page.
+
+. Create a policy with the route as its target and the mode `Off`:
++
+[source,yaml]
+----
+apiVersion: gateway-protector.kubewarden.io/v1alpha1
+kind: WAFPolicy
+metadata:
+  name: status-page-off
+  namespace: gateway-protector-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: status-page
+    namespace: team-shop
+  engine:
+    mode: "Off"
+----
++
+Put the value `Off` in quotes. Without quotes, YAML can read `Off` as a
+boolean value.
+
+. Apply the policy and make sure that it governs the route.
+
+To turn the WAF off for one rule only, put the name of the rule in
+`sectionName`.
+
+The traffic of the route still goes through the processor. When no processor
+replica is ready, agentgateway also blocks this route. To take the WAF out
+of the path of every route in an emergency, see
+xref:howtos/emergency-disable.adoc[Turn off the WAF in an emergency].
+
+[#_make_sure_that_the_correct_policy_governs_a_route]
+== Make sure that the correct policy governs a route
+
+. List the policies and their targets:
++
+[source,bash]
+----
+kubectl get wafpolicy -A -o custom-columns='NAME:.metadata.name,KIND:.spec.targetRef.kind,TARGET:.spec.targetRef.name,NAMESPACE:.spec.targetRef.namespace,SECTION:.spec.targetRef.sectionName,MODE:.spec.engine.mode'
+----
+
+. For each rule of the route, find the policy that governs it. Try the rule,
+  the route, the listener, and the gateway, in this order. The first policy
+  that you find governs the rule. If the route gets traffic through more
+  than one listener, do this step for each listener.
+
+. Make sure that this policy is accepted and programmed. See
+  xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the
+  status of a policy]. The message of `Programmed` gives the number of
+  routes that the policy can apply to.
+
+. Send a request with an attack to the route. Replace `<gateway address>`
+  with the address of the gateway. The command
+  `kubectl get gateway shared-gw -n infra` shows it.
++
+[source,bash]
+----
+curl -s -o /dev/null -D - -H 'Host: shop.example.com' \
+  'http://<gateway address>/admin?q=%3Cscript%3Ealert(1)%3C/script%3E'
+----
++
+The result depends on the mode of the policy:
++
+* `Blocking`: The response has the status `403` and the header
+  `x-waf-violation: 1`.
+* `Detection`: The request passes. The processor writes the line
+  `WAF rule triggered` with the URI of the request.
+* `Off`: The request passes. The processor writes no line for it.
+
+If the result is not what you expect, see
+xref:howtos/troubleshooting.adoc#_the_waf_does_not_inspect_a_route[The WAF
+does not inspect the requests of a route].

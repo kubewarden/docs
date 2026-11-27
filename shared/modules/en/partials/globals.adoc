@@ -24,6 +24,11 @@
 :co-community-short-name: Compliance Operator
 :co-community-abbrev: KWCO
 
+// Gateway Protector.
+:gp-community-name: {community-project-name} Gateway Protector
+:gp-community-short-name: Gateway Protector
+:gp-community-abbrev: KWGP
+
 // Network Enforcer.
 :ne-community-name: {community-project-name} Network Enforcer
 :ne-community-short-name: Network Enforcer
@@ -38,11 +43,6 @@
 :sboms-community-name: {community-project-name} SBOM Scanner
 :sboms-community-short-name: SBOM Scanner
 :sboms-community-abbrev: KWSBOMS
-
-// Web Application Firewall.
-:waf-community-name: {community-project-name} Web Application Firewall
-:waf-community-short-name: Web Application Firewall
-:waf-community-abbrev: KWWAF
 
 // Pull in the build specific global attributes.
 include::{build-type}-specific/globals.adoc[]

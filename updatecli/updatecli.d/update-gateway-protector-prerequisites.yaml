@@ -1,0 +1,116 @@
+# Keeps the versions of the gateway-protector prerequisites in the dev
+# documentation version in sync with the upstream repository. The
+# attributes :gateway-api-version: and :agentgateway-version: live in
+# docs/gateway-protector/version-<dev>/modules/en/partials/variables.adoc
+# and feed the quick start and the compatibility page.
+#
+# The sources read the main branch of kubewarden/gateway-protector:
+# - The Gateway API version is the version of sigs.k8s.io/gateway-api in
+#   go.mod.
+# - The agentgateway version is the agentgateway_version line of the
+#   Tiltfile. An updatecli job of the upstream repository writes this line.
+#
+# This job does not need an upstream release, so it runs with the reference
+# documentation jobs in updatecli/update-ref-docs.yaml.
+
+name: "Update gateway-protector prerequisite versions"
+pipelineid: "gateway-protector-prerequisites"
+
+scms:
+  default:
+    kind: "github"
+    spec:
+      user: "{{ .scm.user }}"
+      email: "{{ .scm.email }}"
+      owner: "{{ .scm.owner }}"
+      repository: "{{ .scm.repository }}"
+      branch: "{{ .scm.branch }}"
+      submodules: false
+      commitusingapi: true
+      commitmessage:
+        hidecredit: true
+        footers: "Signed-off-by: Kubewarden bot <cncf-kubewarden-maintainers@lists.cncf.io>"
+
+sources:
+  gatewayApiVersion:
+    name: "Get the Gateway API version of gateway-protector"
+    kind: golang/gomod
+    spec:
+      file: "https://raw.githubusercontent.com/kubewarden/gateway-protector/main/go.mod"
+      module: "sigs.k8s.io/gateway-api"
+
+  agentgatewayVersion:
+    name: "Get the agentgateway version of gateway-protector"
+    kind: file
+    spec:
+      file: "https://raw.githubusercontent.com/kubewarden/gateway-protector/main/Tiltfile"
+      matchpattern: 'agentgateway_version = "[^"]+"'
+    transformers:
+      - findsubmatch:
+          pattern: 'agentgateway_version = "([^"]+)"'
+          captureindex: 1
+
+  # The dev documentation version, read from the documentation tree, the same
+  # way updatecli.d/update-release-attributes.yaml does.
+  devVersion:
+    name: "Find the gateway-protector dev version"
+    kind: shell
+    scmid: default
+    spec:
+      environments:
+        - name: "PATH"
+      command: |
+        #!/bin/sh
+        COMPONENT_DIR="docs/gateway-protector"
+
+        DEV_VERSION=""
+        DEV_COUNT=0
+
+        for dir in ${COMPONENT_DIR}/version-*/; do
+          [ -f "${dir}antora.yml" ] || continue
+          grep -q "prerelease:" "${dir}antora.yml" || continue
+
+          DEV_COUNT=$((DEV_COUNT + 1))
+          [ -n "$DEV_VERSION" ] || DEV_VERSION=$(basename "$dir" | sed 's/^version-//')
+        done
+
+        if [ "$DEV_COUNT" -ne 1 ]; then
+          echo "${COMPONENT_DIR}: expected exactly 1 dev version directory with 'prerelease:', found ${DEV_COUNT}" >&2
+          exit 1
+        fi
+
+        echo "$DEV_VERSION"
+
+targets:
+  gatewayApiVersionAttribute:
+    name: "Update :gateway-api-version: in gateway-protector dev docs"
+    kind: file
+    sourceid: gatewayApiVersion
+    scmid: default
+    spec:
+      file: 'docs/gateway-protector/version-{{ source "devVersion" }}/modules/en/partials/variables.adoc'
+      matchpattern: '(?m)^:gateway-api-version: .*$'
+      replacepattern: ':gateway-api-version: {{ source "gatewayApiVersion" }}'
+
+  agentgatewayVersionAttribute:
+    name: "Update :agentgateway-version: in gateway-protector dev docs"
+    kind: file
+    sourceid: agentgatewayVersion
+    scmid: default
+    spec:
+      file: 'docs/gateway-protector/version-{{ source "devVersion" }}/modules/en/partials/variables.adoc'
+      matchpattern: '(?m)^:agentgateway-version: .*$'
+      replacepattern: ':agentgateway-version: {{ source "agentgatewayVersion" }}'
+
+actions:
+  default:
+    kind: "github/pullrequest"
+    scmid: "default"
+    spec:
+      merge:
+        strategy: manual
+      title: "Update Kubewarden gateway-protector prerequisite versions"
+      description: "Automatically sync the Gateway API and agentgateway versions of the gateway-protector documentation with the kubewarden/gateway-protector repository"
+      labels:
+        - "kind/chore"
+        - "area/documentation"

@@ -1,0 +1,304 @@
+include::partial$variables.adoc[]
+
+= Troubleshooting
+:revdate: 2026-11-24
+:page-revdate: {revdate}
+:description: Find out why a {gp-name} policy does not protect a route, what an unexpected response from a protected route means, and why a processor pod restarts.
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["troubleshooting"]
+:doc-type: ["howto"]
+:keywords: {gp-name}, kubewarden, troubleshooting, waf, wafpolicy, status conditions, logs
+
+This page helps you find why a {gp-name} policy does not protect a route,
+why a protected route gives an unexpected response, and why a processor pod
+restarts. Start with the status of the policy. It shows most problems.
+
+The commands on this page use the release name and the namespace of the
+xref:quickstart.adoc[quick start]: `gateway-protector` and
+`gateway-protector-system`. If you use other values, change the commands.
+
+[#_read_the_status_of_a_policy]
+== Read the status of a policy
+
+Each policy reports two conditions. `Accepted` shows that the policy is
+valid. `Programmed` shows that the rules of the policy compiled, and that
+the controller sent them to the processor.
+
+. List the policies and their conditions.
++
+[source,bash]
+----
+kubectl get wafpolicy -A
+----
++
+[source,bash]
+----
+NAMESPACE                  NAME           TARGET KIND   TARGET NAME       MODE        ACCEPTED   PROGRAMMED   AGE
+gateway-protector-system   httpbin-demo   Gateway       httpbin-gateway   Detection   True       True         15s
+----
++
+A policy that works has `True` in the columns `ACCEPTED` and `PROGRAMMED`.
+
+. If a column does not show `True`, print the reason and the message of each
+  condition of the policy.
++
+[source,bash]
+----
+kubectl get wafpolicy httpbin-demo -n gateway-protector-system \
+  -o jsonpath='{range .status.conditions[*]}{.type}{"\t"}{.status}{"\t"}{.reason}{"\t"}{.message}{"\n"}{end}'
+----
+
+. Find the condition and the reason in the table that follows. Then do the
+  action in the last column.
+
+include::partial$status-conditions.adoc[]
+
+[#_the_waf_does_not_inspect_a_route]
+== The WAF does not inspect the requests of a route
+
+Do these checks when the policy is `Accepted` and `Programmed`, but the WAF
+does not block an attack:
+
+. Make sure that the policy is in `Blocking` mode. In `Detection` mode, the
+  WAF blocks nothing. It only writes the matched rules to the log of the
+  processor.
+
+. Read the message of the condition `Programmed`. It gives the number of
+  routes that the policy can apply to. If the number is 0, make sure that
+  the route attaches to the target of the policy.
+
+. Make sure that the route has a generated `AgentgatewayPolicy`. Its name is
+  `gateway-protector-<route name>`. Replace `<route namespace>` with the
+  namespace of the route:
++
+[source,bash]
+----
+kubectl get agentgatewaypolicies -n <route namespace> -l gateway-protector.kubewarden.io/managed=true
+----
++
+If the object does not exist, read the log of the controller.
+
+. Make sure that no `AgentgatewayPolicy` of your own stops the inspection.
+  See
+  xref:reference/known_limitations.adoc#_your_own_agentgatewaypolicy_can_stop_the_inspection[Your own `AgentgatewayPolicy` can stop the inspection].
+
+. Make sure that a more specific policy does not govern the request. For
+  example, look for a policy with the mode `Off` on the rule or on the
+  route. agentgateway selects the rule with all the matches of the route.
+  See
+  xref:explanations/policy-attachment.adoc#_selection_order[Selection
+  order].
+
+. Make sure that the processor applied the latest configuration. Each
+  processor replica writes the line `Applied config from controller` when it
+  applies a configuration.
++
+[source,bash]
+----
+kubectl logs -n gateway-protector-system -l app.kubernetes.io/component=processor \
+  --prefix --tail=-1 | grep 'Applied config from controller'
+----
++
+The controller writes `Processor rejected config` for each replica that
+rejects a configuration:
++
+[source,bash]
+----
+kubectl logs -n gateway-protector-system -l app.kubernetes.io/component=controller \
+  --prefix --tail=-1 | grep 'Processor rejected config'
+----
+
+. If the request still passes, set the chart value `processor.logLevel` to
+  `debug`. The processor then writes the line
+  `No WAFPolicy applies, request is unprotected` for each request that no
+  policy covers. The field `identity` of the line gives the gateway, the
+  listener, the route, and the rule of the request.
+
+[#_unexpected_responses]
+== Unexpected responses
+
+The response of a protected route shows if the WAF, the processor, or
+agentgateway stopped the request.
+
+[cols="2,3,3", options="header"]
+|===
+|Response |Cause |What to do
+
+|A status with the header `x-waf-violation: 1`, by default `403`.
+|A rule rejected the request or the response. The log line
+`WAF blocked traffic` of the processor gives the path and the ID of the
+rule.
+|If the request is valid, the cause is a false positive. See
+xref:howtos/tune-false-positives.adoc[Tune false positives]. To stop the
+blocking at once, see
+xref:howtos/emergency-disable.adoc#_stop_the_blocking[Stop the blocking].
+
+|Status `413` with the header `x-waf-violation: 1`.
+|The request body is larger than the limit of the policy. This happens only
+in `Blocking` mode.
+|Increase `requestBody.maxSize` in the policy. See
+xref:reference/known_limitations.adoc#_large_request_bodies_are_rejected[Large request bodies are rejected in Blocking mode].
+
+|Status `500` without the header `x-waf-violation`.
+|The WAF engine returned an error. The processor rejects the request, so
+that it does not pass without inspection. The log line
+`Failed to process request body` or `Failed to process response body` gives
+the error.
+|Read the error in the log of the processor.
+
+|Status `500` without the header `x-waf-violation`, and the log line
+`Request has no valid identity in the ext_proc metadata, failing closed`.
+|agentgateway sent the request without its identity. For example, your own
+`AgentgatewayPolicy` sends traffic to the processor. The field `error` of
+the line gives the missing value.
+|In your own `AgentgatewayPolicy`, remove the `extProc` section that points
+at the processor. See
+xref:reference/known_limitations.adoc#_a_request_without_its_identity_fails[A
+request without its identity fails].
+
+|Status `400`, and the processor writes no log line for the request.
+|agentgateway rejected the request before the WAF. For example, the URL
+contains a raw `<` or `>` character.
+|Nothing. The response comes from agentgateway, not from the WAF.
+
+|Each request to a protected route gets status `500` with the body
+`external processing failed`.
+|No processor replica is ready, and agentgateway blocks the traffic of the
+protected routes.
+|Make sure that the processor pods are ready. A new replica is ready only
+after it gets its first configuration, so make sure that the controller runs
+too. If you cannot fix the processor quickly, see
+xref:howtos/emergency-disable.adoc#_take_the_waf_out_of_the_path[Take the
+WAF out of the path].
+|===
+
+To find the processor pods that are not ready, run this command:
+
+[source,bash]
+----
+kubectl get pods -n gateway-protector-system
+----
+
+[#_a_processor_pod_restarts_again_and_again]
+== A processor pod restarts again and again
+
+A processor pod gets its configuration from the controller. Until it has a
+configuration, the pod is not ready, and its liveness probe also fails.
+Kubernetes then restarts the pod about once a minute. After each restart,
+Kubernetes waits longer before the next start.
+
+. Look for the events of the failed probes:
++
+[source,bash]
+----
+kubectl get events -n gateway-protector-system --field-selector reason=Unhealthy
+----
++
+The message of these events is
+`Liveness probe failed: service unhealthy (responded with "NOT_SERVING")`,
+or the same message for the readiness probe.
+
+. Make sure that a controller pod runs and is ready:
++
+[source,bash]
+----
+kubectl get pods -n gateway-protector-system \
+  -l app.kubernetes.io/component=controller
+----
++
+If no controller pod is ready, read the log and the events of the
+controller.
+
+. When a controller pod is ready, restart the processor:
++
+[source,bash]
+----
+kubectl rollout restart deployment gateway-protector-processor \
+  -n gateway-protector-system
+----
++
+A new pod gets its configuration at once. An old pod can wait some minutes
+for its next start.
+
+See
+xref:reference/known_limitations.adoc#_a_new_processor_replica_needs_the_controller[A
+new processor replica needs the controller].
+
+[#_read_the_logs]
+== Read the logs
+
+The processor writes one JSON line for each event. The controller writes one
+line for each event in text format.
+
+`kubectl logs deploy/<name>` reads the log of one pod only. If the processor
+has more than one replica, read the log of every replica with the label of
+its pods:
+
+[source,bash]
+----
+kubectl logs -n gateway-protector-system -l app.kubernetes.io/component=processor --prefix --tail=-1
+----
+
+These log lines help you to find a problem:
+
+[cols="1,2,3", options="header"]
+|===
+|Program |Message |Meaning
+
+|Processor
+|`Processor ready`
+|The processor started. The field `crs-version` gives the version of the
+OWASP Core Rule Set.
+
+|Processor
+|`Applied config from controller`
+|The processor applied a new configuration.
+
+|Processor
+|`Failed to parse config from controller, keeping previous config` or
+`Failed to compile config from controller, keeping previous config`
+|The processor rejected a configuration. It keeps its last good
+configuration.
+
+|Processor
+|`WAF rule triggered`
+|A rule matched. The fields `rule_id`, `severity`, `message`, and `uri` give
+the details. In `Detection` mode, this line is the only result of a match.
+
+|Processor
+|`WAF blocked traffic`
+|The WAF blocked a request or a response. The fields `path` and `rule_id`
+give the details. The field `identity` gives the gateway, the listener, the
+route, and the rule of the request.
+
+|Processor
+|`No WAFPolicy applies, request is unprotected`
+|No policy covers the gateway, the listener, the route, and the rule of the
+request. The processor writes this line only at the log level `debug`.
+
+|Processor
+|`Request has no valid identity in the ext_proc metadata, failing closed`
+|agentgateway sent a request without its identity, and the processor
+answered with status `500`.
+
+|Processor
+|`Failed to process request body` or `Failed to process response body`
+|The WAF engine returned an error, and the processor answered with status
+`500`.
+
+|Controller
+|`Processor applied config` or `Processor rejected config`
+|The answer of one processor replica to a configuration.
+
+|Controller
+|`Rejected a processor subscription: the controller and the processor have incompatible versions`
+|A processor replica supports another version of the configuration format.
+The controller sends it no configuration. See
+xref:reference/upgrade-path.adoc#_version_compatibility_among_components[Version
+compatibility among components].
+
+|Controller
+|`WAFPolicy conflicts with an earlier WAFPolicy targeting the same attachment point`
+|Two policies have the same target. The field `winner` gives the policy that
+wins.
+|===

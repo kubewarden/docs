@@ -1,0 +1,12 @@
+---
+name: "Updates gateway-protector CRD reference documentation files"
+files:
+  - dst: docs/gateway-protector/version-0.1/modules/en/partials/crd-reference.adoc
+scm:
+  branch: "main"
+pr:
+  title: "Update Kubewarden gateway-protector CRD reference documentation"
+  description: "Automatically sync the CRD reference documentation from the kubewarden/gateway-protector repository"
+  labels:
+    - "kind/chore"
+    - "area/documentation"

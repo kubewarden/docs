@@ -1,0 +1,358 @@
+include::partial$variables.adoc[]
+
+= Turn off the WAF in an emergency
+:revdate: 2026-11-23
+:page-revdate: {revdate}
+:description: Stop the {gp-name} WAF from blocking valid traffic, or take it out of the path of the protected routes when the processor fails. Then put it back.
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["emergency", "incident-response", "bypass"]
+:doc-type: ["howto"]
+:keywords: {gp-name}, kubewarden, waf, emergency, bypass, fail closed, detection mode, incident
+
+Use this page when the WAF of {gp-name} stops the traffic of your
+applications, and you cannot wait for a fix. The page has two procedures,
+one for each kind of emergency, and the steps to put the WAF back.
+
+[CAUTION]
+====
+Each procedure on this page removes protection. Attacks get to your
+applications until you put the WAF back.
+====
+
+The commands on this page use the namespace `gateway-protector-system` and
+the release name `gateway-protector`, as in the xref:quickstart.adoc[quick
+start]. Change them if your installation uses other names.
+
+[#_choose_the_procedure]
+== Choose the procedure
+
+[cols="3,2,2", options="header"]
+|===
+|Symptom |Cause |Procedure
+
+|Valid requests get a status with the header `x-waf-violation: 1`, by
+default `403` or `413`.
+|The WAF blocks valid traffic. The processor works.
+|xref:#_stop_the_blocking[Stop the blocking]
+
+|Each request to a protected route gets status `500` with the body
+`external processing failed`.
+|No processor replica is ready, and agentgateway blocks the traffic of the
+protected routes.
+|xref:#_take_the_waf_out_of_the_path[Take the WAF out of the path]
+|===
+
+When no processor replica is ready, a change to a policy does not help.
+agentgateway sends the traffic of each protected route to the processor,
+also when the mode of the policy is `Detection` or `Off`.
+
+[#_stop_the_blocking]
+== Stop the blocking
+
+Use this procedure when the processor works. Set the mode of the policy to
+`Detection`. In this mode, the WAF blocks nothing. It still writes each rule
+that matches to the log of the processor, so you can use these lines later
+to tune the policy.
+
+[#_stop_the_blocking_of_one_policy]
+=== Stop the blocking of one policy
+
+. Set the mode of the policy to `Detection`. Replace `httpbin-demo` with the
+  name of the policy:
++
+[source,bash]
+----
+kubectl patch wafpolicy httpbin-demo -n gateway-protector-system \
+  --type=merge -p '{"spec":{"engine":{"mode":"Detection"}}}'
+----
+
+. Make sure that the policy shows the new mode:
++
+[source,bash]
+----
+kubectl get wafpolicies -n gateway-protector-system
+----
++
+The column `MODE` shows `Detection`, and the column `PROGRAMMED` shows
+`True`. In a test, the change took effect in less than one second.
+
+. Send a request that the WAF blocked before. It passes now.
+
+[#_stop_the_blocking_for_one_route]
+=== Stop the blocking for one route
+
+If a policy on a `Gateway` covers many routes, and only one route has the
+problem, add a policy for this route with the mode `Detection`. The route
+policy replaces the gateway policy for this route only. The other routes
+stay protected.
+
+. Write a policy for the route. Replace the name and the namespace of the
+  route:
++
+[source,bash]
+----
+kubectl apply -f - <<EOF
+apiVersion: gateway-protector.kubewarden.io/v1alpha1
+kind: WAFPolicy
+metadata:
+  name: httpbin-emergency
+  namespace: gateway-protector-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: httpbin
+    namespace: httpbin
+  engine:
+    mode: Detection
+EOF
+----
+
+. Wait until the policy is active:
++
+[source,bash]
+----
+kubectl wait wafpolicy httpbin-emergency -n gateway-protector-system \
+  --for=condition=Programmed --timeout=60s
+----
+
+See
+xref:howtos/attach-a-policy.adoc#_give_one_route_a_different_policy[Give
+one route a different policy].
+
+[#_stop_the_blocking_of_every_policy]
+=== Stop the blocking of every policy
+
+. Save the list of the policies with the mode `Blocking`. You need this file
+  to put the WAF back:
++
+[source,bash]
+----
+kubectl get wafpolicies -A \
+  -o jsonpath='{range .items[?(@.spec.engine.mode=="Blocking")]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}' \
+  > blocking-policies.txt
+----
+
+. Set the mode of each of these policies to `Detection`:
++
+[source,bash]
+----
+while read -r namespace name; do
+  kubectl patch wafpolicy "$name" -n "$namespace" --type=merge \
+    -p '{"spec":{"engine":{"mode":"Detection"}}}'
+done < blocking-policies.txt
+----
+
+. Make sure that no policy shows the mode `Blocking`:
++
+[source,bash]
+----
+kubectl get wafpolicies -A
+----
+
+The policies with the mode `Off` or `Detection` do not change. A policy with
+the mode `Off` stays `Off`, so the WAF does not start to inspect its routes.
+
+[#_take_the_waf_out_of_the_path]
+== Take the WAF out of the path
+
+Use this procedure when no processor replica is ready, and you cannot fix
+the processor quickly.
+
+For each protected route, the controller writes an `AgentgatewayPolicy`
+that sends the traffic of the route to the processor. See
+xref:explanations/architecture.adoc#_generated_objects[Generated objects].
+This procedure stops the controller and deletes these generated objects.
+agentgateway then sends the traffic of the protected routes to the
+applications, without the processor. The `WAFPolicy` and `WAFRuleSet`
+objects stay in the cluster, and they do not change.
+
+Before you start:
+
+* If a GitOps tool manages the release of the chart, suspend its automatic
+  sync. Otherwise, the tool can start the controller again.
+* Do not run `helm upgrade` until you put the WAF back. An upgrade starts
+  the controller again.
+
+Do these steps:
+
+. Save the number of controller replicas. You need it to put the WAF back:
++
+[source,bash]
+----
+kubectl get deployment gateway-protector-controller -n gateway-protector-system \
+  -o jsonpath='{.spec.replicas}{"\n"}'
+----
+
+. Stop the controller, and wait until its pods are gone:
++
+[source,bash]
+----
+kubectl scale deployment gateway-protector-controller \
+  -n gateway-protector-system --replicas=0
+kubectl wait pod -n gateway-protector-system \
+  -l app.kubernetes.io/component=controller --for=delete --timeout=60s
+----
++
+Stop the controller first. While the controller runs, it writes each
+deleted object again in less than one second.
+
+. Delete the generated objects:
++
+[source,bash]
+----
+kubectl delete agentgatewaypolicies -A \
+  -l gateway-protector.kubewarden.io/managed=true
+----
+
+. Send a request to a protected route. In a test, the traffic passed in
+  less than one second.
+
+[WARNING]
+====
+While the WAF is out of the path:
+
+* The WAF inspects no traffic of the protected routes.
+* The policies still show their mode and the condition `Programmed=True`.
+  Their status does not show that the WAF is out of the path.
+* A change to a policy has no effect, because the controller does not run.
+====
+
+A processor pod that starts while the controller does not run does not
+become ready. Kubernetes restarts it about once a minute, because its
+liveness probe fails too. This has no effect on the traffic.
+
+[#_put_the_waf_back]
+== Put the WAF back
+
+[#_after_you_stopped_the_blocking]
+=== After you stopped the blocking
+
+Tune the policy first, so that the WAF does not block the same valid
+requests again. See xref:howtos/tune-false-positives.adoc[Tune false
+positives].
+
+* For one policy, set the mode back to `Blocking`:
++
+[source,bash]
+----
+kubectl patch wafpolicy httpbin-demo -n gateway-protector-system \
+  --type=merge -p '{"spec":{"engine":{"mode":"Blocking"}}}'
+----
+
+* For one route, delete the route policy:
++
+[source,bash]
+----
+kubectl delete wafpolicy httpbin-emergency -n gateway-protector-system
+----
+
+* For every policy, set the mode back to `Blocking` for each policy in the
+  saved file:
++
+[source,bash]
+----
+while read -r namespace name; do
+  kubectl patch wafpolicy "$name" -n "$namespace" --type=merge \
+    -p '{"spec":{"engine":{"mode":"Blocking"}}}'
+done < blocking-policies.txt
+----
+
+[#_after_you_took_the_waf_out_of_the_path]
+=== After you took the WAF out of the path
+
+When the controller starts, it writes the generated objects again. From
+this moment, agentgateway sends the traffic of the protected routes to the
+processor. If no processor replica is ready at this moment, the protected
+routes get status `500` again, until a replica is ready.
+
+. Start the controller with the number of replicas that you saved. For
+  example, for one replica:
++
+[source,bash]
+----
+kubectl scale deployment gateway-protector-controller \
+  -n gateway-protector-system --replicas=1
+----
++
+If you must change a chart value to fix the processor, for example its
+memory limit, use `helm upgrade` instead. The upgrade also starts the
+controller.
+
+. Wait until the controller writes the generated objects again:
++
+[source,bash]
+----
+until kubectl get agentgatewaypolicies -A \
+    -l gateway-protector.kubewarden.io/managed=true -o name | grep -q .; do
+  sleep 1
+done
+----
++
+In a test, this took about 20 seconds. The new controller pod waits for the
+lease of the old pod to expire before it starts to work.
+
+. Look at the processor pods:
++
+[source,bash]
+----
+kubectl get pods -n gateway-protector-system \
+  -l app.kubernetes.io/component=processor
+----
++
+If a pod shows `1/1` in the column `READY`, go to the next step. If no pod
+is ready, restart the processor at once:
++
+[source,bash]
+----
+kubectl rollout restart deployment gateway-protector-processor \
+  -n gateway-protector-system
+kubectl rollout status deployment gateway-protector-processor \
+  -n gateway-protector-system
+----
++
+A processor pod that waited for the controller can need some minutes to
+become ready, because Kubernetes waits longer between its restarts. A new
+pod connects to the controller at once. In two tests, the protected routes
+failed for about 12 seconds with the restart. In other tests without the
+restart, they failed for up to 2 minutes.
+
+. Send a request with an attack to a route with a policy in `Blocking` mode.
+  The WAF blocks it again. For example, the attack of the quick start gets
+  status `403`.
+
+. Resume the automatic sync of your GitOps tool, if you suspended it.
+
+[#_what_does_not_help]
+== What does not help
+
+These actions do not stop the emergency:
+
+[cols="2,3", options="header"]
+|===
+|Action |Result
+
+|Set the mode `Detection` or `Off` while no processor replica is ready.
+|The protected routes still get status `500`.
+
+|Delete the generated objects while the controller runs.
+|The controller writes them again in less than one second.
+
+|Scale the processor to zero replicas.
+|The protected routes get status `500`.
+|===
+
+[#_after_the_emergency]
+== After the emergency
+
+* To find the rules that blocked valid traffic, see
+  xref:howtos/tune-false-positives.adoc#_find_the_rules_that_reject_valid_requests[Find
+  the rules that reject valid requests].
+* To find why the processor failed, see
+  xref:howtos/troubleshooting.adoc#_read_the_logs[Read the logs].
+* To make an outage of the processor less likely, run more replicas and set
+  their memory. See
+  xref:howtos/production-deployments.adoc#_run_more_than_one_processor_replica[Run
+  more than one processor replica] and
+  xref:howtos/production-deployments.adoc#_set_the_memory_of_the_processor[Set
+  the memory of the processor].

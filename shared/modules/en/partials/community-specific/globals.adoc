@@ -11,6 +11,10 @@
 :co-short-name: {co-community-short-name}
 :co-abbrev: {co-community-abbrev}
 
+:gp-name: {gp-community-name}
+:gp-short-name: {gp-community-short-name}
+:gp-abbrev: {gp-community-abbrev}
+
 :ne-name: {ne-community-name}
 :ne-short-name: {ne-community-short-name}
 :ne-abbrev: {ne-community-abbrev}

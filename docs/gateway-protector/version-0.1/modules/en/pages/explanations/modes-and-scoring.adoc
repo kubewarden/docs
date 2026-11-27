@@ -1,0 +1,184 @@
+include::partial$variables.adoc[]
+
+= Modes and anomaly scoring
+:revdate: 2026-11-24
+:page-revdate: {revdate}
+:description: Learn how the OWASP Core Rule Set decides that a request is an attack in {gp-name}, and what the modes, the paranoia level, and the anomaly thresholds of a policy change.
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["modes", "anomaly-scoring"]
+:doc-type: ["explanation"]
+:keywords: {gp-name}, kubewarden, waf, owasp core rule set, crs, anomaly scoring, paranoia level, detection mode
+
+A policy sets two things. Its mode decides whether the WAF inspects the
+traffic and blocks attacks. Its paranoia level and its anomaly thresholds
+decide how strict the inspection is. This page explains how the OWASP Core
+Rule Set (CRS) decides that a request is an attack, and what each of these
+settings changes.
+
+[#_modes]
+== Modes
+
+The field `spec.engine.mode` of a policy has one of three values:
+
+[cols="1,2,1,3", options="header"]
+|===
+|Mode |Rules |Blocks |Log of the processor
+
+|`Blocking`
+|The WAF applies the rules.
+|Yes
+|One line `WAF rule triggered` for each rule that matches. One line
+`WAF blocked traffic` for each request or response that the WAF blocks.
+
+|`Detection`
+|The WAF applies the rules.
+|No
+|One line `WAF rule triggered` for each rule that matches.
+
+|`Off`
+|The WAF applies no rules.
+|No
+|Nothing.
+|===
+
+Use `Detection` mode to learn which rules your traffic matches before you
+block. In this mode, the WAF also does not reject large request bodies. See
+xref:reference/known_limitations.adoc#_large_request_bodies_are_rejected[Large
+request bodies are rejected in Blocking mode].
+
+A policy with the mode `Off` is not the same as no policy. It replaces the
+broader policies for its target, so it can turn the WAF off for one route of
+a protected gateway. See
+xref:explanations/policy-attachment.adoc#_one_policy_governs_a_rule[One
+policy governs a request].
+
+agentgateway still sends the traffic of a route with the mode `Off` to the
+processor. As a result, this route also fails when no processor replica is
+ready.
+
+[#_anomaly_scoring]
+== Anomaly scoring
+
+The CRS does not block a request at the first rule that matches. Each rule
+that matches adds points to an anomaly score. The severity of the rule gives
+the number of points:
+
+[cols="1,1", options="header"]
+|===
+|Severity |Points
+
+|Critical
+|5
+
+|Error
+|4
+
+|Warning
+|3
+
+|Notice
+|2
+|===
+
+At the end of phase 2, after the request body, rule 949110 compares the
+score of the request with the inbound threshold. If the score is equal to
+the threshold or greater, the WAF blocks the request. For a response, rule
+959100 does the same at the end of phase 4, with the outbound threshold.
+
+The default inbound threshold is 5, and the default outbound threshold is 4.
+As a result, one critical rule is enough to block a request.
+
+For example, the attack of the xref:quickstart.adoc[quick start] puts
+`<script>alert(1)</script>` in the query string. At paranoia level 1, it
+matches four critical rules:
+
+[cols="1,3", options="header"]
+|===
+|Rule |Message
+
+|941100
+|XSS Attack Detected via libinjection
+
+|941110
+|XSS Filter - Category 1: Script Tag Vector
+
+|941160
+|NoScript XSS InjectionChecker: HTML Injection
+
+|941390
+|Javascript method detected
+|===
+
+The score is 20, so rule 949110 blocks the request. Its line in the log of
+the processor gives the total: `Inbound Anomaly Score Exceeded (Total Score:
+20)`.
+
+[#_anomaly_thresholds]
+== Anomaly thresholds
+
+The field `spec.anomalyThreshold` sets the two thresholds, `inbound` and
+`outbound`. A lower threshold blocks more. A higher threshold blocks less,
+and an attack that matches only a few rules gets through.
+
+For example, with an inbound threshold of 25, the WAF does not block the
+attack of the quick start, because its score is 20.
+
+A threshold of `0` is the same as no value. See
+xref:reference/known_limitations.adoc#_an_anomaly_threshold_of_zero_is_not_possible[An
+anomaly threshold of 0 is not possible].
+
+[#_paranoia_levels]
+== Paranoia levels
+
+Each CRS rule belongs to one of four paranoia levels. The field
+`spec.paranoiaLevel` selects the level, from 1 to 4. The default is 1. The
+WAF applies the rules of the selected level and of the lower levels. It
+does not apply the rules of the higher levels.
+
+A higher level finds more attacks, and it also rejects more valid requests.
+These requests passed at level 1 in a test, and the WAF blocked them at
+level 2:
+
+* A search for `O'Reilly -- the best books`. Rule 942440 found an SQL
+  comment sequence.
+* A blog comment with a link, `<a href="https://example.com">link</a>`. Five
+  rules matched.
+
+At level 2, the attack of the quick start matches six rules and scores 30.
+
+Raise the level only together with tuning. See
+xref:howtos/tune-false-positives.adoc[Tune false positives].
+
+[#_custom_rules_and_scoring]
+== Custom rules and scoring
+
+A rule of your own with the action `deny` blocks the request at once. It
+does not add points to the score, and the thresholds have no effect on it.
+In `Detection` mode, it blocks nothing. See
+xref:howtos/custom-rules.adoc[Write your own rules].
+
+[#_responses]
+== Responses
+
+The response rules of the CRS look for data that a response must not
+contain, such as error messages of a database. The WAF inspects only some
+responses, and only the first part of their body. See
+xref:reference/known_limitations.adoc#_response_bodies_are_inspected_in_part[Response
+bodies are inspected only in part].
+
+[#_what_you_see]
+== What you see
+
+* A blocked request gets the status `403` by default, an empty body, and
+  the header `x-waf-violation: 1`.
+* The line `WAF blocked traffic` gives the rule that blocked the request.
+  For a request that the score blocks, this rule is 949110, not the rules
+  that found the attack.
+* The lines `WAF rule triggered` give each rule that matched, with its
+  severity and its message. The line of rule 949110 gives the total score.
+  A rule with the action `nolog` writes no line.
+
+To find the rules that caused a block, read the lines `WAF rule triggered`
+of the same request. The how-to
+xref:howtos/tune-false-positives.adoc#_find_the_rules_that_reject_valid_requests[Tune
+false positives] shows how.

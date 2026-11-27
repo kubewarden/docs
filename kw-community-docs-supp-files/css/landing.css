@@ -42,6 +42,7 @@
 .kw-landing .sbom-card { --component-icon: url('../img/component-sbom.svg'); }
 .kw-landing .runtime-card { --component-icon: url('../img/component-runtime.svg'); }
 .kw-landing .network-card { --component-icon: url('../img/component-network.svg'); }
+.kw-landing .gateway-card { --component-icon: url('../img/component-gateway.svg'); }
 .kw-landing .component-card > .paragraph { margin: .75rem 0 1.5rem; line-height: 1.6; }
 .kw-landing .component-card > .component-stability { margin: auto 0 .75rem; }
 .kw-landing .component-card .card-links { margin-top: 0; }

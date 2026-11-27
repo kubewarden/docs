@@ -44,6 +44,7 @@ This is an [Antora](https://antora.org) multi-component documentation site writt
 | `sbom-scanner` | `docs/sbom-scanner/version-*` | SBOM scanner docs, versioned `version-X.Y` |
 | `runtime-enforcer` | `docs/runtime-enforcer/version-*` | Runtime enforcer docs, versioned `version-X.Y` |
 | `network-enforcer` | `docs/network-enforcer/version-*` | Network enforcer docs, versioned `version-X.Y` |
+| `gateway-protector` | `docs/gateway-protector/version-*` | Gateway protector docs, versioned `version-X.Y` |
 | `shared` | `shared/` | Shared partials and variables; no pages |
 
 **Playbooks**:
@@ -86,6 +87,7 @@ Do not hardcode a product name. Use the name attributes:
 | `sbom-scanner` | `{sboms-name}` | `{sboms-short-name}` |
 | `runtime-enforcer` | `{rte-name}` | `{rte-short-name}` |
 | `network-enforcer` | `{ne-name}` | `{ne-short-name}` |
+| `gateway-protector` | `{gp-name}` | `{gp-short-name}` |
 
 - Use the full name for the first mention on a page and in `:description:`.
   Use the short name after that.
@@ -108,7 +110,7 @@ Do not hardcode a product name. Use the name attributes:
 | All versions of one component | `shared/modules/en/partials/<key>-variables.adoc` | `shared/modules/en/partials/community-specific/<key>-variables.adoc` |
 | One component version | `partials/variables.adoc` | `partials/community-specific/variables.adoc` |
 
-The component keys are `admc`, `ne`, `rte`, `sboms`, and `kw`. The product
+The component keys are `admc`, `gp`, `ne`, `rte`, `sboms`, and `kw`. The product
 repository has the same files with `product-specific/` in place of
 `community-specific/`.
 
@@ -258,6 +260,7 @@ with the heading defined as:
 - **`sbom-scanner`** versions: directories named `version-X.Y`
 - **`runtime-enforcer`** versions: directories named `version-X.Y`
 - **`network-enforcer`** versions: directories named `version-X.Y`
+- **`gateway-protector`** versions: directories named `version-X.Y`
 - Prerelease (dev) versions have `prerelease: -dev` in `antora.yml`
 - The current latest release has `display: 'X.Y-latest'` in `antora.yml`; the previous latest loses the `display:` line
 - The landing page in `docs/kw/` links each component with `latest@` xrefs. When you promote a version, check that those xrefs use the page paths of the newly promoted layout. A page alias keeps an old path working through a redirect, but the link should point at the page directly.
@@ -268,6 +271,8 @@ Each component must always have **exactly one** version directory with `prerelea
 - The reference documentation manifests read the dev version from the directory marked `prerelease:` to decide where generated partials are written.
 
 Never remove `prerelease:` from a version directory by hand without adding `display: 'X.Y-latest'` to it and removing that line from the previous latest. Doing so stalls the automatic version bump. Use the release script instead, which handles both edits.
+
+`gateway-protector` is an exception until its first release. It has one version directory, with `prerelease:` and no `-latest` version. It is not in `scripts/check-docs-versions.sh`, `scripts/make-new-release.sh`, or the version promotion in `.github/workflows/updatecli.yml`. It has no `:release-tag:` and `:chart-version:` attributes yet. Its CRD reference sync and its prerequisite versions sync in `updatecli/update-ref-docs.yaml` work without a release, because they read the upstream `main` branch and write into the `prerelease:` directory. The landing page links it with `dev@` xrefs, because `latest@` resolves only to a released version. At the first release, promote the version by hand, create the next dev directory, add the component to the scripts and to the version promotion, add the two release version attributes, and change the landing page xrefs to `latest@`.
 
 The component repository defines the version number. The `prerelease:` directory is a placeholder for the next release, and its number is a guess made by the previous promotion. When a release appears, the promotion renames that directory to the published version. The placeholder number carries no meaning until that rename happens, so a placeholder whose number differs from the next release is normal.
 
@@ -293,6 +298,7 @@ Some partials are copies of files that upstream repositories generate. Do not ed
 | `runtime-enforcer` | `runtime-enforcer/docs/kubectl-plugin/cli-docs.adoc` | `partials/kubectl-plugin-cli-reference.adoc` |
 | `runtime-enforcer` | `runtime-enforcer/docs/wpgen/cli-docs.adoc` | `partials/wpgen-cli-reference.adoc` |
 | `network-enforcer` | `network-enforcer/docs/crds/CRD-docs-for-docs-repo.adoc` | `partials/crd-reference.adoc` |
+| `gateway-protector` | `gateway-protector/docs/crds/CRD-docs-for-docs-repo.adoc` | `partials/crd-reference.adoc` |
 
 The partials land in the current dev version only. An hourly updatecli job (`.github/workflows/updatecli.yml`) watches upstream releases. When a new release appears, the job promotes the dev version and points the values files at the next dev version.
 
@@ -308,6 +314,19 @@ Each component's dev version defines two AsciiDoc attributes in `partials/commun
 Use `{release-tag}` for the upstream release tag (image tags, cosign certificate identities) and `{chart-version}` for the published Helm chart version. Inside a `[source]` block, add `subs="+attributes"` or the attribute is printed literally.
 
 Do not bump these by hand. The hourly updatecli job runs `updatecli/updatecli.d/update-release-attributes.yaml` for each component. It reads the latest GitHub release of the component repository and the latest `<chart name>-X.Y.Z` release of `kubewarden/helm-charts`, and rewrites the two attributes in the dev version. The chart name per component is `chartName` in `updatecli/values.d/`.
+
+### Prerequisite versions of gateway-protector
+
+The dev version of `gateway-protector` defines two more attributes in `partials/variables.adoc`:
+
+```asciidoc
+:gateway-api-version: v1.7.0
+:agentgateway-version: v1.7.0
+```
+
+The quick start and the compatibility page use them. The values are the same in the community and the product builds, so they are not in a `community-specific/` file.
+
+Do not bump these by hand. The scheduled job in `.github/workflows/update-ref-docs.yml` runs `updatecli/updatecli.d/update-gateway-protector-prerequisites.yaml`. The job reads two files on the `main` branch of `kubewarden/gateway-protector`: the version of `sigs.k8s.io/gateway-api` in `go.mod`, and the `agentgateway_version` line of the `Tiltfile`. When a version changes, the job opens a pull request.
 
 ### Mermaid diagrams
 

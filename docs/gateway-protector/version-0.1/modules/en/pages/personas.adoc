@@ -1,0 +1,52 @@
+include::partial$variables.adoc[]
+= Who is this project for? The personas.
+:revdate: 2026-11-20
+:page-revdate: {revdate}
+:description: Who is this project for? The personas of {gp-name}.
+:keywords: {gp-name}, kubewarden, documentation, personas
+:doc-persona: ["kubewarden-all"]
+:doc-type: ["explanation"]
+:doc-topic: ["explanation"]
+
+This page lists the people who use {gp-name}, and what each of them does
+with it. The xref:use-cases.adoc[use cases] refer to these personas.
+
+[#_gateway_protector_personas]
+== {gp-name} personas
+
+[cols="1,2", options="header"]
+|===
+|Persona |Description
+
+|**Operator**
+|Installs agentgateway and {gp-short-name} in a cluster and keeps them
+running. Sets the replicas and the resources of the controller and the
+processor. Knows that the protected routes reject traffic when the processor
+is not available.
+
+|**Platform engineer**
+|Owns the gateways and their protection. Attaches a `WAFPolicy` to a
+`Gateway` or to an `HTTPRoute`, and keeps the policies in one restricted
+namespace. Starts a policy in `Detection` mode and moves it to `Blocking`
+mode. Gives one route a different policy, or turns the WAF off for it.
+
+|**Application team**
+|Owns one or more applications. Publishes an `HTTPRoute` and changes nothing
+else. Does not need write access to the policies. Asks the platform engineer
+for an exclusion when a rule rejects a valid request.
+
+|**Security engineer**
+|Reads the matched rules and the blocked requests in the log of the
+processor. Decides when a matched rule is a false positive. Selects the
+paranoia level and the anomaly thresholds, excludes rules, and writes custom
+rules in a `WAFRuleSet`.
+
+|**Integrator**
+|Builds tools on top of {gp-short-name}. Reads the custom resources and
+their status conditions, the JSON log of the processor, and the header
+`x-waf-violation` of blocked responses. Examples are a dashboard, a SIEM, or
+a GitOps pipeline.
+
+|**Developer**
+|Works on {gp-short-name} itself.
+|===

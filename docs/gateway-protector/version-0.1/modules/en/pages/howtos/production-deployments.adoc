@@ -1,0 +1,497 @@
+include::partial$variables.adoc[]
+
+= Configure {gp-name} for production
+:revdate: 2026-11-24
+:page-revdate: {revdate}
+:description: Configure the replicas, the scheduling, the memory, and the certificates of {gp-name}, so that the protected routes stay available in a production cluster.
+:doc-persona: ["kubewarden-operator", "kubewarden-integrator"]
+:doc-topic: ["production", "high-availability", "resources"]
+:doc-type: ["howto"]
+:keywords: {gp-name}, kubewarden, production, replicas, poddisruptionbudget, topology spread, memory, gomemlimit, priorityclass, certificates
+
+This page gives the chart values for {gp-name} in a production cluster.
+
+[WARNING]
+====
+{gp-short-name} is experimental and under active development. It is not
+ready for production.
+====
+
+The processor is in the path of each protected request. If no processor
+replica is ready, agentgateway blocks the traffic of every protected route.
+The chart installs one processor replica, so one failure of this replica
+stops every protected route. See
+xref:explanations/architecture.adoc#_fail_closed_at_each_layer[Fail closed
+at each layer]. If the processor fails and you cannot fix it quickly, see
+xref:howtos/emergency-disable.adoc[Turn off the WAF in an emergency].
+
+The controller is not in the path of the requests. A processor replica
+keeps its last good configuration when the controller is not available.
+But a new processor replica needs the controller to get its first
+configuration.
+
+[#_chart_values_layers]
+== The layers of the chart values
+
+The chart deploys two workloads, the controller and the processor. Each
+workload has its own block in the values: `controller` and `processor`.
+
+The `global` block holds the values for both workloads. Each workload block
+accepts the same keys, for that workload only. For example,
+`global.tolerations` applies to both workloads, and `processor.tolerations`
+applies to the processor only.
+
+If more than one block sets a key, the chart combines the values as follows:
+
+[cols="2,3", options="header"]
+|===
+|Keys |Result
+
+|`logLevel`, `priorityClassName`, `tolerations`,
+`topologySpreadConstraints`, `extraEnvFrom`
+|The value of the workload block replaces the value of `global`.
+
+|`labels`, `annotations`, `podLabels`, `podAnnotations`, `nodeSelector`,
+`affinity`, `serviceAccount.annotations`
+|The chart merges the maps. The workload block wins on a duplicate key.
+
+|`imagePullSecrets`, `extraEnv`, `extraVolumes`, `extraVolumeMounts`
+|The chart adds the list of the workload block to the list of `global`.
+
+|`imagePullPolicy`
+|The `image.pullPolicy` of a workload block replaces
+`global.imagePullPolicy`.
+
+|`imageRegistry`
+|`global.imageRegistry` replaces the `image.registry` of every workload
+block.
+|===
+
+An empty value (`""`, `[]`, or `{}`) counts as not set.
+
+The chart also accepts a `common` block with the keys of `global`, except
+`imageRegistry`. A value in `common` wins over `global`, and a workload
+block wins over `common`. If {gp-short-name} is a subchart and the parent
+chart sets `global`, use `common`.
+
+[#_processor]
+== Processor
+
+[#_run_more_than_one_processor_replica]
+=== Run more than one processor replica
+
+The chart value `processor.replicas` defaults to `1`. With one replica, the
+protected routes stop each time that the processor pod stops, for example
+during a node drain. When a node fails, Kubernetes waits 5 minutes by
+default before it replaces the pods of that node.
+
+Run at least two processor replicas, on different nodes. If the cluster has
+nodes in three zones, run three replicas, one in each zone:
+
+[source,yaml]
+----
+processor:
+  replicas: 3
+----
+
+Each replica holds every WAF engine and inspects the traffic of every
+protected route. The replicas share no state.
+
+The chart uses the default update strategy of a Deployment. With three
+replicas or fewer, a new processor pod is ready before an old pod stops. A
+new pod is ready only after it gets its configuration from the controller.
+
+[#_spread_the_processor_replicas]
+=== Spread the processor replicas
+
+Replicas on the same node stop together when the node fails. Use
+`processor.topologySpreadConstraints` to put the replicas on different
+nodes, and in different zones:
+
+[source,yaml]
+----
+processor:
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: gateway-protector
+          app.kubernetes.io/component: processor
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: gateway-protector
+          app.kubernetes.io/component: processor
+----
+
+* The first constraint puts a new replica on a node with the fewest
+  replicas. If no node meets this constraint, the new pod waits.
+* The second constraint prefers a spread across zones. If the spread is not
+  possible, the scheduler still starts the pod.
+
+[#_add_a_poddisruptionbudget_for_the_processor]
+=== Add a PodDisruptionBudget for the processor
+
+A PodDisruptionBudget (PDB) limits how many pods a voluntary disruption can
+remove at the same time. A node drain and a cluster upgrade are voluntary
+disruptions. The chart creates no PDB by default.
+
+To create a PDB for the processor, set `minAvailable` or `maxUnavailable`
+under `processor.podDisruptionBudget`, in the same way as a PDB `spec`:
+
+[source,yaml]
+----
+processor:
+  podDisruptionBudget:
+    maxUnavailable: 1
+----
+
+The chart copies each key of `processor.podDisruptionBudget` into the
+`spec` of the PDB, and it adds the `selector`. The block has no `enabled`
+key. An empty block creates no PDB.
+
+[WARNING]
+====
+Before you add the PDB, set `processor.replicas` to `2` or more. If
+`processor.replicas` is `1`, a PDB cannot keep the protection available. A
+PDB with `minAvailable: 1` then blocks every voluntary disruption of the
+processor pod, including `kubectl drain`.
+====
+
+[#_set_the_memory_of_the_processor]
+=== Set the memory of the processor
+
+The default memory limit of the processor is `256Mi`. Two things use the
+memory of a processor replica: the WAF engines, and the request bodies in
+progress.
+
+The processor compiles one WAF engine for each different set of policy
+settings. The rules of the rule sets that a policy references are part of
+its settings. The target of a policy is not part of its settings. Policies
+with the same settings share one engine. All the policies with the mode
+`Off` share one small engine. See
+xref:explanations/architecture.adoc#_policies_with_the_same_rules_share_one_engine[Policies
+with the same rules share one engine].
+
+The configuration changes when a policy or a `WAFRuleSet` changes. A new
+route does not change it. When the configuration changes, the processor
+compiles all the engines of the new configuration while the old engines
+still inspect the traffic. For a short time, the processor holds both. In a
+test without traffic, the processor took this memory from the operating
+system during a configuration change:
+
+[cols="1,1", options="header"]
+|===
+|Different engines |Memory
+
+|1
+|53 MiB
+
+|5
+|81 MiB
+
+|10
+|111 MiB
+
+|20
+|184 MiB
+
+|40
+|299 MiB
+|===
+
+With 40 different engines, the processor needs more than the default limit.
+The container can then run out of memory at a configuration change, and
+Kubernetes restarts it with the reason `OOMKilled`.
+
+The processor also holds each request body in memory until the WAF
+inspects the full body. The default limit for one body is 12.5 MiB. If a
+policy sets `requestBody.maxSize`, the WAF also keeps its own copy of the
+body in memory, so each body uses about twice its size. Without `maxSize`,
+the WAF writes its copy to a file in `/tmp`, an `emptyDir` volume of the
+pod.
+
+To set the memory:
+
+. Count the different sets of settings in your policies.
+. Find the memory for this number in the table.
+. Add the memory for the bodies in progress. For example, if 10 uploads of
+  10 MiB can arrive at the same time, add 100 MiB. If a policy sets
+  `requestBody.maxSize`, add 200 MiB.
+. Add a margin, for example 25%.
+. Set the total as the memory request and as the memory limit.
+. Set the environment variable `GOMEMLIMIT` to about 80% of the limit.
+
+The processor is a Go program, and Go does not know the memory limit of the
+container. `GOMEMLIMIT` tells Go to free memory before the program reaches
+this value. In the test with 40 engines, `GOMEMLIMIT=200MiB` kept the
+memory at 217 MiB instead of 299 MiB.
+
+For example:
+
+[source,yaml]
+----
+processor:
+  resources:
+    requests:
+      memory: 512Mi
+    limits:
+      memory: 512Mi
+  extraEnv:
+    - name: GOMEMLIMIT
+      value: 410MiB
+----
+
+Helm merges these values with the defaults of the chart, so the CPU values
+stay the same.
+
+[#_watch_the_cpu_of_the_processor]
+=== Watch the CPU of the processor
+
+The default CPU limit of the processor is `500m`. The CPU cost of the
+inspection is not measured yet. See
+xref:reference/known_limitations.adoc#_the_added_latency_is_not_measured[The
+added latency is not measured]. Watch the CPU use of the processor under
+real traffic. If the processor reaches its limit, increase
+`processor.resources.limits.cpu`, or add replicas.
+
+[#_controller]
+== Controller
+
+The controller makes sure that each policy is valid. Then it builds the
+configuration and sends it to the processor replicas. When no controller
+replica is available:
+
+* The processor replicas keep their last good configuration, and they
+  inspect the traffic.
+* A change to a policy or a route waits until a controller replica is back.
+* A new processor replica does not become ready. See
+  xref:reference/known_limitations.adoc#_a_new_processor_replica_needs_the_controller[A
+  new processor replica needs the controller].
+
+[#_run_a_second_controller_replica]
+=== Run a second controller replica
+
+The chart value `controller.replicas` defaults to `1`. The controller always
+uses leader election (the replicas select one leader to do the work), so you
+can run more than one replica. When the leader stops, another replica
+becomes the leader in about 15 seconds. With one replica, a node failure can
+stop the controller for 5 minutes or more.
+
+Set `controller.replicas` to `2`:
+
+[source,yaml]
+----
+controller:
+  replicas: 2
+----
+
+Only the leader serves the configuration to the processor. A processor
+replica can also connect to another controller replica, which refuses the
+connection. The processor replica then tries again after a delay, so a new
+processor replica can need more time to become ready. See
+xref:reference/known_limitations.adoc#_only_the_controller_leader_serves_the_configuration[Only
+the controller leader serves the configuration].
+
+[#_add_a_poddisruptionbudget_for_the_controller]
+=== Add a PodDisruptionBudget for the controller
+
+With two controller replicas, add a PDB in the same way as for the
+processor:
+
+[source,yaml]
+----
+controller:
+  podDisruptionBudget:
+    minAvailable: 1
+----
+
+[WARNING]
+====
+Before you add the PDB, set `controller.replicas` to `2` or more. If
+`controller.replicas` is `1` and
+`controller.podDisruptionBudget.minAvailable` is `1`, the PDB blocks every
+voluntary disruption of the controller pod, including `kubectl drain`.
+====
+
+[#_spread_the_controller_replicas]
+=== Spread the controller replicas
+
+Put the controller replicas on different nodes:
+
+[source,yaml]
+----
+controller:
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: gateway-protector
+          app.kubernetes.io/component: controller
+----
+
+[#_priorityclass]
+== PriorityClass
+
+The chart creates no PriorityClass, so its pods get the default priority.
+When the cluster is short of resources, the scheduler can remove pods with
+a lower priority to start pods with a higher priority. Give the processor
+at least the priority of the agentgateway proxy pods. Without the
+processor, the proxy blocks the protected routes.
+
+. Create a PriorityClass, or use one that your cluster already has:
++
+[source,yaml]
+----
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: gateway-protector
+value: 1000000
+globalDefault: false
+description: The WAF of the protected routes.
+----
+
+. Set the class for both workloads:
++
+[source,yaml]
+----
+global:
+  priorityClassName: gateway-protector
+----
+
+[WARNING]
+====
+Do not delete the PriorityClass while the pods of {gp-short-name} use it.
+The running pods keep running, but new pods that name the deleted class do
+not start.
+====
+
+[#_certificates]
+== Certificates
+
+The connections between agentgateway, the processor, and the controller use
+mutual TLS. The chart creates a certificate authority (CA), valid for 10
+years, and four certificates, valid for one year. It keeps them in Secrets
+in the namespace of {gp-short-name}. You do not need cert-manager.
+
+The controller leader examines the certificates every 12 hours. It renews a
+certificate 60 days before the certificate expires. The processor and the
+controller load a renewed certificate without a restart.
+
+[WARNING]
+====
+Install the chart with a tool that runs Helm against the cluster, such as
+the `helm` command or Flux. At each install and upgrade, the chart reads
+the Secrets in the cluster and keeps the certificates in them.
+
+A tool that renders the chart without access to the cluster, such as Argo
+CD, gets a new CA and new certificates at each render. See
+xref:reference/known_limitations.adoc#_a_render_without_the_cluster_replaces_the_certificates[A
+render without the cluster replaces the certificates].
+====
+
+[#_telemetry]
+== Telemetry
+
+{gp-short-name} does not export telemetry yet. The chart accepts the
+`global.otel` values, but they have no effect. See
+xref:reference/known_limitations.adoc#_no_export_of_telemetry[No export of
+telemetry]. To follow the blocked requests, read the log of the processor.
+See xref:howtos/tune-false-positives.adoc#_move_to_blocking_mode[Move to
+Blocking mode].
+
+[#_use_a_private_registry]
+== Use a private registry
+
+By default, the chart pulls its images from `{oci-registry}`. To pull every
+image from your own registry, set `global.imageRegistry`. The chart keeps
+the path of each image, for example `kubewarden/gateway-protector/processor`.
+
+If the registry needs credentials, add the name of the pull Secret to
+`global.imagePullSecrets`. The Secret must be in the namespace of
+{gp-short-name}:
+
+[source,yaml]
+----
+global:
+  imageRegistry: registry.example.com
+  imagePullSecrets:
+    - registry-credentials
+----
+
+The processor image contains the OWASP Core Rule Set. The processor does
+not download rules, so it needs no access to the internet.
+
+[#_example_production_configuration]
+== Example production configuration
+
+This example combines the configuration from this page into one Helm values
+file. Its memory values have room for about 20 different sets of policy
+settings and 10 uploads of 10 MiB at the same time. Change them for your
+policies. Save the example as `production-values.yaml`:
+
+[source,yaml]
+----
+global:
+  priorityClassName: gateway-protector
+
+controller:
+  replicas: 2
+  podDisruptionBudget:
+    minAvailable: 1
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: gateway-protector
+          app.kubernetes.io/component: controller
+
+processor:
+  replicas: 3
+  podDisruptionBudget:
+    maxUnavailable: 1
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: gateway-protector
+          app.kubernetes.io/component: processor
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: gateway-protector
+          app.kubernetes.io/component: processor
+  resources:
+    requests:
+      memory: 512Mi
+    limits:
+      memory: 512Mi
+  extraEnv:
+    - name: GOMEMLIMIT
+      value: 410MiB
+----
+
+Create the PriorityClass first. Then apply the values at install or upgrade
+time:
+
+[source,bash]
+----
+helm upgrade --install gateway-protector kubewarden/gateway-protector \
+  --namespace gateway-protector-system \
+  --create-namespace \
+  -f production-values.yaml \
+  --wait
+----

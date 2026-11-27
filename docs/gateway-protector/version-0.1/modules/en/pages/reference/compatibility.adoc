@@ -1,0 +1,117 @@
+include::partial$variables.adoc[]
+
+= Compatibility
+:description: Check which gateway, Gateway API version, and platforms {gp-name} works with.
+:revdate: 2026-11-24
+:page-revdate: {revdate}
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["compatibility"]
+:doc-type: ["reference"]
+
+[#_overview]
+== Overview
+
+{gp-name} adds a web application firewall (WAF) to the routes of a gateway.
+It works with one implementation of the Kubernetes Gateway API,
+agentgateway. agentgateway and the Gateway API CRDs must be in the cluster
+before you install {gp-short-name}.
+
+[#_quick_reference]
+== Quick reference
+
+[cols="2,3,5"]
+|===
+|Component |Requirement |Notes
+
+|*Gateway*
+|agentgateway {agentgateway-version}
+|agentgateway is the only supported implementation of the Gateway API.
+{gp-short-name} is tested with this version. The controller writes
+`AgentgatewayPolicy` objects, so it depends on the API of agentgateway.
+Other versions are not tested. The generated objects use the
+`metadataContext` field of ext_proc. They also use the Common Expression
+Language (CEL) variables for the route that agentgateway selects.
+agentgateway versions before v1.4.0 do not have this field and these
+variables.
+
+|*Gateway API*
+|{gateway-api-version}, standard channel
+|The CRDs in the file `standard-install.yaml` of this release. A policy
+targets `Gateway` and `HTTPRoute` objects of the API version
+`gateway.networking.k8s.io/v1`.
+
+|*Architecture*
+|x86_64, aarch64
+|The images of the controller and of the processor are available for the
+two architectures.
+
+|*Kubernetes*
+|1.31 or later
+|The Helm chart does not install on an older version. The end-to-end tests
+of {gp-short-name} use Kubernetes 1.37.
+
+|*cert-manager*
+|Not required
+|The Helm chart creates the certificates for the mutual TLS (mTLS)
+connections between the components. The controller rotates them.
+|===
+
+[#_agentgateway_configuration]
+== agentgateway configuration
+
+{gp-short-name} works with the default configuration of agentgateway. One
+setting of the agentgateway controller changes this:
+`AGW_BACKEND_REF_GRANT_MODE`.
+
+The controller of {gp-short-name} writes one `AgentgatewayPolicy` in the
+namespace of each protected route. This object refers to the Service
+`gateway-protector-processor` in the namespace of {gp-short-name}. A
+reference to an object in another namespace needs permission:
+
+[cols="1,3"]
+|===
+|Value of `AGW_BACKEND_REF_GRANT_MODE` |Result
+
+|`route` (default)
+|agentgateway permits the reference. No change is necessary.
+
+|`none`
+|agentgateway permits the reference. No change is necessary.
+
+|`route-and-policy`
+|agentgateway needs a `ReferenceGrant` in the namespace of
+{gp-short-name} for this reference. The Helm chart does not create this
+`ReferenceGrant`.
+|===
+
+{gp-short-name} is tested only with the default value, `route`.
+
+[#_rule_engine_and_rule_set]
+== Rule engine and rule set
+
+The processor uses the https://coraza.io[Coraza] WAF library and the
+https://coreruleset.org[OWASP Core Rule Set] (CRS). Each release of
+{gp-short-name} contains one version of each. You cannot select another
+version.
+
+The processor writes the CRS version in the field `crs-version` of its log
+line `Processor ready`. To find the CRS version of your installation, run
+this command:
+
+[source,bash]
+----
+kubectl logs -n gateway-protector-system deploy/gateway-protector-processor | grep 'Processor ready'
+----
+
+{gp-short-name} does not support CRS plugins. See
+xref:reference/known_limitations.adoc#_one_crs_version_and_no_crs_plugins[One CRS version in each release, and no CRS plugins].
+
+include::partial${build-type}-specific/compatibility-integrations.adoc[]
+
+[#_support]
+== Support
+
+If you find a compatibility problem that this page does not describe, open
+an link:https://github.com/kubewarden/gateway-protector/issues[issue]. Give
+the versions of Kubernetes, agentgateway, the Gateway API, and
+{gp-short-name}.

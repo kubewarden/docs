@@ -1,0 +1,310 @@
+include::partial$variables.adoc[]
+
+= Write your own rules
+:revdate: 2026-11-24
+:page-revdate: {revdate}
+:description: Add your own SecLang rules to a {gp-name} policy with a WAFRuleSet, make sure that they work, and turn off CRS rules for one path.
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["custom-rules"]
+:doc-type: ["howto"]
+:keywords: {gp-name}, kubewarden, wafruleset, secrule, seclang, coraza, custom rules
+
+A `WAFRuleSet` holds rules of your own. The rules use SecLang, the rule
+language of ModSecurity and Coraza. A policy references the rule set with
+`customRulesRefs`, and the WAF applies its rules together with the OWASP
+Core Rule Set (CRS). Many policies can use the same rule set.
+
+[#_prerequisites]
+== Prerequisites
+
+* A policy that protects a route. See
+  xref:howtos/attach-a-policy.adoc[Attach a policy to a gateway or a route].
+* Write access to the namespace of the policies. The examples use the
+  namespace `gateway-protector-system`.
+* Knowledge of SecLang. The Coraza documentation describes the
+  https://coraza.io/docs/seclang/directives/[directives],
+  https://coraza.io/docs/seclang/variables/[variables],
+  https://coraza.io/docs/seclang/operators/[operators], and
+  https://coraza.io/docs/seclang/actions/[actions].
+
+[CAUTION]
+====
+Give write access to `WAFRuleSet` objects only to the people who can write
+policies. A rule set can weaken a policy or turn its WAF off. See
+xref:#_a_rule_set_can_weaken_a_policy[A rule set can weaken a policy].
+====
+
+[#_write_a_rule_set]
+== Write a rule set
+
+. Create a `WAFRuleSet` in the namespace of the policy. This rule set has
+  two rules:
++
+[source,yaml]
+----
+apiVersion: gateway-protector.kubewarden.io/v1alpha1
+kind: WAFRuleSet
+metadata:
+  name: shop-custom-rules
+  namespace: gateway-protector-system
+spec:
+  rules:
+    - id: 10011
+      directive: |
+        SecRule ARGS:promo_code "!@rx ^[A-Z0-9]{6,12}$" \
+          "id:10011,phase:2,deny,status:400,msg:'malformed promo code'"
+    - id: 10020
+      directive: |
+        SecRule REQUEST_HEADERS:X-Debug "@streq 1" \
+          "id:10020,phase:1,deny,status:403,msg:'debug header not allowed'"
+----
++
+The first rule rejects a `promo_code` parameter that does not have 6 to 12
+capital letters or digits. It checks the query string and the form body. The
+second rule rejects a request with the header `X-Debug: 1`.
+
+. Use the same ID in the field `id` and in the action `id` of the directive.
+  The ID must be from 1 to 99999. See xref:#_rule_ids[Rule IDs].
+
+. Give each rule that rejects a request the action `deny` and a `status`.
+  Without a `status`, the response has the status `403`.
+
+. Apply the rule set:
++
+[source,bash]
+----
+kubectl apply -f shop-custom-rules.yaml
+----
+
+[#_reference_the_rule_set_from_a_policy]
+== Reference the rule set from a policy
+
+. Add the name of the rule set to `customRulesRefs` of the policy:
++
+[source,yaml]
+----
+apiVersion: gateway-protector.kubewarden.io/v1alpha1
+kind: WAFPolicy
+metadata:
+  name: shared-gw-default
+  namespace: gateway-protector-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: shared-gw
+    namespace: infra
+  engine:
+    mode: Blocking
+  customRulesRefs:
+    - name: shop-custom-rules
+----
+
+. Apply the policy:
++
+[source,bash]
+----
+kubectl apply -f shared-gw-default.yaml
+----
++
+You can apply the policy before the rule set. Until the rule set exists, the
+policy reports `Accepted=False` with the reason `Invalid`.
+
+A policy can reference only the rule sets in its own namespace. A rule set
+applies only to the policies that reference it.
+
+[#_make_sure_that_the_rules_work]
+== Make sure that the rules work
+
+. Make sure that the policy is accepted and programmed:
++
+[source,bash]
+----
+kubectl get wafpolicy shared-gw-default -n gateway-protector-system
+----
++
+If `PROGRAMMED` is `False`, see
+xref:#_if_the_rules_do_not_compile[If the rules do not compile].
+
+. Send a request that a rule rejects. Replace `<gateway address>` with the
+  address of the gateway:
++
+[source,bash]
+----
+curl -s -o /dev/null -D - -H 'Host: shop.example.com' \
+  'http://<gateway address>/cart?promo_code=bad!'
+----
++
+The response has the status `400` and the header `x-waf-violation: 1`.
+
+. Find the rule in the log of the processor:
++
+[source,bash]
+----
+kubectl logs -n gateway-protector-system -l app.kubernetes.io/component=processor \
+  --tail=-1 | grep '"rule_id":10011'
+----
++
+The line `WAF rule triggered` gives the `msg` of the rule in the field
+`message`. The line `WAF blocked traffic` gives the rule that blocked the
+request.
+
+In `Detection` mode, your rules match and the processor writes the line
+`WAF rule triggered`, but the WAF blocks nothing. Use this mode to test a
+new rule on real traffic before you block.
+
+[#_if_the_rules_do_not_compile]
+== If the rules do not compile
+
+A `WAFRuleSet` has no status of its own. An error in a rule shows on each
+policy that references the rule set:
+
+. Read the message of the condition `Programmed`:
++
+[source,bash]
+----
+kubectl get wafpolicy shared-gw-default -n gateway-protector-system \
+  -o jsonpath='{.status.conditions[?(@.type=="Programmed")].message}'
+----
++
+For example, two rules with the same ID give this message:
++
+[source,text]
+----
+failed to compile directives: engine "78102d6e01691370": engine "78102d6e01691370": failed to compile directives: invalid WAF config from string: failed to compile the directive "secrule": duplicated rule id 10050
+----
+
+. Correct the rule that the message names, and apply the rule set again.
+
+While the rules do not compile, the WAF does not inspect the traffic that
+the policy covers. See
+xref:reference/known_limitations.adoc#_a_policy_that_does_not_compile_protects_nothing[A
+policy that does not compile protects nothing].
+
+[#_examples]
+== Examples
+
+Add these rules to the `rules` list of a rule set.
+
+[#_limit_the_length_of_a_parameter_on_one_path]
+=== Limit the length of a parameter on one path
+
+A rule with the action `chain` continues on the next line. The WAF rejects
+the request only when all the rules of the chain match.
+
+[source,yaml]
+----
+    - id: 10091
+      directive: |
+        SecRule REQUEST_URI "@beginsWith /search" \
+          "id:10091,phase:2,deny,status:400,msg:'search term is too long',chain"
+          SecRule ARGS:q "@gt 100" "t:length"
+----
+
+The rule rejects a `q` parameter that is longer than 100 characters, on the
+paths that start with `/search` only.
+
+[#_turn_off_crs_rules_for_one_path]
+=== Turn off CRS rules for one path
+
+The `exclusions` of a policy remove CRS rules for every request that the
+policy covers. The xref:howtos/tune-false-positives.adoc[Tune false
+positives] page compares the ways to remove CRS rules. To remove CRS rules
+for one path only, use a rule with the action `ctl:ruleRemoveByTag` or
+`ctl:ruleRemoveById`.
+
+For example, the editor of a content management system sends HTML in its
+requests, and the CRS rules for cross-site scripting reject it:
+
+[source,yaml]
+----
+    - id: 10030
+      directive: |
+        SecRule REQUEST_URI "@beginsWith /cms/editor" \
+          "id:10030,phase:1,pass,nolog,ctl:ruleRemoveByTag=attack-xss"
+----
+
+Use `phase:1` for this kind of rule. Your rules run after the CRS rules of
+the same phase. As a result, a `phase:2` rule removes the CRS rules too
+late, and it has no effect. See
+xref:#_how_the_waf_applies_your_rules[How the WAF applies your rules].
+
+[#_how_the_waf_applies_your_rules]
+== How the WAF applies your rules
+
+The controller adds your rules to the rules of the policy in this order:
+
+. The base directives that Coraza recommends.
+. The mode of the policy.
+. The limits for the inspection of bodies.
+. The paranoia level and the anomaly thresholds.
+. The CRS.
+. Your rules. The rule sets are in the order of their namespace and name.
+  The rules of one rule set keep their order.
+. The exclusions of the policy.
+
+This order has these effects:
+
+* The WAF applies the rules of each phase in the order of the list. In each
+  phase, your rules run after the CRS rules of the same phase.
+* The CRS rejects a request at the end of phase 2, when its anomaly score is
+  too high. A `phase:2` rule of your own runs only when the CRS does not
+  reject the request first.
+* The order of `customRulesRefs` has no effect. Put rules that depend on
+  each other in the same rule set.
+* The mode of the policy applies to your rules. In `Detection` mode, they
+  block nothing. In `Off` mode, the WAF does not apply them.
+
+[#_rule_ids]
+== Rule IDs
+
+Each rule needs an ID that no other rule of the policy uses. The ID of a
+custom rule must be from 1 to 99999. The other ranges have owners:
+
+[cols="1,2", options="header"]
+|===
+|Range |Owner
+
+|1 to 99999
+|Your rules in `WAFRuleSet` objects.
+
+|100000 to 899999
+|Rule sets of other vendors, by convention.
+
+|900000 to 999999
+|The CRS.
+
+|9500000 to 9599999
+|CRS plugins.
+
+|10000000 to 10000099
+|The directives that {gp-short-name} generates.
+|===
+
+The Kubernetes API rejects a value of the field `id` outside the range 1 to
+99999. It does not compare the field with the action `id` in the directive.
+The WAF uses the ID in the directive.
+
+Two rules with the same ID in the rule sets of one policy are an error. The
+policy then reports `Programmed=False` with the reason `CompileFailed`.
+
+[#_a_rule_set_can_weaken_a_policy]
+== A rule set can weaken a policy
+
+The directives of a rule set are raw SecLang. The Kubernetes API and the
+controller do not limit them. A rule set can change the behavior of every
+policy that references it:
+
+* The directive `SecRuleEngine Off` turns the WAF off. The policy still shows
+  the mode `Blocking` and the condition `Programmed=True`.
+* A rule with the action `ctl:ruleEngine=Off` turns the WAF off for the
+  requests that the rule matches. If the rule matches a request header, every
+  client that sends this header gets past the WAF.
+* A rule with the action `ctl:ruleRemoveByTag` can remove a whole class of
+  CRS rules.
+
+For this reason, review a rule set with the same care as a policy. Keep the
+rule sets in the namespace of the policies. Give write access to this
+namespace only to the platform team. See
+xref:reference/known_limitations.adoc#_a_rule_set_can_turn_off_the_waf[A
+rule set can turn off the WAF].

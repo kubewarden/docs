@@ -1,0 +1,140 @@
+include::partial$variables.adoc[]
+= Upgrade path
+:revdate: 2026-11-23
+:page-revdate: {revdate}
+:description: Upgrade {gp-name} with the supported version steps, and read the changes of the target version before you upgrade.
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["operator-manual", "upgrade-path"]
+:doc-type: ["reference"]
+:keywords: ["{gp-name}", kubewarden, "upgrade path", support, versioning]
+
+[#_versioning]
+== Versioning
+
+{gp-name} uses https://semver.org/[semantic versioning]. A version follows
+the `MAJOR.MINOR.PATCH` pattern. A release tag has the prefix `v`, for
+example `v0.2.0`. A release candidate has a suffix, for example
+`v0.2.0-rc.1`. The supported version is the latest release.
+
+A release contains these deliverables, with the same version:
+
+* The `gateway-protector` Helm chart.
+* The controller image and the processor image.
+
+[#_helm_chart_versions]
+== Helm chart versions
+
+A Helm chart has two version fields. The `version` field is the version of
+the chart itself. The `appVersion` field is the version of {gp-short-name}.
+
+For {gp-short-name}, the two fields always give the same release. The
+`version` field has no `v` prefix, and the `appVersion` field has it, for
+example `0.2.0` and `v0.2.0`. The image tags in the chart values are the
+same as `appVersion`. The release process makes sure that these values
+agree with the release tag.
+
+[#_version_compatibility_among_components]
+== Version compatibility among components
+
+The chart installs the controller and the processor with the same version.
+Keep the two images on the same version. Do not change the image tag of only
+one of them.
+
+The controller sends its configuration to the processor in a format that the
+two programs share. The format has a version. The controller sends no
+configuration to a processor that supports another version of the format.
+A processor also rejects a configuration of another version of the format.
+This processor keeps its last good configuration, and it does not apply the
+changes to your policies.
+
+Each version of {gp-short-name} is tested with one version of agentgateway
+and one version of the Gateway API. The
+xref:reference/compatibility.adoc[Compatibility] page of the target version
+gives them.
+
+[#_upgrade_paths]
+== Upgrade paths
+
+You can upgrade across several `PATCH` versions in one operation. You
+cannot upgrade across more than one `MINOR` or `MAJOR` version in one
+operation.
+
+For example, you can upgrade from `0.1.0` to `0.1.1` in one step. You
+cannot upgrade from `0.1.0` to `0.3.0` in one step. Upgrade from `0.1.0` to
+`0.2.x` first, then from `0.2.x` to `0.3.0`. To move across a `MAJOR`
+version, apply every `MINOR` version between the two.
+
+Before you move to the next `MINOR` version, upgrade to the latest `PATCH`
+version of your current `MINOR` version. The example graph marks the other
+path as not recommended.
+
+.Example upgrade path support graph
+[mermaid,subs="attributes"]
+....
+flowchart LR;
+  accTitle: Upgrade path support graph
+  accDescr: A diagram showing supported and unsupported upgrade paths for {gp-short-name}.
+  0.1.0(0.1.0)-->0.1.1(0.1.1);
+  0.1.1-->0.2.0(0.2.0);
+  0.2.0-->0.2.1(0.2.1);
+  0.1.0-->0.2.0;
+  0.2.1-->0.3.0(0.3.0);
+  0.2.0-->|Not recommended|0.3.0;
+  0.1.1-->|Not supported|0.3.0;
+  linkStyle 5 color:brown,stroke-width:2px,stroke-dasharray: 3 5
+  linkStyle 6 color:red,stroke-width:2px,stroke-dasharray: 3 5
+....
+
+[#_breaking_and_important_changes_between_versions]
+== Breaking and important changes between versions
+
+This section records breaking changes and other important changes that you
+must review before you upgrade to a specific version. There are no entries
+yet.
+
+[#_rule_set_changes]
+== Changes to the rules
+
+Each release contains one version of Coraza and one version of the OWASP
+Core Rule Set (CRS). An upgrade can change these versions. A new CRS version
+can add rules or change rules. As a result, it can reject requests that the
+old version accepted.
+
+To find these false positives before they block traffic, upgrade a staging
+cluster first. Then read the matched rules in the log of the processor. The
+xref:reference/compatibility.adoc#_rule_engine_and_rule_set[Rule engine and
+rule set] section tells you how to find the CRS version of a processor.
+
+[#_upgrade_order]
+== Upgrade order
+
+Upgrade the `gateway-protector` Helm chart with `helm upgrade`. The chart
+contains the CRDs, so the upgrade also updates them. The chart upgrades the
+controller and the processor together. It keeps the certificate authority
+and the certificates of the old release.
+
+A new processor pod is ready only after it gets its first configuration
+from the controller. Kubernetes sends traffic only to ready pods, so a new
+pod does not get traffic before it has rules. An old processor pod keeps its
+last good configuration until it stops. When an old pod stops, it waits for
+the requests in progress, for up to 10 seconds.
+
+[#_downgrades]
+== Downgrades
+
+{gp-short-name} does not support downgrades, and the project does not test
+them.
+
+[#_policies]
+== Policies
+
+A `WAFPolicy` and a `WAFRuleSet` carry no version of their own. They stay in
+the cluster across {gp-short-name} upgrades. You do not apply them again
+when you upgrade. After the upgrade, the controller writes the
+`AgentgatewayPolicy` objects of the protected routes again.
+
+The API version of the two kinds is `v1alpha1`. An alpha API can change in
+an incompatible way in a new `MINOR` version. The
+xref:#_breaking_and_important_changes_between_versions[Breaking and
+important changes] section lists each such change, with the steps to update
+your policies.

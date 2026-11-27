@@ -1,0 +1,219 @@
+include::partial$variables.adoc[]
+
+= Policy attachment
+:revdate: 2026-11-23
+:page-revdate: {revdate}
+:description: Learn how {gp-name} finds the policy that governs each request, from the gateway, the listener, the route, and the rule that agentgateway selects.
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["policy-attachment"]
+:doc-type: ["explanation"]
+:keywords: {gp-name}, kubewarden, wafpolicy, policy attachment, gateway api, httproute, sectionName
+
+A `WAFPolicy` has exactly one target. More than one policy can apply to the
+same request, for example a policy on a `Gateway` and a policy on one of its
+routes. This page explains which policy governs each request. It also
+explains how {gp-name} finds the requests that a policy covers.
+
+The xref:howtos/attach-a-policy.adoc[Attach a policy to a gateway or a
+route] page gives a manifest for each kind of target.
+
+[#_targets]
+== Targets
+
+The field `spec.targetRef` names the target of a policy. It always has the
+group `gateway.networking.k8s.io`, a kind, a name, and a namespace. The
+optional field `sectionName` narrows the target to one part of it. Four
+targets are possible:
+
+[cols="2,2,3", options="header"]
+|===
+|Target |`targetRef` |Scope
+
+|A `Gateway`
+|`kind: Gateway`, no `sectionName`
+|Every request that this gateway accepts.
+
+|A listener of a `Gateway`
+|`kind: Gateway`, `sectionName` is the name of the listener
+|Every request that this listener accepts.
+
+|An `HTTPRoute`
+|`kind: HTTPRoute`, no `sectionName`
+|Every rule of this route.
+
+|A rule of an `HTTPRoute`
+|`kind: HTTPRoute`, `sectionName` is the name of the rule
+|This rule only.
+|===
+
+[#_selection_order]
+== Selection order
+
+agentgateway selects the route and the rule of each request. It uses all the
+matches of the Gateway API: the hostnames, the path, the headers, the query
+parameters, and the method. Then it tells the processor the gateway, the
+listener, the route, and the rule of the request.
+
+The processor finds the policy of the request. It tries four levels, from
+the most specific to the least specific. It stops at the first level that
+has a policy:
+
+. A policy on the rule that agentgateway selected. This level applies only
+  to a rule that has a name.
+. A policy on the full route.
+. A policy on the listener that accepted the request.
+. A policy on the gateway that accepted the request.
+
+If no level has a policy, the WAF does not inspect the request.
+
+.The selection order
+[mermaid]
+....
+flowchart TD
+    accTitle: The selection order of a policy
+    accDescr: A flowchart showing the four levels that the processor tries for one request, from a policy on the rule that agentgateway selected to a policy on the gateway that accepted the request.
+    start(["One request"]) --> l1{"Does a policy target the rule<br/>that agentgateway selected?"}
+    l1 -->|"yes"| p1["Route rule policy"]
+    l1 -->|"no"| l2{"Does a policy target<br/>the full route?"}
+    l2 -->|"yes"| p2["Route policy"]
+    l2 -->|"no"| l3{"Does a policy target the listener<br/>that accepted the request?"}
+    l3 -->|"yes"| p3["Listener policy"]
+    l3 -->|"no"| l4{"Does a policy target the gateway<br/>that accepted the request?"}
+    l4 -->|"yes"| p4["Gateway policy"]
+    l4 -->|"no"| none["No policy. The WAF does not inspect this request."]
+    p1 --> out["This policy governs the request.<br/>No other policy applies."]
+    p2 --> out
+    p3 --> out
+    p4 --> out
+....
+
+A rule policy covers only the requests that agentgateway sends to its rule.
+For example, a route has two rules: a rule `health` with the match
+`PathPrefix /health`, and a rule without a name for the path `/`. A policy
+on the rule `health` covers `/health/live`. It does not cover
+`/healthz-admin`. A `PathPrefix` match uses full path segments, so
+agentgateway sends this request to the other rule. In the same way, a policy
+on a rule that also matches a header covers only the requests that have this
+header.
+
+[#_one_policy_governs_a_rule]
+== One policy governs a request
+
+The policy that the selection finds governs the request in full.
+{gp-short-name} never merges two policies, and policies have no priorities.
+
+For example, a policy on a route replaces the policy on its gateway for the
+rules of the route. The route policy keeps no value of the gateway policy,
+such as the paranoia level or the exclusions. To keep a value, write it again
+in the route policy.
+
+This design has one reason: the result for a request depends on one object
+only. You can read one policy and know how the WAF treats the request.
+
+[#_listener_policies]
+== Listener policies
+
+A policy on a listener covers each request that this listener accepts. A
+route attaches to a `Gateway` through an entry in its `spec.parentRefs`. The
+entry can name one listener of the gateway with `sectionName`, or it can name
+no listener. In both cases, the requests that the listener accepts get the
+listener policy.
+
+A route that names another listener of the gateway in `sectionName` gets no
+traffic through this listener. As a result, the listener policy does not
+apply to this route.
+
+[#_rule_policies]
+== Rule policies
+
+A policy can target one rule of an `HTTPRoute`. The `sectionName` of the
+policy is the `name` of the rule. A rule without a name cannot be the target
+of a policy.
+
+The application team owns the route, so it can change the name of a rule.
+After the change, the policy reports `Accepted=False` with the reason
+`TargetNotFound`. The traffic of the rule then falls under the next broader
+policy, and this policy can be weaker. See
+xref:reference/known_limitations.adoc#_a_policy_for_one_rule_depends_on_the_rule_name[A
+policy for one rule depends on the name of the rule].
+
+[#_two_policies_with_the_same_target]
+== Two policies with the same target
+
+Two policies have the same target when they have the same kind, namespace,
+name, and `sectionName`. This is a conflict. The oldest policy wins. If the
+two policies were created in the same second, the order of their namespace
+and name decides.
+
+The other policy reports `Accepted=False` with the reason `Conflicted`. The
+message of the condition gives the name of the policy that wins. When you
+delete the policy that wins, the next oldest policy wins.
+
+A policy on a gateway and a policy on one of its routes are not a conflict.
+They have different targets, and the selection order decides between them.
+
+[#_a_route_with_more_than_one_gateway]
+== A route with more than one gateway
+
+An `HTTPRoute` can attach to more than one `Gateway`. The first two levels of
+the selection order, the rule and the route, do not depend on the gateway.
+
+The last two levels use the gateway and the listener that accepted the
+request. As a result, a route can get a different policy on each gateway.
+For example, a route attaches to a public gateway with a `Blocking` policy,
+and to an internal gateway with an `Off` policy. The WAF blocks the attacks
+that come through the public gateway. It does not inspect the requests that
+come through the internal gateway.
+
+Two routes for the same hostname on two gateways behave in the same way. The
+requests of each gateway get the policy of this gateway.
+
+[#_policies_in_another_namespace]
+== Policies in another namespace
+
+A policy can be in a namespace that is different from the namespace of its
+target. The field `targetRef.namespace` is required for this reason.
+
+As a result, the platform team can keep every policy in one namespace, for
+example the namespace of {gp-short-name}. With Kubernetes RBAC (role-based
+access control), it gives the application teams no write access to this
+namespace. The application teams publish their routes, and the policies of
+the platform team protect them.
+
+A policy and the `WAFRuleSet` objects that it references must be in the same
+namespace.
+
+[#_how_the_processor_finds_the_policy]
+== How the processor finds the policy of a request
+
+The processor does not match requests to routes. Each `AgentgatewayPolicy`
+that the controller generates tells agentgateway to send the identity of
+each request to the processor. The identity is the gateway, the listener,
+the route, and the rule of the request. agentgateway sets these values from
+its own route selection, so a client cannot change them.
+
+The configuration of the processor has one entry for each accepted policy.
+The entry gives the target of the policy and its WAF rules. The processor uses
+the identity of the request to find an entry, in the
+xref:#_selection_order[selection order].
+
+The configuration has no hosts and no paths. As a result, the WAF applies
+the policy of the rule that agentgateway selected, for every kind of match.
+This includes a `RegularExpression` path match, and a match on a header, a
+query parameter, or the method.
+
+If a request gets to the processor without its identity, the processor
+rejects it with status `500`. See
+xref:reference/known_limitations.adoc#_a_request_without_its_identity_fails[A
+request without its identity fails].
+
+[#_when_an_object_changes]
+== When an object changes
+
+When a policy or a `WAFRuleSet` changes, the controller builds the
+configuration of the processor again. When an `HTTPRoute` changes, the
+controller writes the `AgentgatewayPolicy` objects again. For example, a new
+route on a protected gateway gets the gateway policy without other action.
+The
+xref:explanations/architecture.adoc#_a_related_object_changes[Architecture]
+page lists the effect of each change.

@@ -1,0 +1,519 @@
+include::partial$variables.adoc[]
+
+= {gp-name} architecture
+:revdate: 2026-11-24
+:page-revdate: {revdate}
+:description: How {gp-name} is built: the controller, the processor, and agentgateway, and the path of a policy and of a request through them.
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["architecture"]
+:doc-type: ["explanation"]
+:keywords: {gp-name}, kubewarden, kubernetes, architecture, waf, gateway api, agentgateway, coraza
+
+{gp-name} has two programs. The controller is the control plane. It reads
+the policies and decides what the web application firewall (WAF) must do.
+The processor is the data plane. It inspects the traffic.
+
+The proxy is agentgateway. It is not a part of {gp-short-name}. It sends the
+traffic of each protected route to the processor, and it blocks the traffic
+that the processor rejects.
+
+The xref:introduction.adoc[introduction] explains what a policy is. The
+xref:explanations/policy-attachment.adoc[Policy attachment] page explains how
+a policy selects traffic. This page explains how the parts fit together.
+
+[#_design_principles]
+== Design principles
+
+[#_the_gateway_selects_the_route]
+=== The gateway selects the route, the processor selects the rules
+
+agentgateway decides whether a request goes to the processor. The processor
+decides which WAF rules apply to the request. For the first decision, the
+controller writes one `AgentgatewayPolicy` for each protected route. For the
+second decision, agentgateway sends the identity of the request to the
+processor. The identity is the gateway, the listener, the route, and the
+rule that agentgateway selected. The processor then finds the policy for
+this identity.
+
+Only agentgateway matches requests to routes. The processor does not match
+the request to a route a second time. As a result, agentgateway and the
+processor cannot select different routes.
+
+[#_a_policy_names_only_gateway_api_objects]
+=== A policy names only Gateway API objects
+
+A `WAFPolicy` targets a `Gateway` or an `HTTPRoute`. The platform team
+writes no object that is specific to agentgateway. The controller generates
+these objects. An application team writes only its `HTTPRoute`.
+
+[#_fail_closed_at_each_layer]
+=== Fail closed at each layer
+
+Protection does not stop silently at any layer:
+
+* When no processor replica is reachable, agentgateway blocks the traffic of
+  the protected routes.
+* When the WAF engine returns an error, the processor answers with status
+  `500`.
+* When a request gets to the processor without its identity, the processor
+  answers with status `500`.
+* A processor replica without a configuration receives no traffic, because
+  its readiness probe fails.
+* When a new configuration is not valid, the processor keeps the last good
+  configuration.
+* A conflict between two policies has one defined winner.
+
+If a component fails and you cannot fix it quickly, see
+xref:howtos/emergency-disable.adoc[Turn off the WAF in an emergency].
+
+[#_the_cluster_state_is_the_only_input]
+=== The cluster state is the only input
+
+After each change, the controller builds the full configuration again from
+the objects in the cluster. It does not change the configuration in steps.
+As a result, the configuration depends only on the objects in the cluster,
+and a deleted policy needs no cleanup step.
+
+[#_policies_with_the_same_rules_share_one_engine]
+=== Policies with the same rules share one engine
+
+A WAF engine is one instance of Coraza with one set of rules. The controller
+writes the rules of each policy in a fixed order. Two policies with the same
+meaning then get the same rules, and the processor holds one engine for the
+two policies.
+
+[#_the_processor_does_not_use_the_kubernetes_api]
+=== The processor does not use the Kubernetes API
+
+The processor gets its full configuration from the controller, over one
+connection. It needs no Kubernetes permissions. Its image contains the files
+of the OWASP Core Rule Set (CRS), so it needs no network access to get the
+rules.
+
+[#_the_gateway_protector_stack]
+== The {gp-short-name} stack
+
+.Architecture
+[mermaid,subs="attributes"]
+....
+%%{init: { "themeVariables": { "fontSize": "24px" } }}%%
+flowchart LR
+    accTitle: {gp-short-name} architecture
+    accDescr: A diagram showing the components of {gp-short-name}, the objects that each team writes, and the flow of data between them.
+    platform["Platform team"]
+    app["Application team"]
+    client["HTTP client"]
+    upstream["Application"]
+
+    subgraph k8s["Kubernetes API"]
+        wafpolicy["WAFPolicy<br/>WAFRuleSet"]
+        gwapi["Gateway<br/>HTTPRoute"]
+        agwpolicy["AgentgatewayPolicy<br/>(generated)"]
+    end
+
+    subgraph cp["Control plane"]
+        controller["Controller"]
+    end
+
+    subgraph dp["Data plane"]
+        processor["Processor<br/>WAF engines<br/>one entry for each policy"]
+    end
+
+    agw["agentgateway"]
+
+    platform -->|"writes"| wafpolicy
+    app -->|"writes"| gwapi
+    wafpolicy -->|"watch"| controller
+    gwapi -->|"watch"| controller
+    controller -->|"writes status"| wafpolicy
+    controller -->|"writes"| agwpolicy
+    controller -->|"configuration (mTLS)"| processor
+    agwpolicy -->|"read by"| agw
+    gwapi -->|"read by"| agw
+    client -->|"HTTP"| agw
+    agw -->|"ext_proc (mTLS)"| processor
+    agw -->|"permitted traffic"| upstream
+....
+
+One Helm chart installs the CRDs, the controller, and the processor. The
+Gateway API CRDs and agentgateway must be in the cluster first.
+
+[#_custom_resources]
+=== Custom resources
+
+`WAFPolicy` and `WAFRuleSet` are the user-facing API. A `WAFPolicy` attaches
+one set of WAF rules to one `Gateway` or `HTTPRoute`. A `WAFRuleSet` holds
+custom rules that policies in the same namespace reference by name. See
+xref:howtos/custom-rules.adoc[Write your own rules]. The
+xref:reference/crd.adoc[CRD API reference] describes each field.
+
+[#_controller]
+=== Controller
+
+The controller is a Deployment with leader election. Only the leader does
+the work, and the other replicas wait. The controller does four tasks:
+
+. It decides if each policy is valid, and it writes the `Accepted`
+  condition.
+. It builds the configuration of the processor from every valid policy. It
+  compiles the rules of each policy as a test, so rules that do not compile
+  never get to the processor.
+. It writes one `AgentgatewayPolicy` for each protected route.
+. It writes the `Programmed` condition of each policy.
+
+The controller also serves the configuration stream to the processor, on
+port 9002, and it rotates the certificates.
+
+[#_processor]
+=== Processor
+
+The processor is a Deployment with a Service, `gateway-protector-processor`,
+on port 9000. It is a server for ext_proc, the external processing protocol
+of the Envoy proxy. agentgateway opens one ext_proc stream to the processor
+for each HTTP exchange.
+
+The processor holds two things in memory:
+
+* One WAF engine for each different set of rules.
+* One entry for each accepted policy. The entry connects the target of the
+  policy to one engine.
+
+The processor runs as its own Deployment, not inside the agentgateway pods.
+As a result, you scale the processor independently of agentgateway.
+
+[#_agentgateway]
+=== agentgateway
+
+agentgateway reads the `Gateway` and `HTTPRoute` objects and routes the
+traffic. It also reads the `AgentgatewayPolicy` objects. An
+`AgentgatewayPolicy` that the controller generates tells agentgateway to
+send the traffic of one route to the processor.
+
+[#_generated_objects]
+=== Generated objects
+
+The controller writes one `AgentgatewayPolicy` in the namespace of each
+protected route. The object has the name `gateway-protector-<route name>`
+and the label `gateway-protector.kubewarden.io/managed: "true"`. The route
+owns the object, so Kubernetes deletes the object together with the route.
+
+You do not write or change these objects. If someone changes or deletes one
+of them, the controller writes it again. The controller deletes the object
+when no policy covers the route.
+
+The body modes of the object come from the policies that can apply to the
+route. If no policy inspects a body, agentgateway does not send this body to
+the processor.
+
+The object also has a `metadataContext` field. This field tells
+agentgateway to send the identity of each request to the processor. The
+field is the same for each route, so a change to a policy does not change
+it.
+
+[#_configuration_stream]
+=== Configuration stream
+
+The processor connects to the controller and keeps one gRPC stream open. The
+stream works as follows:
+
+. The controller sends the current configuration when the processor
+  connects. It sends a new configuration after each change.
+. Each configuration has a version. The version is a hash of the content, so
+  the two sides ignore a configuration that did not change.
+. The processor compiles the configuration. Then it answers with the version
+  and the result.
+
+If a configuration is not valid, the processor rejects it and keeps the last
+good configuration. If the stream fails, the processor connects again.
+
+The format of the configuration also has a version, the format version.
+When the processor connects, it gives the format version that it supports.
+The controller sends no configuration to a processor that supports another
+format version. The processor also rejects a configuration with another
+format version. As a result, a processor never applies a configuration in a
+format that it does not support.
+
+[#_what_runs_where]
+== What runs where
+
+[cols="1,3", options="header"]
+|===
+|Place |Work
+
+|Controller leader
+|The check of each policy. The build of the configuration. The
+`AgentgatewayPolicy` objects. The status of each policy. The configuration
+stream, on port 9002. The rotation of the certificates.
+
+|Other controller replicas
+|No work. They wait to become the leader.
+
+|Every processor replica
+|The WAF engines and the entries of the policies. The inspection of each
+request and response, on port 9000. A health service for the Kubernetes
+probes, on port 9001.
+
+|agentgateway
+|The match of each request to a route and a rule. The call to the processor
+for a protected route, with the identity of the request. The block response
+to the client.
+|===
+
+[#_the_journey_of_a_policy]
+== The journey of a policy
+
+This section follows one policy from `kubectl apply` to an active WAF.
+
+. *You apply a `WAFPolicy`.* The Kubernetes API checks the fields that it
+  can check in the object alone, for example the mode and the paranoia
+  level. {gp-short-name} has no admission webhook.
+
+. *The controller accepts the policy.* It makes sure that the target exists,
+  that each referenced `WAFRuleSet` exists, and that no older policy has the
+  same target. Then it sets `Accepted=True`. If a check fails, the condition
+  gives the reason.
+
+. *The controller writes the rules.* It turns the policy into one block of
+  SecLang directives. SecLang is the rule language of ModSecurity and
+  Coraza. The directives have this order:
+.. The base directives that Coraza recommends
+.. The mode
+.. The limits for bodies
+.. The paranoia level and the anomaly thresholds
+.. The CRS
+.. The custom rules
+.. The exclusions
+
+. *The controller computes the engine key.* The key is the first 16
+  characters of the SHA-256 hash of the directives. Two policies with the
+  same directives get the same key, and they share one engine.
+
+. *The controller compiles the rules as a test.* If the rules do not
+  compile, the policy gets `Programmed=False` with reason `CompileFailed`,
+  and its entry in the configuration has no engine. The WAF then does not
+  inspect the traffic that the policy covers.
+
+. *The controller adds an entry for the policy.* The entry gives the target
+  of the policy and the engine key. The configuration has no hosts and no
+  paths. See
+  xref:explanations/policy-attachment.adoc#_how_the_processor_finds_the_policy[How
+  the processor finds the policy of a request].
+
+. *The controller sends the configuration.* Each processor replica compiles
+  it and starts to use it. Requests in progress finish with the old engines.
+
+. *The controller writes the `AgentgatewayPolicy` objects.* It writes one
+  for each route that the policy can apply to. agentgateway then sends the
+  traffic of each protected route to the processor.
+
+. *The controller sets `Programmed=True`.* The condition shows that the
+  rules compiled and that they are in the configuration that the controller
+  sent. It does not show that each processor replica applied this
+  configuration.
+
+[#_a_related_object_changes]
+=== A related object changes
+
+The controller examines a policy again when a related object changes:
+
+[cols="2,3", options="header"]
+|===
+|Change |Result
+
+|The target is deleted, or the listener or rule that `sectionName` names is
+removed.
+|The policy stays in the cluster. It gets `Accepted=False` with reason
+`TargetNotFound`, and its rules leave the configuration.
+
+|The target comes back.
+|The controller accepts the policy again. You do not change the policy.
+
+|A referenced `WAFRuleSet` is deleted.
+|The policy gets `Accepted=False` with reason `Invalid`, and its rules leave
+the configuration.
+
+|A route is added to a protected `Gateway`.
+|The controller writes the `AgentgatewayPolicy` of the route. The
+configuration of the processor does not change.
+
+|A policy is deleted.
+|Its rules leave the configuration. If the policy won a conflict, the next
+oldest policy with the same target wins.
+|===
+
+[#_the_journey_of_a_request]
+== The journey of a request
+
+This section follows one request to a protected route.
+
+.The path of a protected request
+[mermaid]
+....
+sequenceDiagram
+    accTitle: The path of a protected request
+    accDescr: A sequence diagram showing how agentgateway sends the headers, the identity, and the body of a request and of a response to the processor, and how a block ends the exchange.
+    participant Client
+    participant AGW as agentgateway
+    participant Proc as Processor
+    participant App as Application
+
+    Client->>AGW: HTTP request
+    AGW->>Proc: request headers and identity
+    Proc->>Proc: select the engine by the identity
+    alt no identity
+        Proc-->>AGW: block with status 500
+        AGW-->>Client: status 500
+    else no policy for this identity
+        Proc-->>AGW: continue without inspection
+    else a rule rejects the headers
+        Proc-->>AGW: block
+        AGW-->>Client: block response
+    else the headers pass
+        Proc-->>AGW: continue
+        AGW->>Proc: request body
+        Note over Proc: the processor holds the body until the verdict
+        alt a rule rejects the body
+            Proc-->>AGW: block
+            AGW-->>Client: block response
+        else the body passes
+            Proc-->>AGW: release the body
+            AGW->>App: request
+            App-->>AGW: response
+            AGW->>Proc: response headers and body
+            alt a rule rejects the response
+                Proc-->>AGW: block
+                AGW-->>Client: block response
+            else the response passes
+                Proc-->>AGW: release the response
+                AGW-->>Client: response
+            end
+        end
+    end
+....
+
+. *agentgateway matches the request to a rule of an `HTTPRoute`.* If a
+  generated `AgentgatewayPolicy` targets this route, agentgateway opens an
+  ext_proc stream to the processor. With the request headers, it sends the
+  identity of the request: the gateway, the listener, the route, and the
+  rule.
+
+. *The processor selects one engine.* If the identity is missing, the
+  processor rejects the request with status `500`. Otherwise, it uses the
+  identity to find the policy, in the
+  xref:explanations/policy-attachment.adoc#_selection_order[selection
+  order]. If no policy applies, the request continues without inspection.
+
+. *The engine inspects the request.* The processor inspects one HTTP
+  exchange in four phases:
++
+[cols="1,3", options="header"]
+|===
+|Phase |What the processor does
+
+|Request headers
+|It selects the engine and applies the rules to the URL and the headers. A
+request with no body gets its full verdict in this phase.
+
+|Request body
+|It holds the body until the verdict. A blocked body never gets to the
+application.
+
+|Response headers
+|It applies the rules to the headers. If the engine inspects the body of
+this response, the processor holds its answer until the verdict on the body.
+
+|Response body
+|It holds the body until the verdict. A block in this phase replaces the
+full response.
+|===
+
+. *The processor answers with a verdict.* If no rule rejects the exchange,
+  agentgateway forwards it. If a rule rejects it, agentgateway sends a block
+  response to the client.
+
+A block response has status `403` by default, an empty body, and the header
+`x-waf-violation: 1`. A custom rule can set a different status. The
+processor writes the rule ID to its log, and it never sends the ID to the
+client. A rule ID in the response helps an attacker to learn the rules.
+
+In `Detection` mode, the engine applies the same rules and rejects nothing.
+The processor writes one log line for each rule that matches.
+
+[#_what_the_status_tells_you]
+== What the status tells you
+
+Each policy reports two conditions. They follow the convention of the
+Gateway API.
+
+include::partial$status-conditions.adoc[]
+
+A policy with `Programmed=True` on a `Gateway` with no routes has no error.
+It only has no traffic to inspect yet.
+
+The status does not record the rules that match, or the requests that the
+WAF blocks. This information is in the log of the processor. The status also
+does not show the state of each processor replica. See
+xref:reference/known_limitations.adoc#_programmed_does_not_show_each_replica[`Programmed` does not show the state of each processor replica].
+
+The
+xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the status
+of a policy] section tells you how to read the conditions of a policy.
+
+[#_trust_boundaries]
+== Trust boundaries
+
+* One certificate authority (CA) signs every certificate. The Helm chart
+  creates the CA and the certificates when you install it. {gp-short-name}
+  does not need cert-manager.
+* The private key of the CA is in a Secret that no pod mounts.
+* The configuration stream uses mutual TLS (mTLS). The processor verifies
+  the certificate of the controller, and the controller verifies the
+  certificate of the processor.
+* The ext_proc connection uses mTLS too. The processor accepts only a client
+  that has a certificate from the CA. The chart gives agentgateway this
+  certificate with a second `AgentgatewayPolicy`, in the namespace of
+  {gp-short-name}.
+* The controller leader examines the certificates every 12 hours. It
+  replaces a certificate that expires in less than 60 days. Each side reads
+  its certificate again for each new connection, so a rotation needs no
+  restart.
+* The controller reads the `Gateway`, `HTTPRoute`, and `WAFRuleSet` objects,
+  and it never changes them. It writes the status of the `WAFPolicy` objects
+  and the generated `AgentgatewayPolicy` objects.
+* The controller reads and writes Secrets and ConfigMaps only in its own
+  namespace, for the certificates.
+* The processor has no Kubernetes permissions.
+* The two containers do not run as root. They have a read-only root file
+  system and no Linux capabilities.
+* Kubernetes RBAC (role-based access control) decides who writes a policy.
+  The platform team keeps the policies in one namespace, and it gives other
+  teams no write access to this namespace.
+
+[#_how_gateway_protector_scales]
+== How {gp-short-name} scales
+
+The processor is in the path of each protected request. agentgateway calls
+it for the headers and for the body of each request and response. The cost
+of these calls is not measured yet. See
+xref:reference/known_limitations.adoc#_the_added_latency_is_not_measured[The added latency is not measured].
+
+Every processor replica holds every engine. The memory of a replica grows
+with the number of different sets of rules, not with the number of routes or
+policies. One policy on a `Gateway` with 100 routes uses one engine. The
+configuration of the processor has one entry for each policy and no entry
+for a route, so a new route does not change it. See
+xref:howtos/production-deployments.adoc#_set_the_memory_of_the_processor[Set
+the memory of the processor] for measured values.
+
+The processor holds the body of a request until the verdict. As a result,
+its memory also grows with the size of the bodies in progress. The field
+`requestBody.maxSize` of a policy sets the limit for one body.
+
+The controller builds the full configuration after each change. It compiles
+each set of rules only once and keeps the result. In a test, the first
+compilation of the CRS took 270 milliseconds, and each later compilation
+took about 40 milliseconds. A change that only updates the status of
+a `Gateway` or an `HTTPRoute` does not start a build.
+
+The controller writes one `AgentgatewayPolicy` for each protected route, so
+the number of these objects grows with the number of routes.

@@ -1,0 +1,15 @@
+// Here goes version specific shared attributes and content
+
+// Pull in version independent shared attributes
+include::latest@shared:en:partial$gp-variables.adoc[]
+
+// Pull in version specific shared attributes
+include::{build-type}-specific/variables.adoc[]
+
+// Versions of the prerequisites that this version of the component is
+// tested with. In the kubewarden/gateway-protector repository, the Gateway
+// API version is the version of sigs.k8s.io/gateway-api in go.mod. The
+// agentgateway version is in the Tiltfile and in test/e2e/main_test.go.
+// Bumped by updatecli in the dev version. Do not edit by hand.
+:gateway-api-version: v1.7.0
+:agentgateway-version: v1.7.0

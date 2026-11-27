@@ -1,0 +1,5 @@
+// Here goes version specific, community-specific shared attributes and content
+
+// The project origin sentence, used by the introduction page. The text
+// matches the Admission Controller introduction.
+:intro-paragraph: {gp-name} is a xref:#_vendor_neutrality[vendor neutral], https://cncf.io[CNCF] Sandbox project.

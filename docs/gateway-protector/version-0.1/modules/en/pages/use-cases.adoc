@@ -1,0 +1,259 @@
+include::partial$variables.adoc[]
+= {gp-name} use cases
+:revdate: 2026-11-24
+:page-revdate: {revdate}
+:description: Example use cases for {gp-name}. Protect the routes of a gateway with a web application firewall, tune the rules, and keep the protection in the hands of the platform team.
+:keywords: {gp-name}, documentation, use cases
+:doc-persona: ["kubewarden-all"]
+:doc-type: ["explanation"]
+:doc-topic: ["explanation"]
+
+These are example use cases for {gp-name}. Each case names a
+xref:personas.adoc[persona] and a goal. Then it explains how {gp-short-name}
+meets that goal.
+
+A policy has one of three modes: `Detection`, `Blocking`, and `Off`. The use
+cases that follow use these modes. See
+xref:explanations/policy-attachment.adoc[Policy attachment] for the rules
+that select the policy of each route.
+
+[#_case_a]
+== Case A: As a platform engineer, I want to protect every application behind a gateway, without writing rules.
+
+My cluster has one shared `Gateway`. Many teams attach their applications to
+it with `HTTPRoute` objects. I want the same protection for each
+application. I do not know each application, and I do not want to write WAF
+rules.
+
+I attach one `WAFPolicy` to the `Gateway`. The policy applies to every route
+of the gateway. It also applies to the routes that the teams add later.
+{gp-short-name} includes the OWASP Core Rule Set (CRS), a set of rules that
+finds generic attacks, such as SQL injection and cross-site scripting. I do
+not write rules.
+
+I keep the policy in the namespace of {gp-short-name}. The `Gateway` stays in
+its own namespace. The policy reports two conditions. `Accepted` shows that
+the policy is valid and that its target exists. `Programmed` shows that the
+rules compiled and that the controller sent them to the processor.
+
+See xref:quickstart.adoc[Quick start],
+xref:howtos/attach-a-policy.adoc#_protect_every_route_of_a_gateway[Protect every route of a gateway],
+xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the status of a policy],
+and
+xref:reference/known_limitations.adoc#_only_httproute_objects_are_protected[Only HTTPRoute objects are protected].
+
+[#_case_b]
+== Case B: As a platform engineer, I want to turn on the WAF without breaking my applications.
+
+A WAF rule can reject a valid request. The name of such a request is a false
+positive. I do not want a false positive to stop an application.
+
+I create the policy in `Detection` mode first. In this mode, the WAF applies
+the rules and blocks nothing. The processor writes one log line for each rule
+that matches. The line has the rule ID, the severity, the message, and the
+URI of the request. I read these lines and look for valid requests.
+
+When the log shows no false positives for a period that I trust, I change one
+field of the policy, `spec.engine.mode`, to `Blocking`. If a new release of
+an application causes false positives, I set the mode back to `Detection`.
+
+In `Detection` mode, the WAF does not reject large request bodies. Before I
+change the mode, I make sure that the body limit is large enough for my
+applications.
+
+See xref:quickstart.adoc#_detect_attacks[Detect attacks],
+xref:quickstart.adoc#_block_attacks[Block attacks],
+xref:howtos/tune-false-positives.adoc[Tune false positives],
+xref:howtos/emergency-disable.adoc#_stop_the_blocking[Stop the blocking], and
+xref:reference/known_limitations.adoc#_large_request_bodies_are_rejected[Large request bodies are rejected in Blocking mode].
+
+[#_case_c]
+== Case C: As a security engineer, I want to stop common web attacks before they get to the application.
+
+Attackers send requests with SQL injection, cross-site scripting, and other
+known attacks. I want to stop these requests at the gateway.
+
+In `Blocking` mode, the processor inspects the URL, the headers, and the body
+of each request. It holds the body until the verdict, so a blocked request
+never gets to the application. The CRS does not reject a request at the first
+rule that matches. Each rule that matches adds points to an anomaly score.
+The CRS rejects the request when the score reaches a threshold. If the
+request passes, the processor inspects the response in the same way.
+
+A blocked request gets status `403` by default, with an empty body and the
+header `x-waf-violation: 1`. The rule ID is only in the log of the processor,
+so an attacker cannot learn which rule matched.
+
+I set the strictness with two fields of the policy. `paranoiaLevel` is a
+level from 1 to 4. A higher level enables more rules. It finds more attacks,
+but it also causes more false positives. `anomalyThreshold` sets the scores
+that reject a request and a response.
+
+See xref:quickstart.adoc#_block_attacks[Block attacks],
+xref:explanations/modes-and-scoring.adoc[Modes and anomaly scoring],
+xref:reference/crd.adoc#k8s-api-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicyspec[WAFPolicySpec],
+and
+xref:reference/known_limitations.adoc#_response_bodies_are_inspected_in_part[Response bodies are inspected only in part].
+
+[#_case_d]
+== Case D: As a platform engineer, I want different protection for one application.
+
+Most applications use the policy of the gateway. One admin portal needs
+stricter rules. A public status page needs no WAF.
+
+I attach a second policy to the `HTTPRoute` of the admin portal, with a
+higher paranoia level. With `sectionName`, the policy can target one rule of
+the route, for example the rule for the `/admin` path. For the status page, I
+attach a policy with the mode `Off` to its route. The traffic of the status
+page still goes through the processor, so the status page also fails when no
+processor replica is ready.
+
+The most specific policy wins, and it replaces the gateway policy in full. A
+route policy keeps no value of the gateway policy, so I write each value
+again. Two policies with the same target are a conflict. The oldest policy
+wins, and the other policy reports `Accepted=False` with reason `Conflicted`.
+
+See
+xref:howtos/attach-a-policy.adoc[Attach a policy to a gateway or a route],
+xref:explanations/policy-attachment.adoc[Policy attachment],
+xref:reference/known_limitations.adoc#_a_route_policy_replaces_the_gateway_policy[A route policy replaces the gateway policy in full],
+and
+xref:reference/known_limitations.adoc#_a_policy_for_one_rule_depends_on_the_rule_name[A policy for one rule depends on the name of the rule].
+
+[#_case_e]
+== Case E: As a security engineer, I want to correct a false positive for one application, and add rules of my own.
+
+A rule of the CRS rejects a valid request of one application. I do not want
+to lower the paranoia level for every application.
+
+I add an exclusion to the policy of this application. An exclusion removes
+CRS rules by rule ID, or by tag, for example `attack-sqli`. I find the rule
+ID in the log of the processor.
+
+Some applications need rules that the CRS does not have, for example a check
+of the format of one parameter. I write these rules in a `WAFRuleSet`, in
+SecLang, the rule language of ModSecurity and Coraza. Each policy in the same
+namespace can reference the `WAFRuleSet` by name, so many policies use the
+same rules. The ID of a custom rule must be from 1 to 99999. If the rules do
+not compile, the policy reports `Programmed=False` with reason
+`CompileFailed`.
+
+See
+xref:howtos/tune-false-positives.adoc[Tune false positives],
+xref:howtos/custom-rules.adoc[Write your own rules],
+xref:reference/crd.adoc#k8s-api-github-com-kubewarden-gateway-protector-api-v1alpha1-wafexclusion[WAFExclusion],
+xref:reference/crd.adoc#k8s-api-github-com-kubewarden-gateway-protector-api-v1alpha1-wafruleset[WAFRuleSet],
+xref:reference/known_limitations.adoc#_a_policy_that_does_not_compile_protects_nothing[A policy that does not compile protects nothing],
+xref:reference/known_limitations.adoc#_the_order_of_customrulesrefs_has_no_effect[The order of customRulesRefs has no effect],
+and
+xref:howtos/troubleshooting.adoc#_unexpected_responses[Unexpected responses].
+
+[#_case_f]
+== Case F: As an application team, I want my application to get the protection with no work.
+
+I publish my application with an `HTTPRoute`. I do not want to learn WAF
+rules.
+
+The `HTTPRoute` has no field for the WAF. When my route attaches to a
+protected `Gateway`, the policy of the platform engineer covers it. I do not
+change anything.
+
+The platform team keeps the policies in its own namespace. With Kubernetes
+RBAC (role-based access control), it gives me no write access to this
+namespace. As a result, I cannot turn the WAF off by mistake. When a rule
+rejects a valid request of my application, I ask the platform engineer for an
+exclusion.
+
+When my application returns an error, I look at the response headers. A
+response with the header `x-waf-violation: 1` comes from the WAF, not from my
+application.
+
+See xref:quickstart.adoc#_block_attacks[Block attacks].
+
+[#_case_g]
+== Case G: As an operator, I want to know what happens when a component fails.
+
+The WAF is in the path of each protected request. I want to know what
+happens when a part of {gp-short-name} fails.
+
+{gp-short-name} fails closed. If no processor replica is ready, agentgateway
+blocks the traffic of every protected route. If the WAF engine returns an
+error, the processor answers with status `500`. A policy has no field to let
+traffic through without inspection. As a result, an attacker who can stop the
+processor cannot get past the WAF.
+
+The Helm chart installs one replica of the controller and one replica of the
+processor. I increase the number of processor replicas, so that one failure
+does not stop the protected routes. A processor replica keeps its last good
+configuration when the controller is not available. A new replica needs the
+controller for its first configuration. I follow
+xref:howtos/production-deployments.adoc[Configure {gp-short-name} for production]
+for the replicas, the scheduling, and the memory.
+
+The controller and the processor connect with mutual TLS (mTLS), and
+agentgateway connects to the processor with mTLS too. The Helm chart creates
+the certificates, and the controller rotates them. {gp-short-name} does not
+need cert-manager.
+
+If the processor fails and I cannot fix it quickly, I take the WAF out of
+the path of the traffic by hand. Then I put it back when the processor works
+again.
+
+See
+xref:explanations/architecture.adoc#_fail_closed_at_each_layer[Fail closed at each layer],
+xref:reference/known_limitations.adoc#_protected_routes_fail_closed[Protected routes fail closed],
+xref:reference/known_limitations.adoc#_a_new_processor_replica_needs_the_controller[A new processor replica needs the controller],
+and
+xref:howtos/emergency-disable.adoc[Turn off the WAF in an emergency].
+
+[#_case_h]
+== Case H: As a platform engineer with many clusters, I want the same policies in every cluster, managed as code.
+
+I run the same gateways and applications in many clusters. I want the same
+protection in each cluster, from one Git repository.
+
+A `WAFPolicy` and a `WAFRuleSet` are namespaced Kubernetes resources. A
+policy refers to its target by name and namespace, and it contains no state
+of one cluster. I commit the policies to my GitOps repository, next to the
+`Gateway` and `HTTPRoute` objects. My GitOps tool applies them to each
+cluster. I test a change in `Detection` mode in a staging cluster before I
+apply it to production.
+
+I do not commit the `AgentgatewayPolicy` objects that the controller
+generates. The controller writes them in each cluster. If someone changes or
+deletes one of them, the controller writes it again.
+
+A policy can be in the repository before its target exists in a cluster.
+The policy then reports `Accepted=False` with reason `TargetNotFound`. When
+the target exists, the controller accepts the policy. I do not change the
+policy.
+
+I install the chart with a tool that runs Helm against the cluster. A tool
+that renders the chart without access to the cluster replaces the
+certificates at each render.
+
+See
+xref:reference/known_limitations.adoc#_errors_show_only_in_the_status_conditions[Errors show only in the status conditions],
+xref:reference/known_limitations.adoc#_a_render_without_the_cluster_replaces_the_certificates[A render without the cluster replaces the certificates],
+and
+xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the status of a policy].
+
+[#_non_goals]
+== Non-goals
+
+{gp-short-name} does not intend to:
+
+* Replace the gateway. agentgateway must be in the cluster.
+* Support other implementations of the Gateway API.
+* Change `Gateway` or `HTTPRoute` objects.
+* Let traffic through without inspection when a component fails.
+* Merge two policies, or give policies a priority.
+* Let an application team change the protection of its routes.
+* Stop unsafe workloads before they enter the cluster. This is the role of
+  the {admc-name}.
+* Control which executables run in a container. This is the role of the
+  {rte-name}.
+* Control network traffic between workloads. This is the role of the
+  {ne-name}.
+* Find vulnerabilities in images. This is the role of the {sboms-name}.
+* Provide a UI. The custom resources are the interface.

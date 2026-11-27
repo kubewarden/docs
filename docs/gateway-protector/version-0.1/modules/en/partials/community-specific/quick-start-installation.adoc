@@ -1,0 +1,77 @@
+[#_prerequisites]
+== Prerequisites
+
+You need these items:
+
+* A Kubernetes cluster that you can delete after the test, for example a
+  link:https://kind.sigs.k8s.io/[kind] cluster. This guide creates one.
+* `kubectl` and `helm` on your computer.
+
+{gp-short-name} works with one gateway,
+link:https://agentgateway.dev[agentgateway]. This guide installs it.
+
+[#_create_a_cluster]
+== Create a cluster
+
+Create a kind cluster:
+
+[source,bash]
+----
+kind create cluster --name gateway-protector
+----
+
+[#_install_the_gateway_api_and_agentgateway]
+== Install the Gateway API and agentgateway
+
+. Install the CRDs of the Kubernetes Gateway API. A CRD (Custom Resource
+  Definition) adds a new object kind to the Kubernetes API.
++
+[source,bash,subs="+attributes"]
+----
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/{gateway-api-version}/standard-install.yaml
+----
+
+. Install the CRDs of agentgateway.
++
+[source,bash,subs="+attributes"]
+----
+helm install agentgateway-crds oci://cr.agentgateway.dev/charts/agentgateway-crds \
+  --namespace agentgateway-system \
+  --create-namespace \
+  --version {agentgateway-version} \
+  --wait
+----
+
+. Install agentgateway.
++
+[source,bash,subs="+attributes"]
+----
+helm install agentgateway oci://cr.agentgateway.dev/charts/agentgateway \
+  --namespace agentgateway-system \
+  --version {agentgateway-version} \
+  --wait
+----
+
+[#_install_the_gateway_protector_chart]
+== Install the {gp-short-name} chart
+
+. Add the Helm repository.
++
+[source,bash]
+----
+helm repo add kubewarden https://charts.kubewarden.io
+helm repo update
+----
+
+. Install the chart.
++
+[source,bash]
+----
+helm install gateway-protector kubewarden/gateway-protector \
+  --namespace gateway-protector-system \
+  --create-namespace \
+  --wait
+----
+
+The chart has no dependency on cert-manager. It creates the certificates
+that protect the connections between the components.

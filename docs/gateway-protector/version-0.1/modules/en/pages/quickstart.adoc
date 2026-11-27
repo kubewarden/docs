@@ -1,0 +1,399 @@
+include::partial$variables.adoc[]
+
+= {gp-name} Quick Start
+:description: Follow the steps to prepare a cluster, install {gp-name} with Helm, protect a sample application with a WAFPolicy, and block an attack.
+:revdate: 2026-11-24
+:page-revdate: {revdate}
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["quick-start"]
+:doc-type: ["tutorial"]
+
+This guide installs {gp-name} in a test cluster and protects a sample
+application with a web application firewall (WAF).
+
+The guide has these steps:
+
+* Create a cluster with the Kubernetes Gateway API and agentgateway.
+* Install {gp-short-name} with `helm`.
+* Deploy a sample application behind a `Gateway`.
+* Attach a `WAFPolicy` in `Detection` mode and read the rules that match an
+  attack.
+* Change the policy to `Blocking` mode and see that the WAF blocks the
+  attack.
+
+[WARNING]
+====
+{gp-short-name} is experimental and under active development. It is not
+ready for production.
+====
+
+'''
+
+include::partial${build-type}-specific/quick-start-installation.adoc[]
+
+[#_verify_the_deployment]
+== Verify the deployment
+
+Make sure that the two deployments are available:
+
+[source,bash]
+----
+kubectl get deployments -n gateway-protector-system
+----
+
+The release has two deployments:
+
+* `gateway-protector-controller` reads the `WAFPolicy` objects and builds
+  the configuration of the processor.
+* `gateway-protector-processor` inspects the traffic.
+
+[#_deploy_a_sample_application]
+== Deploy a sample application
+
+The sample application is
+link:https://github.com/mccutchen/go-httpbin[httpbin], an HTTP server that
+answers test requests. The pod has a second container, `curl`. You send the
+requests of this guide from this container, so you do not need a port
+forward.
+
+. Deploy the application and its `Service`.
++
+[source,bash]
+----
+kubectl apply -f - <<'EOF'
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: httpbin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpbin
+  namespace: httpbin
+spec:
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8080
+  selector:
+    app: httpbin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin
+  namespace: httpbin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin
+  template:
+    metadata:
+      labels:
+        app: httpbin
+    spec:
+      containers:
+        - name: httpbin
+          image: docker.io/mccutchen/go-httpbin:2.26.0
+          command: [go-httpbin]
+          args: ["-port", "8080"]
+          ports:
+            - containerPort: 8080
+        - name: curl
+          image: curlimages/curl:8.23.0
+          command: ["tail", "-f", "/dev/null"]
+EOF
+----
+
+. Expose the application through agentgateway with a `Gateway` and an
+  `HTTPRoute`.
++
+[source,bash]
+----
+kubectl apply -f - <<'EOF'
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: httpbin-gateway
+  namespace: httpbin
+spec:
+  gatewayClassName: agentgateway
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: httpbin
+  namespace: httpbin
+spec:
+  parentRefs:
+    - name: httpbin-gateway
+  rules:
+    - backendRefs:
+        - name: httpbin
+          port: 8000
+EOF
+----
++
+agentgateway creates a proxy for the `Gateway`. The proxy is a deployment
+and a `Service` with the name `httpbin-gateway` in the namespace `httpbin`.
+
+. Wait for the application and the gateway.
++
+[source,bash]
+----
+kubectl wait -n httpbin --for=condition=Available deployment/httpbin --timeout=300s
+kubectl wait -n httpbin --for=condition=Programmed gateway/httpbin-gateway --timeout=300s
+----
+
+[#_send_requests_without_a_policy]
+== Send requests without a policy
+
+No policy targets the `Gateway`, so the WAF does not inspect the traffic.
+
+. Send a normal request through the gateway.
++
+[source,bash]
+----
+kubectl exec -n httpbin deploy/httpbin -c curl -- \
+  curl -s -o /dev/null -w '%{http_code}\n' http://httpbin-gateway/get
+----
++
+The command prints the HTTP status of the response:
++
+[source,bash]
+----
+200
+----
++
+If the command prints an error, the proxy is not ready. Wait a few seconds
+and send the request again.
+
+. Send a request with a script injection attack in the query string.
++
+[source,bash]
+----
+kubectl exec -n httpbin deploy/httpbin -c curl -- \
+  curl -s -o /dev/null -w '%{http_code}\n' 'http://httpbin-gateway/get?q=%3Cscript%3Ealert(1)%3C/script%3E'
+----
++
+The command prints `200` again. The attack gets to the application.
+
+[NOTE]
+====
+The attack in the query string is percent-encoded. agentgateway rejects a
+request target that contains the characters `<` or `>` with status `400`,
+before the WAF sees the request. The WAF decodes the query string before it
+applies the rules.
+====
+
+[#_detect_attacks]
+== Detect attacks
+
+In `Detection` mode, the WAF logs each rule that matches and blocks nothing.
+Use this mode to read the matched rules before you block traffic.
+
+. Attach a `WAFPolicy` to the `Gateway`.
++
+[source,bash]
+----
+kubectl apply -f - <<'EOF'
+apiVersion: gateway-protector.kubewarden.io/v1alpha1
+kind: WAFPolicy
+metadata:
+  name: httpbin-demo
+  namespace: gateway-protector-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: httpbin-gateway
+    namespace: httpbin
+  engine:
+    mode: Detection
+  paranoiaLevel: 1
+EOF
+----
++
+The policy is in the namespace of {gp-short-name}, and its target is in the
+namespace `httpbin`. A policy on a `Gateway` applies to every route of this
+gateway. The field `paranoiaLevel` selects the paranoia level of the OWASP
+Core Rule Set (CRS), from 1 to 4. A higher level enables more rules and
+causes more false positives. See
+xref:explanations/modes-and-scoring.adoc#_paranoia_levels[Paranoia levels].
+
+. Wait until the policy reports the condition `Programmed`.
++
+[source,bash]
+----
+kubectl wait -n gateway-protector-system --for=condition=Programmed wafpolicy/httpbin-demo --timeout=60s
+----
+
+. Read the status of the policy.
++
+[source,bash]
+----
+kubectl get wafpolicy -n gateway-protector-system
+----
++
+[source,bash]
+----
+NAME           TARGET KIND   TARGET NAME       MODE        ACCEPTED   PROGRAMMED   AGE
+httpbin-demo   Gateway       httpbin-gateway   Detection   True       True         15s
+----
++
+The condition `Accepted` shows that the policy is valid and that its target
+exists. The condition `Programmed` shows that the rules of the policy
+compiled, and that the controller sent them to the processor. If a
+condition is not `True`, see
+xref:howtos/troubleshooting.adoc#_read_the_status_of_a_policy[Read the
+status of a policy].
+
+. Send the attack again.
++
+[source,bash]
+----
+kubectl exec -n httpbin deploy/httpbin -c curl -- \
+  curl -s -o /dev/null -w '%{http_code}\n' 'http://httpbin-gateway/get?q=%3Cscript%3Ealert(1)%3C/script%3E'
+----
++
+The command prints `200`, because `Detection` mode blocks nothing.
+
+. Read the matched rules in the log of the processor.
++
+[source,bash]
+----
+kubectl logs -n gateway-protector-system deploy/gateway-protector-processor | grep 'WAF rule triggered'
+----
++
+The processor writes one JSON line for each rule that matches. Each line
+has the fields `rule_id`, `severity`, `message`, and `uri`.
+
+The controller also wrote an `AgentgatewayPolicy` object in the namespace of
+the route. This object tells agentgateway to send the traffic of the route
+to the processor. You do not change this object.
+
+[source,bash]
+----
+kubectl get agentgatewaypolicies -n httpbin
+----
+
+[#_block_attacks]
+== Block attacks
+
+In `Blocking` mode, the WAF rejects a request or a response when its rules
+find an attack.
+
+. Change the mode of the policy.
++
+[source,bash]
+----
+kubectl patch wafpolicy httpbin-demo -n gateway-protector-system \
+  --type=merge -p '{"spec":{"engine":{"mode":"Blocking"}}}'
+----
+
+. Send the attack again.
++
+[source,bash]
+----
+kubectl exec -n httpbin deploy/httpbin -c curl -- \
+  curl -s -o /dev/null -w '%{http_code}\n' 'http://httpbin-gateway/get?q=%3Cscript%3Ealert(1)%3C/script%3E'
+----
++
+The command prints the status of a blocked request:
++
+[source,bash]
+----
+403
+----
++
+If the command prints `200`, the processor does not have the new
+configuration yet. Send the request again.
+
+. Send a SQL injection attack.
++
+[source,bash]
+----
+kubectl exec -n httpbin deploy/httpbin -c curl -- \
+  curl -s -o /dev/null -w '%{http_code}\n' "http://httpbin-gateway/get?id=1'%20OR%20'1'='1"
+----
++
+The command prints `403`.
+
+. Send an attack in the body of a request. The WAF also inspects the body.
++
+[source,bash]
+----
+kubectl exec -n httpbin deploy/httpbin -c curl -- \
+  curl -s -o /dev/null -w '%{http_code}\n' http://httpbin-gateway/post -d 'q=<script>alert(1)</script>'
+----
++
+The command prints `403`.
+
+. Send a normal request.
++
+[source,bash]
+----
+kubectl exec -n httpbin deploy/httpbin -c curl -- \
+  curl -s -o /dev/null -w '%{http_code}\n' http://httpbin-gateway/get
+----
++
+The command prints `200`. The WAF blocks only the requests that the rules
+reject.
+
+. Print the headers of a blocked response.
++
+[source,bash]
+----
+kubectl exec -n httpbin deploy/httpbin -c curl -- \
+  curl -s -o /dev/null -D - 'http://httpbin-gateway/get?q=%3Cscript%3Ealert(1)%3C/script%3E'
+----
++
+A blocked response has an empty body and the header `x-waf-violation: 1`.
+This header shows the difference between a WAF block and an application
+error with the same status.
+
+. Read the blocked requests in the log of the processor.
++
+[source,bash]
+----
+kubectl logs -n gateway-protector-system deploy/gateway-protector-processor | grep 'WAF blocked traffic'
+----
++
+Each line has the path of the request and the ID of the rule that blocked
+it.
+
+[#_next_steps]
+== Next steps
+
+* To give one route, one listener, or one rule a different policy, or to
+  turn the WAF off for one route, see
+  xref:howtos/attach-a-policy.adoc[Attach a policy to a gateway or a route].
+* Before you block the traffic of a real application, tune the policy. See
+  xref:howtos/tune-false-positives.adoc[Tune false positives].
+* To add rules of your own, see xref:howtos/custom-rules.adoc[Write your own
+  rules].
+* Before you install {gp-short-name} in a cluster with real traffic, read
+  xref:howtos/production-deployments.adoc[Configure {gp-name} for
+  production] and xref:reference/compatibility.adoc[Compatibility].
+* To prepare for an outage of the processor, or for a policy that blocks
+  valid traffic, read xref:howtos/emergency-disable.adoc[Turn off the WAF in
+  an emergency].
+* To learn each field of a policy, for example the exclusions of CRS rules
+  and the limits for body inspection, see the
+  xref:reference/crd.adoc[CRD API reference].
+
+[#_clean_up]
+== Clean up
+
+Delete the cluster:
+
+[source,bash]
+----
+kind delete cluster --name gateway-protector
+----

@@ -58,3 +58,19 @@ Discover network activity and secure the communication between your workloads.
 // dev version is promoted to latest.
 * xref:latest@network-enforcer:en:installation/quickstart.adoc[Quick start]
 * xref:latest@network-enforcer:en:introduction.adoc[Documentation]
+
+[.component-card.gateway-card]
+=== {gp-short-name}
+
+Protect the HTTP traffic that your gateways expose with a web application firewall.
+
+++++
+<div data-component-maturity="gateway-protector"></div>
+++++
+
+[.card-links]
+// The component has only a dev version, and latest@ resolves only to a
+// released version. Change dev@ to latest@ when the first version is
+// promoted to latest.
+* xref:dev@gateway-protector:en:quickstart.adoc[Quick start]
+* xref:dev@gateway-protector:en:introduction.adoc[Documentation]

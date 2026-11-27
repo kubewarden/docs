@@ -1,0 +1,498 @@
+// Generated documentation. Please do not edit.
+:anchor_prefix: k8s-api
+
+[id="{p}-api-reference"]
+== API Reference
+
+.Packages
+- xref:{anchor_prefix}-gateway-protector-kubewarden-io-v1alpha1[$$gateway-protector.kubewarden.io/v1alpha1$$]
+
+
+[id="{anchor_prefix}-gateway-protector-kubewarden-io-v1alpha1"]
+=== gateway-protector.kubewarden.io/v1alpha1
+
+Package v1alpha1 contains API Schema definitions for the gateway-protector.kubewarden.io v1alpha1 API group.
+
+.Resource Types
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicy[$$WAFPolicy$$]
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicylist[$$WAFPolicyList$$]
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafruleset[$$WAFRuleSet$$]
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafrulesetlist[$$WAFRuleSetList$$]
+
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-localrulesetreference"]
+==== LocalRuleSetReference
+
+
+
+LocalRuleSetReference references a WAFRuleSet living in the same namespace
+as the WAFPolicy that references it (see WAFPolicySpec.CustomRulesRefs).
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicyspec[$$WAFPolicySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ | name is the name of the referenced WAFRuleSet, in the same namespace +
+as the WAFPolicy referencing it. + |  | MaxLength: 253 +
+MinLength: 1 +
+Required: \{} +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-policytargetreference"]
+==== PolicyTargetReference
+
+
+
+PolicyTargetReference identifies the Gateway API object (Gateway or
+HTTPRoute) that a WAFPolicy/DLPPolicy attaches to.
+
+It mirrors the upstream Gateway API policy-attachment reference form (see
+sigs.k8s.io/gateway-api/apis/v1.NamespacedPolicyTargetReference), extended
+with an optional SectionName so a policy can target a single listener
+(when Kind is Gateway) or a single route rule (when Kind is HTTPRoute).
+Upstream does not currently ship a combined Namespace+SectionName
+reference type, so this struct is hand-written rather than reused
+directly.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicyspec[$$WAFPolicySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`group`* __link:https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/#group[$$Group$$]__ | group is the group of the target resource. + |  | Required: \{} +
+
+| *`kind`* __link:https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/#kind[$$Kind$$]__ | kind is the kind of the target resource. Only "Gateway" and "HTTPRoute" +
+(group gateway.networking.k8s.io) are supported. + |  | Enum: [Gateway HTTPRoute] +
+Required: \{} +
+
+| *`name`* __link:https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/#objectname[$$ObjectName$$]__ | name is the name of the target resource. + |  | Required: \{} +
+
+| *`namespace`* __link:https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/#namespace[$$Namespace$$]__ | namespace is the namespace of the target resource. WAFPolicy/DLPPolicy +
+objects live in the platform-owned namespace (e.g. +
+gateway-protector-system) while the targeted Gateway/HTTPRoute usually +
+lives elsewhere, so this field is required to let the controller +
+resolve cross-namespace targets unambiguously. + |  | Required: \{} +
+
+| *`sectionName`* __link:https://gateway-api.sigs.k8s.io/reference/api-spec/main/spec/#sectionname[$$SectionName$$]__ | sectionName targets a specific listener (when kind is Gateway) or a +
+specific route rule (when kind is HTTPRoute). When unset, the policy +
+applies to the whole Gateway/HTTPRoute. + |  | Optional: \{} +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafanomalythreshold"]
+==== WAFAnomalyThreshold
+
+
+
+WAFAnomalyThreshold sets the CRS anomaly-scoring thresholds above which a
+request (or response) is considered an attack.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicyspec[$$WAFPolicySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`inbound`* __integer__ | inbound is the anomaly score threshold applied to the request phase. + |  | Optional: \{} +
+
+| *`outbound`* __integer__ | outbound is the anomaly score threshold applied to the response phase. + |  | Optional: \{} +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafbodyinspectionspec"]
+==== WAFBodyInspectionSpec
+
+
+
+WAFBodyInspectionSpec toggles and bounds request/response body inspection.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicyspec[$$WAFPolicySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`enabled`* __boolean__ | enabled toggles body inspection for this phase. + |  | Required: \{} +
+
+| *`maxSize`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#quantity-resource-api[$$Quantity$$]__ | maxSize caps the number of bytes buffered for inspection (e.g. "1Mi"). +
+Bodies larger than this are handled per the engine's configured +
+behavior for oversized bodies. Only meaningful when enabled is true. + |  | Optional: \{} +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafcustomrule"]
+==== WAFCustomRule
+
+
+
+WAFCustomRule is a single raw Coraza/ModSecurity SecRule directive block,
+identified by its numeric rule id.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafrulesetspec[$$WAFRuleSetSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`id`* __integer__ | id is the numeric SecRule id. It must be in the site-local range +
+1-99999, which is the SecLang convention reserved for a site's own +
+custom rules (as opposed to 100000-899999, historically assigned to +
+various commercial/community rule vendors; 900000-999999, the OWASP +
+Core Rule Set itself; 9500000-9599999, registered CRS plugins; and +
+10000000-10000099, reserved by gateway-protector for its own +
+generated directives). It is +
+the author's responsibility to keep ids unique within a WAFRuleSet +
+and across every other WAFRuleSet referenced by the same WAFPolicy. +
+
+This validates the declared id field only, not any id that might +
+also appear inside the raw directive text below - a mismatch between +
+the two is still only caught at dry-compile time. + |  | Required: \{} +
+
+| *`directive`* __string__ | directive is one or more raw SecRule lines composing this rule. + |  | MinLength: 1 +
+Required: \{} +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafenginemode"]
+==== WAFEngineMode
+
+_Underlying type:_ _string_
+
+WAFEngineMode controls whether the WAF engine blocks matching requests,
+only logs them, or is disabled entirely.
+
+.Validation:
+- Enum: [Blocking Detection Off]
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafenginespec[$$WAFEngineSpec$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafenginespec"]
+==== WAFEngineSpec
+
+
+
+WAFEngineSpec configures the WAF engine's operating mode.
+
+There is deliberately no failure-posture (fail-open/fail-closed) knob
+here: the data plane this project integrates with (agentgateway's
+ext_proc wiring) hardcodes fail-closed when the processor is
+unreachable and exposes no way to configure it, so this API doesn't
+promise a behavior it cannot deliver. If upstream ever exposes it, a
+failureMode field can be reintroduced.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicyspec[$$WAFPolicySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`mode`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafenginemode[$$WAFEngineMode$$]__ | mode selects whether the engine blocks, only logs, or is disabled. + |  | Enum: [Blocking Detection Off] +
+Required: \{} +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafexclusion"]
+==== WAFExclusion
+
+
+
+WAFExclusion excludes specific CRS rules (by numeric id) or rule tags from
+evaluation, e.g. to silence a known false positive.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicyspec[$$WAFPolicySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`byId`* __integer array__ | byId excludes specific CRS rule ids. + |  | Optional: \{} +
+
+| *`byTag`* __string array__ | byTag excludes every CRS rule carrying one of the given tags (e.g. +
+"attack-sqli"). + |  | Optional: \{} +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicy"]
+==== WAFPolicy
+
+
+
+WAFPolicy is the Schema for the wafpolicies API. It attaches a Coraza +
+OWASP Core Rule Set WAF engine to a Gateway (as the default for all its
+routes) or to a single HTTPRoute (as an override of the Gateway default).
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicylist[$$WAFPolicyList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `gateway-protector.kubewarden.io/v1alpha1` | |
+| *`kind`* __string__ | `WAFPolicy` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | Optional: \{} +
+
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicyspec[$$WAFPolicySpec$$]__ | spec defines the desired state of WAFPolicy + |  | Required: \{} +
+
+| *`status`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicystatus[$$WAFPolicyStatus$$]__ | status defines the observed state of WAFPolicy + |  | Optional: \{} +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicylist"]
+==== WAFPolicyList
+
+
+
+WAFPolicyList contains a list of WAFPolicy
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `gateway-protector.kubewarden.io/v1alpha1` | |
+| *`kind`* __string__ | `WAFPolicyList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicy[$$WAFPolicy$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicyspec"]
+==== WAFPolicySpec
+
+
+
+WAFPolicySpec defines the desired state of WAFPolicy.
+
+A WAFPolicy attaches a Coraza + OWASP Core Rule Set WAF engine to a
+Gateway (as the default for all its routes) or to a single HTTPRoute (as
+an override of the Gateway default for that route only) - resolved
+"most-specific-wins" between exactly those two attachment levels, with no
+merging: a Route-level WAFPolicy fully replaces the Gateway-level one for
+that route, it doesn't add to it. See the field docs below for the
+per-field reference, docs/wafpolicy-lifecycle.md for the validation and
+conflict-resolution rules, and docs/processor.md for how the compiled
+result is ultimately consumed by the data plane.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicy[$$WAFPolicy$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`targetRef`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-policytargetreference[$$PolicyTargetReference$$]__ | targetRef identifies exactly one Gateway (applies to all its routes, +
+the common default case) or one HTTPRoute (overrides the Gateway +
+default for that route only). + |  | Required: \{} +
+
+| *`engine`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafenginespec[$$WAFEngineSpec$$]__ | engine configures the WAF engine's mode and failure posture. + |  | Required: \{} +
+
+| *`paranoiaLevel`* __integer__ | paranoiaLevel selects the CRS paranoia level (1-4); higher levels +
+enable more (and more false-positive-prone) rules. Absent means the +
+Core Rule Set's own default (paranoia level 1). + |  | Maximum: 4 +
+Minimum: 1 +
+Optional: \{} +
+
+| *`anomalyThreshold`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafanomalythreshold[$$WAFAnomalyThreshold$$]__ | anomalyThreshold sets the inbound/outbound anomaly score thresholds. +
+Absent means the Core Rule Set's own defaults. + |  | Optional: \{} +
+
+| *`requestBody`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafbodyinspectionspec[$$WAFBodyInspectionSpec$$]__ | requestBody configures request body inspection. + |  | Optional: \{} +
+
+| *`responseBody`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafbodyinspectionspec[$$WAFBodyInspectionSpec$$]__ | responseBody configures response body inspection. + |  | Optional: \{} +
+
+| *`exclusions`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafexclusion[$$WAFExclusion$$] array__ | exclusions silence specific CRS rules (by id or tag), e.g. to resolve a +
+known false positive without lowering the paranoia level. + |  | Optional: \{} +
+
+| *`customRulesRefs`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-localrulesetreference[$$LocalRuleSetReference$$] array__ | customRulesRefs references WAFRuleSet objects, in the same namespace as +
+this WAFPolicy, whose custom SecRule directives are compiled into the +
+engine alongside the Core Rule Set. Referenced WAFRuleSets are +
+rendered in namespace/name order, not the order listed here (this is +
+a listType=map, so list order isn't meaningful and isn't preserved +
+across a server-side-apply merge); SecLang rules that depend on a +
+specific relative order must be placed together within a single +
+WAFRuleSet, whose own spec.rules order is preserved. + |  | Optional: \{} +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicystatus"]
+==== WAFPolicyStatus
+
+
+
+WAFPolicyStatus defines the observed state of WAFPolicy.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafpolicy[$$WAFPolicy$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#condition-v1-meta[$$Condition$$] array__ | conditions represent the current state of the WAFPolicy resource, using +
+the Gateway API status-conditions convention: Accepted (valid, target +
+resolves, not conflicted - see ConditionReasonConflicted) and +
+Programmed (gateway wired, engine live in the data plane). + |  | Optional: \{} +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafruleset"]
+==== WAFRuleSet
+
+
+
+WAFRuleSet is the Schema for the wafrulesets API. It is a reusable bundle
+of custom SecRule directives referenced from one or more WAFPolicy objects
+in the same namespace via customRulesRefs.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafrulesetlist[$$WAFRuleSetList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `gateway-protector.kubewarden.io/v1alpha1` | |
+| *`kind`* __string__ | `WAFRuleSet` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | Optional: \{} +
+
+| *`spec`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafrulesetspec[$$WAFRuleSetSpec$$]__ | spec defines the desired state of WAFRuleSet + |  | Required: \{} +
+
+| *`status`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafrulesetstatus[$$WAFRuleSetStatus$$]__ | status defines the observed state of WAFRuleSet + |  | Optional: \{} +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafrulesetlist"]
+==== WAFRuleSetList
+
+
+
+WAFRuleSetList contains a list of WAFRuleSet
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `gateway-protector.kubewarden.io/v1alpha1` | |
+| *`kind`* __string__ | `WAFRuleSetList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafruleset[$$WAFRuleSet$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafrulesetspec"]
+==== WAFRuleSetSpec
+
+
+
+WAFRuleSetSpec defines the desired state of WAFRuleSet.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafruleset[$$WAFRuleSet$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`rules`* __xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafcustomrule[$$WAFCustomRule$$] array__ | rules are raw Coraza/ModSecurity SecRule directive blocks, referenced +
+from WAFPolicy.customRulesRefs to avoid pasting raw directives inline +
+in every WAFPolicy. + |  | MinItems: 1 +
+Required: \{} +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafrulesetstatus"]
+==== WAFRuleSetStatus
+
+
+
+WAFRuleSetStatus defines the observed state of WAFRuleSet.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-kubewarden-gateway-protector-api-v1alpha1-wafruleset[$$WAFRuleSet$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.37/#condition-v1-meta[$$Condition$$] array__ | conditions represent the current state of the WAFRuleSet resource. + |  | Optional: \{} +
+
+|===
+
+
