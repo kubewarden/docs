@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = OpenTelemetry
-:revdate: 2026-08-19
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :description: Export traces and metrics from {sboms-name} with OpenTelemetry.
 :keywords: ["{sboms-name}", "kubewarden", "kubernetes", "opentelemetry", "otlp", "traces", "metrics", "observability"]
@@ -39,7 +39,9 @@ Set the `otel.endpoint` value to the URL of your OTLP endpoint:
 
 [source,bash]
 ----
-helm upgrade sbomscanner ./chart \
+helm upgrade sbomscanner kubewarden/sbomscanner \
+  --namespace sbomscanner \
+  --reuse-values \
   --set otel.endpoint=https://otel-collector.telemetry.svc.cluster.local:4317
 ----
 
@@ -96,7 +98,9 @@ Set all three values:
 
 [source,bash]
 ----
-helm upgrade sbomscanner ./chart \
+helm upgrade sbomscanner kubewarden/sbomscanner \
+  --namespace sbomscanner \
+  --reuse-values \
   --set otel.endpoint=https://otel-collector.telemetry.svc.cluster.local:4317 \
   --set otel.caSecretName=sbomscanner-otel-client \
   --set otel.clientCertificateSecretName=sbomscanner-otel-client
@@ -129,7 +133,7 @@ processors:
 [#_example_dashboard]
 == Example dashboard
 
-The {sboms-name} repository contains an example Grafana dashboard at https://github.com/kubewarden/sbomscanner/blob/main/examples/dashboards/sbomscanner.json[examples/dashboards/sbomscanner.json].
+The {sboms-name} repository contains an example Grafana dashboard at https://github.com/kubewarden/sbomscanner/blob/{release-tag}/examples/dashboards/sbomscanner.json[examples/dashboards/sbomscanner.json].
 The dashboard shows the scan counters, the stage durations, the storage metrics, and the resource usage of each replica.
 The latency panels show exemplars.
 An exemplar connects one point on a latency panel to the trace that produced it.

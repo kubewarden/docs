@@ -1,7 +1,7 @@
 include::partial$variables.adoc[]
 
 = Scanning Workloads
-:revdate: 2026-11-05
+:revdate: 2026-11-26
 :page-revdate: {revdate}
 :page-aliases: user-guide/scanning-workloads.adoc
 :description: Configure workload scanning and understand workload vulnerability reports.
@@ -52,8 +52,7 @@ walked up; every other owner kind is used as-is.
 
 When you install {sboms-name} with the Helm chart, WorkloadScan reconcilers are
 enabled by default. Workload scanning becomes active after you create a
-`WorkloadScanConfiguration` resource. A sample configuration is in the
-https://github.com/kubewarden/sbomscanner/blob/main/examples/workloadscanconfiguration.yaml[examples folder].
+`WorkloadScanConfiguration` resource.
 
 == Configuration
 
@@ -63,13 +62,7 @@ To activate workload scanning after installation, create the configuration:
 
 [source,bash]
 ----
-kubectl apply -f https://raw.githubusercontent.com/kubewarden/sbomscanner/main/examples/workloadscanconfiguration.yaml
-----
-
-Or create your own configuration:
-
-[source,yaml]
-----
+kubectl apply -f - <<EOF
 apiVersion: sbomscanner.kubewarden.io/v1alpha1
 kind: WorkloadScanConfiguration
 metadata:
@@ -86,7 +79,13 @@ spec:
       os: linux
     - arch: arm64
       os: linux
+EOF
 ----
+
+This configuration scans only the workloads in namespaces that have the
+`sbomscanner.kubewarden.io/workloadscan: "true"` label. To add the label to a
+namespace, refer to
+xref:#_enabling_scanning_for_a_namespace[Enabling scanning for a namespace].
 
 === Fields
 
@@ -199,6 +198,7 @@ controller:
 Use this setting when explicit `Registry` configurations handle scanning. It is
 also useful when additional controllers use too many resources.
 
+[#_enabling_scanning_for_a_namespace]
 == Enabling scanning for a namespace
 
 The example configuration above uses a namespace selector that matches the label `sbomscanner.kubewarden.io/workloadscan: "true"`. Scanning is not active in any namespace until you apply this label.
